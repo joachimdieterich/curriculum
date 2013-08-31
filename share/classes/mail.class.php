@@ -140,7 +140,11 @@ class Mail {
         return mysql_query($query);
     }
     
-    
+    /**
+     * set status of a message
+     * @param int $status
+     * @return boolean 
+     */
     public function setStatus($status){
        $query = sprintf("UPDATE message SET status = %s
                         WHERE id = '%s'",

@@ -88,7 +88,12 @@ class Course {
      */
     public $icon = null; 
  
- 
+    /**
+     * get courses depending on dependency
+     * @param string $dependency
+     * @param int $id
+     * @return array of course objects
+     */
     public function getCourse($dependency = null, $id = null){
         switch ($dependency) {
             case 'admin': $query = sprintf("SELECT cu.id, cu.curriculum, cu.description, gp.groups, gp.id AS gpid, fl.filename
@@ -170,6 +175,12 @@ class Course {
         } 
    }
    
+   /**
+    * get teacher depending on user id and curriculum id
+    * @param int $user_id
+    * @param int $curriculum_id
+    * @return array of users | boolean 
+    */
    public function getTeacher($user_id, $curriculum_id){
        $query = sprintf("SELECT DISTINCT usr.id
                         FROM users AS usr, groups_enrolments AS gre

@@ -106,7 +106,7 @@ class Curriculum {
      */
     public $terminal_objectives = null; 
     /**
-     * add group
+     * add curriculum to db
      * @return mixed 
      */
     public function add(){
@@ -133,7 +133,7 @@ class Curriculum {
     }
     
     /**
-     * Update group
+     * Update curriculum in db
      * @return boolean 
      */
     public function update(){
@@ -155,7 +155,7 @@ class Curriculum {
     }
     
     /**
-     * Delete group
+     * Delete curriculum from db
      * @return mixed 
      */
     public function delete(){
@@ -165,7 +165,9 @@ class Curriculum {
     } 
     
     /**
-     * Load group with id $this->id 
+     * load curriculum depending on id 
+     * if load_terminal_objectives == true -> get Objectives
+     * @param type $load_terminal_objectives 
      */
     public function load($load_terminal_objectives = false){
         $query = sprintf("SELECT cu.*, co.code, su.subject 
@@ -194,7 +196,12 @@ class Curriculum {
         }
         
     }
-    
+    /**
+     * get curriulum depending on dependency
+     * @param string $dependency
+     * @param int $id
+     * @return array of curriculum objects  
+     */
     public function getCurricula($dependency = null, $id = null){
         switch ($dependency) {
             case 'group':   $query = sprintf("SELECT cu.id, cu.curriculum, cu.description, fl.filename, su.subject, 

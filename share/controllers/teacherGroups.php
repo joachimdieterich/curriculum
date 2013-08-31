@@ -22,9 +22,6 @@
 */
 global $USER, $TEMPLATE, $PAGE;
 
-/*if(isset($_GET['reset']) OR (isset($_POST['reset']))){
-    resetPaginator('groupsPaginator');            
-}*/
 $selectedCurriculum = (isset($_GET['curriculum']) && $_GET['curriculum'] != '' ? $_GET['curriculum'] : '_'); //'_' ist das Trennungszeichen 
 $TEMPLATE->assign('selectedCurriculum', $selectedCurriculum);
 $curriculum = new Curriculum();

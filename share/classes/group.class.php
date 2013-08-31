@@ -90,8 +90,9 @@ class Group {
    
     
     /**
-     * add group
-     * @return mixed 
+     * add group to db
+     * @param boolean $condition
+     * @return boolean 
      */
     public function add($condition = false){
         switch ($condition) {
@@ -204,9 +205,9 @@ class Group {
     
     /**
      * expel group from curriclum
-     * @param type $user_id
-     * @param type $curriculum_id
-     * @return type 
+     * @param int $user_id
+     * @param int $curriculum_id
+     * @return boolean 
      */
     public function expel($user_id, $curriculum_id){
         if ($this->checkEnrolment($curriculum_id)) {
@@ -220,6 +221,12 @@ class Group {
         } 
     }
     
+    /**
+     * enrol user to curriculum
+     * @param int $user_id
+     * @param int $curriculum_id
+     * @return boolean 
+     */
     public function enrol($user_id, $curriculum_id){
         if ($this->checkEnrolment($curriculum_id, 0)) {
             $query = sprintf("UPDATE curriculum_enrolments 
@@ -241,7 +248,7 @@ class Group {
     
     /**
      * assume group members to new group
-     * @global type $USER 
+     * @global object $USER 
      */
     public function changeSemester(){
         global $USER;

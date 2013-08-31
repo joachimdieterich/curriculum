@@ -53,5 +53,4 @@ $TEMPLATE->assign('filesize', round(convertByteToMb($INSTITUTION->institution_cs
 $new_users = new User(); 
 $newusers = $new_users->newUsers($USER->id);
 setPaginator('newUsersPaginator', $TEMPLATE, $newusers, 'results', 'index.php?action=teacherUserImport'); //set Paginator
-//addLog($USER->id, 'view', curPageURL(), 'teacherUserImport'); //Addlog 
 ?>

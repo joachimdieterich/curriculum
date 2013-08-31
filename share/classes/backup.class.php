@@ -53,7 +53,12 @@ class Backup {
                         mysql_real_escape_string($userID));
        return mysql_query($query);  
     }
-    
+    /**
+     * loader function 
+     * @global int $USER
+     * @param string $dependency
+     * @return Array of backup objects|boolean 
+     */
     public function load($dependency = null){
         global $USER; 
         switch ($dependency) {
@@ -100,9 +105,7 @@ class Backup {
             return $backup;
         } else {
             return false;
-        }  
-        
+        }        
     }
 }
-
 ?>

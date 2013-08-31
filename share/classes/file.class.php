@@ -272,8 +272,10 @@ class File {
         
     }
     /**
-     * Get all availible files 
-     * @return array of file objects 
+     * get files depending on dependency
+     * @param string $dependency
+     * @param int $id
+     * @return array of file objects|boolean 
      */
     public function getFiles($dependency = null, $id = null){
         switch ($dependency) {
@@ -344,7 +346,7 @@ class File {
         } else {return false;}
     }
     
-    /**
+ /**
  * get context path
  * @param string $context
  * @return string 
@@ -372,6 +374,10 @@ $query = sprintf("SELECT context_id FROM context WHERE context = '%s'",
     } else {return false;}
 }
 
+/**
+ * function used during the install process to set up creator id to new admin
+ * @return boolean
+ */
 public function dedicate(){ // only use during install
         $query = sprintf("UPDATE files SET creator_id = '%s'",
                                             mysql_real_escape_string($this->creator_id));

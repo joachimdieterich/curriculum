@@ -23,7 +23,13 @@
  * http://www.gnu.org/copyleft/gpl.html      
  */
 class Cron {
-    
+    /**
+     * add cronjob log into db
+     * @param string $cronjob
+     * @param int $user_id
+     * @param string $log
+     * @return boolean 
+     */
     public function add($cronjob,$user_id,$log){
         $query = sprintf("INSERT INTO cronjobs (cronjob,creator_id,log) VALUES('%s','%s','%s')",
                 mysql_real_escape_string($cronjob),
@@ -32,16 +38,17 @@ class Cron {
         return mysql_query($query);
     }
     
+    /**
+     * get last time where 'detectExpiredObjective' was called
+     * @return object|boolean 
+     */
     public function check_cronjob(){
         $query = sprintf("SELECT DISTINCT creation_time FROM cronjobs WHERE cronjob = 'detectExpiredObjective'");
         $result = mysql_query($query);
         if ($result && mysql_num_rows($result)){
             while($row = mysql_fetch_assoc($result)) { 
-                    //$this->id = $row['id'];
-                    //$this->cronjob = $row['cronjob'];
                     $this->creation_time = $row['creation_time'];
-                    //$this->creator_id = $row['creator_id'];
-                    //$this->log = $row['log'];
+                    
             }
                 return $this;
         } else {
@@ -50,7 +57,7 @@ class Cron {
 
     }
     
-    /**
+/**
  * function seDay von http://gd.tuwien.ac.at/languages/php/selfphp/kochbuch/kochbuch11.html
  * @param timestamp $begin
  * @param timestamp $end
@@ -121,7 +128,5 @@ function detectExpiredObjective($execUser = -1){
     $cronjob = new Cron();
     $cronjob->add(__FUNCTION__, $execUser, 'DB auf abgelaufene Ziele überprüft.');
 }
-    
-    
 }
 ?>

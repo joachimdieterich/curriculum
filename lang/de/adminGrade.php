@@ -3,7 +3,7 @@
 * This file is part of curriculum - http://www.joachimdieterich.de
 * Strings for component 'adminGrade', language 'de', branch 'CURRICULUM_1_BEAT'
 *
-* @package   adminGrade
+* @package   language
 * @copyright 2012 onwards Joachim Dieterich  {@link http://www.joachimdieterich.de}
 * @license   
 * This program is free software; you can redistribute it and/or modify 

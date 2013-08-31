@@ -111,6 +111,4 @@ $country = new State();
     $countries = $country->getCountries();
     $TEMPLATE->assign('countries', $countries);
     $TEMPLATE->assign('states', $country->getStates('profile', $currentUser->country_id));
-    
-//addLog($USER->id, 'view', $PAGE->url, 'profile'); //Addlog
 ?>

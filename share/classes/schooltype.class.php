@@ -167,6 +167,10 @@ class Schooltype {
         } else {return $result;}
     }
     
+    /**
+    * function used during the install process to set up creator id to new admin
+    * @return boolean
+    */
     public function dedicate(){ // only use during install
         $query = sprintf("UPDATE schooltype SET creator_id = '%s'",
                                             mysql_real_escape_string($this->creator_id));
