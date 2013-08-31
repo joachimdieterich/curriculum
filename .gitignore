@@ -1,0 +1,13 @@
+/share/templates/compiled/
+/phpdoc/docs/manual/.exts/
+/phpdoc/docs/manual/.static/
+/phpdoc/docs/manual/.templates/
+/curriculumdata/userdata/
+/curriculumdata/support/demo/demo.sql
+/curriculumdata/solutions/
+/curriculumdata/curriculum/
+/curriculumdata/backups/tmp/
+/curriculumdata/backups/
+/curriculumdata/avatar/
+/nbproject/
+/phpdoc.dist.xml

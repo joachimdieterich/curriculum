@@ -1,0 +1,214 @@
+<?xml version ='1.0' encoding ='UTF-8' ?> 
+<definitions name='CurriculumServer' 
+xmlns:tns=' http://127.0.0.1/curriculum/webservice/soap/server.wsdl ' 
+xmlns:soap='http://schemas.xmlsoap.org/wsdl/soap/' 
+xmlns:xsd='http://www.w3.org/2001/XMLSchema' 
+xmlns:soapenc='http://schemas.xmlsoap.org/soap/encoding/' 
+xmlns:wsdl='http://schemas.xmlsoap.org/wsdl/' 
+xmlns='http://schemas.xmlsoap.org/wsdl/'> 
+<types>
+<xsd:complexType name='CurriculumList'>
+  <xsd:complexContent mixed='false'>
+    <xsd:restriction base='soapenc:Array'>
+      <xsd:attribute wsdl:arrayType='Curriculum[]' ref='soapenc:arrayType' />
+    </xsd:restriction>
+  </xsd:complexContent>
+</xsd:complexType>
+<xsd:complexType name='Curriculum'>
+  <xsd:all>
+    <xsd:element
+    name='id'
+    type='xsd:int'/>
+    <xsd:element
+      name='curriculum'
+      type='xsd:string'/>
+    <xsd:element
+      name='description'
+      type='xsd:string'/>
+    
+  </xsd:all>
+</xsd:complexType>
+
+<xsd:complexType name='LoginResult'>
+  <xsd:complexContent mixed='false'>
+    <xsd:restriction base='soapenc:Array'>
+      <xsd:attribute wsdl:arrayType='Login[]' ref='soapenc:arrayType' />
+    </xsd:restriction>
+  </xsd:complexContent>
+</xsd:complexType>
+<xsd:complexType name='Login'>
+  <xsd:all>
+    <xsd:element
+    name='exists'
+    type='xsd:boolean'/>
+    <xsd:element
+      name='token'
+      type='xsd:string'/>    
+  </xsd:all>
+</xsd:complexType>
+
+<xsd:complexType name='ObjectivesResult'>
+  <xsd:complexContent mixed='false'>
+    <xsd:restriction base='soapenc:Array'>
+      <xsd:attribute wsdl:arrayType='Objectives[]' ref='soapenc:arrayType' />
+    </xsd:restriction>
+  </xsd:complexContent>
+</xsd:complexType>
+<xsd:complexType name='Objectives'>
+  <xsd:all>
+    <xsd:element
+    name='id'
+    type='xsd:int'/>
+    <xsd:element
+      name='Objective'
+      type='xsd:string'/>    
+  </xsd:all>
+</xsd:complexType>
+</types>
+
+<message name='getObjectiveRequest'> 
+    <part name='curriculum_id' type='xsd:int'/>
+</message> 
+<message name='getObjectiveResult'> 
+    <part name='result' type='xsd:ObjectivesResult'/>
+</message> 
+
+<message name='soapConnect'> 
+    <part name='username' type='xsd:string'/>
+    <part name='password' type='xsd:string'/>
+</message> 
+
+<message name='soapLogin'> 
+    <part name='user_external_id' type='xsd:int'/>
+    <part name='username' type='xsd:string'/>
+    <part name='firstname' type='xsd:string'/>
+    <part name='lastname' type='xsd:string'/>
+    <part name='email' type='xsd:string'/>
+    <part name='password' type='xsd:string'/>
+    <part name='ws_username' type='xsd:string'/>
+</message> 
+
+<message name='loginResult'> 
+    <part name='Result' type='LoginResult'/> 
+</message> 
+
+<message name='GetCurriculumRequest'>
+  <part name='username' type='xsd:string'/>
+</message>
+<message name='GetCurriculumResponse'>
+  <part name='Result' type='CurriculumList'/>
+</message>
+
+<message name='setAccomplishedObjectivesRequest'> 
+    <part name='curriculum_user_id' type='xsd:int'/>
+    <part name='enabling_objective_id' type='xsd:int'/>
+    <part name='teacher_id' type='xsd:int'/>
+    <part name='status_id' type='xsd:int'/>
+</message>
+<message name='setAccomplishedObjectivesResult'> 
+    <part name='Result' type='xsd:boolean'/>
+</message>
+
+<message name='getTokenResponse'>
+  <part name='Result' type='xsd:string'/>
+</message>
+
+<portType name='CurriculumServerPortType'> 
+<operation name='soapConnect'> 
+    <input message='tns:soapConnect'/> 
+    <output message='tns:loginResult'/> 
+</operation> 
+<operation name='soapLogin'> 
+    <input message='tns:soapLogin'/> 
+    <output message='tns:loginResult'/> 
+</operation> 
+<operation name='get_Curriculum'> 
+    <input message='tns:GetCurriculumRequest'/> 
+    <output message='tns:GetCurriculumResponse'/> 
+</operation> 
+<operation name='getToken'> 
+    <output message='tns:getTokenResponse'/> 
+</operation> 
+<operation name='get_Objectives'> 
+    <input message='tns:getObjectiveRequest'/> 
+    <output message='tns:getObjectiveResult'/> 
+</operation>
+<operation name='set_accomplishedObjectives'> 
+    <input message='tns:setAccomplishedObjectivesRequest'/> 
+    <output message='tns:setAccomplishedObjectivesResult'/> 
+</operation> 
+</portType> 
+
+<binding name='CurriculumServerBinding' type='tns:CurriculumServerPortType'> 
+<soap:binding style='rpc' 
+transport='http://schemas.xmlsoap.org/soap/http'/> 
+<operation name='soapConnect'> 
+    <soap:operation soapAction='urn:xmethodsCurriculumServer#soapConnect'/> 
+    <input> 
+    <soap:body use='encoded' namespace='urn:xmethodsCurriculumServer' 
+    encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
+    </input> 
+    <output> 
+    <soap:body use='encoded' namespace='urn:xmethodsCurriculumServer' 
+    encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
+    </output> 
+</operation> 
+<operation name='soapLogin'> 
+    <soap:operation soapAction='urn:xmethodsCurriculumServer#soapLogin'/> 
+    <input> 
+    <soap:body use='encoded' namespace='urn:xmethodsCurriculumServer' 
+    encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
+    </input> 
+    <output> 
+    <soap:body use='encoded' namespace='urn:xmethodsCurriculumServer' 
+    encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
+    </output> 
+</operation> 
+<operation name='get_Curriculum'> 
+    <soap:operation soapAction='urn:xmethodsCurriculumServer#get_Curriculum'/> 
+    <input> 
+    <soap:body use='encoded' namespace='urn:xmethodsCurriculumServer' 
+    encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
+    </input> 
+    <output> 
+    <soap:body use='encoded' namespace='urn:xmethodsCurriculumServer' 
+    encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
+    </output> 
+</operation>
+<operation name='get_Objectives'> 
+    <soap:operation soapAction='urn:xmethodsCurriculumServer#get_Objectives'/> 
+    <input> 
+    <soap:body use='encoded' namespace='urn:xmethodsCurriculumServer' 
+    encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
+    </input> 
+    <output> 
+    <soap:body use='encoded' namespace='urn:xmethodsCurriculumServer' 
+    encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
+    </output> 
+</operation>
+<operation name='set_accomplishedObjectives'> 
+    <soap:operation soapAction='urn:xmethodsCurriculumServer#set_accomplishedObjectives'/> 
+    <input> 
+    <soap:body use='encoded' namespace='urn:xmethodsCurriculumServer' 
+    encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
+    </input> 
+    <output> 
+    <soap:body use='encoded' namespace='urn:xmethodsCurriculumServer' 
+    encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
+    </output> 
+</operation>
+<operation name='getToken'> 
+    <soap:operation soapAction='urn:xmethodsCurriculumServer#getToken'/> 
+    <output> 
+    <soap:body use='encoded' namespace='urn:xmethodsCurriculumServer' 
+    encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/> 
+    </output> 
+</operation>
+</binding> 
+
+<service name='CurriculumServerService'> 
+<port name='CurriculumServerPort' binding='CurriculumServerBinding'> 
+<soap:address location='http://127.0.0.1/curriculum/webservice/soap/server.php'/> 
+</port> 
+</service> 
+</definitions>
