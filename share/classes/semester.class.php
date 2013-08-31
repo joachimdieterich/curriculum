@@ -178,6 +178,10 @@ class Semester {
         $this->institution_id    = mysql_result($result, 0, "institution_id");
     }
     
+    /**
+    * function used during the install process to set up creator id to new admin
+    * @return boolean
+    */
     public function dedicate(){ // only use during install
         $query = sprintf("UPDATE semester SET institution_id = '%s', creator_id = '%s'",
                                             mysql_real_escape_string($this->institution_id),

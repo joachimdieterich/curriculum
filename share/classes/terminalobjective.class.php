@@ -131,7 +131,13 @@ class TerminalObjective {
             } 
         }    
     }
-    
+    /**
+     * get objectives depending on dependency
+     * @param string $dependency
+     * @param int $id
+     * @param boolean $load_enabling_objectives
+     * @return array of TerminalObjective objects|boolean 
+     */
     public function getObjectives($dependency = null, $id = null, $load_enabling_objectives = false) {
         switch ($dependency) {
             case 'curriculum':  $query = sprintf("SELECT * 

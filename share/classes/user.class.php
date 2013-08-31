@@ -92,12 +92,20 @@ class User {
      * @var string
      */
     public $state = null; 
+    /**
+     * id of state
+     * @var int
+     */
     public $state_id = null; 
     /**
      * country
      * @var string 
      */
     public $country = null; 
+    /**
+     * id of country
+     * @var type 
+     */
     public $country_id = null; 
     /**
      * filename of avatar
@@ -265,7 +273,7 @@ class User {
     
     /**
      * update User
-     * @return bool 
+     * @return boolean
      */
     public function update() {
         $query = sprintf("UPDATE users 
@@ -298,7 +306,7 @@ class User {
     }
     /**
      * delete User
-     * @return type 
+     * @return boolean 
      */
     public function delete(){
         $query = sprintf("DELETE FROM users WHERE id='%s'",
@@ -376,14 +384,11 @@ class User {
                             } else return false; 
                 break;
         }
-        
-                 
-        
     }  
     
     /**
      * List of new Users since last login of current user
-     * @return array 
+     * @return array of object
      */
     public function newUsers($id){
         $query = sprintf("SELECT usr.*, rol.role 
@@ -421,7 +426,11 @@ class User {
         }   //keine neuen Benutzer
     }
     
-    
+    /**
+     * enrole user to institution
+     * @param int $institution_id
+     * @return boolean 
+     */
     public function enroleToInstitution($institution_id){
         $query = sprintf("INSERT INTO institution_enrolments (institution_id,user_id,creator_id) 
                                      VALUES('%s','%s','%s')",
@@ -431,6 +440,12 @@ class User {
         return mysql_query($query);
     }
     
+    /**
+     * enrole user to group
+     * @param int $group_id
+     * @param int $creator_id
+     * @return boolean 
+     */
     public function enroleToGroup($group_id, $creator_id){
         $query = sprintf("SELECT count(id) FROM groups_enrolments WHERE group_id = '%s' AND user_id = '%s'",
                                             mysql_real_escape_string($group_id), 
@@ -453,6 +468,11 @@ class User {
         }
     }
     
+    /**
+     * expel user from group
+     * @param int $group_id
+     * @return boolean 
+     */
     public function expelFromGroup($group_id){
         $query = sprintf("SELECT COUNT(id) FROM groups_enrolments WHERE group_id = '%s' AND user_id = '%s'",
                                             mysql_real_escape_string($group_id), 
@@ -467,6 +487,14 @@ class User {
         }
     }
     
+    /** 
+     * import csv user list
+     * @global object $CFG
+     * @param int $institution_id
+     * @param file $import_file
+     * @param string $delimiter
+     * @return boolean 
+     */
     public function import($institution_id, $import_file, $delimiter = ';'){
         global $CFG;
         $row = 1;   //row counter
@@ -526,8 +554,10 @@ class User {
     }
     
     /**
-     * Returns user List depending on $this->role_id 
-     * @return array 
+     * get user list depending on dependency
+     * @param string $dependency
+     * @param int $id
+     * @return array of object 
      */
     public function userList($dependency = 'institution', $id = null){
         switch ($dependency) {
@@ -601,7 +631,7 @@ class User {
     /**
      * Returns all Curricula in which the user is enroled. 
      * If User isn't enroled in any curriculum, return is false
-     * @return mixed 
+     * @return array of object | boolean 
      */
     public function getCurricula() {
         $query = sprintf("SELECT cu.id, cu.curriculum, cu.description, fl.filename, su.subject, 
@@ -634,6 +664,10 @@ class User {
         }
     }
     
+    /**
+     * get groups
+     * @return array of object | boolean 
+     */
     public function getGroups(){
        $query = sprintf("SELECT gp.*, gr.grade, yr.semester, ins.institution, us.username AS creator
                             FROM groups AS gp, groups_enrolments AS cle, grade AS gr, semester AS yr, institution AS ins, users AS us
@@ -703,6 +737,12 @@ class User {
         }
     }
     
+    /**
+     * get users depending on course
+     * @param string $dependency
+     * @param int $id
+     * @return array of object|boolean 
+     */
     public function getUsers($dependency = null, $id = null){
        switch ($dependency) {
            case 'course': $query = sprintf("SELECT DISTINCT us.*          
@@ -736,6 +776,12 @@ class User {
            } else {return false;}
    }
    
+   /**
+    * get new users depending on institution
+    * @param string $dependency
+    * @param int $id
+    * @return boolean 
+    */
    public function getNewUsers($dependency = null, $id = null){
        switch ($dependency) {
            case null:   $query   = sprintf("SELECT COUNT(id) FROM users WHERE confirmed = 4");
@@ -766,6 +812,10 @@ class User {
         
    }
    
+   /**
+    * check login data
+    * @return boolean 
+    */
    public function checkLoginData(){
         $query   = sprintf("SELECT COUNT(id) FROM users WHERE UPPER(username) = UPPER('%s') AND password='%s'",
                                     mysql_real_escape_string($this->username),
@@ -780,6 +830,10 @@ class User {
         }
    }
    
+   /**
+    * set last login
+    * @return boolean
+    */
    public function setLastLogin(){
        $query   = sprintf("UPDATE users SET last_login = NOW() WHERE UPPER(username) = UPPER('%s') AND password = '%s'",
                                     mysql_real_escape_string($this->username),
@@ -787,6 +841,10 @@ class User {
        return mysql_query($query);
    }
    
+   /**
+    * get users confirmed status
+    * @return int
+    */
    public function getConfirmed(){
        $query   = sprintf("SELECT confirmed FROM users WHERE UPPER(username) = UPPER('%s') AND password='%s'",
                                     mysql_real_escape_string($this->username),
@@ -796,6 +854,11 @@ class User {
        return $this->confirmed;
    }
    
+   /**
+    * confirm user
+    * @param int $user_id
+    * @return boolean 
+    */
    public function confirmUser($user_id){
        $query = sprintf("UPDATE users SET confirmed = 1 WHERE id = '%s'",
                                 mysql_real_escape_string($user_id)); //confirmed 1 == freigeben
@@ -804,10 +867,9 @@ class User {
    }
    
     /**
-    * get user enrolments
-    * @param string $username
-    * @return string 
-    */
+     * get user enrolments
+     * @return string | array
+     */
    public function get_user_enrolments() {
         $query = sprintf("SELECT cu.curriculum, cu.id, cu.grade_id, gp.id AS group_id, gp.groups, fl.filename 
                             FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp, files AS fl
@@ -828,6 +890,10 @@ class User {
         return $data;
     }
     
+    /**
+    * function used during the install process to set up creator id to new admin
+    * @return boolean
+    */
     public function dedicate(){ // only use during install
         $query = sprintf("UPDATE users SET creator_id = '%s'",
                                             mysql_real_escape_string($this->creator_id));

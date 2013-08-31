@@ -223,7 +223,7 @@ if (isset($_GET['function'])){
                                     //Überprüfen, ob es enablingObjectives mit unterhalb dieses terminalObjectives gibt
                                     $query = sprintf("SELECT id 
                                                         FROM enablingObjectives
-                                                        WHERE terminalObjective_id = '%s'",
+                                                        WHERE terminal_objective_id = '%s'",
                                                 mysql_real_escape_string($_GET['terminalObjectiveID']));
                                     $result = mysql_query($query);
                                     if ($result && mysql_num_rows($result)){

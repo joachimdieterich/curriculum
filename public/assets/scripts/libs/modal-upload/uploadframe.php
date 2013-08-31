@@ -2,7 +2,7 @@
 
 /** This file is part of curriculum - http://www.joachimdieterich.de
  * 
- * @package upload
+ * @package core
  * @filename uploadframe.php
  * @copyright 2013 Joachim Dieterich
  * @author Joachim Dieterich
@@ -33,7 +33,6 @@ $file = new File();
 $conn = mysql_connect($CFG->db_host,$CFG->db_user,$CFG->db_password)
 	or die('Error connecting to mysql');
     mysql_select_db($CFG->db_name);
-//
 
 $error = '';
 $image = '';
@@ -520,7 +519,6 @@ $(document).ready(function() {
             <!--avatarfiles div-->
             <div id="div_avatarfiles" class="floatright verticalSeperator" style="display:none;">
                 <?php 
-                //$files = getAvatarsByUserId($upload_user->id, '3');
                 $files = $file->getFiles('avatar', $upload_user->id);
                 renderList('uploadframe.php', $files, $data_dir, '_avatarfiles', $targetID, $returnFormat, $multipleFiles);  //Rendert die Thumbnailliste
                 ?>

@@ -80,5 +80,4 @@ if (isset($user_list)){
 } else {
     $TEMPLATE->assign('data', 'none'); //keine Datensätze vorhanden
 }
-//addLog($USER->id, 'view', curPageURL(), 'adminConfirm'); //Addlog
 ?>

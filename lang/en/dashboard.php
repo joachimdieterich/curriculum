@@ -3,7 +3,7 @@
 * This file is part of curriculum - http://www.joachimdieterich.de
 * Strings for component 'dashboard', language 'en', branch 'CURRICULUM_1_BEAT'
 *
-* @package   dashboard
+* @package   language
 * @copyright 2012 onwards Joachim Dieterich  {@link http://www.joachimdieterich.de}
 * @license   
 * This program is free software; you can redistribute it and/or modify 

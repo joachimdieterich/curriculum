@@ -30,21 +30,66 @@ class Authenticate {
      * @var int
      */
     public $id              = null;
+    /**
+     * username
+     * @var string 
+     */
     public $username        = null; 
+    /**
+     * password
+     * @var string 
+     */
     public $password        = null; 
+    /**
+     * token
+     * @var string
+     */
     public $token           = null; 
+    /**
+     * time of creation 
+     * @var timestring
+     */
     public $creation_time   = null; 
+    /**
+     * user id of creator
+     * @var int
+     */
     public $creator_id      = null; 
+    /**
+     * status id
+     * @var int 
+     */
     public $status          = null; 
+    /**
+     * firstname 
+     * @var string
+     */
     public $firstname       = null; 
+    /**
+     * lastname
+     * @var string 
+     */
     public $lastname        = null; 
+    /**
+     * emailadress
+     * @var string
+     */
     public $email           = null; 
+    /**
+     * user id on external plattform
+     * @var int
+     */
     public $user_external_id = null; 
+    /**
+     * username of webservice user
+     * @var string
+     */
     public $ws_username     = null;
  
     
     /**
-     * get User via token 
+     * get user via token 
+     * @param string $dependency 
      */
     public function getUser($dependency = null){
         switch ($dependency) {
@@ -83,8 +128,6 @@ class Authenticate {
             default:
                 break;
         }
-    
     }
-   
 }
 ?>

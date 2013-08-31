@@ -15,3 +15,5 @@ curriculum BETA Version 0.9
                                                                        
  http://www.gnu.org/copyleft/gpl.html 
  
+Important notes: 
+- SAVE MODE has to be off! 

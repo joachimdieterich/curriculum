@@ -156,11 +156,11 @@ class EnablingObjective {
      * @return mixed 
      */
     public function delete(){
-
+        //not implemented yet --> see request.php
     } 
     
-  /**
-     * Load objective
+    /**
+     * Load enabling objectives from db 
      */
     public function load(){
         $query = sprintf("SELECT * 
@@ -183,10 +183,12 @@ class EnablingObjective {
         }    
     }
     /**
-     * gets enabling objectives
-     * @param type $dependency
-     * @param type $id
-     * @return \EnablingObjective|boolean 
+     * get objectives depending on dependency
+     * @global int $USER
+     * @param string $dependency
+     * @param int $id
+     * @param int $group
+     * @return array of EnablingObjective objects|boolean 
      */
     public function getObjectives($dependency = null, $id = null, $group = null) {
         global $USER; 
@@ -325,7 +327,11 @@ class EnablingObjective {
         } else { return false;}
         
     }  
-    
+    /**
+     * get last enabling objectives depending on users accomplished days
+     * @global int $USER
+     * @return mixed 
+     */
     public function getLastEnablingObjectives(){
         global $USER;
     $query = sprintf("SELECT ena.*, SUBSTRING(cur.curriculum, 1, 20) AS curriculum
@@ -383,6 +389,10 @@ class EnablingObjective {
         }
     }
     
+    /**
+     * get repeating objectives
+     * @return array of EnablingObjective objects|boolean 
+     */
     public function getRepeatingObjectives(){
         $query = "SELECT ua.*, ena.repeat_interval 
                         FROM user_accomplished AS ua, enablingObjectives AS ena
@@ -409,6 +419,11 @@ class EnablingObjective {
         } else {return false;}  
     }
     
+    /**
+     * set accomplished status of enabling objective in db
+     * @param int $status
+     * @return boolean 
+     */
     public function setAccomplishedStatus($status = 2) {
        $query = sprintf("UPDATE user_accomplished SET status_id = '%s' WHERE enabling_objectives_id = '%s'",
                           mysql_real_escape_string($status),

@@ -273,7 +273,12 @@ if ($_POST){
     }
 }
                 
-                
+/**
+ * write config file
+ * @param file $file
+ * @param string $pattern
+ * @param string $replace 
+ */                
 function writeConfigFile($file, $pattern, $replace){
     $lines = file($file);
     //print_r($lines);
@@ -287,6 +292,10 @@ function writeConfigFile($file, $pattern, $replace){
         file_put_contents($file,$lines);
 }
 
+/**
+ * load countries
+ * @global object $TEMPLATE 
+ */
 function load_Countries(){
     global $TEMPLATE; 
     $country = new State(); 

@@ -42,7 +42,10 @@ class State extends Country {
     
     
     /**
-     * load States 
+     * get states depending on country code
+     * @param string $dependency
+     * @param int $id
+     * @return array of objects|boolean 
      */
     public function getStates($dependency = null, $id = null) {
         switch ($dependency) {

@@ -63,5 +63,4 @@ $zipURL = $CFG->web_backup_url;
 $TEMPLATE->assign('web_backup_url', $zipURL); //keine Datensätze vorhanden
 
 $TEMPLATE->assign('page_message', $PAGE->message);
-//addLog($USER->id, 'view', curPageURL(), 'teacherBackup'); //Addlog
 ?>

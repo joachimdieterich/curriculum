@@ -411,8 +411,9 @@ function array2str($array, $pre = ' ', $pad = '', $sep = ', ')
 }
 
 /**
- * debug object arrays
- *  
+ * debug objects
+ * @param object $obj
+ * @param int $level 
  */
  function object_to_array($obj, $level = 0) {       
         $arrObj = is_object($obj) ? get_object_vars($obj) : $obj;

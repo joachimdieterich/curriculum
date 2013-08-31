@@ -48,7 +48,9 @@ class Country {
 
     
     /**
-     * function load Contries 
+     * load countries
+     * @param int $id
+     * @return array of country objects|boolean 
      */
     public function load($id) {
         

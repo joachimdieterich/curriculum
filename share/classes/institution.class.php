@@ -50,7 +50,15 @@ class Institution {
      * @var int 
      */
     public $schooltype_id       = null;
+    /**
+     * country code
+     * @var string
+     */
     public $country_code        = null;
+    /**
+     * id of state
+     * @var int
+     */
     public $state_id            = null; 
     /**
      * timestamp, default null 
@@ -64,7 +72,7 @@ class Institution {
     public $creator_id          = null;
     
     /**
-     * function load Institution 
+     * load  institution from db depending on id
      */
     public function load() {
         $query = sprintf("SELECT * FROM institution WHERE id = '%s'",
@@ -87,7 +95,7 @@ class Institution {
     }
     
     /**
-     *  addInstitution  
+     *  add institution to db   
      */
     public function add() {
         $query = sprintf("SELECT COUNT(id) FROM institution WHERE institution = '%s'",
@@ -114,8 +122,8 @@ class Institution {
     }
     
     /**
-     * delete Institution 
-     * @return mixed 
+     * delete Institution from db
+     * @return boolean 
      */
     public function deleteInstitution(){
         $query = sprintf("DELETE FROM institution WHERE id='%s'",
@@ -124,7 +132,8 @@ class Institution {
     }
     
     /**
-     * update Institution  
+     * update institution in db
+     * @return boolean 
      */
     public function update(){
         $query = sprintf("UPDATE institution SET institution = '%s', description= '%s', schooltype_id= '%s', country_id= '%s', state_id= '%s', creator_id= '%s', confirmed = '%s' 
@@ -151,9 +160,14 @@ class Institution {
         }
     }
     
+    /**
+     * load user config
+     * @global object $INSTITUTION
+     * @param string $dependency
+     * @param int $id 
+     */
     public function loadConfig($dependency = null, $id = null){
     global $INSTITUTION; 
-    //Get institution data
     switch ($dependency) {
         case 'user':    $query = sprintf("SELECT ins.id, ins.institution, ins.description, sch.schooltype AS schooltype_id, sta.state AS state_id, 
                              ins.country_id, ins.creation_time, usr.username AS creator_id 
@@ -199,7 +213,11 @@ class Institution {
                 
         }
     }
-
+    
+    /**
+     * get amount of new institutions
+     * @return boolean 
+     */
     public function getNewInsitutions(){
         $query          = sprintf("SELECT COUNT(id) AS value FROM institution WHERE confirmed = 4");
         $result         = mysql_query($query); 
@@ -211,6 +229,10 @@ class Institution {
         }
     }
     
+    /** 
+     * get institution of a given user
+     * @param string $username 
+     */
     public function getInstitutionByUserName($username){
         $query = sprintf("SELECT ins.id
                             FROM institution AS ins
@@ -251,5 +273,5 @@ class Institution {
         return $value;
     }
 
-} /* end of class Institution */
+} 
 ?>

@@ -1,6 +1,5 @@
 <?php
 /**
- *
  * 
  * @abstract This file is part of curriculum - http://www.joachimdieterich.de
  * @package core
@@ -25,36 +24,114 @@
 
 
 class Config {
-    
     /**
      * id
      * @var int
      */
     public $id                              = null;
+    /**
+     * id of user
+     * @var int
+     */
     public $user_id                         = null; 
+    /**
+     * filepath of user (not used yet)
+     * @var string
+     */
     public $user_filepath                   = null; 
+    /**
+     * paginator limit of user
+     * @var int
+     */
     public $user_paginator_limit            = null; 
+    /**
+     * user accomplished days 
+     * @var int
+     */
     public $user_acc_days                   = null; 
+    /**
+     * user language
+     * @var string
+     */
     public $user_language                   = null; 
+    /** 
+     * id of institution
+     * @var int
+     */
     public $institution_id                  = null; 
+    /**
+     * filepath of institution (not used yet)
+     * @var string
+     */
     public $institution_filepath            = null; 
+    /**
+     * paginator limit of institution
+     * @var int 
+     */
     public $institution_paginator_limit     = null; 
+    /**
+     * standard role id of institution
+     * @var int
+     */
     public $institution_standard_role       = null; 
+    /**
+     * standard country id of institution
+     * @var int
+     */
     public $institution_standard_country    = null; 
+    /**
+     * standard state id of institution
+     * @var int
+     */
     public $institution_standard_state      = null; 
+    /**
+     * max csv size of institution
+     * @var int
+     */
     public $institution_csv_size            = null; 
+    /**
+     * max avatar size of institution
+     * @var int 
+     */
     public $institution_avatar_size         = null; 
+    /**
+     * max. material size of institution
+     * @var int
+     */
     public $institution_material_size       = null; 
+    /**
+     * accomplished days for institution
+     * @var int 
+     */
     public $institution_acc_days            = null; 
+    /**
+     * language setting of institution
+     * @var string 
+     */
     public $institution_language            = null; 
+    /** 
+     * timeout 
+     * @var int 
+     */
     public $institution_timeout             = null; 
+    /**
+     * timestamp of creation
+     * @var timestamp
+     */
     public $creation_time                   = null; //evtl. überflüssig ???
+    /**
+     * update timestamp
+     * @var timestamp
+     */
     public $update_time                     = null; 
     
  
     /**
-     * class constructor
-     * @param int $id default = null
+     * constructor for config class
+     * @global object $CFG
+     * @global object $USER
+     * @param string $dependency
+     * @param int $id 
      */
     public function __construct($dependency = null, $id = null){
         global $CFG, $USER; 
@@ -121,6 +198,12 @@ class Config {
         
     }
     
+    /**
+     * add config to db
+     * @param string $dependency
+     * @param int $id
+     * @return boolean
+     */
     public function add($dependency = null, $id = null){
             switch ($dependency) {
                 case 'institution': $this->institution_id = $id; 
@@ -160,7 +243,12 @@ class Config {
                 default: break; 
             }
     }
-    
+    /**
+     * delete configuration from db
+     * @param string $dependency
+     * @param int $id
+     * @return boolean 
+     */
     public function delete($dependency = null, $id = null){
             switch ($dependency) {
                 case 'institution': $this->institution_id = $id; 
@@ -176,9 +264,12 @@ class Config {
                 default: break; 
             }
     }
-    
-    public function update($dependency = null){
-        
+    /**
+     * update configuration in db
+     * @param string $dependency
+     * @return boolean
+     */
+    public function update($dependency = null){    
         switch ($dependency) {
             case 'user':        return $this->updateUser(); 
                 break;
@@ -250,6 +341,10 @@ class Config {
         
     }
     
+    /**
+     * update user config
+     * @return boolean
+     */
     public function updateUser (){
         $query = sprintf("SELECT COUNT(user_id) FROM config_user 
                             WHERE user_id = '%s'",
@@ -283,10 +378,5 @@ class Config {
             return mysql_query($query);      	
         }
     }
-    
-    public function load(){
-        
-    }
-   
 }
 ?>

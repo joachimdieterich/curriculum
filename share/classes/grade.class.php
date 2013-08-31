@@ -158,6 +158,10 @@ class Grade {
         } else {return $result;}
     }
     
+ /**
+ * function used during the install process to set up creator id to new admin
+ * @return boolean
+ */
     public function dedicate(){ // only use during install
         $query = sprintf("UPDATE grade SET institution_id = '%s', creator_id = '%s'",
                                             mysql_real_escape_string($this->institution_id),

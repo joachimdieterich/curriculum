@@ -61,7 +61,7 @@ class Subject {
     
     /**
      * Get all available subjects of current Institution
-     * @return \Subject 
+     * @return array of objects 
      */
     public function getSubjects(){
         $subjects = array();
@@ -83,9 +83,10 @@ class Subject {
             return $subjects;
         } else {return $result;}
     }
+    
     /**
      * Add Subject
-     * @return mixed 
+     * @return boolean 
      */
     public function add(){
         $query = sprintf("SELECT COUNT(id) FROM subjects WHERE UPPER(subject) = UPPER('%s') AND institution_id = '%s'",
@@ -156,6 +157,10 @@ class Subject {
         $this->description   = $row["description"];
     }
     
+    /**
+    * function used during the install process to set up creator id to new admin
+    * @return boolean
+    */
     public function dedicate(){ // only use during install
         $query = sprintf("UPDATE subjects SET institution_id = '%s', creator_id = '%s'",
                                             mysql_real_escape_string($this->institution_id),

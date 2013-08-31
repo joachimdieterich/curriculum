@@ -153,5 +153,4 @@ switch ($function) {
 // load solutions
 $files = new File(); 
 $TEMPLATE->assign('solutions', $files->getSolutions('course', $PAGE->curriculum, $USER->id));  
-//addLog($USER->id, 'view', curPageURL(), 'view'); //Addlog
 ?>

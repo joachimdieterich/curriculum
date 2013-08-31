@@ -28,6 +28,10 @@ class Roles {
      * @var int
      */
     public $id = null;
+    /**
+     * role id
+     * @var int 
+     */
     public $role_id = null; 
     /**
      * Name of role
@@ -90,6 +94,10 @@ class Roles {
         
     }
     
+    /**
+     * get user roles from db
+     * @return array of roles |boolean 
+     */
     public function get(){
         $query = "SELECT * FROM user_roles";
         $result = mysql_query($query);
@@ -105,6 +113,10 @@ class Roles {
         } else {return false;}
     }
     
+    /**
+    * function used during the install process to set up creator id to new admin
+    * @return boolean
+    */
     public function dedicate(){ // only use during install
         $query = sprintf("UPDATE user_roles SET creator_id = '%s'",
                                             mysql_real_escape_string($this->creator_id));
