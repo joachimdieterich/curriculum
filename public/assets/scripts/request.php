@@ -244,27 +244,8 @@ if (isset($_GET['function'])){
                             break;                       
 
         case "setAccomplishedObjectives": if (isset($_GET['ajax'])) {
-                                $query = sprintf("SELECT COUNT(id) FROM user_accomplished WHERE enabling_objectives_id = '%s' AND user_id = '%s'",
-                                                                mysql_real_escape_string($_GET["enablingObjectiveID"]),
-                                                                mysql_real_escape_string($_GET["userID"]));
-                                $result = mysql_query($query);
-                                list($count) = mysql_fetch_row($result);
-                                if($count >= 1) { 
-                                        //$error = 'Diesen Eintrag gibt es bereits.';
-                                        $query = sprintf("UPDATE user_accomplished SET status_id = '%s', creator_id = '%s' WHERE enabling_objectives_id = '%s' AND user_id = '%s'",
-                                                                        mysql_real_escape_string($_GET["statusID"]),
-                                                                        mysql_real_escape_string($_GET["creatorID"]),
-                                                                        mysql_real_escape_string($_GET["enablingObjectiveID"]),
-                                                                        mysql_real_escape_string($_GET["userID"]));
-                                        mysql_query($query);
-                                } else {
-                                        $query = sprintf("INSERT INTO user_accomplished(enabling_objectives_id,user_id,status_id,creator_id) VALUES ('%s','%s','%s','%s')",
-                                                                        mysql_real_escape_string($_GET["enablingObjectiveID"]),
-                                                                        mysql_real_escape_string($_GET["userID"]),
-                                                                        mysql_real_escape_string($_GET["statusID"]),
-                                                                        mysql_real_escape_string($_GET["creatorID"]));
-                                        mysql_query($query);	
-                                }
+                                $enabling_objectives = new EnablingObjective();
+                                $enabling_objective->setAccomplishedStatus('teacher', $_GET["userID"], $_GET["creatorID"], $_GET["statusID"]);
                             }
                             break;   
                             
@@ -292,19 +273,10 @@ if (isset($_GET['function'])){
          
         case "deleteGroup": if (isset($_GET['ajax'])) {
                                     //Überprüfen, ob Schüler in die Lerngruppe eingeschrieben sind.
-                                    $query = sprintf("SELECT id 
-                                                        FROM groups_enrolments
-                                                        WHERE group_id = '%s' AND status = 1",
-                                                mysql_real_escape_string($_GET['group_id']));
-                                    $result = mysql_query($query);
-                                    if ($result && mysql_num_rows($result)){
-                                        $claEnrExists = true; 
-                                    } else {$claEnrExists = false;} 
-                                    
-                                    if ($claEnrExists == false){ //nur löschen, wenn keine Schüler eingeschrieben
-                                    $query = sprintf("DELETE FROM groups WHERE id='%s'",
-                                                    mysql_real_escape_string($_GET['group_id']));
-                                    mysql_query($query);
+                                    $group = new Group();
+                                    $group->id = $_GET['group_id'];
+                                    $group->delete();
+                                    if ($group->delete()){ //nur löschen, wenn keine Schüler eingeschrieben
                                         renderDeleteMessage('Lerngruppe wurde erfolgreich gelöscht.'); //Rendert das Popupfenster
                                     } else {
                                         renderDeleteMessage('Lerngruppe kann nicht gelöscht werden. Es müssen zuerst alle Schüler aus der Lerngruppe ausgeschrieben werden.'); //Rendert das Popupfenster
@@ -325,7 +297,6 @@ if (isset($_GET['function'])){
                                     //Überprüfen, ob Datei verwendet wird sind.
                                     $file = new File();
                                     $file->id = $_GET['fileID'];
-                                    
                                     if ($file->delete()){
                                         echo 'Datei wurde erfolgreich gelöscht.'; 
                                     } else { 
@@ -341,28 +312,13 @@ if (isset($_GET['function'])){
                                         renderDeleteMessage('Benutzer wurde erfolgreich gelöscht.'); //Rendert das Popupfenster
                                     } else { 
                                        renderDeleteMessage('Benutzer konnte nicht gelöscht werden.'); //Rendert das Popupfenster
-                                    }
-                                        
+                                    }           
                             }
                             break;                     
         case "expelUser": if (isset($_GET['ajax'])) {
-                                    //Überprüfen, ob Schüler in die Lerngruppe eingeschrieben sind.
-                                    $query = sprintf("SELECT count(id) FROM groups_enrolments WHERE group_id = '%s' AND user_id = '%s'",
-                                                    mysql_real_escape_string($_GET['groupsID']), 
-                                                    mysql_real_escape_string($_GET['userID']));
-                                    $result = mysql_query($query);
-                                    if ($result && mysql_num_rows($result)){
-                                        $claEnrExists = true; 
-                                        
-                                    } else {$claEnrExists = false;} 
-                                    
-                                    if ($claEnrExists == true){ //nur ausschreiben, wenn  Schüler eingeschrieben
-                                    $query = sprintf("UPDATE groups_enrolments SET status = 0 
-                                                        WHERE group_id = '%s' 
-                                                        AND user_id = '%s'",
-                                                        mysql_real_escape_string($_GET['groupsID']), 
-                                                        mysql_real_escape_string($_GET['userID']));
-                                    mysql_query($query);
+                                    $current_user = new User();
+                                    $current_user->id = $_GET['userID'];
+                                    if ($current_user->expelFromGroup($_GET['groupsID'])){
                                         renderDeleteMessage('Benutzer wurde erfolgreich ausgeschrieben.'); //Rendert das Popupfenster
                                     } else { 
                                        renderDeleteMessage('Datensatz konnte nicht gefunden werden.'); //Rendert das Popupfenster

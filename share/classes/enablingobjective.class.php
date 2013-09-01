@@ -437,11 +437,40 @@ class EnablingObjective {
      * @param int $status
      * @return boolean 
      */
-    public function setAccomplishedStatus($status = 2) {
-       $query = sprintf("UPDATE user_accomplished SET status_id = '%s' WHERE enabling_objectives_id = '%s'",
-                          mysql_real_escape_string($status),
-                          mysql_real_escape_string($this->id));
-       return mysql_query($query); 
+    public function setAccomplishedStatus($dependency = null, $user_id = null, $creator_id = null, $status = 2) {
+        switch ($dependency) {
+            case 'cron': $query = sprintf("UPDATE user_accomplished SET status_id = '%s' WHERE enabling_objectives_id = '%s'",
+                                    mysql_real_escape_string($status),
+                                    mysql_real_escape_string($this->id));
+                         return mysql_query($query); 
+                break;
+            
+            case 'teacher': $query = sprintf("SELECT COUNT(id) FROM user_accomplished WHERE enabling_objectives_id = '%s' AND user_id = '%s'",
+                                                                mysql_real_escape_string($this->id),
+                                                                mysql_real_escape_string($user));
+                                $result = mysql_query($query);
+                                list($count) = mysql_fetch_row($result);
+                                if($count >= 1) { 
+                                        //$error = 'Diesen Eintrag gibt es bereits.';
+                                        $query = sprintf("UPDATE user_accomplished SET status_id = '%s', creator_id = '%s' WHERE enabling_objectives_id = '%s' AND user_id = '%s'",
+                                                                        mysql_real_escape_string($status),
+                                                                        mysql_real_escape_string($creator_id),
+                                                                        mysql_real_escape_string($this->id),
+                                                                        mysql_real_escape_string($user_id));
+                                        return mysql_query($query);
+                                } else {
+                                        $query = sprintf("INSERT INTO user_accomplished(enabling_objectives_id,user_id,status_id,creator_id) VALUES ('%s','%s','%s','%s')",
+                                                                        mysql_real_escape_string($this->id),
+                                                                        mysql_real_escape_string($user_id),
+                                                                        mysql_real_escape_string($status),
+                                                                        mysql_real_escape_string($creator_id));
+                                        return mysql_query($query);	
+                                }
+                break;
+            
+            default:
+                break;
+        } 
     }
     
 }
