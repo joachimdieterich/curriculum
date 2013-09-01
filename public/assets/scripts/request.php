@@ -41,8 +41,6 @@ $conn = mysql_connect($CFG->db_host,$CFG->db_user,$CFG->db_password)
 // Configure Timezone $$$ You may want to change this otherwise php will complain
 date_default_timezone_set('Europe/Berlin');
 
-
-
 if (isset($_GET['function'])){
     switch ($_GET['function']) {
         case "showMaterial": 
@@ -203,7 +201,6 @@ if (isset($_GET['function'])){
                                     
                                     if ($terObjExists == false && $curEnrExists == false){ //nur löschen, wenn keine Ziele existieren
                                         $curriculum->delete();
-                                   
                                         echo '<div class="border-top-radius contentheader">Information</div>
                                               <div id="popupcontent">
                                               <p>Lehrplan wurde erfolgreich gelöscht.</p>
@@ -219,55 +216,23 @@ if (isset($_GET['function'])){
                             break; 
                             
         case "deleteObjective": if (isset($_GET['ajax'])) {
-                                if ($_GET['enablingObjectiveID'] == 'notset') {//Löschen eines terminalObjectives
-                                    //Überprüfen, ob es enablingObjectives mit unterhalb dieses terminalObjectives gibt
-                                    $query = sprintf("SELECT id 
-                                                        FROM enablingObjectives
-                                                        WHERE terminal_objective_id = '%s'",
-                                                mysql_real_escape_string($_GET['terminalObjectiveID']));
-                                    $result = mysql_query($query);
-                                    if ($result && mysql_num_rows($result)){
-                                        $enaObjExists = true; 
-                                    } else {$enaObjExists = false;} 
-                                    if ($enaObjExists == false){ //nur löschen, wenn keine enablingObjectives existieren
-                                    //Ende Überprüfen
-                                        $query = sprintf("DELETE
-                                                        FROM terminalObjectives 
-                                                        WHERE curriculum_id = '%s' AND id = '%s'",
-                                                        mysql_real_escape_string($_GET['curriculumID']),
-                                                    mysql_real_escape_string($_GET['terminalObjectiveID']));
-                                        $result = mysql_query($query);
-                                        
+                                $enabling_objective = new EnablingObjective();
+                                if ($_GET['enablingObjectiveID'] == 'notset') {//Löschen eines terminalObjectives   
+                                    if (!$enabling_objective->getObjectives('terminal_objective', $_GET['terminalObjectiveID'])){ // check if there are enabling objectives under this terminal objective
+                                        $terminal_objective = new TerminalObjective();
+                                        $terminal_objective->id = $_GET['terminalObjectiveID'];
+                                        $result = $terminal_objective->delete();    
                                     } else {
                                         echo '<div class="border-top-radius contentheader">Warnung</div>
                                               <div id="popupcontent">
                                               <p>Thema kann nicht gelöscht werden. Es müssen zuerst alle Ziele des Themas gelöscht werden.</p>
                                               </div>';
                                         }                                   
-                                } else { //Löschen eines enablingObjectives
-                                  //Überprüfen, ob es Material oder abgaben mit unterhalb dieses terminalObjectives gibt
-                                    $query = sprintf("SELECT id 
-                                                        FROM files
-                                                        WHERE ena_id = '%s' AND context_id = 2",
-                                                mysql_real_escape_string($_GET['enablingObjectiveID']));
-                                    $result = mysql_query($query);
-                                    if ($result && mysql_num_rows($result)){
-                                        $addInfObjExists = true; 
-                                    } else {$addInfObjExists = false;} 
-                                    $query = sprintf("SELECT id 
-                                                        FROM files
-                                                        WHERE ena_id = '%s'",
-                                                mysql_real_escape_string($_GET['enablingObjectiveID']));
-                                    $result = mysql_query($query);
-                                    if ($result && mysql_num_rows($result)){
-                                        $filesExists = true; 
-                                    } else {$filesExists = false;} 
-                                    if ($addInfObjExists == false && $filesExists == false){ //nur löschen, wenn keine enablingObjectives existieren  
-                                    $query = sprintf("DELETE
-                                                    FROM enablingObjectives 
-                                                    WHERE id = '%s'",
-                                                    mysql_real_escape_string($_GET['enablingObjectiveID']));  
-                                    $result = mysql_query($query); 
+                                } else { // delete enabling objective
+                                    $file = new File(); 
+                                    if ($file->getFiles('enabling_objective', $_GET['enablingObjectiveID']) == false){ //checks if there are files for this enabling objective 
+                                    $enabling_objective->id = $_GET['enablingObjectiveID'];
+                                    $result = $enabling_objective->delete();
                                     } else {
                                         echo '<div class="border-top-radius contentheader">Warnung</div>
                                               <div id="popupcontent">

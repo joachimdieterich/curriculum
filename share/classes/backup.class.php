@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of curriculum - http://www.joachimdieterich.de
  * 
@@ -23,14 +22,45 @@
  * http://www.gnu.org/copyleft/gpl.html      
  */
 class Backup {
+    /**
+     * id of backup
+     * @var int
+     */
     public $id              = null; 
+    /**
+     * path to backup file
+     * @var string
+     */
     public $file_path       = null; 
+    /**
+     * filename of backup
+     * @var string
+     */
     public $file_name       = null; 
+    /**
+     * id of curriculum
+     * @var int
+     */
     public $curriculum_id   = null; 
-    public $curriculum      = null; 
+    /**
+     * name of curriculum
+     * @var string
+     */
+    public $curriculum      = null;
+    /**
+     * user id of creator
+     * @var int
+     */
     public $creator_id      = null; 
+    /**
+     * username of creator
+     * @var string
+     */
     public $creator         = null; 
-    
+    /**
+     * timestamp of file creation
+     * @var timestamp
+     */
     public $creation_time   = null; 
     
     

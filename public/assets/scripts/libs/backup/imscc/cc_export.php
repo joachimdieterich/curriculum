@@ -169,19 +169,16 @@ function manifestOrganizationsClosingTag(){
     return $organizationsTag;
 }
 
+
 /**
-  * Creates and returns manifest Items for imsmanifest.xml
-  * 
-  * @since 0.5
-  *
-  * @param string $url                          url to tmp folder
-  * @param string $folder                       tmp folder
-  * @param string $terminalobjectivedata        dataset of terminal objective
-  * @param string $enablingobjectivedata        dataset of enabling objective
-  * @param string $material                     dataset of material
-  * @param string $resourceTagItems             pointer to resourceTagItems
-  */
-//function manifestItems($url, $folder, $terminalobjectivedata, $enablingobjectivedata, $material, &$resourceTagItems){
+ * Creates and returns manifest Items for imsmanifest.xml
+ * @since 0.5
+ * @param string $url                   url to tmp folder
+ * @param string $folder                tmp folder
+ * @param string $cur                   curriculum
+ * @param string $resourceTagItems      pointer to resourceTagItems
+ * @return string 
+ */
 function manifestItems($url, $folder, $cur, &$resourceTagItems){
     $resourceURL = $url.''.$folder;             //URL to resource
     

@@ -1,7 +1,7 @@
 <?php
 /**
+ * This file is part of curriculum - http://www.joachimdieterich.de
  * 
- * @abstract This file is part of curriculum - http://www.joachimdieterich.de
  * @package core
  * @filename config.class.php
  * @copyright 2013 Joachim Dieterich

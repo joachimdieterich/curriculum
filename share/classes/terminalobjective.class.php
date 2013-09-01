@@ -1,6 +1,6 @@
 <?php
 /**
- * Group object can add, update, delete and get data from curriculum db
+ * terminal objective class can add, update, delete and get data from curriculum db
  * 
  * @example
  * // Add new objective <br>
@@ -102,11 +102,15 @@ class TerminalObjective {
     }
     
     /**
-     * Delete objective
-     * @return mixed 
+     * Delete terminal objective
+     * @return boolean 
      */
     public function delete(){
-
+        $query = sprintf("DELETE
+                        FROM terminalObjectives 
+                        WHERE id = '%s'",
+                  mysql_real_escape_string($_GET['terminalObjectiveID']));
+        return mysql_query($query);
     } 
     
     /**
