@@ -316,7 +316,12 @@ class File {
                                                         AND fl.context_id = ct.context_id", 
                                         mysql_real_escape_string($id));
                 break;
-
+            case 'enabling_objective': $query = sprintf("SELECT id 
+                                                        FROM files
+                                                        WHERE ena_id = '%s'",
+                                       mysql_real_escape_string($id));
+                break;
+            default : break; 
             
         }                     
         

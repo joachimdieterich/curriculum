@@ -1,8 +1,7 @@
 <?php
 /**
- *
+ * This file is part of curriculum - http://www.joachimdieterich.de
  * 
- * @abstract This file is part of curriculum - http://www.joachimdieterich.de
  * @package core
  * @filename authenticate.class.php
  * @copyright 2013 Joachim Dieterich
@@ -22,7 +21,6 @@
  *                                                                       
  * http://www.gnu.org/copyleft/gpl.html      
  */
-
 
 class Authenticate {
     /**

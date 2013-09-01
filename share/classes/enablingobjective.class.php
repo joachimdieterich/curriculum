@@ -1,6 +1,6 @@
 <?php
 /**
- * Group object can add, update, delete and get data from curriculum db
+ * enabling objective class can add, update, delete and get data from curriculum db
  * 
  * @example
  * // Add new objective <br>
@@ -152,11 +152,15 @@ class EnablingObjective {
     }
     
     /**
-     * Delete objective
-     * @return mixed 
+     * delete enabling objective
+     * @return boolean 
      */
     public function delete(){
-        //not implemented yet --> see request.php
+        $query = sprintf("DELETE
+                        FROM enablingObjectives 
+                        WHERE id = '%s'",
+                        mysql_real_escape_string($this->id));  
+        return mysql_query($query);
     } 
     
     /**
@@ -318,7 +322,16 @@ class EnablingObjective {
                                 }
                          
                 break;
-
+            case 'terminal_objective': //checks if there are enabling objectives under a terminal objective
+                                    $query = sprintf("SELECT id 
+                                                        FROM enablingObjectives
+                                                        WHERE terminal_objective_id = '%s'",
+                                                mysql_real_escape_string($id));
+                                    $result = mysql_query($query);
+                                    if ($result && mysql_num_rows($result)){
+                                        return true; 
+                                    } else {return false;} 
+                break;
             default:
                 break;
         }
