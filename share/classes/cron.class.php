@@ -112,7 +112,7 @@ function detectExpiredObjective($execUser = -1){
                 $mail->status = true; 
                 $mail->postMail();
                 $PAGE->message[] = '- Benachrichtigung verschickt.<br>';
-                $objectives[$i]->setAccomplishedStatus();;
+                $objectives[$i]->setAccomplishedStatus('cron',$objectives[$i]->accomplished_users, -1, 2);
                 $PAGE->message[] = '- Status auf deaktiviert gesetzt (Wiederholung erforderlich).<br>';
                 $PAGE->message[] = "===============================<br>";
             } else {

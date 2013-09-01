@@ -148,7 +148,7 @@ class Group {
     public function delete(){
         $query = sprintf("SELECT id 
                           FROM curriculum_enrolments
-                          WHERE group_id = '%s'",
+                          WHERE group_id = '%s' AND status_id = 1",
                           mysql_real_escape_string($this->id));
         $result = mysql_query($query);
         if ($result && mysql_num_rows($result)){

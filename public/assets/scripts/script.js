@@ -177,23 +177,6 @@ function deleteFile() {
         }
     }
 }
-/*function deleteFile() {
-    if (confirm("Datei wirklich löschen?")) {   //Meldung "Wirklich löschen?"
-        //Link unterscheidet sich von den anderen funktionen, da diese funktion vom upload_frame aufgerufen wird
-        var url = "../../../../assets/scripts/request.php?ajax=on&function=deleteFile&fileID="+ arguments[1]; 
-        var prefix = arguments[0];
-        var fileID = arguments[1]
-        req = XMLobject();
-        if(req) {        
-            req.onreadystatechange = function(){
-                    hideFile(prefix+''+fileID);
-                }
-            req.open("GET", url, true);
-            req.send(null);
-        }
-    }
-}*/
-
 
 function expelUser() {
     if (confirm("Benutzer wirklich aus der Lerngruppe ausschreiben?")) {   //Meldung "Wirklich löschen?"
