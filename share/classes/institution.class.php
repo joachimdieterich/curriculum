@@ -209,8 +209,7 @@ class Institution {
             $INSTITUTION->institution_material_size         = mysql_result($result, 0, "institution_material_size");
             $INSTITUTION->institution_acc_days              = mysql_result($result, 0, "institution_acc_days");
             $INSTITUTION->institution_language              = mysql_result($result, 0, "institution_language");  
-            $INSTITUTION->institution_timeout               = mysql_result($result, 0, "institution_timeout");  
-                
+            $INSTITUTION->institution_timeout               = mysql_result($result, 0, "institution_timeout");                
         }
     }
     
@@ -271,6 +270,20 @@ class Institution {
             $value = NULL;
         } 
         return $value;
+    }
+    
+    /**
+    * function used during the install process to set up creator id to new admin
+    * @return boolean
+    */
+    public function dedicate(){ // only use during install
+        $query = sprintf("UPDATE institution SET creator_id = '%s'",
+                                            mysql_real_escape_string($this->creator_id));
+        if( mysql_query($query)){
+            $query = sprintf("UPDATE institution_enrolments SET creator_id = '%s'",
+                                            mysql_real_escape_string($this->creator_id));
+        }
+        return mysql_query($query);
     }
 
 } 

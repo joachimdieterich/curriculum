@@ -295,5 +295,19 @@ class Curriculum {
        list($count) = mysql_fetch_row($result);
        if($count >= 1) { return true;} else {return false;}
    }
+   
+   /**
+    * function used during the install process to set up creator id to new admin
+    * @return boolean
+    */
+    public function dedicate(){ // only use during install
+        $query = sprintf("UPDATE curriculum SET creator_id = '%s'",
+                                            mysql_real_escape_string($this->creator_id));
+        if (mysql_query($query)){
+            $query = sprintf("UPDATE curriculum_enrolments SET creator_id = '%s'",
+                                            mysql_real_escape_string($this->creator_id));
+            return mysql_query($query);
+        }
+    }
 }
 ?>

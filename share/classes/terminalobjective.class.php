@@ -178,5 +178,14 @@ class TerminalObjective {
         } else { return false;}
     }
     
+    /**
+    * function used during the install process to set up creator id to new admin
+    * @return boolean
+    */
+    public function dedicate(){ // only use during install
+        $query = sprintf("UPDATE terminalObjectives SET creator_id = '%s'",
+                                            mysql_real_escape_string($this->creator_id));
+        return mysql_query($query);
+    }
 }
 ?>

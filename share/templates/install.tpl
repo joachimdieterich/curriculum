@@ -40,7 +40,7 @@
                 {validate_msg field='db_password'}
                 <p><label>DB Name*: </label><input class="inputform" name='db_name'{if isset($db_name)}value='{$db_name}'{/if}/></p>
                 {validate_msg field='db_name'}
-                <p><label>Bestehende Daten sichern?</label><input class="centervertical" type="checkbox" name="dump"/>!Achtung! nachdem die Datei automatisch herunter geladen wurde, müssen sie erneut auf "weiter" klicken!</p>
+                {*<p><label>Bestehende Daten sichern?</label><input class="centervertical" type="checkbox" name="dump"/>!Achtung! nachdem die Datei automatisch herunter geladen wurde, müssen sie erneut auf "weiter" klicken!</p>*}{*realized but useless yet*}
                 <p><label>&nbsp;</label><input type='submit' name='step_1' value='weiter' /></p>
             {/if}
         
@@ -50,7 +50,7 @@
                 <p><h3>Titel und URL</h3></p>
                 <p><label>Name der Seite*: </label><input class="inputform" name='app_title'{if isset($app_title)}value='{$app_title}'{/if}/></p>
                 {validate_msg field='app_title'}
-                <p><label>Beispieldaten installieren</label><input class="centervertical" type="checkbox" name="demo"/></p>
+                {*<p><label>Beispieldaten installieren</label><input class="centervertical" type="checkbox" name="demo"/></p>*}{*not yet available - dedication incorrect*}
                 <p><label>&nbsp;</label><input type='submit' name='step_2' value='weiter' /></p>
             {/if}
         

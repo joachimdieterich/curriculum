@@ -344,5 +344,19 @@ class Group {
             return $groups;
         } else {return NULL;}  
     }
+    
+    /**
+    * function used during the install process to set up creator id to new admin
+    * @return boolean
+    */
+    public function dedicate(){ // only use during install
+        $query = sprintf("UPDATE groups SET creator_id = '%s'",
+                                            mysql_real_escape_string($this->creator_id));
+        if (mysql_query($query)){
+            $query = sprintf("UPDATE groups_enrolments SET creator_id = '%s'",
+                                            mysql_real_escape_string($this->creator_id));
+            return mysql_query($query);
+        }
+    }
 }
 ?>
