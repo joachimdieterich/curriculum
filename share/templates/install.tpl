@@ -40,7 +40,7 @@
                 {validate_msg field='db_password'}
                 <p><label>DB Name*: </label><input class="inputform" name='db_name'{if isset($db_name)}value='{$db_name}'{/if}/></p>
                 {validate_msg field='db_name'}
-                <p><label>Bestehende Daten sichern?</label><input class="centervertical" type="checkbox" name="dump"/>!Achtung! nachdem die Datei automatisch herunterladen wurde, müssen sie erneut auf "weiter" klicken!</p>
+                <p><label>Bestehende Daten sichern?</label><input class="centervertical" type="checkbox" name="dump"/>!Achtung! nachdem die Datei automatisch herunter geladen wurde, müssen sie erneut auf "weiter" klicken!</p>
                 <p><label>&nbsp;</label><input type='submit' name='step_1' value='weiter' /></p>
             {/if}
         
