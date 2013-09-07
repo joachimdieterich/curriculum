@@ -99,7 +99,8 @@ function loginExistingUser($username, $password, $creation_time = 0){ //if token
     if ($creation_time-time() <= 60){ //Timeout == 60 sec Global regeln
         $_SESSION['authenticated'] = true;
         $_SESSION['username'] = $existing_user->username;
-        $_SESSION['timeout'] = time();
+        $_SESSION['timein'] = time();
+        
 
         $existing_user->setLastLogin();
         $confirmed = $existing_user->getConfirmed();
@@ -125,7 +126,8 @@ function loginNewUser($username, $password, $creation_time= 0){
     if ($creation_time-time() <= 60){ //Timeout == 60 sec Global regeln
         $_SESSION['authenticated'] = true;
         $_SESSION['username'] = $username;
-        $_SESSION['timeout'] = time();
+        $_SESSION['timein'] = time();
+        
         
         $authenticate = new Authenticate();
         $authenticate->username = $username;

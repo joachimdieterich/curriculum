@@ -420,7 +420,7 @@ class User {
                     $this->role_name         = $role->role;
                     $users[] = clone $this; 
             }
-            return $users;          //??? besser als object 
+            return $users;          
         } else {
             return false;   
         }   //keine neuen Benutzer
