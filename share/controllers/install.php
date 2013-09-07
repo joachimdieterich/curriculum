@@ -134,12 +134,14 @@ if ($_POST){
                                                 }    
                                                 if ($fp==0) {
                                                     $PAGE->message[] = "Datenbank erfolgreich eingerichtet";
+                                                    load_Countries();
+                                                    $TEMPLATE->assign('step', 3);
                                                 } else {
                                                     $PAGE->message[] = "Bei der Einrichtung der Datenbank ist ein Fehler aufgetreten.";
+                                                    $TEMPLATE->assign('step', 2);
                                                 }
                                                 //end import sql
-                                                load_Countries();
-                                                $TEMPLATE->assign('step', 3);
+                                                
                                                 
                                             }
             break;

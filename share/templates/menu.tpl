@@ -35,8 +35,8 @@
             <li><p><a href="index.php?action=teacherObjectives&reset=true">Lernstand</a></p></li>            
             <li><p><a href="index.php?action=teacherCurriculum&reset=true">Lehrpläne</a></p></li>
             <li><p><a href="index.php?action=teacherGroups&reset=true">Lerngruppen verwalten</a></p></li>
-            <li><p><a href="index.php?action=teacherProfile">Benutzer anlegen</a></p></li>
-            <li><p><a href="index.php?action=teacherUserImport&reset=true">Benutzer-Liste hochladen</a></p></li>
+            {*<li><p><a href="index.php?action=teacherProfile">Benutzer anlegen</a></p></li>*}
+            {*<li><p><a href="index.php?action=teacherUserImport&reset=true">Benutzer-Liste hochladen</a></p></li>*}
             <li><p><a href="index.php?action=teacherUser&reset=true">Benutzerverwaltung</a></p></li>
   {if $my_role_id == 1 or $my_role_id == 4}
             <li><p><a href="index.php?action=teacherGrade">Klassenstufen</a></p></li>
