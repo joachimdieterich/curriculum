@@ -155,6 +155,9 @@ if ($_POST){
                                         'state'           => 'required'*/
                                         ));
                         $validated_data = $gump->run($_POST);
+                                        if (!isset($_POST['state'])){
+                                            $_POST['state'] = 1;
+                                        }
                                         if($validated_data === false) {/* validation failed */
                                                 foreach($_POST as $key => $value){
                                                 $TEMPLATE->assign($key, $value);
@@ -192,6 +195,9 @@ if ($_POST){
             break;     
         case isset($_POST['step_4']):
                     $gump = new Gump();
+                        if (!isset($_POST['state'])){
+                                            $_POST['state'] = 1; // eq not set
+                                        }
                         $gump->validation_rules(array(
                                         'username'      => 'required',
                                         'firstname'     => 'required',
@@ -199,7 +205,6 @@ if ($_POST){
                                         'email'         => 'required',
                                         'postalcode'    => 'required',
                                         'city'          => 'required',
-                                        'state'         => 'required',
                                         'country'       => 'required',
                                         'password'      => 'required', 
                                         'institution_id'=> 'required'
@@ -226,6 +231,7 @@ if ($_POST){
                                                 $new_user->role_id    = 1;
                                                 $new_user->creator_id = -1;
                                                 $user_id = $new_user->add();
+                                                $new_user->creator_id           = $user_id;
                                                 $new_user->enroleToInstitution($_POST['institution_id']);
                                                 /*$user_config = new Config(); //wird über user->add gemacht
                                                 $user_config->add('user', $user_id);*/
@@ -233,9 +239,11 @@ if ($_POST){
                                                 //Set creator_id of institution to admin_id
                                                 $institution = new Institution(); 
                                                 $institution->id            = $_POST['institution_id']; 
-                                                $institution->load();
                                                 $institution->creator_id    = $user_id;
-                                                $institution->update(); 
+                                                /*$institution->load();
+                                                $institution->creator_id    = $user_id;
+                                                $institution->update(); */
+                                                $institution->dedicate();
                                                 //Set institution_id in subjects_db
                                                 $subjects = new Subject(); 
                                                 $subjects->institution_id   = $_POST['institution_id'];
@@ -263,6 +271,19 @@ if ($_POST){
                                                 $roles = new Roles();
                                                 $roles->creator_id          = $user_id;
                                                 $roles->dedicate();
+                                                $terminal_objective = new TerminalObjective();
+                                                $terminal_objective->creator_id = $user_id; 
+                                                $terminal_objective->dedicate();
+                                                $enabling_objective = new EnablingObjective();
+                                                $enabling_objective->creator_id = $user_id;
+                                                $enabling_objective->dedicate();
+                                                $group = new Group();
+                                                $group->creator_id = $user_id;
+                                                $group->dedicate();
+                                                $curriculum = new Curriculum();
+                                                $curriculum->id = $user_id;
+                                                $curriculum->dedicate();
+                                                
                                                 $TEMPLATE->assign('step', 5);
                                                 session_destroy(); //important! reset $USER
                                             }
