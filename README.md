@@ -5,6 +5,7 @@ The resulting curricula can be linked with learning groups and be viewed by lear
 This will give students, teachers (and parents) a good overview of the objectives to be achieved. 
 Not yet reached objectives are shown in red - if a objectives is achieved it will be shown in green. 
 So curriculum provides a good overview of the current learning status. 
+More information on http://www.joachimdieterich.de
 
 Copyright notice
 
