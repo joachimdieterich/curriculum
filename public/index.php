@@ -55,18 +55,19 @@ $PAGE->login      = (isset($_GET['login']) && trim($_GET['login'] != '') ? $_GET
 
 if ($PAGE->action  != 'login' OR $PAGE->action  != 'register' OR $PAGE->action  != 'install') {
     //check ob eingeloggt oder timeout --> muss ganz oben stehen bleiben
+    
     if($PAGE->action  != 'register' AND $PAGE->action  != 'install') {
         if (isset($_SESSION['username'])) {
             include ('../share/session.php');       // first build session, then do the login-check!
             include ('../share/login-check.php'); //checkt ob man eingeloggt ist
-            if ($_SESSION['authenticated']) {
-            $TEMPLATE->assign('loginname', $_SESSION['username']);
-            //object_to_array($USER);
+                if ($_SESSION['authenticated']) {
+                $TEMPLATE->assign('loginname', $_SESSION['username']);
+                //object_to_array($USER);
+                }
             } else {
                 $PAGE->message[] = 'Sie sind nicht angemeldet.';
                 $PAGE->action  = 'login';
-            }
-        } 
+            }   
     } else {    //register and install
         $TEMPLATE->assign('loginname', '');
         $TEMPLATE->assign('role_id', -1);

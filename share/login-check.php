@@ -22,13 +22,14 @@
 */
 global $INSTITUTION; 
 
-if(isset($_SESSION['timeout']) ) {        // check to see if $_SESSION['timeout'] is set 
+if(isset($_SESSION['timein']) ) {        // check to see if $_SESSION['timein'] is set 
     
-    $session_life = time() - $_SESSION['timeout'];
+    $session_life = time() - $_SESSION['timein'];
+    
     if($session_life > ($INSTITUTION->institution_timeout)*60){ //*60 to get minutes
         session_destroy(); 
         header('Location:index.php?action=login');   
     }
 }
-$_SESSION['timeout'] = time();
+$_SESSION['timein'] = time();
 ?>
