@@ -130,10 +130,11 @@ if ($_POST){
                                                 if (isset($_POST['demo'])){     // install demo or new db
                                                     system( '/usr/bin/mysql -u' . $CFG->db_user . ' -p' . escapeshellarg( $CFG->db_password ) . ' -h' . $CFG->db_host . ' ' . $CFG->db_name . ' <' . $CFG->demo_root . 'demo.sql', $fp);
                                                 } else {
-                                                    system( '/usr/bin/mysql -u' . $CFG->db_user . ' -p' . escapeshellarg( $CFG->db_password ) . ' -h' . $CFG->db_host . ' ' . $CFG->db_name . ' <' . $CFG->demo_root . 'install.sql', $fp);
+                                                    system( '/usr/bin/mysql -u' . $CFG->db_user . ' -p' . escapeshellarg( $CFG->db_password ) . ' -h' . $CFG->db_host . ' ' . $CFG->db_name . ' <' . $CFG->demo_root . 'install.sql', $fp);  
+                                                    $TEMPLATE->assign('demo', true);
                                                 }    
                                                 if ($fp==0) {
-                                                    $PAGE->message[] = "Datenbank erfolgreich eingerichtet";
+                                                    $PAGE->message[] = "Datenbank erfolgreich eingerichtet";  
                                                     load_Countries();
                                                     $TEMPLATE->assign('step', 3);
                                                 } else {
@@ -183,9 +184,14 @@ if ($_POST){
                                                 $new_institution->state_id      = $_POST['state'];
                                                 $new_institution->creator_id    = -1; // system user
                                                 $new_institution->confirmed     = 1;  // institution is confirmed
-                                                $institution_id = $new_institution->add();
-                                                $user_config = new Config(); 
-                                                $user_config->add('institution', $institution_id);
+                                                if (isset($_POST['demo'])){
+                                                    $institution_id = $new_institution->update(TRUE);
+                                                } else {
+                                                    $institution_id = $new_institution->add();
+                                                    $user_config = new Config();                
+                                                    $user_config->add('institution', $institution_id);
+                                                }
+                                                
                                                 $TEMPLATE->assign('institution_id', $institution_id);   
                                             }
                                             load_Countries();
@@ -195,9 +201,11 @@ if ($_POST){
             break;     
         case isset($_POST['step_4']):
                     $gump = new Gump();
+                         $institution = new Institution(); 
                         if (!isset($_POST['state'])){
                                             $_POST['state'] = 1; // eq not set
                                         }
+                                        
                         $gump->validation_rules(array(
                                         'username'      => 'required',
                                         'firstname'     => 'required',
@@ -237,7 +245,7 @@ if ($_POST){
                                                 $user_config->add('user', $user_id);*/
                                                 $new_user->dedicate();
                                                 //Set creator_id of institution to admin_id
-                                                $institution = new Institution(); 
+                                                //$institution = new Institution(); 
                                                 $institution->id            = $_POST['institution_id']; 
                                                 $institution->creator_id    = $user_id;
                                                 /*$institution->load();
@@ -281,7 +289,7 @@ if ($_POST){
                                                 $group->creator_id = $user_id;
                                                 $group->dedicate();
                                                 $curriculum = new Curriculum();
-                                                $curriculum->id = $user_id;
+                                                $curriculum->creator_id = $user_id;
                                                 $curriculum->dedicate();
                                                 
                                                 $TEMPLATE->assign('step', 5);
