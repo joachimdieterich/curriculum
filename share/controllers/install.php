@@ -129,9 +129,10 @@ if ($_POST){
 
                                                 if (isset($_POST['demo'])){     // install demo or new db
                                                     system( '/usr/bin/mysql -u' . $CFG->db_user . ' -p' . escapeshellarg( $CFG->db_password ) . ' -h' . $CFG->db_host . ' ' . $CFG->db_name . ' <' . $CFG->demo_root . 'demo.sql', $fp);
+                                                    $TEMPLATE->assign('demo', true);
                                                 } else {
                                                     system( '/usr/bin/mysql -u' . $CFG->db_user . ' -p' . escapeshellarg( $CFG->db_password ) . ' -h' . $CFG->db_host . ' ' . $CFG->db_name . ' <' . $CFG->demo_root . 'install.sql', $fp);  
-                                                    $TEMPLATE->assign('demo', true);
+                                                    $TEMPLATE->assign('demo', false);
                                                 }    
                                                 if ($fp==0) {
                                                     $PAGE->message[] = "Datenbank erfolgreich eingerichtet";  
@@ -184,7 +185,7 @@ if ($_POST){
                                                 $new_institution->state_id      = $_POST['state'];
                                                 $new_institution->creator_id    = -1; // system user
                                                 $new_institution->confirmed     = 1;  // institution is confirmed
-                                                if (isset($_POST['demo'])){
+                                                if ($_POST['demo']){
                                                     $institution_id = $new_institution->update(TRUE);
                                                 } else {
                                                     $institution_id = $new_institution->add();

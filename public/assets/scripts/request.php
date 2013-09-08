@@ -246,8 +246,7 @@ if (isset($_GET['function'])){
         case "setAccomplishedObjectives": if (isset($_GET['ajax'])) {
                                 $enabling_objectives = new EnablingObjective();
                                 $enabling_objectives->id = $_GET['enablingObjectiveID'];
-                                $enabling_objectives->setAccomplishedStatus('teacher', $_GET["userID"], $_GET["creatorID"], $_GET["statusID"]);
-                                
+                                $enabling_objectives->setAccomplishedStatus('teacher', $_GET["userID"], $_GET["creatorID"], $_GET["statusID"]);     
                             }
                             break;   
                             
