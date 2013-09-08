@@ -50,7 +50,7 @@
                 <p><h3>Titel und URL</h3></p>
                 <p><label>Name der Seite*: </label><input class="inputform" name='app_title'{if isset($app_title)}value='{$app_title}'{/if}/></p>
                 {validate_msg field='app_title'}
-                {*<p><label>Beispieldaten installieren</label><input class="centervertical" type="checkbox" name="demo"/></p>*}{*not yet available - dedication incorrect*}
+                <p><label>Beispieldaten installieren</label><input class="centervertical" type="checkbox" name="demo"/></p>{*not yet available - dedication incorrect*}
                 <p><label>&nbsp;</label><input type='submit' name='step_2' value='weiter' /></p>
             {/if}
         
@@ -58,6 +58,7 @@
                 {*Serverdaten*}
                 <p>&nbsp;</p>
                 <p><h3>Institution</h3></p>
+                <input type='hidden' name='demo' id='demo' {if isset($demo)}value='{$demo}'{/if} />   
                 <p><label>Institution / Schule: </label><input class='inputformlong' type='text' name='institution' id='institution' {if isset($institution)}value='{$institution}'{/if} /></p> 
                 <p><label>Beschreibung: </label><input class='inputformlong' type='institution_description' name='institution_description' {if isset($institution_description)}value='{$institution_description}'{/if}/></p>
                 <p id="schooltype_list"><label>Schultyp: </label><select name="schooltype_id" >

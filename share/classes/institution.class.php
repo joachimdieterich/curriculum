@@ -135,18 +135,40 @@ class Institution {
      * update institution in db
      * @return boolean 
      */
-    public function update(){
-        $query = sprintf("UPDATE institution SET institution = '%s', description= '%s', schooltype_id= '%s', country_id= '%s', state_id= '%s', creator_id= '%s', confirmed = '%s' 
-                                WHERE id = '%s'",
-                                            mysql_real_escape_string($this->institution),
-                                            mysql_real_escape_string($this->description),
-                                            mysql_real_escape_string($this->schooltype_id),
-                                            mysql_real_escape_string($this->country_id),
-                                            mysql_real_escape_string($this->state_id),
-                                            mysql_real_escape_string($this->creator_id),
-                                            mysql_real_escape_string($this->confirmed),
-                                            mysql_real_escape_string($this->id));
-        return mysql_query($query);
+    public function update($install = false){
+        if ($install){
+            $query = sprintf("UPDATE institution SET institution = '%s', description= '%s', schooltype_id= '%s', country_id= '%s', state_id= '%s', creator_id= '%s', confirmed = '%s' ",
+                                                mysql_real_escape_string($this->institution),
+                                                mysql_real_escape_string($this->description),
+                                                mysql_real_escape_string($this->schooltype_id),
+                                                mysql_real_escape_string($this->country_id),
+                                                mysql_real_escape_string($this->state_id),
+                                                mysql_real_escape_string($this->creator_id),
+                                                mysql_real_escape_string($this->confirmed));
+             if (mysql_query($query)){
+                $query = sprintf("SELECT id FROM institution WHERE institution = '%s'",
+                            mysql_real_escape_string($this->institution));
+                $result = mysql_query($query);
+
+                if ($result && mysql_num_rows($result)) {
+                    $this->id          = mysql_result($result, 0, 'id'); 
+                    return $this->id;
+                } else { return false; }
+             }
+        } else {
+            $query = sprintf("UPDATE institution SET institution = '%s', description= '%s', schooltype_id= '%s', country_id= '%s', state_id= '%s', creator_id= '%s', confirmed = '%s' 
+                                    WHERE id = '%s'",
+                                                mysql_real_escape_string($this->institution),
+                                                mysql_real_escape_string($this->description),
+                                                mysql_real_escape_string($this->schooltype_id),
+                                                mysql_real_escape_string($this->country_id),
+                                                mysql_real_escape_string($this->state_id),
+                                                mysql_real_escape_string($this->creator_id),
+                                                mysql_real_escape_string($this->confirmed),
+                                                mysql_real_escape_string($this->id));
+            return mysql_query($query);
+        
+        }
     }
     
     /**
