@@ -81,7 +81,7 @@ class EnablingObjective {
      * Position of enabling_objective  within terminal_objective
      * @var type 
      */
-    public $order = null; 
+    public $order_id = null; 
     /**
      * id of current accomplish status
      * @var int
@@ -179,7 +179,7 @@ class EnablingObjective {
                 $this->description           = $row["description"];
                 $this->curriculum_id         = $row["curriculum_id"];
                 $this->terminal_objective_id = $row["terminal_objective_id"];
-                $this->order                 = $row["order"];
+                $this->order_id              = $row["order_id"];
                 $this->repeat_interval       = $row["repeat_interval"];
                 $this->creation_time         = $row["creation_time"];
                 $this->creator_id            = $row["creator_id"];
@@ -212,7 +212,7 @@ class EnablingObjective {
                                     $this->description             = $row["description"];
                                     $this->curriculum_id           = $row["curriculum_id"];
                                     $this->terminal_objective_id   = $row["terminal_objective_id"];
-                                    $this->order                   = $row["order"];
+                                    $this->order_id                = $row["order_id"];
                                     $this->repeat_interval_id      = $row["repeat_interval"];
                                     $this->creation_time           = $row["creation_time"];
                                     $this->creator_id              = $row["creator_id"];   
@@ -236,7 +236,7 @@ class EnablingObjective {
                                     $this->description             = $row["description"];
                                     $this->curriculum_id           = $row["curriculum_id"];
                                     $this->terminal_objective_id   = $row["terminal_objective_id"];
-                                    $this->order                   = $row["order"];
+                                    $this->order_id                = $row["order_id"];
                                     $this->repeat_interval_id      = $row["repeat_interval"];
                                     $this->creation_time           = $row["creation_time"];
                                     $this->creator_id              = $row["creator_id"];     
@@ -259,7 +259,7 @@ class EnablingObjective {
                                     $this->description             = $row["description"];
                                     $this->curriculum_id           = $row["curriculum_id"];
                                     $this->terminal_objective_id   = $row["terminal_objective_id"];
-                                    $this->order                   = $row["order"];
+                                    $this->order_id                = $row["order_id"];
                                     $this->repeat_interval_id      = $row["repeat_interval"];
                                     $this->creation_time           = $row["creation_time"];
                                     $this->creator_id              = $row["creator_id"];    
@@ -307,7 +307,7 @@ class EnablingObjective {
                                     $this->description             = $row["description"];
                                     $this->curriculum_id           = $row["curriculum_id"];
                                     $this->terminal_objective_id   = $row["terminal_objective_id"];
-                                    $this->order                   = $row["order"];
+                                    $this->order_id                = $row["order_id"];
                                     $this->repeat_interval_id      = $row["repeat_interval"];
                                     $this->creation_time           = $row["creation_time"];
                                     $this->creator_id              = $row["creator_id"];   
@@ -365,7 +365,7 @@ class EnablingObjective {
             $this->curriculum_id           = $row["curriculum_id"];
             $this->curriculum              = $row["curriculum"];
             $this->terminal_objective_id   = $row["terminal_objective_id"];
-            $this->order                   = $row["order"];
+            $this->order_id                = $row["order_id"];
             $this->repeat_interval_id      = $row["repeat_interval"];
             $this->creation_time           = $row["creation_time"];
             $this->creator_id              = $row["creator_id"];   
