@@ -66,7 +66,7 @@ class TerminalObjective {
      * Position of enabling_objective within curriculum
      * @var type 
      */
-    public $order = null; 
+    public $order_id = null; 
     /**
      * load enabling objectives of current terminal objective
      * @var array of objects
@@ -128,7 +128,7 @@ class TerminalObjective {
                 $this->terminal_objective   = $row["terminal_objective"];
                 $this->description          = $row["description"];
                 $this->curriculum_id        = $row["curriculum_id"];
-                $this->order                = $row["order"];
+                $this->order_id             = $row["order_id"];
                 $this->repeat_interval      = $row["repeat_interval"];
                 $this->creation_time        = $row["creation_time"];
                 $this->creator_id           = $row["creator_id"];
@@ -144,9 +144,13 @@ class TerminalObjective {
      */
     public function getObjectives($dependency = null, $id = null, $load_enabling_objectives = false) {
         switch ($dependency) {
+            /*case 'curriculum':  $query = sprintf("SELECT * 
+                                                    FROM terminalObjectives
+                                                    WHERE curriculum_id = '%s' ORDER by id ASC, 'order' ASC",
+                                                    mysql_real_escape_string($id));*/
             case 'curriculum':  $query = sprintf("SELECT * 
                                                     FROM terminalObjectives
-                                                    WHERE curriculum_id = '%s' ORDER by id",
+                                                    WHERE curriculum_id = '%s' ORDER by curriculum_id ASC, order_id ASC, id ASC",
                                                     mysql_real_escape_string($id));
                 break;
 
@@ -160,7 +164,7 @@ class TerminalObjective {
                 $this->terminal_objective   = $row["terminal_objective"];
                 $this->description          = $row["description"];
                 $this->curriculum_id        = $row["curriculum_id"];
-                $this->order                = $row["order"];
+                $this->order_id             = $row["order_id"];
                 $this->repeat_interval      = $row["repeat_interval"];
                 $this->creation_time        = $row["creation_time"];
                 $this->creator_id           = $row["creator_id"];   
