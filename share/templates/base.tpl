@@ -57,7 +57,7 @@
                     <img src="{$request_url}assets/images/basic/logo.png" height="40"/><h1><a  href="index.php?action=dashboard">{$app_title}</a></h1>
                 </hgroup>
                 {if $page_message AND isset($page_message[0])} 
-                     <div class="floatright" onclick="showMessagebox();"><img src="{$BASE_URL}public/assets/images/basic/glyphicons_266_flag.png" height="10" /> {$page_message_count} Meldungen </div>
+                     <div class="floatright" onclick="showMessagebox();"><img src="{$request_url}assets/images/basic/glyphicons_266_flag.png" height="10" /> {$page_message_count} Meldungen </div>
                      {/if}
             </header>    
             
