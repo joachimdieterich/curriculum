@@ -78,13 +78,79 @@ class TerminalObjective {
      * @return mixed 
      */
     public function add(){
+        
+        $query = sprintf("SELECT MAX(order_id) FROM terminalObjectives WHERE curriculum_id = '%s'",
+                mysql_real_escape_string($this->curriculum_id));
+        $result = mysql_query($query);
+        list($max) = mysql_fetch_row($result);
+        $this->order_id = $max+1;
+
+            //object_to_array($this);
         $query = sprintf("INSERT INTO terminalObjectives 
-                    (terminal_objective,description,curriculum_id) 
-                    VALUES ('%s','%s','%s')",
+                    (terminal_objective,description,curriculum_id,order_id) 
+                    VALUES ('%s','%s','%s','%s')",
                     mysql_real_escape_string($this->terminal_objective),
                     mysql_real_escape_string($this->description),
-                    mysql_real_escape_string($this->curriculum_id));
+                    mysql_real_escape_string($this->curriculum_id),
+                    mysql_real_escape_string($this->order_id));
         return mysql_query($query);
+    }
+    
+    public function order($direction = null){
+        switch ($direction) {
+            case 'down': if ($this->order_id == 1){
+                            // order_id kann nicht kleiner sein
+                            } else {
+                                $query = sprintf("SELECT id FROM terminalObjectives 
+                                                    WHERE curriculum_id = '%s' AND order_id = '%s'",
+                                        mysql_real_escape_string($this->curriculum_id), 
+                                        mysql_real_escape_string($this->order_id-1));
+                                $result = mysql_query($query);
+                                $replace_id = mysql_result($result, 0, "id"); 
+                                $query = sprintf("UPDATE terminalObjectives SET order_id = '%s' WHERE id = '%s'", 
+                                        mysql_real_escape_string($this->order_id),
+                                        mysql_real_escape_string($replace_id));
+                                mysql_query($query);
+                                $query = sprintf("UPDATE terminalObjectives SET order_id = '%s' WHERE id = '%s'", 
+                                        mysql_real_escape_string($this->order_id-1),
+                                        mysql_real_escape_string($this->id));
+                                mysql_query($query);
+                            }
+
+                break;
+            case 'up':      $query = sprintf("SELECT MAX(order_id) FROM terminalObjectives WHERE curriculum_id = '%s'",
+                                    mysql_real_escape_string($this->curriculum_id));
+                            $result = mysql_query($query);
+                            list($max) = mysql_fetch_row($result);
+                            if ($this->order_id == $max){
+                            // order_id darf nicht größer als maximale order_id sein
+                            } else {
+                                $query = sprintf("SELECT id FROM terminalObjectives 
+                                                    WHERE curriculum_id = '%s' AND order_id = '%s'",
+                                        mysql_real_escape_string($this->curriculum_id), 
+                                        mysql_real_escape_string($this->order_id+1));
+                                $result = mysql_query($query);
+                                $replace_id = mysql_result($result, 0, "id"); 
+                                
+                                $query = sprintf("UPDATE terminalObjectives SET order_id = '%s' WHERE id = '%s'", 
+                                        mysql_real_escape_string($this->order_id),
+                                        mysql_real_escape_string($replace_id));
+                                mysql_query($query);
+                                $query = sprintf("UPDATE terminalObjectives SET order_id = '%s' WHERE id = '%s'", 
+                                        mysql_real_escape_string($this->order_id+1),
+                                        mysql_real_escape_string($this->id));
+                                mysql_query($query);
+                            }
+
+                break;
+
+            default:
+                break;
+        }
+        
+        
+        
+        
     }
     
     /**

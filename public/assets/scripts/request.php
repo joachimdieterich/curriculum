@@ -376,7 +376,20 @@ if (isset($_GET['function'])){
                                 }
                                 echo '</select>';
                             }
-                            break;             
+                            break;    
+         case "order": if (isset($_GET['ajax'])) {
+                            if (isset($_GET['enabling_objective_id'])){
+                                // enabling objective
+                            } else {
+                                // terminal objective 
+                                $terminal_objective = new TerminalObjective();
+                                $terminal_objective->id = $_GET['terminal_objective_id'];
+                                $terminal_objective->curriculum_id = $_GET['curriculum_id'];
+                                $terminal_objective->order_id = $_GET['order_id'];
+                                $terminal_objective->order($_GET['order']);
+                            }
+                        }
+                        break;                     
         default:
             break;
     }   

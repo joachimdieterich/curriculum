@@ -39,13 +39,23 @@
                                 {if isset($showaddObjectives)}
                                         <input class="deletebtn floatright" type="button" name="delete" onclick="deleteObjective({$con->curriculum_id},{$ter->id})">
                                         <input class="editbtn floatright" type="button" name="edit" onclick="editObjective({$con->curriculum_id},{$ter->id})">
+                                        <input class="upbtn" type="button" name="delete" onclick="order('down', {$ter->order_id},{$con->curriculum_id},{$ter->id})" />
+                                        {$ter->order_id}
                                 {/if}<!--Thema-->
                                 </div>
-                          
-                                <div id="Anker_{$ter->id}" class="boxcontent">
-                                {$ter->terminal_objective}<!--{$ter->description}-->
+                                <div id="Anker_{$ter->id}" class="boxwrap">
+                                    <div class="boxscroll">
+                                        <div class="boxcontent">
+                                            {$ter->terminal_objective}<!--{$ter->description}-->
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="boxfooter border-bottom-radius"><!--Options...--></div> 
+                                
+                                <div class="boxfooter border-bottom-radius">
+                                    {if isset($showaddObjectives)}
+                                        <input class="downbtn" type="button" name="delete" onclick="order('up', {$ter->order_id},{$con->curriculum_id},{$ter->id})" />
+                                    {/if}
+                                </div> 
                             </div>
                         </td>
                         {if $enabledObjectives != false}
@@ -75,9 +85,13 @@
                                 {/if}   
 
                                 </div>
-
-                                <div class="boxcontent">
-                                    {$ena->enabling_objective}<!--{$ena->description}--></div>
+                                <div class="boxwrap">
+                                    <div class="boxscroll">
+                                    <div class="boxcontent">
+                                        {$ena->enabling_objective}<!--{$ena->description}-->
+                                    </div>
+                                    </div>
+                                </div>
                                 <div class="boxfooter border-bottom-radius">
                                     {if isset($showaddObjectives)}
                                         

@@ -96,7 +96,13 @@
                 {foreach key=terid item=ter from=$terminalObjectives}
                     <tr><td class="boxleftpadding"><div class="box gray-gradient border-radius box-shadow gray-border ">
                                 <div class="boxheader border-top-radius"></div>
-                                <div class="boxcontent">{$ter->terminal_objective}<!--{$ter->description}--></div>
+                                <div class="boxwrap">
+                                    <div class="boxscroll">
+                                        <div class="boxcontent">
+                                            {$ter->terminal_objective}<!--{$ter->description}-->
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="boxfooter border-bottom-radius"><!--Options...--></div> 
                             </div>
                         </td>
@@ -106,10 +112,15 @@
                             <div style="display:none" id="{$ter->id}_{$ena->id}">{0+$ena->accomplished_status_id}</div><!--Container für Variable-->
                             <div id="{$ter->id}style{$ena->id}" class="box gray-gradient border-radius box-shadow gray-border {if $ena->accomplished_status_id eq 1} boxgreen {else} boxred{/if}">
                             <div class="boxheader border-top-radius "></div>
-                        <div class=" boxcontent ">
-                            <div class="innerBox" onclick="setAccomplishedObjectives({$my_id}, {$selected_user_id}, {$userPaginator.first}, {if isset($paginatorLimit)}{$paginatorLimit}{else}10{/if}, {$ter->id}, {$ena->id})"> {$ena->enabling_objective}
+                        <div class="boxwrap">
+                                    <div class="boxscroll">
+                                    <div class="boxcontent" onclick="setAccomplishedObjectives({$my_id}, {$selected_user_id}, {$userPaginator.first}, {if isset($paginatorLimit)}{$paginatorLimit}{else}10{/if}, {$ter->id}, {$ena->id})">
+                                         {$ena->enabling_objective}
                             <!--<br>{$ena->description}-->
-                            </div>
+                                    </div>
+                                    </div>
+                                </div>
+                           
                             <div class="boxfooter border-bottom-radius" onclick="">
                                 
                                {*Abgaben zum jeweiligen Ziel in pulldownmenü - muss in einer nächsten Version gemacht werden*}
@@ -128,7 +139,7 @@
                                     {/foreach}
                                     </select>
                                 {/if} <!--Options...--></div> 
-                        </div>
+                        
                             
                         </td>
                         </div>{/if}
