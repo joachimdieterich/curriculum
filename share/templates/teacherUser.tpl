@@ -19,7 +19,7 @@
         </p>
         <p>&nbsp;</p><p>&nbsp;</p>
         
-        {if isset($userPaginator)}
+        {if isset($results)}
         {* display pagination header *}
         <p class="floatright">Datensätze {$userPaginator.first}-{$userPaginator.last} von {$userPaginator.total} werden angezeigt.</p>
     <p>&nbsp;</p>
