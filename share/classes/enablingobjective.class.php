@@ -447,7 +447,7 @@ class EnablingObjective {
             
             case 'teacher': $query = sprintf("SELECT COUNT(id) FROM user_accomplished WHERE enabling_objectives_id = '%s' AND user_id = '%s'",
                                                                 mysql_real_escape_string($this->id),
-                                                                mysql_real_escape_string($user));
+                                                                mysql_real_escape_string($user_id));
                                 $result = mysql_query($query);
                                 list($count) = mysql_fetch_row($result);
                                 if($count >= 1) { 

@@ -204,6 +204,21 @@ function js_deleteUser() {
     }
 }
 
+function order() {
+    
+    if (arguments.length == 4) {
+        var url = "assets/scripts/request.php?ajax=on&function=order&order="+ arguments[0] +"&order_id="+ arguments[1]+"&curriculum_id="+ arguments[2] +"&terminal_objective_id="+ arguments[3];
+    } else if (arguments.length == 5) {
+        var url = "assets/scripts/request.php?ajax=on&function=order&order="+ arguments[0] +"&order_id="+ arguments[1]+"&curriculum_id="+ arguments[2] +"&terminal_objective_id="+ arguments[3]+"&enabling_objective_id="+ arguments[4]; 
+    }
+    req = XMLobject();
+    if(req) {        
+        req.onreadystatechange = answer; 
+        req.onreadystatechange = reloadPage; //window.location.reload() wichtig!
+        req.open("GET", url, true);
+        req.send(null);
+    }
+}
 function editObjective() {
     if (arguments.length == 2) {
        var url = "assets/scripts/request.php?ajax=on&function=editterminalObjective&curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1] +"&enablingObjectiveID=notset"; 
