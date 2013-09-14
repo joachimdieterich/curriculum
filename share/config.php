@@ -45,7 +45,7 @@ $CFG->db_dns                    = 'mysql:host=localhost;dbname='.$CFG->db_name; 
 /**
  * Paths - do not edit
  */
-$CFG->BASE_URL                  = '/curriculum/';                               // URL to index //Pfad von 
+$CFG->BASE_URL='/curriculum/';                               // URL to index //Pfad von 
 $CFG->document_root             = dirname(__FILE__).'/../public/';
 $CFG->controllers_root          = dirname(__FILE__).'/controllers/'; 
 $CFG->user_root                 = dirname(__FILE__).'/../curriculumdata/userdata/';
