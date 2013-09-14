@@ -282,10 +282,12 @@ class EnablingObjective {
                             $result = mysql_query($query);
                             
                             while($row = mysql_fetch_assoc($result)) { //Prozentberechnung - Wie viele Teilnehmer (in %) waren erfolgreich
-                                    $query = sprintf("SELECT COUNT(user_id) AS cntEnroled
-                                                        FROM groups_enrolments
-                                                        WHERE status = 1
-                                                        AND group_id = '%s'",
+                                    $query = sprintf("SELECT COUNT(gr.user_id) AS cntEnroled
+                                                        FROM groups_enrolments AS gr, users AS us
+                                                        WHERE gr.status = 1
+                                                        AND gr.group_id = '%s'
+                                                        AND gr.user_id = us.id
+                                                        AND us.role_id = 0",
                                                         mysql_real_escape_string($group));
                                     $cntEnrResult = mysql_query($query);
                                     $cntEnroled = mysql_fetch_assoc($cntEnrResult);
