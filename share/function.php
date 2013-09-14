@@ -115,13 +115,14 @@ function getagent(){
      //$brows=ereg_replace("Opera/([0-9,\.]+).*","Opera \\1",$_SERVER['HTTP_USER_AGENT']);    }}
   }
   elseif (strstr($_SERVER['HTTP_USER_AGENT'],'MSIE'))
-     //$brows=ereg_replace(".+\(.+MSIE ([0-9,\.]+).+","Internet Explorer \\1",$_SERVER['HTTP_USER_AGENT']);
      $brows='InternetExplorer';
   elseif (strstr($_SERVER['HTTP_USER_AGENT'],'Firefox'))
-     //$brows=ereg_replace(".+\(.+rv:.+\).+Firefox/(.*)","Firefox \\1",$_SERVER['HTTP_USER_AGENT']);
      $brows='Firefox';
+  elseif (strstr($_SERVER['HTTP_USER_AGENT'],'Chrome'))
+     $brows='Chrome';
+  elseif (strstr($_SERVER['HTTP_USER_AGENT'],'Safari'))
+     $brows='Safari';
   elseif (strstr($_SERVER['HTTP_USER_AGENT'],'Mozilla'))
-     //$brows=ereg_replace(".+\(.+rv:([0-9,\.]+).+","Mozilla \\1",$_SERVER['HTTP_USER_AGENT']);
      $brows='Mozilla';     
   else
      $brows=$_SERVER['HTTP_USER_AGENT'];

@@ -74,7 +74,7 @@ if ($PAGE->action  != 'login' OR $PAGE->action  != 'register' OR $PAGE->action  
     }  
 }
 
-           
+
 /**
  * avoid double requests
  */

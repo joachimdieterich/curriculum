@@ -85,6 +85,9 @@ if (isset($_SESSION['PAGE'])){
     }
     $PAGE->message = null;
     $_SESSION['PAGE']   =& $PAGE;
+    foreach($_SESSION['PAGE'] as $key => $value){
+    $TEMPLATE->assign('page_'.$key, $value);                      /**$TEMPLATE->assign('my_username',  $_SESSION['USER']->username);*/
+    }
 } else {
     $PAGE->previous_url = 'null'; 
     $PAGE->url = curPageURL();
@@ -92,7 +95,7 @@ if (isset($_SESSION['PAGE'])){
     $PAGE->php = curPageName();
     $PAGE->previous_action = 'null'; 
     $PAGE->action = (isset($_GET['action']) && trim($_GET['action'] != '') ? $_GET['action'] : 'login');;
-    
+    $PAGE->browser = getagent();
     
     $_SESSION['PAGE'] =  new stdClass();
     $_SESSION['PAGE'] =& $PAGE;

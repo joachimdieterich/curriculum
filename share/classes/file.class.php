@@ -235,7 +235,7 @@ class File {
                             $query = sprintf("SELECT fl.*, us.firstname, us.lastname
                             FROM files AS fl, users AS us
                             WHERE fl.cur_id = '%s'
-                            AND fl.creator_id IN ('%s')
+                            AND fl.creator_id IN (%s)
                             AND fl.creator_id = us.id
                             AND fl.context_id = '4'",
                             mysql_real_escape_string($course_id),
