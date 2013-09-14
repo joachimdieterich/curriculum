@@ -24,7 +24,7 @@
 
 global $CFG;
 
-include ($_SERVER['DOCUMENT_ROOT'].$CFG->BASE_URL.'public/assets/scripts/libs/backup/imscc/cc_export.php'); //IMS CC Export-Funktion  anders einbinden
+include ($CFG->document_root.'assets/scripts/libs/backup/imscc/cc_export.php'); //IMS CC Export-Funktion  anders einbinden
  
 /**
  * Force Download of a given file
