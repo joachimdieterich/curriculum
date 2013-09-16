@@ -40,7 +40,7 @@
                                         <input class="deletebtn floatright" type="button" name="delete" onclick="deleteObjective({$con->curriculum_id},{$ter->id})">
                                         <input class="editbtn floatright" type="button" name="edit" onclick="editObjective({$con->curriculum_id},{$ter->id})">
                                         <input class="upbtn" type="button" name="delete" onclick="order('down', {$ter->order_id},{$con->curriculum_id},{$ter->id})" />
-                                        {$ter->order_id}
+                                        {*{$ter->order_id}*}
                                 {/if}<!--Thema-->
                                 </div>
                                 <div id="Anker_{$ter->id}" class="boxwrap">
