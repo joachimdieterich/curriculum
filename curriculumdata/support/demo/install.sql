@@ -453,14 +453,14 @@ CREATE TABLE IF NOT EXISTS `enablingObjectives` (
   `creation_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `creator_id` int(11) NOT NULL,
   `repeat_interval` int(11) NOT NULL DEFAULT '-1',
-  `order` tinyint(4) NOT NULL DEFAULT '0',
+  `order_id` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `files`
+--  Tabellenstruktur für Tabelle `files`
 --
 
 DROP TABLE IF EXISTS `files`;
@@ -838,7 +838,7 @@ CREATE TABLE IF NOT EXISTS `terminalObjectives` (
   `curriculum_id` int(11) DEFAULT NULL,
   `creation_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `creator_id` int(11) NOT NULL,
-  `order` tinyint(4) NOT NULL DEFAULT '0',
+  `order_id` tinyint(4) NOT NULL DEFAULT '0',
   `repeat_interval` int(11) NOT NULL DEFAULT '-1',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
