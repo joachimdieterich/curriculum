@@ -124,7 +124,7 @@
                             <div class="boxfooter border-bottom-radius" onclick="">
                                 
                                {*Abgaben zum jeweiligen Ziel in pulldownmenü - muss in einer nächsten Version gemacht werden*}
-                               {if $addedSolutions != "false"} 
+                               {if $addedSolutions != false} 
                                     {assign var="firstrun" value="true"} 
 
                                     {foreach key=solID item=sol from=$addedSolutions}
