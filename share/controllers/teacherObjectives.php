@@ -67,12 +67,10 @@ if ($selected_curriculum != '') {
         setPaginator('userPaginator', $TEMPLATE, $users, 'results', 'index.php?action=teacherObjectives&course='.$selected_curriculumforURL); //set Paginator    
         //Schüler-Solutions laden
         $files = new File(); 
-        $TEMPLATE->assign('addedSolutions', $files->getSolutions('course', $selected_curriculum, $user_id_list));
+        $TEMPLATE->assign('addedSolutions', $files->getSolutions('course', $selected_curriculum, $user_id_list)); 
     } else {
         $showuser = true;
-    }
-    
-    
+    }  
    
 }
 /*******************************************************************************
