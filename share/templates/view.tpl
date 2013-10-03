@@ -39,7 +39,9 @@
                                 {if isset($showaddObjectives)}
                                         <input class="deletebtn floatright" type="button" name="delete" onclick="deleteObjective({$con->curriculum_id},{$ter->id})">
                                         <input class="editbtn floatright" type="button" name="edit" onclick="editObjective({$con->curriculum_id},{$ter->id})">
-                                        <input class="upbtn" type="button" name="delete" onclick="order('down', {$ter->order_id},{$con->curriculum_id},{$ter->id})" />
+                                        {if $ter->order_id neq '1'}
+                                            <input class="upbtn" type="button" name="orderdown" onclick="order('down', {$ter->order_id},{$con->curriculum_id},{$ter->id})" />
+                                        {/if}
                                         {*{$ter->order_id}*}
                                 {/if}<!--Thema-->
                                 </div>
@@ -53,7 +55,7 @@
                                 
                                 <div class="boxfooter border-bottom-radius">
                                     {if isset($showaddObjectives)}
-                                        <input class="downbtn" type="button" name="delete" onclick="order('up', {$ter->order_id},{$con->curriculum_id},{$ter->id})" />
+                                        <input class="downbtn" type="button" name="orderup" onclick="order('up', {$ter->order_id},{$con->curriculum_id},{$ter->id})" />
                                     {/if}
                                 </div> 
                             </div>
@@ -80,14 +82,20 @@
                                         {/if}
 
                                     {/if} {if isset($showaddObjectives)}
+                                        <input class="rightbtn floatright" type="button" name="orderright" onclick="order('up', {$ena->order_id},{$con->curriculum_id},{$ter->id},{$ena->id})" />
                                         <input class="deletebtn floatright" type="button" name="delete" onclick="deleteObjective({$con->curriculum_id},{$ter->id},{$ena->id})" />
                                         <input class="editbtn floatright" type="button" name="edit" onclick="editObjective({$con->curriculum_id},{$ter->id},{$ena->id})">
+                                        {if $ena->order_id neq '1'}
+                                            <input class="leftbtn" type="button" name="orderleft" onclick="order('down', {$ena->order_id},{$con->curriculum_id},{$ter->id},{$ena->id})" />
+                                        {/if}
+                                        
                                 {/if}   
 
                                 </div>
                                 <div class="boxwrap">
                                     <div class="boxscroll">
                                     <div class="boxcontent">
+                                        
                                         {$ena->enabling_objective}<!--{$ena->description}-->
                                     </div>
                                     </div>

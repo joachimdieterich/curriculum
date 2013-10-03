@@ -211,6 +211,7 @@ function order() {
     } else if (arguments.length == 5) {
         var url = "assets/scripts/request.php?ajax=on&function=order&order="+ arguments[0] +"&order_id="+ arguments[1]+"&curriculum_id="+ arguments[2] +"&terminal_objective_id="+ arguments[3]+"&enabling_objective_id="+ arguments[4]; 
     }
+    //alert(url);
     req = XMLobject();
     if(req) {        
         req.onreadystatechange = answer; 
