@@ -125,14 +125,22 @@ class EnablingObjective {
      * @return mixed 
      */
     public function add(){
+        $query = sprintf("SELECT MAX(order_id) FROM enablingObjectives WHERE terminal_objective_id = '%s'",
+                mysql_real_escape_string($this->terminal_objective_id));
+        $result = mysql_query($query);
+        list($max) = mysql_fetch_row($result);
+        $this->order_id = $max+1;
+        
         $query = sprintf("INSERT INTO enablingObjectives 
-                    (enabling_objective,description,terminal_objective_id,curriculum_id,repeat_interval) 
-                    VALUES ('%s','%s','%s','%s','%s')",
+                    (enabling_objective,description,terminal_objective_id,curriculum_id,repeat_interval,order_id,creator_id) 
+                    VALUES ('%s','%s','%s','%s','%s','%s','%s')",
                     mysql_real_escape_string($this->enabling_objective),
                     mysql_real_escape_string($this->description),
                     mysql_real_escape_string($this->terminal_objective_id), 
                     mysql_real_escape_string($this->curriculum_id), 
-                    mysql_real_escape_string($this->repeat_interval));
+                    mysql_real_escape_string($this->repeat_interval),
+                    mysql_real_escape_string($this->order_id),
+                    mysql_real_escape_string($this->creator_id));
         return mysql_query($query);
     }
     
@@ -201,7 +209,7 @@ class EnablingObjective {
                                         FROM enablingObjectives AS en 
                                         LEFT JOIN user_accomplished AS ua ON en.id = ua.enabling_objectives_id AND ua.user_id = (SELECT id FROM users WHERE id = '%s')
                                         WHERE en.curriculum_id = '%s'
-                                        ORDER by en.id",
+                                        ORDER by en.terminal_objective_id, en.order_id",
                                         mysql_real_escape_string($id),
                                         mysql_real_escape_string($this->curriculum_id));
                             $result = mysql_query($query);
@@ -226,7 +234,7 @@ class EnablingObjective {
             case 'curriculum':  $query = sprintf("SELECT en.*
                                         FROM enablingObjectives AS en 
                                         WHERE en.curriculum_id = '%s'
-                                        ORDER by en.id",
+                                        ORDER by en.terminal_objective_id, en.order_id",
                                         mysql_real_escape_string($this->curriculum_id));
                             $result = mysql_query($query);
                             if ($result && mysql_num_rows($result)) {
@@ -249,7 +257,7 @@ class EnablingObjective {
                                         $query = sprintf("SELECT en.*
                                         FROM enablingObjectives AS en 
                                         WHERE en.terminal_objective_id = '%s'
-                                        ORDER by en.id",
+                                        ORDER by en.terminal_objective_id, en.order_id",
                                         mysql_real_escape_string($id));
                             $result = mysql_query($query);
                             if ($result && mysql_num_rows($result)) {
@@ -276,7 +284,7 @@ class EnablingObjective {
                                                         INNER JOIN curriculum AS cu ON en.curriculum_id = cu.id 
                                                         LEFT JOIN user_accomplished AS ua ON en.id = ua.enabling_objectives_id AND ua.user_id = '%s'
                                                         WHERE en.curriculum_id = '%s'
-                                                        ORDER by en.id",
+                                                        ORDER by en.terminal_objective_id, en.order_id",
                                                         mysql_real_escape_string($USER->id),
                                                         mysql_real_escape_string($id));
                             $result = mysql_query($query);
@@ -342,6 +350,59 @@ class EnablingObjective {
         } else { return false;}
         
     }  
+    
+    public function order($direction = null){
+        switch ($direction) {
+            case 'down': if ($this->order_id == 1){
+                            // order_id kann nicht kleiner sein
+                            } else {
+                                $query = sprintf("SELECT id FROM enablingObjectives 
+                                                    WHERE terminal_objective_id = '%s' AND order_id = '%s'",
+                                        mysql_real_escape_string($this->terminal_objective_id), 
+                                        mysql_real_escape_string($this->order_id-1));
+                                $result = mysql_query($query);
+                                $replace_id = mysql_result($result, 0, "id"); 
+                                $query = sprintf("UPDATE enablingObjectives SET order_id = '%s' WHERE id = '%s'", 
+                                        mysql_real_escape_string($this->order_id),
+                                        mysql_real_escape_string($replace_id));
+                                mysql_query($query);
+                                $query = sprintf("UPDATE enablingObjectives SET order_id = '%s' WHERE id = '%s'", 
+                                        mysql_real_escape_string($this->order_id-1),
+                                        mysql_real_escape_string($this->id));
+                                mysql_query($query);
+                            }
+                break;
+            case 'up':      $query = sprintf("SELECT MAX(order_id) FROM enablingObjectives WHERE terminal_objective_id = '%s'",
+                                    mysql_real_escape_string($this->terminal_objective_id));
+                            $result = mysql_query($query);
+                            list($max) = mysql_fetch_row($result);
+                            if ($this->order_id == $max){
+                            // order_id darf nicht größer als maximale order_id sein
+                            } else {
+                                $query = sprintf("SELECT id FROM enablingObjectives 
+                                                    WHERE terminal_objective_id = '%s' AND order_id = '%s'",
+                                        mysql_real_escape_string($this->terminal_objective_id), 
+                                        mysql_real_escape_string($this->order_id+1));
+                                $result = mysql_query($query);
+                                $replace_id = mysql_result($result, 0, "id"); 
+                                
+                                $query = sprintf("UPDATE enablingObjectives SET order_id = '%s' WHERE id = '%s'", 
+                                        mysql_real_escape_string($this->order_id),
+                                        mysql_real_escape_string($replace_id));
+                                mysql_query($query);
+                                $query = sprintf("UPDATE enablingObjectives SET order_id = '%s' WHERE id = '%s'", 
+                                        mysql_real_escape_string($this->order_id+1),
+                                        mysql_real_escape_string($this->id));
+                                mysql_query($query);
+                            }
+                break;
+
+            default:
+                break;
+        }     
+    }
+    
+    
     /**
      * get last enabling objectives depending on users accomplished days
      * @global int $USER

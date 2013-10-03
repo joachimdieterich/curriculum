@@ -380,6 +380,12 @@ if (isset($_GET['function'])){
          case "order": if (isset($_GET['ajax'])) {
                             if (isset($_GET['enabling_objective_id'])){
                                 // enabling objective
+                                $enabling_objective = new EnablingObjective();
+                                $enabling_objective->id = $_GET['enabling_objective_id'];
+                                $enabling_objective->curriculum_id = $_GET['curriculum_id'];
+                                $enabling_objective->terminal_objective_id = $_GET['terminal_objective_id'];
+                                $enabling_objective->order_id = $_GET['order_id'];
+                                $enabling_objective->order($_GET['order']);
                             } else {
                                 // terminal objective 
                                 $terminal_objective = new TerminalObjective();

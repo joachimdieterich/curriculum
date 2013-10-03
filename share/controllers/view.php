@@ -46,7 +46,7 @@ if ($_POST){
                                         $terminal_objective->curriculum_id     = $_POST['curriculum_id'];
                                         $terminal_objective->terminal_objective = $_POST['terminal_objective'];
                                         $terminal_objective->description        = $_POST['description'];
-                                        
+                                        $terminal_objective->creator_id         = $USER->id;
                                         $gump->validation_rules(array(
                                         'terminal_objective'         => 'required'
                                         ));
@@ -82,7 +82,8 @@ if ($_POST){
                                         $enabling_objective->terminal_objective_id  = $_POST['terminal_objective_id'];
                                         $enabling_objective->curriculum_id          = $_POST['curriculum_id'];
                                         $enabling_objective->repeat_interval        = $str_interval;
-                                         
+                                        $enabling_objective->creator_id             = $USER->id;
+                                        
                                         $gump->validation_rules(array(
                                         'curriculum_id'             => 'required',
                                         'enabling_objective'         => 'required'

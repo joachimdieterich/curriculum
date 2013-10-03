@@ -87,12 +87,13 @@ class TerminalObjective {
 
             //object_to_array($this);
         $query = sprintf("INSERT INTO terminalObjectives 
-                    (terminal_objective,description,curriculum_id,order_id) 
-                    VALUES ('%s','%s','%s','%s')",
+                    (terminal_objective,description,curriculum_id,order_id,creator_id) 
+                    VALUES ('%s','%s','%s','%s','%s')",
                     mysql_real_escape_string($this->terminal_objective),
                     mysql_real_escape_string($this->description),
                     mysql_real_escape_string($this->curriculum_id),
-                    mysql_real_escape_string($this->order_id));
+                    mysql_real_escape_string($this->order_id),
+                    mysql_real_escape_string($this->creator_id));
         return mysql_query($query);
     }
     
@@ -116,7 +117,6 @@ class TerminalObjective {
                                         mysql_real_escape_string($this->id));
                                 mysql_query($query);
                             }
-
                 break;
             case 'up':      $query = sprintf("SELECT MAX(order_id) FROM terminalObjectives WHERE curriculum_id = '%s'",
                                     mysql_real_escape_string($this->curriculum_id));
@@ -141,16 +141,11 @@ class TerminalObjective {
                                         mysql_real_escape_string($this->id));
                                 mysql_query($query);
                             }
-
                 break;
 
             default:
                 break;
-        }
-        
-        
-        
-        
+        }     
     }
     
     /**
