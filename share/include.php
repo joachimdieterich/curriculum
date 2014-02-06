@@ -29,12 +29,14 @@
 
 include_once('classes/authenticate.class.php');
 include_once('classes/backup.class.php');
+include_once('classes/capability.class.php');
 include_once('classes/cron.class.php');
 include_once('classes/config.class.php');
 include_once('classes/course.class.php'); 
 include_once('classes/country.class.php');
 include_once('classes/curriculum.class.php'); 
 include_once('classes/enablingobjective.class.php'); 
+include_once('classes/exception.class.php'); 
 include_once('classes/file.class.php'); 
 include_once('classes/grade.class.php');     
 include_once('classes/group.class.php');  

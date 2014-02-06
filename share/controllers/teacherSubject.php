@@ -24,7 +24,7 @@
 
 global $USER, $PAGE, $TEMPLATE; 
 
-if (isset($_GET['function']) AND rolepermission(curPageName(), $USER->role_id)) {
+if (isset($_GET['function'])) {
      switch ($_GET['function']) {
         case "newSubject": 
                 $TEMPLATE->assign('showSubjectForm', true); 

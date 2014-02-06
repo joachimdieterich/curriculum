@@ -46,7 +46,7 @@
 <div class="mailcontenttable">
  <div class="floatleft">
      <form id='outbox' method='post' action='index.php?action=messages'>
-     {if isset($outbox)}
+     {if isset($outbox[0])}
          <table id="contenttable" class="mailseperate">
 		<tr id="contenttablehead" >
                 <td></td>
@@ -81,7 +81,7 @@
 <div class="mailcontenttable">
  <div class="floatleft">
      <form id='inbox' method='post' action='index.php?action=messages'>
-     {if isset($inbox)}
+     {if isset($inbox[0])}
          <table id="contenttable" class="mailseperate">
 		<tr id="contenttablehead" >
                 <td></td>

@@ -138,7 +138,11 @@ class User {
      */
     
     public $enrolments = array();
-    
+    /**
+     * role capabilities 
+     * @var array [capability][read/write]
+     */
+    public $capabilities = array();
     
     /**
      * User class constructor
@@ -224,6 +228,12 @@ class User {
         } else {
             $this->institutions[] = NULL;
         }    
+        
+        /**
+         * get capabilities 
+         */
+        $capabilitiy = new Capability();
+        $this->capabilities = $capabilitiy->getCapabilities($this->role_id);
     }
     
     /**
@@ -231,42 +241,43 @@ class User {
     * @return mixed 
     */
     public function add(){ 
-        $query = sprintf("SELECT COUNT(id) FROM users WHERE UPPER(username) = UPPER('%s')",
+        global $USER; 
+        if (checkCapabilities('user:addUser', $USER->role_id)){
+            $query = sprintf("SELECT COUNT(id) FROM users WHERE UPPER(username) = UPPER('%s')",
+                                                mysql_real_escape_string($this->username));
+            $result = mysql_query($query);
+            list($count) = mysql_fetch_row($result);
+            if($count >= 1) { 
+                    return false;
+            } else {
+                $query = sprintf("INSERT INTO users (username,firstname,lastname,email,postalcode,city,state_id,country_id,avatar,password,role_id,confirmed,creator_id) 
+                                                VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')",
+                                                    mysql_real_escape_string($this->username),
+                                                    mysql_real_escape_string($this->firstname),
+                                                    mysql_real_escape_string($this->lastname),
+                                                    mysql_real_escape_string($this->email),
+                                                    mysql_real_escape_string($this->postalcode),
+                                                    mysql_real_escape_string($this->city),
+                                                    mysql_real_escape_string($this->state_id),
+                                                    mysql_real_escape_string($this->country_id),
+                                                    mysql_real_escape_string($this->avatar),
+                                                    mysql_real_escape_string(md5($this->password)),
+                                                    mysql_real_escape_string($this->role_id),
+                                                    mysql_real_escape_string($this->confirmed), 
+                                                    mysql_real_escape_string($this->creator_id)); 
+                if (mysql_query($query)){
+                        $query = sprintf("SELECT id from users WHERE UPPER(username) = UPPER('%s')",
                                             mysql_real_escape_string($this->username));
-        $result = mysql_query($query);
-        list($count) = mysql_fetch_row($result);
-        if($count >= 1) { 
-                return false;
-        } else {
-            $query = sprintf("INSERT INTO users (username,firstname,lastname,email,postalcode,city,state_id,country_id,avatar,password,role_id,confirmed,creator_id) 
-                                            VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')",
-                                                mysql_real_escape_string($this->username),
-                                                mysql_real_escape_string($this->firstname),
-                                                mysql_real_escape_string($this->lastname),
-                                                mysql_real_escape_string($this->email),
-                                                mysql_real_escape_string($this->postalcode),
-                                                mysql_real_escape_string($this->city),
-                                                mysql_real_escape_string($this->state_id),
-                                                mysql_real_escape_string($this->country_id),
-                                                mysql_real_escape_string($this->avatar),
-                                                mysql_real_escape_string(md5($this->password)),
-                                                mysql_real_escape_string($this->role_id),
-                                                mysql_real_escape_string($this->confirmed), 
-                                                mysql_real_escape_string($this->creator_id)); 
-            if (mysql_query($query)){
-                    $query = sprintf("SELECT id from users WHERE UPPER(username) = UPPER('%s')",
-                                        mysql_real_escape_string($this->username));
-                    $result = mysql_query($query);
-                    $this->id = mysql_result($result, 0, "id"); 
-                    //generate Config
-                    
-                    $user_config = new Config(); 
-                    $user_config->add('user', $this->id);
-                    
-                    return $this->id; 
-                    
-            } else { 
-                return false; 
+                        $result = mysql_query($query);
+                        $this->id = mysql_result($result, 0, "id"); 
+
+                        $user_config = new Config();    //generate Config
+                        $user_config->add('user', $this->id);
+
+                        return $this->id;          
+                } else { 
+                    return false; 
+                }
             }
         }
     }
@@ -276,49 +287,58 @@ class User {
      * @return boolean
      */
     public function update() {
-        $query = sprintf("UPDATE users 
-                SET username = '%s', firstname = '%s', lastname = '%s', email = '%s', postalcode = '%s', city = '%s', state_id = '%s', country_id = '%s', avatar = '%s' 
-                WHERE id = '%s'",
-                                mysql_real_escape_string($this->username),
-                                mysql_real_escape_string($this->firstname),
-                                mysql_real_escape_string($this->lastname),
-                                mysql_real_escape_string($this->email),
-                                mysql_real_escape_string($this->postalcode),
-                                mysql_real_escape_string($this->city),
-                                mysql_real_escape_string($this->state_id),
-                                mysql_real_escape_string($this->country_id),
-                                mysql_real_escape_string($this->avatar),
-                                mysql_real_escape_string($this->id));
-        return mysql_query($query);
+        global $USER; 
+        if(checkCapabilities('user:updateUser', $USER->role_id) OR $_POST['userID'] == $USER->id){ //2. Bedingung für Änderung des eigenen Profils 
+            $query = sprintf("UPDATE users 
+                    SET username = '%s', firstname = '%s', lastname = '%s', email = '%s', postalcode = '%s', city = '%s', state_id = '%s', country_id = '%s', avatar = '%s' 
+                    WHERE id = '%s'",
+                                    mysql_real_escape_string($this->username),
+                                    mysql_real_escape_string($this->firstname),
+                                    mysql_real_escape_string($this->lastname),
+                                    mysql_real_escape_string($this->email),
+                                    mysql_real_escape_string($this->postalcode),
+                                    mysql_real_escape_string($this->city),
+                                    mysql_real_escape_string($this->state_id),
+                                    mysql_real_escape_string($this->country_id),
+                                    mysql_real_escape_string($this->avatar),
+                                    mysql_real_escape_string($this->id));
+            return mysql_query($query);
+        }
     }
     
     public function updateRole(){
-        $query = sprintf("UPDATE users SET role_id = '%s' WHERE id='%s'",
-                                mysql_real_escape_string($this->role_id), 
-                                mysql_real_escape_string($this->id));
-        if (mysql_query($query)){
-            $role = new Roles(); 
-            $role->role_id = $this->role_id;
-            $role->load(); 
-            $this->role_name         = $role->role;
-            return true;
-        } else {return false;}
+        global $USER; 
+        if(checkCapabilities('user:updateRole', $USER->role_id)){
+            $query = sprintf("UPDATE users SET role_id = '%s' WHERE id='%s'",
+                                    mysql_real_escape_string($this->role_id), 
+                                    mysql_real_escape_string($this->id));
+            if (mysql_query($query)){
+                $role = new Roles(); 
+                $role->role_id = $this->role_id;
+                $role->load(); 
+                $this->role_name         = $role->role;
+                return true;
+            } else {return false;}
+        }
     }
     /**
      * delete User
      * @return boolean 
      */
     public function delete(){
-        $query = sprintf("DELETE FROM users WHERE id='%s'",
+        global $USER; 
+        if(checkCapabilities('user:updateDelete', $USER->role_id)){
+            $query = sprintf("DELETE FROM users WHERE id='%s'",
+                                    mysql_real_escape_string($this->id));
+            if (mysql_query($query)) {
+                $user_config = new Config(); 
+                $user_config->delete('user', $this->id);
+                $query = sprintf("DELETE FROM institution_enrolments WHERE user_id = '%s'", 
                                 mysql_real_escape_string($this->id));
-        if (mysql_query($query)) {
-            $user_config = new Config(); 
-            $user_config->delete('user', $this->id);
-            $query = sprintf("DELETE FROM institution_enrolments WHERE user_id = '%s'", 
-                            mysql_real_escape_string($this->id));
-            mysql_query($query);
-            return true; 
-        } else {return false;} 
+                mysql_query($query);
+                return true; 
+            } else {return false;} 
+        }   
     }
     /**
      * change password
@@ -326,10 +346,13 @@ class User {
      * @return boolean
      */
     public function changePassword($password) {
-        $query = sprintf("UPDATE users SET password = '%s', confirmed = 1 WHERE UPPER(username) = UPPER('%s')",
-                                            mysql_real_escape_string($password),
-                                            mysql_real_escape_string($this->username));
-        return mysql_query($query);
+        global $USER; 
+        if(checkCapabilities('user:changePassword', $USER->role_id)){
+            $query = sprintf("UPDATE users SET password = '%s', confirmed = 1 WHERE UPPER(username) = UPPER('%s')",
+                                                mysql_real_escape_string($password),
+                                                mysql_real_escape_string($this->username));
+            return mysql_query($query);
+        }
     }
   
     /**
@@ -339,17 +362,19 @@ class User {
      * @return string 
      */
     public function getPassword($table='users', $format='md5') {
-        
-        $query = sprintf("SELECT password FROM %s WHERE UPPER(username) = UPPER('%s')",
-                                            mysql_real_escape_string($table),
-                                            mysql_real_escape_string($this->username));
-        $result = mysql_query($query);
-        
-        if ($format == 'md5'){
-            return  md5(mysql_result($result, 0, "password"));
-        } else {
-            return  mysql_result($result, 0, "password");
-        }  
+        global $USER; 
+        if(checkCapabilities('user:getPassword', $USER->role_id)){
+            $query = sprintf("SELECT password FROM %s WHERE UPPER(username) = UPPER('%s')",
+                                                mysql_real_escape_string($table),
+                                                mysql_real_escape_string($this->username));
+            $result = mysql_query($query);
+
+            if ($format == 'md5'){
+                return  md5(mysql_result($result, 0, "password"));
+            } else {
+                return  mysql_result($result, 0, "password");
+            }  
+        }
     }
     
     /**
@@ -357,32 +382,35 @@ class User {
      * @return array 
      */
     public function getGroupMembers($dependency = null, $id = null) {
-        switch ($dependency) {
-            case 'group':   $query = sprintf("SELECT user_id FROM groups_enrolments WHERE group_id = '%s'",
-                                                    mysql_real_escape_string($id));
-                            $result =  mysql_query($query);  
-                            while($row = mysql_fetch_assoc($result)) { 
-                                $group_members[] =  $row["user_id"];
-                            }
-                            return $group_members;
-                            
-                break;
+        global $USER; 
+        if(checkCapabilities('user:getGroupMembers', $USER->role_id)){
+            switch ($dependency) {
+                case 'group':   $query = sprintf("SELECT user_id FROM groups_enrolments WHERE group_id = '%s'",
+                                                        mysql_real_escape_string($id));
+                                $result =  mysql_query($query);  
+                                while($row = mysql_fetch_assoc($result)) { 
+                                    $group_members[] =  $row["user_id"];
+                                }
+                                return $group_members;
 
-            default:        $query = sprintf("SELECT DISTINCT usr.id, usr.firstname, usr.lastname, usr.username 
-                                    FROM users AS usr, groups_enrolments AS cle 
-                                    WHERE cle.group_id IN (SELECT DISTINCT group_id FROM groups_enrolments WHERE user_id = '%s')
-                                    AND usr.id = cle.user_id", 
-                                    mysql_real_escape_string($this->id)); //??? WHERE Mailempfang erlaubt!!!
-                            $result = mysql_query($query);
+                    break;
 
-                            while($row = mysql_fetch_assoc($result)) { 
-                                    $class_members["id"][]     = $row["id"];  //??? besser als object realisieren
-                                    $class_members["user"][]   = $row['firstname'].' '.$row['lastname'].' ('.$row['username'].')'; 
-                            } 
-                            if (isset($class_members)){
-                                return $class_members;
-                            } else return false; 
-                break;
+                default:        $query = sprintf("SELECT DISTINCT usr.id, usr.firstname, usr.lastname, usr.username 
+                                        FROM users AS usr, groups_enrolments AS cle 
+                                        WHERE cle.group_id IN (SELECT DISTINCT group_id FROM groups_enrolments WHERE user_id = '%s')
+                                        AND usr.id = cle.user_id", 
+                                        mysql_real_escape_string($this->id)); //??? WHERE Mailempfang erlaubt!!!
+                                $result = mysql_query($query);
+
+                                while($row = mysql_fetch_assoc($result)) { 
+                                        $class_members["id"][]     = $row["id"];  //??? besser als object realisieren
+                                        $class_members["user"][]   = $row['firstname'].' '.$row['lastname'].' ('.$row['username'].')'; 
+                                } 
+                                if (isset($class_members)){
+                                    return $class_members;
+                                } else return false; 
+                    break;
+            }
         }
     }  
     
@@ -391,39 +419,42 @@ class User {
      * @return array of object
      */
     public function newUsers($id){
-        $query = sprintf("SELECT usr.*, rol.role 
-                    FROM users AS usr, user_roles AS rol
-                    WHERE usr.role_id = rol.role_id AND usr.creation_time > (SELECT last_login FROM users WHERE id = '%s')",
-                            mysql_real_escape_string($id));
-        $result = mysql_query($query);
-        if ($result && mysql_num_rows($result)){
-            while($row = mysql_fetch_assoc($result)) { 
-                    $this->id                = $row['id'];
-                    $this->username          = $row['username'];
-                    $this->password          = $row['password'];
-                    $this->firstname         = $row['firstname']; 
-                    $this->lastname          = $row['lastname']; 
-                    $this->email             = $row['email']; 
-                    $this->postalcode        = $row['postalcode'];
-                    $this->city              = $row['city']; 
-                    $this->state_id          = $row['state_id'];
-                    $this->country_id        = $row['country_id'];
-                    $this->confirmed         = $row['confirmed']; 
-                    $this->last_login        = $row['last_login']; 
-                    $this->role_id           = $row['role_id']; 
-                    $this->avatar            = $row['avatar'];
-                    $this->creation_time     = $row['creation_time'];
-                    $this->creator_id        = $row['creator_id'];
-                    $role = new Roles(); 
-                    $role->role_id = $this->role_id;
-                    $role->load(); 
-                    $this->role_name         = $role->role;
-                    $users[] = clone $this; 
-            }
-            return $users;          
-        } else {
-            return false;   
-        }   //keine neuen Benutzer
+        global $USER; 
+        if(checkCapabilities('user:listNewUsers', $USER->role_id)){
+            $query = sprintf("SELECT usr.*, rol.role 
+                        FROM users AS usr, user_roles AS rol
+                        WHERE usr.role_id = rol.role_id AND usr.creation_time > (SELECT last_login FROM users WHERE id = '%s')",
+                                mysql_real_escape_string($id));
+            $result = mysql_query($query);
+            if ($result && mysql_num_rows($result)){
+                while($row = mysql_fetch_assoc($result)) { 
+                        $this->id                = $row['id'];
+                        $this->username          = $row['username'];
+                        $this->password          = $row['password'];
+                        $this->firstname         = $row['firstname']; 
+                        $this->lastname          = $row['lastname']; 
+                        $this->email             = $row['email']; 
+                        $this->postalcode        = $row['postalcode'];
+                        $this->city              = $row['city']; 
+                        $this->state_id          = $row['state_id'];
+                        $this->country_id        = $row['country_id'];
+                        $this->confirmed         = $row['confirmed']; 
+                        $this->last_login        = $row['last_login']; 
+                        $this->role_id           = $row['role_id']; 
+                        $this->avatar            = $row['avatar'];
+                        $this->creation_time     = $row['creation_time'];
+                        $this->creator_id        = $row['creator_id'];
+                        $role = new Roles(); 
+                        $role->role_id = $this->role_id;
+                        $role->load(); 
+                        $this->role_name         = $role->role;
+                        $users[] = clone $this; 
+                }
+                return $users;          
+            } else {
+                return false;   
+            }   //keine neuen Benutzer
+        }
     }
     
     /**
@@ -432,12 +463,15 @@ class User {
      * @return boolean 
      */
     public function enroleToInstitution($institution_id){
-        $query = sprintf("INSERT INTO institution_enrolments (institution_id,user_id,creator_id) 
-                                     VALUES('%s','%s','%s')",
-                                    mysql_real_escape_string($institution_id), 
-                                    mysql_real_escape_string($this->id),
-                                    mysql_real_escape_string($this->creator_id));
-        return mysql_query($query);
+        global $USER; 
+        if(checkCapabilities('user:enroleToInstitution', $USER->role_id)){
+            $query = sprintf("INSERT INTO institution_enrolments (institution_id,user_id,creator_id) 
+                                        VALUES('%s','%s','%s')",
+                                        mysql_real_escape_string($institution_id), 
+                                        mysql_real_escape_string($this->id),
+                                        mysql_real_escape_string($this->creator_id));
+            return mysql_query($query);
+        }
     }
     
     /**
@@ -447,24 +481,27 @@ class User {
      * @return boolean 
      */
     public function enroleToGroup($group_id, $creator_id){
-        $query = sprintf("SELECT count(id) FROM groups_enrolments WHERE group_id = '%s' AND user_id = '%s'",
-                                            mysql_real_escape_string($group_id), 
-                                            mysql_real_escape_string($this->id));
-        $result = mysql_query($query);
-        list($count) = mysql_fetch_row($result);
-        if($count > 0) { 
-        $query = sprintf("UPDATE groups_enrolments SET status = 1 WHERE group_id = '%s' AND user_id = '%s'",
-                                            mysql_real_escape_string($group_id), 
-                                            mysql_real_escape_string($this->id)); //Status 1 == eingeschrieben
-        return mysql_query($query);
-        } else {            
-            $query = sprintf("INSERT INTO groups_enrolments 
-                                                (status,group_id,user_id,creator_id) 
-                                                VALUES (1,'%s','%s','%s')",
+        global $USER; 
+        if(checkCapabilities('user:enroleToGroup', $USER->role_id)){
+            $query = sprintf("SELECT count(id) FROM groups_enrolments WHERE group_id = '%s' AND user_id = '%s'",
                                                 mysql_real_escape_string($group_id), 
-                                                mysql_real_escape_string($this->id),
-                                                mysql_real_escape_string($creator_id)); //Status 1 == eingeschrieben
-        return mysql_query($query);
+                                                mysql_real_escape_string($this->id));
+            $result = mysql_query($query);
+            list($count) = mysql_fetch_row($result);
+            if($count > 0) { 
+            $query = sprintf("UPDATE groups_enrolments SET status = 1 WHERE group_id = '%s' AND user_id = '%s'",
+                                                mysql_real_escape_string($group_id), 
+                                                mysql_real_escape_string($this->id)); //Status 1 == eingeschrieben
+            return mysql_query($query);
+            } else {            
+                $query = sprintf("INSERT INTO groups_enrolments 
+                                                    (status,group_id,user_id,creator_id) 
+                                                    VALUES (1,'%s','%s','%s')",
+                                                    mysql_real_escape_string($group_id), 
+                                                    mysql_real_escape_string($this->id),
+                                                    mysql_real_escape_string($creator_id)); //Status 1 == eingeschrieben
+            return mysql_query($query);
+            }
         }
     }
     
@@ -474,16 +511,19 @@ class User {
      * @return boolean 
      */
     public function expelFromGroup($group_id){
-        $query = sprintf("SELECT COUNT(id) FROM groups_enrolments WHERE group_id = '%s' AND user_id = '%s'",
-                                            mysql_real_escape_string($group_id), 
-                                            mysql_real_escape_string($this->id));
-        $result = mysql_query($query);
-        list($count) = mysql_fetch_row($result);
-        if($count >= 1) {
-        $query = sprintf("UPDATE groups_enrolments SET status = 0, expel_time = NOW()
-                                WHERE user_id ='%s'", 
-                                mysql_real_escape_string($this->id)); //Status 0 Benutzer wurde ausgeschrieben
-        return mysql_query($query);
+        global $USER; 
+        if(checkCapabilities('user:expelFromGroup', $USER->role_id)){
+            $query = sprintf("SELECT COUNT(id) FROM groups_enrolments WHERE group_id = '%s' AND user_id = '%s'",
+                                                mysql_real_escape_string($group_id), 
+                                                mysql_real_escape_string($this->id));
+            $result = mysql_query($query);
+            list($count) = mysql_fetch_row($result);
+            if($count >= 1) {
+            $query = sprintf("UPDATE groups_enrolments SET status = 0, expel_time = NOW()
+                                    WHERE user_id ='%s'", 
+                                    mysql_real_escape_string($this->id)); //Status 0 Benutzer wurde ausgeschrieben
+            return mysql_query($query);
+            }
         }
     }
     
@@ -496,124 +536,129 @@ class User {
      * @return boolean 
      */
     public function import($institution_id, $import_file, $delimiter = ';'){
-        global $CFG;
-        $row = 1;   //row counter
-        ini_set("auto_detect_line_endings", true);
-        if (($handle = fopen($import_file, "r")) !== FALSE) {
-            while (($data = fgetcsv($handle, 1000, $delimiter)) !== FALSE) {
-                    $num = count($data);        
-                if ($row == 1) {	// Hier werden die Felder verknüpft.
-                    for ($c=0; $c < $num; $c++) {
-                        if ($data[$c] == "username")    {$username_position       = $c;}
-                        if ($data[$c] == "password")    {$password_position       = $c;}
-                        if ($data[$c] == "role_id")     {$role_id_position        = $c;}
-                        if ($data[$c] == "email")       {$email_position          = $c;}
-                        if ($data[$c] == "confirmed")   {$confirmed_position      = $c;}
-                        if ($data[$c] == "firstname")   {$firstname_position      = $c;}
-                        if ($data[$c] == "lastname")    {$lastname_position       = $c;}
-                        if ($data[$c] == "postalcode")  {$postalcode_position     = $c;}
-                        if ($data[$c] == "city")        {$city_position           = $c;}
-                        if ($data[$c] == "state_id")       {$state_position          = $c;}
-                        if ($data[$c] == "country_id")     {$country_position        = $c;}
-                        if ($data[$c] == "avatar")      {$avatar_position         = $c;}
-                    }    
-                }
-                $row++; //Tielzeile überspringen
-                if ($row > 2) {	
-                    $this->role_id = 0; //reset role id to avoid wrong permissions
-                    if (!isset($username_position))       {$this->username   = '';}                  else {$this->username   = $data[$username_position];}
-                    if (!isset($firstname_position))      {$this->firstname  = '';}                  else {$this->firstname  = $data[$firstname_position];}
-                    if (!isset($lastname_position))       {$this->lastname   = '';}                  else {$this->lastname   = $data[$lastname_position];}
-                    if (!isset($email_position))          {$this->email      = '';}                  else {$this->email      = $data[$email_position];}
-                    if (!isset($postalcode_position))     {$this->postalcode = '';}                  else {$this->postalcode = $data[$postalcode_position];}
-                    if (!isset($city_position))           {$this->city       = '';}                  else {$this->city       = $data[$city_position];}
-                    if (!isset($state_position))          {$this->state_id      = $CFG->standard_state;}                  else {$this->state_id      = $data[$state_position];}
-                    if (!isset($country_position))        {$this->country_id    = $CFG->standard_country;}                  else {$this->country_id    = $data[$country_position];}
-                    if (!isset($avatar_position))         {$this->avatar     = 'noprofile.jpg';}     else {$this->avatar     = $data[$avatar_position];}
-                    if (!isset($password_position))       {$this->password   = 'Reis1834';}          else {$this->password   = $data[$password_position];} //??? standard password global regeln
-                    if (!isset($role_id_position))        {$this->role_id    = $this->role_id;}      else {$this->role_id    = $data[$role_id_position];}
-                    if (!isset($confirmed_position))      {$this->confirmed  = '3';}                 else {$this->confirmed  = $data[$confirmed_position];}
-                    
-                    $validated_data = $this->validate();
-                    if ($validated_data === true) {
-                        $this->add();
-                        $this->enroleToInstitution($institution_id);
-                    } else {
-                        $error[] = array('username' => $this->username, 
-                                         'error'    => $validated_data); 
+        global $CFG, $USER;
+        if(checkCapabilities('user:import', $USER->role_id)){
+            $row = 1;   //row counter
+            ini_set("auto_detect_line_endings", true);
+            if (($handle = fopen($import_file, "r")) !== FALSE) {
+                while (($data = fgetcsv($handle, 1000, $delimiter)) !== FALSE) {
+                        $num = count($data);        
+                    if ($row == 1) {	// Hier werden die Felder verknüpft.
+                        for ($c=0; $c < $num; $c++) {
+                            if ($data[$c] == "username")    {$username_position       = $c;}
+                            if ($data[$c] == "password")    {$password_position       = $c;}
+                            if ($data[$c] == "role_id")     {$role_id_position        = $c;}
+                            if ($data[$c] == "email")       {$email_position          = $c;}
+                            if ($data[$c] == "confirmed")   {$confirmed_position      = $c;}
+                            if ($data[$c] == "firstname")   {$firstname_position      = $c;}
+                            if ($data[$c] == "lastname")    {$lastname_position       = $c;}
+                            if ($data[$c] == "postalcode")  {$postalcode_position     = $c;}
+                            if ($data[$c] == "city")        {$city_position           = $c;}
+                            if ($data[$c] == "state_id")       {$state_position          = $c;}
+                            if ($data[$c] == "country_id")     {$country_position        = $c;}
+                            if ($data[$c] == "avatar")      {$avatar_position         = $c;}
+                        }    
+                    }
+                    $row++; //Tielzeile überspringen
+                    if ($row > 2) {	
+                        $this->role_id = 0; //reset role id to avoid wrong permissions
+                        if (!isset($username_position))       {$this->username   = '';}                  else {$this->username   = $data[$username_position];}
+                        if (!isset($firstname_position))      {$this->firstname  = '';}                  else {$this->firstname  = $data[$firstname_position];}
+                        if (!isset($lastname_position))       {$this->lastname   = '';}                  else {$this->lastname   = $data[$lastname_position];}
+                        if (!isset($email_position))          {$this->email      = '';}                  else {$this->email      = $data[$email_position];}
+                        if (!isset($postalcode_position))     {$this->postalcode = '';}                  else {$this->postalcode = $data[$postalcode_position];}
+                        if (!isset($city_position))           {$this->city       = '';}                  else {$this->city       = $data[$city_position];}
+                        if (!isset($state_position))          {$this->state_id      = $CFG->standard_state;}                  else {$this->state_id      = $data[$state_position];}
+                        if (!isset($country_position))        {$this->country_id    = $CFG->standard_country;}                  else {$this->country_id    = $data[$country_position];}
+                        if (!isset($avatar_position))         {$this->avatar     = 'noprofile.jpg';}     else {$this->avatar     = $data[$avatar_position];}
+                        if (!isset($password_position))       {$this->password   = 'Reis1834';}          else {$this->password   = $data[$password_position];} //??? standard password global regeln
+                        if (!isset($role_id_position))        {$this->role_id    = $this->role_id;}      else {$this->role_id    = $data[$role_id_position];}
+                        if (!isset($confirmed_position))      {$this->confirmed  = '3';}                 else {$this->confirmed  = $data[$confirmed_position];}
+
+                        $validated_data = $this->validate();
+                        if ($validated_data === true) {
+                            $this->add();
+                            $this->enroleToInstitution($institution_id);
+                        } else {
+                            $error[] = array('username' => $this->username, 
+                                            'error'    => $validated_data); 
+                        }
                     }
                 }
             }
-        }
-        fclose($handle);
-        if (isset($error)){ //if there are any error messages
-            return $error;
-        } else {
-            return true;    
-        }
+            fclose($handle);
+            if (isset($error)){ //if there are any error messages
+                return $error;
+            } else {
+                return true;    
+            }
+        } //capability
     }
     
     /**
-     * get user list depending on dependency
+     * get user list depending on $dependency
      * @param string $dependency
      * @param int $id
      * @return array of object 
      */
     public function userList($dependency = 'institution', $id = null){
-        switch ($dependency) {
-            case 'institution': if ($this->role_id == 3 OR $this->role_id == 2){ // 3 = Rolle Lehrer, 2 = Tutor //Bedingung Lehrer müssen in die Klasse eingeschrieben sein, oder sie erstellt haben    
-                                $query = sprintf("SELECT us.id
-                                                FROM users AS us
-                                                WHERE us.id = ANY (SELECT user_id FROM institution_enrolments 
-                                                                WHERE institution_id = ANY (SELECT institution_id FROM institution_enrolments 
-                                                                                            WHERE user_id = '%s'))      
-                                                AND us.creator_id = '%s'
-                                                ORDER by us.lastname",
-                                                mysql_real_escape_string($this->id),
-                                                mysql_real_escape_string($this->id)); 
-                                } else if ($this->role_id == 4 OR $this->role_id == 1){ //4 = Institutions-Admin, 1= sidewide Admin
-                                        $query = sprintf("SELECT us.id
-                                                FROM users AS us
-                                                WHERE us.id = ANY (SELECT user_id FROM institution_enrolments 
-                                                                WHERE institution_id = ANY (SELECT institution_id FROM institution_enrolments 
-                                                                WHERE user_id = '%s'))                                         
-                                                ORDER by us.lastname",
-                                                mysql_real_escape_string($this->id)); //Bisher werden nur Benutzer der Institution angezeigt, an der man angemeldet ist. ???Side-Admin muss aber alle sehen können 
-                                }
-                                
-                                break;
-            case 'group':       $query = sprintf("SELECT us.id
-                                                FROM users AS us, groups_enrolments AS gre
-                                                WHERE gre.user_id = us.id 
-                                                AND gre.status = 1
-                                                AND gre.group_id = '%s'",
-                                                mysql_real_escape_string($id));
-                                break;
-            case 'confirm':     if ($this->role_id = 1){
-                                    $query = "SELECT us.id 
-                                    FROM users AS us
-                                    WHERE us.confirmed = 4";
-                                } else {
-                                    $query = sprintf("SELECT us.id 
-                                    FROM users AS us, institution_enrolments AS ine
-                                    WHERE us.confirmed = 4
-                                    AND ine.user_id = us.id
-                                    AND ine.institution_id IN ('%s')",
-                                    mysql_real_escape_string(implode(',',$this->institutions["id"])));
-                                }
-            break; 
-            default:
-                break;
-        }
-        
+        global $CFG, $USER;
+        if(checkCapabilities('user:userList', $USER->role_id)){
+            switch ($dependency) {
+                case 'institution': if ($this->role_id == 3 OR $this->role_id == 2){ // 3 = Rolle Lehrer, 2 = Tutor //Bedingung Lehrer müssen in die Klasse eingeschrieben sein, oder sie erstellt haben    
+                                    $query = sprintf("SELECT us.id
+                                                    FROM users AS us
+                                                    WHERE us.id = ANY (SELECT user_id FROM institution_enrolments 
+                                                                    WHERE institution_id = ANY (SELECT institution_id FROM institution_enrolments 
+                                                                                                WHERE user_id = '%s'))      
+                                                    AND us.creator_id = '%s'
+                                                    ORDER by us.lastname",
+                                                    mysql_real_escape_string($this->id),
+                                                    mysql_real_escape_string($this->id)); 
+                                    } else if ($this->role_id == 4 OR $this->role_id == 1){ //4 = Institutions-Admin, 1= sidewide Admin
+                                            $query = sprintf("SELECT us.id
+                                                    FROM users AS us
+                                                    WHERE us.id = ANY (SELECT user_id FROM institution_enrolments 
+                                                                    WHERE institution_id = ANY (SELECT institution_id FROM institution_enrolments 
+                                                                    WHERE user_id = '%s'))                                         
+                                                    ORDER by us.lastname",
+                                                    mysql_real_escape_string($this->id)); //Bisher werden nur Benutzer der Institution angezeigt, an der man angemeldet ist. ???Side-Admin muss aber alle sehen können 
+                                    }
 
-        $result = mysql_query($query);
-        while($row = mysql_fetch_assoc($result)) { 
-                $this->load('id', $row['id']);
-                $users[] = clone $this;
-        } 
-        if (isset($users)){
-            return $users;
+                                    break;
+                case 'group':       $query = sprintf("SELECT us.id
+                                                    FROM users AS us, groups_enrolments AS gre
+                                                    WHERE gre.user_id = us.id 
+                                                    AND gre.status = 1
+                                                    AND gre.group_id = '%s'",
+                                                    mysql_real_escape_string($id));
+                                    break;
+                case 'confirm':     if ($this->role_id = 1){
+                                        $query = "SELECT us.id 
+                                        FROM users AS us
+                                        WHERE us.confirmed = 4";
+                                    } else {
+                                        $query = sprintf("SELECT us.id 
+                                        FROM users AS us, institution_enrolments AS ine
+                                        WHERE us.confirmed = 4
+                                        AND ine.user_id = us.id
+                                        AND ine.institution_id IN ('%s')",
+                                        mysql_real_escape_string(implode(',',$this->institutions["id"])));
+                                    }
+                break; 
+                default:
+                    break;
+            }
+
+
+            $result = mysql_query($query);
+            while($row = mysql_fetch_assoc($result)) { 
+                    $this->load('id', $row['id']);
+                    $users[] = clone $this;
+            } 
+            if (isset($users)){
+                return $users;
+            }
         }
     }
     
@@ -622,11 +667,14 @@ class User {
      * @return boolean 
      */
     public function resetPassword() {
-        $query = sprintf("UPDATE users SET password = '%s', confirmed = '%s' WHERE id='%s'",
-                                                mysql_real_escape_string(md5($this->password)),
-                                                mysql_real_escape_string($this->confirmed),
-                                                mysql_real_escape_string($this->id));
-        return mysql_query($query);                    
+        global $USER;
+        if(checkCapabilities('user:resetPassword', $USER->role_id)){
+            $query = sprintf("UPDATE users SET password = '%s', confirmed = '%s' WHERE id='%s'",
+                                                    mysql_real_escape_string(md5($this->password)),
+                                                    mysql_real_escape_string($this->confirmed),
+                                                    mysql_real_escape_string($this->id));
+            return mysql_query($query);       
+        }
     }
     /**
      * Returns all Curricula in which the user is enroled. 
@@ -665,7 +713,7 @@ class User {
     }
     
     /**
-     * get groups
+     * get groups of current user
      * @return array of object | boolean 
      */
     public function getGroups(){
@@ -744,36 +792,39 @@ class User {
      * @return array of object|boolean 
      */
     public function getUsers($dependency = null, $id = null){
-       switch ($dependency) {
-           case 'course': $query = sprintf("SELECT DISTINCT us.*          
-                                            FROM users AS us
-                                            INNER JOIN groups_enrolments AS gr ON us.id = gr.user_id 
-                                            AND gr.group_id = ANY (SELECT group_id FROM curriculum_enrolments WHERE curriculum_id = '%s' AND status = 1 )
-                                            AND gr.group_id = ANY (SELECT id FROM groups 
-                                                                    WHERE institution_id = ANY (SELECT institution_id FROM institution_enrolments 
-                                                                                                    WHERE user_id = '%s'))                                                       
-                                            ORDER by us.lastname",
-                                            mysql_real_escape_string($id),                
-                                            mysql_real_escape_string($this->id),
-                                            mysql_real_escape_string($this->id));
+        global $USER;
+        if(checkCapabilities('user:getUsers', $USER->role_id)){
+            switch ($dependency) {
+                case 'course': $query = sprintf("SELECT DISTINCT us.*          
+                                                    FROM users AS us
+                                                    INNER JOIN groups_enrolments AS gr ON us.id = gr.user_id 
+                                                    AND gr.group_id = ANY (SELECT group_id FROM curriculum_enrolments WHERE curriculum_id = '%s' AND status = 1 )
+                                                    AND gr.group_id = ANY (SELECT id FROM groups 
+                                                                            WHERE institution_id = ANY (SELECT institution_id FROM institution_enrolments 
+                                                                                                            WHERE user_id = '%s'))                                                       
+                                                    ORDER by us.lastname",
+                                                    mysql_real_escape_string($id),                
+                                                    mysql_real_escape_string($this->id),
+                                                    mysql_real_escape_string($this->id));
 
-                            $result = mysql_query($query);
-                            if ($result && mysql_num_rows($result)) {
-                                while($row = mysql_fetch_assoc($result)) { 
-                                    $this->id           = $row['id'];
-                                    $this->load('id', $this->id);
-                                    $users[] = clone $this; 
-                                }
-                            }
-               break;
+                                    $result = mysql_query($query);
+                                    if ($result && mysql_num_rows($result)) {
+                                        while($row = mysql_fetch_assoc($result)) { 
+                                            $this->id           = $row['id'];
+                                            $this->load('id', $this->id);
+                                            $users[] = clone $this; 
+                                        }
+                                    }
+                    break;
 
-           default:
-               break;
-       }
-                      
-           if (isset($users)) {
-               return $users; 
-           } else {return false;}
+                default:
+                    break;
+            }
+
+                if (isset($users)) {
+                    return $users; 
+                } else {return false;}
+        }
    }
    
    /**
@@ -783,33 +834,35 @@ class User {
     * @return boolean 
     */
    public function getNewUsers($dependency = null, $id = null){
-       switch ($dependency) {
-           case null:   $query   = sprintf("SELECT COUNT(id) FROM users WHERE confirmed = 4");
-                        $result  = mysql_query($query);
-                        $amount_of_new_user = mysql_fetch_array($result);
-                        if ($amount_of_new_user[0]){
-                            return $amount_of_new_user[0];
-                        } else {
-                            return false; 
-                        }
-               break;
-           case 'institution': $query = sprintf("SELECT COUNT(usr.id) FROM users AS usr, institution_enrolments AS ine
-                                WHERE usr.confirmed = 4
-                                AND usr.id = ine.user_id
-                                AND ine.institution_id IN ('%s')",
-                                mysql_real_escape_string(implode(',',$this->institutions["id"])));
-                        $result  = mysql_query($query);
-                        $amount_of_new_user = mysql_fetch_array($result);
-                        if ($amount_of_new_user[0]){
-                            return $amount_of_new_user[0];
-                        } else {
-                            return false; 
-                        }
-               break;
-           default:
-               break;
-       }
-        
+       global $USER;
+       if(checkCapabilities('user:getNewUsers', $USER->role_id)){
+            switch ($dependency) {
+                case null:   $query   = sprintf("SELECT COUNT(id) FROM users WHERE confirmed = 4");
+                                $result  = mysql_query($query);
+                                $amount_of_new_user = mysql_fetch_array($result);
+                                if ($amount_of_new_user[0]){
+                                    return $amount_of_new_user[0];
+                                } else {
+                                    return false; 
+                                }
+                    break;
+                case 'institution': $query = sprintf("SELECT COUNT(usr.id) FROM users AS usr, institution_enrolments AS ine
+                                        WHERE usr.confirmed = 4
+                                        AND usr.id = ine.user_id
+                                        AND ine.institution_id IN ('%s')",
+                                        mysql_real_escape_string(implode(',',$this->institutions["id"])));
+                                $result  = mysql_query($query);
+                                $amount_of_new_user = mysql_fetch_array($result);
+                                if ($amount_of_new_user[0]){
+                                    return $amount_of_new_user[0];
+                                } else {
+                                    return false; 
+                                }
+                    break;
+                default:
+                    break;
+            }
+       }  
    }
    
    /**
@@ -860,9 +913,12 @@ class User {
     * @return boolean 
     */
    public function confirmUser($user_id){
-       $query = sprintf("UPDATE users SET confirmed = 1 WHERE id = '%s'",
-                                mysql_real_escape_string($user_id)); //confirmed 1 == freigeben
-       return mysql_query($query);
+       global $USER;
+       if(checkCapabilities('user:confirmUser', $USER->role_id)){
+            $query = sprintf("UPDATE users SET confirmed = 1 WHERE id = '%s'",
+                                        mysql_real_escape_string($user_id)); //confirmed 1 == freigeben
+            return mysql_query($query);
+       }
        
    }
    
@@ -895,9 +951,12 @@ class User {
     * @return boolean
     */
     public function dedicate(){ // only use during install
-        $query = sprintf("UPDATE users SET creator_id = '%s'",
-                                            mysql_real_escape_string($this->creator_id));
-        return mysql_query($query);
+        global $USER;
+        if(checkCapabilities('user:dedicate', $USER->role_id)){
+            $query = sprintf("UPDATE users SET creator_id = '%s'",
+                                                mysql_real_escape_string($this->creator_id));
+            return mysql_query($query);
+        }
     }
 }
 ?>

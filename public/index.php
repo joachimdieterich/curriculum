@@ -55,7 +55,6 @@ $PAGE->login      = (isset($_GET['login']) && trim($_GET['login'] != '') ? $_GET
 
 if ($PAGE->action  != 'login' OR $PAGE->action  != 'register' OR $PAGE->action  != 'install') {
     //check ob eingeloggt oder timeout --> muss ganz oben stehen bleiben
-    
     if($PAGE->action  != 'register' AND $PAGE->action  != 'install') {
         if (isset($_SESSION['username'])) {
             include ('../share/session.php');       // first build session, then do the login-check!
@@ -83,14 +82,41 @@ detect_reload();
 /**
  * Check if user has permission to see page 
  */
-$PAGE->action  = pagePermissions($PAGE->action );   
+global $USER;
+if (isset($USER)){
+    /**
+     * role capabilities (menu)
+     */
+    $TEMPLATE->assign('ccs_menu_MyCurricula',       checkCapabilities('menu:readMyCurricula', $USER->role_id));
+    $TEMPLATE->assign('ccs_menu_Institution',       checkCapabilities('menu:readInstitution', $USER->role_id));
+    $TEMPLATE->assign('ccs_menu_Progress',          checkCapabilities('menu:readProgress', $USER->role_id));
+    $TEMPLATE->assign('ccs_menu_Curricula',         checkCapabilities('menu:readCurricula', $USER->role_id));
+    $TEMPLATE->assign('ccs_menu_Group',             checkCapabilities('menu:readGroup', $USER->role_id));
+    $TEMPLATE->assign('ccs_menu_UserAdministration',checkCapabilities('menu:readUserAdministration', $USER->role_id));
+    $TEMPLATE->assign('ccs_menu_Roles',             checkCapabilities('menu:readRoles', $USER->role_id));
+    $TEMPLATE->assign('ccs_menu_Grade',             checkCapabilities('menu:readGrade', $USER->role_id));
+    $TEMPLATE->assign('ccs_menu_Subject',           checkCapabilities('menu:readSubject', $USER->role_id));
+    $TEMPLATE->assign('ccs_menu_Semester',          checkCapabilities('menu:readSemester', $USER->role_id));
+    $TEMPLATE->assign('ccs_menu_Backup',            checkCapabilities('menu:readBackup', $USER->role_id));
+    $TEMPLATE->assign('ccs_menu_Confirm',           checkCapabilities('menu:readConfirm', $USER->role_id));
+    $TEMPLATE->assign('ccs_menu_ProfileConfig',     checkCapabilities('menu:readProfileConfig', $USER->role_id));
+    $TEMPLATE->assign('ccs_menu_InstitutionConfig', checkCapabilities('menu:readInstitutionConfig', $USER->role_id));
+    
+    $TEMPLATE->assign('ccs_menu_logmenu',           checkCapabilities('menu:readlogmenu', $USER->role_id));
+}
 
 /**
  * load controller 
  */
 $PAGE->controller = $CFG->controllers_root.'/'.$PAGE->action .'.php';
-if (file_exists($PAGE->controller)) {
-    require_once($PAGE->controller);
+if (file_exists($PAGE->controller)) { 
+    try {                                       //Curriculum Exception Check
+        require_once($PAGE->controller);   
+    } catch (CurriculumException $e){
+        $TEMPLATE->assign('prev_page_name', $PAGE->action);  
+        $TEMPLATE->assign('curriculum_exception', $e);  
+        $PAGE->action = 'error';        
+    }
 }
 
 /*
@@ -121,13 +147,9 @@ $TEMPLATE->assign('page_name',  $PAGE->action );
  */
 try {   
     $TEMPLATE->display((isset($TEMPLATE_prefix) ? $TEMPLATE_prefix : '').$PAGE->action .'.tpl');
-}
-
-catch (SmartyException $e) {    
+} catch (SmartyException $e) {    
     $TEMPLATE->display($CFG->smarty_template_dir.'error-404.tpl');
-}
-
-catch (Exception $e) {
+} catch (Exception $e) {
     $TEMPLATE->display($CFG->smarty_template_dir.'error-500.tpl');
 }
 ?>

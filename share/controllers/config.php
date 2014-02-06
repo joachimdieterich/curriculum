@@ -25,7 +25,7 @@
 global $CFG, $USER, $TEMPLATE, $PAGE, $LOG;
   $LOG->add($USER->id, 'view', $PAGE->url, 'allConfig'); 
  
-  $language = read_folder_directory('thisDir', './../lang/');
+  $language = read_folder_directory('./../lang/', 'thisDir');
   $TEMPLATE->assign('language', $language);
  //Je nach Rolle sollen unterschiedliche Möglichkeiten angezeigt werden.
 if($_POST) {
@@ -115,8 +115,6 @@ if($_POST) {
                             $PAGE->message[] = 'Einstellungen wurden gespeichert.';
                         }
                     }
-                    
-                    //    addLog($USER->id, 'setConfig(complete)', curPageURL(), end($config['message'])); //Addlog
                     break;
        
 } //end switch

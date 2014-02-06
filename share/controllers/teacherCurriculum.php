@@ -28,7 +28,7 @@ if(isset($_GET['reset']) OR (isset($_POST['reset'])) OR (isset($_POST['new_curri
     resetPaginator('curriculumPaginator'); 
 }
 
-if (isset($_GET['function']) /*AND rolepermission(curPageName(), $USER->role_id)*/){
+if (isset($_GET['function'])){
     switch ($_GET['function']) {
         case "new_curriculum":  loadeditFormData($TEMPLATE);
             break; 
