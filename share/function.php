@@ -23,7 +23,6 @@
 */
 
 global $CFG;
-
 include ($CFG->document_root.'assets/scripts/libs/backup/imscc/cc_export.php'); //IMS CC Export-Funktion  anders einbinden
  
 /**
@@ -39,82 +38,15 @@ function forceDownload($file){
     readfile($file);
     
 }
-/**
- * Checks for 'teacher' and 'admin' in URL. If userrole is not allowed to see the page, then action is set to ''
- * 
- * @param type $action
- * @return string 
- */
-function pagePermissions($action){
-    global $USER;
-
-    if (isset($USER->role_id)){
-
-            if ($USER->role_id == 0){ // Funktioniert
-                $check1 = strpos($action,'admin'); 
-                $check2 = strpos($action,'teacher');
-                if($check1 === false AND $check2 === false) {} else {$action = '';}
-            } 
-            else if ($USER->role_id == 1) {/*admin(sidewide) - braucht keine weitere Überprüfung*/}
-            else if ($USER->role_id == 2) { //Bedinungen verknüpfen !
-                $check1 = strpos($action,'admin'); 
-                if($check1 === false) {} else {$action = '';}
-            }
-            else if ($USER->role_id == 3) {
-                $check1 = strpos($action,'admin'); 
-                if($check1 === false) {} else {$action = '';}
-            }
-            else if ($USER->role_id == 4) {   // funktioniert
-                $check1 = strpos($action,'admin'); 
-                if($check1 === false) {} else {$action = '';}
-            } 
-    } 
-    return $action;
-}
-
-/**
- * check role permissions 
- * @param string $pageName
- * @param int $role_id
- * @param string $function default null
- * @return boolean 
- */
-function rolepermission($pageName, $role_id, $function = NULL) {
-    switch ($role_id) {
-        case '0': $permission = false; //Student = Abhängig von pageName
-            break;
-        case '1': $permission = true;  //Admin (sidewide) = darf alles
-            break;
-        case '2': $permission = false; //Tutor = Abhängig von pageName
-            break;
-        case '3': $permission = false; //Lehrer = Abhängig von pageName
-            if ($pageName == 'teacherCurriculum'){ //Admin (Institution) = Abhängig von pageName
-                       $permission = true;
-                  } else {$permission = true;}
-            break;
-        case '4': if ($pageName == 'teacherGrade'){ //Admin (Institution) = Abhängig von pageName
-                       $permission = true;
-                  } else {$permission = true;}
-            break;
-
-        default:  $permission = false;
-            break;
-    }
-    return $permission;
-}
 
 /**
  * get browser
  * @return string 
  */
 function getagent(){
-  if (strstr($_SERVER['HTTP_USER_AGENT'],'Opera'))    {    
-     //$brows=ereg_replace(".+\(.+\) (Opera |v){0,1}([0-9,\.]+)[^0-9]*","Opera \\2",$_SERVER['HTTP_USER_AGENT']);
+  if (strstr($_SERVER['HTTP_USER_AGENT'],'Opera')) {    
      $brows='Opera';
-     //if(ereg('^Opera/.*',$_SERVER['HTTP_USER_AGENT'])){
-     //$brows=ereg_replace("Opera/([0-9,\.]+).*","Opera \\1",$_SERVER['HTTP_USER_AGENT']);    }}
-  }
-  elseif (strstr($_SERVER['HTTP_USER_AGENT'],'MSIE'))
+  } elseif (strstr($_SERVER['HTTP_USER_AGENT'],'MSIE'))
      $brows='InternetExplorer';
   elseif (strstr($_SERVER['HTTP_USER_AGENT'],'Firefox'))
      $brows='Firefox';
@@ -135,7 +67,7 @@ function getagent(){
  * @param string $dir
  * @return array 
  */
-function read_folder_directory($request = "allDirFiles", $dir) { 
+function read_folder_directory($dir, $request = "allDirFiles") { 
     switch ($request) {
         case "allDirFiles":    
                             $listDir = array(); 
@@ -145,7 +77,7 @@ function read_folder_directory($request = "allDirFiles", $dir) {
                                         if(is_file($dir."/".$sub)) { 
                                             $listDir[] = $sub; 
                                         }elseif(is_dir($dir."/".$sub)){ 
-                                            $listDir[$sub] = read_folder_directory($request, $dir."/".$sub); 
+                                            $listDir[$sub] = read_folder_directory($dir."/".$sub, $request); 
                                         } 
                                     } 
                                 } 
@@ -214,11 +146,6 @@ function setPaginator($instance, $template, $data, $returnVar, $currentURL) {
     $CFG->paginator_name = &$instance;
     
     $SmartyPaginate->setLimit($INSTITUTION->institution_paginator_limit, $instance);
-
-    /*if (isset($selectedID)) { //selectedID is not set
-        $currentURL .= '&selectedID='.$selectedID;
-    }*/
-  
     $SmartyPaginate->setUrl($currentURL, $instance);//$currentURL, $instance);
     $SmartyPaginate->setUrlVar($instance, $instance);
 
@@ -247,7 +174,6 @@ function resetPaginator($instance){  //Setzt den Paginator zurück auf den index
     $SmartyPaginate->connect($instance);
     $SmartyPaginate->setCurrentItem(1, $instance);
 }
-
 
 /**
  * convert mb to byte
@@ -285,7 +211,6 @@ function convertByteToKbyte($byte){
     return $byte/1024;
 }
   
-
 /**
  * Die Funktion detect_reload() wird über die index.php aufgerufen und verhindert, dass Formulare mit identischem Inhalt 2x abgeschickt werden. 
  */
@@ -301,7 +226,6 @@ function detect_reload(){
     }
 } 
 
-
 /**
  * Die Funktion renderList() erzeugt die Dateilisten im Uploadframe
  * @param string $formname
@@ -313,12 +237,10 @@ function detect_reload(){
  * @param string $multipleFiles 
  */
 function renderList($formname, $files, $data_dir, $ID_Postfix, $targetID, $returnFormat, $multipleFiles){
-    //var_dump($files);
 ?><form name="<?php echo $formname ?>" action="<?php echo $formname ?>" method="post" enctype="multipart/form-data">
         <div> 
         <table>
             <tr><?php 
-            //$context_array = array('-1', '0', '1', '2', '3', '4', '5', $contextUserPath['id']); //legt fest welche Dateien (Kontexte) angezeigt werden sollen
             if (!empty($files)){
             for ($i=0; $i < count($files); $i++){
             ?><td>
@@ -381,6 +303,18 @@ function addMessage($message){
     $PAGE->message[] = $message;
 }
 
+/**
+ * checks capability for a given role
+ * @param string $capability
+ * @param int $role_id
+ * @return boolean 
+ */
+function checkCapabilities($capability = null, $role_id = null){
+    $capabilities = new Capability();
+    $capabilities->capability = $capability; 
+    $capabilities->role_id    = $role_id; 
+    return $capabilities->checkCapability();
+}
 
 /**
  * Converts a multidimensional array to string
@@ -418,10 +352,13 @@ function array2str($array, $pre = ' ', $pad = '', $sep = ', ')
  */
  function object_to_array($obj, $level = 0) {       
         $arrObj = is_object($obj) ? get_object_vars($obj) : $obj;
-        foreach ($arrObj as $key => $val) {    
-            $val = (is_array($val) || is_object($val)) ? object_to_array($val,$level+1) : $val;
+        foreach ($arrObj as $key => $val) {  
             echo '<p style="text-indent:'.$level.'00px; margin-bottom: -10px;">';
-            echo '<label>',$key,': </label>', $val,'</p>';       
+            echo '<label>',$key,': </label>';
+            $val = (is_array($val) || is_object($val)) ? object_to_array($val,$level+1) : $val;    
+            if  ($val != (is_array($val) || is_object($val))){
+                echo $val,'</p>';
+            }
         }
 }
 

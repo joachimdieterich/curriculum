@@ -26,7 +26,7 @@ $selectedCurriculum = (isset($_GET['curriculum']) && $_GET['curriculum'] != '' ?
 $TEMPLATE->assign('selectedCurriculum', $selectedCurriculum);
 $curriculum = new Curriculum();
 
-if (isset($_GET['function']) AND rolepermission(curPageName(), $USER->role_id)) {
+if (isset($_GET['function'])) {
      switch ($_GET['function']) {
         case "edit": 
                 loadeditFormData ($TEMPLATE, $_GET['group_id']);  

@@ -12,13 +12,13 @@
 <div class=" border-radius gray-border">	
     <div class="border-top-radius contentheader ">{$adminLog}</div>
     <div class="space-top-padding gray-gradient border-bottom-radius box-shadow ">
-    <p>Hier können die Logfiles aufgerufen werden</p>
-    <h3>&nbsp;</h3>
-    
+    {if isset($ccs_page_log)}
+        <p>Hier können die Logfiles aufgerufen werden</p>
+        <h3>&nbsp;</h3>
         {* display pagination header *}
         <p>Datensätze {$logPaginator.first}-{$logPaginator.last} von {$logPaginator.total} werden angezeigt.</p>
         <table id="contenttable">
-		<tr id="contenttablehead">
+                <tr id="contenttablehead">
                     <td></td>
                 <td>ID</td>
                 <td>Datum/Zeit</td>
@@ -45,7 +45,8 @@
         <!--Hack für problem, dass kein Array gepostet wird, wenn nichts angewählt wird-->
         <input class="invisible" type="checkbox" name="id[]" value="none" checked />
         {* display pagination info *}
-            <p class="floatright">{paginate_first id="logPaginator"} {paginate_middle id="logPaginator"} {paginate_next id="logPaginator"}</p>
+        <p class="floatright">{paginate_first id="logPaginator"} {paginate_middle id="logPaginator"} {paginate_next id="logPaginator"}</p>
+    {else}<p>Sie haben keine Berechtigung für diesen Bereich.</p>{/if} 
     </div>
 </div>
 {/block}

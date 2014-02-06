@@ -53,13 +53,11 @@
                        <td>{$results[res]->country}</td>
                        <td>{$results[res]->role_name}</td>
                        <td>
-                        <a class="deletebtn floatright" type="button" onclick="js_deleteUser({$results[res]->id})"></a>
+                        <a class="deletebtn floatright" type="button" onclick="del('user',{$results[res]->id})"></a>
                         <a class="editbtn floatright" href="index.php?action=profile&function=editUser&userID={$results[res]->id}"></a>
                         <a class="groupbtn floatright" href="index.php?action=teacherUser&function=showGroups&userID={$results[res]->id}"></a>
-                        <a class="listbtn floatright" href="index.php?action=teacherUser&function=showCurriculum&userID={$results[res]->id}"></a>
-                       
-                       </td>
-                          
+                        <a class="listbtn floatright" href="index.php?action=teacherUser&function=showCurriculum&userID={$results[res]->id}"></a>                 
+                       </td>    
                     </tr>
                 {/section}
 		</table>
@@ -86,11 +84,12 @@
         <p><h3>Rolle</h3></p>
         <p><label>Benutzer-Rolle festlegen</label>
         <SELECT class="centervertical" name='roles' id='roles' />
-                        {foreach key=rolid item=rol from=$roles}
-                            <OPTION  value="{$rol->role_id}">{$rol->role}</OPTION>
-                        {/foreach} 
-                        </SELECT></p> 
-           <p> <input type='submit' name='setRole' value='Rolle ändern' /></p>
+            {foreach key=rolid item=rol from=$roles}
+                <OPTION  value="{$rol->role_id}">{$rol->role}</OPTION>
+            {/foreach} 
+            </SELECT></p> 
+       <p><input type='submit' name='setRole' value='Rolle zuweisen' /></p>
+           
         <p>&nbsp;</p>
         <p><h3>Passwort zurücksetzen</h3></p>
         <p>Neues Passwort für markierte Benutzer festlegen</p>
@@ -106,9 +105,7 @@
 	</form> 
         {else}<p><input type='submit' name="back" value='Funktionen einblenden'/></p>{/if}{/if}{/if}
         {if !isset($groups_array)}<p>Sie können noch keine Benutzer Verwalten, da sie entweder nicht über die nötigen Rechte verfügen, oder keine Benutzer in ihrer Institution vorhanden sind.</p><p>&nbsp;</p>{/if}
-        
-        
-        
+               
         {*Groups paginator*}
         {if isset($showenroledGroups)}
         {if isset($groups_list)}    
@@ -153,9 +150,7 @@
             <p class="floatright">{paginate_prev id="groupsPaginator"} {paginate_middle id="groupsPaginator"} {paginate_next id="groupsPaginator"}</p>
         {else}<p><strong>Der Benutzer ist in keiner Lerngruppe eingeschrieben.</strong></p><p>&nbsp;</p>{/if}{/if}
         {*Ende Groups paginator*}
-        
-        
-        
+             
         {*Curriculum paginator*}
         {if isset($curriculumList)}
         <p><h3>Lehrpläne des Benutzers</h3></p>

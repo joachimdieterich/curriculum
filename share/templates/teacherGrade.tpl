@@ -65,7 +65,7 @@
                     <td>{$grade_list[grade]->grade}</td>
                     <td>{$grade_list[grade]->description}</td>
                     <td class="td_options">
-                        <a class="deletebtn floatright" type="button" name="delete" onclick="deleteGrade({$grade_list[grade]->id})"></a>
+                        <a class="deletebtn floatright" type="button" name="delete" onclick="del('grade',{$grade_list[grade]->id})"></a>
                         <a class="editbtn floatright" href="index.php?action=teacherGrade&edit=true&id={$grade_list[grade]->id}"></a>
                         </td>
                 </tr>

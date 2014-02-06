@@ -24,5 +24,9 @@ global $USER, $TEMPLATE, $PAGE, $LOG;
 
 $TEMPLATE->assign('adminLog', 'Logfiles'); 
 $LOG->add($USER->id, 'view', $PAGE->url, 'adminLog'); 
-setPaginator('logPaginator', $TEMPLATE, $LOG->getLogs(), 'results', 'index.php?action=adminLog');
+    
+if (checkCapabilities('page:readLog', $USER->role_id)){
+    setPaginator('logPaginator', $TEMPLATE, $LOG->getLogs(), 'results', 'index.php?action=adminLog');
+    $TEMPLATE->assign('ccs_page_log', true); 
+} 
 ?>

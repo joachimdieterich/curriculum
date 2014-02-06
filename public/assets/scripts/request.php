@@ -250,50 +250,47 @@ if (isset($_GET['function'])){
                             }
                             break;   
                             
-        case "delete_semester": if (isset($_GET['ajax'])) {
-                                    $semester = new Semester();
-                                    $semester->id = $_GET['semester_id'];
-                                    if ($semester->delete()){ //nur löschen, wenn keine Einschreibungen existieren
-                                        renderDeleteMessage('Lernzeitraum wurde erfolgreich gelöscht.'); //Rendert das Popupfenster
-                                    } else {
-                                        renderDeleteMessage('Lernzeitraum kann nicht gelöscht werden solange Klassen mit dem Lernzeitraum verknüpft sind.'); //Rendert das Popupfenster
+                                                                           
+        case "delete":      if (isset($_GET['ajax'])) {
+                                    $db = $_GET['db'];
+                                    $id = $_GET['id'];
+                                    switch ($db) {
+                                        case "grade": $grade = new Grade();
+                                                      $grade->id  = $id;
+                                                      $ok = $grade->delete();
+                                            break;
+                                        case "group": $group = new Group();
+                                                      $group->id  = $id;
+                                                      $ok = $group->delete();
+                                            break;
+                                        case "role": $role = new Roles();
+                                                     $role->role_id = $id;
+                                                     $ok = $role->delete();
+                                            break;
+                                        case "semester":    $semester = new Semester();
+                                                            $semester->id = $id;
+                                                            $ok = $semester->delete();
+                                            break;
+                                        case "subject": $subject = new Subject();
+                                                        $subject->id = $id;
+                                                     $ok = $subject->delete();
+                                            break;
+                                        case "user": $user = new User(); 
+                                                     $user->id = $id;
+                                                     $ok = $user->delete();
+                                            break;
+
+                                        default:
+                                            break;
                                     }
+                                    
+                                    if ($ok){
+                                       renderDeleteMessage('Datensatz wurde erfolgreich gelöscht.'); //Rendert das Popupfenster
+                                    } else { 
+                                       renderDeleteMessage('Datensatz konnte nicht gelöscht werden.'); //Rendert das Popupfenster
+                                    }           
                             }
                             break; 
-       
-        case "delete_subject": if (isset($_GET['ajax'])) {
-                                    $subject = new Subject();
-                                    $subject->id = $_GET['subject_id'];
-                                    if ($subject->delete()){
-                                        renderDeleteMessage('Fach wurde erfolgreich gelöscht.'); //Rendert das Popupfenster
-                                    } else {
-                                        renderDeleteMessage('Fach kann nicht gelöscht werden solange Lehrpläne mit dem Fach verknüpft sind.'); //Rendert das Popupfenster
-                                    }
-                            }
-                            break;                    
-         
-        case "deleteGroup": if (isset($_GET['ajax'])) {
-                                    //Überprüfen, ob Schüler in die Lerngruppe eingeschrieben sind.
-                                    $group = new Group();
-                                    $group->id = $_GET['group_id'];
-                                    $group->delete();
-                                    if ($group->delete()){ //nur löschen, wenn keine Schüler eingeschrieben
-                                        renderDeleteMessage('Lerngruppe wurde erfolgreich gelöscht.'); //Rendert das Popupfenster
-                                    } else {
-                                        renderDeleteMessage('Lerngruppe kann nicht gelöscht werden. Es müssen zuerst alle Schüler aus der Lerngruppe ausgeschrieben werden.'); //Rendert das Popupfenster
-                                    }
-                            }
-                            break;
-        case "delete_grade": if (isset($_GET['ajax'])) {
-                                    $grade = new Grade();
-                                    $grade->id = $_GET['grade_id'];
-                                    if ($grade->delete()) {   
-                                        renderDeleteMessage('Klassenstufe wurde erfolgreich gelöscht.'); //Rendert das Popupfenster
-                                    } else {
-                                        renderDeleteMessage('Klassenstufe kann nicht gelöscht werden. Es müssen zuerst alle verknüpften Lehrpläne gelöscht werden.'); //Rendert das Popupfenster
-                                    }
-                            }
-                            break;
         case "deleteFile": if (isset($_GET['ajax'])) {
                                     //Überprüfen, ob Datei verwendet wird sind.
                                     $file = new File();
@@ -305,17 +302,6 @@ if (isset($_GET['function'])){
                                     }
                             }
                             break;
-                            
-        case "deleteUser": if (isset($_GET['ajax'])) {
-                                    $user = new User(); 
-                                    $user->id = $_GET['userID'];
-                                    if ($user->delete()){
-                                        renderDeleteMessage('Benutzer wurde erfolgreich gelöscht.'); //Rendert das Popupfenster
-                                    } else { 
-                                       renderDeleteMessage('Benutzer konnte nicht gelöscht werden.'); //Rendert das Popupfenster
-                                    }           
-                            }
-                            break;                     
         case "expelUser": if (isset($_GET['ajax'])) {
                                     $current_user = new User();
                                     $current_user->id = $_GET['userID'];

@@ -19,7 +19,7 @@
 *                                                                       
 * http://www.gnu.org/copyleft/gpl.html      
 */
-global $CFG, $USER, $PAGE, $TEMPLATE, $LOG;
+global $USER, $PAGE, $TEMPLATE, $LOG;
 
 $PAGE->message[] = null;
   /** Load last accomplished Objectives */

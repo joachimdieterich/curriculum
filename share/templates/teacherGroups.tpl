@@ -56,7 +56,7 @@
             <input type='hidden' name='institution' id='institution' value='{$my_institutions['id'][0]}' /></p>       
         {/if}
         {if isset($new_semester_form)}
-            <p class="formtext "><label>Personen übernehmen?: </label>
+            <p><label>Personen übernehmen?: </label>
                 <input style="vertical-align: text-bottom;" type="checkbox" id="assumeUsers" name="assumeUsers" checked="checked" />
                 Um eine leere Lerngruppe zu erstellen, Haken entfernen.
             </p>  
@@ -104,7 +104,7 @@
                     <td>{$results[res]->creation_time}</td>
                     <td>{$results[res]->creator}</td>
                     <td class="td_options">
-                        <a class="deletebtn floatright" type="button" name="delete" onclick="deleteGroup({$results[res]->id})"></a>
+                        <a class="deletebtn floatright" type="button" name="delete" onclick="del('group',{$results[res]->id})"></a>
                         <a class="calbtn floatright" href="index.php?action=teacherGroups&function=semester&group_id={$results[res]->id}"></a>
                         <a class="editbtn floatright" href="index.php?action=teacherGroups&function=edit&group_id={$results[res]->id}"></a>
                         <a class="groupbtn floatright" href="index.php?action=teacherGroups&function=showUsers&group_id={$results[res]->id}"></a>

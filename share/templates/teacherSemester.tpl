@@ -75,7 +75,7 @@
                     <td>{$semester_list[semester]->creator_username}</td>
                    
                     <td>
-                        <a class="deletebtn floatright" type="button" name="delete" onclick="deleteSemester({$semester_list[semester]->id})"></a>
+                        <a class="deletebtn floatright" type="button" name="delete" onclick="del('semester',{$semester_list[semester]->id})"></a>
                         <a class="editbtn floatright" href="index.php?action=teacherSemester&edit=true&id={$semester_list[semester]->id}"></a>
                         </td>
                 </tr>

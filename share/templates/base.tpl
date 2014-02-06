@@ -44,70 +44,63 @@
     </head>
 
     <body>
-        
         <div id="page" >
-        <div class="{$page_name}">
-            <header id="header" class="border-bottom-radius">
-                 <div class="floatright">
-                    {if $my_username eq ''} Sie sind nicht angemeldet. 
-                 {else} {if $my_role_id != -1}Sie sind als <strong>{$my_username}</strong> ({$my_role_name}) angemeldet. <a href="index.php?action=logout">Logout</a>{/if}
-                 {/if} 
-                 </div>
-                <hgroup >
-                    <img src="{$request_url}assets/images/basic/logo.png" height="40"/><h1><a  href="index.php?action=dashboard">{$app_title}</a></h1>
-                </hgroup>
-                {if $page_message AND isset($page_message[0])} 
-                     <div class="floatright" onclick="showMessagebox();"><img src="{$request_url}assets/images/basic/glyphicons_266_flag.png" height="10" /> {$page_message_count} Meldungen </div>
-                     {/if}
-            </header>    
-            
-                {if $page_name eq 'login'} <!--Kein Menu -->
-                    {else}
-                        {block name=nav}
-                        <div class="floatleft">
-                          {include file='menu.tpl'}
-                        </div>    
-                        {/block}
-                {/if}
-    
-            <div id="main" class="group">
-                <div id="content" class="space-top space-bottom">
-                    {block name=content}
-                    
-                    {/block}
-                   
-                </div> <!-- end #content -->
-                
-                <div id="sidebar">                    
-                    {block name=sidebar}
-                    
-                    {/block}
-               
-                    <!-- Popup -->     
-                    <div id="popup" ></div> 
-                    <!-- end Popup --> 
-                 
-                </div> <!-- end #sidebar -->
-            </div> <!-- end #main -->
-            
-            <!-- Message-Box -->
-            {if $page_message AND isset($page_message[0])} {*wenn [0] gesetzt == nachricht vorhanden, soll die messagebox gezeigt werden*}
-            <div id="messagebox"><!--<p id="messageboxheader">Messagebox</p>-->
-                <div class="messageboxClose" onclick="hideMessagebox();"></div>
-                <div id="messageboxcontent"><div>
-                        
-                    {section name=mes loop=$page_message}<p>{$page_message[mes]}</p>{/section}</div>
-                </div>
-            </div>
-            {/if}
-                <footer id="footer" class="space-top border-top-radius gray-border gray-gradient">
-                    <div> 
-                        {$app_footer}{block name=footer} {/block}
+            <div class="{$page_name}">
+                <header id="header">
+                    <div class="floatright">
+                        {if $my_username eq ''} Sie sind nicht angemeldet. 
+                    {else} {if $my_role_id != -1}Sie sind als <strong>{$my_username}</strong> ({$my_role_name}) angemeldet. <a href="index.php?action=logout">Logout</a>{/if}
+                    {/if}
+
                     </div>
-                </footer>
-        </div>    
-               
-                    
+                    <hgroup>
+                        <img src="{$request_url}assets/images/basic/logo.png"/><h1><a  href="index.php?action=dashboard">{$app_title}</a></h1>
+                    </hgroup>
+                    {if $page_message AND isset($page_message[0])} 
+                        <div class="floatright" onclick="showMessagebox();"><img src="{$request_url}assets/images/basic/glyphicons_266_flag.png" height="10" /> {$page_message_count} Meldungen </div>
+                        {/if}
+                </header>    
+
+                    {if $page_name eq 'login'} <!--Kein Menu -->
+                        {else}
+                            {block name=nav}
+                            <div class="floatleft">
+                            {include file='menu.tpl'}
+                            </div>    
+                            {/block}
+                    {/if}
+
+                <div id="main" class="group">
+                    <div id="content" class="space-top space-bottom">
+                        {block name=content} {/block}
+                    </div> <!-- end #content -->
+
+                    <div id="sidebar">                    
+                        {block name=sidebar} {/block}
+
+                        <!-- Popup -->     
+                        <div id="popup" ></div> 
+                        <!-- end Popup --> 
+
+                    </div> <!-- end #sidebar -->
+                </div> <!-- end #main -->
+
+                <!-- Message-Box -->
+                {if $page_message AND isset($page_message[0])} {*wenn [0] gesetzt == nachricht vorhanden, soll die messagebox gezeigt werden*}
+                <div id="messagebox"><!--<p id="messageboxheader">Messagebox</p>-->
+                    <div class="messageboxClose" onclick="hideMessagebox();"></div>
+                    <div id="messageboxcontent"><div>
+
+                        {section name=mes loop=$page_message}<p>{$page_message[mes]}</p>{/section}</div>
+                    </div>
+                </div>
+                {/if}
+                    <footer id="footer" class="space-top gray-border gray-gradient">
+                        <div> 
+                            {$app_footer}{block name=footer} {/block}
+                        </div>
+                    </footer>
+            </div>                          
         </div> <!-- end #page -->
         
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js">
@@ -133,8 +126,5 @@
             <script src="{$media_url}scripts/libs/dd_belatedpng/dd_belatedpng.js"></script>
             <script>DD_belatedPNG.fix('img, .trans-bg');</script>
         <![endif]--> 
-        
-        
-
     </body>
 </html>

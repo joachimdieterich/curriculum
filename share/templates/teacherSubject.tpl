@@ -68,7 +68,7 @@
                     <td>{$subject_list[subject]->subject_short}</td>
                     <td>{$subject_list[subject]->description}</td>
                     <td class="td_options">
-                        <a class="deletebtn floatright" type="button" name="delete" onclick="deleteSubject({$subject_list[subject]->id})"></a>
+                        <a class="deletebtn floatright" type="button" name="delete" onclick="del('subject',{$subject_list[subject]->id})"></a>
                         <a class="editbtn floatright" href="index.php?action=teacherSubject&edit=true&id={$subject_list[subject]->id}"></a>
                         </td>
                 </tr>

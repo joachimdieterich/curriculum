@@ -148,9 +148,9 @@ function deleteSubject() {
     }
 }
 
-function deleteGrade() {
-    if (confirm("Klassenstufe wirklich löschen?")) {   //Meldung "Wirklich löschen?"
-        var url = "assets/scripts/request.php?ajax=on&function=delete_grade&grade_id="+ arguments[0]; 
+function del() {
+    if (confirm("Datensatz wirklich löschen?")) {   //Meldung "Wirklich löschen?"
+        var url = "assets/scripts/request.php?ajax=on&function=delete&db="+arguments[0]+"&id="+ arguments[1]; 
         
         req = XMLobject();
         if(req) {        
@@ -191,21 +191,7 @@ function expelUser() {
     }
 }
 
-function js_deleteUser() {
-    if (confirm("Benutzer wirklich löschen?")) {   //Meldung "Wirklich löschen?"
-        var url = "assets/scripts/request.php?ajax=on&function=deleteUser&userID="+ arguments[0]; 
-        
-        req = XMLobject();
-        if(req) {        
-            req.onreadystatechange = answer; //Dialog mit Meldungen zeigen
-            req.open("GET", url, true);
-            req.send(null);
-        }
-    }
-}
-
 function order() {
-    
     if (arguments.length == 4) {
         var url = "assets/scripts/request.php?ajax=on&function=order&order="+ arguments[0] +"&order_id="+ arguments[1]+"&curriculum_id="+ arguments[2] +"&terminal_objective_id="+ arguments[3];
     } else if (arguments.length == 5) {
@@ -220,6 +206,7 @@ function order() {
         req.send(null);
     }
 }
+
 function editObjective() {
     if (arguments.length == 2) {
        var url = "assets/scripts/request.php?ajax=on&function=editterminalObjective&curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1] +"&enablingObjectiveID=notset"; 

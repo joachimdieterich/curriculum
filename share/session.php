@@ -40,7 +40,6 @@ if (isset($_SESSION['USER'])){                                                  
     foreach($USER as $key => $value){
     $TEMPLATE->assign('my_'.$key, $value);
     }
-    /*$TEMPLATE->assign('my_username',           $USER->username);*/
 
      /** Store $USER in Session */
     $_SESSION['USER'] =  new stdClass();
@@ -59,8 +58,6 @@ function session_reload_user(){
     foreach($USER as $key => $value){
     $TEMPLATE->assign('my_'.$key, $value);
     }
-    
-    /*$TEMPLATE->assign('my_username',           $USER->username);*/
 }
 /**
  * Setup global $PAGE  
