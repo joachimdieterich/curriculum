@@ -88,7 +88,6 @@
                                         {if $ena->order_id neq '1'}
                                             <input class="leftbtn" type="button" name="orderleft" onclick="order('down', {$ena->order_id},{$con->curriculum_id},{$ter->id},{$ena->id})" />
                                         {/if}
-                                        
                                 {/if}   
 
                                 </div>
