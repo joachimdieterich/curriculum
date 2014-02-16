@@ -203,11 +203,11 @@ button {  width: auto; overflow: auto; }
 .printbtn, .editbtn, .deletebtn, .addbtn, .addmaterialbtn, .leftbtn, .rightbtn, .upbtn, .downbtn, 
 .addsolutionbtn, .okbtn, .notbtn, .groupbtn, .calbtn, .listbtn, .downloadbtn{ 
     background-repeat: no-repeat;
-    background-size: 16px 16px;
+    background-size: contain;
     background-color: transparent;
     margin-right: 5px;    
-    height: 16px;
-    width: 16px;
+    height: 16px ;
+    width: 16px ;
     border: none;
     cursor: pointer;
     vertical-align: middle; 
@@ -532,6 +532,8 @@ footer > div {
     height: 20px;
     color: #FFF;
 }
+
+
 
 /*option spalte braucht feste Breite damit die Symbole nebeinander dargestellt werden*/
 .td_options {

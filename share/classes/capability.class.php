@@ -129,7 +129,7 @@ class Capability {
     public function getCapabilities($role_id){
         $query = sprintf("SELECT DISTINCT ca.*, rca.permission, rca.creator_id FROM capabilities AS ca
                             LEFT JOIN role_capabilities as rca ON rca.capability = ca.capability
-                            AND rca.role_id = '%s'",
+                            AND rca.role_id = '%s' ORDER BY ca.capability",
                                 mysql_real_escape_string($role_id));
         $result = mysql_query($query); 
         if ($result && mysql_num_rows($result)){

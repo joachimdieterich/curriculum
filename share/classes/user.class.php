@@ -186,7 +186,7 @@ class User {
                                             mysql_real_escape_string($this->state_id));
         $state_result = mysql_query($query);
         if ($state_result && mysql_num_rows($state_result)){
-        $this->state           = mysql_result($state_result, 0, "state");
+        $this->state             = mysql_result($state_result, 0, "state");
         }
         $this->country_id        = mysql_result($result, 0, "country_id");
         $query = sprintf("SELECT de FROM countries WHERE id = '%s'",
@@ -199,7 +199,7 @@ class User {
         $this->last_login        = mysql_result($result, 0, "last_login"); 
         $this->role_id           = mysql_result($result, 0, "role_id"); 
         $this->avatar            = mysql_result($result, 0, "avatar");
-        $this->creation_time = mysql_result($result, 0, "creation_time");
+        $this->creation_time     = mysql_result($result, 0, "creation_time");
         $this->creator_id        = mysql_result($result, 0, "creator_id");
         $role = new Roles(); 
         $role->role_id = $this->role_id;
@@ -327,7 +327,7 @@ class User {
      */
     public function delete(){
         global $USER; 
-        if(checkCapabilities('user:updateDelete', $USER->role_id)){
+        if(checkCapabilities('user:delete', $USER->role_id)){
             $query = sprintf("DELETE FROM users WHERE id='%s'",
                                     mysql_real_escape_string($this->id));
             if (mysql_query($query)) {
@@ -445,7 +445,7 @@ class User {
                         $this->creation_time     = $row['creation_time'];
                         $this->creator_id        = $row['creator_id'];
                         $role = new Roles(); 
-                        $role->role_id = $this->role_id;
+                        $role->role_id           = $this->role_id;
                         $role->load(); 
                         $this->role_name         = $role->role;
                         $users[] = clone $this; 
@@ -495,11 +495,11 @@ class User {
             return mysql_query($query);
             } else {            
                 $query = sprintf("INSERT INTO groups_enrolments 
-                                                    (status,group_id,user_id,creator_id) 
-                                                    VALUES (1,'%s','%s','%s')",
-                                                    mysql_real_escape_string($group_id), 
-                                                    mysql_real_escape_string($this->id),
-                                                    mysql_real_escape_string($creator_id)); //Status 1 == eingeschrieben
+                                                (status,group_id,user_id,creator_id) 
+                                                VALUES (1,'%s','%s','%s')",
+                                                mysql_real_escape_string($group_id), 
+                                                mysql_real_escape_string($this->id),
+                                                mysql_real_escape_string($creator_id)); //Status 1 == eingeschrieben
             return mysql_query($query);
             }
         }

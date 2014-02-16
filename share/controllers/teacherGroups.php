@@ -189,7 +189,10 @@ if($_POST){
                                            
         default:
             break;
+            
+            
     }
+    session_reload_user(); // --> get the changes immediately 
     $TEMPLATE->assign('page_message', $PAGE->message);    
 }
 /*******************************************************************************

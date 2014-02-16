@@ -43,7 +43,7 @@
                         <OPTION label="{$states[s_id]->state}" value="{$states[s_id]->id}" {if $states[s_id]->id eq $state_id}selected{/if}>{$states[s_id]->state}</OPTION>
                     {/section}   
                 </select></p>
-            <p><label>Avatar: </label><input class="inputform" id="myfile" name='avatar' value={$avatar} readonly onclick="tb_show('','assets/scripts/libs/modal-upload/uploadframe.php?userID={$my_id}&context=avatar&target=myfile&format=1&multiple=false&placeValuesBeforeTB_=savedValues&TB_iframe=true&width=710&modal=true')" href="#" class="thickbox"/>
+            <p><label>Avatar: </label><input class="inputform" id="myfile" name='avatar' value={$avatar} readonly onclick="tb_show('','assets/scripts/libs/modal-upload/uploadframe.php?userID={$my_id}&last_login={$my_last_login}&context=avatar&target=myfile&format=1&multiple=false&placeValuesBeforeTB_=savedValues&TB_iframe=true&width=710&modal=true')" href="#" class="thickbox"/>
             <p><label>Rolle/Gruppe: </label><input class="hidden" name='role_id' value={$role_id} readonly="readonly"/><input class="inputform" name='role_name' value={$role_name} readonly="readonly"/></p>
             <p><label>&nbsp;</label><input type='submit' value='Änderungen speichern' /></p>
         </form>
