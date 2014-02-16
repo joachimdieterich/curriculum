@@ -62,11 +62,14 @@ $returnFormat = (isset($_GET['format']) && trim($_GET['format'] != '') ? $_GET['
 $multipleFiles = (isset($_GET['multiple']) && trim($_GET['multiple'] != '') ? $_GET['multiple'] : $POST_multipleFiles); //Mehrfachauswahl möglich?
 
 
-$context = (isset($_GET['context']) && trim($_GET['context'] != '') ? $_GET['context'] : $_POST['context']);
-$user_id =  (isset($_GET['userID']) && trim($_GET['userID'] != '') ? $_GET['userID'] : $_POST['userID']);
+$context =      (isset($_GET['context']) && trim($_GET['context'] != '') ? $_GET['context'] : $_POST['context']);
+$user_id =      (isset($_GET['userID']) && trim($_GET['userID'] != '') ? $_GET['userID'] : $_POST['userID']);
+$last_login =   (isset($_GET['last_login']) && trim($_GET['last_login'] != '') ? $_GET['last_login'] : $_POST['last_login']); //security check to prevent access without login
+
 $upload_user = new User(); 
 $upload_user->load('id', $user_id); //Load upload User data
 
+if ($upload_user->last_login != $last_login){die("forbidden");}//security check to prevent access without login
 
 if (isset($context)) {
         $contextPath = $file->getContextPath($context);

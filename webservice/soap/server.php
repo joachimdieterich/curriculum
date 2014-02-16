@@ -28,7 +28,9 @@ global $CFG;
 
 include($configfile);
 include_once 'server.class.php';    //Server class file
+
 include_once''.dirname(__FILE__).'/../../share/function.php'; //damit funktionen verfügbar sind.
+include_once''.dirname(__FILE__).'/../../share/include.php'; //damit funktionen verfügbar sind.
 // Database config
 $conn = mysql_connect($CFG->db_host,$CFG->db_user,$CFG->db_password)
 	or die('Error connecting to mysql');

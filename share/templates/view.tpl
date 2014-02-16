@@ -71,7 +71,7 @@
 
                                     {/if}
                                     {if !isset($showaddObjectives)}
-                                        <a href="assets/scripts/libs/modal-upload/uploadframe.php?userID={$my_id}&context=userView&curID={$con->curriculum_id}&terID={$ter->id}&enaID={$ena->id}&placeValuesBeforeTB_=savedValues&TB_iframe=true&width=700&modal=true" class="thickbox">
+                                        <a href="assets/scripts/libs/modal-upload/uploadframe.php?userID={$my_id}&last_login={$my_last_login}&context=userView&curID={$con->curriculum_id}&terID={$ter->id}&enaID={$ena->id}&placeValuesBeforeTB_=savedValues&TB_iframe=true&width=700&modal=true" class="thickbox">
                                         <input class="addsolutionbtn floatright" type="button" name="addMaterial"></a>
                                         {if $solutions != false}
                                             {foreach key=solID item=sol from=$solutions}
@@ -103,7 +103,7 @@
                                 <div class="boxfooter border-bottom-radius">
                                     {if isset($showaddObjectives)}
                                         
-                                        <a href="assets/scripts/libs/modal-upload/uploadframe.php?userID={$my_id}&context=curriculum&curID={$con->curriculum_id}&terID={$ter->id}&enaID={$ena->id}&placeValuesBeforeTB_=savedValues&TB_iframe=true&width=700&modal=true" class="thickbox">
+                                        <a href="assets/scripts/libs/modal-upload/uploadframe.php?userID={$my_id}&last_login={$my_last_login}&context=curriculum&curID={$con->curriculum_id}&terID={$ter->id}&enaID={$ena->id}&placeValuesBeforeTB_=savedValues&TB_iframe=true&width=700&modal=true" class="thickbox">
                                         <input class="addmaterialbtn floatright" type="button" name="addMaterial"></a>
                                         <input class="editbtn floatright" type="button" name="editMaterial" onclick="editMaterial({$con->curriculum_id},{$ter->id},{$ena->id})">
                                     {/if}  

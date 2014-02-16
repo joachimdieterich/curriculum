@@ -159,18 +159,16 @@ class Server {
      * @return array 
      */
     function get_Curriculum($username){
-        $institution = new Institution(); 
-        $institution_id = $institution->getInstitutionByUserName($username); //
-
         $query = sprintf("SELECT cu.curriculum, cu.id, cu.grade_id, gp.id AS group_id, gp.groups, fl.filename 
                 FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp, files AS fl
                 WHERE cu.id = ce.curriculum_id 
                 AND ce.status = 1 
                 AND gp.id = ce.group_id 
-                AND gp.institution_id = '%s'
+                AND gp.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE user_id = 
+                                            (SELECT id FROM users WHERE username = '%s'))
                 AND cu.icon_id = fl.id
                 ORDER BY gp.groups, cu.curriculum ASC",
-                mysql_real_escape_string($institution_id));
+                mysql_real_escape_string($username));
 
         $result = mysql_query($query);
 

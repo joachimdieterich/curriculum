@@ -30,14 +30,22 @@
         <script type='text/javascript'>
 	document.getElementById('role').focus();
 	</script>
-        
+        <p>&nbsp;</p>
         {*capabilities*}
+        {assign var="section" value=""}
         {foreach key=id from=$capabilities item=aktuelle_id}
-        <p><label>{$capabilities[$id]['name']}</label>
-            <input type="radio" name="{$capabilities[$id]['capability']}" value="true"{if $capabilities[$id]['permission'] eq 1}checked{/if}> erlaubt
-            <input type="radio" name="{$capabilities[$id]['capability']}" value="false"{if $capabilities[$id]['permission'] eq 0}checked{/if}> nicht erlaubt
-        <p style=font-size:80%;">{$capabilities[$id]['capability']}</p></br>
-        </p>
+            {assign var="colon" value=$capabilities[$id]['capability']|strpos:":"}
+            {if $section neq $capabilities[$id]['capability']|substr:0:$colon}
+                <div class="contentheader">{$capabilities[$id]['capability']|substr:0:$colon}</div> 
+            {/if}
+             <p><label>{$capabilities[$id]['name']}</label>
+                <input type="radio" name="{$capabilities[$id]['capability']}" value="true"{if $capabilities[$id]['permission'] eq 1}checked{/if}> erlaubt
+                <input type="radio" name="{$capabilities[$id]['capability']}" value="false"{if $capabilities[$id]['permission'] eq 0}checked{/if}> nicht erlaubt
+            <p style=font-size:80%;">{$capabilities[$id]['capability']}</p></br>
+            </p>   
+            {assign var="section" value=$capabilities[$id]['capability']|substr:0:$colon}
+            
+            
         {/foreach}
         
         {*End capabilities*}
