@@ -127,12 +127,16 @@ if ($_POST){
                                             } else {/* validation successful */
                                                 writeConfigFile($cfg_file, '$CFG->app_title', $_POST["app_title"]);
                                                 $CFG->app_title = $_POST["app_title"];
-
+                                                if (file_exists('/usr/bin/mysql')){ $path_to_mysqlfile = '/usr/bin/mysql';} 
+                                                if (file_exists('/var/lib/mysql')){ $path_to_mysqlfile = '/var/lib/mysql';} 
+                                                if (file_exists('/chroot/mysql')){ $path_to_mysqlfile = '/chroot/mysql';} 
+                                                if (file_exists('/applications/mamp/library/bin/mysql')){ $path_to_mysqlfile = '/applications/mamp/library/bin/mysql';} 
                                                 if (isset($_POST['demo'])){     // install demo or new db
-                                                    system( '/usr/bin/mysql -u' . $CFG->db_user . ' -p' . escapeshellarg( $CFG->db_password ) . ' -h' . $CFG->db_host . ' ' . $CFG->db_name . ' <' . $CFG->demo_root . 'demo.sql', $fp);
+                                                    
+                                                    system( $path_to_mysqlfile.' -u' . $CFG->db_user . ' -p' . escapeshellarg( $CFG->db_password ) . ' -h' . $CFG->db_host . ' ' . $CFG->db_name . ' <' . $CFG->demo_root . 'demo.sql', $fp);
                                                     $TEMPLATE->assign('demo', true);
                                                 } else {
-                                                    system( '/usr/bin/mysql -u' . $CFG->db_user . ' -p' . escapeshellarg( $CFG->db_password ) . ' -h' . $CFG->db_host . ' ' . $CFG->db_name . ' <' . $CFG->demo_root . 'install.sql', $fp);  
+                                                    system( $path_to_mysqlfile.' -u' . $CFG->db_user . ' -p' . escapeshellarg( $CFG->db_password ) . ' -h' . $CFG->db_host . ' ' . $CFG->db_name . ' <' . $CFG->demo_root . 'install.sql', $fp);  
                                                     $TEMPLATE->assign('demo', false);
                                                 }    
                                                 if ($fp==0) {
@@ -140,7 +144,7 @@ if ($_POST){
                                                     load_Countries();
                                                     $TEMPLATE->assign('step', 3);
                                                 } else {
-                                                    $PAGE->message[] = "Bei der Einrichtung der Datenbank ist ein Fehler aufgetreten.";
+                                                    $PAGE->message[] = "Bei der Einrichtung der Datenbank ist ein Fehler aufgetreten. Stellen Sie sicher, dass mysql unter /user/bin/ vorhanden ist. ";
                                                     $TEMPLATE->assign('step', 2);
                                                 }
                                                 //end import sql
