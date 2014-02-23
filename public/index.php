@@ -103,6 +103,9 @@ if (isset($USER)){
     $TEMPLATE->assign('ccs_menu_InstitutionConfig', checkCapabilities('menu:readInstitutionConfig', $USER->role_id));
     
     $TEMPLATE->assign('ccs_menu_logmenu',           checkCapabilities('menu:readlogmenu', $USER->role_id));
+} else { // for installation 
+    $TEMPLATE->assign('ccs_menu_Institution',       NULL);
+    $TEMPLATE->assign('ccs_menu_logmenu',           NULL);
 }
 
 /**
