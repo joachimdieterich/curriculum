@@ -24,7 +24,9 @@
 require_once(dirname(__FILE__).'../../setup.php');
 require_once(dirname(__FILE__).'../../include.php');
 
-global $TEMPLATE, $CFG, $PAGE;
+global $TEMPLATE, $CFG, $PAGE, $USER;
+$USER = new User();
+
 $TEMPLATE->assign('db_host', '127.0.0.1');
 $TEMPLATE->assign('install', 'Curriculum installieren');
 $TEMPLATE->assign('my_username', '');
@@ -203,6 +205,7 @@ if ($_POST){
                                                 $new_institution->state_id      = $_POST['state'];
                                                 $new_institution->creator_id    = -1; // system user
                                                 $new_institution->confirmed     = 1;  // institution is confirmed
+                                                
                                                 if ($_POST['demo']){
                                                     $institution_id = $new_institution->update(TRUE);
                                                 } else {
@@ -252,12 +255,14 @@ if ($_POST){
                                                 $new_user->email      = $_POST['email'];
                                                 $new_user->postalcode = $_POST['postalcode'];
                                                 $new_user->city       = $_POST['city'];
-                                                $new_user->state_id      = $_POST['state'];
-                                                $new_user->country_id    = $_POST['country'];
+                                                $new_user->state_id   = $_POST['state'];
+                                                $new_user->country_id = $_POST['country'];
                                                 $new_user->password   = $_POST['password'];
                                                 $new_user->role_id    = 1;
                                                 $new_user->creator_id = -1;
+                                                $USER = $new_user;  //important! $USER is required in user.class.php
                                                 $user_id = $new_user->add();
+                                               
                                                 $new_user->creator_id           = $user_id;
                                                 $new_user->enroleToInstitution($_POST['institution_id']);
                                                 /*$user_config = new Config(); //wird über user->add gemacht
