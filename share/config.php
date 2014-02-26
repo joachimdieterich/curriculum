@@ -22,7 +22,7 @@
 * http://www.gnu.org/copyleft/gpl.html      
 */
  
-global $CFG;  
+global $CFG, $DB;  
 $CFG = new stdClass();
 
 /**
@@ -40,8 +40,10 @@ $CFG->db_host='127.0.0.1';
 $CFG->db_user='root';
 $CFG->db_password ='root';
 $CFG->db_name='install';
-$CFG->db_dns                    = 'mysql:host=localhost;dbname='.$CFG->db_name; // PDO DSN http://www.php.net/manual/en/ref.pdo-mysql.php
 
+$DB = new PDO('mysql:host='.$CFG->db_host.';dbname='.$CFG->db_name.';charset=utf8', $CFG->db_user, $CFG->db_password ); // PDO DSN http://www.php.net/manual/en/ref.pdo-mysql.php
+$DB->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$DB->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 /**
  * Paths - do not edit
  */

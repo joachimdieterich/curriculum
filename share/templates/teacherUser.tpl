@@ -92,7 +92,7 @@
            
         <p>&nbsp;</p>
         <p><h3>Passwort zurücksetzen</h3></p>
-        <p>Neues Passwort für markierte Benutzer festlegen</p>
+        <p>Neues Passwort für markierte Benutzer festlegen. Passwort muss mind. 6 Zeichen lang sein. </p>
         <p><label>Neues Passwort:</label><input class="inputform" type='password' name='password' id='password'  {if isset($password)}value='{$password}'{/if}/>
             <input type='submit' name='resetPassword' value='Passwort zurücksetzen' /></p>
         {validate_msg field='password'}
@@ -128,18 +128,18 @@
             
             {* display results *}    
             {section name=res loop=$groups_list}
-                <tr class="contenttablerow" id="row{$groups_list[res].id}" onclick="checkrow({$groups_list[res].id})">
-                    <td><input class="invisible" type="checkbox" id="{$groups_list[res].id}" name="id[]" value={$groups_list[res].id} /></td>
+                <tr class="contenttablerow" id="row{$groups_list[res]->id}" onclick="checkrow({$groups_list[res]->id})">
+                    <td><input class="invisible" type="checkbox" id="{$groups_list[res]->id}" name="id[]" value={$groups_list[res]->id} /></td>
                     {*<td>{$results[res]->id}</td>*}
-                    <td>{$groups_list[res].groups}</td>
-                    <td>{$groups_list[res].grade}</td>
-                    <td>{$groups_list[res].description}</td>
-                    <td>{$groups_list[res].semester}</td>
-                    <td>{$groups_list[res].institution}</td>
-                    <td>{$groups_list[res].creation_time}</td>
-                    <td>{$groups_list[res].creator}</td>
+                    <td>{$groups_list[res]->groups}</td>
+                    <td>{$groups_list[res]->grade}</td>
+                    <td>{$groups_list[res]->description}</td>
+                    <td>{$groups_list[res]->semester}</td>
+                    <td>{$groups_list[res]->institution}</td>
+                    <td>{$groups_list[res]->creation_time}</td>
+                    <td>{$groups_list[res]->creator}</td>
                     <td class="td_options">
-                        <a class="deletebtn floatright" type="button" name="delete" onclick="expelUser({$groups_list[res].id},{$selectedUserID})"></a>
+                        <a class="deletebtn floatright" type="button" name="delete" onclick="expelUser({$groups_list[res]->id},{$selectedUserID})"></a>
                         </td>
                 </tr>
             {/section}            
@@ -172,17 +172,17 @@
             
             {* display results *}    
             {section name=res loop=$resultscurriculumList}
-                <tr {if isset($selectedID) AND $selectedID eq $resultscurriculumList[res].id} class="activecontenttablerow"{/if} class="contenttablerow" id="row{$resultscurriculumList[res].id}" name="row{$resultscurriculumList[res].id}" onclick="checkrow({$resultscurriculumList[res].id})">
-                    <td><input class="invisible" type="checkbox" id="{$resultscurriculumList[res].id}" name="id[]" value={$resultscurriculumList[res].id} {if isset($selectedID) AND $selectedID eq $resultscurriculumList[res].id} checked{/if}/></td>
+                <tr {if isset($selectedID) AND $selectedID eq $resultscurriculumList[res]->id} class="activecontenttablerow"{/if} class="contenttablerow" id="row{$resultscurriculumList[res]->id}" name="row{$resultscurriculumList[res]->id}" onclick="checkrow({$resultscurriculumList[res]->id})">
+                    <td><input class="invisible" type="checkbox" id="{$resultscurriculumList[res]->id}" name="id[]" value={$resultscurriculumList[res]->id} {if isset($selectedID) AND $selectedID eq $resultscurriculumList[res]->id} checked{/if}/></td>
                     {*<td>{$results[res]->id}</td>*}
-                    <td><img class="icon_tiny icon_listposition" src="{$subjects_url}{$resultscurriculumList[res].filename}"></td>
-                    <td>{$resultscurriculumList[res].curriculum}</td>
-                    <td>{$resultscurriculumList[res].description}</td>
-                    <td>{$resultscurriculumList[res].subject}</td>
-                    <td>{$resultscurriculumList[res].grade}</td>
-                    <td>{$resultscurriculumList[res].schooltype}</td>
-                    <td>{$resultscurriculumList[res].state}</td>
-                    <td>{$resultscurriculumList[res].de}</td>
+                    <td><img class="icon_tiny icon_listposition" src="{$subjects_url}{$resultscurriculumList[res]->filename}"></td>
+                    <td>{$resultscurriculumList[res]->curriculum}</td>
+                    <td>{$resultscurriculumList[res]->description}</td>
+                    <td>{$resultscurriculumList[res]->subject}</td>
+                    <td>{$resultscurriculumList[res]->grade}</td>
+                    <td>{$resultscurriculumList[res]->schooltype}</td>
+                    <td>{$resultscurriculumList[res]->state}</td>
+                    <td>{$resultscurriculumList[res]->de}</td>
                 </tr>
             {/section}
             

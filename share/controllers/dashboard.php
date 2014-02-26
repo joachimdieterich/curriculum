@@ -21,7 +21,6 @@
 */
 global $USER, $PAGE, $TEMPLATE, $LOG;
 
-$PAGE->message[] = null;
   /** Load last accomplished Objectives */
   include ('./../lang/'.$USER->language.'/dashboard.php');                      //includes language pack
   $acc_objectives = new EnablingObjective();
@@ -51,7 +50,7 @@ $PAGE->message[] = null;
                     $PAGE->message[] = 'Es wurden '.$new_users.' neue Benutzer registriert. Sie können diese unter "Freigabe" bestätigen';
                 }
                 if ($cronjob->check_cronjob()){
-                $TEMPLATE->assign('cronjob', 'Es wurde zuletzt am '.$cronjob->creation_time.' geprüft, ob Ziele abgelaufen sind.<br>');//Check last Cronjob execution
+                    $TEMPLATE->assign('cronjob', 'Es wurde zuletzt am '.$cronjob->creation_time.' geprüft, ob Ziele abgelaufen sind.<br>');//Check last Cronjob execution
                 }
           break;
     case 2:     //  Tutor
@@ -62,10 +61,10 @@ $PAGE->message[] = null;
                 /** Load new registered users */
                 $new_users = $USER->getNewUsers('institution', $USER->institutions);
                 if ($new_users){
-                $PAGE->message[] = 'Es wurden '.$new_users.' neue Benutzer registriert. Sie können diese unter "Freigabe" bestätigen';
+                    $PAGE->message[] = 'Es wurden '.$new_users.' neue Benutzer registriert. Sie können diese unter "Freigabe" bestätigen';                
                 }
                 if ($cronjob->check_cronjob()){
-                $TEMPLATE->assign('cronjob', 'Es wurde zuletzt am '.$cronjob->creation_time.' geprüft, ob Ziele abgelaufen sind.<br>');//Check last Cronjob execution
+                    $TEMPLATE->assign('cronjob', 'Es wurde zuletzt am '.$cronjob->creation_time.' geprüft, ob Ziele abgelaufen sind.<br>');//Check last Cronjob execution
                 }
           break;
 

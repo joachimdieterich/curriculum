@@ -160,71 +160,67 @@ class User {
      * @param string $user_value 
      */
     public function load($key, $user_value) {
+        
         if ($key == 'username'){
-            $query = sprintf("SELECT * FROM users WHERE UPPER(%s) = UPPER('%s')",
-                                            mysql_real_escape_string($key),
-                                            mysql_real_escape_string($user_value));
-            $result = mysql_query($query);
+            $db = DB::prepare('SELECT * FROM users WHERE UPPER('.$key.') = UPPER(?)');
+            $db->execute(array($user_value));
+            $result = $db->fetchObject();
         } else {
-            $query = sprintf("SELECT * FROM users WHERE %s = '%s'",
-                                            mysql_real_escape_string($key),
-                                            mysql_real_escape_string($user_value));
-            $result = mysql_query($query); 
+            $db = DB::prepare('SELECT * FROM users WHERE '.$key.' = ?');
+            $db->execute(array($user_value));
+            $result = $db->fetchObject();
         }
         
-        $this->id                = mysql_result($result, 0, "id");
-        $this->username          = mysql_result($result, 0, "username");
-        $this->password          = mysql_result($result, 0, "password");
-        $this->firstname         = mysql_result($result, 0, "firstname"); 
-        $this->lastname          = mysql_result($result, 0, "lastname"); 
-        $this->email             = mysql_result($result, 0, "email"); 
-        $this->postalcode        = mysql_result($result, 0, "postalcode"); 
-        $this->city              = mysql_result($result, 0, "city"); 
-        $this->state_id          = mysql_result($result, 0, "state_id"); 
-        
-        $query = sprintf("SELECT state FROM state WHERE id = '%s'",
-                                            mysql_real_escape_string($this->state_id));
-        $state_result = mysql_query($query);
-        if ($state_result && mysql_num_rows($state_result)){
-        $this->state             = mysql_result($state_result, 0, "state");
+        $this->id                = $result->id;
+        $this->username          = $result->username;
+        $this->password          = $result->password;
+        $this->firstname         = $result->firstname; 
+        $this->lastname          = $result->lastname; 
+        $this->email             = $result->email; 
+        $this->postalcode        = $result->postalcode; 
+        $this->city              = $result->city; 
+        $this->state_id          = $result->state_id; 
+
+        $db = DB::prepare('SELECT state FROM state WHERE id = ?');
+        $db->execute(array($this->state_id));
+        $state_result = $db->fetchObject();
+        if ($state_result->state){
+        $this->state             = $state_result->state;
         }
-        $this->country_id        = mysql_result($result, 0, "country_id");
-        $query = sprintf("SELECT de FROM countries WHERE id = '%s'",
-                                            mysql_real_escape_string($this->country_id));
-        $country_result = mysql_query($query);
-        if ($country_result && mysql_num_rows($country_result)){
-        $this->country           = mysql_result($country_result, 0, "de");
+        $this->country_id        = $result->country_id;
+        $db = DB::prepare('SELECT de FROM countries WHERE id = ?');
+        $db->execute(array($this->country_id));
+        $country_result = $db->fetchObject();
+        if ($country_result->de){
+        $this->country           = $country_result->de;
         }
-        $this->confirmed         = mysql_result($result, 0, "confirmed"); 
-        $this->last_login        = mysql_result($result, 0, "last_login"); 
-        $this->role_id           = mysql_result($result, 0, "role_id"); 
-        $this->avatar            = mysql_result($result, 0, "avatar");
-        $this->creation_time     = mysql_result($result, 0, "creation_time");
-        $this->creator_id        = mysql_result($result, 0, "creator_id");
+        $this->confirmed         = $result->confirmed; 
+        $this->last_login        = $result->last_login; 
+        $this->role_id           = $result->role_id; 
+        $this->avatar            = $result->avatar;
+        $this->creation_time     = $result->creation_time;
+        $this->creator_id        = $result->creator_id;
         $role = new Roles(); 
-        $role->role_id = $this->role_id;
+        $role->role_id           = $this->role_id;
         $role->load(); 
         $this->role_name         = $role->role;
         $this->enrolments        = $this->get_user_enrolments();
-        
-        $query = sprintf("SELECT * FROM config_user WHERE user_id = '%s'",
-                                            mysql_real_escape_string($this->id));
-        $result = mysql_query($query);
-        $this->language          = mysql_result($result, 0, "user_language");
-        $this->acc_days          = mysql_result($result, 0, "user_acc_days");
-        $this->paginator_limit   = mysql_result($result, 0, "user_paginator_limit");
+        $db = DB::prepare('SELECT * FROM config_user WHERE user_id = ?');
+        $db->execute(array($this->id));
+        $result = $db->fetchObject();
+        $this->language          = $result->user_language;
+        $this->acc_days          = $result->user_acc_days;
+        $this->paginator_limit   = $result->user_paginator_limit;
         
         /**
          * ! users can be enroled in more than one institution 
          */
-        $query = sprintf("SELECT id, institution
-                      FROM institution
-                      WHERE id = ANY (SELECT institution_id FROM institution_enrolments WHERE user_id = '%s')",
-                            mysql_real_escape_string($this->id));
-        $result = mysql_query($query);
-        if ($result && mysql_num_rows($result)){
-            $this->institutions['id'][] = mysql_result($result, 0, "id");
-            $this->institutions['institution'][] = mysql_result($result, 0, "institution");
+        $db = DB::prepare('SELECT id, institution FROM institution WHERE id = ANY (SELECT institution_id FROM institution_enrolments WHERE user_id = ?)');
+        $db->execute(array($this->id));
+        $result = $db->fetchObject();
+        if ($result){
+            $this->institutions['id'][] = $result->id;
+            $this->institutions['institution'][] = $result->institution;
         } else {
             $this->institutions[] = NULL;
         }    
@@ -243,39 +239,24 @@ class User {
     public function add(){ 
         global $USER; 
         if (checkCapabilities('user:addUser', $USER->role_id)){
-            $query = sprintf("SELECT COUNT(id) FROM users WHERE UPPER(username) = UPPER('%s')",
-                                                mysql_real_escape_string($this->username));
-            $result = mysql_query($query);
-            list($count) = mysql_fetch_row($result);
-            if($count >= 1) { 
+            $db = DB::prepare('SELECT COUNT(id) FROM users WHERE UPPER(username) = UPPER(?)');
+            $db->execute(array($this->username));
+            if($db->fetchColumn() >= 1) { 
                     return false;
             } else {
-                $query = sprintf("INSERT INTO users (username,firstname,lastname,email,postalcode,city,state_id,country_id,avatar,password,role_id,confirmed,creator_id) 
-                                                VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')",
-                                                    mysql_real_escape_string($this->username),
-                                                    mysql_real_escape_string($this->firstname),
-                                                    mysql_real_escape_string($this->lastname),
-                                                    mysql_real_escape_string($this->email),
-                                                    mysql_real_escape_string($this->postalcode),
-                                                    mysql_real_escape_string($this->city),
-                                                    mysql_real_escape_string($this->state_id),
-                                                    mysql_real_escape_string($this->country_id),
-                                                    mysql_real_escape_string($this->avatar),
-                                                    mysql_real_escape_string(md5($this->password)),
-                                                    mysql_real_escape_string($this->role_id),
-                                                    mysql_real_escape_string($this->confirmed), 
-                                                    mysql_real_escape_string($this->creator_id)); 
-                if (mysql_query($query)){
-                        $query = sprintf("SELECT id from users WHERE UPPER(username) = UPPER('%s')",
-                                            mysql_real_escape_string($this->username));
-                        $result = mysql_query($query);
-                        $this->id = mysql_result($result, 0, "id"); 
+                $db = DB::prepare('INSERT INTO users (username,firstname,lastname,email,postalcode,city,state_id,country_id,avatar,password,role_id,confirmed,creator_id) 
+                                                VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)');
+                if($db->execute(array($this->username,$this->firstname,$this->lastname,$this->email,$this->postalcode,$this->city,$this->state_id,$this->country_id,$this->avatar,md5($this->password),$this->role_id,$this->confirmed,$this->creator_id))){
+                    $db = DB::prepare('SELECT id from users WHERE UPPER(username) = UPPER(?)');
+                    $db->execute(array($this->username));
+                    $result = $db->fetchObject();
+                    $this->id = $result->id;
+                    
+                    $user_config = new Config();    //generate Config
+                    $user_config->add('user', $this->id);
 
-                        $user_config = new Config();    //generate Config
-                        $user_config->add('user', $this->id);
-
-                        return $this->id;          
-                } else { 
+                        return $this->id; 
+                } else {
                     return false; 
                 }
             }
@@ -288,35 +269,31 @@ class User {
      */
     public function update() {
         global $USER; 
-        if(checkCapabilities('user:updateUser', $USER->role_id) OR $_POST['userID'] == $USER->id){ //2. Bedingung für Änderung des eigenen Profils 
-            $query = sprintf("UPDATE users 
-                    SET username = '%s', firstname = '%s', lastname = '%s', email = '%s', postalcode = '%s', city = '%s', state_id = '%s', country_id = '%s', avatar = '%s' 
-                    WHERE id = '%s'",
-                                    mysql_real_escape_string($this->username),
-                                    mysql_real_escape_string($this->firstname),
-                                    mysql_real_escape_string($this->lastname),
-                                    mysql_real_escape_string($this->email),
-                                    mysql_real_escape_string($this->postalcode),
-                                    mysql_real_escape_string($this->city),
-                                    mysql_real_escape_string($this->state_id),
-                                    mysql_real_escape_string($this->country_id),
-                                    mysql_real_escape_string($this->avatar),
-                                    mysql_real_escape_string($this->id));
-            return mysql_query($query);
+        if(checkCapabilities('user:updateUser', $USER->role_id) OR $_POST['userID'] == $USER->id){ //2. Bedingung für Änderung des eigenen Profils  
+            $db = DB::prepare('UPDATE users 
+                    SET username = ?, 
+                        firstname = ?, 
+                        lastname = ?, 
+                        email = ?, 
+                        postalcode = ?, 
+                        city = ?, 
+                        state_id = ?, 
+                        country_id = ?,
+                        avatar = ? 
+                    WHERE id = ?');
+            return $db->execute(array($this->username,$this->firstname,$this->lastname,$this->email,$this->postalcode,$this->city,$this->state_id,$this->country_id,$this->avatar,$this->id));    
         }
     }
     
     public function updateRole(){
         global $USER; 
         if(checkCapabilities('user:updateRole', $USER->role_id)){
-            $query = sprintf("UPDATE users SET role_id = '%s' WHERE id='%s'",
-                                    mysql_real_escape_string($this->role_id), 
-                                    mysql_real_escape_string($this->id));
-            if (mysql_query($query)){
+            $db = DB::prepare('UPDATE users SET role_id = ? WHERE id= ?');
+            if ($db->execute(array($this->role_id, $this->id))){
                 $role = new Roles(); 
-                $role->role_id = $this->role_id;
+                $role->role_id      = $this->role_id;
                 $role->load(); 
-                $this->role_name         = $role->role;
+                $this->role_name    = $role->role;
                 return true;
             } else {return false;}
         }
@@ -328,15 +305,12 @@ class User {
     public function delete(){
         global $USER; 
         if(checkCapabilities('user:delete', $USER->role_id)){
-            $query = sprintf("DELETE FROM users WHERE id='%s'",
-                                    mysql_real_escape_string($this->id));
-            if (mysql_query($query)) {
+            $db = DB::prepare('DELETE FROM users WHERE id = ?');
+            if ($db->execute(array($this->id))) {
                 $user_config = new Config(); 
                 $user_config->delete('user', $this->id);
-                $query = sprintf("DELETE FROM institution_enrolments WHERE user_id = '%s'", 
-                                mysql_real_escape_string($this->id));
-                mysql_query($query);
-                return true; 
+                $db = DB::prepare('DELETE FROM institution_enrolments WHERE user_id = ?');
+                return $db->execute(array($this->id));
             } else {return false;} 
         }   
     }
@@ -348,10 +322,8 @@ class User {
     public function changePassword($password) {
         global $USER; 
         if(checkCapabilities('user:changePassword', $USER->role_id)){
-            $query = sprintf("UPDATE users SET password = '%s', confirmed = 1 WHERE UPPER(username) = UPPER('%s')",
-                                                mysql_real_escape_string($password),
-                                                mysql_real_escape_string($this->username));
-            return mysql_query($query);
+            $db = DB::prepare('UPDATE users SET password = ?, confirmed = 1 WHERE UPPER(username) = UPPER(?)');
+            return $db->execute(array($password, $this->username));
         }
     }
   
@@ -364,16 +336,14 @@ class User {
     public function getPassword($table='users', $format='md5') {
         global $USER; 
         if(checkCapabilities('user:getPassword', $USER->role_id)){
-            $query = sprintf("SELECT password FROM %s WHERE UPPER(username) = UPPER('%s')",
-                                                mysql_real_escape_string($table),
-                                                mysql_real_escape_string($this->username));
-            $result = mysql_query($query);
-
+            $db = DB::prepare('SELECT password FROM ? WHERE UPPER(username) = UPPER(?)');
+            $db->execute(array($table, $this->username));
+            $result = $db->fetchObject();
             if ($format == 'md5'){
-                return  md5(mysql_result($result, 0, "password"));
+                return  md5($result->password);
             } else {
-                return  mysql_result($result, 0, "password");
-            }  
+                return  $result->password;
+            }      
         }
     }
     
@@ -385,26 +355,23 @@ class User {
         global $USER; 
         if(checkCapabilities('user:getGroupMembers', $USER->role_id)){
             switch ($dependency) {
-                case 'group':   $query = sprintf("SELECT user_id FROM groups_enrolments WHERE group_id = '%s'",
-                                                        mysql_real_escape_string($id));
-                                $result =  mysql_query($query);  
-                                while($row = mysql_fetch_assoc($result)) { 
-                                    $group_members[] =  $row["user_id"];
+                case 'group':   $db = DB::prepare('SELECT user_id FROM groups_enrolments WHERE group_id = ?');
+                                $db->execute(array($id)); 
+                                while($result = $db->fetchObject()) { 
+                                    $group_members[] =  $result->user_id;
                                 }
                                 return $group_members;
 
                     break;
 
-                default:        $query = sprintf("SELECT DISTINCT usr.id, usr.firstname, usr.lastname, usr.username 
+                default:        $db = DB::prepare('SELECT DISTINCT usr.id, usr.firstname, usr.lastname, usr.username 
                                         FROM users AS usr, groups_enrolments AS cle 
-                                        WHERE cle.group_id IN (SELECT DISTINCT group_id FROM groups_enrolments WHERE user_id = '%s')
-                                        AND usr.id = cle.user_id", 
-                                        mysql_real_escape_string($this->id)); //??? WHERE Mailempfang erlaubt!!!
-                                $result = mysql_query($query);
-
-                                while($row = mysql_fetch_assoc($result)) { 
-                                        $class_members["id"][]     = $row["id"];  //??? besser als object realisieren
-                                        $class_members["user"][]   = $row['firstname'].' '.$row['lastname'].' ('.$row['username'].')'; 
+                                        WHERE cle.group_id IN (SELECT DISTINCT group_id FROM groups_enrolments WHERE user_id = ?)
+                                        AND usr.id = cle.user_id');//??? WHERE Mailempfang erlaubt!!!
+                                $db->execute(array($this->id));
+                                while($result = $db->fetchObject()) { 
+                                        $class_members["id"][]     = $result->id;  //??? besser als object realisieren
+                                        $class_members["user"][]   = $result->firstname.' '.$result->lastname.' ('.$result->username.')'; 
                                 } 
                                 if (isset($class_members)){
                                     return $class_members;
@@ -421,35 +388,34 @@ class User {
     public function newUsers($id){
         global $USER; 
         if(checkCapabilities('user:listNewUsers', $USER->role_id)){
-            $query = sprintf("SELECT usr.*, rol.role 
+            $db = DB::prepare('SELECT usr.*, rol.role 
                         FROM users AS usr, user_roles AS rol
-                        WHERE usr.role_id = rol.role_id AND usr.creation_time > (SELECT last_login FROM users WHERE id = '%s')",
-                                mysql_real_escape_string($id));
-            $result = mysql_query($query);
-            if ($result && mysql_num_rows($result)){
-                while($row = mysql_fetch_assoc($result)) { 
-                        $this->id                = $row['id'];
-                        $this->username          = $row['username'];
-                        $this->password          = $row['password'];
-                        $this->firstname         = $row['firstname']; 
-                        $this->lastname          = $row['lastname']; 
-                        $this->email             = $row['email']; 
-                        $this->postalcode        = $row['postalcode'];
-                        $this->city              = $row['city']; 
-                        $this->state_id          = $row['state_id'];
-                        $this->country_id        = $row['country_id'];
-                        $this->confirmed         = $row['confirmed']; 
-                        $this->last_login        = $row['last_login']; 
-                        $this->role_id           = $row['role_id']; 
-                        $this->avatar            = $row['avatar'];
-                        $this->creation_time     = $row['creation_time'];
-                        $this->creator_id        = $row['creator_id'];
-                        $role = new Roles(); 
-                        $role->role_id           = $this->role_id;
-                        $role->load(); 
-                        $this->role_name         = $role->role;
-                        $users[] = clone $this; 
-                }
+                        WHERE usr.role_id = rol.role_id AND usr.creation_time > (SELECT last_login FROM users WHERE id = ?)');
+            $db->execute(array($id));
+                while($result = $db->fetchObject()) { 
+                $this->id                = $result->id;
+                $this->username          = $result->username;
+                $this->password          = $result->password;
+                $this->firstname         = $result->firstname; 
+                $this->lastname          = $result->lastname; 
+                $this->email             = $result->email; 
+                $this->postalcode        = $result->postalcode;
+                $this->city              = $result->city; 
+                $this->state_id          = $result->state_id;
+                $this->country_id        = $result->country_id;
+                $this->confirmed         = $result->confirmed; 
+                $this->last_login        = $result->last_login; 
+                $this->role_id           = $result->role_id; 
+                $this->avatar            = $result->avatar;
+                $this->creation_time     = $result->creation_time;
+                $this->creator_id        = $result->creator_id;
+                $role = new Roles(); 
+                $role->role_id           = $this->role_id;
+                $role->load(); 
+                $this->role_name         = $role->role;
+                $users[] = clone $this; 
+            }
+            if (isset($users)){
                 return $users;          
             } else {
                 return false;   
@@ -465,13 +431,10 @@ class User {
     public function enroleToInstitution($institution_id){
         global $USER; 
         if(checkCapabilities('user:enroleToInstitution', $USER->role_id)){
-            $query = sprintf("INSERT INTO institution_enrolments (institution_id,user_id,creator_id) 
-                                        VALUES('%s','%s','%s')",
-                                        mysql_real_escape_string($institution_id), 
-                                        mysql_real_escape_string($this->id),
-                                        mysql_real_escape_string($this->creator_id));
-            return mysql_query($query);
-        }
+            $db = DB::prepare('INSERT INTO institution_enrolments (institution_id,user_id,creator_id) 
+                                        VALUES(?,?,?)');
+            return $db->execute(array($institution_id, $this->id, $this->creator_id));
+        } 
     }
     
     /**
@@ -483,24 +446,15 @@ class User {
     public function enroleToGroup($group_id, $creator_id){
         global $USER; 
         if(checkCapabilities('user:enroleToGroup', $USER->role_id)){
-            $query = sprintf("SELECT count(id) FROM groups_enrolments WHERE group_id = '%s' AND user_id = '%s'",
-                                                mysql_real_escape_string($group_id), 
-                                                mysql_real_escape_string($this->id));
-            $result = mysql_query($query);
-            list($count) = mysql_fetch_row($result);
-            if($count > 0) { 
-            $query = sprintf("UPDATE groups_enrolments SET status = 1 WHERE group_id = '%s' AND user_id = '%s'",
-                                                mysql_real_escape_string($group_id), 
-                                                mysql_real_escape_string($this->id)); //Status 1 == eingeschrieben
-            return mysql_query($query);
-            } else {            
-                $query = sprintf("INSERT INTO groups_enrolments 
-                                                (status,group_id,user_id,creator_id) 
-                                                VALUES (1,'%s','%s','%s')",
-                                                mysql_real_escape_string($group_id), 
-                                                mysql_real_escape_string($this->id),
-                                                mysql_real_escape_string($creator_id)); //Status 1 == eingeschrieben
-            return mysql_query($query);
+            $db = DB::prepare('SELECT count(id) FROM groups_enrolments WHERE group_id = ? AND user_id = ?');
+            $db->execute(array($group_id, $this->id));
+            if($db->fetchColumn() > 0) {
+                $db = DB::prepare('UPDATE groups_enrolments SET status = 1 WHERE group_id = ? AND user_id = ?');//Status 1 == enroled
+                return $db->execute(array($group_id, $this->id));
+            } else { 
+                $db = DB::prepare('INSERT INTO groups_enrolments (status,group_id,user_id,creator_id) 
+                                                VALUES (1,?,?,?)');//Status 1 == enroled
+                return $db->execute(array($group_id, $this->id, $creator_id));
             }
         }
     }
@@ -513,16 +467,11 @@ class User {
     public function expelFromGroup($group_id){
         global $USER; 
         if(checkCapabilities('user:expelFromGroup', $USER->role_id)){
-            $query = sprintf("SELECT COUNT(id) FROM groups_enrolments WHERE group_id = '%s' AND user_id = '%s'",
-                                                mysql_real_escape_string($group_id), 
-                                                mysql_real_escape_string($this->id));
-            $result = mysql_query($query);
-            list($count) = mysql_fetch_row($result);
-            if($count >= 1) {
-            $query = sprintf("UPDATE groups_enrolments SET status = 0, expel_time = NOW()
-                                    WHERE user_id ='%s'", 
-                                    mysql_real_escape_string($this->id)); //Status 0 Benutzer wurde ausgeschrieben
-            return mysql_query($query);
+            $db = DB::prepare('SELECT COUNT(id) FROM groups_enrolments WHERE group_id = ? AND user_id = ?');
+            $db->execute(array($group_id, $this->id));
+            if($db->fetchColumn() >= 1) {
+                $db = DB::prepare('UPDATE groups_enrolments SET status = 0, expel_time = NOW() WHERE user_id =?'); // Status 0 expelled
+                return $db->execute(array($this->id));
             }
         }
     }
@@ -606,54 +555,35 @@ class User {
         if(checkCapabilities('user:userList', $USER->role_id)){
             switch ($dependency) {
                 case 'institution': if ($this->role_id == 3 OR $this->role_id == 2){ // 3 = Rolle Lehrer, 2 = Tutor //Bedingung Lehrer müssen in die Klasse eingeschrieben sein, oder sie erstellt haben    
-                                    $query = sprintf("SELECT us.id
-                                                    FROM users AS us
-                                                    WHERE us.id = ANY (SELECT user_id FROM institution_enrolments 
-                                                                    WHERE institution_id = ANY (SELECT institution_id FROM institution_enrolments 
-                                                                                                WHERE user_id = '%s'))      
-                                                    AND us.creator_id = '%s'
-                                                    ORDER by us.lastname",
-                                                    mysql_real_escape_string($this->id),
-                                                    mysql_real_escape_string($this->id)); 
+                                        $db = DB::prepare('SELECT us.id FROM users AS us WHERE us.id = ANY (SELECT user_id FROM institution_enrolments 
+                                                        WHERE institution_id = ANY (SELECT institution_id FROM institution_enrolments 
+                                                        WHERE user_id = ?)) AND us.creator_id = ? ORDER by us.lastname');
+                                        $db->execute(array($this->id, $this->id));
                                     } else if ($this->role_id == 4 OR $this->role_id == 1){ //4 = Institutions-Admin, 1= sidewide Admin
-                                            $query = sprintf("SELECT us.id
-                                                    FROM users AS us
-                                                    WHERE us.id = ANY (SELECT user_id FROM institution_enrolments 
-                                                                    WHERE institution_id = ANY (SELECT institution_id FROM institution_enrolments 
-                                                                    WHERE user_id = '%s'))                                         
-                                                    ORDER by us.lastname",
-                                                    mysql_real_escape_string($this->id)); //Bisher werden nur Benutzer der Institution angezeigt, an der man angemeldet ist. ???Side-Admin muss aber alle sehen können 
+                                        $db = DB::prepare('SELECT us.id FROM users AS us WHERE us.id = ANY (SELECT user_id FROM institution_enrolments 
+                                                        WHERE institution_id = ANY (SELECT institution_id FROM institution_enrolments 
+                                                        WHERE user_id = ?)) ORDER by us.lastname');
+                                        $db->execute(array($this->id)); //Bisher werden nur Benutzer der Institution angezeigt, an der man angemeldet ist. ???Side-Admin muss aber alle sehen können 
                                     }
-
                                     break;
-                case 'group':       $query = sprintf("SELECT us.id
-                                                    FROM users AS us, groups_enrolments AS gre
-                                                    WHERE gre.user_id = us.id 
-                                                    AND gre.status = 1
-                                                    AND gre.group_id = '%s'",
-                                                    mysql_real_escape_string($id));
+                case 'group':       $db = DB::prepare('SELECT us.id FROM users AS us, groups_enrolments AS gre 
+                                                        WHERE gre.user_id = us.id AND gre.status = 1 AND gre.group_id = ?');
+                                    $db->execute(array($id)); 
                                     break;
-                case 'confirm':     if ($this->role_id = 1){
-                                        $query = "SELECT us.id 
-                                        FROM users AS us
-                                        WHERE us.confirmed = 4";
+                case 'confirm':     if ($this->role_id == 1){
+                                        $db = DB::prepare('SELECT us.id FROM users AS us WHERE us.confirmed = 4');
+                                        $db->execute();
                                     } else {
-                                        $query = sprintf("SELECT us.id 
-                                        FROM users AS us, institution_enrolments AS ine
-                                        WHERE us.confirmed = 4
-                                        AND ine.user_id = us.id
-                                        AND ine.institution_id IN ('%s')",
-                                        mysql_real_escape_string(implode(',',$this->institutions["id"])));
+                                        $db = DB::prepare('SELECT us.id FROM users AS us, institution_enrolments AS ine
+                                        WHERE us.confirmed = 4 AND ine.user_id = us.id AND ine.institution_id IN (?)');
+                                        $db->execute(array(implode(',',$this->institutions["id"])));
                                     }
-                break; 
-                default:
-                    break;
+                                    break; 
+                default:            break;
             }
-
-
-            $result = mysql_query($query);
-            while($row = mysql_fetch_assoc($result)) { 
-                    $this->load('id', $row['id']);
+            
+            while($result = $db->fetchObject()) { 
+                    $this->load('id', $result->id);
                     $users[] = clone $this;
             } 
             if (isset($users)){
@@ -669,11 +599,8 @@ class User {
     public function resetPassword() {
         global $USER;
         if(checkCapabilities('user:resetPassword', $USER->role_id)){
-            $query = sprintf("UPDATE users SET password = '%s', confirmed = '%s' WHERE id='%s'",
-                                                    mysql_real_escape_string(md5($this->password)),
-                                                    mysql_real_escape_string($this->confirmed),
-                                                    mysql_real_escape_string($this->id));
-            return mysql_query($query);       
+            $db = DB::prepare('UPDATE users SET password = ?, confirmed = ? WHERE id=?');
+            return $db->execute(array(md5($this->password), $this->confirmed, $this->id));       
         }
     }
     /**
@@ -682,29 +609,24 @@ class User {
      * @return array of object | boolean 
      */
     public function getCurricula() {
-        $query = sprintf("SELECT cu.id, cu.curriculum, cu.description, fl.filename, su.subject, 
-                                        gr.grade, sc.schooltype, st.state, co.de
-                                            FROM curriculum AS cu, groups_enrolments AS ce, curriculum_enrolments AS cure,
-                                            files AS fl, subjects AS su, grade AS gr, schooltype AS sc,
-                                            state AS st, countries AS co
-                                            WHERE cu.icon_id = fl.id
-                                            AND cu.id = cure.curriculum_id
-                                            AND cure.group_id = ce.group_id
-                                            AND cu.grade_id = gr.grade
-                                            AND cu.subject_id = su.id
-                                            AND cu.schooltype_id = sc.id
-                                            AND cu.state_id = st.id
-                                            AND cu.country_id = co.id
-                                            AND ce.user_id = '%s'
-                                            AND ce.status = 1
-                                            ORDER BY cu.curriculum ASC",
-                                            mysql_real_escape_string($this->id));    
-                $result = mysql_query($query);
-                if ($result && mysql_num_rows($result)) {
-                    while($row = mysql_fetch_assoc($result)) { 
-                            $curricula[] = $row; 
-                    }         
-                }
+        $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, fl.filename, su.subject, gr.grade, sc.schooltype, st.state, co.de
+                            FROM curriculum AS cu, groups_enrolments AS ce, curriculum_enrolments AS cure, files AS fl, subjects AS su, grade AS gr, schooltype AS sc, state AS st, countries AS co
+                            WHERE cu.icon_id = fl.id
+                            AND cu.id = cure.curriculum_id
+                            AND cure.group_id = ce.group_id
+                            AND cu.grade_id = gr.grade
+                            AND cu.subject_id = su.id
+                            AND cu.schooltype_id = sc.id
+                            AND cu.state_id = st.id
+                            AND cu.country_id = co.id
+                            AND ce.user_id = ?
+                            AND ce.status = 1
+                            ORDER BY cu.curriculum ASC');
+        $db->execute(array($this->id));
+
+        while($result = $db->fetchObject()) { 
+                $curricula[] = $result; 
+        }         
         if (isset($curricula)) {
             return $curricula;      
         } else {
@@ -717,23 +639,20 @@ class User {
      * @return array of object | boolean 
      */
     public function getGroups(){
-       $query = sprintf("SELECT gp.*, gr.grade, yr.semester, ins.institution, us.username AS creator
+       $db = DB::prepare('SELECT gp.*, gr.grade, yr.semester, ins.institution, us.username AS creator
                             FROM groups AS gp, groups_enrolments AS cle, grade AS gr, semester AS yr, institution AS ins, users AS us
-                            WHERE cle.user_id = '%s'
+                            WHERE cle.user_id = ?
                             AND cle.group_id = gp.id
                             AND gr.id = gp.grade_id 
                             AND yr.id = gp.semester_id 
                             AND ins.id = gp.institution_id 
                             AND us.id = gp.creator_id
-                            AND cle.status = 1",
-                            mysql_real_escape_string($this->id));
+                            AND cle.status = 1');
+       $db->execute(array($this->id)); 
 
-                $result = mysql_query($query);
-                if ($result && mysql_num_rows($result)) {
-                    while($row = mysql_fetch_assoc($result)) { 
-                            $groups[] = $row;
-                    } 
-                }
+       while($result = $db->fetchObject()) {  
+                    $groups[] = $result;
+            } 
        if (isset($groups)) {
             return $groups;      
         } else {
@@ -795,35 +714,27 @@ class User {
         global $USER;
         if(checkCapabilities('user:getUsers', $USER->role_id)){
             switch ($dependency) {
-                case 'course': $query = sprintf("SELECT DISTINCT us.*          
-                                                    FROM users AS us
+                case 'course':  $db = DB::prepare('SELECT DISTINCT us.* FROM users AS us
                                                     INNER JOIN groups_enrolments AS gr ON us.id = gr.user_id 
-                                                    AND gr.group_id = ANY (SELECT group_id FROM curriculum_enrolments WHERE curriculum_id = '%s' AND status = 1 )
-                                                    AND gr.group_id = ANY (SELECT id FROM groups 
-                                                                            WHERE institution_id = ANY (SELECT institution_id FROM institution_enrolments 
-                                                                                                            WHERE user_id = '%s'))                                                       
-                                                    ORDER by us.lastname",
-                                                    mysql_real_escape_string($id),                
-                                                    mysql_real_escape_string($this->id),
-                                                    mysql_real_escape_string($this->id));
+                                                    AND gr.group_id = ANY (SELECT group_id FROM curriculum_enrolments WHERE curriculum_id = ? AND status = 1 )
+                                                    AND gr.group_id = ANY (SELECT id FROM groups WHERE institution_id = ANY 
+                                                    (SELECT institution_id FROM institution_enrolments WHERE user_id = ?))                                                       
+                                                    ORDER by us.lastname');
+                                $db->execute(array($id, $this->id)); 
+  
+                                while($result = $db->fetchObject()) {  
+                                        $this->id           = $result->id;
+                                        $this->load('id', $this->id);
+                                        $users[] = clone $this; 
+                                }
+                                break;
 
-                                    $result = mysql_query($query);
-                                    if ($result && mysql_num_rows($result)) {
-                                        while($row = mysql_fetch_assoc($result)) { 
-                                            $this->id           = $row['id'];
-                                            $this->load('id', $this->id);
-                                            $users[] = clone $this; 
-                                        }
-                                    }
-                    break;
-
-                default:
-                    break;
+                default:        break;
             }
 
-                if (isset($users)) {
-                    return $users; 
-                } else {return false;}
+            if (isset($users)) {
+                return $users; 
+            } else {return false;}
         }
    }
    
@@ -837,27 +748,25 @@ class User {
        global $USER;
        if(checkCapabilities('user:getNewUsers', $USER->role_id)){
             switch ($dependency) {
-                case null:   $query   = sprintf("SELECT COUNT(id) FROM users WHERE confirmed = 4");
-                                $result  = mysql_query($query);
-                                $amount_of_new_user = mysql_fetch_array($result);
-                                if ($amount_of_new_user[0]){
-                                    return $amount_of_new_user[0];
-                                } else {
-                                    return false; 
-                                }
+            case null:  $db = DB::prepare('SELECT COUNT(id) FROM users WHERE confirmed = 4');
+                        $db->execute();
+                        $count = $db->fetchColumn();
+                        if ($count > 0){
+                            return $count;
+                        } else {
+                            return false; 
+                        }
                     break;
-                case 'institution': $query = sprintf("SELECT COUNT(usr.id) FROM users AS usr, institution_enrolments AS ine
-                                        WHERE usr.confirmed = 4
-                                        AND usr.id = ine.user_id
-                                        AND ine.institution_id IN ('%s')",
-                                        mysql_real_escape_string(implode(',',$this->institutions["id"])));
-                                $result  = mysql_query($query);
-                                $amount_of_new_user = mysql_fetch_array($result);
-                                if ($amount_of_new_user[0]){
-                                    return $amount_of_new_user[0];
-                                } else {
-                                    return false; 
-                                }
+            case 'institution': 
+                        $db = DB::prepare('SELECT COUNT(usr.id) FROM users AS usr, institution_enrolments AS ine
+                                        WHERE usr.confirmed = 4 AND usr.id = ine.user_id AND ine.institution_id IN (?)');
+                        $db->execute(array(implode(',',$this->institutions["id"])));
+                        $count = $db->fetchColumn();
+                        if ($count > 0){
+                            return $count;
+                        } else {
+                            return false; 
+                        }
                     break;
                 default:
                     break;
@@ -870,13 +779,10 @@ class User {
     * @return boolean 
     */
    public function checkLoginData(){
-        $query   = sprintf("SELECT COUNT(id) FROM users WHERE UPPER(username) = UPPER('%s') AND password='%s'",
-                                    mysql_real_escape_string($this->username),
-                                    mysql_real_escape_string($this->password));
-        $result  = mysql_query($query);
-        $user_exists = mysql_fetch_array($result);
-        if ($user_exists[0]){
-
+        $db = DB::prepare('SELECT COUNT(id) FROM users WHERE UPPER(username) = UPPER(?) AND password=?');
+        $db->execute(array($this->username, $this->password));
+        $count = $db->fetchColumn();
+        if ($count > 0){
             return true;
         } else {
             return false; 
@@ -888,10 +794,9 @@ class User {
     * @return boolean
     */
    public function setLastLogin(){
-       $query   = sprintf("UPDATE users SET last_login = NOW() WHERE UPPER(username) = UPPER('%s') AND password = '%s'",
-                                    mysql_real_escape_string($this->username),
-                                    mysql_real_escape_string($this->password));
-       return mysql_query($query);
+        $db = DB::prepare('UPDATE users SET last_login = NOW() WHERE UPPER(username) = UPPER(?) AND password = ?');
+        $db->execute(array($this->username, $this->password));
+        return $db->execute(array($this->username, $this->password));
    }
    
    /**
@@ -899,12 +804,12 @@ class User {
     * @return int
     */
    public function getConfirmed(){
-       $query   = sprintf("SELECT confirmed FROM users WHERE UPPER(username) = UPPER('%s') AND password='%s'",
-                                    mysql_real_escape_string($this->username),
-                                    mysql_real_escape_string($this->password));
-       $result  = mysql_query($query);
-       $this->confirmed = mysql_result($result, 0, "confirmed");
-       return $this->confirmed;
+        $db = DB::prepare('SELECT confirmed FROM users WHERE UPPER(username) = UPPER(?) AND password=?');
+        $db->execute(array($this->username, $this->password));
+        
+        $result  = $db->fetchObject();
+        $this->confirmed = $result->confirmed;
+        return $this->confirmed;
    }
    
    /**
@@ -914,36 +819,32 @@ class User {
     */
    public function confirmUser($user_id){
        global $USER;
-       if(checkCapabilities('user:confirmUser', $USER->role_id)){
-            $query = sprintf("UPDATE users SET confirmed = 1 WHERE id = '%s'",
-                                        mysql_real_escape_string($user_id)); //confirmed 1 == freigeben
-            return mysql_query($query);
+       if(checkCapabilities('user:confirmUser', $USER->role_id)){           
+            $db = DB::prepare('UPDATE users SET confirmed = 1 WHERE id = ?');//confirmed 1 == freigeben
+            return $db->execute(array($user_id));
        }
-       
    }
    
     /**
      * get user enrolments
      * @return string | array
      */
-   public function get_user_enrolments() {
-        $query = sprintf("SELECT cu.curriculum, cu.id, cu.grade_id, gp.id AS group_id, gp.groups, fl.filename 
+   public function get_user_enrolments() { 
+        $db = DB::prepare('SELECT cu.curriculum, cu.id, cu.grade_id, gp.id AS group_id, gp.groups, fl.filename 
                             FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp, files AS fl
                             WHERE cu.id = ce.curriculum_id AND ce.status = 1 AND gp.id = ce.group_id AND cu.icon_id = fl.id
                             AND ce.group_id = ANY (SELECT group_id FROM groups_enrolments 
-                                WHERE user_id = (SELECT id FROM users WHERE username = '%s'))
-                                ORDER BY gp.groups, cu.curriculum ASC",
-                            mysql_real_escape_string($this->username));
+                            WHERE user_id = (SELECT id FROM users WHERE username = ?))
+                            ORDER BY gp.groups, cu.curriculum ASC');
+        $db->execute(array($this->username));
 
-        $result = mysql_query($query);
-
-        while($row = mysql_fetch_assoc($result)) { 
-                $data[] = $row; 
+        while($result = $db->fetchObject()) { 
+                $data[] = $result; 
         } 
-        if (!isset($data)){
-            $data = '';
+        if (isset($data)){
+            $data;
         }
-        return $data;
+        return false; //changed $data = '' to false. ??? not fully tested yet
     }
     
     /**
@@ -953,9 +854,8 @@ class User {
     public function dedicate(){ // only use during install
         global $USER;
         if(checkCapabilities('user:dedicate', $USER->role_id)){
-            $query = sprintf("UPDATE users SET creator_id = '%s'",
-                                                mysql_real_escape_string($this->creator_id));
-            return mysql_query($query);
+            $db = DB::prepare('UPDATE users SET creator_id = ?');
+            return $db->execute(array($this->creator_id));
         }
     }
 }
