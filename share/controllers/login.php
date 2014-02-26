@@ -100,7 +100,6 @@ function loginExistingUser($username, $password, $creation_time = 0){ //if token
         $_SESSION['authenticated'] = true;
         $_SESSION['username'] = $existing_user->username;
         $_SESSION['timein'] = time();
-        
 
         $existing_user->setLastLogin();
         $confirmed = $existing_user->getConfirmed();
@@ -127,7 +126,6 @@ function loginNewUser($username, $password, $creation_time= 0){
         $_SESSION['authenticated'] = true;
         $_SESSION['username'] = $username;
         $_SESSION['timein'] = time();
-        
         
         $authenticate = new Authenticate();
         $authenticate->username = $username;

@@ -29,7 +29,7 @@ switch ($PAGE->login) {
     
     case 'webservice': //wird über die login.php gesetzt
                 //$oldpassword = $USER->getPassword($USER->username, 'authenticate'); // login via webservice: get old password
-                $oldpassword = $USER->getPassword(); // login via webservice: get old password
+                $oldpassword = $USER->getPassword(); // login via webservice: get old password //not tested yet mit PDO
                 $TEMPLATE->assign('oldpassword', $oldpassword);
                 $TEMPLATE->assign('webservice', 'Willkommen auf curriculum! Sie melden sich das erste mal auf curriculum an. Um den automatischen Anmeldevorgang abzuschließen müssen sie  ein Zugangskennwort festlegen. Mit diesem können sie sich in Zukunft auch direkt auf curriculum anmelden ');
         break;

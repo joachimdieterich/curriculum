@@ -35,6 +35,7 @@ include_once('classes/config.class.php');
 include_once('classes/course.class.php'); 
 include_once('classes/country.class.php');
 include_once('classes/curriculum.class.php'); 
+include_once('classes/db.class.php'); 
 include_once('classes/enablingobjective.class.php'); 
 include_once('classes/exception.class.php'); 
 include_once('classes/file.class.php'); 
