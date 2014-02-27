@@ -110,25 +110,14 @@ class Curriculum {
      * @return mixed 
      */
     public function add(){
-        $query = sprintf("SELECT COUNT(id) FROM curriculum WHERE UPPER(curriculum) = UPPER('%s')",
-                                    mysql_real_escape_string($this->curriculum));
-        $result = mysql_query($query);
-        list($count) = mysql_fetch_row($result);
-        if($count >= 1) { 
+        $db = DB::prepare('SELECT COUNT(id) FROM curriculum WHERE UPPER(curriculum) = UPPER(?)');
+        $db->execute(array($this->curriculum));
+        if($db->fetchColumn() >= 1) { 
             return 'Diesen Lehrplan gibt es bereits.';
         } else {
-            $query = sprintf("INSERT INTO curriculum (curriculum, description, grade_id, subject_id, schooltype_id, state_id, icon_id, country_id, creator_id) 
-                                                  VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s')",
-                                            mysql_real_escape_string($this->curriculum),
-                                            mysql_real_escape_string($this->description),
-                                            mysql_real_escape_string($this->grade_id),
-                                            mysql_real_escape_string($this->subject_id),
-                                            mysql_real_escape_string($this->schooltype_id),
-                                            mysql_real_escape_string($this->state_id),
-                                            mysql_real_escape_string($this->icon_id),
-                                            mysql_real_escape_string($this->country_id),
-                                            mysql_real_escape_string($this->creator_id));
-            return mysql_query($query);		
+            $db = DB::prepare('INSERT INTO curriculum (curriculum, description, grade_id, subject_id, schooltype_id, state_id, icon_id, country_id, creator_id) 
+                                                  VALUES (?,?,?,?,?,?,?,?,?)');
+            return $db->execute(array($this->curriculum, $this->description, $this->grade_id, $this->subject_id, $this->schooltype_id, $this->state_id, $this->icon_id, $this->country_id, $this->creator_id));
         }
     }
     
@@ -137,21 +126,11 @@ class Curriculum {
      * @return boolean 
      */
     public function update(){
-        $query = sprintf("UPDATE curriculum 
-                SET curriculum = '%s', description = '%s', grade_id = '%s', subject_id = '%s', 
-                schooltype_id = '%s', state_id = '%s', icon_id = '%s', country_id = '%s', creator_id = '%s'
-                WHERE id = '%s'",
-                mysql_real_escape_string($this->curriculum),
-                mysql_real_escape_string($this->description),
-                mysql_real_escape_string($this->grade_id),
-                mysql_real_escape_string($this->subject_id),
-                mysql_real_escape_string($this->schooltype_id),
-                mysql_real_escape_string($this->state_id),
-                mysql_real_escape_string($this->icon_id),
-                mysql_real_escape_string($this->country_id),
-                mysql_real_escape_string($this->creator_id), 
-                mysql_real_escape_string($this->id));
-        return mysql_query($query);
+        $db = DB::prepare('UPDATE curriculum 
+                SET curriculum = ?, description = ?, grade_id = ?, subject_id = ?, 
+                schooltype_id = ?, state_id = ?, icon_id = ?, country_id = ?, creator_id = ?
+                WHERE id = ?');
+        return $db->execute(array($this->curriculum, $this->description, $this->grade_id, $this->subject_id, $this->schooltype_id, $this->state_id, $this->icon_id, $this->country_id, $this->creator_id ,$this->id));
     }
     
     /**
@@ -159,9 +138,8 @@ class Curriculum {
      * @return mixed 
      */
     public function delete(){
-        $query = sprintf("DELETE FROM curriculum WHERE id='%s'",
-                        mysql_real_escape_string($this->id));
-        return mysql_query($query);
+         $db = DB::prepare('DELETE FROM curriculum WHERE id=?');
+        return $db->execute(array($this->id));
     } 
     
     /**
@@ -170,26 +148,25 @@ class Curriculum {
      * @param type $load_terminal_objectives 
      */
     public function load($load_terminal_objectives = false){
-        $query = sprintf("SELECT cu.*, co.code, su.subject 
+        $db = DB::prepare('SELECT cu.*, co.code, su.subject 
                             FROM curriculum AS cu, countries AS co, subjects AS su 
                             WHERE cu.country_id = co.id 
                             AND cu.subject_id = su.id
-                            AND cu.id='%s'",
-                        mysql_real_escape_string($this->id));
-        $result = mysql_query($query);
-        $row = mysql_fetch_assoc($result);
-        $this->curriculum       = $row["curriculum"];
-        $this->description      = $row["description"];
-        $this->grade_id         = $row["grade_id"];
-        $this->subject_id       = $row["subject_id"];
-        $this->subject          = $row["subject"];
-        $this->schooltype_id    = $row["schooltype_id"];
-        $this->state_id         = $row["state_id"];
-        $this->icon_id          = $row["icon_id"];
-        $this->country_id       = $row["country_id"];
-        $this->language_code    = $row["code"];
-        $this->creation_time    = $row["creation_time"];
-        $this->creator_id       = $row["creator_id"];
+                            AND cu.id=?');
+        $db->execute(array($this->id));
+        $result = $db->fetchObject();
+        $this->curriculum       = $result->curriculum;
+        $this->description      = $result->description;
+        $this->grade_id         = $result->grade_id;
+        $this->subject_id       = $result->subject_id;
+        $this->subject          = $result->subject;
+        $this->schooltype_id    = $result->schooltype_id;
+        $this->state_id         = $result->state_id;
+        $this->icon_id          = $result->icon_id;
+        $this->country_id       = $result->country_id;
+        $this->language_code    = $result->code;
+        $this->creation_time    = $result->creation_time;
+        $this->creator_id       = $result->creator_id;
         if ($load_terminal_objectives){
             $terminal_objectives = new TerminalObjective();
             $this->terminal_objectives = $terminal_objectives->getObjectives('curriculum', $this->id, true);
@@ -204,73 +181,60 @@ class Curriculum {
      */
     public function getCurricula($dependency = null, $id = null){
         switch ($dependency) {
-            case 'group':   $query = sprintf("SELECT cu.id, cu.curriculum, cu.description, fl.filename, su.subject, 
+            case 'group':   $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, fl.filename, su.subject, 
                                             gr.grade, sc.schooltype, st.state, co.de
                                             FROM curriculum AS cu, curriculum_enrolments AS ce, 
                                             files AS fl, subjects AS su, grade AS gr, schooltype AS sc,
                                             state AS st, countries AS co
                                             WHERE cu.id = ce.curriculum_id
-                                            AND cu.icon_id = fl.id
-                                            AND cu.grade_id = gr.id
-                                            AND cu.subject_id = su.id
-                                            AND cu.schooltype_id = sc.id
-                                            AND cu.state_id = st.id
-                                            AND cu.country_id = co.id
-                                            AND ce.group_id = '%s'
-                                            AND ce.status = '1'
-                                            ORDER BY cu.curriculum ASC",
-                                            mysql_real_escape_string($id));    
-                            $result = mysql_query($query);
-                            if ($result && mysql_num_rows($result)) {
-                                while($row = mysql_fetch_assoc($result)) { 
-                                        $curriculum[] = $row; 
-                                }         
-                            }
+                                            AND cu.icon_id = fl.id AND cu.grade_id = gr.id AND cu.subject_id = su.id
+                                            AND cu.schooltype_id = sc.id AND cu.state_id = st.id AND cu.country_id = co.id
+                                            AND ce.group_id = ? AND ce.status = 1
+                                            ORDER BY cu.curriculum ASC');
+                            $db->execute(array($id));
+                            while($result = $db->fetchObject()) { 
+                                    $curriculum[] = $result; 
+                            }         
                 break;
-            case 'creator': $query = sprintf("SELECT cu.id, cu.curriculum, cu.description, gr.grade  
+            case 'creator': $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, gr.grade  
                                                 FROM curriculum AS cu, grade AS gr
-                                                WHERE cu.creator_id = '%s' AND gr.id = cu.grade_id",
-                                                mysql_real_escape_string($id));
-                            $result = mysql_query($query);
-                            while($row = mysql_fetch_assoc($result)) {
-                                        $curriculum[] = $row; 
+                                                WHERE cu.creator_id = ? AND gr.id = cu.grade_id');
+                            $db->execute(array($id));
+                            while($result = $db->fetchObject()) {
+                                        $curriculum[] = $result; 
                             }
                 break; 
-            case 'teacher': $query = sprintf("SELECT cu.id, cu.curriculum, cu.description, gp.groups, gp.id AS gpid, fl.filename
+            /*case 'teacher': $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, gp.groups, gp.id AS gpid, fl.filename
                                             FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp, files AS fl
                                             WHERE cu.id = ce.curriculum_id
                                             AND cu.icon_id = fl.id
                                             AND gp.id = ce.group_id
                                             AND ce.group_id = ANY (SELECT id FROM groups 
                                                                 WHERE institution_id = ANY (SELECT institution_id FROM institution_enrolments 
-                                                                                                WHERE user_id = '%s'))
-                                            ORDER BY gp.groups, cu.curriculum ASC",
-                                            mysql_real_escape_string($id)); 
-                                $result = mysql_query($query);
-                                if ($result && mysql_num_rows($result)){
-                                $counter = 0;
-                                while($row = mysql_fetch_assoc($result)) { 
-                                        $curriculum[$counter]["id"] = $row["id"];
-                                        $curriculum[$counter]["id_clsid"] = $row["id"].'_'.$row["gpid"];
-                                        $curriculum[$counter]["curriculum"] = $row["curriculum"];
-                                        $curriculum[$counter]["description"] = $row["description"];
-                                        $curriculum[$counter]["groups"] = $row["groups"];
-                                        $curriculum[$counter]["filename"] = $row["filename"];
-                                        $curriculum[$counter]["coursename"] = $row["groups"].' | '.$row["curriculum"].' | '.$row["description"]; 
-                                $counter++;
-                                }
-                                }
-                break; 
-            case 'user':    $query = sprintf("SELECT cu.*, co.de, st.state, sc.schooltype, gr.grade, su.subject, fl.filename  
+                                                                                                WHERE user_id = ?))
+                                            ORDER BY gp.groups, cu.curriculum ASC');
+                            $db->execute(array($id));
+                            $counter = 0;
+                            while($result = $db->fetchObject()) { 
+                                    $curriculum[$counter]["id"]         = $result->id;
+                                    $curriculum[$counter]["id_clsid"]   = $result->id.'_'.$result->gpid;
+                                    $curriculum[$counter]["curriculum"] = $result->curriculum;
+                                    $curriculum[$counter]["description"]= $result->description;
+                                    $curriculum[$counter]["groups"]     = $result->groups;
+                                    $curriculum[$counter]["filename"]   = $result->filename;
+                                    $curriculum[$counter]["coursename"] = $result->groups.' | '.$result->curriculum.' | '.$result->description; 
+                            $counter++;
+                            }
+                break; */ //not used
+            case 'user':    $db = DB::prepare('SELECT cu.*, co.de, st.state, sc.schooltype, gr.grade, su.subject, fl.filename  
                                             FROM curriculum AS cu, countries AS co, state AS st, schooltype AS sc, grade AS gr, subjects AS su, files AS fl
                                             WHERE  cu.country_id = co.id AND cu.state_id = st.id 
                                             AND cu.schooltype_id = sc.id AND cu.grade_id = gr.id 
-                                            AND cu.subject_id = su.id AND cu.creator_id = '%s'
-                                            AND cu.icon_id = fl.id",
-                                            mysql_real_escape_string($id));
-                            $result = mysql_query($query);
-                            while($row = mysql_fetch_assoc($result)) { 
-                                $curriculum[] = $row; //result Data wird an setPaginator vergeben
+                                            AND cu.subject_id = su.id AND cu.creator_id = ?
+                                            AND cu.icon_id = fl.id');
+                            $db->execute(array($id));
+                            while($result = $db->fetchObject()) {
+                                $curriculum[] = $result; //result Data wird an setPaginator vergeben
                             } 
                 break; 
             default:    
@@ -287,13 +251,9 @@ class Curriculum {
     * @return boolean 
     */
    public function getCurriculumEnrolments(){
-       $query = sprintf("SELECT id 
-                            FROM curriculum_enrolments
-                            WHERE curriculum_id = '%s' AND status = 1",
-                    mysql_real_escape_string($this->id));
-       $result = mysql_query($query);
-       list($count) = mysql_fetch_row($result);
-       if($count >= 1) { return true;} else {return false;}
+       $db = DB::prepare('SELECT id FROM curriculum_enrolments WHERE curriculum_id = ? AND status = 1');
+       $db->execute(array($this->id));
+       if($db->fetchColumn() >= 1) { return true;} else {return false;}
    }
    
    /**
@@ -301,12 +261,10 @@ class Curriculum {
     * @return boolean
     */
     public function dedicate(){ // only use during install
-        $query = sprintf("UPDATE curriculum SET creator_id = '%s'",
-                                            mysql_real_escape_string($this->creator_id));
-        if (mysql_query($query)){
-            $query = sprintf("UPDATE curriculum_enrolments SET creator_id = '%s'",
-                                            mysql_real_escape_string($this->creator_id));
-            return mysql_query($query);
+        $db = DB::prepare('UPDATE curriculum SET creator_id = ?');
+        if ($db->execute(array($this->creator_id))){
+            DB::prepare('UPDATE curriculum_enrolments SET creator_id = ?');
+            return $db->execute(array($this->creator_id));
         }
     }
 }

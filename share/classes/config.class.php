@@ -153,43 +153,40 @@ class Config {
         }
         switch ($dependency) {
             case 'institution': $this->institution_id  = implode(",", $id);
+                                $db = DB::prepare('SELECT * FROM config_institution WHERE institution_id IN (?)'); 
+                                $db->execute(array($this->institution_id));
+                                $result = $db->fetchObject(); 
+                                $this->institution_id                    = $result->institution_id;
+                                $this->institution_filepath              = $result->institution_filepath;
+                                $this->institution_paginator_limit       = $result->institution_paginator_limit;
+                                $this->institution_standard_role         = $result->institution_standard_role;
+                                $this->institution_standard_country      = $result->institution_standard_country;
+                                $this->institution_standard_state        = $result->institution_standard_state;
+                                $this->institution_csv_size              = $result->institution_csv_size;
+                                $this->institution_avatar_size           = $result->institution_avatar_size;
+                                $this->institution_material_size         = $result->institution_material_size;
+                                $this->institution_acc_days              = $result->institution_acc_days;
+                                $this->institution_language              = $result->institution_language;
+                                $this->institution_timeout               = $result->institution_timeout;
                                 
-                                $query = sprintf("SELECT * FROM config_institution
-                                                    WHERE institution_id IN ('%s')",
-                                                    mysql_real_escape_string($this->institution_id));
-                                $result = mysql_query($query);
-                                $this->institution_id                    = mysql_result($result, 0, "institution_id");
-                                $this->institution_filepath              = mysql_result($result, 0, "institution_filepath");
-                                $this->institution_paginator_limit       = mysql_result($result, 0, "institution_paginator_limit");
-                                $this->institution_standard_role         = mysql_result($result, 0, "institution_standard_role");
-                                $this->institution_standard_country      = mysql_result($result, 0, "institution_standard_country");
-                                $this->institution_standard_state        = mysql_result($result, 0, "institution_standard_state");
-                                $this->institution_csv_size              = mysql_result($result, 0, "institution_csv_size");
-                                $this->institution_avatar_size           = mysql_result($result, 0, "institution_avatar_size");
-                                $this->institution_material_size         = mysql_result($result, 0, "institution_material_size");
-                                $this->institution_acc_days              = mysql_result($result, 0, "institution_acc_days");
-                                $this->institution_language              = mysql_result($result, 0, "institution_language");
-                                $this->institution_timeout               = mysql_result($result, 0, "institution_timeout");
-                                $query = sprintf("SELECT * FROM config_user
-                                                    WHERE user_id = '%s'",
-                                                    mysql_real_escape_string($USER->id));
-                                $result = mysql_query($query);
-                                $this->user_id                    = mysql_result($result, 0, "user_id");
-                                $this->user_filepath              = mysql_result($result, 0, "user_filepath");
-                                $this->user_paginator_limit       = mysql_result($result, 0, "user_paginator_limit");
-                                $this->user_acc_days              = mysql_result($result, 0, "user_acc_days");
-                                $this->user_language              = mysql_result($result, 0, "user_language"); 
+                                $db = DB::prepare('SELECT * FROM config_user WHERE user_id = ?'); 
+                                $db->execute(array($USER->id));
+                                $result = $db->fetchObject();
+                                $this->user_id                    = $result->user_id;
+                                $this->user_filepath              = $result->user_filepath;
+                                $this->user_paginator_limit       = $result->user_paginator_limit;
+                                $this->user_acc_days              = $result->user_acc_days;
+                                $this->user_language              = $result->user_language; 
                 break;
             case 'user':        $this->user_id = $id;
-                                $query = sprintf("SELECT * FROM config_user
-                                                    WHERE user_id = '%s'",
-                                                    mysql_real_escape_string($this->user_id));
-                                $result = mysql_query($query);
-                                $this->user_id                    = mysql_result($result, 0, "user_id");
-                                $this->user_filepath              = mysql_result($result, 0, "user_filepath");
-                                $this->user_paginator_limit       = mysql_result($result, 0, "user_paginator_limit");
-                                $this->user_acc_days              = mysql_result($result, 0, "user_acc_days");
-                                $this->user_language              = mysql_result($result, 0, "user_language");  
+                                $db = DB::prepare('SELECT * FROM config_user WHERE user_id = ?'); 
+                                $db->execute(array($this->user_id));
+                                $result = $db->fetchObject();
+                                $this->user_id                    = $result->user_id;
+                                $this->user_filepath              = $result->user_filepath;
+                                $this->user_paginator_limit       = $result->user_paginator_limit;
+                                $this->user_acc_days              = $result->user_acc_days;
+                                $this->user_language              = $result->user_language; 
                 break;
 
             default:
@@ -207,40 +204,18 @@ class Config {
     public function add($dependency = null, $id = null){
             switch ($dependency) {
                 case 'institution': $this->institution_id = $id; 
-                                $query = sprintf("INSERT INTO config_institution(institution_id, institution_filepath, 
+                                    $db = DB::prepare('INSERT INTO config_institution(institution_id, institution_filepath, 
                                                             institution_paginator_limit,institution_standard_role, institution_standard_country,
                                                             institution_standard_state, institution_csv_size, institution_avatar_size, institution_material_size,
                                                             institution_acc_days, institution_language, institution_timeout) 
-                                                       VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')",
-                                                        mysql_real_escape_string($this->institution_id),
-                                                        mysql_real_escape_string($this->institution_filepath),
-                                                        mysql_real_escape_string($this->institution_paginator_limit),
-                                                        mysql_real_escape_string($this->institution_standard_role),
-                                                        mysql_real_escape_string($this->institution_standard_country),
-                                                        mysql_real_escape_string($this->institution_standard_state),
-                                                        mysql_real_escape_string($this->institution_csv_size),
-                                                        mysql_real_escape_string($this->institution_avatar_size),
-                                                        mysql_real_escape_string($this->institution_material_size),
-                                                        mysql_real_escape_string($this->institution_acc_days),
-                                                        mysql_real_escape_string($this->institution_language),
-                                                        mysql_real_escape_string($this->institution_timeout)
-                                                        );
-                                return mysql_query($query); 
-                    break; 
-                case 'user':    $this->user_id = $id; 
-                                $query = sprintf("INSERT INTO config_user(user_id, 
-                                                            user_paginator_limit,
-                                                            user_acc_days,
-                                                            user_language) 
-                                                       VALUES ('%s','%s','%s','%s')",
-                                                        mysql_real_escape_string($this->user_id),
-                                                        mysql_real_escape_string($this->user_paginator_limit),
-                                                        mysql_real_escape_string($this->user_acc_days),
-                                                        mysql_real_escape_string($this->user_language)
-                                                        );
-                                return mysql_query($query);  
-                    break; 
-                default: break; 
+                                                       VALUES (?,?,?,?,?,?,?,?,?,?,?,?)');     
+                                    return $db->execute(array($this->institution_id, $this->institution_filepath, $this->institution_paginator_limit,$this->institution_standard_role, $this->institution_standard_country, $this->institution_standard_state, $this->institution_csv_size, $this->institution_avatar_size, $this->institution_material_size, $this->institution_acc_days, $this->institution_language, $this->institution_timeout));
+                                    break; 
+                case 'user':        $this->user_id = $id; 
+                                    $db = DB::prepare('INSERT INTO config_user(user_id, user_paginator_limit, user_acc_days, user_language) VALUES (?,?,?,?');
+                                    return $db->execute(array($this->user_id, $this->user_paginator_limit, $this->user_acc_days, $this->user_language));
+                                    break; 
+                default:            break; 
             }
     }
     /**
@@ -252,16 +227,15 @@ class Config {
     public function delete($dependency = null, $id = null){
             switch ($dependency) {
                 case 'institution': $this->institution_id = $id; 
-                                $query = sprintf("DELETE FROM config_institution WHERE institution_id = '%s'",
-                                                        mysql_real_escape_string($this->institution_id));
-                                return mysql_query($query); 
-                    break; 
-                case 'user':    $this->user_id = $id; 
-                                $query = sprintf("DELETE FROM config_user WHERE user_id = '%s'",
-                                                        mysql_real_escape_string($this->user_id));
-                                return mysql_query($query);  
-                    break; 
-                default: break; 
+                                    $db = DB::prepare('DELETE FROM config_institution WHERE institution_id = ?');
+                                    $db->execute(array($this->institution_id));
+                                    return $db->execute(array($this->institution_id));
+                                    break; 
+                case 'user':        $this->user_id = $id; 
+                                    $db = DB::prepare('DELETE FROM config_user WHERE user_id = ?');                    
+                                    return $db->execute(array($this->user_id)); 
+                                    break; 
+                default:            break; 
             }
     }
     /**
@@ -275,39 +249,25 @@ class Config {
                 break;
                             
             case 'institution': $this->updateUser();
-                                $query = sprintf("SELECT COUNT(institution_id) FROM config_institution 
-                                                    WHERE institution_id = '%s'",
-                                                    mysql_real_escape_string($this->institution_id));
-                                $result = mysql_query($query);
-                                list($count) = mysql_fetch_row($result);
-                                if($count >= 1) { 
-                                    $query = sprintf("UPDATE config_institution SET 
-                                                            institution_paginator_limit = '%s', 
-                                                            institution_standard_role = '%s',
-                                                            institution_standard_country = '%s',
-                                                            institution_standard_state = '%s',
-                                                            institution_csv_size = '%s',
-                                                            institution_avatar_size = '%s',
-                                                            institution_material_size = '%s',
-                                                            institution_acc_days = '%s',
-                                                            institution_language = '%s',
-                                                            institution_timeout = '%s',
+                                $db = DB::prepare('SELECT COUNT(institution_id) FROM config_institution WHERE institution_id =  ?'); 
+                                $db->execute(array($this->institution_id));
+                                if($db->fetchColumn() >= 1) { 
+                                    $db = DB::prepare('UPDATE config_institution SET 
+                                                            institution_paginator_limit = ?, 
+                                                            institution_standard_role = ?,
+                                                            institution_standard_country = ?,
+                                                            institution_standard_state = ?,
+                                                            institution_csv_size = ?,
+                                                            institution_avatar_size = ?,
+                                                            institution_material_size = ?,
+                                                            institution_acc_days = ?,
+                                                            institution_language = ?,
+                                                            institution_timeout = ?,
                                                             update_time = NOW()
-                                                            WHERE institution_id = '%s'",
-                                                        mysql_real_escape_string($this->institution_paginator_limit),
-                                                        mysql_real_escape_string($this->institution_standard_role),
-                                                        mysql_real_escape_string($this->institution_standard_country),
-                                                        mysql_real_escape_string($this->institution_standard_state),
-                                                        mysql_real_escape_string($this->institution_csv_size),
-                                                        mysql_real_escape_string($this->institution_avatar_size),
-                                                        mysql_real_escape_string($this->institution_material_size),
-                                                        mysql_real_escape_string($this->institution_acc_days),
-                                                        mysql_real_escape_string($this->institution_language),
-                                                        mysql_real_escape_string($this->institution_timeout),
-                                                        mysql_real_escape_string($this->institution_id));
-                                    return mysql_query($query);
+                                                            WHERE institution_id = ?'); 
+                                return $db->execute(array($this->institution_paginator_limit, $this->institution_standard_role, $this->institution_standard_country, $this->institution_standard_state, $this->institution_csv_size, $this->institution_avatar_size, $this->institution_material_size, $this->institution_acc_days, $this->institution_language, $this->institution_timeout, $this->institution_id));
                                 } else { 
-                                    $query = sprintf("INSERT INTO config_institution(
+                                    $db = DB::prepare('INSERT INTO config_institution(
                                                             institution_paginator_limit,
                                                             institution_standard_role,
                                                             institution_standard_country,
@@ -319,26 +279,14 @@ class Config {
                                                             institution_language,
                                                             institution_timeout,
                                                             update_time) 
-                                                       VALUES ('%s','%s','%s','%s', '%s', '%s', '%s', '%s', '%s', '%s', NOW())",
-                                                        mysql_real_escape_string($this->institution_paginator_limit),
-                                                        mysql_real_escape_string($this->institution_standard_role),
-                                                        mysql_real_escape_string($this->institution_standard_country),
-                                                        mysql_real_escape_string($this->institution_standard_state),
-                                                        mysql_real_escape_string($this->institution_csv_size),
-                                                        mysql_real_escape_string($this->institution_avatar_size),
-                                                        mysql_real_escape_string($this->institution_material_size),
-                                                        mysql_real_escape_string($this->institution_acc_days),
-                                                        mysql_real_escape_string($this->institution_language),
-                                                        mysql_real_escape_string($this->institution_timeout),
-                                                        mysql_real_escape_string($this->institution_id));
-                                    return mysql_query($query);      	
+                                                       VALUES (?,?,?,?, ?, ?, ?, ?, ?, ?, NOW())'); 
+                                return $db->execute(array($this->institution_paginator_limit, $this->institution_standard_role, $this->institution_standard_country, $this->institution_standard_state, $this->institution_csv_size, $this->institution_avatar_size, $this->institution_material_size, $this->institution_acc_days, $this->institution_language, $this->institution_timeout, $this->institution_id));   	
                                 }
                 break;
 
             default:
                 break;
-        }
-        
+        }     
     }
     
     /**
@@ -346,36 +294,15 @@ class Config {
      * @return boolean
      */
     public function updateUser (){
-        $query = sprintf("SELECT COUNT(user_id) FROM config_user 
-                            WHERE user_id = '%s'",
-                            mysql_real_escape_string($this->user_id));
-        $result = mysql_query($query);
-        list($count) = mysql_fetch_row($result);
-        if($count >= 1) { 
-            $query = sprintf("UPDATE config_user 
-                                    SET user_language = '%s', 
-                                    user_filepath = '%s',
-                                    user_paginator_limit = '%s',
-                                    user_acc_days = '%s'
-                                    WHERE user_id = '%s'",
-                                mysql_real_escape_string($this->user_language),
-                                mysql_real_escape_string($this->user_filepath),
-                                mysql_real_escape_string($this->user_paginator_limit),
-                                mysql_real_escape_string($this->user_acc_days),
-                                mysql_real_escape_string($this->user_id));
-            return mysql_query($query);
+        $db = DB::prepare('SELECT COUNT(user_id) FROM config_user WHERE user_id = ?');
+        $db->execute(array($this->user_id));
+        if($db->fetchColumn() >= 1) { 
+            $db = DB::prepare('UPDATE config_user  SET user_language = ?, user_filepath = ?,
+                                    user_paginator_limit = ?, user_acc_days = ? WHERE user_id = ?');                   
+            return $db->execute(array($this->user_language, $this->user_filepath, $this->user_paginator_limit, $this->user_acc_days,$this->user_id)); 
         } else { 
-            $query = sprintf("INSERT INTO config_user(user_language, 
-                                                    user_filepath, 
-                                                    user_paginator_limit,
-                                                    user_acc_days,
-                                                    user_id) VALUES ('%s','%s','%s','%s','%s')",
-                                mysql_real_escape_string($this->user_language),
-                                mysql_real_escape_string($this->user_filepath),
-                                mysql_real_escape_string($this->user_paginator_limit),
-                                mysql_real_escape_string($this->user_acc_days),
-                                mysql_real_escape_string($this->user_id));
-            return mysql_query($query);      	
+            $db = DB::prepare('INSERT INTO config_user(user_language, user_filepath, user_paginator_limit, user_acc_days, user_id) VALUES (?,?,?,?,?)');                    
+            return $db->execute(array($this->user_language, $this->user_filepath, $this->user_paginator_limit, $this->user_acc_days, $this->user_id));
         }
     }
 }

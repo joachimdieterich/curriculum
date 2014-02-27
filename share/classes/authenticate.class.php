@@ -91,41 +91,30 @@ class Authenticate {
      */
     public function getUser($dependency = null){
         switch ($dependency) {
-            case 'token':   $query = sprintf("SELECT * FROM authenticate WHERE token ='%s'",
-                                                        mysql_real_escape_string($this->token));
-                            $result = mysql_query($query);
-                            $this->id               = mysql_result($result, 0, "id");
-                            $this->username         = mysql_result($result, 0, "username");
-                            $this->password         = mysql_result($result, 0, "password");
-                            $this->creation_time    = mysql_result($result, 0, "creation_time");
-                            $this->creator_id       = mysql_result($result, 0, "creator_id");
-                            $this->status           = mysql_result($result, 0, "status");           // 1 == User exists, 0 == Register New User
-                            $this->firstname        = mysql_result($result, 0, "firstname");
-                            $this->lastname         = mysql_result($result, 0, "lastname");    
-                            $this->email            = mysql_result($result, 0, "email");    
-                            $this->user_external_id = mysql_result($result, 0, "user_external_id");    
-                            $this->ws_username      = mysql_result($result, 0, "ws_username");  
+            case 'token':   $db = DB::prepare('SELECT * FROM authenticate WHERE token =?');
+                            $db->execute(array($this->token));
+                            $result = $db->fetchObject();
                 break;
-            case 'login':   $query = sprintf("SELECT * FROM authenticate WHERE UPPER(username) = UPPER('%s') AND password='%s'",
-                                            mysql_real_escape_string($this->username),
-                                            mysql_real_escape_string($this->password));
-                            $result = mysql_query($query);
-                            $this->id               = mysql_result($result, 0, "id");
-                            $this->username         = mysql_result($result, 0, "username");
-                            $this->password         = mysql_result($result, 0, "password");
-                            $this->creation_time    = mysql_result($result, 0, "creation_time");
-                            $this->creator_id       = mysql_result($result, 0, "creator_id");
-                            $this->status           = mysql_result($result, 0, "status");           // 1 == User exists, 0 == Register New User
-                            $this->firstname        = mysql_result($result, 0, "firstname");
-                            $this->lastname         = mysql_result($result, 0, "lastname");    
-                            $this->email            = mysql_result($result, 0, "email");    
-                            $this->user_external_id = mysql_result($result, 0, "user_external_id");    
-                            $this->ws_username      = mysql_result($result, 0, "ws_username"); 
+            case 'login':   $db = DB::prepare('SELECT * FROM authenticate WHERE UPPER(username) = UPPER(?) AND password=?');
+                            $db->execute(array($this->username, $this->password));
+                            $result = $db->fetchObject();
                 break;
 
             default:
                 break;
         }
+       
+        $this->id               = $result->id;
+        $this->username         = $result->username;
+        $this->password         = $result->password;
+        $this->creation_time    = $result->creation_time;
+        $this->creator_id       = $result->creator_id;
+        $this->status           = $result->status;           // 1 == User exists, 0 == Register New User
+        $this->firstname        = $result->firstname;
+        $this->lastname         = $result->lastname;    
+        $this->email            = $result->email;    
+        $this->user_external_id = $result->user_external_id;    
+        $this->ws_username      = $result->ws_username;  
     }
 }
 ?>

@@ -63,7 +63,7 @@ class DB {
     public static function getInstance(  ) {
         global $CFG;   
         if(!self::$objInstance){
-            self::$objInstance = new PDO('mysql:host='.$CFG->db_host.';dbname='.$CFG->db_name.';charset=utf8', $CFG->db_user, $CFG->db_password ); // PDO DSN http://www.php.net/manual/en/ref.pdo-mysql.php
+            self::$objInstance = new PDO('mysql:host='.$CFG->db_host.';dbname='.$CFG->db_name.';'/*'.charset=utf8.'*/, $CFG->db_user, $CFG->db_password ); // PDO DSN http://www.php.net/manual/en/ref.pdo-mysql.php
             self::$objInstance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING); //ERRMODE_SILENT, ERRMODE_WARNING (for debug), ERRMODE_EXCEPTION 
             self::$objInstance->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         }

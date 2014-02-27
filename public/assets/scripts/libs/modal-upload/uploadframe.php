@@ -433,7 +433,7 @@ $(document).ready(function() {
 		<p><input name="target" type="hidden" value="<?php echo $targetID; ?>" /></p>
 		<p><input name="format" type="hidden" value="<?php echo $returnFormat; ?>" /></p>
 		<p><input name="multiple" type="hidden" value="<?php echo $multipleFiles; ?>" /></p>
-                <p><input name="context" type="hidden" value="<?php echo $context; ?>" /></p>
+                <p><input name="last_login" type="hidden" value="<?php echo $last_login; ?>" /></p>
                 <p><label>Titel*: </label><input class="inputform" id="titel" name="title" /></p>
                 <?php
                 if (isset($v_error['title']['message'][0])){
@@ -471,7 +471,7 @@ $(document).ready(function() {
                     <p><input name="curID" type="hidden" value="<?php echo $curriculum_id; ?>" /></p>
                     <p><input name="terID" type="hidden" value="<?php echo $terminal_objective_id; ?>" /></p>
                     <p><input name="enaID" type="hidden" value="<?php echo $enabling_objective->id; ?>" /></p>
-                    <p><input name="context" type="hidden" value="<?php echo $context; ?>" /></p>
+                    <p><input name="last_login" type="hidden" value="<?php echo $last_login; ?>" /></p>
                     <p><label>Titel: </label><input class="inputform" id="titel" name="title" /></p>
                     <?php
                     if (isset($v_error['title']['message'][0])){

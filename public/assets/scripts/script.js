@@ -241,6 +241,7 @@ function hideMaterial (){
 
 //wenn checkbox angeklickt, dann wird element mit id angezeigt
 function checkbox_addForm (){//arguments checked, style, id, invers_id -> if checked id is 'block' invers_id is 'none''
+    
     if (arguments[0]) {
         document.getElementById(arguments[2]).style.display=arguments[1];
         document.getElementById(arguments[3]).style.display='none';

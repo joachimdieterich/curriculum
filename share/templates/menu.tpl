@@ -18,8 +18,8 @@
         <ul class="group">
             <li class="border-top-radius contentheader">Meine Lehrpläne</li>
             {if $my_enrolments != ''}
-                {foreach item=cur from=$my_enrolments}
-                    <li><p><a href="index.php?action=view&curriculum={$cur.id}&group={$cur.group_id}">{$cur.curriculum}<span> {$cur.groups}</span></a></p></li>
+                {foreach item=cur_menu from=$my_enrolments}
+                    <li><p><a href="index.php?action=view&curriculum={$cur_menu->id}&group={$cur_menu->group_id}">{$cur_menu->curriculum}<span> {$cur_menu->groups}</span></a></p></li>
                 {/foreach}
             {else}<li><p>Sie sind in keinem Lehrplan eingeschrieben</p></li>
             {/if}    

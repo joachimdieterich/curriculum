@@ -31,30 +31,24 @@ class Cron {
      * @return boolean 
      */
     public function add($cronjob,$user_id,$log){
-        $query = sprintf("INSERT INTO cronjobs (cronjob,creator_id,log) VALUES('%s','%s','%s')",
-                mysql_real_escape_string($cronjob),
-                mysql_real_escape_string($user_id),
-                mysql_real_escape_string($log));
-        return mysql_query($query);
+        $db = DB::prepare('INSERT INTO cronjobs (cronjob,creator_id,log) VALUES(?,?,?)');
+        return $db->execute(array($cronjob, $user_id, $log));
     }
     
-    /**
+     /**
      * get last time where 'detectExpiredObjective' was called
      * @return object|boolean 
      */
     public function check_cronjob(){
-        $query = sprintf("SELECT DISTINCT creation_time FROM cronjobs WHERE cronjob = 'detectExpiredObjective'");
-        $result = mysql_query($query);
-        if ($result && mysql_num_rows($result)){
-            while($row = mysql_fetch_assoc($result)) { 
-                    $this->creation_time = $row['creation_time'];
-                    
-            }
-                return $this;
+        $db = DB::prepare('SELECT DISTINCT creation_time FROM cronjobs WHERE cronjob = "detectExpiredObjective"');
+        $db->execute();
+        while($result = $db->fetchObject()) { 
+            $this->creation_time = $result->creation_time;        }
+        if (isset($this->creation_time)){
+            return $this;
         } else {
             return false;
         }
-
     }
     
 /**

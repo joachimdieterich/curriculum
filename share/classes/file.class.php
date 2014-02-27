@@ -100,26 +100,14 @@ class File {
      */
     public $enabling_objective_id = null; 
     
-   
-    
     /**
      * add file
      * @return mixed 
      */
     public function add(){
-        $query = sprintf("INSERT INTO files (title, filename, description, type, path, context_id, creator_id, cur_id, ter_id, ena_id) 
-                            VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')",
-                                        mysql_real_escape_string($this->title),
-                                        mysql_real_escape_string($this->filename),
-                                        mysql_real_escape_string($this->description),
-                                        mysql_real_escape_string($this->type),
-                                        mysql_real_escape_string($this->path),
-                                        mysql_real_escape_string($this->context_id),
-                                        mysql_real_escape_string($this->creator_id),
-                                        mysql_real_escape_string($this->curriculum_id),
-                                        mysql_real_escape_string($this->terminal_objective_id),
-                                        mysql_real_escape_string($this->enabling_objective_id));
-        return mysql_query($query);		
+        $db = DB::prepare('INSERT INTO files (title, filename, description, type, path, context_id, creator_id, cur_id, ter_id, ena_id) 
+                            VALUES (?,?,?,?,?,?,?,?,?,?)');
+        return $db->execute(array($this->title, $this->filename, $this->description, $this->type, $this->path, $this->context_id, $this->creator_id, $this->curriculum_id, $this->terminal_objective_id, $this->enabling_objective_id));
     }
     
     /**
@@ -127,21 +115,8 @@ class File {
      * @return boolean 
      */
     public function update(){
-        $query = sprintf("UPDATE files SET title = '%s', filename = '%s', description = '%s', type = '%s', path = '%s', 
-                                           context_id = '%s', creator_id = '%s', cur_id = '%s', ter_id = '%s', ena_id = '%s'
-                                WHERE id = '%s'",
-                                        mysql_real_escape_string($this->title),
-                                        mysql_real_escape_string($this->filename),
-                                        mysql_real_escape_string($this->description),
-                                        mysql_real_escape_string($this->type),
-                                        mysql_real_escape_string($this->path),
-                                        mysql_real_escape_string($this->context_id),
-                                        mysql_real_escape_string($this->creator_id),
-                                        mysql_real_escape_string($this->curriculum_id),
-                                        mysql_real_escape_string($this->terminal_objective_id),
-                                        mysql_real_escape_string($this->enabling_objective_id),
-                                        mysql_real_escape_string($this->id));
-        return mysql_query($query);
+        $db = DB::prepare('UPDATE files SET title = ?, filename = ?, description = ?, type = ?, path = ?, context_id = ?, creator_id = ?, cur_id = ?, ter_id = ?, ena_id = ? WHERE id = ?');
+        return $db->execute(array($this->title, $this->filename, $this->description, $this->type, $this->path, $this->context_id, $this->creator_id, $this->curriculum_id, $this->terminal_objective_id, $this->enabling_objective_id, $this->id));
     }
     
     /**
@@ -151,10 +126,8 @@ class File {
     public function delete(){
         global $CFG;
         $this->load();
-        $query = sprintf("DELETE FROM files WHERE id='%s'",
-                                        mysql_real_escape_string($this->id));
-        if (mysql_query($query)){/* unlink file*/
-            
+        $db = DB::prepare('DELETE FROM files WHERE id=?');
+        if ($db->execute(array($this->id))){/* unlink file*/
             switch ($this->context_id) {
                 case 1: 
                         $return = (unlink($CFG->user_root.$this->creator_id.'/'.$this->filename)); //Datei vom Server löschen     
@@ -196,29 +169,27 @@ class File {
         } else {
             return false;
         }
-        
     } 
     
     /**
      * Load file with id $this->id 
      */
     public function load(){
-        $query = sprintf("SELECT * FROM files WHERE id='%s'",
-                        mysql_real_escape_string($this->id));
-        $result = mysql_query($query);
-        $row = mysql_fetch_assoc($result);
-        $this->id                    = $row['id'];
-        $this->title                 = $row["title"];
-        $this->filename              = $row["filename"];
-        $this->description           = $row["description"];
-        $this->path                  = $row["path"];
-        $this->filetype              = $row["type"];
-        $this->context_id            = $row["context_id"];
-        $this->curriculum_id         = $row["cur_id"];
-        $this->terminal_objective_id = $row["ter_id"];
-        $this->enabling_objective_id = $row["ena_id"];
-        $this->creation_time         = $row["creation_time"];
-        $this->creator_id            = $row["creator_id"];   
+        $db = DB::prepare('SELECT * FROM files WHERE id=?');
+        $db->execute(array($this->id));
+        $result = $db->fetchObject();
+        $this->id                    = $result->id;
+        $this->title                 = $result->title;
+        $this->filename              = $result->filename;
+        $this->description           = $result->description;
+        $this->path                  = $result->path;
+        $this->filetype              = $result->type;
+        $this->context_id            = $result->context_id;
+        $this->curriculum_id         = $result->cur_id;
+        $this->terminal_objective_id = $result->ter_id;
+        $this->enabling_objective_id = $result->ena_id;
+        $this->creation_time         = $result->creation_time;
+        $this->creator_id            = $result->creator_id;   
     }
     
     /**
@@ -229,48 +200,40 @@ class File {
      */
     public function getSolutions($dependency = null, $course_id = null, $user_ids = null){
         switch ($dependency) {
-            case 'course':  if (!is_array($user_ids)){
-                               $user_ids = array ($user_ids);
+            case 'course':  if (is_array($user_ids)){
+                                $user_ids = implode(", ", $user_ids);
                             }
-                            $query = sprintf("SELECT fl.*, us.firstname, us.lastname
-                            FROM files AS fl, users AS us
-                            WHERE fl.cur_id = '%s'
-                            AND fl.creator_id IN (%s)
-                            AND fl.creator_id = us.id
-                            AND fl.context_id = '4'",
-                            mysql_real_escape_string($course_id),
-                            mysql_real_escape_string(implode(", ", $user_ids)));
-                break;
-
-            default:
-                break;
+                            $db = DB::prepare('SELECT fl.*, us.firstname, us.lastname FROM files AS fl, users AS us
+                                WHERE fl.cur_id = ? AND fl.creator_id IN ('.$user_ids.')
+                                AND fl.creator_id = us.id AND fl.context_id = 4');
+                            $db->execute(array($course_id));  
+                            break;
+            default:        break;
         }
-        $result = mysql_query($query);
-        if ($result && mysql_num_rows($result)) {
-            $files = array(); //Array of files
-            while($row = mysql_fetch_assoc($result)) { 
-                    $this->id                    = $row['id'];
-                    $this->title                 = $row["title"];
-                    $this->filename              = $row["filename"];
-                    $this->description           = $row["description"];
-                    $this->path                  = $row["path"];
-                    $this->filetype              = $row["type"];
-                    $this->context_id            = $row["context_id"];
-                    $this->curriculum_id         = $row["cur_id"];
-                    $this->terminal_objective_id = $row["ter_id"];
-                    $this->enabling_objective_id = $row["ena_id"];
-                    $this->creation_time         = $row["creation_time"];
-                    $this->creator_id            = $row["creator_id"];
-                    $this->firstname             = $row["firstname"];
-                    $this->lastname              = $row["lastname"];
-                    
-                    $files[] = clone $this;        //it has to be clone, to get the object and not the reference
-            } 
-            
+        $files = array(); //Array of files
+        while($result = $db->fetchObject()) { 
+                $this->id                    = $result->id;
+                $this->title                 = $result->title;
+                $this->filename              = $result->filename;
+                $this->description           = $result->description;
+                $this->path                  = $result->path;
+                $this->filetype              = $result->type;
+                $this->context_id            = $result->context_id;
+                $this->curriculum_id         = $result->cur_id;
+                $this->terminal_objective_id = $result->ter_id;
+                $this->enabling_objective_id = $result->ena_id;
+                $this->creation_time         = $result->creation_time;
+                $this->creator_id            = $result->creator_id;
+                $this->firstname             = $result->firstname;
+                $this->lastname              = $result->lastname;
+                $files[] = clone $this;        //it has to be clone, to get the object and not the reference
+        } 
+        if (isset($files)) {  
             return $files;
         } else {return false;}
         
     }
+    
     /**
      * get files depending on dependency
      * @param string $dependency
@@ -279,74 +242,61 @@ class File {
      */
     public function getFiles($dependency = null, $id = null){
         switch ($dependency) {
-            case 'context':     $query = sprintf("SELECT fl.*, ct.path AS context_path 
-                                                        FROM files AS fl, context AS ct
-                                                        WHERE fl.context_id = '%s' AND fl.context_id = ct.context_id",
-                                            mysql_real_escape_string($id));
+            case 'context':     $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+                                                        WHERE fl.context_id = ? AND fl.context_id = ct.context_id');
+                                $db->execute(array($id));
                 break;
-            case 'userfiles':   $query = sprintf("SELECT fl.*, ct.path AS context_path 
-                                                        FROM files AS fl, context AS ct
-                                                        WHERE fl.creator_id = '%s' AND fl.context_id = 1 AND fl.context_id = ct.context_id",
-                                            mysql_real_escape_string($id));
+            case 'userfiles':   $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+                                                        WHERE fl.creator_id = ? AND fl.context_id = 1 AND fl.context_id = ct.context_id');
+                                $db->execute(array($id));
                 break;
-            case 'curriculum':  $query = sprintf("SELECT fl.*, ct.path AS context_path 
-                                                        FROM files AS fl, context AS ct
-                                                        WHERE fl.cur_id = '%s' AND fl.context_id = 2 AND fl.context_id = ct.context_id",
-                                            mysql_real_escape_string($id));
+            case 'curriculum':  $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+                                                        WHERE fl.cur_id = ? AND fl.context_id = 2 AND fl.context_id = ct.context_id');
+                                $db->execute(array($id));
                 break;
-            case 'enabling_objective': $query = sprintf("SELECT fl.*, ct.path AS context_path 
-                                                        FROM files AS fl, context AS ct
-                                                        WHERE fl.ena_id = '%s' AND fl.context_id = 2 AND fl.context_id = ct.context_id",
-                                            mysql_real_escape_string($id));
+            case 'enabling_objective':$db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+                                                        WHERE fl.ena_id = ? AND fl.context_id = 2 AND fl.context_id = ct.context_id');
+                                $db->execute(array($id));
                 break;
-            case 'avatar':      $query = sprintf("SELECT fl.*, ct.path AS context_path 
-                                                        FROM files AS fl, context AS ct
-                                                        WHERE fl.creator_id = '%s' AND fl.context_id = 3 AND fl.context_id = ct.context_id",
-                                            mysql_real_escape_string($id));
+            case 'avatar':      $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+                                                        WHERE fl.creator_id = ? AND fl.context_id = 3 AND fl.context_id = ct.context_id');
+                                $db->execute(array($id));
                 break;
-            case 'solution':    $query = sprintf("SELECT fl.*, ct.path AS context_path 
-                                                        FROM files AS fl, context AS ct
-                                                        WHERE fl.cur_id = '%s' AND fl.context_id = 4 AND fl.context_id = ct.context_id",
-                                            mysql_real_escape_string($id));
+            case 'solution':    $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+                                                        WHERE fl.cur_id = ? AND fl.context_id = 4 AND fl.context_id = ct.context_id');
+                                $db->execute(array($id));
                 break;
 
-            case 'user':               $query = sprintf("SELECT fl.*, ct.path AS context_path 
-                                                        FROM files AS fl, context AS ct
-                                                        WHERE fl.creator_id = '%s'
-                                                        AND fl.context_id = ct.context_id", 
-                                        mysql_real_escape_string($id));
+            case 'user':        $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+                                                        WHERE fl.creator_id = ? AND fl.context_id = ct.context_id');
+                                $db->execute(array($id));
                 break;
-            case 'enabling_objective': $query = sprintf("SELECT id 
-                                                        FROM files
-                                                        WHERE ena_id = '%s'",
-                                       mysql_real_escape_string($id));
+            case 'enabling_objective': $db = DB::prepare('SELECT id FROM filesWHERE ena_id = ?');
+                                $db->execute(array($id));
                 break;
             default : break; 
             
-        }                     
-        
-        $result = mysql_query($query);
-        if ($result && mysql_num_rows($result)) {
-            $files = array(); //Array of files
-            while($row = mysql_fetch_assoc($result)) { 
-                    $this->id                    = $row['id'];
-                    $this->title                 = $row['title'];
-                    $this->filename              = $row["filename"];
-                    $this->description           = $row["description"];
-                    $this->path                  = $row["path"];
-                    $this->filetype              = $row["type"];
-                    $this->context_id            = $row["context_id"];
-                    if (isset($row["context_path"])){
-                        $this->context_path      = $row["context_path"];
-                    }
-                    $this->curriculum_id         = $row["cur_id"];
-                    $this->terminal_objective_id = $row["ter_id"];
-                    $this->enabling_objective_id = $row["ena_id"];
-                    $this->creation_time         = $row["creation_time"];
-                    $this->creator_id            = $row["creator_id"];
-                    
-                    $files[] = clone $this;        //it has to be clone, to get the object and not the reference
-            } 
+        }                      
+        $files = array(); //Array of files
+        while($result = $db->fetchObject()) { 
+                $this->id                    = $result->id;
+                $this->title                 = $result->title;
+                $this->filename              = $result->filename;
+                $this->description           = $result->description;
+                $this->path                  = $result->path;
+                $this->filetype              = $result->type;
+                $this->context_id            = $result->context_id;
+                if (isset($result->context_path)){
+                    $this->context_path      = $result->context_path;
+                }
+                $this->curriculum_id         = $result->cur_id;
+                $this->terminal_objective_id = $result->ter_id;
+                $this->enabling_objective_id = $result->ena_id;
+                $this->creation_time         = $result->creation_time;
+                $this->creator_id            = $result->creator_id;
+                $files[] = clone $this;        //it has to be clone, to get the object and not the reference
+        }
+        if (isset($files)) {
             return $files;
         } else {return false;}
     }
@@ -357,11 +307,11 @@ class File {
  * @return string 
  */
 public function getContextPath($context){ //get Context by context name
-$query = sprintf("SELECT path FROM context WHERE context = '%s'",
-                    mysql_real_escape_string($context));
-    $result = mysql_query($query);
-    if ($result && mysql_num_rows($result)) {
-        return  mysql_result($result, 0, "path");
+    $db = DB::prepare('SELECT path FROM context WHERE context = ?');
+    $db->execute(array($context));
+    $result = $db->fetchObject();
+    if ($result) {
+        return  $result->path;
     } else {return false;}
 }
 
@@ -371,11 +321,11 @@ $query = sprintf("SELECT path FROM context WHERE context = '%s'",
  * @return string 
  */
 public function getContextId($context){ //get Context by context name
-$query = sprintf("SELECT context_id FROM context WHERE context = '%s'",
-                    mysql_real_escape_string($context));
-    $result = mysql_query($query);
-    if ($result && mysql_num_rows($result)) {
-        return  mysql_result($result, 0, "context_id");
+    $db = DB::prepare('SELECT context_id FROM context WHERE context = ?');
+    $db->execute(array($context));
+    $result = $db->fetchObject();
+    if ($result) {
+        return  $result->context_id;
     } else {return false;}
 }
 
@@ -384,10 +334,8 @@ $query = sprintf("SELECT context_id FROM context WHERE context = '%s'",
  * @return boolean
  */
 public function dedicate(){ // only use during install
-        $query = sprintf("UPDATE files SET creator_id = '%s'",
-                                            mysql_real_escape_string($this->creator_id));
-        return mysql_query($query);
-    }
-
+    $db = DB::prepare('UPDATE files SET creator_id = ?');
+    return $db->execute(array($this->creator_id));
+}
 }
 ?>

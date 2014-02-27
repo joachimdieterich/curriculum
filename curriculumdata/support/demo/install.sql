@@ -834,7 +834,7 @@ INSERT INTO `role_capabilities` (`id`, `role_id`, `capability`, `permission`, `c
 (199, 0, 'menu:readConfirm', 0, '2013-11-26 23:45:20', 102),
 (200, 0, 'menu:readInstitutionConfig', 0, '2013-11-26 23:45:20', 102),
 (201, 0, 'menu:readProfileConfig', 0, '2013-11-26 23:45:20', 102),
-(202, 0, 'menu:readMyCurricula', 0, '2013-11-26 23:45:20', 102),
+(202, 0, 'menu:readMyCurricula', 1, '2013-11-26 23:45:20', 102),
 (203, 0, 'menu:readGroup', 0, '2013-11-26 23:45:20', 102),
 (204, 0, 'page:readLog', 0, '2013-11-26 23:45:20', 102),
 (205, 0, 'page:showRoleForm', 0, '2013-11-26 23:45:20', 102),
