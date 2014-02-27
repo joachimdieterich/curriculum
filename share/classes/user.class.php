@@ -837,12 +837,13 @@ class User {
                             WHERE user_id = (SELECT id FROM users WHERE username = ?))
                             ORDER BY gp.groups, cu.curriculum ASC');
         $db->execute(array($this->username));
-
+        
         while($result = $db->fetchObject()) { 
-                $data[] = $result; 
+                $data[] = $result;         
+                
         } 
         if (isset($data)){
-            $data;
+            return $data;
         }
         return false; //changed $data = '' to false. ??? not fully tested yet
     }

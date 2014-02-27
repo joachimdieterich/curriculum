@@ -17,16 +17,18 @@
     <p>{$str_achievments_txt1}</p>
     <p>&nbsp;</p>
     <table style="width:100%">
-        <tr><td><div class="space-left"></div></td><td>
+        <tr><td><div class="space-left"></div></td><td class="boxleftpadding">
         {foreach key=enaid item=ena from=$enabledObjectives}
             <div>
                 <div class="box gray-gradient border-radius box-shadow gray-border boxgreen">
-                    <div class="boxheader border-top-radius ">
-                        {$ena.curriculum}<!--Kursvergleich--> 
+                    <div class="boxheader border-top-radius">
+                        {$ena->curriculum}<!--Kursvergleich--> 
                     </div>
-                        <div class=" boxcontent ">
-                        {$ena.enablingObjective}<!--{$ena.description}-->
-                    <div class="boxfooter border-bottom-radius"> 
+                    <div class="boxscroll">
+                        <div class="boxcontent">
+                         {$ena->enabling_objective}<!--{$ena->description}-->
+                        <div class="boxfooter border-bottom-radius"> 
+                        </div>
                     </div> 
                 </div>
            </div>

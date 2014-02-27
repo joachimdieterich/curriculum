@@ -171,6 +171,7 @@ if (isset($_GET['function'])){
                                 echo '<p><label >Wiederholung? </label><input class="centervertical" type="checkbox" name="repeat" ';
                                 if ($enabling_objective->repeat_interval != -1){echo'checked';}
                                 echo ' onchange="checkbox_addForm(this.checked,';
+                                echo "'block',";// Wiederholungen
                                 echo "'interval'";
                                 echo ');"/></p><p id="interval" ';
                                 if ($enabling_objective->repeat_interval == -1){echo ' style="display:none;"';}

@@ -24,6 +24,6 @@
  * http://www.gnu.org/copyleft/gpl.html      
  */
 class CurriculumException extends Exception  {
-
+    //not implemented 
 }
 ?>

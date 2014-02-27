@@ -54,8 +54,7 @@ class Capability {
     * role_id
     * @var int 
     */
-    public $role_id                     = null; 
-    
+    public $role_id                     = null;    
  
     /**
      * constructor capability class
@@ -73,14 +72,8 @@ class Capability {
      * @return boolean
      */
     public function add(){
-            $query = sprintf("INSERT INTO capabilities (capability, description, type, component) 
-                                    VALUES ('%s','%s','%s','%s')",
-                                    mysql_real_escape_string($this->capability),
-                                    mysql_real_escape_string($this->description),
-                                    mysql_real_escape_string($this->type),
-                                    mysql_real_escape_string($this->component)
-                                    );
-            return mysql_query($query);  
+        $db = DB::prepare('INSERT INTO capabilities (capability, description, type, component) VALUES (?,?,?,?)'); 
+        return $db->execute(array($this->capability, $this->description, $this->type, $this->component));
     }
     
     /**
@@ -89,9 +82,8 @@ class Capability {
      * @return boolean 
      */
     public function delete($capability = null){
-        $query = sprintf("DELETE FROM capabilities WHERE capability = '%s'",
-                                mysql_real_escape_string($capability));
-        return mysql_query($query); 
+        $db = DB::prepare('DELETE FROM capabilities WHERE capability = ? '); 
+        return $db->execute(array($capability));
     }
     
     /**
@@ -101,24 +93,21 @@ class Capability {
      */
     public function update($capability = null){    
         
-    }
-    
+    }   
     
     /**
      * checks capability 
      * @return boolean 
      */
     public function checkCapability(){
-        $query = sprintf("SELECT permission FROM role_capabilities WHERE capability = '%s' AND role_id = '%s'",
-                                mysql_real_escape_string($this->capability),
-                                mysql_real_escape_string($this->role_id));
-        $result = mysql_query($query); 
-        if ($result && mysql_num_rows($result)){
-            $perminssion = mysql_result($result, 0, "permission"); 
-        } else {
+        $db = DB::prepare('SELECT permission FROM role_capabilities WHERE capability = ? AND role_id = ?'); 
+        $db->execute(array($this->capability, $this->role_id));
+
+        $result = $db->fetchObject();
+        $perminssion = $result->permission; 
+        if (!isset($perminssion)){
             $perminssion = false; 
         }
-        
         return $perminssion;
     }
     /**
@@ -127,21 +116,20 @@ class Capability {
      * @return array 
      */
     public function getCapabilities($role_id){
-        $query = sprintf("SELECT DISTINCT ca.*, rca.permission, rca.creator_id FROM capabilities AS ca
+        $db = DB::prepare('SELECT DISTINCT ca.*, rca.permission, rca.creator_id FROM capabilities AS ca
                             LEFT JOIN role_capabilities as rca ON rca.capability = ca.capability
-                            AND rca.role_id = '%s' ORDER BY ca.capability",
-                                mysql_real_escape_string($role_id));
-        $result = mysql_query($query); 
-        if ($result && mysql_num_rows($result)){
-            while($row = mysql_fetch_assoc($result)) {  
-                $capabilities[] = $row; 
-            }
-        } else {
-            $capabilities = false; 
+                            AND rca.role_id = ? ORDER BY ca.capability'); 
+        $db->execute(array($role_id));
+        
+        while($result = $db->fetchObject()) {  
+            $capabilities[] = $result; 
         }
         
-        return $capabilities;
-    }
-    
+        if (isset($capabilities)){
+            return $capabilities;
+        } else {
+            return false;
+        }   
+    } 
 }
 ?>

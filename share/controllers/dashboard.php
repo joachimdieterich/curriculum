@@ -73,7 +73,9 @@ global $USER, $PAGE, $TEMPLATE, $LOG;
 }
   
 /** assign messages */
-$TEMPLATE->assign('page_message', $PAGE->message);
+if (isset($PAGE->message)){
+    $TEMPLATE->assign('page_message', $PAGE->message);
+}
 
 /** add log */
 $LOG->add($USER->id, 'view', $PAGE->url,  'dashboard'); 

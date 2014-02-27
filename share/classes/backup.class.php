@@ -75,13 +75,9 @@ class Backup {
     * @param string $userID                      id of current user
     */
     function add($url, $filename, $cur_id, $userID){
-        $query = sprintf("INSERT INTO files_backup (file_path,file_name,curriculum_id,creator_id) 
-                            VALUES ('%s','%s','%s','%s')",
-                        mysql_real_escape_string($url),
-                        mysql_real_escape_string($filename),
-                        mysql_real_escape_string($cur_id),
-                        mysql_real_escape_string($userID));
-       return mysql_query($query);  
+       $db = DB::prepare('INSERT INTO files_backup (file_path,file_name,curriculum_id,creator_id) 
+                            VALUES (?,?,?,?)');                
+       return $db->execute(array($url, $filename, $cur_id, $userID)); 
     }
     /**
      * loader function 
@@ -92,12 +88,13 @@ class Backup {
     public function load($dependency = null){
         global $USER; 
         switch ($dependency) {
-            case 'admin':   $query = sprintf("SELECT fb.*, cu.curriculum, us.username
+            case 'admin':   $db = DB::prepare('SELECT fb.*, cu.curriculum, us.username
                                                 FROM files_backup AS fb, curriculum AS cu, users AS us
                                                 WHERE cu.id = fb.curriculum_id
-                                                AND us.id = fb.creator_id ORDER BY fb.id DESC");
+                                                AND us.id = fb.creator_id ORDER BY fb.id DESC');
+                            $db->execute();                    
                 break;
-            case 'teacher': $query = sprintf("SELECT DISTINCT fb.*, cu.curriculum, us.username
+            case 'teacher': $db = DB::prepare('SELECT DISTINCT fb.*, cu.curriculum, us.username
                                                 FROM files_backup AS fb, curriculum_enrolments AS ce, curriculum AS cu, users AS us
                                                 WHERE fb.curriculum_id = ce.curriculum_id 
                                                 AND cu.id = fb.curriculum_id
@@ -105,33 +102,29 @@ class Backup {
                                                 AND ce.group_id = ANY(SELECT gr.group_id
                                                                     FROM groups_enrolments AS gr, institution_enrolments AS ine
                                                                     WHERE ine.user_id = gr.user_id
-                                                                    AND ine.institution_id IN ('%s')
-                                                                    AND gr.user_id =  '%s'
-                                                                    OR gr.creator_id =  '%s') ORDER BY fb.id DESC", 
-                                            mysql_real_escape_string(implode(',', $USER->institutions["id"])),
-                                            mysql_real_escape_string($USER->id),
-                                            mysql_real_escape_string($USER->id));
+                                                                    AND ine.institution_id IN (?)
+                                                                    AND gr.user_id =  ?
+                                                                    OR gr.creator_id =  ?) ORDER BY fb.id DESC');
+                            $db->execute(array(implode(',', $USER->institutions["id"]), $USER->id, $USER->id));                                            
                 break;
 
             default:
                 break;
         }
-        $result = mysql_query($query);
-        $backup = array();
-        if ($result && mysql_num_rows($result)) {
-            while($row = mysql_fetch_assoc($result)) { ; 
-                    $this->id               = $row['id'];
-                    $this->file_path        = $row['file_path'];
-                    $this->file_name        = $row['file_name'];
-                    $this->curriculum_id    = $row['curriculum_id'];
-                    $this->curriculum       = $row['curriculum'];
-                    $this->creation_time    = $row['creation_time'];
-                    $this->creator_id       = $row['creator_id'];
-                    $this->creator          = $row['username'];
-                   
-                    $backup[] = clone $this;        //it has to be clone, to get the object and not the reference
-            } 
-            
+        
+        $backup = array();   
+        while($result = $db->fetchObject()) { ; 
+                $this->id               = $result->id;
+                $this->file_path        = $result->file_path;
+                $this->file_name        = $result->file_name;
+                $this->curriculum_id    = $result->curriculum_id;
+                $this->curriculum       = $result->curriculum;
+                $this->creation_time    = $result->creation_time;
+                $this->creator_id       = $result->creator_id;
+                $this->creator          = $result->username;
+                $backup[] = clone $this;        //it has to be clone, to get the object and not the reference
+        } 
+        if (isset($backup)) {    
             return $backup;
         } else {
             return false;

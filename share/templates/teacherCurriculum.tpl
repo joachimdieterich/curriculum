@@ -110,22 +110,22 @@
             
             {* display results *}    
             {section name=res loop=$results}
-                <tr {if isset($selectedID) AND $selectedID eq $results[res].id} class="activecontenttablerow"{/if} class="contenttablerow" id="row{$results[res].id}" name="row{$results[res].id}" onclick="checkrow({$results[res].id})">
-                    <td><input class="invisible" type="checkbox" id="{$results[res].id}" name="id[]" value={$results[res].id} {if isset($selectedID) AND $selectedID eq $results[res].id} checked{/if}/></td>
-                    {*<td>{$results[res].id}</td>*}
-                    <td><img class="icon_tiny icon_listposition" src="{$subjects_url}{$results[res].filename}"></td>
-                    <td>{$results[res].curriculum}</td>
-                    <td>{$results[res].description}</td>
-                    <td>{$results[res].subject}</td>
-                    <td>{$results[res].grade}</td>
-                    <td>{$results[res].schooltype}</td>
-                    <td>{$results[res].state}</td>
-                    <td>{$results[res].de}</td>
+                <tr {if isset($selectedID) AND $selectedID eq $results[res]->id} class="activecontenttablerow"{/if} class="contenttablerow" id="row{$results[res]->id}" name="row{$results[res]->id}" onclick="checkrow({$results[res]->id})">
+                    <td><input class="invisible" type="checkbox" id="{$results[res]->id}" name="id[]" value={$results[res]->id} {if isset($selectedID) AND $selectedID eq $results[res]->id} checked{/if}/></td>
+                    {*<td>{$results[res]->id}</td>*}
+                    <td><img class="icon_tiny icon_listposition" src="{$subjects_url}{$results[res]->filename}"></td>
+                    <td>{$results[res]->curriculum}</td>
+                    <td>{$results[res]->description}</td>
+                    <td>{$results[res]->subject}</td>
+                    <td>{$results[res]->grade}</td>
+                    <td>{$results[res]->schooltype}</td>
+                    <td>{$results[res]->state}</td>
+                    <td>{$results[res]->de}</td>
                     {if !isset($edit_form)}
                     <td class="td_options">{*<div class="editbtn"  onmouseup="document.getElementById('editCurriculum').click();""></div>*}
-                        <a class="deletebtn floatright" type="button" name="delete" onclick="deleteCurriculum({$results[res].id})"></a>
-                        <a class="addbtn floatright" href="index.php?action=view&function=addObjectives&curriculum={$results[res].id}"></a>
-                        <a class="editbtn floatright" href="index.php?action=teacherCurriculum&function=edit&edit_curriculum_id={$results[res].id}"></a>
+                        <a class="deletebtn floatright" type="button" name="delete" onclick="deleteCurriculum({$results[res]->id})"></a>
+                        <a class="addbtn floatright" href="index.php?action=view&function=addObjectives&curriculum={$results[res]->id}"></a>
+                        <a class="editbtn floatright" href="index.php?action=teacherCurriculum&function=edit&edit_curriculum_id={$results[res]->id}"></a>
                     </td>
                     {/if}
                 </tr>

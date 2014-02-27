@@ -96,78 +96,65 @@ class Course {
      */
     public function getCourse($dependency = null, $id = null){
         switch ($dependency) {
-            case 'admin': $query = sprintf("SELECT cu.id, cu.curriculum, cu.description, gp.groups, gp.id AS gpid, fl.filename
+            case 'admin': $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, gp.groups, gp.id AS gpid, fl.filename
                                             FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp, files AS fl
                                             WHERE cu.id = ce.curriculum_id
                                             AND cu.icon_id = fl.id
                                             AND gp.id = ce.group_id
                                             AND ce.group_id = ANY (SELECT id FROM groups 
                                                                 WHERE institution_id = ANY (SELECT institution_id FROM institution_enrolments 
-                                                                                                WHERE user_id = '%s'))
-                                            ORDER BY gp.groups, cu.curriculum ASC",
-                                            mysql_real_escape_string($id)); 
-                                $result = mysql_query($query);
-                                if ($result && mysql_num_rows($result)){
-                                    while($row = mysql_fetch_assoc($result)) { 
-                                        $this->id            = $row["id"].'_'.$row["gpid"];
-                                        $this->course        = $row["groups"].' | '.$row["curriculum"].' | '.$row["description"]; 
-                                        $this->curriculum_id = $row["id"];
-                                        $this->curriculum    = $row["curriculum"];
-                                        $this->description   = $row["description"];
-                                        $this->group         = $row["groups"];
-                                        $this->icon          = $row["filename"];
-                                        $course[] = clone $this;        //it has to be clone, to get the object and not the reference
-                                    }
-                                }
-                            
-                break; 
-            case 'teacher': $query = sprintf("SELECT cu.id, cu.curriculum, cu.description, gp.groups
+                                                                                                WHERE user_id = ?))
+                                            ORDER BY gp.groups, cu.curriculum ASC');
+                            $db->execute(array($id));
+                            while($result = $db->fetchObject()) { 
+                                $this->id            = $result->id.'_'.$result->gpid;
+                                $this->course        = $result->groups.' | '.$result->curriculum.' | '.$result->description; 
+                                $this->curriculum_id = $result->id;
+                                $this->curriculum    = $result->curriculum;
+                                $this->description   = $result->description;
+                                $this->group         = $result->groups;
+                                $this->icon          = $result->filename;
+                                $course[] = clone $this;        //it has to be clone, to get the object and not the reference
+                            }              
+                            break; 
+            case 'teacher': $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, gp.groups
                                             FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp
                                             WHERE cu.id = ce.curriculum_id
                                             AND gp.id = ce.group_id
                                             AND ce.group_id = ANY(SELECT group_id
                                                     FROM groups_enrolments
-                                                    WHERE user_id =  '%s'
-                                                    OR creator_id =  '%s')
-                                                    ORDER BY gp.groups, cu.curriculum ASC",
-                                            mysql_real_escape_string($id), 
-                                            mysql_real_escape_string($id)); 
-                                $result = mysql_query($query);
-                                if ($result && mysql_num_rows($result)){
-                                    while($row = mysql_fetch_assoc($result)) { 
-                                        $this->id            = $row["id"].'_'.$row["gpid"];
-                                        $this->course        = $row["groups"].' | '.$row["curriculum"].' | '.$row["description"]; 
-                                        $this->curriculum_id = $row["id"];
-                                        $this->curriculum    = $row["curriculum"];
-                                        $this->description   = $row["description"];
-                                        $this->group         = $row["groups"];
-                                        $this->icon          = $row["filename"];
-                                        $course[] = clone $this;        //it has to be clone, to get the object and not the reference
-                                    }
-                                }
-                break; 
-            case 'course': $query = sprintf("SELECT cu.*, co.de, st.state, sc.schooltype, gr.grade, su.subject  
+                                                    WHERE user_id =  ?
+                                                    OR creator_id =  ?)
+                                                    ORDER BY gp.groups, cu.curriculum ASC');
+                            $db->execute(array($id));
+                            while($result = $db->fetchObject()) { 
+                                $this->id            = $result->id.'_'.$result->gpid;
+                                $this->course        = $result->groups.' | '.$result->curriculum.' | '.$result->description; 
+                                $this->curriculum_id = $result->id;
+                                $this->curriculum    = $result->curriculum;
+                                $this->description   = $result->description;
+                                $this->group         = $result->groups;
+                                $this->icon          = $result->filename;
+                                $course[] = clone $this;        
+                            }
+                            break; 
+            case 'course':  $db = DB::prepare('SELECT cu.*, co.de, st.state, sc.schooltype, gr.grade, su.subject  
                                             FROM curriculum AS cu, countries AS co, state AS st, schooltype AS sc, grade AS gr, subjects AS su
                                             WHERE cu.country_id = co.id AND cu.state_id = st.id 
-                                            AND cu.schooltype_id = sc.id AND cu.grade_id = gr.id AND cu.subject_id = su.id AND cu.id = '%s'",            
-                                        mysql_real_escape_string($id));
-                                    $result = mysql_query($query);
-                                    if ($result && mysql_num_rows($result)){
-                                        while($row = mysql_fetch_assoc($result)) { 
-                                            $this->curriculum_id = $row["id"];
-                                            $this->curriculum    = $row["curriculum"];
-                                            $this->description   = $row["description"];
-                                            $this->state         = $row["state"]; 
-                                            $this->country       = $row["de"];
-                                            $this->grade         = $row["grade"];
-                                            $this->subject       = $row["subject"];
-                                            $this->schooltype       = $row["schooltype"];
-                                            $course[] = clone $this;        //it has to be clone, to get the object and not the reference
-                                        }
-                                    }
-
-            default:    
-                break;
+                                            AND cu.schooltype_id = sc.id AND cu.grade_id = gr.id AND cu.subject_id = su.id AND cu.id = ?');
+                            $db->execute(array($id));
+                            while($result = $db->fetchObject()) { 
+                                $this->curriculum_id = $result->id;
+                                $this->curriculum    = $result->curriculum;
+                                $this->description   = $result->description;
+                                $this->state         = $result->state; 
+                                $this->country       = $result->de;
+                                $this->grade         = $result->grade;
+                                $this->subject       = $result->subject;
+                                $this->schooltype    = $result->schooltype;
+                                $course[] = clone $this;        
+                            }
+            default:        break;
         }
         
         if (isset($course)){
@@ -182,24 +169,19 @@ class Course {
     * @return array of users | boolean 
     */
    public function getTeacher($user_id, $curriculum_id){
-       $query = sprintf("SELECT DISTINCT usr.id
-                        FROM users AS usr, groups_enrolments AS gre
-                        WHERE (usr.role_id = 1 OR usr.role_id = 2 OR usr.role_id = 3 OR usr.role_id = 4 )
-                        AND gre.group_id = ANY (SELECT gre.group_id
-                                FROM groups_enrolments as gre, curriculum_enrolments as cue
-                                WHERE gre.user_id =  '%s' AND cue.curriculum_id = '%s')",
-                        mysql_real_escape_string($user_id), 
-                        mysql_real_escape_string($curriculum_id)); 
-            $result = mysql_query($query);
-            if ($result && mysql_num_rows($result)){
-                while($row = mysql_fetch_assoc($result)) {
-                    $teachers[] = $row["id"];
-                }
-            }
+        $db = DB::prepare('SELECT DISTINCT usr.id
+                            FROM users AS usr, groups_enrolments AS gre
+                            WHERE (usr.role_id = 1 OR usr.role_id = 2 OR usr.role_id = 3 OR usr.role_id = 4 )
+                            AND gre.group_id = ANY (SELECT gre.group_id
+                                    FROM groups_enrolments as gre, curriculum_enrolments as cue
+                                    WHERE gre.user_id =  ? AND cue.curriculum_id = ?)'); //WHERE Condition has to be changed for new roles
+        $db->execute(array($user_id, $curriculum_id));    
+        while($result = $db->fetchObject()) {
+            $teachers[] = $result->id;
+        }
        if (isset($teachers)){
            return $teachers; 
        } else {return false;}
-   }   
-   
+   }    
 }
 ?>

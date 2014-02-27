@@ -123,7 +123,7 @@
             <p class="floatleft">
                 <select class='inputform floatleft' name="curriculum">
                     {section name=res loop=$curriculum_list}  
-                        <option label="{$curriculum_list[res].curriculum} | {$curriculum_list[res].grade} | {$curriculum_list[res].description}" value="{$curriculum_list[res].id}">{$curriculum_list[res].curriculum} | {$curriculum_list[res].grade} | {$curriculum_list[res].description}</option>
+                        <option label="{$curriculum_list[res]->curriculum} | {$curriculum_list[res]->grade} | {$curriculum_list[res]->description}" value="{$curriculum_list[res]->id}">{$curriculum_list[res]->curriculum} | {$curriculum_list[res]->grade} | {$curriculum_list[res]->description}</option>
                     {/section}
                 </select> 
             <div class=" floatleft gray-gradient cssimgbtn border-radius gray-border">
@@ -163,20 +163,20 @@
             
             {* display results *}    
             {section name=res loop=$resultscurriculumList}
-                <tr {if isset($selectedID) AND $selectedID eq $resultscurriculumList[res].id} class="activecontenttablerow"{/if} class="contenttablerow" id="row{$resultscurriculumList[res].id}" name="row{$resultscurriculumList[res].id}" onclick="checkrow({$resultscurriculumList[res].id})">
-                    <td><input class="invisible" type="checkbox" id="{$resultscurriculumList[res].id}" name="id[]" value={$resultscurriculumList[res].id} {if isset($selectedID) AND $selectedID eq $resultscurriculumList[res].id} checked{/if}/></td>
+                <tr {if isset($selectedID) AND $selectedID eq $resultscurriculumList[res]->id} class="activecontenttablerow"{/if} class="contenttablerow" id="row{$resultscurriculumList[res]->id}" name="row{$resultscurriculumList[res]->id}" onclick="checkrow({$resultscurriculumList[res]->id})">
+                    <td><input class="invisible" type="checkbox" id="{$resultscurriculumList[res]->id}" name="id[]" value={$resultscurriculumList[res]->id} {if isset($selectedID) AND $selectedID eq $resultscurriculumList[res]->id} checked{/if}/></td>
                     {*<td>{$results[res].id}</td>*}
-                    <td><img class="icon_tiny icon_listposition" src="{$subjects_url}{$resultscurriculumList[res].filename}"></td>
-                    <td>{$resultscurriculumList[res].curriculum}</td>
-                    <td>{$resultscurriculumList[res].description}</td>
-                    <td>{$resultscurriculumList[res].subject}</td>
-                    <td>{$resultscurriculumList[res].grade}</td>
-                    <td>{$resultscurriculumList[res].schooltype}</td>
-                    <td>{$resultscurriculumList[res].state}</td>
-                    <td>{$resultscurriculumList[res].de}</td>
+                    <td><img class="icon_tiny icon_listposition" src="{$subjects_url}{$resultscurriculumList[res]->filename}"></td>
+                    <td>{$resultscurriculumList[res]->curriculum}</td>
+                    <td>{$resultscurriculumList[res]->description}</td>
+                    <td>{$resultscurriculumList[res]->subject}</td>
+                    <td>{$resultscurriculumList[res]->grade}</td>
+                    <td>{$resultscurriculumList[res]->schooltype}</td>
+                    <td>{$resultscurriculumList[res]->state}</td>
+                    <td>{$resultscurriculumList[res]->de}</td>
                     {if !isset($showCurriculumForm)}
                     <td class="td_1options">
-                        <a class="deletebtn floatright" href="index.php?action=teacherGroups&function=expel_group&curriculumID={$resultscurriculumList[res].id}&group_id={$selected_group_id}"></a>
+                        <a class="deletebtn floatright" href="index.php?action=teacherGroups&function=expel_group&curriculumID={$resultscurriculumList[res]->id}&group_id={$selected_group_id}"></a>
                     </td>
                     {/if}
                 </tr>

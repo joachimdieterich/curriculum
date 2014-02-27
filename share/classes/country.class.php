@@ -53,20 +53,16 @@ class Country {
      * @return array of country objects|boolean 
      */
     public function load($id) {
+        $db = DB::prepare('SELECT * FROM countries WHERE id = ? ORDER BY de ASC');
+        $db->execute(array($id));
+        while($result = $db->fetchObject()) { 
+            $this->id    = $result->id;   
+            $this->code  = $result->code;   
+            $this->en    = $result->en;   
+            $this->de    = $result->de; 
+            $countries[] = clone $this; 
+        } 
         
-        $query = sprintf("SELECT * FROM countries WHERE id = '%s' ORDER BY de ASC",
-                                      mysql_real_escape_string($id));
-        $result  = mysql_query($query);
-        
-        if ($result  && mysql_num_rows($result)) {
-           while($row = mysql_fetch_assoc($result)) { 
-               $this->id    = $row["id"];   
-               $this->code  = $row["code"];   
-               $this->en    = $row["en"];   
-               $this->de    = $row["de"]; 
-               $countries[] = clone $this; 
-           } 
-        }
         if (isset($countries)) {
             return $countries;
         } else {
@@ -79,17 +75,14 @@ class Country {
      * @return array 
      */
     public function getCountries(){
-        $query  = "SELECT * FROM countries ORDER BY de ASC";
-        $result = mysql_query($query);
-        
-        if ($result  && mysql_num_rows($result)) {
-           while($row = mysql_fetch_assoc($result)) { 
-               $this->id    = $row["id"];   
-               $this->code  = $row["code"];   
-               $this->en    = $row["en"];   
-               $this->de    = $row["de"]; 
-               $countries[] = clone $this; 
-           } 
+        $db = DB::prepare('SELECT * FROM countries ORDER BY de ASC');
+        $db->execute();
+        while($result = $db->fetchObject()) { 
+            $this->id    = $result->id;   
+            $this->code  = $result->code;   
+            $this->en    = $result->en;   
+            $this->de    = $result->de; 
+            $countries[] = clone $this; 
         }
         
         if (isset($countries)) {
