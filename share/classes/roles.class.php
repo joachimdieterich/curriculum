@@ -64,30 +64,18 @@ class Roles {
      * @return mixed 
      */
     public function add(){
-        $query = sprintf("SELECT MAX(role_id) FROM user_roles");
-        $result = mysql_query($query);
-        list($max) = mysql_fetch_row($result);
-        $this->role_id = $max + 1; 
-        $query = sprintf("INSERT INTO user_roles (role_id, role, description,creator_id) 
-                                                    VALUES ('%s', '%s', '%s', '%s')",
-                        mysql_real_escape_string($this->role_id),
-                        mysql_real_escape_string($this->role),
-                        mysql_real_escape_string($this->description),
-                        mysql_real_escape_string($this->creator_id));
-        $write_role = mysql_query($query);
-        
+        $db = DB::prepare('SELECT MAX(role_id) as max FROM user_roles');
+        $db->execute();
+        $result = $db->fetchObject();
+        $this->role_id = $result->max + 1; 
+        $db = DB::prepare('INSERT INTO user_roles (role_id, role, description,creator_id) VALUES (?,?,?,?)');
+        $write_role = $db->execute(array($this->role_id, $this->role, $this->description, $this->creator_id));
         foreach($this->capabilities as $key=>$value) {
             foreach ($value as $v_key => $v_value) {
-            $query = sprintf("INSERT INTO role_capabilities (role_id, capability, permission, creator_id) 
-                                VALUES ('%s', '%s', %s, '%s')",
-                            mysql_real_escape_string($this->role_id),
-                            mysql_real_escape_string($v_key),
-                            mysql_real_escape_string($v_value),
-                            mysql_real_escape_string($this->creator_id));
-            $write_role_capabilities = mysql_query($query);
+            $db = DB::prepare('INSERT INTO role_capabilities (role_id, capability, permission, creator_id) VALUES (?, ?, ?, ?)');
+            $write_role_capabilities = $db->execute(array($this->role_id, $v_key, $v_value, $this->creator_id));
             }
         }
-        
         if ($write_role == true AND $write_role_capabilities == true){
             return true;
         } else {
@@ -100,38 +88,22 @@ class Roles {
      * @return boolean 
      */
     public function update(){
-         $query = sprintf("UPDATE user_roles SET role = '%s', description = '%s',creator_id = '%s'
-                            WHERE role_id = '%s'",
-                        mysql_real_escape_string($this->role),
-                        mysql_real_escape_string($this->description),
-                        mysql_real_escape_string($this->creator_id),
-                        mysql_real_escape_string($this->role_id));
-        $update_role = mysql_query($query);
+        $db = DB::prepare('UPDATE user_roles SET role = ?, description = ?,creator_id = ? WHERE role_id = ?');
+        $update_role = $db->execute(array($this->role, $this->description, $this->creator_id, $this->role_id));
         //object_to_array($this->capabilities);
         foreach($this->capabilities as $key=>$value) {
             foreach ($value as $v_key => $v_value) {
-            $query = sprintf("SELECT role_id FROM role_capabilities WHERE role_id = '%s' AND capability = '%s'", 
-                            mysql_real_escape_string($this->role_id),
-                            mysql_real_escape_string($v_key));
-            $result = mysql_query($query);
-            list($role_id) = mysql_fetch_row($result);
-            
-                if (isset($role_id)){       
-                    $query = sprintf("UPDATE role_capabilities SET permission= %s, creator_id = '%s'
-                                        WHERE role_id = '%s' AND capability = '%s'",
-                                    mysql_real_escape_string($v_value),
-                                    mysql_real_escape_string($this->creator_id),
-                                    mysql_real_escape_string($this->role_id),
-                                    mysql_real_escape_string($v_key));
-                    $update_role_capabilities = mysql_query($query);
+            $db = DB::prepare('SELECT role_id FROM role_capabilities WHERE role_id = ? AND capability = ?');
+            $db->execute(array($this->role_id, $v_key));
+            $result = $db->fetchObject();            
+                if (isset($result->role_id)){       
+                    $db = DB::prepare('UPDATE role_capabilities SET permission= '.$v_value.', creator_id = ?
+                                        WHERE role_id = ? AND capability = ?');
+                    $update_role_capabilities = $db->execute(array($this->creator_id, $this->role_id, $v_key));
                 } else {
-                    $query = sprintf("INSERT INTO role_capabilities (role_id, capability, permission, creator_id) 
-                                VALUES ('%s', '%s', %s, '%s')",
-                            mysql_real_escape_string($this->role_id),
-                            mysql_real_escape_string($v_key),
-                            mysql_real_escape_string($v_value),
-                            mysql_real_escape_string($this->creator_id));
-                    $update_role_capabilities = mysql_query($query);
+                    $db = DB::prepare('INSERT INTO role_capabilities (role_id, capability, permission, creator_id) 
+                                        VALUES (?, ?, ?, ?)');
+                    $update_role_capabilities = $db->execute(array($this->role_id, $v_key, $v_value, $this->creator_id));
                 }
             }
         }
@@ -148,12 +120,10 @@ class Roles {
      * @return mixed 
      */
     public function delete(){
-        $query = sprintf("DELETE FROM user_roles WHERE role_id='%s'",
-                        mysql_real_escape_string($this->role_id));
-        $delete_role =  mysql_query($query);
-        $query = sprintf("DELETE FROM role_capabilities WHERE role_id='%s'",
-                        mysql_real_escape_string($this->role_id));
-        $delete_role_capabilities = mysql_query($query);
+        $db = DB::prepare('DELETE FROM user_roles WHERE role_id = ?');
+        $delete_role =  $db->execute(array($this->role_id));
+        $db = DB::prepare('DELETE FROM role_capabilities WHERE role_id= ?');
+        $delete_role_capabilities = $db->execute(array($this->role_id));
        if ($delete_role == true AND $delete_role_capabilities == true){
             return true;
         } else {
@@ -165,15 +135,14 @@ class Roles {
      * Load Grade with id $this->id 
      */
     public function load(){
-        $query = sprintf("SELECT * FROM user_roles WHERE role_id='%s'",
-                        mysql_real_escape_string($this->role_id));
-        $result = mysql_query($query);
-        $row = mysql_fetch_assoc($result);
-        $this->role_id      = $row["role_id"];
-        $this->role         = $row["role"];
-        $this->description  = $row["description"];
-        $this->creation_time= $row["creation_time"];
-        $this->creator_id   = $row["creator_id"];  
+        $db = DB::prepare('SELECT * FROM user_roles WHERE role_id = ?');
+        $db->execute(array($this->role_id));             
+        $result = $db->fetchObject();
+        $this->role_id      = $result->role_id;
+        $this->role         = $result->role;
+        $this->description  = $result->description;
+        $this->creation_time= $result->creation_time;
+        $this->creator_id   = $result->creator_id;  
     }
     
     /**
@@ -181,12 +150,12 @@ class Roles {
      * @return array of roles |boolean 
      */
     public function get(){
-        $query = "SELECT * FROM user_roles";
-        $result = mysql_query($query);
-        while ($row = mysql_fetch_assoc($result)) {
-            $this->role_id      = $row["role_id"];
-            $this->role         = $row["role"];
-            $this->description  = $row["description"];
+        $db = DB::prepare('SELECT * FROM user_roles');
+        $db->execute();
+        while ($result = $db->fetchObject()) {
+            $this->role_id      = $result->role_id;
+            $this->role         = $result->role;
+            $this->description  = $result->description;
             $roles[] = clone $this; 
         }
     
@@ -200,12 +169,10 @@ class Roles {
     * @return boolean
     */
     public function dedicate(){ // only use during install
-        $query = sprintf("UPDATE user_roles SET creator_id = '%s'",
-                                            mysql_real_escape_string($this->creator_id));
-        $dedicate_roles =  mysql_query($query);
-        $query = sprintf("UPDATE role_capabilities SET creator_id = '%s'",
-                                            mysql_real_escape_string($this->creator_id));
-        $dedicate_capabilities =  mysql_query($query);
+        $db = DB::prepare('UPDATE user_roles SET creator_id = ?');
+        $dedicate_roles =  $db->execute(array($this->creator_id));
+        $db = DB::prepare('UPDATE role_capabilities SET creator_id = ?');
+        $dedicate_capabilities =  $db->execute(array($this->creator_id));
         
         if ($dedicate_roles  == true AND $dedicate_capabilities == true){
             return true;

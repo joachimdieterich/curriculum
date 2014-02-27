@@ -89,67 +89,56 @@ class Mailbox {
      */
     public function loadMailbox($user_id, $mailbox = 'in'){
         if ($mailbox != 'deleted'){
-            
-            $query = sprintf("SELECT *
-                        FROM message
-                        WHERE %s = '%s' ORDER BY id DESC",
-                        mysql_real_escape_string($mailbox),
-                        mysql_real_escape_string($user_id));
+            $db = DB::prepare('SELECT * FROM message WHERE '.$mailbox.' = ? ORDER BY id DESC');
+            $db->execute(array($user_id));
         } else {
-            $query = sprintf("SELECT msg.*
-                        FROM message AS msg
-                        WHERE msg.sender_id = '%s' OR msg.receiver_id = '%s' 
-                        AND msg.status = '-1' 
-                        ORDER BY msg.id DESC",
-                        mysql_real_escape_string($user_id),
-                        mysql_real_escape_string($user_id));
+            $db = DB::prepare('SELECT msg.* FROM message AS msg WHERE msg.sender_id = ? OR msg.receiver_id = ?
+                        AND msg.status = -1 ORDER BY msg.id DESC');
+            $db->execute(array($user_id, $user_id));        
         }
-       $result = mysql_query($query);
-        if ($result && mysql_num_rows($result)){
-            while ($row = mysql_fetch_assoc($result)) {
-                $getMail = new Mail();
-                $getMail->id                 = $row['id'];
-                $getMail->sender_id          = $row['sender_id'];
+       $result = $db->fetchObject();
+        
+        while ($result = $db->fetchObject()) {
+            $getMail = new Mail();
+            $getMail->id                 = $result->id;
+            $getMail->sender_id          = $result->sender_id;
 
-                $query = sprintf("SELECT username, firstname, lastname FROM users WHERE id = '%s'",
-                        mysql_real_escape_string($getMail->sender_id));
-                $sender = mysql_query($query);
-                if ($sender && mysql_num_rows($sender)){
-                    $getMail->sender_username    = mysql_result($sender, 0, "username");
-                    $getMail->sender_firstname   = mysql_result($sender, 0, "firstname");
-                    $getMail->sender_lastname    = mysql_result($sender, 0, "lastname");
-                }
-                $getMail->receiver_id        = $row['receiver_id'];
-                $query = sprintf("SELECT username, firstname, lastname FROM users WHERE id = '%s'",
-                        mysql_real_escape_string($getMail->sender_id));
-                $receiver = mysql_query($query);
-                if ($receiver && mysql_num_rows($receiver)){
-                $getMail->receiver_username  = mysql_result($receiver, 0, "username");
-                $getMail->receiver_firstname = mysql_result($receiver, 0, "firstname");
-                $getMail->receiver_lastname  = mysql_result($receiver, 0, "lastname");
-                }
-                $getMail->subject            = $row['subject'];
-                $getMail->message            = $row['message'];
-                $getMail->creation_time      = $row['creation_time'];
-                $getMail->status             = $row['status'];
-                switch ($mailbox) {
-                    case 'receiver_id': //inbox
-                                        $this->inbox[]            = $getMail;
-                                        break;
-                    case 'sender_id': // outbox
-                                        $this->outbox[]           = $getMail;
-                                        break;
-                        break;
-                    case 'deleted':   // deleted messages
-                                        $this->deleted_messages[] = $getMail;
-                                        break;
-                        break;
-
-                    default:
-                        break;
-                }
+            $db_01 = DB::prepare('SELECT username, firstname, lastname FROM users WHERE id = ?');
+            $db_01->execute(array($getMail->sender_id));
+            $sender = $db_01->fetchObject();
+            if ($sender){
+                $getMail->sender_username    = $sender->username;
+                $getMail->sender_firstname   = $sender->firstname;
+                $getMail->sender_lastname    = $sender->lastname;
             }
-            
+            $getMail->receiver_id        = $result->receiver_id;
+            $db_02 = DB::prepare('SELECT username, firstname, lastname FROM users WHERE id = ?');
+            $db_02->execute(array($getMail->sender_id)); 
+            $receiver = $db_02->fetchObject();
+            if ($receiver){
+                $getMail->receiver_username  = $receiver->username;
+                $getMail->receiver_firstname = $receiver->firstname;
+                $getMail->receiver_lastname  = $receiver->lastname;
+            }
+            $getMail->subject            = $result->subject;
+            $getMail->message            = $result->message;
+            $getMail->creation_time      = $result->creation_time;
+            $getMail->status             = $result->status;
+            switch ($mailbox) {
+                case 'receiver_id': //inbox
+                                    $this->inbox[]            = $getMail;
+                                    break;
+                case 'sender_id': // outbox
+                                    $this->outbox[]           = $getMail;
+                                    break;
+                case 'deleted':   // deleted messages
+                                    $this->deleted_messages[] = $getMail;
+                                    break;
+                default:            break;
+            }
+        }
+        if (isset($this->inbox) OR isset($this->outbox) OR isset($this->deleted_messages)){
+            // nothing to do
         } else { switch ($mailbox) {
                     case 'receiver_id': //inbox
                                         $this->inbox[]            = null;
@@ -157,14 +146,10 @@ class Mailbox {
                     case 'sender_id':   // outbox
                                         $this->outbox[]           = null;
                                         break;
-                        break;
                     case 'deleted':     // deleted messages
                                         $this->deleted_messages[] = null;
                                         break;
-                        break;
-
-                    default:
-                        break;
+                    default:            break;
                 }           
         }
     }    

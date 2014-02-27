@@ -75,22 +75,19 @@ class Institution {
      * load  institution from db depending on id
      */
     public function load() {
-        $query = sprintf("SELECT * FROM institution WHERE id = '%s'",
-                         mysql_real_escape_string($this->id));
-        
-        $result = mysql_query($query);
-        
-        if ($result && mysql_num_rows($result)) {
-          $this->confirmed          = mysql_result($result, 0, 'confirmed'); 
-          $this->institution        = mysql_result($result, 0, 'institution'); 
-          $this->description        = mysql_result($result, 0, 'description'); 
-          $this->schooltype_id      = mysql_result($result, 0, 'schooltype_id'); 
-          $this->country_id         = mysql_result($result, 0, 'country_id'); 
-          $this->state_id           = mysql_result($result, 0, 'state_id'); 
-          $this->creation_time      = mysql_result($result, 0, 'creation_time'); 
-          $this->creator_id         = mysql_result($result, 0, 'creator_id'); 
+        $db = DB::prepare('SELECT * FROM institution WHERE id = ?');
+        if ($db->execute(array($this->id))) {
+          $result = $db->fetchObject();
+          $this->confirmed          = $result->confirmed;
+          $this->institution        = $result->institution; 
+          $this->description        = $result->description; 
+          $this->schooltype_id      = $result->schooltype_id; 
+          $this->country_id         = $result->country_id; 
+          $this->state_id           = $result->state_id; 
+          $this->creation_time      = $result->creation_time; 
+          $this->creator_id         = $result->creator_id; 
         } else {
-            return $result;
+            return false;
         }
     }
     
@@ -98,24 +95,15 @@ class Institution {
      *  add institution to db   
      */
     public function add() {
-        $query = sprintf("SELECT COUNT(id) FROM institution WHERE institution = '%s'",
-                                    mysql_real_escape_string($this->institution));
-        $result = mysql_query($query);
-        list($count) = mysql_fetch_row($result);
-        if($count >= 1) { 
+        $db = DB::prepare('SELECT COUNT(id) FROM institution WHERE institution = ?');
+        $db->execute(array($this->institution));
+        if($db->fetchColumn() >= 1) { 
             return false;
         } else {
-            $query = sprintf("INSERT INTO institution (institution, description, schooltype_id, country_id, state_id, creator_id, confirmed) 
-                                VALUES ('%s','%s','%s','%s','%s','%s','%s')",
-                                            mysql_real_escape_string($this->institution),
-                                            mysql_real_escape_string($this->description),
-                                            mysql_real_escape_string($this->schooltype_id),
-                                            mysql_real_escape_string($this->country_id),
-                                            mysql_real_escape_string($this->state_id),
-                                            mysql_real_escape_string($this->creator_id),
-                                            mysql_real_escape_string($this->confirmed));
-            if (mysql_query($query)){
-                return mysql_insert_id(); //gibt die ID zurück
+            $db = DB::prepare('INSERT INTO institution (institution, description, schooltype_id, country_id, state_id, creator_id, confirmed) 
+                                VALUES (?,?,?,?,?,?,?)');
+            if ($db->execute(array($this->institution, $this->description, $this->schooltype_id, $this->country_id, $this->state_id, $this->creator_id, $this->confirmed))){
+                return $db->lastInsertId(); //gibt die ID zurück
             } else return false; 
             
         }
@@ -126,9 +114,8 @@ class Institution {
      * @return boolean 
      */
     public function deleteInstitution(){
-        $query = sprintf("DELETE FROM institution WHERE id='%s'",
-                          mysql_real_escape_string($this->id));
-        return mysql_query($query);
+        $db = DB::prepare('DELETE FROM institution WHERE id = ?');
+        return $db->execute(array($this->id));
     }
     
     /**
@@ -137,37 +124,20 @@ class Institution {
      */
     public function update($install = false){
         if ($install){
-            $query = sprintf("UPDATE institution SET institution = '%s', description= '%s', schooltype_id= '%s', country_id= '%s', state_id= '%s', creator_id= '%s', confirmed = '%s' ",
-                                                mysql_real_escape_string($this->institution),
-                                                mysql_real_escape_string($this->description),
-                                                mysql_real_escape_string($this->schooltype_id),
-                                                mysql_real_escape_string($this->country_id),
-                                                mysql_real_escape_string($this->state_id),
-                                                mysql_real_escape_string($this->creator_id),
-                                                mysql_real_escape_string($this->confirmed));
-             if (mysql_query($query)){
-                $query = sprintf("SELECT id FROM institution WHERE institution = '%s'",
-                            mysql_real_escape_string($this->institution));
-                $result = mysql_query($query);
-
-                if ($result && mysql_num_rows($result)) {
-                    $this->id          = mysql_result($result, 0, 'id'); 
+            $db = DB::prepare('UPDATE institution SET institution = ?, description= ?, schooltype_id= ?, country_id= ?, state_id= ?, creator_id= ?, confirmed = ?');
+             if ($db->execute(array($this->institution, $this->description, $this->schooltype_id, $this->country_id, $this->state_id, $this->creator_id, $this->confirmed))){
+                $db = DB::prepare('SELECT id FROM institution WHERE institution = ?');
+                $db->execute(array($this->institution));
+                $result = $db->fetchObject();
+                if ($result) {
+                    $this->id          = $result->id; 
                     return $this->id;
                 } else { return false; }
              }
         } else {
-            $query = sprintf("UPDATE institution SET institution = '%s', description= '%s', schooltype_id= '%s', country_id= '%s', state_id= '%s', creator_id= '%s', confirmed = '%s' 
-                                    WHERE id = '%s'",
-                                                mysql_real_escape_string($this->institution),
-                                                mysql_real_escape_string($this->description),
-                                                mysql_real_escape_string($this->schooltype_id),
-                                                mysql_real_escape_string($this->country_id),
-                                                mysql_real_escape_string($this->state_id),
-                                                mysql_real_escape_string($this->creator_id),
-                                                mysql_real_escape_string($this->confirmed),
-                                                mysql_real_escape_string($this->id));
-            return mysql_query($query);
-        
+            $db = DB::prepare('UPDATE institution SET institution = ?, description= ?, schooltype_id= ?, country_id= ?, state_id= ?, creator_id= ?, confirmed = ? 
+                                    WHERE id = ?');
+            return $db->execute(array($this->institution, $this->description, $this->schooltype_id, $this->country_id, $this->state_id, $this->creator_id, $this->confirmed, $this->id));
         }
     }
     
@@ -191,47 +161,43 @@ class Institution {
     public function loadConfig($dependency = null, $id = null){
     global $INSTITUTION; 
     switch ($dependency) {
-        case 'user':    $query = sprintf("SELECT ins.id, ins.institution, ins.description, sch.schooltype AS schooltype_id, sta.state AS state_id, 
+        case 'user':    $db = DB::prepare('SELECT ins.id, ins.institution, ins.description, sch.schooltype AS schooltype_id, sta.state AS state_id, 
                              ins.country_id, ins.creation_time, usr.username AS creator_id 
                         FROM institution AS ins, schooltype AS sch, state AS sta, users AS usr
-                        WHERE sch.id = ins.schooltype_id
-                        AND sta.id = ins.state_id
-                        AND usr.id = ins.creator_id
-                        AND ins.id = ANY (SELECT institution_id FROM institution_enrolments WHERE user_id = '%s')",
-                        mysql_real_escape_string($id));
-            break;
+                        WHERE sch.id = ins.schooltype_id AND sta.id = ins.state_id AND usr.id = ins.creator_id
+                        AND ins.id = ANY (SELECT institution_id FROM institution_enrolments WHERE user_id = ?)');
+                        $db->execute(array($id));
+                        break;
 
-        default:
-            break;
+        default:        break;
     }
-
-    $result = mysql_query($query);
     //setup $INSTITUTION   
-        while($row = mysql_fetch_assoc($result)) { 
-            $INSTITUTION->id                = mysql_result($result, 0, "id");
-            $INSTITUTION->institution       = mysql_result($result, 0, "institution");
-            $INSTITUTION->description       = mysql_result($result, 0, "description");
-            $INSTITUTION->schooltype        = mysql_result($result, 0, "schooltype_id");
-            $INSTITUTION->country_id        = mysql_result($result, 0, "country_id");
-            $INSTITUTION->state             = mysql_result($result, 0, "state_id");
-            $INSTITUTION->creator_id        = mysql_result($result, 0, "creator_id");
+        while($result = $db->fetchObject()) { 
+            $INSTITUTION->id                = $result->id;
+            $INSTITUTION->institution       = $result->institution;
+            $INSTITUTION->description       = $result->description;
+            $INSTITUTION->schooltype        = $result->schooltype_id;
+            $INSTITUTION->country_id        = $result->country_id;
+            $INSTITUTION->state             = $result->state_id;
+            $INSTITUTION->creator_id        = $result->creator_id;
 
             //get config data from db config_institution
-            $query = sprintf("SELECT * FROM config_institution
-                                WHERE institution_id = '%s'",
-                                mysql_real_escape_string($INSTITUTION->id));
-            $result = mysql_query($query);
-            $INSTITUTION->institution_filepath              = mysql_result($result, 0, "institution_filepath");
-            $INSTITUTION->institution_paginator_limit       = mysql_result($result, 0, "institution_paginator_limit");
-            $INSTITUTION->institution_standard_role         = mysql_result($result, 0, "institution_standard_role");
-            $INSTITUTION->institution_standard_country      = mysql_result($result, 0, "institution_standard_country");
-            $INSTITUTION->institution_standard_state        = mysql_result($result, 0, "institution_standard_state");
-            $INSTITUTION->institution_csv_size              = mysql_result($result, 0, "institution_csv_size");
-            $INSTITUTION->institution_avatar_size           = mysql_result($result, 0, "institution_avatar_size");
-            $INSTITUTION->institution_material_size         = mysql_result($result, 0, "institution_material_size");
-            $INSTITUTION->institution_acc_days              = mysql_result($result, 0, "institution_acc_days");
-            $INSTITUTION->institution_language              = mysql_result($result, 0, "institution_language");  
-            $INSTITUTION->institution_timeout               = mysql_result($result, 0, "institution_timeout");                
+            $db_1 = DB::prepare('SELECT * FROM config_institution
+                                WHERE institution_id = ?');
+            $db_1->execute(array($INSTITUTION->id));
+            
+            $result_1 =  $db_1->fetchObject();
+            $INSTITUTION->institution_filepath              = $result_1->institution_filepath;
+            $INSTITUTION->institution_paginator_limit       = $result_1->institution_paginator_limit;
+            $INSTITUTION->institution_standard_role         = $result_1->institution_standard_role;
+            $INSTITUTION->institution_standard_country      = $result_1->institution_standard_country;
+            $INSTITUTION->institution_standard_state        = $result_1->institution_standard_state;
+            $INSTITUTION->institution_csv_size              = $result_1->institution_csv_size;
+            $INSTITUTION->institution_avatar_size           = $result_1->institution_avatar_size;
+            $INSTITUTION->institution_material_size         = $result_1->institution_material_size;
+            $INSTITUTION->institution_acc_days              = $result_1->institution_acc_days;
+            $INSTITUTION->institution_language              = $result_1->institution_language;  
+            $INSTITUTION->institution_timeout               = $result_1->institution_timeout;                
         }
     }
     
@@ -240,11 +206,12 @@ class Institution {
      * @return boolean 
      */
     public function getNewInsitutions(){
-        $query          = sprintf("SELECT COUNT(id) AS value FROM institution WHERE confirmed = 4");
-        $result         = mysql_query($query); 
-        $amount_of_new_instituions = mysql_fetch_array($result);
-        if ($amount_of_new_instituions[0]){
-            return $amount_of_new_instituions[0];
+        $db = DB::prepare('SELECT COUNT(id) AS value FROM institution WHERE confirmed = 4');
+        $db->execute();
+        $result = $db->fetchColumn();
+        
+        if ($result){
+            return $result;
         } else {
             return false; 
         }
@@ -255,15 +222,12 @@ class Institution {
      * @param string $username 
      */
     public function getInstitutionByUserName($username){
-        $query = sprintf("SELECT ins.id
-                            FROM institution AS ins
+        $db = DB::prepare('SELECT ins.id FROM institution AS ins
                             WHERE ins.id = ANY (SELECT institution_id FROM institution_enrolments WHERE user_id = 
-                                            (SELECT id FROM users WHERE username = '%s'))",
-                            mysql_real_escape_string($username));
-        $result = mysql_query($query);
-
-        while($row = mysql_fetch_assoc($result)) { 
-                $this->id = $row['id']; 
+                                            (SELECT id FROM users WHERE username = ?))');
+        $db->execute(array($username));
+        while($result = $db->fetchObject()) { 
+                $this->id = $result->id;
         } 
     }
     
@@ -273,18 +237,14 @@ class Institution {
     * @return array , default = null 
     */
     public function getInstitutionsByUserID($user_id){
-        $query = sprintf("SELECT ins.id, ins.institution, ins.description, sch.schooltype AS schooltype_id, sta.state AS state_id, ins.country_id, co.de AS country, ins.creation_time, usr.username AS creator_id 
+        $db = DB::prepare('SELECT ins.id, ins.institution, ins.description, sch.schooltype AS schooltype_id, sta.state AS state_id, ins.country_id, co.de AS country, ins.creation_time, usr.username AS creator_id 
                             FROM institution AS ins, schooltype AS sch, state AS sta, countries AS co, users AS usr
-                            WHERE sch.id = ins.schooltype_id
-                            AND sta.id = ins.state_id
-                            AND co.id = ins.country_id
-                            AND usr.id = ins.creator_id
-                            AND ins.id = ANY (SELECT institution_id FROM institution_enrolments WHERE user_id = '%s')",
-                            mysql_real_escape_string($user_id));
-        $result = mysql_query($query);
+                            WHERE sch.id = ins.schooltype_id AND sta.id = ins.state_id AND co.id = ins.country_id AND usr.id = ins.creator_id
+                            AND ins.id = ANY (SELECT institution_id FROM institution_enrolments WHERE user_id = ?)');
+        $db->execute(array($user_id));
 
-        while($row = mysql_fetch_assoc($result)) { 
-                $dataInstitution[] = $row; 
+        while($result = $db->fetchObject()) { 
+                $dataInstitution[] = $result; 
         } 
         if (isset($dataInstitution)){
             $value = $dataInstitution;
@@ -299,14 +259,14 @@ class Institution {
     * @return boolean
     */
     public function dedicate(){ // only use during install
-        $query = sprintf("UPDATE institution SET creator_id = '%s'",
-                                            mysql_real_escape_string($this->creator_id));
-        if( mysql_query($query)){
-            $query = sprintf("UPDATE institution_enrolments SET creator_id = '%s'",
-                                            mysql_real_escape_string($this->creator_id));
-        }
-        return mysql_query($query);
+        $db = DB::prepare('UPDATE institution SET creator_id = ?');
+        
+        if($db->execute(array($this->creator_id))){
+           $db = DB::prepare('UPDATE institution_enrolments SET creator_id = ?');
+           $db->execute(array($this->creator_id));
+           return true; 
+        } else {
+        return false;}
     }
-
 } 
 ?>

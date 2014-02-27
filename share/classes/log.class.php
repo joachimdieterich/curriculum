@@ -77,13 +77,8 @@ class Log {
      * @return boolean 
      */
     public function add($user_id, $action, $url, $info){
-    $query = sprintf("INSERT INTO log (creation_time,user_id,ip,action,url,info) VALUES (NOW(),'%s','%s','%s','%s','%s')",
-                    mysql_real_escape_string($user_id),
-                    mysql_real_escape_string($_SERVER['REMOTE_ADDR']),
-                    mysql_real_escape_string($action),
-                    mysql_real_escape_string($url),
-                    mysql_real_escape_string($info));
-    return mysql_query($query);	
+    $db = DB::prepare('INSERT INTO log (creation_time,user_id,ip,action,url,info) VALUES (NOW(),?,?,?,?,?)');
+    return $db->execute(array($user_id, $_SERVER['REMOTE_ADDR'], $action, $url, $info));
     }
     
     /**
@@ -110,24 +105,21 @@ class Log {
     }
     
     public function getLogs() {
-        $query = sprintf("SELECT lg.*, us.username  
+        $db = DB::prepare('SELECT lg.*, us.username  
                             FROM log AS lg, users AS us
-                            WHERE lg.user_id = us.id"); //DATE(creation_time) = CURDATE()
-        $result = mysql_query($query);
-        if ($result && mysql_num_rows($result)) {
-            while($row = mysql_fetch_assoc($result)) { 
-                $this->id                = $row["id"];
-                $this->creation_time     = $row["creation_time"];
-                $this->user_id           = $row["user_id"];   
-                $this->username          = $row["username"];   
-                $this->ip                = $row["ip"];   
-                $this->action            = $row["action"];   
-                $this->url               = $row["url"];   
-                $this->info              = $row["info"];   
-                $log[]                   = clone $this; 
-            } 
-        }  
-        
+                            WHERE lg.user_id = us.id'); //DATE(creation_time) = CURDATE()
+        $db->execute();
+        while($result = $db->fetchObject()) { 
+            $this->id                = $result->id;
+            $this->creation_time     = $result->creation_time;
+            $this->user_id           = $result->user_id;
+            $this->username          = $result->username;
+            $this->ip                = $result->ip; 
+            $this->action            = $result->action;
+            $this->url               = $result->url;   
+            $this->info              = $result->info;   
+            $log[]                   = clone $this; 
+        }   
         if (isset($log)){
             return $log;
         } else { return false;}

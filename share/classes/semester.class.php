@@ -75,26 +75,23 @@ class Semester {
      */
     public function getSemesters(){
         $semesters = array();
-        $query = sprintf("SELECT se.id, se.semester, se.description, se.begin, se.end, 
+        $db = DB::prepare('SELECT se.id, se.semester, se.description, se.begin, se.end, 
                                 se.creation_time, se.creator_id, us.username, ins.institution
                         FROM semester AS se, users AS us, institution AS ins
-                        WHERE se.institution_id IN ('%s')
-                        AND se.creator_id = us.id
-                        AND se.institution_id = ins.id",
-                            mysql_real_escape_string(implode(",", $this->institution_id)));
-        $result = mysql_query($query);
-        if ($result && mysql_num_rows($result)) {
-            while($row = mysql_fetch_assoc($result)) { 
-                    $this->id                  = $row['id'];
-                    $this->semester            = $row['semester'];
-                    $this->description         = $row['description'];
-                    $this->begin               = $row['begin'];
-                    $this->end                 = $row['end'];
-                    $this->creation_time       = $row['creation_time'];
-                    $this->creator_id          = $row['creator_id'];
-                    $this->creator_username    = $row['username'];
-                    $semesters[] = clone $this;
-            } 
+                        WHERE se.institution_id IN (?) AND se.creator_id = us.id AND se.institution_id = ins.id');
+        $db->execute(array(implode(",", $this->institution_id)));
+        while($result = $db->fetchObject()) { 
+                $this->id                  = $result->id;
+                $this->semester            = $result->semester;
+                $this->description         = $result->description;
+                $this->begin               = $result->begin;
+                $this->end                 = $result->end;
+                $this->creation_time       = $result->creation_time;
+                $this->creator_id          = $result->creator_id;
+                $this->creator_username    = $result->username;
+                $semesters[] = clone $this;
+        } 
+        if (isset($semesters)) {    
             return $semesters;
         } else {
             return NULL;
@@ -106,23 +103,14 @@ class Semester {
      * @return mixed 
      */
     public function add(){
-        $query = sprintf("SELECT COUNT(id) FROM semester WHERE UPPER(semester) = UPPER('%s') AND institution_id = '%s'",
-                                    mysql_real_escape_string($this->semester),
-                                    mysql_real_escape_string($this->institution_id));
-        $result = mysql_query($query);
-        list($count) = mysql_fetch_row($result);
-        if($count >= 1) { 
-                return 'Diesen Lernzeitraum gibt es bereits.';
+        $db = DB::prepare('SELECT COUNT(id) FROM semester WHERE UPPER(semester) = UPPER(?) AND institution_id = ?');
+        $db->execute(array($this->semester, $this->institution_id));
+        if($db->fetchColumn >= 1) { 
+            return 'Diesen Lernzeitraum gibt es bereits.';
         } else {
-            $query = sprintf("INSERT INTO semester (semester,description,begin,end,creation_time,creator_id,institution_id)
-                                            VALUES ('%s','%s','%s','%s',NOW(),'%s','%s')",
-                                            mysql_real_escape_string($this->semester),
-                                            mysql_real_escape_string($this->description),
-                                            mysql_real_escape_string($this->begin),
-                                            mysql_real_escape_string($this->end),
-                                            mysql_real_escape_string($this->creator_id),
-                                            mysql_real_escape_string($this->institution_id));
-            return mysql_query($query);		
+            $db = DB::prepare('INSERT INTO semester (semester,description,begin,end,creation_time,creator_id,institution_id)
+                                            VALUES (?,?,?,?,NOW(),?,?)');
+            return $db->execute(array($this->semester, $this->description, $this->begin, $this->end, $this->creator_id, $this->institution_id));	
         }   
     }
     
@@ -131,15 +119,8 @@ class Semester {
      * @return boolean 
      */
     public function update(){
-        $query = sprintf("UPDATE semester 
-                        SET semester = '%s', description = '%s', begin = '%s', end = '%s'
-                        WHERE id = '%s'",
-                        mysql_real_escape_string($this->semester),
-                        mysql_real_escape_string($this->description),
-                        mysql_real_escape_string($this->begin),
-                        mysql_real_escape_string($this->end),
-                        mysql_real_escape_string($this->id));
-        return mysql_query($query);   
+        $db = DB::prepare('UPDATE semester SET semester = ?, description = ?, begin = ?, end = ? WHERE id = ?');
+        return $db->execute(array($this->semester, $this->description, $this->begin, $this->end, $this->id));
     }
     
     /**
@@ -147,17 +128,14 @@ class Semester {
      * @return boolean 
      */
     public function delete(){
-        $query = sprintf("SELECT id 
-                            FROM groups
-                            WHERE semester_id = '%s'",
-                    mysql_real_escape_string($this->id));
-        $result = mysql_query($query);
-        if ($result && mysql_num_rows($result)){
+        $db = DB::prepare('SELECT id FROM groups WHERE semester_id = ?');
+        $db->execute(array($this->id));           
+        $result = $db->fetchObject();
+        if ($result){
             return false; 
         } else {
-            $query = sprintf("DELETE FROM semester WHERE id='%s'",
-                        mysql_real_escape_string($this->id));
-            return mysql_query($query);
+            $db = DB::prepare('DELETE FROM semester WHERE id = ?');
+            return $db->execute(array($this->id));
         }
     }
     
@@ -165,17 +143,15 @@ class Semester {
      * Load semester 
      */
     public function load(){
-        $query = sprintf("SELECT *
-                        FROM semester 
-                        WHERE id = '%s'",
-                        mysql_real_escape_string($this->id));  
-        $result                  = mysql_query($query); 
-        $this->id                = mysql_result($result, 0, "id");
-        $this->semester          = mysql_result($result, 0, "semester");
-        $this->description       = mysql_result($result, 0, "description");
-        $this->begin             = mysql_result($result, 0, "begin");
-        $this->end               = mysql_result($result, 0, "end");
-        $this->institution_id    = mysql_result($result, 0, "institution_id");
+        $db = DB::prepare('SELECT * FROM semester WHERE id = ?');
+        $db->execute(array($this->id));
+        $result                  = $db->fetchObject();
+        $this->id                = $result->id;
+        $this->semester          = $result->semester;
+        $this->description       = $result->description;
+        $this->begin             = $result->begin;
+        $this->end               = $result->end;
+        $this->institution_id    = $result->institution_id;
     }
     
     /**
@@ -183,10 +159,8 @@ class Semester {
     * @return boolean
     */
     public function dedicate(){ // only use during install
-        $query = sprintf("UPDATE semester SET institution_id = '%s', creator_id = '%s'",
-                                            mysql_real_escape_string($this->institution_id),
-                                            mysql_real_escape_string($this->creator_id));
-        return mysql_query($query);
+        $db = DB::prepare('UPDATE semester SET institution_id = ?, creator_id = ?');
+        return $db->execute(array($this->institution_id, $this->creator_id));
     }
     
 }

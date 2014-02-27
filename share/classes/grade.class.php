@@ -69,19 +69,13 @@ class Grade {
      * @return mixed 
      */
     public function add(){
-        $query = sprintf("SELECT COUNT(id) FROM grade WHERE grade = '%s'",
-                                    mysql_real_escape_string($this->grade));
-        $result = mysql_query($query);
-        list($count) = mysql_fetch_row($result);
-        if($count >= 1) { 
+        $db = DB::prepare('SELECT COUNT(id) FROM grade WHERE grade = ?');
+        $db->execute(array($this->grade));
+        if($db->fetchColumn() >= 1) { 
             return 'Diesen Klassennamen gibt es bereits.';
         } else {
-            $query = sprintf("INSERT INTO grade (grade,description,creator_id,institution_id) VALUES ('%s','%s','%s','%s')",
-                                            mysql_real_escape_string($this->grade),
-                                            mysql_real_escape_string($this->description),
-                                            mysql_real_escape_string($this->creator_id),
-                                            mysql_real_escape_string($this->institution_id));
-            return mysql_query($query);		
+            $db = DB::prepare('INSERT INTO grade (grade,description,creator_id,institution_id) VALUES (?,?,?,?)');
+            return $db->execute(array($this->grade, $this->description, $this->creator_id, $this->institution_id));
         }
     }
     
@@ -90,15 +84,8 @@ class Grade {
      * @return boolean 
      */
     public function update(){
-        $query = sprintf("UPDATE grade 
-                SET grade = '%s', description = '%s',
-                creator_id = '%s'
-                WHERE id = '%s'",
-                mysql_real_escape_string($this->grade),
-                mysql_real_escape_string($this->description),
-                mysql_real_escape_string($this->creator_id),
-                mysql_real_escape_string($this->id));
-        return mysql_query($query);
+        $db = DB::prepare('UPDATE grade SET grade = ?, description = ?, creator_id = ? WHERE id = ?');
+        return $db->execute(array($this->grade, $this->description, $this->creator_id, $this->id));
     }
     
     /**
@@ -106,17 +93,13 @@ class Grade {
      * @return mixed 
      */
     public function delete(){
-        $query = sprintf("SELECT id 
-                          FROM curriculum
-                          WHERE grade_id = '%s'",
-                          mysql_real_escape_string($this->id));
-        $result = mysql_query($query);
-        if ($result && mysql_num_rows($result)){
+        $db = DB::prepare('SELECT id FROM curriculum WHERE grade_id = ?');
+        $db->execute(array($this->id));
+        if ($db->fetchObject()){ //endroled !
             return false;
         } else {
-            $query = sprintf("DELETE FROM grade WHERE id='%s'",
-                            mysql_real_escape_string($this->id));
-            return mysql_query($query);
+            $db = DB::prepare('DELETE FROM grade WHERE id = ?');
+            return $db->execute(array($this->id));
         } 
     } 
     
@@ -124,13 +107,12 @@ class Grade {
      * Load Grade with id $this->id 
      */
     public function load(){
-        $query = sprintf("SELECT * FROM grade WHERE id='%s'",
-                        mysql_real_escape_string($this->id));
-        $result = mysql_query($query);
-        $row = mysql_fetch_assoc($result);
-        $this->grade       = $row["grade"];
-        $this->description = $row["description"];
+        $db = DB::prepare('SELECT * FROM grade WHERE id = ?');
+        $db->execute(array($this->id));
         
+        $result = $db->fetchObject();
+        $this->grade       = $result->grade;
+        $this->description = $result->description;
     }
     
     /**
@@ -139,21 +121,20 @@ class Grade {
      */
     public function getGrades(){
         $grades = array();                      //Array of grades
-        $query = sprintf("SELECT * FROM grade WHERE institution_id IN ('%s')",
-                        mysql_real_escape_string(implode(",", $this->institution_id)));
-        $result = mysql_query($query);
-        if ($result && mysql_num_rows($result)) {
-            while($row = mysql_fetch_assoc($result)) { 
-                    $this->id                   = $row['id'];
-                    $this->grade                = $row['grade'];
-                    $this->description          = $row['description'];
-                    $this->creation_times       = $row['creation_time'];
-                    $this->creator_id           = $row['creator_id'];
-                    $this->institution_id       = $row['institution_id'];
-                    
-                    $grades[] = clone $this;        //it has to be clone, to get the object and not the reference
-            } 
-            
+        $inst_id = implode(",", $this->institution_id);
+        $db = DB::prepare('SELECT * FROM grade WHERE institution_id IN ('.$inst_id.')');
+        $db->execute();
+        
+        while($result = $db->fetchObject()) { 
+                $this->id                   = $result->id;
+                $this->grade                = $result->grade;
+                $this->description          = $result->description;
+                $this->creation_times       = $result->creation_time;
+                $this->creator_id           = $result->creator_id;
+                $this->institution_id       = $result->institution_id;
+                $grades[] = clone $this;        //it has to be clone, to get the object and not the reference
+        } 
+        if (isset($grades)) {    
             return $grades;
         } else {return $result;}
     }
@@ -163,10 +144,8 @@ class Grade {
  * @return boolean
  */
     public function dedicate(){ // only use during install
-        $query = sprintf("UPDATE grade SET institution_id = '%s', creator_id = '%s'",
-                                            mysql_real_escape_string($this->institution_id),
-                                            mysql_real_escape_string($this->creator_id));
-        return mysql_query($query);
+        $db = DB::prepare('UPDATE grade SET institution_id = ?, creator_id = ?');        
+        return $db->execute(array($this->institution_id, $this->creator_id));
     }
 }
 ?>
