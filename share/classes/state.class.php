@@ -39,8 +39,7 @@ class State extends Country {
      * @var string
      */
     public $country_code = null; 
-    
-    
+       
     /**
      * get states depending on country code
      * @param string $dependency
@@ -49,36 +48,31 @@ class State extends Country {
      */
     public function getStates($dependency = null, $id = null) {
         switch ($dependency) {
-            case null: $query = sprintf("SELECT * FROM state WHERE country_code = '%s' ORDER BY state ASC",
-                                      mysql_real_escape_string(parent::$this->code));        
-                break;
+            case null:      $db = DB::prepare('SELECT * FROM state WHERE country_code = ? ORDER BY state ASC');
+                            $db->execute(array(parent::$this->code));        
+                            break;
             
-            case 'profile': $query = sprintf("SELECT sta.* FROM state AS sta, countries AS cou 
-                                            WHERE sta.country_code = cou.code 
-                                            AND cou.id = '%s' ORDER BY sta.state ASC",
-                                      mysql_real_escape_string($id));
-
-            default:
-                break;
+            case 'profile': $db = DB::prepare('SELECT sta.* FROM state AS sta, countries AS cou 
+                                            WHERE sta.country_code = cou.code AND cou.id = ? ORDER BY sta.state ASC');
+                            $db->execute(array($id));
+                            break;
+            default:        break;
         }
-        $result  = mysql_query($query);
-        if ($result && mysql_num_rows($result)) {
-                        while($row = mysql_fetch_assoc($result)) { 
-                            $this->id            = $row["id"];
-                            $this->state         = $row["state"];
-                            $this->country_code  = $row["country_code"];
-                            $states[] = clone $this; 
-                        } 
-                        } else { // no states for current country available
-                            $this->id            = '-1';
-                            $this->state         = '---';
-                            $this->country_code  = parent::$this->code;
-                            $states[] = clone $this;
-                        }
+       
+        while($result = $db->fetchObject()) { 
+            $this->id            = $result->id;
+            $this->state         = $result->state;
+            $this->country_code  = $result->country_code;
+            $states[] = clone $this; 
+        } 
         if (isset($states)){
             return $states;
         } else {
-            return false; 
+            $this->id            = '-1';
+            $this->state         = '---';
+            $this->country_code  = parent::$this->code;
+            $states[] = clone $this;
+            return  $states; 
         }
     }
     

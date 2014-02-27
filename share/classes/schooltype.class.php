@@ -67,22 +67,17 @@ class Schooltype {
      * @return mixed 
      */
     public function add(){
-        $query = sprintf("SELECT COUNT(id) FROM schooltype WHERE schooltype = '%s'",
-                                    mysql_real_escape_string($this->schooltype));
-        $result = mysql_query($query);
-        list($count) = mysql_fetch_row($result);
-        if($count >= 1) { 
+        $db = DB::prepare('SELECT COUNT(id) FROM schooltype WHERE schooltype = ?');                      
+        $db->execute(array($this->schooltype));
+        if($db->fetchColumn() >= 1) { 
             return false;
         } else {
-            $query = sprintf("INSERT INTO schooltype (schooltype, description, country_id, state_id, creator_id) 
-                                VALUES ('%s','%s','%s','%s','%s')",
-                                            mysql_real_escape_string($this->schooltype),
-                                            mysql_real_escape_string($this->description),
-                                            mysql_real_escape_string($this->country_id),
-                                            mysql_real_escape_string($this->state_id),
-                                            mysql_real_escape_string($this->creator_id));
-            if (mysql_query($query)){
-                return mysql_insert_id(); //gibt die ID zurück
+            $db = DB::prepare('INSERT INTO schooltype (schooltype, description, country_id, state_id, creator_id) 
+                                VALUES (?,?,?,?,?)');
+            $result = $db->execute(array($this->schooltype, $this->description, $this->country_id, $this->state_id, $this->creator_id));
+
+            if ($result){
+                return $db->lastInsertId(); 
             } else return false; 
             
         }
@@ -93,17 +88,8 @@ class Schooltype {
      * @return boolean 
      */
     public function update(){
-        $query = sprintf("UPDATE schooltype 
-                SET schooltype = '%s', description = '%s', country_id = '%s', state_id = '%s',
-                creator_id = '%s'
-                WHERE id = '%s'",
-                mysql_real_escape_string($this->schooltype),
-                mysql_real_escape_string($this->description),
-                mysql_real_escape_string($this->country_id),
-                mysql_real_escape_string($this->state_id),
-                mysql_real_escape_string($this->creator_id),
-                mysql_real_escape_string($this->id));
-        return mysql_query($query);
+        $db = DB::prepare('UPDATE schooltype SET schooltype = ?, description = ?, country_id = ?, state_id = ?,creator_id = ? WHERE id = ?');
+        return $db->execute(array($this->schooltype, $this->description, $this->country_id, $this->state_id, $this->creator_id, $this->id));
     }
     
     /**
@@ -111,17 +97,14 @@ class Schooltype {
      * @return mixed 
      */
     public function delete(){
-        $query = sprintf("SELECT id 
-                          FROM curriculum
-                          WHERE schooltype_id = '%s'",
-                          mysql_real_escape_string($this->id));
-        $result = mysql_query($query);
-        if ($result && mysql_num_rows($result)){
+        $db = DB::prepare('SELECT id FROM curriculum WHERE schooltype_id = ?');
+        $db->execute(array($this->id));
+        $result = $db->fetchObject();
+        if ($result){
             return false;
         } else {
-            $query = sprintf("DELETE FROM schooltype WHERE id='%s'",
-                            mysql_real_escape_string($this->id));
-            return mysql_query($query);
+            $db = DB::prepare('DELETE FROM schooltype WHERE id = ?');
+            return $db->execute(array($this->id));
         } 
     } 
     
@@ -129,17 +112,16 @@ class Schooltype {
      * Load schooltype with id $this->id 
      */
     public function load(){
-        $query = sprintf("SELECT * FROM schooltype WHERE id='%s'",
-                        mysql_real_escape_string($this->id));
-        $result = mysql_query($query);
-        $row = mysql_fetch_assoc($result);
-        $this->schooltype       = $row["schooltype"];
-        $this->description      = $row["description"];
-        $this->country_id       = $row["country_id"];
-        $this->state_id         = $row["state_id"];
-        $this->creation_time    = $row["creation_time"];
-        $this->creator_id       = $row["creator_id"];
+        $db = DB::prepare('SELECT * FROM schooltype WHERE id= ?');
+        $db->execute(array($this->id));
         
+        $result = $db->fetchObject();
+        $this->schooltype       = $result->schooltype;
+        $this->description      = $result->description;
+        $this->country_id       = $result->country_id;
+        $this->state_id         = $result->state_id;
+        $this->creation_time    = $result->creation_time;
+        $this->creator_id       = $result->creator_id;
     }
     
     /**
@@ -148,23 +130,21 @@ class Schooltype {
      */
     public function getSchooltypes(){
         $schooltypes = array();                      //Array of schooltypes
-        $query = "SELECT * FROM schooltype";
-        $result = mysql_query($query);
-        if ($result && mysql_num_rows($result)) {
-            while($row = mysql_fetch_assoc($result)) { 
-                    $this->id                   = $row['id'];
-                    $this->schooltype       = $row["schooltype"];
-                    $this->description      = $row["description"];
-                    $this->country_id       = $row["country_id"];
-                    $this->state_id         = $row["state_id"];
-                    $this->creation_time    = $row["creation_time"];
-                    $this->creator_id       = $row["creator_id"];
-                    
+        $db = DB::prepare('SELECT * FROM schooltype');
+        $db->execute();
+            while($result = $db->fetchObject()) { 
+                    $this->id               = $result->id;
+                    $this->schooltype       = $result->schooltype;
+                    $this->description      = $result->description;
+                    $this->country_id       = $result->country_id;
+                    $this->state_id         = $result->state_id;
+                    $this->creation_time    = $result->creation_time;
+                    $this->creator_id       = $result->creator_id;
                     $schooltypes[] = clone $this;        //it has to be clone, to get the object and not the reference
             } 
-            
+        if (isset($schooltypes)) {   
             return $schooltypes;
-        } else {return $result;}
+        } else {return false;}
     }
     
     /**
@@ -172,9 +152,8 @@ class Schooltype {
     * @return boolean
     */
     public function dedicate(){ // only use during install
-        $query = sprintf("UPDATE schooltype SET creator_id = '%s'",
-                                            mysql_real_escape_string($this->creator_id));
-        return mysql_query($query);
+        $db = DB::prepare('UPDATE schooltype SET creator_id = ?');
+        return $db->execute(array($this->creator_id));
     }
 }
 ?>

@@ -105,24 +105,20 @@ class Mail {
      * @param int $id 
      */
     public function loadMail($id){
-       $query = sprintf("SELECT *
-                      FROM message
-                      WHERE id = '%s'",
-                      mysql_real_escape_string($id));
-       $result = mysql_query($query);
-        if ($result && mysql_num_rows($result)){
-            $this->id           = mysql_result($result, 0, "id");
-            $this->sender_id    = mysql_result($result, 0, "sender_id");
-            $this->receiver_id  = mysql_result($result, 0, "receiver_id");
-            $this->subject      = mysql_result($result, 0, "subject");
-            $this->message      = mysql_result($result, 0, "message");
-            $this->creation_time = mysql_result($result, 0, "creation_time");
-            $this->status       = mysql_result($result, 0, "status");
-            
+       $db = DB::prepare('SELECT * FROM message WHERE id = ?');
+       $db->execute(array($id));
+       $result = $db->fetchObject();
+        if ($result){
+            $this->id           = $result->id;
+            $this->sender_id    = $result->sender_id;
+            $this->receiver_id  = $result->receiver_id;
+            $this->subject      = $result->subject;
+            $this->message      = $result->message;
+            $this->creation_time = $result->creation_time;
+            $this->status       = $result->status;    
         } else {
             //$this->institutions[] = NULL;
-        }    
-       
+        }  
     }
     
     /**
@@ -130,14 +126,8 @@ class Mail {
      * @return boolean 
      */
     public function postMail(){
-        $query = sprintf("INSERT INTO message 
-                                    (sender_id,receiver_id,subject,message,status) 
-                                    VALUES ('%s','%s','%s','%s',0)",
-                                    mysql_real_escape_string($this->sender_id), 
-                                    mysql_real_escape_string($this->receiver_id),
-                                    mysql_real_escape_string($this->subject),
-                                    mysql_real_escape_string($this->message));
-        return mysql_query($query);
+        $db = DB::prepare('INSERT INTO message (sender_id,receiver_id,subject,message,status) VALUES (?,?,?,?,0)');
+        return $db->execute(array($this->sender_id, $this->receiver_id, $this->subject, $this->message));
     }
     
     /**
@@ -146,11 +136,8 @@ class Mail {
      * @return boolean 
      */
     public function setStatus($status){
-       $query = sprintf("UPDATE message SET status = %s
-                        WHERE id = '%s'",
-                        mysql_real_escape_string($status),
-                        mysql_real_escape_string($this->id)); 
-       return mysql_query($query);
+       $db = DB::prepare('UPDATE message SET status = ? WHERE id = ?');
+       return $db->execute(array($status, $this->id));
     }
 }
 ?>

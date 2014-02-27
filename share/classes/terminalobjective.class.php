@@ -78,23 +78,15 @@ class TerminalObjective {
      * @return mixed 
      */
     public function add(){
-        
-        $query = sprintf("SELECT MAX(order_id) FROM terminalObjectives WHERE curriculum_id = '%s'",
-                mysql_real_escape_string($this->curriculum_id));
-        $result = mysql_query($query);
-        list($max) = mysql_fetch_row($result);
-        $this->order_id = $max+1;
+        $db = DB::prepare('SELECT MAX(order_id) as max FROM terminalObjectives WHERE curriculum_id = ?');
+        $db->execute(array($this->curriculum_id));
+        $result = $db->fetchObject();
+        $this->order_id = $result->max+1;
 
             //object_to_array($this);
-        $query = sprintf("INSERT INTO terminalObjectives 
-                    (terminal_objective,description,curriculum_id,order_id,creator_id) 
-                    VALUES ('%s','%s','%s','%s','%s')",
-                    mysql_real_escape_string($this->terminal_objective),
-                    mysql_real_escape_string($this->description),
-                    mysql_real_escape_string($this->curriculum_id),
-                    mysql_real_escape_string($this->order_id),
-                    mysql_real_escape_string($this->creator_id));
-        return mysql_query($query);
+        $db = DB::prepare('INSERT INTO terminalObjectives (terminal_objective,description,curriculum_id,order_id,creator_id) 
+                    VALUES (?,?,?,?,?)');
+        return $db->execute(array($this->terminal_objective, $this->description, $this->curriculum_id, $this->order_id, $this->creator_id));
     }
     
     public function order($direction = null){
@@ -102,44 +94,32 @@ class TerminalObjective {
             case 'down': if ($this->order_id == 1){
                             // order_id kann nicht kleiner sein
                             } else {
-                                $query = sprintf("SELECT id FROM terminalObjectives 
-                                                    WHERE curriculum_id = '%s' AND order_id = '%s'",
-                                        mysql_real_escape_string($this->curriculum_id), 
-                                        mysql_real_escape_string($this->order_id-1));
-                                $result = mysql_query($query);
-                                $replace_id = mysql_result($result, 0, "id"); 
-                                $query = sprintf("UPDATE terminalObjectives SET order_id = '%s' WHERE id = '%s'", 
-                                        mysql_real_escape_string($this->order_id),
-                                        mysql_real_escape_string($replace_id));
-                                mysql_query($query);
-                                $query = sprintf("UPDATE terminalObjectives SET order_id = '%s' WHERE id = '%s'", 
-                                        mysql_real_escape_string($this->order_id-1),
-                                        mysql_real_escape_string($this->id));
-                                mysql_query($query);
+                                $db = DB::prepare('SELECT id FROM terminalObjectives 
+                                                    WHERE curriculum_id = ? AND order_id = ?');
+                                $db->execute(array($this->curriculum_id, ($this->order_id-1)));
+                                $result = $db->fetchObject();
+                                $replace_id = $result->id; 
+                                $db = DB::prepare('UPDATE terminalObjectives SET order_id = ? WHERE id = ?');
+                                $db->execute(array($this->order_id, $replace_id));
+                                $db = DB::prepare('UPDATE terminalObjectives SET order_id = ? WHERE id = ?');
+                                $db->execute(array(($this->order_id-1), $this->id));
                             }
                 break;
-            case 'up':      $query = sprintf("SELECT MAX(order_id) FROM terminalObjectives WHERE curriculum_id = '%s'",
-                                    mysql_real_escape_string($this->curriculum_id));
-                            $result = mysql_query($query);
-                            list($max) = mysql_fetch_row($result);
-                            if ($this->order_id == $max){
+            case 'up':      $db = DB::prepare('SELECT MAX(order_id) as max FROM terminalObjectives WHERE curriculum_id = ?');
+                            $db->execute(array($this->curriculum_id));
+                            $result = $db->fetchObject();
+                            if ($this->order_id == $result->max){
                             // order_id darf nicht größer als maximale order_id sein
                             } else {
-                                $query = sprintf("SELECT id FROM terminalObjectives 
-                                                    WHERE curriculum_id = '%s' AND order_id = '%s'",
-                                        mysql_real_escape_string($this->curriculum_id), 
-                                        mysql_real_escape_string($this->order_id+1));
-                                $result = mysql_query($query);
-                                $replace_id = mysql_result($result, 0, "id"); 
-                                
-                                $query = sprintf("UPDATE terminalObjectives SET order_id = '%s' WHERE id = '%s'", 
-                                        mysql_real_escape_string($this->order_id),
-                                        mysql_real_escape_string($replace_id));
-                                mysql_query($query);
-                                $query = sprintf("UPDATE terminalObjectives SET order_id = '%s' WHERE id = '%s'", 
-                                        mysql_real_escape_string($this->order_id+1),
-                                        mysql_real_escape_string($this->id));
-                                mysql_query($query);
+                                $db = DB::prepare('SELECT id FROM terminalObjectives 
+                                                    WHERE curriculum_id = ? AND order_id = ?');
+                                $db->execute(array($this->curriculum_id, ($this->order_id+1)));
+                                $result = $db->fetchObject();
+                                $replace_id = $result->id;
+                                $db = DB::prepare('UPDATE terminalObjectives SET order_id = ? WHERE id = ?');
+                                $db->execute(array($this->order_id, $replace_id));
+                                $db = DB::prepare('UPDATE terminalObjectives SET order_id = ? WHERE id = ?');
+                                $db->execute(array(($this->order_id+1), $this->id));
                             }
                 break;
 
@@ -153,13 +133,8 @@ class TerminalObjective {
      * @return boolean 
      */
     public function update(){
-        $query = sprintf("UPDATE terminalObjectives 
-                    SET terminal_objective = '%s', description = '%s' 
-                    WHERE id = '%s'",
-                    mysql_real_escape_string($this->terminal_objective),
-                    mysql_real_escape_string($this->description),
-                    mysql_real_escape_string($this->id));
-        return mysql_query($query);
+        $db = DB::prepare('UPDATE terminalObjectives SET terminal_objective = ?, description = ? WHERE id = ?');
+        return $db->execute(array($this->terminal_objective, $this->description, $this->id));
     }
     
     /**
@@ -167,32 +142,25 @@ class TerminalObjective {
      * @return boolean 
      */
     public function delete(){
-        $query = sprintf("DELETE
-                        FROM terminalObjectives 
-                        WHERE id = '%s'",
-                  mysql_real_escape_string($_GET['terminalObjectiveID']));
-        return mysql_query($query);
+        $db = DB::prepare('DELETE FROM terminalObjectives WHERE id = ?');
+        return $db->execute(array($_GET['terminalObjectiveID']));
     } 
     
     /**
      * Load objective
      */
     public function load(){
-        $query = sprintf("SELECT * 
-                            FROM terminalObjectives
-                            WHERE id = '%s'",
-                            mysql_real_escape_string($this->id));
-        $result = mysql_query($query);
-        if ($result && mysql_num_rows($result)) {
-            while($row = mysql_fetch_assoc($result)) { 
-                $this->id                   = $row["id"];
-                $this->terminal_objective   = $row["terminal_objective"];
-                $this->description          = $row["description"];
-                $this->curriculum_id        = $row["curriculum_id"];
-                $this->order_id             = $row["order_id"];
-                $this->repeat_interval      = $row["repeat_interval"];
-                $this->creation_time        = $row["creation_time"];
-                $this->creator_id           = $row["creator_id"];
+        $db = DB::prepare('SELECT * FROM terminalObjectives WHERE id = ?');
+        if ($db->execute(array($this->id))) {
+            while($reset = $db->fetchObject()) { 
+                $this->id                   = $reset->id;
+                $this->terminal_objective   = $reset->terminal_objective;
+                $this->description          = $reset->description;
+                $this->curriculum_id        = $reset->curriculum_id;
+                $this->order_id             = $reset->order_id;
+                $this->repeat_interval      = $reset->repeat_interval;
+                $this->creation_time        = $reset->creation_time;
+                $this->creator_id           = $reset->creator_id;
             } 
         }    
     }
@@ -205,38 +173,28 @@ class TerminalObjective {
      */
     public function getObjectives($dependency = null, $id = null, $load_enabling_objectives = false) {
         switch ($dependency) {
-            /*case 'curriculum':  $query = sprintf("SELECT * 
-                                                    FROM terminalObjectives
-                                                    WHERE curriculum_id = '%s' ORDER by id ASC, 'order' ASC",
-                                                    mysql_real_escape_string($id));*/
-            case 'curriculum':  $query = sprintf("SELECT * 
-                                                    FROM terminalObjectives
-                                                    WHERE curriculum_id = '%s' ORDER by curriculum_id ASC, order_id ASC, id ASC",
-                                                    mysql_real_escape_string($id));
-                break;
-
-            default:
-                break;
+            case 'curriculum':  $db = DB::prepare('SELECT * FROM terminalObjectives
+                                                    WHERE curriculum_id = ? ORDER by curriculum_id ASC, order_id ASC, id ASC');
+                                $db->execute(array($id));                    
+                                break;
+            default:            break;
         }
-        $result = mysql_query($query);
-        if ($result && mysql_num_rows($result)) {
-            while($row = mysql_fetch_assoc($result)) { 
-                $this->id                   = $row["id"];
-                $this->terminal_objective   = $row["terminal_objective"];
-                $this->description          = $row["description"];
-                $this->curriculum_id        = $row["curriculum_id"];
-                $this->order_id             = $row["order_id"];
-                $this->repeat_interval      = $row["repeat_interval"];
-                $this->creation_time        = $row["creation_time"];
-                $this->creator_id           = $row["creator_id"];   
-                if ($load_enabling_objectives){
-                    $enabling_objectives = new EnablingObjective();
-                    $this->enabling_objectives = $enabling_objectives->getObjectives('terminal_objective', $this->id);
-                }
-                $objectives[]               = clone $this; 
-                
-            } 
-        }  
+        
+        while($result = $db->fetchObject()) { 
+            $this->id                   = $result->id;
+            $this->terminal_objective   = $result->terminal_objective;
+            $this->description          = $result->description;
+            $this->curriculum_id        = $result->curriculum_id;
+            $this->order_id             = $result->order_id;
+            $this->repeat_interval      = $result->repeat_interval;
+            $this->creation_time        = $result->creation_time;
+            $this->creator_id           = $result->creator_id;
+            if ($load_enabling_objectives){
+                $enabling_objectives = new EnablingObjective();
+                $this->enabling_objectives = $enabling_objectives->getObjectives('terminal_objective', $this->id);
+            }
+            $objectives[]               = clone $this; 
+        } 
         
         if (isset($objectives)){
             return $objectives;
@@ -248,9 +206,8 @@ class TerminalObjective {
     * @return boolean
     */
     public function dedicate(){ // only use during install
-        $query = sprintf("UPDATE terminalObjectives SET creator_id = '%s'",
-                                            mysql_real_escape_string($this->creator_id));
-        return mysql_query($query);
+        $db = DB::prepare('UPDATE terminalObjectives SET creator_id = ?');
+        return $db->execute(array($this->creator_id));
     }
 }
 ?>

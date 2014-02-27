@@ -65,21 +65,19 @@ class Subject {
      */
     public function getSubjects(){
         $subjects = array();
-        $query = sprintf("SELECT * FROM subjects WHERE institution_id IN ('%s')",
-                        mysql_real_escape_string(implode(",", $this->institution_id)));
-        $result = mysql_query($query);
-        if ($result && mysql_num_rows($result)) {
-            while($row = mysql_fetch_assoc($result)) { 
-                    $this->id                   = $row['id'];
-                    $this->subject              = $row['subject'];
-                    $this->subject_short        = $row['subject_short'];
-                    $this->description          = $row['description'];
-                    $this->creation_timestamp   = $row['creation_time'];
-                    $this->creator_id           = $row['creator_id'];
-                    $this->institution_id       = $row['institution_id'];
-                    $subjects[] = clone $this;
-            } 
-            
+        $db = DB::prepare('SELECT * FROM subjects WHERE institution_id IN (?)');
+        $db->execute(array(implode(",", $this->institution_id)));
+        while($result = $db->fetchObject()) { 
+                $this->id                   = $result->id;
+                $this->subject              = $result->subject;
+                $this->subject_short        = $result->subject_short;
+                $this->description          = $result->description;
+                $this->creation_timestamp   = $result->creation_time;
+                $this->creator_id           = $result->creator_id;
+                $this->institution_id       = $result->institution_id;
+                $subjects[] = clone $this;
+        } 
+         if (isset($subjects)) {    
             return $subjects;
         } else {return $result;}
     }
@@ -89,22 +87,14 @@ class Subject {
      * @return boolean 
      */
     public function add(){
-        $query = sprintf("SELECT COUNT(id) FROM subjects WHERE UPPER(subject) = UPPER('%s') AND institution_id = '%s'",
-                        		 mysql_real_escape_string($this->subject),
-                                         mysql_real_escape_string($this->institution_id));
-        $result = mysql_query($query);
-        list($count) = mysql_fetch_row($result);
-        if($count >= 1) { 
+        $db = DB::prepare('SELECT COUNT(id) FROM subjects WHERE UPPER(subject) = UPPER(?) AND institution_id = ?');
+        $db->execute(array($this->subject, $this->institution_id));
+        if($db->fetchColumn() >= 1) { 
             return 'Diesen Fächernamen gibt es bereits.';
         } else {
-            $query = sprintf("INSERT INTO subjects (subject,subject_short,description,creator_id,institution_id) 
-                                            VALUES ('%s','%s','%s','%s','%s')",
-                                            mysql_real_escape_string($this->subject),
-                                            mysql_real_escape_string($this->subject_short),
-                                            mysql_real_escape_string($this->description),
-                                            mysql_real_escape_string($this->creator_id),
-                                            mysql_real_escape_string($this->institution_id));
-            return  mysql_query($query);	
+            $db = DB::prepare('INSERT INTO subjects (subject,subject_short,description,creator_id,institution_id) 
+                                            VALUES (?,?,?,?,?)');
+            return $db->execute(array($this->subject, $this->subject_short, $this->description, $this->creator_id, $this->institution_id));
         }
     }
     
@@ -113,33 +103,22 @@ class Subject {
      * @return boolean 
      */
     public function update(){
-        $query = sprintf("UPDATE subjects 
-                            SET subject = '%s', subject_short = '%s', description = '%s',
-                            creator_id = '%s'
-                            WHERE id = '%s'",
-                                            mysql_real_escape_string($this->subject),
-                                            mysql_real_escape_string($this->subject_short),
-                                            mysql_real_escape_string($this->description),
-                                            mysql_real_escape_string($this->creator_id),
-                                            mysql_real_escape_string($this->id));
-        return mysql_query($query);
+        $db = DB::prepare('UPDATE subjects  SET subject = ?, subject_short = ?, description = ?, creator_id = ? WHERE id = ?');
+        return $db->execute(array($this->subject, $this->subject_short, $this->description, $this->creator_id, $this->id));
     }
     /**
      * Delete current subject
      * @return boolean 
      */
     public function delete(){
-        $query = sprintf("SELECT id 
-                            FROM curriculum
-                            WHERE subject_id = '%s'",
-                    mysql_real_escape_string($this->id));
-        $result = mysql_query($query);
-        if ($result && mysql_num_rows($result)){
+        $db = DB::prepare('SELECT id FROM curriculum WHERE subject_id = ?');
+        $db->execute(array($this->id));
+        $result = $db->fetchObject();
+        if ($result){
             return false;
-        } else { //nur löschen, wenn keine Einschreibungen existieren
-            $query = sprintf("DELETE FROM subjects WHERE id='%s'",
-                            mysql_real_escape_string($this->id));
-            return mysql_query($query);
+        } else { //delete only, if no enrolments exists
+            $db = DB::prepare('DELETE FROM subjects WHERE id = ?');
+            return $db->execute(array($this->id));
         }
     }
 
@@ -147,14 +126,12 @@ class Subject {
      * Load a subject 
      */
     public function load(){
-        $query = sprintf("SELECT * FROM subjects WHERE id='%s'",
-                        mysql_real_escape_string($this->id));
-        $result = mysql_query($query);
-
-        $row = mysql_fetch_assoc($result);
-        $this->subject       = $row["subject"];
-        $this->subject_short = $row["subject_short"];
-        $this->description   = $row["description"];
+        $db = DB::prepare('SELECT * FROM subjects WHERE id = ?');
+        $db->execute(array($this->id));
+        $result = $db->fetchObject();
+        $this->subject       = $result->subject;
+        $this->subject_short = $result->subject_short;
+        $this->description   = $result->description;
     }
     
     /**
@@ -162,10 +139,8 @@ class Subject {
     * @return boolean
     */
     public function dedicate(){ // only use during install
-        $query = sprintf("UPDATE subjects SET institution_id = '%s', creator_id = '%s'",
-                                            mysql_real_escape_string($this->institution_id),
-                                            mysql_real_escape_string($this->creator_id));
-        return mysql_query($query);
+        $db = DB::prepare('UPDATE subjects SET institution_id = ?, creator_id = ?');
+        return $db->execute(array($this->institution_id, $this->creator_id));
     }
 }
 ?>

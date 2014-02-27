@@ -55,15 +55,15 @@
         </tr>
         {* display myInstitutions *}    
         {section name=ins loop=$myInstitutions}
-            <tr class="contenttablerow" id="row{$myInstitutions[ins].id}" onclick="checkrow({$myInstitutions[ins].id})">
-                <td><input class="invisible" type="checkbox" id="{$myInstitutions[ins].id}" name="id[]" value={$myInstitutions[ins].id} /></td>
-                <td>{$myInstitutions[ins].institution}</td>
-                <td>{$myInstitutions[ins].description}</td>
-                <td>{$myInstitutions[ins].schooltype_id}</td>
-                <td>{$myInstitutions[ins].state_id}</td>
-                <td>{$myInstitutions[ins].country}</td>
-                <td>{$myInstitutions[ins].creation_time}</td>
-                <td>{$myInstitutions[ins].creator_id}</td>
+            <tr class="contenttablerow" id="row{$myInstitutions[ins]->id}" onclick="checkrow({$myInstitutions[ins]->id})">
+                <td><input class="invisible" type="checkbox" id="{$myInstitutions[ins]->id}" name="id[]" value={$myInstitutions[ins]->id} /></td>
+                <td>{$myInstitutions[ins]->institution}</td>
+                <td>{$myInstitutions[ins]->description}</td>
+                <td>{$myInstitutions[ins]->schooltype_id}</td>
+                <td>{$myInstitutions[ins]->state_id}</td>
+                <td>{$myInstitutions[ins]->country}</td>
+                <td>{$myInstitutions[ins]->creation_time}</td>
+                <td>{$myInstitutions[ins]->creator_id}</td>
             </tr>
         {/section}
         </table>
