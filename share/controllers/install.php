@@ -106,11 +106,12 @@ if ($_POST){
                                     writeConfigFile($cfg_file, '$CFG->db_name', $_POST["db_name"]);
                                     writeConfigFile($cfg_file, '$CFG->BASE_URL', str_replace("public", "", implode('/', array_slice(explode('/', $_SERVER['REQUEST_URI']), 0, -1)))); //Generates BASE_URL
                                     //Backup erstellen
-                                    if (mysql_select_db($_POST['db_name'])){
-                                        $result = mysql_query("SHOW TABLES LIKE 'users'"); //check if DB is emty
-                                        if (isset($_POST['dump']) AND $_POST['dump'] != '' AND mysql_num_rows($result) > 0) {
+                                    
+                                    //if (mysql_select_db($_POST['db_name'])){
+                                        //$result = mysql_query("SHOW TABLES LIKE 'users'"); //check if DB is emty
+                                        //if (isset($_POST['dump']) AND $_POST['dump'] != '' AND mysql_num_rows($result) > 0) {
                                             /* Datei download erzwingen*/
-                                            system( $path_to_mysqldump.' -u' . $_POST['db_user']. ' -p' . escapeshellarg( $_POST['db_password'] ) . ' -h' . $_POST['db_host'] . ' ' . $_POST['db_name'] . ' >' . $CFG->sql_backup_root."dump.sql", $fp);
+                                        /*    system( $path_to_mysqldump.' -u' . $_POST['db_user']. ' -p' . escapeshellarg( $_POST['db_password'] ) . ' -h' . $_POST['db_host'] . ' ' . $_POST['db_name'] . ' >' . $CFG->sql_backup_root."dump.sql", $fp);
                                             if ( ( $fp==0 ) && ( false !== chmod( $CFG->sql_backup_root."dump.sql", 0666 ) ) ){
                                             $PAGE->message[]  =  "Daten exportiert";
                                             } else {
@@ -121,12 +122,12 @@ if ($_POST){
                                             $_SESSION['LASTPOST'] = NULL; // ermöglicht reload
                                             $_SESSION['DOWNLOAD'] = 1;    // ermöglicht go to page 2
                                             $PAGE->message[] = 'Datenbank erfolgreich gesichert!';
-                                        }
+                                        }*/
                                         $PAGE->message[] = 'Datenbankzugriff funktioniert!';
                                         $TEMPLATE->assign('step', 2);
-                                    } else { 
+                                    /*} else { 
                                         $PAGE->message[] = 'Datenbank ('.$_POST['db_name'].') nicht gefunden oder leer.';
-                                    }
+                                    }*/
                                 }  
                         }
                         catch(PDOException $ex){
