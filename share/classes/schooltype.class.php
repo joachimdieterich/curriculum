@@ -77,7 +77,8 @@ class Schooltype {
             $result = $db->execute(array($this->schooltype, $this->description, $this->country_id, $this->state_id, $this->creator_id));
 
             if ($result){
-                return $db->lastInsertId(); 
+                $last_id = $db->lastInsertId(); //gibt die ID zurück
+                return $last_id;
             } else return false; 
             
         }
