@@ -336,8 +336,8 @@ class User {
     public function getPassword($table='users', $format='md5') {
         global $USER; 
         if(checkCapabilities('user:getPassword', $USER->role_id)){
-            $db = DB::prepare('SELECT password FROM ? WHERE UPPER(username) = UPPER(?)');
-            $db->execute(array($table, $this->username));
+            $db = DB::prepare('SELECT password FROM '.$table.' WHERE UPPER(username) = UPPER(?)');
+            $db->execute(array($this->username));
             $result = $db->fetchObject();
             if ($format == 'md5'){
                 return  md5($result->password);
