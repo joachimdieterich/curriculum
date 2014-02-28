@@ -34,9 +34,9 @@ include($functionfile);
 global $CFG;
 
 // Database config
-$conn = mysql_connect($CFG->db_host,$CFG->db_user,$CFG->db_password)
+/*$conn = mysql_connect($CFG->db_host,$CFG->db_user,$CFG->db_password)
 	or die('Error connecting to mysql');
-    mysql_select_db($CFG->db_name);
+    mysql_select_db($CFG->db_name);*/
 
 // Configure Timezone $$$ You may want to change this otherwise php will complain
 date_default_timezone_set('Europe/Berlin');

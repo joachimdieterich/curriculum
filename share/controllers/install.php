@@ -85,48 +85,49 @@ if ($_POST){
                             $db = new pdo('mysql:host='.$CFG->db_host.';dbname='.$CFG->db_name.';'/*'.charset=utf8.'*/, $CFG->db_user, $CFG->db_password ,
                                             array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
                             $gump = new Gump();
-                        $gump->validation_rules(array(
-                                        'db_host'     => 'required',
-                                        'db_user'     => 'required',
-                                        'db_password' => 'required',
-                                        'db_name'     => 'required'
-                                        ));
-                        $validated_data = $gump->run($_POST);
-                        if($validated_data === false) {/* validation failed */
-                                foreach($_POST as $key => $value){
-                                $TEMPLATE->assign($key, $value);
-                                } 
-                                $TEMPLATE->assign('v_error', $gump->get_readable_errors());     
-                                $TEMPLATE->assign('step', 1); 
-                            } else {/* validation successful */
-                                writeConfigFile($cfg_file, '$CFG->db_host', $_POST["db_host"]);
-                                writeConfigFile($cfg_file, '$CFG->db_user', $_POST["db_user"]);
-                                writeConfigFile($cfg_file, '$CFG->db_password ', $_POST["db_password"]);
-                                writeConfigFile($cfg_file, '$CFG->db_name', $_POST["db_name"]);
-                                writeConfigFile($cfg_file, '$CFG->BASE_URL', str_replace("public", "", implode('/', array_slice(explode('/', $_SERVER['REQUEST_URI']), 0, -1)))); //Generates BASE_URL
-                                //Backup erstellen
-                                if (mysql_select_db($_POST['db_name'])){
-                                    $result = mysql_query("SHOW TABLES LIKE 'users'"); //check if DB is emty
-                                    if (isset($_POST['dump']) AND $_POST['dump'] != '' AND mysql_num_rows($result) > 0) {
-                                        /* Datei download erzwingen*/
-                                        system( $path_to_mysqldump.' -u' . $_POST['db_user']. ' -p' . escapeshellarg( $_POST['db_password'] ) . ' -h' . $_POST['db_host'] . ' ' . $_POST['db_name'] . ' >' . $CFG->sql_backup_root."dump.sql", $fp);
-                                        if ( ( $fp==0 ) && ( false !== chmod( $CFG->sql_backup_root."dump.sql", 0666 ) ) ){
-                                        $PAGE->message[]  =  "Daten exportiert";
-                                        } else {
-                                        $PAGE->message[]  =  "Es ist ein Fehler aufgetreten";
+                            
+                            $gump->validation_rules(array(
+                                            'db_host'     => 'required',
+                                            'db_user'     => 'required',
+                                            'db_password' => 'required',
+                                            'db_name'     => 'required'
+                                            ));
+                            $validated_data = $gump->run($_POST);
+                            if($validated_data === false) {/* validation failed */
+                                    foreach($_POST as $key => $value){
+                                    $TEMPLATE->assign($key, $value);
+                                    } 
+                                    $TEMPLATE->assign('v_error', $gump->get_readable_errors());     
+                                    $TEMPLATE->assign('step', 1); 
+                                } else {/* validation successful */
+                                    writeConfigFile($cfg_file, '$CFG->db_host', $_POST["db_host"]);
+                                    writeConfigFile($cfg_file, '$CFG->db_user', $_POST["db_user"]);
+                                    writeConfigFile($cfg_file, '$CFG->db_password ', $_POST["db_password"]);
+                                    writeConfigFile($cfg_file, '$CFG->db_name', $_POST["db_name"]);
+                                    writeConfigFile($cfg_file, '$CFG->BASE_URL', str_replace("public", "", implode('/', array_slice(explode('/', $_SERVER['REQUEST_URI']), 0, -1)))); //Generates BASE_URL
+                                    //Backup erstellen
+                                    if (mysql_select_db($_POST['db_name'])){
+                                        $result = mysql_query("SHOW TABLES LIKE 'users'"); //check if DB is emty
+                                        if (isset($_POST['dump']) AND $_POST['dump'] != '' AND mysql_num_rows($result) > 0) {
+                                            /* Datei download erzwingen*/
+                                            system( $path_to_mysqldump.' -u' . $_POST['db_user']. ' -p' . escapeshellarg( $_POST['db_password'] ) . ' -h' . $_POST['db_host'] . ' ' . $_POST['db_name'] . ' >' . $CFG->sql_backup_root."dump.sql", $fp);
+                                            if ( ( $fp==0 ) && ( false !== chmod( $CFG->sql_backup_root."dump.sql", 0666 ) ) ){
+                                            $PAGE->message[]  =  "Daten exportiert";
+                                            } else {
+                                            $PAGE->message[]  =  "Es ist ein Fehler aufgetreten";
+                                            }
+                                            forceDownload($CFG->sql_backup_root."dump.sql");
+                                            unlink($CFG->sql_backup_root."dump.sql"); //Datei vom Server löschen 
+                                            $_SESSION['LASTPOST'] = NULL; // ermöglicht reload
+                                            $_SESSION['DOWNLOAD'] = 1;    // ermöglicht go to page 2
+                                            $PAGE->message[] = 'Datenbank erfolgreich gesichert!';
                                         }
-                                        forceDownload($CFG->sql_backup_root."dump.sql");
-                                        unlink($CFG->sql_backup_root."dump.sql"); //Datei vom Server löschen 
-                                        $_SESSION['LASTPOST'] = NULL; // ermöglicht reload
-                                        $_SESSION['DOWNLOAD'] = 1;    // ermöglicht go to page 2
-                                        $PAGE->message[] = 'Datenbank erfolgreich gesichert!';
+                                        $PAGE->message[] = 'Datenbankzugriff funktioniert!';
+                                        $TEMPLATE->assign('step', 2);
+                                    } else { 
+                                        $PAGE->message[] = 'Datenbank ('.$_POST['db_name'].') nicht gefunden oder leer.';
                                     }
-                                    $PAGE->message[] = 'Datenbankzugriff funktioniert!';
-                                    $TEMPLATE->assign('step', 2);
-                                } else { 
-                                    $PAGE->message[] = 'Datenbank ('.$_POST['db_name'].') nicht gefunden oder leer.';
-                                }
-                            }  
+                                }  
                         }
                         catch(PDOException $ex){
                             die(json_encode(array('outcome' => false, 'message' => 'Unable to connect')));
