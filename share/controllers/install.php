@@ -34,7 +34,7 @@ $TEMPLATE->assign('step', 0);
 $TEMPLATE->assign('countries', '');
 $PAGE->message = '';
 $cfg_file = dirname(__FILE__).'../../config.php';
-if (file_exists('/usr/bin/mysql')){ 
+/*if (file_exists('/usr/bin/mysql')){ 
     $path_to_mysqlfile = '/usr/bin/mysql'; 
     $path_to_mysqldump = '/usr/bin/mysqldump';
 } 
@@ -49,7 +49,7 @@ if (file_exists('/chroot/mysql')){
 if (file_exists('/applications/mamp/library/bin/mysql')){ 
     $path_to_mysqlfile = '/applications/mamp/library/bin/mysql';
     $path_to_mysqldump = '/applications/mamp/library/bin/mysqldump';
-    }  //If mamp is used
+    }*/  //If mamp is used
 
                 
 if (isset($_GET)){ 
@@ -152,7 +152,6 @@ if ($_POST){
                                                 $CFG->app_title = $_POST["app_title"];
                                                 
                                                 if (isset($_POST['demo'])){     // install demo or new db
-                                                    
                                                     //system( $path_to_mysqlfile.' -u' . $CFG->db_user . ' -p' . escapeshellarg( $CFG->db_password ) . ' -h' . $CFG->db_host . ' ' . $CFG->db_name . ' <' . $CFG->demo_root . 'demo.sql', $fp);
                                                     import_SQL($CFG->demo_root . 'demo.sql');
                                                     $TEMPLATE->assign('demo', true);
