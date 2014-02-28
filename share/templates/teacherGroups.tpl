@@ -104,7 +104,7 @@
                     <td>{$results[res]->creation_time}</td>
                     <td>{$results[res]->creator}</td>
                     <td class="td_options">
-                        <a class="deletebtn floatright" type="button" name="delete" onclick="del('group',{$results[res]->id})"></a>
+                        <a class="deletebtn floatright" type="button" name="delete" onclick="del('group',{$results[res]->id}, {$my_id})"></a>
                         <a class="calbtn floatright" href="index.php?action=teacherGroups&function=semester&group_id={$results[res]->id}"></a>
                         <a class="editbtn floatright" href="index.php?action=teacherGroups&function=edit&group_id={$results[res]->id}"></a>
                         <a class="groupbtn floatright" href="index.php?action=teacherGroups&function=showUsers&group_id={$results[res]->id}"></a>

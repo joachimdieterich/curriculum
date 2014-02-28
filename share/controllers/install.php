@@ -34,23 +34,6 @@ $TEMPLATE->assign('step', 0);
 $TEMPLATE->assign('countries', '');
 $PAGE->message = '';
 $cfg_file = dirname(__FILE__).'../../config.php';
-/*if (file_exists('/usr/bin/mysql')){ 
-    $path_to_mysqlfile = '/usr/bin/mysql'; 
-    $path_to_mysqldump = '/usr/bin/mysqldump';
-} 
-if (file_exists('/var/lib/mysql')){ 
-    $path_to_mysqlfile = '/var/lib/mysql';
-    $path_to_mysqldump = '/var/lib/mysqldump';
-    } 
-if (file_exists('/chroot/mysql')){ 
-    $path_to_mysqlfile = '/chroot/mysql';
-    $path_to_mysqldump = '/chroot/mysqldump';
-    } 
-if (file_exists('/applications/mamp/library/bin/mysql')){ 
-    $path_to_mysqlfile = '/applications/mamp/library/bin/mysql';
-    $path_to_mysqldump = '/applications/mamp/library/bin/mysqldump';
-    }*/  //If mamp is used
-
                 
 if (isset($_GET)){ 
     switch ($_GET) {
@@ -152,15 +135,13 @@ if ($_POST){
                                                 $CFG->app_title = $_POST["app_title"];
                                                 
                                                 if (isset($_POST['demo'])){     // install demo or new db
-                                                    //system( $path_to_mysqlfile.' -u' . $CFG->db_user . ' -p' . escapeshellarg( $CFG->db_password ) . ' -h' . $CFG->db_host . ' ' . $CFG->db_name . ' <' . $CFG->demo_root . 'demo.sql', $fp);
-                                                    import_SQL($CFG->demo_root . 'demo.sql');
+                                                    $fp = import_SQL($CFG->demo_root . 'demo.sql');
                                                     $TEMPLATE->assign('demo', true);
-                                                } else {
-                                                    //system( $path_to_mysqlfile.' -u' . $CFG->db_user . ' -p' . escapeshellarg( $CFG->db_password ) . ' -h' . $CFG->db_host . ' ' . $CFG->db_name . ' <' . $CFG->demo_root . 'install.sql', $fp);  
-                                                     import_SQL($CFG->demo_root . 'demo.sql');
+                                                } else {                                                    
+                                                     $fp = import_SQL($CFG->demo_root . 'demo.sql');
                                                     $TEMPLATE->assign('install', false);
                                                 }    
-                                                if ($fp==0) {
+                                                if ($fp) {
                                                     $PAGE->message[] = "Datenbank erfolgreich eingerichtet";  
                                                     load_Countries();
                                                     $TEMPLATE->assign('step', 3);
@@ -388,11 +369,12 @@ if (substr(trim($line), -1, 1) == ';')
 {
     // Perform the query
     $db = DB::prepare($templine);
-    $db->execute();
+    $feedback = $db->execute();
     // Reset temp variable to empty
     $templine = '';
 }
 }
+return $feedback; 
 }
 
 $TEMPLATE->assign('page_message', $PAGE->message);	

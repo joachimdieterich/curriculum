@@ -129,7 +129,6 @@ class EnablingObjective {
         $db->execute(array($this->terminal_objective_id));
         $result = $db->fetchObject();
         $this->order_id = $result->max+1;
-        echo 'test',$this->order_id;
         $db = DB::prepare('INSERT INTO enablingObjectives 
                     (enabling_objective,description,terminal_objective_id,curriculum_id,repeat_interval,order_id,creator_id) 
                     VALUES (?,?,?,?,?,?,?)');        

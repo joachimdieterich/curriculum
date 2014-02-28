@@ -150,7 +150,7 @@ function deleteSubject() {
 
 function del() {
     if (confirm("Datensatz wirklich löschen?")) {   //Meldung "Wirklich löschen?"
-        var url = "assets/scripts/request.php?ajax=on&function=delete&db="+arguments[0]+"&id="+ arguments[1]; 
+        var url = "assets/scripts/request.php?ajax=on&function=delete&db="+arguments[0]+"&id="+ arguments[1]+"&creator_id="+ arguments[2]; 
         
         req = XMLobject();
         if(req) {        

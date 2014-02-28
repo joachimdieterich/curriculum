@@ -74,7 +74,7 @@
                     <td>{$role_list[role]->role}</td>
                     <td>{$role_list[role]->description}</td>
                     <td class="td_options">
-                        <a class="deletebtn floatright" type="button" name="delete" onclick="del('role', {$role_list[role]->role_id})"></a>
+                        <a class="deletebtn floatright" type="button" name="delete" onclick="del('role', {$role_list[role]->role_id}, {$my_id})"></a>
                         <a class="editbtn floatright" href="index.php?action=role&edit=true&id={$role_list[role]->role_id}"></a>
                         </td>
                 </tr>

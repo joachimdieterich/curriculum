@@ -113,8 +113,8 @@
                             <div id="{$ter->id}style{$ena->id}" class="box gray-gradient border-radius box-shadow gray-border {if $ena->accomplished_status_id eq 1} boxgreen {else} boxred{/if}">
                             <div class="boxheader border-top-radius "></div>
                         <div class="boxwrap">
-                                    <div class="boxscroll">
-                                    <div class="boxcontent" onclick="setAccomplishedObjectives({$my_id}, {$selected_user_id}, {$userPaginator.first}, {if isset($paginatorLimit)}{$paginatorLimit}{else}10{/if}, {$ter->id}, {$ena->id})">
+                                    <div class="boxscroll" onclick="setAccomplishedObjectives({$my_id}, {$selected_user_id}, {$userPaginator.first}, {if isset($paginatorLimit)}{$paginatorLimit}{else}10{/if}, {$ter->id}, {$ena->id})">
+                                    <div class="boxcontent" >
                                          {$ena->enabling_objective}
                             <!--<br>{$ena->description}-->
                                     </div>

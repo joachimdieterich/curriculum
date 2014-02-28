@@ -313,6 +313,7 @@ function checkCapabilities($capability = null, $role_id = null){
     $capabilities = new Capability();
     $capabilities->capability = $capability; 
     $capabilities->role_id    = $role_id; 
+    
     return $capabilities->checkCapability();
 }
 
