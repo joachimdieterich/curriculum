@@ -103,8 +103,8 @@ class Institution {
             $db = DB::prepare('INSERT INTO institution (institution, description, schooltype_id, country_id, state_id, creator_id, confirmed) 
                                 VALUES (?,?,?,?,?,?,?)');
             if ($db->execute(array($this->institution, $this->description, $this->schooltype_id, $this->country_id, $this->state_id, $this->creator_id, $this->confirmed))){
-                $last_id = $db->lastInsertId(); //gibt die ID zurück
-                return $last_id;
+                $last_id = $db->fetchObject(); //gibt die ID zurück
+                return $last_id->lastInsertId();
             } else return false; 
             
         }
