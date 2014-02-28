@@ -264,6 +264,7 @@ if ($_POST){
                                                 $new_user->country_id = $_POST['country'];
                                                 $new_user->password   = $_POST['password'];
                                                 $new_user->role_id    = 1;
+                                                $new_user->confirmed  = 1;
                                                 $new_user->creator_id = -1;
                                                 $USER = $new_user;  //important! $USER is required in user.class.php
                                                 $user_id = $new_user->add();
