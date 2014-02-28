@@ -153,11 +153,13 @@ if ($_POST){
                                                 
                                                 if (isset($_POST['demo'])){     // install demo or new db
                                                     
-                                                    system( $path_to_mysqlfile.' -u' . $CFG->db_user . ' -p' . escapeshellarg( $CFG->db_password ) . ' -h' . $CFG->db_host . ' ' . $CFG->db_name . ' <' . $CFG->demo_root . 'demo.sql', $fp);
+                                                    //system( $path_to_mysqlfile.' -u' . $CFG->db_user . ' -p' . escapeshellarg( $CFG->db_password ) . ' -h' . $CFG->db_host . ' ' . $CFG->db_name . ' <' . $CFG->demo_root . 'demo.sql', $fp);
+                                                    import_SQL($CFG->demo_root . 'demo.sql');
                                                     $TEMPLATE->assign('demo', true);
                                                 } else {
-                                                    system( $path_to_mysqlfile.' -u' . $CFG->db_user . ' -p' . escapeshellarg( $CFG->db_password ) . ' -h' . $CFG->db_host . ' ' . $CFG->db_name . ' <' . $CFG->demo_root . 'install.sql', $fp);  
-                                                    $TEMPLATE->assign('demo', false);
+                                                    //system( $path_to_mysqlfile.' -u' . $CFG->db_user . ' -p' . escapeshellarg( $CFG->db_password ) . ' -h' . $CFG->db_host . ' ' . $CFG->db_name . ' <' . $CFG->demo_root . 'install.sql', $fp);  
+                                                     import_SQL($CFG->demo_root . 'demo.sql');
+                                                    $TEMPLATE->assign('install', false);
                                                 }    
                                                 if ($fp==0) {
                                                     $PAGE->message[] = "Datenbank erfolgreich eingerichtet";  
@@ -366,6 +368,32 @@ function load_Countries(){
     $schooltype = new Schooltype();
     $schooltypes = $schooltype->getSchooltypes();
 $TEMPLATE->assign('schooltype', $schooltypes);
+}
+
+function import_SQL($filename){
+    // Temporary variable, used to store current query
+$templine = '';
+// Read in entire file
+$lines = file($filename);
+// Loop through each line
+foreach ($lines as $line)
+{
+// Skip it if it's a comment
+if (substr($line, 0, 2) == '--' || $line == '')
+    continue;
+
+// Add this line to the current segment
+$templine .= $line;
+// If it has a semicolon at the end, it's the end of the query
+if (substr(trim($line), -1, 1) == ';')
+{
+    // Perform the query
+    $db = DB::prepare($templine);
+    $db->execute();
+    // Reset temp variable to empty
+    $templine = '';
+}
+}
 }
 
 $TEMPLATE->assign('page_message', $PAGE->message);	
