@@ -84,13 +84,7 @@ if ($_POST){
                         try{
                             $db = new pdo('mysql:host='.$CFG->db_host.';dbname='.$CFG->db_name.';'/*'.charset=utf8.'*/, $CFG->db_user, $CFG->db_password ,
                                             array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
-                            die(json_encode(array('outcome' => true)));
-                        }
-                        catch(PDOException $ex){
-                            die(json_encode(array('outcome' => false, 'message' => 'Unable to connect')));
-                        }
-                        
-                        $gump = new Gump();
+                            $gump = new Gump();
                         $gump->validation_rules(array(
                                         'db_host'     => 'required',
                                         'db_user'     => 'required',
@@ -133,6 +127,10 @@ if ($_POST){
                                     $PAGE->message[] = 'Datenbank ('.$_POST['db_name'].') nicht gefunden oder leer.';
                                 }
                             }  
+                        }
+                        catch(PDOException $ex){
+                            die(json_encode(array('outcome' => false, 'message' => 'Unable to connect')));
+                        }
                     }
                     
             break;
