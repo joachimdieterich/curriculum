@@ -23,7 +23,7 @@
 
 require_once(dirname(__FILE__).'../../setup.php');
 require_once(dirname(__FILE__).'../../include.php');
-
+require dirname(__FILE__).'../../config.php';
 global $TEMPLATE, $CFG, $PAGE, $USER;
 $USER = new User();
 
