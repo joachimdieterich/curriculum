@@ -77,8 +77,7 @@ class Schooltype {
             $result = $db->execute(array($this->schooltype, $this->description, $this->country_id, $this->state_id, $this->creator_id));
 
             if ($result){
-                $last_id = $db->fetchObject(); //gibt die ID zurück
-                return $last_id->lastInsertId();
+                return DB::lastInsertId();
             } else return false; 
             
         }
