@@ -77,7 +77,7 @@ if ($_POST){
                         unset($_SESSION['DOWNLOAD']); 
                         $TEMPLATE->assign('step', 2);
                     } else {
-                        $CFG->db_host       = $_POST["db_name"];
+                        $CFG->db_host       = $_POST["db_host"];
                         $CFG->db_name       = $_POST["db_name"];
                         $CFG->db_user       = $_POST['db_user'];
                         $CFG->db_password   = $_POST['db_password'];
