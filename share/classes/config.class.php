@@ -212,7 +212,7 @@ class Config {
                                     return $db->execute(array($this->institution_id, $this->institution_filepath, $this->institution_paginator_limit,$this->institution_standard_role, $this->institution_standard_country, $this->institution_standard_state, $this->institution_csv_size, $this->institution_avatar_size, $this->institution_material_size, $this->institution_acc_days, $this->institution_language, $this->institution_timeout));
                                     break; 
                 case 'user':        $this->user_id = $id; 
-                                    $db = DB::prepare('INSERT INTO config_user(user_id, user_paginator_limit, user_acc_days, user_language) VALUES (?,?,?,?');
+                                    $db = DB::prepare('INSERT INTO config_user(user_id, user_paginator_limit, user_acc_days, user_language) VALUES (?,?,?,?)');
                                     return $db->execute(array($this->user_id, $this->user_paginator_limit, $this->user_acc_days, $this->user_language));
                                     break; 
                 default:            break; 
