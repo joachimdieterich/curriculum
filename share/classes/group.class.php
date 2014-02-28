@@ -125,7 +125,15 @@ class Group {
      * Delete group
      * @return mixed 
      */
-    public function delete(){
+    public function delete($creator_id = null){
+        if ($creator_id != null) { // if function is called by request-php --> required by checkCapabilities()
+            $user = new USER();
+
+            $user->load('id', $creator_id);
+            $role_id = $user->role_id;
+        } else {
+            $role_id = $USER->role-id;
+        } 
         $db = DB::prepare('SELECT id FROM curriculum_enrolments WHERE group_id = ? AND status = 1');
         $result = $db->fetchObject();
         if ($result){

@@ -255,30 +255,31 @@ if (isset($_GET['function'])){
         case "delete":      if (isset($_GET['ajax'])) {
                                     $db = $_GET['db'];
                                     $id = $_GET['id'];
+                                    $creator_id = $_GET['creator_id']; 
                                     switch ($db) {
                                         case "grade": $grade = new Grade();
                                                       $grade->id  = $id;
-                                                      $ok = $grade->delete();
+                                                      $ok = $grade->delete($creator_id);
                                             break;
                                         case "group": $group = new Group();
                                                       $group->id  = $id;
-                                                      $ok = $group->delete();
+                                                      $ok = $group->delete($creator_id);
                                             break;
                                         case "role": $role = new Roles();
                                                      $role->role_id = $id;
-                                                     $ok = $role->delete();
+                                                     $ok = $role->delete($creator_id);
                                             break;
                                         case "semester":    $semester = new Semester();
                                                             $semester->id = $id;
-                                                            $ok = $semester->delete();
+                                                            $ok = $semester->delete($creator_id);
                                             break;
                                         case "subject": $subject = new Subject();
                                                         $subject->id = $id;
-                                                     $ok = $subject->delete();
+                                                     $ok = $subject->delete($creator_id);
                                             break;
                                         case "user": $user = new User(); 
                                                      $user->id = $id;
-                                                     $ok = $user->delete();
+                                                     $ok = $user->delete($creator_id);
                                             break;
 
                                         default:

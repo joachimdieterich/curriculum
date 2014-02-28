@@ -302,9 +302,17 @@ class User {
      * delete User
      * @return boolean 
      */
-    public function delete(){
-        global $USER; 
-        if(checkCapabilities('user:delete', $USER->role_id)){
+    public function delete($creator_id = null){
+        if ($creator_id != null) { // if function is called by request-php
+            $user = new USER();
+
+            $user->load('id', $creator_id);
+            $role_id = $user->role_id;
+        } else {
+            $role_id = $USER->role-id;
+        }
+        
+        if(checkCapabilities('user:delete', $role_id)){
             $db = DB::prepare('DELETE FROM users WHERE id = ?');
             if ($db->execute(array($this->id))) {
                 $user_config = new Config(); 

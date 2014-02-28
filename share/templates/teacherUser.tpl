@@ -53,7 +53,7 @@
                        <td>{$results[res]->country}</td>
                        <td>{$results[res]->role_name}</td>
                        <td>
-                        <a class="deletebtn floatright" type="button" onclick="del('user',{$results[res]->id})"></a>
+                        <a class="deletebtn floatright" type="button" onclick="del('user',{$results[res]->id}, {$my_id})"></a>
                         <a class="editbtn floatright" href="index.php?action=profile&function=editUser&userID={$results[res]->id}"></a>
                         <a class="groupbtn floatright" href="index.php?action=teacherUser&function=showGroups&userID={$results[res]->id}"></a>
                         <a class="listbtn floatright" href="index.php?action=teacherUser&function=showCurriculum&userID={$results[res]->id}"></a>                 

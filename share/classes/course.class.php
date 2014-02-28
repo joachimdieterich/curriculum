@@ -126,7 +126,7 @@ class Course {
                                                     WHERE user_id =  ?
                                                     OR creator_id =  ?)
                                                     ORDER BY gp.groups, cu.curriculum ASC');
-                            $db->execute(array($id));
+                            $db->execute(array($id, $id));
                             while($result = $db->fetchObject()) { 
                                 $this->id            = $result->id.'_'.$result->gpid;
                                 $this->course        = $result->groups.' | '.$result->curriculum.' | '.$result->description; 
