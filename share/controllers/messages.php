@@ -40,7 +40,7 @@ if ($_POST){
         $newMail->receiver_id   = $_POST['receiver_id'];
         $newMail->sender_id     = $USER->id;
         $newMail->subject       = $_POST['subject'];
-        $newMail->message       = $_POST['message'];
+        $newMail->message       = $_POST['message_text'];
         
        /**
         * Validation 
@@ -48,7 +48,7 @@ if ($_POST){
         $gump = new Gump();
         $gump->validation_rules(array(
         'subject'     => 'required',
-        'message'     => 'required'
+        'message_text'     => 'required'
         ));
         $validated_data = $gump->run($_POST);
 
@@ -108,6 +108,8 @@ if ($USER->getGroupMembers()){
 /**
  * setContenttitle & log
  */
+
+
 $TEMPLATE->assign('messages', 'Nachrichten');    
 $TEMPLATE->assign('page_message', $PAGE->message);
 //addLog($USER->id, 'view', curPageURL(), 'messages'); //Addlog

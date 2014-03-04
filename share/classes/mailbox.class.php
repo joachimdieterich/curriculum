@@ -87,7 +87,7 @@ class Mailbox {
      * @param int $user_id
      * @param string $mailbox 
      */
-    public function loadMailbox($user_id, $mailbox = 'in'){
+    public function loadMailbox($user_id, $mailbox = 'delete'){
         if ($mailbox != 'deleted'){
             $db = DB::prepare('SELECT * FROM message WHERE '.$mailbox.' = ? ORDER BY id DESC');
             $db->execute(array($user_id));
@@ -152,6 +152,7 @@ class Mailbox {
                     default:            break;
                 }           
         }
+        
     }    
 }
 ?>
