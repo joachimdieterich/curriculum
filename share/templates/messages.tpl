@@ -33,8 +33,8 @@
         {*  <p><label>An:</label><input class='inputformlong' type='text' name='subject' id='subject' value='Administrator' {if isset($inputusers)}value='{$inputusers}'{/if} readonly/></p> *}
         <p><label>Betreff: </label><input class='inputformlong' type='text' name='subject' id='subject' {if isset($subject)}value='{$subject}'{/if}/></p> 
         {validate_msg field='subject'}
-        <p><label>Nachricht: </label>{validate_msg field='message'}
-            <textarea name="message">{if isset($message)}{$message}{/if}</textarea></p>    
+        <p><label>Nachricht: </label>{validate_msg field='message_text'}
+            <textarea name="message_text">{if isset($message_text)}{$message_text}{/if}</textarea></p>    
         <p><label></label><input type='submit' name='sendMessage' value='Nachricht senden' /></p>
       {else}<p>Keine Gruppenmitglieder vorhanden.</p>
         {/if}

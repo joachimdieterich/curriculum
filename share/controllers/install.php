@@ -308,7 +308,8 @@ if ($_POST){
                                                 session_destroy(); //important! reset $USER
                                             }
             break;
-        case isset($_POST['step_5']):header('Location:index.php?action=login');
+        case isset($_POST['step_5']):
+                        header('Location:index.php?action=login');
             break;
         
         default:
