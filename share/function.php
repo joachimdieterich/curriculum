@@ -132,7 +132,7 @@ function curPageName() {
 
 /**
  * set paginator
- * @global object $CFG
+ * @global object $CFG, $INSTITUTION, PAGE
  * @param string $instance
  * @param array $template
  * @param array $resultData
@@ -140,28 +140,28 @@ function curPageName() {
  * @param string $currentURL 
  */
 function setPaginator($instance, $template, $data, $returnVar, $currentURL) {
-    global $CFG, $INSTITUTION;
-    $SmartyPaginate = new SmartyPaginate(); //???neue SmartyPaginate registrieren
+    global $CFG, $INSTITUTION, $PAGE;
+    $SmartyPaginate = new SmartyPaginate(); 
     $SmartyPaginate->connect($instance);
     $CFG->paginator_name = &$instance;
     
     $SmartyPaginate->setLimit($INSTITUTION->institution_paginator_limit, $instance);
-    $SmartyPaginate->setUrl($currentURL, $instance);//$currentURL, $instance);
+    $SmartyPaginate->setUrl($currentURL, $instance);
     $SmartyPaginate->setUrlVar($instance, $instance);
 
-    if ($data == false){ //Hack Bugfix damit alle datensätze gelöscht werden können
-        $template->assign('data', null); //keine Datensätze vorhanden
+    if ($data == false){                        // if no data available
+        $template->assign('data', null); 
         $PAGE->message[] = 'Keine Datensätze vorhanden.';
         $template->assign('message', $PAGE->message);
     } else {
-        $template->assign('data', true); //keine Datensätze vorhanden
+        $template->assign('data', true); 
         $SmartyPaginate->setTotal(count($data), $instance);
-        if ($SmartyPaginate->getCurrentIndex($instance) >= count($data)){ //setzt paginator index zurück, wenn datensatz gelöscht wird, und auf der neuen seite (aktueller index) keine datensätze mehr sind
+        if ($SmartyPaginate->getCurrentIndex($instance) >= count($data)){ //resets paginators current index (if data was deleted)
             $SmartyPaginate->setCurrentItem(1, $instance); 
         }
         $template->assign($returnVar, array_slice($data, $SmartyPaginate->getCurrentIndex($instance), $SmartyPaginate->getLimit($instance)), $instance);
     }    
-    $template->assign('currentUrlId', $SmartyPaginate->getCurrentIndex($instance)+1); // 
+    $template->assign('currentUrlId', $SmartyPaginate->getCurrentIndex($instance)+1); 
     $SmartyPaginate->assign($template, $instance, $instance);
 }
 
@@ -169,7 +169,7 @@ function setPaginator($instance, $template, $data, $returnVar, $currentURL) {
  * reset paginator instance
  * @param string $instance 
  */
-function resetPaginator($instance){  //Setzt den Paginator zurück auf den index 1
+function resetPaginator($instance){  //resets Paginator to index 1
     $SmartyPaginate = new SmartyPaginate(); 
     $SmartyPaginate->connect($instance);
     $SmartyPaginate->setCurrentItem(1, $instance);
