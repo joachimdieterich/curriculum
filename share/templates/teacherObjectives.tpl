@@ -12,7 +12,7 @@
 <div class=" border-radius gray-border">	
     <div class="border-top-radius contentheader ">{$teacherObjectives}<div class="printbtn floatright" onclick="printPage('printContent');"> </div></div>
     <div class="space-top-padding gray-gradient border-bottom-radius box-shadow ">
-      <form id='userlist' method='post' action='index.php?action=adminUser&next={$currentUrlId}'>
+      
         {if isset($user->avatar) and $user->avatar != 'noprofile.jpg'}
             <div id="right">
                 <img class="border-radius gray-border" src="{$avatar_url}{$user->avatar}" alt="Profilfoto">
@@ -179,9 +179,7 @@
             <p>&nbsp;</p>
             {/if}
         {/if}
-        {* Ende course anzeigen*}
-        
-	</form>              
+        {* Ende course anzeigen*}          
     </div>
 </div>
 {/block}
