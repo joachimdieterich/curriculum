@@ -41,7 +41,7 @@
     
     <p><h3>{$str_institution_headline}</h3></p>
     {if isset($myInstitutions)} 
-    <form id='institutionlist' method='post' action='index.php?action=dashboard&next={$currentUrlId}'>
+    
         <table id="contenttable">
 		<tr id="contenttablehead">
                 <td></td>

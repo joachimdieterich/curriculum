@@ -160,8 +160,8 @@ function setPaginator($instance, $template, $data, $returnVar, $currentURL) {
             $SmartyPaginate->setCurrentItem(1, $instance); 
         }
         $template->assign($returnVar, array_slice($data, $SmartyPaginate->getCurrentIndex($instance), $SmartyPaginate->getLimit($instance)), $instance);
-    }
-    $template->assign('currentUrlId', $SmartyPaginate->getCurrentIndex($instance)+1); //damit nach funktionen die selbe Seite angezeigt werden kann
+    }    
+    $template->assign('currentUrlId', $SmartyPaginate->getCurrentIndex($instance)+1); // 
     $SmartyPaginate->assign($template, $instance, $instance);
 }
 
