@@ -36,7 +36,7 @@
             <p><label>Anzahl: </label><input type='number' min="1" max="365" name='user_acc_days' id='user_acc_days' value={$user_acc_days} /></p>
             {validate_msg field='user_acc_days'}<p>&nbsp;</p><p>&nbsp;</p>
             {*Admin*}
-            {if $ccs_menu_InstitutionConfig == 1}
+            {if checkCapabilities('menu:readInstitutionConfig', $my_role_id)}
                 <input type='hidden' name='institution_id' id='institution_id' {if isset($institution_id)}value='{$institution_id}'{/if} />     
                 <p><h3>Einstellungen für Institution</h3></p>
                 <p>&nbsp;</p>
