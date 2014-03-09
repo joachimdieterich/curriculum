@@ -37,7 +37,7 @@
                     <li><p><a href="index.php?action=teacherObjectives&reset=true">Lernstand</a></p></li> 
                 {/if}
                 {if checkCapabilities('menu:readCurricula', $my_role_id)}
-                    <li><p><a href="index.php?action=teacherCurriculum&reset=true">Lehrpläne</a></p></li>
+                    <li><p><a href="index.php?action=curriculum&reset=true">Lehrpläne</a></p></li>
                 {/if}
                 {if checkCapabilities('menu:readGroup', $my_role_id)}
                     <li><p><a href="index.php?action=teacherGroups&reset=true">Lerngruppen</a></p></li>
@@ -58,10 +58,10 @@
                     <li><p><a href="index.php?action=teacherSemester&reset=true">Lernzeiträume</a></p></li>
                 {/if}
                 {if checkCapabilities('menu:readBackup', $my_role_id)}
-                    <li><p><a href="index.php?action=teacherBackup&reset=true">Backup</a></p></li>
+                    <li><p><a href="index.php?action=Backup&reset=true">Backup</a></p></li>
                 {/if}
                 {if checkCapabilities('menu:readConfirm', $my_role_id)}            
-                    <li><p><a href="index.php?action=teacherConfirm&reset=true">Freigaben</a></p></li>
+                    <li><p><a href="index.php?action=confirm&reset=true">Freigaben</a></p></li>
                 {/if}
                 {if checkCapabilities('menu:readProfileConfig', $my_role_id) or checkCapabilities('menu:readInstitutionConfig', $my_role_id)}
                 <li><p><a href="index.php?action=config">Einstellungen</a></p></li>

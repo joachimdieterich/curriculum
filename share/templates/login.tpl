@@ -1,6 +1,6 @@
 {extends file="base.tpl"}
 
-{block name=title}Login{/block}
+{block name=title}{$page_title}{/block}
 {block name=description}{$smarty.block.parent}{/block}
 {block name=nav}{$smarty.block.parent}{/block}
 
@@ -9,7 +9,7 @@
 
 {block name=content}
     
-<!--<h3 class="{$page_name}">{$login_stuff}</h3>-->
+<!--<h3 class="{$page_name}">{$page_title}</h3>-->
 <div class="centerbox">
     <div class="centerboxcorrection gray-gradient border-radius box-shadow gray-border">	
         <div class="border-top-radius contentheader">Login</div>    			

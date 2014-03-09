@@ -1,6 +1,6 @@
 {extends file="base.tpl"}
 
-{block name=title}{$teacherBackup}{/block}
+{block name=title}{$page_title}{/block}
 {block name=description}{$smarty.block.parent}{/block}
 {block name=nav}{$smarty.block.parent}{/block}
 
@@ -10,9 +10,9 @@
 {block name=content}
     
 <div class=" border-radius gray-border">	
-    <div class="border-top-radius contentheader ">{$teacherBackup}</div>
+    <div class="border-top-radius contentheader ">{$page_title}</div>
     <div class="space-top-padding gray-gradient border-bottom-radius box-shadow ">
-      <form method='post' action='index.php?action=teacherBackup'>
+      <form method='post' action='index.php?action=backup'>
         {if isset($user_avatar) and $user_avatar != 'noprofile.jpg'}
             <div id="right">
                 <img class="border-radius gray-border" src="{$avatar_url}{$user_avatar}" alt="Profilfoto">
@@ -20,7 +20,7 @@
         {/if}    
         {if isset($courses)}
           <p>
-              <select class="makeMeFancy" id='course' name='course' onchange="window.location.assign('index.php?action=teacherBackup&course='+this.value);"> {*_blank global regeln*}
+              <select class="makeMeFancy" id='course' name='course' onchange="window.location.assign('index.php?action=backup&course='+this.value);"> {*_blank global regeln*}
                   <option value="-1" data-skip="1">Lehrplan wählen...</option>
                   {section name=res loop=$courses}
                     <option value="{$courses[res]->id}" 
@@ -44,7 +44,7 @@
         {if $data != null}
         {* display pagination header *}
         <p>Datensätze {$fileBackupPaginator.first}-{$fileBackupPaginator.last} von {$fileBackupPaginator.total} werden angezeigt.</p>
-        <form id='userlist' method='post' action='index.php?action=teacherBackup&next={$currentUrlId}'>
+        <form id='userlist' method='post' action='index.php?action=backup&next={$currentUrlId}'>
 		<table id="contenttable">
 		<tr id="contenttablehead">
 			<td></td><td>Dateiname</td>

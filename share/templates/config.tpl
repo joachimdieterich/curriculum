@@ -1,6 +1,6 @@
 {extends file="base.tpl"}
 
-{block name=title}Systemeinstellungen von curriculum{/block}
+{block name=title}{$page_title}{/block}
 {block name=description}{$smarty.block.parent}{/block}
 {block name=nav}{$smarty.block.parent}{/block}
 
@@ -10,7 +10,7 @@
 {block name=content}
     
 <div class=" border-radius gray-border">	
-    <div class="border-top-radius contentheader ">Systemeinstellungen von curriculum</div>
+    <div class="border-top-radius contentheader ">{$page_title}</div>
     <div class="space-top-padding gray-gradient border-bottom-radius box-shadow ">
         <form method='post' action='index.php?action=config'>
             <p><h3>Persönliche Einstellungen</h3></p>

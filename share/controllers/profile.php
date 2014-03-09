@@ -24,7 +24,7 @@
 */
 global $CFG, $USER, $PAGE, $TEMPLATE;
 
-  $TEMPLATE->assign('profile', 'Profil bearbeiten');
+  $TEMPLATE->assign('page_title', 'Profil bearbeiten');
 
 /**
  * create new User object 

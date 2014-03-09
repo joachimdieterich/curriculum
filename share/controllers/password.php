@@ -67,6 +67,6 @@ if($_POST) {
     }
 }
 
-$TEMPLATE->assign('password', 'Passwort ändern');
+$TEMPLATE->assign('page_title', 'Passwort ändern');
 //addLog($USER->id, 'view', curPageURL(), 'password'); //Addlog
 ?>

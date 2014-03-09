@@ -1,6 +1,6 @@
 {extends file="base.tpl"}
 
-{block name=title}{$teacherCurriculum}{/block}
+{block name=title}{$page_title}{/block}
 {block name=description}{$smarty.block.parent}{/block}
 {block name=nav}{$smarty.block.parent}{/block}
 
@@ -10,11 +10,11 @@
 {block name=content}
     
 <div class=" border-radius gray-border">	
-    <div class="border-top-radius contentheader ">{$teacherCurriculum}</div>
+    <div class="border-top-radius contentheader ">{$page_title}</div>
     <div class="space-top-padding gray-gradient border-bottom-radius box-shadow ">
         {if !isset($edit_form)}
         <p class="floatleft gray-gradient cssimgbtn border-radius gray-border">
-            <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=teacherCurriculum&function=new_curriculum">Lehrplan hinzufügen</a>
+            <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=curriculum&function=new_curriculum">Lehrplan hinzufügen</a>
         </p>
         <p>&nbsp;</p>
         {/if}
@@ -23,7 +23,7 @@
             <div id="right">
                 <img id="icon"  src="">
             </div>
-            <form id='add' method='post' action='index.php?action=teacherCurriculum&next={if isset($currentUrlId)}{$currentUrlId}{/if}'>
+            <form id='add' method='post' action='index.php?action=curriculum&next={if isset($currentUrlId)}{$currentUrlId}{/if}'>
             <input class="invisible" type="text" id="edit_curriculum_id" name="edit_curriculum_id" {if isset($edit_curriculum_id)}value='{$edit_curriculum_id}'{/if}>
             <p><label>Lehrplan-Name*: </label><input class='inputformlong' type='text' name='curriculum' id='curriculum' {if isset($curriculum)}value='{$curriculum}'{/if} /></p>   
             {validate_msg field='curriculum'}
@@ -86,7 +86,7 @@
             </form>	
         {/if}
         
-        <form id='curriculumlist' method='post' action='index.php?action=teacherCurriculum&next={if isset($currentUrlId)}{$currentUrlId}{/if}'>
+        <form id='curriculumlist' method='post' action='index.php?action=curriculum&next={if isset($currentUrlId)}{$currentUrlId}{/if}'>
             <p>&nbsp;</p>
     {if $data != null}
         {* display pagination header *}
@@ -125,7 +125,7 @@
                     <td class="td_options">{*<div class="editbtn"  onmouseup="document.getElementById('editCurriculum').click();""></div>*}
                         <a class="deletebtn floatright" type="button" name="delete" onclick="deleteCurriculum({$results[res]->id})"></a>
                         <a class="addbtn floatright" href="index.php?action=view&function=addObjectives&curriculum={$results[res]->id}"></a>
-                        <a class="editbtn floatright" href="index.php?action=teacherCurriculum&function=edit&edit_curriculum_id={$results[res]->id}"></a>
+                        <a class="editbtn floatright" href="index.php?action=curriculum&function=edit&edit_curriculum_id={$results[res]->id}"></a>
                     </td>
                     {/if}
                 </tr>

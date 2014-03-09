@@ -21,6 +21,7 @@
 * http://www.gnu.org/copyleft/gpl.html      
 */
 global $USER, $PAGE, $TEMPLATE;
+$TEMPLATE->assign('page_title', 'Rollen verwalten');
 //throw new CurriculumException("Sie verfügen nicht über ausreichende Berechtigungen");
 if (isset($_GET['function']) AND checkCapabilities('page:showRoleForm', $USER->role_id)) {
      switch ($_GET['function']) {
