@@ -2,7 +2,7 @@
 /** This file is part of curriculum - http://www.joachimdieterich.de
  * 
  * @package core
- * @filename adminLog.php
+ * @filename Log.php
  * @copyright 2013 Joachim Dieterich
  * @author Joachim Dieterich
  * @date 2013.03.08 13:26
@@ -22,11 +22,11 @@
 */
 global $USER, $TEMPLATE, $PAGE, $LOG;
 
-$TEMPLATE->assign('adminLog', 'Logfiles'); 
-$LOG->add($USER->id, 'view', $PAGE->url, 'adminLog'); 
+$TEMPLATE->assign('Log', 'Logfiles'); 
+$LOG->add($USER->id, 'view', $PAGE->url, 'Log'); 
     
-if (checkCapabilities('page:readLog', $USER->role_id)){
-    setPaginator('logPaginator', $TEMPLATE, $LOG->getLogs(), 'results', 'index.php?action=adminLog');
+if (checkCapabilities('menu:readLog', $USER->role_id)){
+    setPaginator('logPaginator', $TEMPLATE, $LOG->getLogs(), 'results', 'index.php?action=Log');
     $TEMPLATE->assign('ccs_page_log', true); 
 } 
 ?>

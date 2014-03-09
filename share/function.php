@@ -151,8 +151,8 @@ function setPaginator($instance, $template, $data, $returnVar, $currentURL) {
 
     if ($data == false){                        // if no data available
         $template->assign('data', null); 
-        $PAGE->message[] = 'Keine Datensätze vorhanden.';
-        $template->assign('message', $PAGE->message);
+        /*$PAGE->message[] = 'Keine Datensätze vorhanden.';
+        $template->assign('message', $PAGE->message);*/
     } else {
         $template->assign('data', true); 
         $SmartyPaginate->setTotal(count($data), $instance);

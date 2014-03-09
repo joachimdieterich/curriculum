@@ -61,7 +61,7 @@
                         {/if}
                 </header>    
 
-                    {if $page_name eq 'login'} <!--Kein Menu -->
+                    {if $page_name eq 'login' OR $page_name eq 'error'} <!--Kein Menu -->
                         {else}
                             {block name=nav}
                             <div class="floatleft">

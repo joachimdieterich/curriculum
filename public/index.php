@@ -20,111 +20,74 @@
  *                                                                       
  * http://www.gnu.org/copyleft/gpl.html      
  */
-
-require_once('../share/setup.php');
-require_once('../share/function.php');      //php-Funktionen implementieren
-
-global $CFG, $PAGE, $TEMPLATE, $LOG;
-
-/**
- * Create LOG Object 
- */
-$LOG = new Log();
-
-/**
-* Setup PAGE 
-*/
-$PAGE = new stdClass();
-
-/**
- *  set PAGE defaults (used when no param is given, see below)
- */
-$PAGE->controller   = 'default';
-$PAGE->action       = 'login';
-$PAGE->curriculum   = 'none';
-$PAGE->login        = 'none';
-
-/**
- *  get PAGE parameters 
- */
-$PAGE->controller = (isset($_GET['controller']) && trim($_GET['controller'] != '') ? $_GET['controller'] : $PAGE->controller);
-$PAGE->action     = (isset($_GET['action']) && trim($_GET['action'] != '') ? $_GET['action'] : $PAGE->action);
-$PAGE->curriculum = (isset($_GET['curriculum']) && trim($_GET['curriculum'] != '') ? $_GET['curriculum'] : $PAGE->curriculum);
-$PAGE->login      = (isset($_GET['login']) && trim($_GET['login'] != '') ? $_GET['login'] : $PAGE->login);
-
-
-if ($PAGE->action  != 'login' OR $PAGE->action  != 'register' OR $PAGE->action  != 'install') {
-    //check ob eingeloggt oder timeout --> muss ganz oben stehen bleiben
-    if($PAGE->action  != 'register' AND $PAGE->action  != 'install') {
-        if (isset($_SESSION['username'])) {
-            include ('../share/session.php');       // first build session, then do the login-check!
-            include ('../share/login-check.php'); //checkt ob man eingeloggt ist
-                if ($_SESSION['authenticated']) {
-                $TEMPLATE->assign('loginname', $_SESSION['username']);
-                //object_to_array($USER);
-                }
-            } else {
-                $PAGE->message[] = 'Sie sind nicht angemeldet.';
-                $PAGE->action  = 'login';
-            }   
-    } else {    //register and install
-        $TEMPLATE->assign('loginname', '');
-        $TEMPLATE->assign('role_id', -1);
-    }  
-}
-
-
-/**
- * avoid double requests
- */
-detect_reload();  
-
-/**
- * Check if user has permission to see page 
- */
-global $USER;
-if (isset($USER)){
-    /**
-     * role capabilities (menu)
-     */
-    $TEMPLATE->assign('ccs_menu_MyCurricula',       checkCapabilities('menu:readMyCurricula', $USER->role_id));
-    $TEMPLATE->assign('ccs_menu_Institution',       checkCapabilities('menu:readInstitution', $USER->role_id));
-    $TEMPLATE->assign('ccs_menu_Progress',          checkCapabilities('menu:readProgress', $USER->role_id));
-    $TEMPLATE->assign('ccs_menu_Curricula',         checkCapabilities('menu:readCurricula', $USER->role_id));
-    $TEMPLATE->assign('ccs_menu_Group',             checkCapabilities('menu:readGroup', $USER->role_id));
-    $TEMPLATE->assign('ccs_menu_UserAdministration',checkCapabilities('menu:readUserAdministration', $USER->role_id));
-    $TEMPLATE->assign('ccs_menu_Roles',             checkCapabilities('menu:readRoles', $USER->role_id));
-    $TEMPLATE->assign('ccs_menu_Grade',             checkCapabilities('menu:readGrade', $USER->role_id));
-    $TEMPLATE->assign('ccs_menu_Subject',           checkCapabilities('menu:readSubject', $USER->role_id));
-    $TEMPLATE->assign('ccs_menu_Semester',          checkCapabilities('menu:readSemester', $USER->role_id));
-    $TEMPLATE->assign('ccs_menu_Backup',            checkCapabilities('menu:readBackup', $USER->role_id));
-    $TEMPLATE->assign('ccs_menu_Confirm',           checkCapabilities('menu:readConfirm', $USER->role_id));
-    $TEMPLATE->assign('ccs_menu_ProfileConfig',     checkCapabilities('menu:readProfileConfig', $USER->role_id));
-    $TEMPLATE->assign('ccs_menu_InstitutionConfig', checkCapabilities('menu:readInstitutionConfig', $USER->role_id));
+try { // Error handling
     
-    $TEMPLATE->assign('ccs_menu_logmenu',           checkCapabilities('menu:readlogmenu', $USER->role_id));
-} else { // for installation 
-    $TEMPLATE->assign('ccs_menu_Institution',       NULL);
-    $TEMPLATE->assign('ccs_menu_logmenu',           NULL);
-}
+    require_once('../share/setup.php');
+    require_once('../share/function.php');      //php-Funktionen implementieren
 
-/**
- * load controller 
- */
-$PAGE->controller = $CFG->controllers_root.'/'.$PAGE->action .'.php';
-if (file_exists($PAGE->controller)) { 
-    try {                                       //Curriculum Exception Check
-        require_once($PAGE->controller);   
-    } catch (CurriculumException $e){
+    global $CFG, $PAGE, $TEMPLATE, $LOG;
+
+    /**
+    * Create LOG Object 
+    */
+    $LOG = new Log();
+
+    /**
+    * Setup PAGE 
+    */
+    $PAGE = new stdClass();
+
+    /**
+    *  get PAGE parameters 
+    */
+    $PAGE->controller = (isset($_GET['controller']) && trim($_GET['controller'] != '')  ? $_GET['controller'] : 'default');
+    $PAGE->action     = (isset($_GET['action']) && trim($_GET['action'] != '')          ? $_GET['action'] : 'login');
+    $PAGE->curriculum = (isset($_GET['curriculum']) && trim($_GET['curriculum'] != '')  ? $_GET['curriculum'] : 'none');
+    $PAGE->login      = (isset($_GET['login']) && trim($_GET['login'] != '')            ? $_GET['login'] : 'none');
+
+
+    if ($PAGE->action  != 'login' OR $PAGE->action  != 'register' OR $PAGE->action  != 'install') {
+        //check ob eingeloggt oder timeout --> muss ganz oben stehen bleiben
+        if($PAGE->action  != 'register' AND $PAGE->action  != 'install') {
+            if (isset($_SESSION['username'])) {
+                include ('../share/session.php');       // first build session, then do the login-check!
+                include ('../share/login-check.php');   //checkt ob man eingeloggt ist
+                    if ($_SESSION['authenticated']) {
+                    $TEMPLATE->assign('loginname', $_SESSION['username']);
+                    }
+                } else {
+                    $PAGE->message[] = 'Sie sind nicht angemeldet.';
+                    $PAGE->action  = 'login';
+                }   
+        } else {    //register and install
+            $TEMPLATE->assign('loginname', '');
+        }  
+    }
+
+    /**
+    * avoid double requests
+    */
+    detect_reload();  
+
+    /**
+    * load controller 
+    */ 
+    $PAGE->controller = $CFG->controllers_root.'/'.$PAGE->action .'.php';
+    if (file_exists($PAGE->controller)) { //Curriculum Exception Check
+    require_once($PAGE->controller);  
+    } else {
+        throw new CurriculumException($PAGE->action .'.php nicht vorhanden.');
+    }
+} catch (CurriculumException $e){
         $TEMPLATE->assign('prev_page_name', $PAGE->action);  
         $TEMPLATE->assign('curriculum_exception', $e);  
-        $PAGE->action = 'error';        
-    }
+        $PAGE->action = 'error';   
+        
 }
 
-/*
-*  Message
-*/
+/**
+ *  Message
+ */
 if (isset($PAGE->message)){
     $TEMPLATE->assign('page_message_count', count($PAGE->message));
     $TEMPLATE->assign('page_message', $PAGE->message);
@@ -143,7 +106,6 @@ if ($CFG->debug){
  * assign TEMPLATE variables 
  */
 $TEMPLATE->assign('page_name',  $PAGE->action );
-//$TEMPLATE->assign('curriculum', $PAGE->curriculum ); --> generates problems
 
 /**
  *  load and render template
