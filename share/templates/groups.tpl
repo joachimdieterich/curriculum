@@ -1,6 +1,6 @@
 {extends file="base.tpl"}
 
-{block name=title}{$teacherGroups}{/block}
+{block name=title}{$page_title}{/block}
 {block name=description}{$smarty.block.parent}{/block}
 {block name=nav}{$smarty.block.parent}{/block}
 
@@ -10,13 +10,13 @@
 {block name=content}
     
 <div class=" border-radius gray-border">	
-    <div class="border-top-radius contentheader ">{$teacherGroups}</div>
+    <div class="border-top-radius contentheader ">{$page_title}</div>
     <div class="space-top-padding gray-gradient border-bottom-radius box-shadow ">
         {if !isset($new_group_form)}
         {*<p >Hier können Lerngruppen angelegt werden</p>*}
         
         <p class="floatleft gray-gradient cssimgbtn border-radius gray-border">
-            <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=teacherGroups&function=new_group">Lerngruppe hinzufügen</a>
+            <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=groups&function=new_group">Lerngruppe hinzufügen</a>
         </p>
         <p>&nbsp;</p>
         <p>&nbsp;</p>
@@ -24,7 +24,7 @@
         {/if}
     {*Neue Lerngruppe anlegen*}
         {if isset($new_group_form)}
-        <form id='addClass' method='post' action='index.php?action=teacherGroups&next={$currentUrlId}'>
+        <form id='addClass' method='post' action='index.php?action=groups&next={$currentUrlId}'>
         {if isset($edit_group_form) OR isset($new_semester_form)}
              <input class="invisible" type="text" id="edit_group_id" name="edit_group_id" value={$group_id}>
         {else}<p><label> </label></p>{/if} 
@@ -72,7 +72,7 @@
             </form>	
         {/if}
     
-        <form id='classlist' method='post' action='index.php?action=teacherGroups&next={$currentUrlId}'>
+        <form id='classlist' method='post' action='index.php?action=groups&next={$currentUrlId}'>
     {if $data != null}
         {* display pagination header *}
         <p>&nbsp;</p>
@@ -105,10 +105,10 @@
                     <td>{$results[res]->creator}</td>
                     <td class="td_options">
                         <a class="deletebtn floatright" type="button" name="delete" onclick="del('group',{$results[res]->id}, {$my_id})"></a>
-                        <a class="calbtn floatright" href="index.php?action=teacherGroups&function=semester&group_id={$results[res]->id}"></a>
-                        <a class="editbtn floatright" href="index.php?action=teacherGroups&function=edit&group_id={$results[res]->id}"></a>
-                        <a class="groupbtn floatright" href="index.php?action=teacherGroups&function=showUsers&group_id={$results[res]->id}"></a>
-                        <a class="listbtn floatright" href="index.php?action=teacherGroups&function=showCurriculum&group_id={$results[res]->id}"></a>
+                        <a class="calbtn floatright" href="index.php?action=groups&function=semester&group_id={$results[res]->id}"></a>
+                        <a class="editbtn floatright" href="index.php?action=groups&function=edit&group_id={$results[res]->id}"></a>
+                        <a class="groupbtn floatright" href="index.php?action=groups&function=showUsers&group_id={$results[res]->id}"></a>
+                        <a class="listbtn floatright" href="index.php?action=groups&function=showCurriculum&group_id={$results[res]->id}"></a>
                         </td>
                 </tr>
             {/section}            
@@ -176,7 +176,7 @@
                     <td>{$resultscurriculumList[res]->de}</td>
                     {if !isset($showCurriculumForm)}
                     <td class="td_1options">
-                        <a class="deletebtn floatright" href="index.php?action=teacherGroups&function=expel_group&curriculumID={$resultscurriculumList[res]->id}&group_id={$selected_group_id}"></a>
+                        <a class="deletebtn floatright" href="index.php?action=groups&function=expel_group&curriculumID={$resultscurriculumList[res]->id}&group_id={$selected_group_id}"></a>
                     </td>
                     {/if}
                 </tr>

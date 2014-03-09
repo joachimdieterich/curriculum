@@ -80,8 +80,8 @@ if($_POST) {
                 if ($currentUser->id == $USER->id){
                     session_reload_user();  
                 }
-                if ($PAGE->previous_action == 'teacherUser'){                       //todo: more options adminUser usw.  
-                    header('Location:index.php?action=teacherUser');
+                if ($PAGE->previous_action == 'user'){                       //todo: more options adminUser usw.  
+                    header('Location:index.php?action=user');
                 } else {
                     header('Location:index.php?action=dashboard');
                 }

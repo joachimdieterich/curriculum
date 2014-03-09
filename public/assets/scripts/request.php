@@ -31,13 +31,6 @@ include($configfile);
 include($setupfile); //damit die *.classen.php funktionieren
 include($functionfile); 
 
-global $CFG;
-
-// Database config
-/*$conn = mysql_connect($CFG->db_host,$CFG->db_user,$CFG->db_password)
-	or die('Error connecting to mysql');
-    mysql_select_db($CFG->db_name);*/
-
 // Configure Timezone $$$ You may want to change this otherwise php will complain
 date_default_timezone_set('Europe/Berlin');
 
@@ -62,7 +55,6 @@ if (isset($_GET['function'])){
                                                 echo '<p class="materialtxt"> <a href='.$files[$i]->path.'>'.$files[$i]->title.'</a><br></p>';
                                             } else {
                                                 echo '<p class="materialtxt"> <a href="../curriculumdata/curriculum/'.$_GET['curriculumID'].'/'.$_GET['terminalObjectiveID'].'/'.$_GET['enablingObjectiveID'].'/'. $files[$i]->filename .'">'.$files[$i]->title.'</a><br></p>';
-                                                //echo '<p class="materialtxt"> <a href='. $val .'>'.substr(strstr(basename($val), '_'), 1).'</a><br></p>'; //Funktioniert zwar aber nur wenn der Dateiname entsprechen codiert ist. Besser dateinamen aus der db holen
                                             }
                                         echo '<lable></label><p class="materialtxt">'.$files[$i]->description .' &nbsp;</p>'; // Leerzeichen  &nbsp; wichtig bei fehlender Beschreibung sonst wird es falsch dargestellt
                                         echo '<div class="materialseperator"></div><div class="materialseperator2"></div>';

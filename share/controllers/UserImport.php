@@ -2,7 +2,7 @@
 /** This file is part of curriculum - http://www.joachimdieterich.de
 * 
 * @package core
-* @filename teacherUserImport.php
+* @filename userImport.php
 * @copyright 2013 Joachim Dieterich
 * @author Joachim Dieterich
 * @date 2013.03.08 13:26
@@ -46,11 +46,11 @@ if(isset($_FILES['datei']['name'])){    //Wenn Datei ausgewählt wurde ...
 /********************************************************************************
  * END POST / GET  
  */  
-$TEMPLATE->assign('teacherUserImport', 'Benutzerkonten importieren');
+$TEMPLATE->assign('page_title', 'Benutzerkonten importieren');
 $TEMPLATE->assign('page_message', $PAGE->message);
 $TEMPLATE->assign('filesize', round(convertByteToMb($INSTITUTION->institution_csv_size),2));
 
 $new_users = new User(); 
 $newusers = $new_users->newUsers($USER->id);
-setPaginator('newUsersPaginator', $TEMPLATE, $newusers, 'results', 'index.php?action=teacherUserImport'); //set Paginator
+setPaginator('newUsersPaginator', $TEMPLATE, $newusers, 'results', 'index.php?action=userImport'); //set Paginator
 ?>

@@ -1,6 +1,6 @@
 {extends file="base.tpl"}
 
-{block name=title}{$teacherObjectives}{/block}
+{block name=title}{$page_title}{/block}
 {block name=description}{$smarty.block.parent}{/block}
 {block name=nav}{$smarty.block.parent}{/block}
 
@@ -10,7 +10,7 @@
 {block name=content} 
 
 <div class=" border-radius gray-border">	
-    <div class="border-top-radius contentheader ">{$teacherObjectives}<div class="printbtn floatright" onclick="printPage('printContent');"> </div></div>
+    <div class="border-top-radius contentheader ">{$page_title}<div class="printbtn floatright" onclick="printPage('printContent');"> </div></div>
     <div class="space-top-padding gray-gradient border-bottom-radius box-shadow ">
       
         {if isset($user->avatar) and $user->avatar != 'noprofile.jpg'}
@@ -20,7 +20,7 @@
         {/if}    
         {if isset($courses)}
           <p>
-              <select class="makeMeFancy" id='course' name='course' onchange="window.location.assign('index.php?action=teacherObjectives&course='+this.value);"> {*_blank global regeln*}
+              <select class="makeMeFancy" id='course' name='course' onchange="window.location.assign('index.php?action=objectives&course='+this.value);"> {*_blank global regeln*}
                   <option value="-1" data-skip="1">Lehrplan wählen...</option>
                   {section name=res loop=$courses}
                     <option value="{$courses[res]->id}" 
@@ -52,7 +52,7 @@
 		</tr>
                 {* display results *}    
                 {section name=res loop=$results}
-                    <tr class="{if isset($selected_user_id) AND $selected_user_id eq $results[res]->id} activecontenttablerow {else}contenttablerow{/if}" id="row{$smarty.section.res.index}" onclick="window.location.assign('index.php?action=teacherObjectives&course='+document.getElementById('course').value+'&userID='+document.getElementById('userID{$smarty.section.res.index}').value);">
+                    <tr class="{if isset($selected_user_id) AND $selected_user_id eq $results[res]->id} activecontenttablerow {else}contenttablerow{/if}" id="row{$smarty.section.res.index}" onclick="window.location.assign('index.php?action=objectives&course='+document.getElementById('course').value+'&userID='+document.getElementById('userID{$smarty.section.res.index}').value);">
                        <td><input class="invisible" type="checkbox" id="userID{$smarty.section.res.index}" name="userID" value={$results[res]->id} {if isset($selected_user_id) AND $selected_user_id eq $results[res]->id} checked{/if}/></td>
                        <!--<td><img src="{$avatar_url}{$results[res]->avatar}" alt="Profilfoto" width="18"></td>-->
                        <!--<td>{$results[res]->username}</td>-->

@@ -2,7 +2,7 @@
 /** This file is part of curriculum - http://www.joachimdieterich.de
  * 
  * @package core
- * @filename teacherGrade.php
+ * @filename grade.php
  * @copyright 2013 Joachim Dieterich
  * @author Joachim Dieterich
  * @date 2013.03.08 13:26
@@ -97,6 +97,6 @@ if($_POST){
  */
 $grade = new Grade();
 $grade->institution_id = $USER->institutions["id"];
-setPaginator('gradePaginator', $TEMPLATE, $grade->getGrades(), 'grade_list', 'index.php?action=teacherGrade'); //set Paginator
-include ('./../lang/'.$USER->language.'/adminGrade.php');                       //Wählt die gesetzte Sprache aus //muss ganz unten stehen!
+setPaginator('gradePaginator', $TEMPLATE, $grade->getGrades(), 'grade_list', 'index.php?action=grade'); //set Paginator
+include ('./../lang/'.$USER->language.'/grade.php');                       //Wählt die gesetzte Sprache aus //muss ganz unten stehen!
 ?>

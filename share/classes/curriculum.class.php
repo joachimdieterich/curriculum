@@ -204,28 +204,6 @@ class Curriculum {
                                         $curriculum[] = $result; 
                             }
                 break; 
-            /*case 'teacher': $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, gp.groups, gp.id AS gpid, fl.filename
-                                            FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp, files AS fl
-                                            WHERE cu.id = ce.curriculum_id
-                                            AND cu.icon_id = fl.id
-                                            AND gp.id = ce.group_id
-                                            AND ce.group_id = ANY (SELECT id FROM groups 
-                                                                WHERE institution_id = ANY (SELECT institution_id FROM institution_enrolments 
-                                                                                                WHERE user_id = ?))
-                                            ORDER BY gp.groups, cu.curriculum ASC');
-                            $db->execute(array($id));
-                            $counter = 0;
-                            while($result = $db->fetchObject()) { 
-                                    $curriculum[$counter]["id"]         = $result->id;
-                                    $curriculum[$counter]["id_clsid"]   = $result->id.'_'.$result->gpid;
-                                    $curriculum[$counter]["curriculum"] = $result->curriculum;
-                                    $curriculum[$counter]["description"]= $result->description;
-                                    $curriculum[$counter]["groups"]     = $result->groups;
-                                    $curriculum[$counter]["filename"]   = $result->filename;
-                                    $curriculum[$counter]["coursename"] = $result->groups.' | '.$result->curriculum.' | '.$result->description; 
-                            $counter++;
-                            }
-                break; */ //not used
             case 'user':    $db = DB::prepare('SELECT cu.*, co.de, st.state, sc.schooltype, gr.grade, su.subject, fl.filename  
                                             FROM curriculum AS cu, countries AS co, state AS st, schooltype AS sc, grade AS gr, subjects AS su, files AS fl
                                             WHERE  cu.country_id = co.id AND cu.state_id = st.id 

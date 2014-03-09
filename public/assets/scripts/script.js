@@ -101,7 +101,6 @@ function deleteCurriculum() {
         req = XMLobject();
         if(req) {        
             req.onreadystatechange = answer; //Dialog mit Meldungen zeigen
-            //req.onreadystatechange = reloadPage; //window.location.reload()
             req.open("GET", url, true);
             req.send(null);
         }
@@ -115,7 +114,6 @@ function deleteGroup() {
         req = XMLobject();
         if(req) {        
             req.onreadystatechange = answer; //Dialog mit Meldungen zeigen
-            //req.onreadystatechange = reloadPage; //window.location.reload()
             req.open("GET", url, true);
             req.send(null);
         }
@@ -197,7 +195,6 @@ function order() {
     } else if (arguments.length == 5) {
         var url = "assets/scripts/request.php?ajax=on&function=order&order="+ arguments[0] +"&order_id="+ arguments[1]+"&curriculum_id="+ arguments[2] +"&terminal_objective_id="+ arguments[3]+"&enabling_objective_id="+ arguments[4]; 
     }
-    //alert(url);
     req = XMLobject();
     if(req) {        
         req.onreadystatechange = answer; 
@@ -255,7 +252,6 @@ function checkbox_addForm (){//arguments checked, style, id, invers_id -> if che
 function reloadPage() {
     if (req.readyState == 4) { 
         if (req.status == 200) { 
-        //alert(req.responseText);
         window.location.reload();
         }
     } 
@@ -335,7 +331,6 @@ if(ch) {
 }
 function checkfile(file){
     var ch = document.getElementById(file);
-    //alert('test');
     if(ch) {
             if (ch.checked == false){
                 ch.checked = true;
@@ -370,14 +365,12 @@ function setAccomplishedObjectives(creatorID, userID, paginatorfirst, paginatorL
         statusID = 1;
     }
         
-    //alert('creatorID:'+creatorID+' userID'+userID+' paginatorfirst'+paginatorfirst+ 'paginatorLimit'+paginatorLimit+'terminalObjectiveID'+terminalObjectiveID+'enablingObjectiveID'+enablingObjectiveID+' StatusID:'+statusID);
     //prüfen wie viele ausgewählt sind
     if (userID.length > 1){
         alert('Es darf nur ein Benutzer ausgewählt sein');
     } else if(userID == '') {
         alert('Es muss ein Benutzer ausgewählt sein');
     } else {
-    //alert(userID);
     var url = "assets/scripts/request.php?ajax=on&function=setAccomplishedObjectives&userID="+ userID +"&creatorID="+ creatorID +"&paginatorfirst="+ paginatorfirst +"&terminalObjectiveID="+ terminalObjectiveID +"&enablingObjectiveID="+ enablingObjectiveID+"&statusID="+statusID;
 
     req = XMLobject();
@@ -453,23 +446,22 @@ function confirmDialog(text) {
     } else {
         return false;
     }
-    
 }
 
 
-// mail function
+// Message functions
 
 function loadmail(mail_id, mailbox) {
-        var url = "assets/scripts/request.php?ajax=on&function=loadMail&mailID="+ mail_id; 
-        
-        req = XMLobject();
-            if(req) {        
-                req.onreadystatechange = function(){
-                    mail(mail_id, mailbox);
-                }
-                req.open("GET", url, true);
-                req.send(null);
+    var url = "assets/scripts/request.php?ajax=on&function=loadMail&mailID="+ mail_id; 
+
+    req = XMLobject();
+        if(req) {        
+            req.onreadystatechange = function(){
+                mail(mail_id, mailbox);
             }
+            req.open("GET", url, true);
+            req.send(null);
+        }
 }
 
 function mail(mail_id, mailbox) {
@@ -505,30 +497,21 @@ req = XMLobject();
 function setStates() {
     if (req.readyState == 4) {  
         if (req.status == 200) {
-            
            if (req.responseText.length != 1){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen
                       if (document.getElementById('states')){
                            document.getElementById('states').innerHTML = req.responseText;
                       } else {
                           alert(req.responseText); //unschön, aber #popup ist vom modalframe aus nicht verfügbar
-                      }
-                     
+                      }  
            } else {
                window.location.reload();
            }
         }
     }   
 }
-// ende mailfuction
+// end Message functions
 
 //icon function
 function showSubjectIcon(path, icon){
-    
     document.getElementById('icon').src = path + icon;
 }
-
-
-function testAlert() {
-    alert('test');
-}
-

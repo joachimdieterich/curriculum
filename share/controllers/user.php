@@ -3,7 +3,7 @@
 *  This file is part of curriculum - http://www.joachimdieterich.de
 * 
 * @package core
-* @filename teacherUser.php
+* @filename user.php
 * @copyright 2013 Joachim Dieterich
 * @author Joachim Dieterich
 * @date 2013.03.08 13:26
@@ -36,7 +36,7 @@ if (isset($_GET['function'])) {
                 $current_user->id = $_GET['userID'];
                 $result = $current_user->getCurricula();
                 if ($result){
-                    setPaginator('curriculumList', $TEMPLATE, $result, 'resultscurriculumList', 'index.php?action=teacherUser&function=showCurriculum&userID='.$_GET['userID']); //set Paginator    
+                    setPaginator('curriculumList', $TEMPLATE, $result, 'resultscurriculumList', 'index.php?action=user&function=showCurriculum&userID='.$_GET['userID']); //set Paginator    
                 }
                 break;
        case "showGroups": 
@@ -46,7 +46,7 @@ if (isset($_GET['function'])) {
                 $result = $current_user->getGroups();
                 if ($result){
                     resetPaginator('groupsPaginator');
-                    setPaginator('groupsPaginator', $TEMPLATE, $result, 'groups_list', 'index.php?action=teacherUser&function=showGroups&userID='.$_GET['userID']); //set Paginator    
+                    setPaginator('groupsPaginator', $TEMPLATE, $result, 'groups_list', 'index.php?action=user&function=showGroups&userID='.$_GET['userID']); //set Paginator    
                 }
                 break;
             default: break;
@@ -126,8 +126,7 @@ if (isset($_POST)){
  */
 
 $TEMPLATE->assign('page_message', $PAGE->message);
-$TEMPLATE->assign('teacherUser', 'Benutzerverwaltung');
-//addLog($USER->id, 'view', curPageURL(), 'teacherUser'); //Addlog
+$TEMPLATE->assign('page_title', 'Benutzerverwaltung');
 
 $roles = new Roles(); 
 $TEMPLATE->assign('roles', $roles->get());                                 //getRoles
@@ -140,5 +139,5 @@ $users = new USER();
 $users->id = $USER->id; 
 $users->role_id = $USER->role_id; 
 $user_list = $users->userList(); // load Userdata
-setPaginator('userPaginator', $TEMPLATE, $user_list, 'results', 'index.php?action=teacherUser'); //set Paginator    
+setPaginator('userPaginator', $TEMPLATE, $user_list, 'results', 'index.php?action=user'); //set Paginator    
 ?>

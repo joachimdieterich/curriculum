@@ -3,7 +3,7 @@
 *  This file is part of curriculum - http://www.joachimdieterich.de
 * 
 * @package core
-* @filename teacherProfile.php
+* @filename profileAdmin.php
 * @copyright 2013 Joachim Dieterich
 * @author Joachim Dieterich
 * @date 2013.03.08 13:26
@@ -23,9 +23,7 @@
 */
 global $CFG, $USER, $TEMPLATE, $PAGE, $INSTITUTION; 
 
-  $TEMPLATE->assign('teacherProfile', 'Benutzer anlegen');
-  //addLog($USER->id, 'view', curPageURL(), 'teacherProfile'); //Addlog
-  
+  $TEMPLATE->assign('page_title', 'Benutzer anlegen');
   $TEMPLATE->assign('newUserAvatar', "noprofile.jpg"); //std. avatar
           
   if($_POST) {
@@ -98,5 +96,5 @@ $country = new State();
 $new_users = new User(); 
 $newusers = $new_users->newUsers($USER->id);
 
-setPaginator('usersPaginator', $TEMPLATE, $newusers, 'results', 'index.php?action=teacherProfile'); //set Paginator
+setPaginator('usersPaginator', $TEMPLATE, $newusers, 'results', 'index.php?action=profileAdmin'); //set Paginator
 ?>

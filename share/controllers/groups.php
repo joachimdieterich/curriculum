@@ -2,7 +2,7 @@
 /** This file is part of curriculum - http://www.joachimdieterich.de
  * 
  * @package core
- * @filename teacherGroups.php
+ * @filename groups.php
  * @copyright 2013 Joachim Dieterich
  * @author Joachim Dieterich
  * @date 2013.03.08 13:26
@@ -41,7 +41,7 @@ if (isset($_GET['function'])) {
                 $users = new User();
                 $resultUser = $users->userList('group', $_GET['group_id']);  
                 if (isset($resultUser)){
-                    setPaginator('userPaginator', $TEMPLATE, $resultUser, 'userResults', 'index.php?action=teacherGroups&function=showUsers&group_id='.$_GET['group_id']); //set Paginator    
+                    setPaginator('userPaginator', $TEMPLATE, $resultUser, 'userResults', 'index.php?action=groups&function=showUsers&group_id='.$_GET['group_id']); //set Paginator    
                 }
                 break;
         case "expel_group": 
@@ -62,7 +62,7 @@ if (isset($_GET['function'])) {
                 $curricula = new Curriculum();
                 $resultCurriculum = $curricula->getCurricula('group', $_GET['group_id']);
                 if (isset($resultCurriculum)){
-                    setPaginator('curriculumList', $TEMPLATE, $resultCurriculum, 'resultscurriculumList', 'index.php?action=teacherGroups&function=showCurriculum&group_id='.$_GET['group_id']); //set Paginator    
+                    setPaginator('curriculumList', $TEMPLATE, $resultCurriculum, 'resultscurriculumList', 'index.php?action=groups&function=showCurriculum&group_id='.$_GET['group_id']); //set Paginator    
                 }
                 $TEMPLATE->assign('selected_group_id', $_GET['group_id']);
                 break;        
@@ -221,7 +221,7 @@ function loadeditFormData ($TEMPLATE, $check) {
 } 
 
 //setContenttitle
-$TEMPLATE->assign('teacherGroups', 'Lerngruppen verwalten');  
+$TEMPLATE->assign('page_title', 'Lerngruppen verwalten');  
 
 //Load curricula
 $curricula = new Curriculum();
@@ -241,5 +241,5 @@ $TEMPLATE->assign('semester', $semesters->getSemesters());
 //Gruppe laden
 $groups = new Group();
 $group_list = $groups->getGroups('group', $USER->id);
-setPaginator('groupsPaginator', $TEMPLATE, $group_list, 'results', 'index.php?action=teacherGroups'); //set Paginator
+setPaginator('groupsPaginator', $TEMPLATE, $group_list, 'results', 'index.php?action=groups'); //set Paginator
 ?>

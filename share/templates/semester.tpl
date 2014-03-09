@@ -1,6 +1,6 @@
 {extends file="base.tpl"}
 
-{block name=title}Lernzeiträume verwalten{/block}
+{block name=title}{$page_title}{/block}
 {block name=description}{$smarty.block.parent}{/block}
 {block name=nav}{$smarty.block.parent}{/block}
 
@@ -10,16 +10,16 @@
 {block name=content}
     
 <div class=" border-radius gray-border">	
-    <div class="border-top-radius contentheader">Lernzeiträume verwalten</div>
+    <div class="border-top-radius contentheader">{$page_title}</div>
     <div class="space-top-padding gray-gradient border-bottom-radius box-shadow ">
         {if !isset($showSemesterForm)}
         <p class="floatleft gray-gradient cssimgbtn border-radius gray-border">
-            <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=teacherSemester&newSemester">Lernzeitraum hinzufügen</a>
+            <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=semester&newSemester">Lernzeitraum hinzufügen</a>
         </p>
         <p>&nbsp;</p>
         {/if}
         {if isset($showSemesterForm)}
-        <form id='addSemester' method='post' action='index.php?action=teacherSemester&next={$currentUrlId}'>
+        <form id='addSemester' method='post' action='index.php?action=semester&next={$currentUrlId}'>
         <input class='inputformlong' type='hidden' name='id' id='id' {if isset($id)}value='{$id}'{/if} />       
         <p><label>Lernzeitraum*:</label><input class='inputformlong' name='semester' id='semester' {if isset($semester)}value='{$semester}'{/if} /></p>   
         {validate_msg field='semester'}
@@ -47,7 +47,7 @@
 	</form>	
         {/if}
          
-        <form id='semesterlist' method='post' action='index.php?action=teacherSemester&next={$currentUrlId}'>
+        <form id='semesterlist' method='post' action='index.php?action=semester&next={$currentUrlId}'>
             <p>&nbsp;</p>
     {if $data != null}
         {* display pagination header *}
@@ -76,7 +76,7 @@
                    
                     <td>
                         <a class="deletebtn floatright" type="button" name="delete" onclick="del('semester',{$semester_list[semester]->id}, {$my_id})"></a>
-                        <a class="editbtn floatright" href="index.php?action=teacherSemester&edit=true&id={$semester_list[semester]->id}"></a>
+                        <a class="editbtn floatright" href="index.php?action=semester&edit=true&id={$semester_list[semester]->id}"></a>
                         </td>
                 </tr>
             {/section}

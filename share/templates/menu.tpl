@@ -34,28 +34,28 @@
             <ul class="group">
                 <li class="border-top-radius contentheader">Meine Institution</li>
                 {if checkCapabilities('menu:readProgress', $my_role_id)}
-                    <li><p><a href="index.php?action=teacherObjectives&reset=true">Lernstand</a></p></li> 
+                    <li><p><a href="index.php?action=objectives&reset=true">Lernstand</a></p></li> 
                 {/if}
                 {if checkCapabilities('menu:readCurricula', $my_role_id)}
                     <li><p><a href="index.php?action=curriculum&reset=true">Lehrpläne</a></p></li>
                 {/if}
                 {if checkCapabilities('menu:readGroup', $my_role_id)}
-                    <li><p><a href="index.php?action=teacherGroups&reset=true">Lerngruppen</a></p></li>
+                    <li><p><a href="index.php?action=groups&reset=true">Lerngruppen</a></p></li>
                 {/if}
                 {if checkCapabilities('menu:readUserAdministration', $my_role_id)}
-                    <li><p><a href="index.php?action=teacherUser&reset=true">Benutzerverwaltung</a></p></li>
+                    <li><p><a href="index.php?action=user&reset=true">Benutzerverwaltung</a></p></li>
                 {/if}
                 {if checkCapabilities('menu:readRoles', $my_role_id)}
                     <li><p><a href="index.php?action=role&reset=true">Rollenverwaltung</a></p></li>
                 {/if}
                 {if checkCapabilities('menu:readGrade', $my_role_id)}
-                    <li><p><a href="index.php?action=teacherGrade">Klassenstufen</a></p></li>
+                    <li><p><a href="index.php?action=grade">Klassenstufen</a></p></li>
                 {/if}
                 {if checkCapabilities('menu:readSubject', $my_role_id)}
-                    <li><p><a href="index.php?action=teacherSubject&reset=true">Fächer</a></p></li>
+                    <li><p><a href="index.php?action=subject&reset=true">Fächer</a></p></li>
                 {/if}
                 {if checkCapabilities('menu:readSemester', $my_role_id)}
-                    <li><p><a href="index.php?action=teacherSemester&reset=true">Lernzeiträume</a></p></li>
+                    <li><p><a href="index.php?action=semester&reset=true">Lernzeiträume</a></p></li>
                 {/if}
                 {if checkCapabilities('menu:readBackup', $my_role_id)}
                     <li><p><a href="index.php?action=Backup&reset=true">Backup</a></p></li>

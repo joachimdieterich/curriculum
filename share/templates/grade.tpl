@@ -15,13 +15,13 @@
         
         {if !isset($showGradeForm)}
         <p class="floatleft gray-gradient cssimgbtn border-radius gray-border">
-            <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=teacherGrade&function=newGrade">Klassenstufe hinzufügen</a>
+            <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=grade&function=newGrade">Klassenstufe hinzufügen</a>
         </p>
         
         {/if}
         <p>&nbsp;</p><p>&nbsp;</p>
         {if isset($showGradeForm)}
-        <form id='addGrade' method='post' action='index.php?action=teacherGrade&next={$currentUrlId}'>
+        <form id='addGrade' method='post' action='index.php?action=grade&next={$currentUrlId}'>
         <input type='hidden' name='id' id='id' {if isset($id)}value='{$id}'{/if} /></p>   
         <p><label>{$str_adminGrade_addGradeName}</label><input class='inputformlong' type='text' name='grade' id='grade' {if isset($grade)}value='{$grade}'{/if} /></p>   
         {validate_msg field='grade'}
@@ -47,7 +47,7 @@
 	</form>	
         {/if}
          
-        <form id='classlist' method='post' action='index.php?action=teacherGrade&next={$currentUrlId}'>
+        <form id='classlist' method='post' action='index.php?action=grade&next={$currentUrlId}'>
             <p>&nbsp;</p>
     {if $data != null}
         {* display pagination header *}
@@ -66,7 +66,7 @@
                     <td>{$grade_list[grade]->description}</td>
                     <td class="td_options">
                         <a class="deletebtn floatright" type="button" name="delete" onclick="del('grade',{$grade_list[grade]->id}, {$my_id})"></a>
-                        <a class="editbtn floatright" href="index.php?action=teacherGrade&edit=true&id={$grade_list[grade]->id}"></a>
+                        <a class="editbtn floatright" href="index.php?action=grade&edit=true&id={$grade_list[grade]->id}"></a>
                         </td>
                 </tr>
             {/section}

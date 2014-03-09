@@ -1,6 +1,6 @@
 {extends file="base.tpl"}
 
-{block name=title}{$teacherProfile}{/block}
+{block name=title}{$page_title}{/block}
 {block name=description}{$smarty.block.parent}{/block}
 {block name=nav}{$smarty.block.parent}{/block}
 
@@ -10,14 +10,14 @@
 {block name=content}
     
 <div class="border-radius gray-border">	
-    <div class="border-top-radius contentheader ">{$teacherProfile}</div>
+    <div class="border-top-radius contentheader ">{$page_title}</div>
     <div class="space-top-padding gray-gradient box-shadow ">
         
        <!-- <div id="right">
         <img class="border-radius gray-border" src="{$avatar_url}{$avatar}" alt="Profilfoto">
         </div>-->
 	
-        <form method='post' action='index.php?action=teacherProfile'>	
+        <form method='post' action='index.php?action=profileAdmin'>	
             <p><label>Benutzername*:</label><input class="inputform" name='username' id='username' {if isset($username)}value='{$username}'{/if} /></p>
             {validate_msg field='username'}
             <p><label>Vorname*: </label><input class="inputform" name='firstname'{if isset($firstname)}value='{$firstname}'{/if}/></p>

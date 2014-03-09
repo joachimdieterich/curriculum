@@ -2,7 +2,7 @@
 /** This file is part of curriculum - http://www.joachimdieterich.de
 * 
 * @package core
-* @filename teacherObjectives.php
+* @filename objectives.php
 * @copyright 2013 Joachim Dieterich
 * @author Joachim Dieterich
 * @date 2013.03.08 13:26
@@ -64,7 +64,7 @@ if ($selected_curriculum != '') {
     $users = $course_user->getUsers('course', $selected_curriculum);
     if (is_array($users)){
         $user_id_list = array_map(function($user) { return $user->id; }, $users); 
-        setPaginator('userPaginator', $TEMPLATE, $users, 'results', 'index.php?action=teacherObjectives&course='.$selected_curriculumforURL); //set Paginator    
+        setPaginator('userPaginator', $TEMPLATE, $users, 'results', 'index.php?action=objectives&course='.$selected_curriculumforURL); //set Paginator    
         //Schüler-Solutions laden
         $files = new File(); 
         $TEMPLATE->assign('addedSolutions', $files->getSolutions('course', $selected_curriculum, $user_id_list)); 
@@ -79,7 +79,7 @@ if ($selected_curriculum != '') {
 $TEMPLATE->assign('showuser', $showuser);
 $TEMPLATE->assign('show_course', $show_course);
 $TEMPLATE->assign('page_message', $PAGE->message);
-$TEMPLATE->assign('teacherObjectives', 'Lernstand eintragen');
+$TEMPLATE->assign('page_title', 'Lernstand eintragen');
 
 // Load courses
 $courses = new Course(); 

@@ -3,7 +3,7 @@
 *  This file is part of curriculum - http://www.joachimdieterich.de
 * 
 * @package core
-* @filename teacherSemester.php
+* @filename semester.php
 * @copyright 2013 Joachim Dieterich
 * @author Joachim Dieterich
 * @date 2013.03.08 13:26
@@ -96,8 +96,10 @@ if($_POST){
 /*******************************************************************************
  * END POST / GET 
  */ 
-    $semesters = new Semester();
-    $semesters->institution_id = $USER->institutions["id"]; 
-    setPaginator('semesterPaginator', $TEMPLATE, $semesters->getSemesters(), 'semester_list', 'index.php?action=teacherSemester'); //set Paginator
-//include ('./../lang/'.$USER->language.'/adminSemester.php');                       //Wählt die gesetzte Sprache aus //muss ganz unten stehen!
+
+$TEMPLATE->assign('page_title','Lernzeiträume verwalten');
+$semesters = new Semester();
+$semesters->institution_id = $USER->institutions["id"]; 
+setPaginator('semesterPaginator', $TEMPLATE, $semesters->getSemesters(), 'semester_list', 'index.php?action=semester'); //set Paginator
+
 ?>
