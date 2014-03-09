@@ -41,7 +41,7 @@ $CFG->db_user='root';
 $CFG->db_password ='root';
 $CFG->db_name='install';
 
-$DB = new PDO('mysql:host='.$CFG->db_host.';dbname='.$CFG->db_name.';charset=utf8', $CFG->db_user, $CFG->db_password ); // PDO DSN http://www.php.net/manual/en/ref.pdo-mysql.php
+$DB = new PDO('mysql:host='.$CFG->db_host.';dbname='.$CFG->db_name.';charset=utf8', $CFG->db_user, $CFG->db_password ); 
 $DB->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $DB->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 /**

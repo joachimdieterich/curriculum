@@ -3,7 +3,7 @@
 *  This file is part of curriculum - http://www.joachimdieterich.de
 * 
 * @package core
-* @filename teacherSubject.php
+* @filename subject.php
 * @copyright 2013 Joachim Dieterich
 * @author Joachim Dieterich
 * @date 2013.03.08 13:26
@@ -99,8 +99,8 @@ if($_POST){
  */
 $subject = new Subject();
 $subject->institution_id = $USER->institutions["id"];
-setPaginator('subjectsPaginator', $TEMPLATE, $subject->getSubjects(), 'subject_list', 'index.php?action=teacherSubject'); //set Paginator   
+setPaginator('subjectsPaginator', $TEMPLATE, $subject->getSubjects(), 'subject_list', 'index.php?action=subject'); //set Paginator   
     
-$TEMPLATE->assign('teacherSubject', 'Fächer verwalten');
+$TEMPLATE->assign('page_title', 'Fächer verwalten');
 $TEMPLATE->assign('page_message', $PAGE->message);
          

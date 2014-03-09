@@ -40,7 +40,6 @@ class Server {
             substr($s,12,4). 
             substr($s,16,4). 
             substr($s,20); 
-        
         return $uniquetoken;
     }
     
@@ -51,12 +50,9 @@ class Server {
      * @return int 
      */
     function userExists($username, $md5_password){
-        $query = sprintf("SELECT COUNT(id) FROM users WHERE UPPER(username) = UPPER('%s') AND password='%s'",
-                                                mysql_real_escape_string($username),
-                                                mysql_real_escape_string($md5_password));
-        $result = mysql_query($query);
-        
-        return mysql_result($result,0);   
+        $db = DB::prepare('SELECT COUNT(id) FROM users WHERE UPPER(username) = UPPER(?) AND password=?');
+        $db->execute(array($username, $md5_password));
+        return $db->fetchColumn();
     }
     
     /**
@@ -66,12 +62,10 @@ class Server {
      * @return int 
      */
     function authenticateExists($username, $md5_password){
-        $query = sprintf("SELECT COUNT(id) FROM authenticate WHERE UPPER(username) = UPPER('%s') AND password='%s'",
-                                            mysql_real_escape_string($username),
-                                            mysql_real_escape_string($md5_password));
-        $result = mysql_query($query);
-        return mysql_result($result,0);
-    }
+        $db = DB::prepare('SELECT COUNT(id) FROM authenticate WHERE UPPER(username) = UPPER(?) AND password=?');
+        $db->execute(array($username, $md5_password));
+        return $db->fetchColumn(); 
+   }
     
     /**
      * update authentication dataset
@@ -82,12 +76,8 @@ class Server {
      * @return boolean 
      */
     function authenticateUpdate($token, $status, $username, $md5_password){
-        $query = sprintf("UPDATE authenticate SET token = '%s', status = '%s', creation_time = NOW() WHERE UPPER(username) = UPPER('%s') AND password='%s'",
-                                            mysql_real_escape_string($token),
-                                            mysql_real_escape_string($status),          // Status == 1 means user exists
-                                            mysql_real_escape_string($username),
-                                            mysql_real_escape_string($md5_password));
-        return mysql_query($query);
+        $db = DB::prepare('UPDATE authenticate SET token = ?, status = ?, creation_time = NOW() WHERE UPPER(username) = UPPER(?) AND password=?');
+        return $db->execute(array($token, $status, $username, $md5_password));
     }
     
     /**
@@ -104,19 +94,9 @@ class Server {
      * @return boolean 
      */
     function authenticateInsert($token, $status, $username, $md5_password, $user_external_id = NULL, $firstname = NULL, $lastname = NULL, $email = NULL, $ws_username = NULL){
-        $query = sprintf("INSERT INTO authenticate (username, password, token, creator_id, status, firstname, lastname, email, user_external_id, ws_username) 
-                          VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
-                                            mysql_real_escape_string($username),
-                                            mysql_real_escape_string($md5_password),
-                                            mysql_real_escape_string($token),
-                                            mysql_real_escape_string('-1'),              //-1 means System
-                                            mysql_real_escape_string($status),
-                                            mysql_real_escape_string($firstname),
-                                            mysql_real_escape_string($lastname),
-                                            mysql_real_escape_string($email),
-                                            mysql_real_escape_string($user_external_id),
-                                            mysql_real_escape_string($ws_username));     // to get the right institution
-        return mysql_query($query);
+        $db = DB::prepare('INSERT INTO authenticate (username, password, token, creator_id, status, firstname, lastname, email, user_external_id, ws_username) 
+                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+       return $db->execute(array($username, $md5_password, $token, '-1', $status, $firstname, $lastname, $email, $user_external_id, $ws_username));
     }
     
     /**
@@ -134,6 +114,7 @@ class Server {
         $returnarray['token'] = $this->getToken();                              // get new token
         
         if($this->userExists($username, $md5_password) == 1) {                  // If User exists
+            
             $returnarray['exists'] = true;
             if($this->authenticateExists($username, $md5_password) == 1) {
                 $this->authenticateUpdate($returnarray['token'], '1', $username, $md5_password);
@@ -141,7 +122,7 @@ class Server {
                 $this->authenticateInsert($returnarray['token'], '1', $username, $md5_password, $ws_username); 
             }
             return $returnarray;
-        } else {                                                                // if User not exists Status == 0 --> New User (if allowed)
+        } else {    // if User not exists Status == 0 --> New User (if allowed)
             $returnarray['exists'] = false;
             if($this->authenticateExists($username, $md5_password) == 1) {
                 $this->authenticateUpdate($returnarray['token'], '0', $username, $md5_password);
@@ -159,25 +140,22 @@ class Server {
      * @return array 
      */
     function get_Curriculum($username){
-        $query = sprintf("SELECT cu.curriculum, cu.id, cu.grade_id, gp.id AS group_id, gp.groups, fl.filename 
+        $db = DB::prepare('SELECT cu.curriculum, cu.id, cu.grade_id, gp.id AS group_id, gp.groups, fl.filename 
                 FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp, files AS fl
                 WHERE cu.id = ce.curriculum_id 
-                AND ce.status = 1 
-                AND gp.id = ce.group_id 
+                AND ce.status = 1 AND gp.id = ce.group_id 
                 AND gp.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE user_id = 
-                                            (SELECT id FROM users WHERE username = '%s'))
+                                            (SELECT id FROM users WHERE username = ?))
                 AND cu.icon_id = fl.id
-                ORDER BY gp.groups, cu.curriculum ASC",
-                mysql_real_escape_string($username));
-
-        $result = mysql_query($query);
-
-        if ($result && mysql_num_rows($result)){
-            while($row = mysql_fetch_assoc($result)) {
-                    $curriculum_array[] = $row; 
-            }
-            return $curriculum_array;
+                ORDER BY gp.groups, cu.curriculum ASC');
+        $db->execute(array($username));
+        while($result = $db->fetchObject()) {
+            $curriculum_array[] = $result;
         }
+        
+        if (isset($curriculum_array)){
+            return $curriculum_array;
+        } else {return false;}
     }
     
     /**
@@ -186,19 +164,16 @@ class Server {
      * @return string 
      */
     function get_Objectives($curriculum_id){
-        $query = sprintf("SELECT a.id, a.enabling_objective, b.terminal_objective
-                        FROM enablingObjectives AS a, terminalObjectives AS b 
-                        WHERE a.curriculum_id = %s 
-                        AND a.terminal_objective_id = b.id
-                        ORDER BY b.id, a.id ASC",
-                        mysql_real_escape_string($curriculum_id));
-    $result = mysql_query($query);
-
-    while ($rec = mysql_fetch_assoc($result)){
-            $get_Objectives_result[$rec['id']] = $rec['terminal_objective'].' | '.$rec['enabling_objective'];//substr($rec['enabling_objectieve'], 0, 70);
-    }
-
-    return $get_Objectives_result;
+        $db = DB::prepare('SELECT a.id, a.enabling_objective, b.terminal_objective FROM enablingObjectives AS a, terminalObjectives AS b 
+                        WHERE a.curriculum_id = ? AND a.terminal_objective_id = b.id ORDER BY b.id, a.id ASC');
+        $db->execute(array($curriculum_id)); 
+  
+        while($result = $db->fetchObject()) {
+                $get_Objectives_result[$result->id] = $result->terminal_objective.' | '.$result->enabling_objective;//substr($rec['enabling_objectieve'], 0, 70);
+            }
+        if (isset($get_Objectives_result)){
+            return $get_Objectives_result;
+        } else {return false;}
     }
     
     /**
@@ -210,29 +185,16 @@ class Server {
      * @return boolean 
      */
     function set_accomplishedObjectives($curriculum_user_id, $enabling_objective_id, $teacher_id, $status_id){
-        $query = sprintf("SELECT COUNT(id) FROM user_accomplished WHERE enabling_objectives_id = '%s' AND user_id = '%s'",
-                                            mysql_real_escape_string($enabling_objective_id),
-                                            mysql_real_escape_string($curriculum_user_id));
-        $result = mysql_query($query);
-        list($count) = mysql_fetch_row($result);
-        if($count >= 1) { //nur eintragen wenn Ziel ausgewählt
-                //$error = 'Diesen Eintrag gibt es bereits.';
-                $query = sprintf("UPDATE user_accomplished SET status_id = '%s', creator_id = '%s' WHERE enabling_objectives_id = '%s' AND user_id = '%s'",
-                                                    mysql_real_escape_string($status_id),
-                                                    mysql_real_escape_string($teacher_id),
-                                                    mysql_real_escape_string($enabling_objective_id),
-                                                    mysql_real_escape_string($curriculum_user_id));
-                $result = mysql_query($query);
+        $db = DB::prepare('SELECT COUNT(id) FROM user_accomplished WHERE enabling_objectives_id = ? AND user_id = ?');
+        $db->execute(array($enabling_objective_id, $curriculum_user_id));
+        if($db->fetchColumn() >= 1) { //nur eintragen wenn Ziel ausgewählt
+                $db = DB::prepare('UPDATE user_accomplished SET status_id = ?, creator_id = ? WHERE enabling_objectives_id = ? AND user_id = ?');
+                $result = $db->execute(array($status_id, $teacher_id, $enabling_objective_id, $curriculum_user_id));
         } else {
-                $query = sprintf("INSERT INTO user_accomplished(enabling_objectives_id,user_id,status_id,creator_id) VALUES ('%s','%s','%s','%s')",
-                                                    mysql_real_escape_string($enabling_objective_id),
-                                                    mysql_real_escape_string($curriculum_user_id),
-                                                    mysql_real_escape_string($status_id),
-                                                    mysql_real_escape_string($teacher_id));
-                $result = mysql_query($query);	
+                $db = DB::prepare('INSERT INTO user_accomplished(enabling_objectives_id,user_id,status_id,creator_id) VALUES (?,?,?,?)');
+                $result = $db->execute(array($status_id, $teacher_id, $enabling_objective_id, $curriculum_user_id));
         }
         return $result;
     }
 }
-
 ?>

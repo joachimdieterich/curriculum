@@ -1,6 +1,6 @@
 {extends file="base.tpl"}
 
-{block name=title}{$teacherUser}{/block}
+{block name=title}{$page_title}{/block}
 {block name=description}{$smarty.block.parent}{/block}
 {block name=nav}{$smarty.block.parent}{/block}
 
@@ -10,12 +10,12 @@
 {block name=content}
     
 <div class=" border-radius gray-border">	
-    <div class="border-top-radius contentheader ">{$teacherUser}</div>
+    <div class="border-top-radius contentheader ">{$page_title}</div>
     <div class="space-top-padding gray-gradient border-bottom-radius box-shadow ">
         
         <p class="floatleft gray-gradient cssimgbtn border-radius gray-border">
             <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=teacherProfile">Benutzer hinzufügen</a>
-            <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=teacherUserImport&reset=true">Benutzerliste importieren</a>
+            <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=userImport&reset=true">Benutzerliste importieren</a>
         </p>
         <p>&nbsp;</p><p>&nbsp;</p>
         
@@ -23,7 +23,7 @@
         {* display pagination header *}
         <p class="floatright">Datensätze {$userPaginator.first}-{$userPaginator.last} von {$userPaginator.total} werden angezeigt.</p>
     <p>&nbsp;</p>
-        <form id='userlist' method='post' action='index.php?action=teacherUser&next={$currentUrlId}'>
+        <form id='userlist' method='post' action='index.php?action=user&next={$currentUrlId}'>
 		<table id="contenttable">
 		<tr id="contenttablehead">
 			<td></td><td>Avatar</td>
@@ -55,8 +55,8 @@
                        <td>
                         <a class="deletebtn floatright" type="button" onclick="del('user',{$results[res]->id}, {$my_id})"></a>
                         <a class="editbtn floatright" href="index.php?action=profile&function=editUser&userID={$results[res]->id}"></a>
-                        <a class="groupbtn floatright" href="index.php?action=teacherUser&function=showGroups&userID={$results[res]->id}"></a>
-                        <a class="listbtn floatright" href="index.php?action=teacherUser&function=showCurriculum&userID={$results[res]->id}"></a>                 
+                        <a class="groupbtn floatright" href="index.php?action=user&function=showGroups&userID={$results[res]->id}"></a>
+                        <a class="listbtn floatright" href="index.php?action=user&function=showCurriculum&userID={$results[res]->id}"></a>                 
                        </td>    
                     </tr>
                 {/section}
