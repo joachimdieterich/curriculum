@@ -1,6 +1,6 @@
 {extends file="base.tpl"}
 
-{block name=title}{$teacherConfirm}{/block}
+{block name=title}{$confirm}{/block}
 {block name=description}{$smarty.block.parent}{/block}
 {block name=nav}{$smarty.block.parent}{/block}
 
@@ -10,7 +10,7 @@
 {block name=content}
     
 <div class=" border-radius gray-border">	
-    <div class="border-top-radius contentheader ">{$teacherConfirm}</div>
+    <div class="border-top-radius contentheader ">{$confirm}</div>
     <div class="space-top-padding gray-gradient border-bottom-radius box-shadow ">
         {if isset($results)}
         <p><h3>Benutzer</h3></p>
@@ -19,7 +19,7 @@
         {* display pagination header *}
         <p>Datensätze {$usersPaginator.first}-{$usersPaginator.last} von {$usersPaginator.total} werden angezeigt.</p>
     
-        <form id='userlist' method='post' action='index.php?action=teacherConfirm&next={$currentUrlId}'>
+        <form id='userlist' method='post' action='index.php?action=confirm&next={$currentUrlId}'>
 		<table id="contenttable">
 		<tr id="contenttablehead">
 			<td></td><td>Avatar</td>

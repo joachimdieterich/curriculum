@@ -2,7 +2,7 @@
 /** This file is part of curriculum - http://www.joachimdieterich.de
 * 
 * @package core
-* @filename teacherCurriculum.php
+* @filename curriculum.php
 * @copyright 2013 Joachim Dieterich
 * @author Joachim Dieterich
 * @date 2013.03.08 13:26
@@ -127,7 +127,7 @@ if (isset($_SESSION["PaginatorID"])) {
     $TEMPLATE->assign('selectedID', str_replace('/','',$_SESSION["PaginatorID"])); //Setzt den ausgewählten Wert in der Curriculumtabelle
 }
 $TEMPLATE->assign('page_message',   $PAGE->message);
-$TEMPLATE->assign('teacherCurriculum', 'Lehrpläne verwalten');  //$Page Title
+$TEMPLATE->assign('page_title', 'Lehrpläne verwalten');  //$Page Title
 
 //Load country 
 $countries = new State('DE'); 
@@ -154,5 +154,5 @@ $TEMPLATE->assign('icons',          $icons->getFiles('context', 5));
 
 // Load curriculum
 $curriculum_list = $curricula->getCurricula('user', $USER->id);
-setPaginator('curriculumPaginator', $TEMPLATE, $curriculum_list, 'results', 'index.php?action=teacherCurriculum'); //set Paginator    
+setPaginator('curriculumPaginator', $TEMPLATE, $curriculum_list, 'results', 'index.php?action=curriculum'); //set Paginator    
 ?>

@@ -24,7 +24,7 @@ global $TEMPLATE;
 
 $user = new User();
 $message = '';              //Achtung, nicht $PAGE-> da Sessionabhängig! die Session wird  nach der Anmeldung erzeugt
-$TEMPLATE->assign('login_stuff', 'Login');
+$TEMPLATE->assign('page_title', 'Login');
 //addLog($_SESSION['username'], 'view', curPageURL(), 'login'); //Addlog
 $TEMPLATE->assign('my_username', ''); //Loginname setzen für header setzen --> Leer
 

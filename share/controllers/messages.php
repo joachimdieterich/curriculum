@@ -110,7 +110,7 @@ if ($USER->getGroupMembers()){
  */
 
 
-$TEMPLATE->assign('messages', 'Nachrichten');    
+$TEMPLATE->assign('page_title', 'Nachrichten');    
 $TEMPLATE->assign('page_message', $PAGE->message);
 //addLog($USER->id, 'view', curPageURL(), 'messages'); //Addlog
 ?>

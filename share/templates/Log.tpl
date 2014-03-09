@@ -1,6 +1,6 @@
 {extends file="base.tpl"}
 
-{block name=title}{$Log}{/block}
+{block name=title}{$page_title}{/block}
 {block name=description}{$smarty.block.parent}{/block}
 {block name=nav}{$smarty.block.parent}{/block}
 
@@ -10,7 +10,7 @@
 {block name=content}
     
 <div class=" border-radius gray-border">	
-    <div class="border-top-radius contentheader ">{$Log}</div>
+    <div class="border-top-radius contentheader ">{$page_title}</div>
     <div class="space-top-padding gray-gradient border-bottom-radius box-shadow ">
     {if isset($ccs_page_log)}
         <p>Hier können die Logfiles aufgerufen werden</p>

@@ -136,4 +136,5 @@ if($_POST) {
     $TEMPLATE->assign('roles', $roles->get());                                 //getRoles
     $TEMPLATE->assign('byte',convertMbToByte($CFG->post_max_size));//Dateigröße in Byte
     $TEMPLATE->assign('message',$PAGE->message);
+    $TEMPLATE->assign('page_title', 'Systemeinstellungen von curriculum');
 ?>

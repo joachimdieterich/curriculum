@@ -2,7 +2,7 @@
 /** This file is part of curriculum - http://www.joachimdieterich.de
  * 
  * @package core
- * @filename teacherBackup.php
+ * @filename Backup.php
  * @copyright 2013 Joachim Dieterich
  * @author Joachim Dieterich
  * @date 2013.03.08 13:26
@@ -41,7 +41,7 @@ if (isset($_GET['course'])) {// create new backup
  * END POST / GET 
  */
 
-$TEMPLATE->assign('teacherBackup', 'Sicherungen erstellen');
+$TEMPLATE->assign('page_title', 'Sicherungen erstellen');
 
 $courses = new Course(); //Load Courses
 if ($USER->role_id == 3 OR $USER->role_id == 2) { // 3 = Rolle Lehrer, 2 = Tutor //Bedingung Lehrer müssen in die Klasse eingeschrieben sein, oder sie erstellt haben
@@ -58,7 +58,7 @@ if ($USER->role_id == 1) {
     $backup_list = $backup->load('admin');
 }
 
-setPaginator('fileBackupPaginator', $TEMPLATE, $backup_list, 'results', 'index.php?action=teacherBackup'); //set Paginator    
+setPaginator('fileBackupPaginator', $TEMPLATE, $backup_list, 'results', 'index.php?action=backup'); //set Paginator    
 $zipURL = $CFG->web_backup_url;
 $TEMPLATE->assign('web_backup_url', $zipURL); //keine Datensätze vorhanden
 

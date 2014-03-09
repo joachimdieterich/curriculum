@@ -2,7 +2,7 @@
 /** This file is part of curriculum - http://www.joachimdieterich.de
 * 
 * @package core
-* @filename teacherConfirm.php
+* @filename confirm.php
 * @copyright 2013 Joachim Dieterich
 * @author Joachim Dieterich
 * @date 2013.03.08 13:26
@@ -69,7 +69,7 @@ if($_POST){
 /******************************************************************************
  * END POST / GET 
  */
-$TEMPLATE->assign('teacherConfirm', 'Freigaben');   //setContenttitle
+$TEMPLATE->assign('page_title', 'Freigaben');   //setContenttitle
 
 $users = new USER();
 $users->id = $USER->id; 

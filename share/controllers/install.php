@@ -27,7 +27,7 @@ global $TEMPLATE, $CFG, $PAGE, $USER;
 $USER = new User();
 
 $TEMPLATE->assign('db_host', '127.0.0.1');
-$TEMPLATE->assign('install', 'Curriculum installieren');
+$TEMPLATE->assign('page_title', 'Curriculum installieren');
 $TEMPLATE->assign('my_username', '');
 $TEMPLATE->assign('my_role_id', '-1');
 $TEMPLATE->assign('step', 0);

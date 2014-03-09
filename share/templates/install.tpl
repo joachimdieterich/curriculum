@@ -1,6 +1,6 @@
 {extends file="base.tpl"}
 
-{block name=title}{$install}{/block}
+{block name=title}{$page_title}{/block}
 {block name=description}{$smarty.block.parent}{/block}
 {block name=nav}{$smarty.block.parent}{/block}
 <meta http-equiv="refresh" content="5; url=http://domain.com/path/to/download" />
@@ -10,7 +10,7 @@
 {block name=content}
     
 <div class="border-radius gray-border">	
-    <div class="border-top-radius contentheader ">{$install}</div>
+    <div class="border-top-radius contentheader ">{$page_title}</div>
     <div class="space-top-padding gray-gradient box-shadow ">
 	
         <form method='post' action='index.php?action=install'>   
