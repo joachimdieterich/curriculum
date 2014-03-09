@@ -31,9 +31,6 @@ include_once''.dirname(__FILE__).'/../../share/function.php'; //damit funktionen
 include_once''.dirname(__FILE__).'/../../share/include.php'; //damit funktionen verfügbar sind.
 include_once 'server.class.php';    //Server class file
 
-/*$db = new pdo('mysql:host='.$CFG->db_host.';dbname='.$CFG->db_name.';.charset=utf8.', $CFG->db_user, $CFG->db_password ,
-                                            array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
-  */  
 $server = new SoapServer(NULL, 
                         array('uri' => $_SERVER['SERVER_NAME'].$CFG->BASE_URL."webservice/soap/server.php"));                //{uri} müsst ihr ersetzen mit den pfad 
 /*

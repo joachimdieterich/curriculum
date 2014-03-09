@@ -29,11 +29,6 @@ include_once $_SERVER['DOCUMENT_ROOT'].$CFG->BASE_URL.'share/function.php';     
 
 $file = new File();
 
-// Database Verbindung starten daten aus config.php
-$conn = mysql_connect($CFG->db_host,$CFG->db_user,$CFG->db_password)
-	or die('Error connecting to mysql');
-    mysql_select_db($CFG->db_name);
-
 $error = '';
 $image = '';
 $copy_link = '';
