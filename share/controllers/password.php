@@ -39,9 +39,6 @@ switch ($PAGE->login) {
 }
 
 if($_POST) {
-    /**
-     * Validation 
-     */
     $gump = new Gump();
     $gump->validation_rules(array(
     'oldpassword'    => 'required',
@@ -58,7 +55,6 @@ if($_POST) {
         } 
         if ($_POST['password'] == $_POST['confirm']){
            if ($USER->changePassword(md5($_POST['password']))){
-                //$PAGE->message[] ='Passwort wurde erfolgreich geändert.'; //???muss ans dashbord übergeben werden
                 header('Location:index.php?action=dashboard');
             } 
         } else {
@@ -68,5 +64,4 @@ if($_POST) {
 }
 
 $TEMPLATE->assign('page_title', 'Passwort ändern');
-//addLog($USER->id, 'view', curPageURL(), 'password'); //Addlog
 ?>

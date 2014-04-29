@@ -143,6 +143,12 @@ class User {
      * @var array [capability][read/write]
      */
     public $capabilities = array();
+    /**
+     * token for authentication
+     * @var string 
+     */
+    public $token = null;
+    
     
     /**
      * User class constructor
@@ -159,7 +165,7 @@ class User {
      * @param string $key
      * @param string $user_value 
      */
-    public function load($key, $user_value) {
+    public function load($key, $user_value, $get_auth = true) {
         
         if ($key == 'username'){
             $db = DB::prepare('SELECT * FROM users WHERE UPPER('.$key.') = UPPER(?)');
@@ -230,6 +236,17 @@ class User {
          */
         $capabilitiy = new Capability();
         $this->capabilities = $capabilitiy->getCapabilities($this->role_id);
+        
+        /**
+         * get token 
+         */
+        if ($get_auth){
+            $authenticate = new Authenticate();
+            $authenticate->username = $this->username;
+            $authenticate->getUser('username');
+            $this->token  = $authenticate->token;
+        }
+       
     }
     
     /**
@@ -549,7 +566,7 @@ class User {
             } else {
                 return true;    
             }
-        } //capability
+        }
     }
     
     /**
@@ -591,7 +608,7 @@ class User {
             }
             
             while($result = $db->fetchObject()) { 
-                    $this->load('id', $result->id);
+                    $this->load('id', $result->id, false);
                     $users[] = clone $this;
             } 
             if (isset($users)){
@@ -732,7 +749,7 @@ class User {
   
                                 while($result = $db->fetchObject()) {  
                                         $this->id           = $result->id;
-                                        $this->load('id', $this->id);
+                                        $this->load('id', $this->id, false);
                                         $users[] = clone $this; 
                                 }
                                 break;
@@ -779,7 +796,7 @@ class User {
                 default:
                     break;
             }
-       }  
+       } 
    }
    
    /**
@@ -802,9 +819,23 @@ class User {
     * @return boolean
     */
    public function setLastLogin(){
-        $db = DB::prepare('UPDATE users SET last_login = NOW() WHERE UPPER(username) = UPPER(?) AND password = ?');
-        $db->execute(array($this->username, $this->password));
-        return $db->execute(array($this->username, $this->password));
+       $db = DB::prepare('UPDATE users SET last_login = NOW() WHERE UPPER(username) = UPPER(?) AND password = ?');
+        $result = $db->execute(array($this->username, $this->password));
+        if ($result){
+            /* set user token --> used by request.php */
+            $db = DB::prepare('SELECT COUNT(username) FROM authenticate WHERE username = ?');  
+            $db->execute(array($this->username));
+            $count = $db->fetchColumn();
+            $this->token = getToken();
+            if ($count > 0){
+                $db = DB::prepare('UPDATE authenticate SET user_id = ?, token = ?, ip = ?, creation_time = ? WHERE username = ?');        
+                $result = $db->execute(array($this->id, $this->token, getIp(), $this->last_login, $this->username));
+            } else {
+                $db = DB::prepare('INSERT INTO authenticate (username, user_id, token, ip, creation_time) VALUES (?,?,?,?,?)');        
+                $result = $db->execute(array($this->username, $this->id, $this->token, getIp(), $this->last_login));
+            }
+        }
+        return $result;
    }
    
    /**

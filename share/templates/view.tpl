@@ -37,7 +37,7 @@
                     <tr><td class="boxleftpadding"><div class="box gray-gradient border-radius box-shadow gray-border ">
                                 <div class="boxheader border-top-radius">
                                 {if isset($showaddObjectives)}
-                                        <input class="deletebtn floatright" type="button" name="delete" onclick="deleteObjective({$con->curriculum_id},{$ter->id})">
+                                        <input class="deletebtn floatright" type="button" name="delete" onclick="deleteObjective({$my_id}, '{$my_token}', {$con->curriculum_id},{$ter->id})">
                                         <input class="editbtn floatright" type="button" name="edit" onclick="editObjective({$con->curriculum_id},{$ter->id})">
                                         {if $ter->order_id neq '1'}
                                             <input class="upbtn" type="button" name="orderdown" onclick="order('down', {$ter->order_id},{$con->curriculum_id},{$ter->id})" />
@@ -70,7 +70,7 @@
                                         {$ena->accomplished_users} von {$ena->enroled_users} ({$ena->accomplished_percent}%)<!--Ziel--> 
 
                                     {/if}
-                                    {if !isset($showaddObjectives)}
+                                    {if !isset($showaddObjectives) AND $file_solutionUpload eq true}
                                         <a href="assets/scripts/libs/modal-upload/uploadframe.php?userID={$my_id}&last_login={$my_last_login}&context=userView&curID={$con->curriculum_id}&terID={$ter->id}&enaID={$ena->id}&placeValuesBeforeTB_=savedValues&TB_iframe=true&width=700&modal=true" class="thickbox">
                                         <input class="addsolutionbtn floatright" type="button" name="addMaterial"></a>
                                         {if $solutions != false}
@@ -83,7 +83,7 @@
 
                                     {/if} {if isset($showaddObjectives)}
                                         <input class="rightbtn floatright" type="button" name="orderright" onclick="order('up', {$ena->order_id},{$con->curriculum_id},{$ter->id},{$ena->id})" />
-                                        <input class="deletebtn floatright" type="button" name="delete" onclick="deleteObjective({$con->curriculum_id},{$ter->id},{$ena->id})" />
+                                        <input class="deletebtn floatright" type="button" name="delete" onclick="deleteObjective({$my_id}, '{$my_token}', {$con->curriculum_id},{$ter->id},{$ena->id})" />
                                         <input class="editbtn floatright" type="button" name="edit" onclick="editObjective({$con->curriculum_id},{$ter->id},{$ena->id})">
                                         {if $ena->order_id neq '1'}
                                             <input class="leftbtn" type="button" name="orderleft" onclick="order('down', {$ena->order_id},{$con->curriculum_id},{$ter->id},{$ena->id})" />
@@ -106,7 +106,9 @@
                                         <input class="addmaterialbtn floatright" type="button" name="addMaterial"></a>
                                         <input class="editbtn floatright" type="button" name="editMaterial" onclick="editMaterial({$con->curriculum_id},{$ter->id},{$ena->id})">
                                     {/if}  
-                                    <a class="text" onclick="showMaterial({$con->curriculum_id}, {$ter->id}, {$ena->id})">Material</a>
+                                    {if  $file_loadMaterial eq true}
+                                        <a class="text" onclick="showMaterial({$my_id}, '{$my_token}', {$con->curriculum_id}, {$ter->id}, {$ena->id})">Material</a>
+                                    {/if}
                                 </div> 
 
                             </td>
@@ -116,7 +118,7 @@
                 {if isset($showaddObjectives)}       
                  <td><div class="box gray-gradient border-radius box-shadow gray-border ">
                          <div class="boxheader border-top-radius ">
-                            <p><input class="addbtn floatright" type="button" name="addenablingObjectiveButton" onclick="addenablingObjective({$con->curriculum_id},{$ter->id})"></p>
+                            <p><input class="addbtn floatright" type="button" name="addenablingObjectiveButton" onclick="addenablingObjective({$my_id}, '{$my_token}', {$con->curriculum_id},{$ter->id})"></p>
                             <label class="boxleftpadding">Ziel hinzufügen</label>
                          </div>
                  </td>   
@@ -128,7 +130,7 @@
                 {if isset($showaddObjectives)}       
                  <td class="boxleftpadding"><div class="box gray-gradient border-radius box-shadow gray-border ">
                       <div class="boxheader border-top-radius ">   
-                         <p><input class="addbtn floatright" type="button" name="addterminalObjectiveButton" onclick="addterminalObjective({$con->curriculum_id})"> </p>
+                         <p><input class="addbtn floatright" type="button" name="addterminalObjectiveButton" onclick="addterminalObjective({$my_id}, '{$my_token}', {$con->curriculum_id})"> </p>
                          <label class="boxleftpadding">Thema hinzufügen</label>
                       </div>
                  </td>                

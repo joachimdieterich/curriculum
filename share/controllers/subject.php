@@ -57,7 +57,7 @@ if($_POST){
         case isset($_POST['updateSubject']):
                     $new_subject = new Subject();
                     if (isset($_POST['id'])){
-                    $new_subject->id             = $_POST['id'];    
+                        $new_subject->id             = $_POST['id'];    
                     }
                     $new_subject->subject        = $_POST['subject'];
                     $new_subject->subject_short  = $_POST['subject_short'];     

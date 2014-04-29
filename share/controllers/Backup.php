@@ -43,24 +43,21 @@ if (isset($_GET['course'])) {// create new backup
 
 $TEMPLATE->assign('page_title', 'Sicherungen erstellen');
 
-$courses = new Course(); //Load Courses
-if ($USER->role_id == 3 OR $USER->role_id == 2) { // 3 = Rolle Lehrer, 2 = Tutor //Bedingung Lehrer müssen in die Klasse eingeschrieben sein, oder sie erstellt haben
-    $TEMPLATE->assign('courses', $courses->getCourse('teacher', $USER->id));     
-} else if ($USER->role_id == 4 OR $USER->role_id == 1) {
-    $TEMPLATE->assign('courses', $courses->getCourse('admin', $USER->id));    
-}
+$courses = new Course(); //load Courses
 
-// Backups laden
-if ($USER->role_id == 4 OR $USER->role_id == 3 OR $USER->role_id == 2) { // 3 = Rolle Lehrer, 2 = Tutor //Bedingung Lehrer müssen in die Klasse eingeschrieben sein, oder sie erstellt haben
+// load ackups and courses
+if (checkCapabilities('backup:getMyBackups', $USER->role_id, false)) { // Teacher and Tutor
     $backup_list = $backup->load('teacher');
+    $TEMPLATE->assign('courses', $courses->getCourse('teacher', $USER->id));     
 } else
-if ($USER->role_id == 1) {
+if (checkCapabilities('backup:getAllBackups', $USER->role_id)) { //Administrators
     $backup_list = $backup->load('admin');
+    $TEMPLATE->assign('courses', $courses->getCourse('admin', $USER->id));
 }
 
 setPaginator('fileBackupPaginator', $TEMPLATE, $backup_list, 'results', 'index.php?action=backup'); //set Paginator    
 $zipURL = $CFG->web_backup_url;
-$TEMPLATE->assign('web_backup_url', $zipURL); //keine Datensätze vorhanden
+$TEMPLATE->assign('web_backup_url', $zipURL); //No Data available
 
 $TEMPLATE->assign('page_message', $PAGE->message);
 ?>

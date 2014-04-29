@@ -115,12 +115,6 @@ if ($_POST){
             break;
     }
     
-    
-    //editMaterial --> ins modalfenster implementieren!
-    //end editMaterial
-    
-    //deleteMaterial --> ins modalfenster inplementieren
-    //end deleteMaterial
     $TEMPLATE->assign('page_message', $PAGE->message);
 }
 
@@ -132,8 +126,12 @@ if ((isset($_GET['function']) AND $_GET['function'] == 'addObjectives') || (isse
  * END POST / GET
  */
 
- $courses = new Course(); // Load course
-                            
+$courses = new Course(); // Load course
+
+//capabilies
+$TEMPLATE->assign('file_solutionUpload', checkCapabilities('file:solutionUpload', $USER->role_id));  
+$TEMPLATE->assign('file_loadMaterial', checkCapabilities('file:loadMaterial', $USER->role_id));  
+
 //load terminal objectives
 $terminal_objectives = new TerminalObjective();
 $TEMPLATE->assign('terminal_objectives', $terminal_objectives->getObjectives('curriculum', $PAGE->curriculum));

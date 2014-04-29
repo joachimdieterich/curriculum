@@ -51,7 +51,7 @@ class Curriculum {
      * id of grade
      * @var int 
      */
-    public $grade_id = 8; //??? std vars setzten --> am besten über constructor
+    public $grade_id = 8; //??? std vars setzten 
     /**
      * name of grade
      * @var string
@@ -110,14 +110,17 @@ class Curriculum {
      * @return mixed 
      */
     public function add(){
-        $db = DB::prepare('SELECT COUNT(id) FROM curriculum WHERE UPPER(curriculum) = UPPER(?)');
-        $db->execute(array($this->curriculum));
-        if($db->fetchColumn() >= 1) { 
-            return 'Diesen Lehrplan gibt es bereits.';
-        } else {
-            $db = DB::prepare('INSERT INTO curriculum (curriculum, description, grade_id, subject_id, schooltype_id, state_id, icon_id, country_id, creator_id) 
-                                                  VALUES (?,?,?,?,?,?,?,?,?)');
-            return $db->execute(array($this->curriculum, $this->description, $this->grade_id, $this->subject_id, $this->schooltype_id, $this->state_id, $this->icon_id, $this->country_id, $this->creator_id));
+        global $USER;
+        if (checkCapabilities('curriculum:add', $USER->role_id)){
+            $db = DB::prepare('SELECT COUNT(id) FROM curriculum WHERE UPPER(curriculum) = UPPER(?)');
+            $db->execute(array($this->curriculum));
+            if($db->fetchColumn() >= 1) { 
+                return 'Diesen Lehrplan gibt es bereits.';
+            } else {
+                $db = DB::prepare('INSERT INTO curriculum (curriculum, description, grade_id, subject_id, schooltype_id, state_id, icon_id, country_id, creator_id) 
+                                                    VALUES (?,?,?,?,?,?,?,?,?)');
+                return $db->execute(array($this->curriculum, $this->description, $this->grade_id, $this->subject_id, $this->schooltype_id, $this->state_id, $this->icon_id, $this->country_id, $this->creator_id));
+            }
         }
     }
     
@@ -126,11 +129,14 @@ class Curriculum {
      * @return boolean 
      */
     public function update(){
-        $db = DB::prepare('UPDATE curriculum 
-                SET curriculum = ?, description = ?, grade_id = ?, subject_id = ?, 
-                schooltype_id = ?, state_id = ?, icon_id = ?, country_id = ?, creator_id = ?
-                WHERE id = ?');
-        return $db->execute(array($this->curriculum, $this->description, $this->grade_id, $this->subject_id, $this->schooltype_id, $this->state_id, $this->icon_id, $this->country_id, $this->creator_id ,$this->id));
+        global $USER;
+        if (checkCapabilities('curriculum:update', $USER->role_id)){
+            $db = DB::prepare('UPDATE curriculum 
+                    SET curriculum = ?, description = ?, grade_id = ?, subject_id = ?, 
+                    schooltype_id = ?, state_id = ?, icon_id = ?, country_id = ?, creator_id = ?
+                    WHERE id = ?');
+            return $db->execute(array($this->curriculum, $this->description, $this->grade_id, $this->subject_id, $this->schooltype_id, $this->state_id, $this->icon_id, $this->country_id, $this->creator_id ,$this->id));
+        }
     }
     
     /**
@@ -138,8 +144,11 @@ class Curriculum {
      * @return mixed 
      */
     public function delete(){
-         $db = DB::prepare('DELETE FROM curriculum WHERE id=?');
-        return $db->execute(array($this->id));
+        global $USER;
+        if (checkCapabilities('curriculum:delete', $USER->role_id)){
+            $db = DB::prepare('DELETE FROM curriculum WHERE id=?');
+            return $db->execute(array($this->id));
+        }
     } 
     
     /**

@@ -59,8 +59,10 @@
                 <p>&nbsp;</p>
                 <p><h3>Institution</h3></p>
                 <input type='hidden' name='demo' id='demo' {if isset($demo)}value='{$demo}'{/if} />   
-                <p><label>Institution / Schule: </label><input class='inputformlong' type='text' name='institution' id='institution' {if isset($institution)}value='{$institution}'{/if} /></p> 
-                <p><label>Beschreibung: </label><input class='inputformlong' type='institution_description' name='institution_description' {if isset($institution_description)}value='{$institution_description}'{/if}/></p>
+                <p><label>Institution / Schule*: </label><input class='inputformlong' type='text' name='institution' id='institution' {if isset($institution)}value='{$institution}'{/if} /></p> 
+                {validate_msg field='institution'}
+                <p><label>Beschreibung*: </label><input class='inputformlong' type='institution_description' name='institution_description' {if isset($institution_description)}value='{$institution_description}'{/if}/></p>
+                {validate_msg field='institution_description'}
                 <p id="schooltype_list"><label>Schultyp: </label><select name="schooltype_id" >
                     {section name=res loop=$schooltype}  
                         <option value={$schooltype[res]->id}>{$schooltype[res]->schooltype}</option>

@@ -26,7 +26,6 @@ if (0 > version_compare(PHP_VERSION, '5')) {
  * http://www.gnu.org/copyleft/gpl.html      
  */
 
-
 class Mailbox {
     /**
      * inbox array
@@ -55,29 +54,41 @@ class Mailbox {
      * @param int $id 
      */
     public function loadMail($id){
-        $getMail = new Mail();
-        $this->inbox[] = $getMail->loadMail($id);   
+        global $USER; 
+        if (checkCapabilities('mail:loadMail', $USER->role_id)){ //check capability
+            $getMail = new Mail();
+            $this->inbox[] = $getMail->loadMail($id);  
+        }
     }
     /**
      * load inbox of a user
      * @param int $user_id 
      */
     public function loadInbox($user_id){
-        $this->loadMailbox($user_id, 'receiver_id');
+        global $USER; 
+        if (checkCapabilities('mail:loadInbox', $USER->role_id)){ //check capability
+            $this->loadMailbox($user_id, 'receiver_id');
+        }
     }
     /**
      * load outbox of a user
      * @param int $user_id 
      */
     public function loadOutbox($user_id){
-        $this->loadMailbox($user_id, 'sender_id');
+        global $USER; 
+        if (checkCapabilities('mail:loadOutbox', $USER->role_id)){ //check capability
+            $this->loadMailbox($user_id, 'sender_id');
+        }
     }
     /**
      * load deleted messages of a user
      * @param int $user_id 
      */
     public function loadDeletedMessages($user_id){
-        $this->loadMailbox($user_id, 'deleted');
+        global $USER; 
+        if (checkCapabilities('mail:loadDeletedMessages', $USER->role_id)){ //check capability
+            $this->loadMailbox($user_id, 'deleted');
+        }    
     }
     /**
      * load a mailbox
@@ -87,7 +98,7 @@ class Mailbox {
      * @param int $user_id
      * @param string $mailbox 
      */
-    public function loadMailbox($user_id, $mailbox = 'delete'){
+    private function loadMailbox($user_id, $mailbox = 'delete'){
         if ($mailbox != 'deleted'){
             $db = DB::prepare('SELECT * FROM message WHERE '.$mailbox.' = ? ORDER BY id DESC');
             $db->execute(array($user_id));

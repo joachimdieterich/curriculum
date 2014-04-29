@@ -24,12 +24,15 @@
 require_once(dirname(__FILE__).'../../setup.php');
 require_once(dirname(__FILE__).'../../include.php');
 global $TEMPLATE, $CFG, $PAGE, $USER;
+global $USER;
 $USER = new User();
+$USER->role_id = -1;
+$USER->id = -1; 
 
 $TEMPLATE->assign('db_host', '127.0.0.1');
 $TEMPLATE->assign('page_title', 'Curriculum installieren');
 $TEMPLATE->assign('my_username', '');
-$TEMPLATE->assign('my_role_id', '-1');
+$TEMPLATE->assign('my_role_id', $USER->role_id);
 $TEMPLATE->assign('step', 0);
 $TEMPLATE->assign('countries', '');
 $PAGE->message = '';
@@ -50,11 +53,10 @@ if ($_POST){
     switch ($_POST) {
         case isset($_POST['step_0']):
             if (isset($_POST['license']) AND $_POST['license'] != '') {
-            $TEMPLATE->assign('step', 1);
+                $TEMPLATE->assign('step', 1);
             }
             break;
         case isset($_POST['step_1']):
-                    //echo $_SESSION['DOWNLOAD'];
                     if (isset($_SESSION['DOWNLOAD'])){ //go to page 2 - 
                         unset($_SESSION['DOWNLOAD']); 
                         $TEMPLATE->assign('step', 2);
@@ -67,7 +69,6 @@ if ($_POST){
                             $db = new pdo('mysql:host='.$CFG->db_host.';dbname='.$CFG->db_name.';'/*'.charset=utf8.'*/, $CFG->db_user, $CFG->db_password ,
                                             array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
                             $gump = new Gump();
-                            
                             $gump->validation_rules(array(
                                             'db_host'     => 'required',
                                             'db_user'     => 'required',
@@ -134,34 +135,31 @@ if ($_POST){
                                                 writeConfigFile($cfg_file, '$CFG->app_title', $_POST["app_title"]);
                                                 $CFG->app_title = $_POST["app_title"];
                                                 
-                                                if (isset($_POST['demo'])){     // install demo or new db
-                                                    $fp = import_SQL($CFG->demo_root . 'demo.sql');
+                                                $fp = import_SQL($CFG->demo_root . 'install.sql'); // install demo data
+                                                if (isset($_POST['demo'])){      // install demo 
+                                                    $fp_demo = import_SQL($CFG->demo_root . 'demo.sql');
                                                     $TEMPLATE->assign('demo', true);
-                                                } else {                                                    
-                                                     $fp = import_SQL($CFG->demo_root . 'demo.sql');
-                                                    $TEMPLATE->assign('install', false);
-                                                }    
+                                                }               
+                                               
                                                 if ($fp) {
-                                                    $PAGE->message[] = "Datenbank erfolgreich eingerichtet";  
+                                                    $PAGE->message[] = "Datenbank erfolgreich eingerichtet"; 
+                                                    if (isset($fp_demo)){
+                                                       $PAGE->message[] = "Demo erfolgreich eingerichtet";      
+                                                    }
                                                     load_Countries();
                                                     $TEMPLATE->assign('step', 3);
                                                 } else {
                                                     $PAGE->message[] = "Bei der Einrichtung der Datenbank ist ein Fehler aufgetreten. Stellen Sie sicher, dass mysql unter /user/bin/ vorhanden ist. ";
                                                     $TEMPLATE->assign('step', 2);
                                                 }
-                                                //end import sql
-                                                
-                                                
+                                                //end import sql  
                                             }
             break;
         case isset($_POST['step_3']):
                         $gump = new Gump();
                         $gump->validation_rules(array(
                                         'institution'      => 'required',
-                                        'institution_description'     => 'required',
-                                        /*'schooltype'      => 'required',
-                                        'country'         => 'required',
-                                        'state'           => 'required'*/
+                                        'institution_description'     => 'required'
                                         ));
                         $validated_data = $gump->run($_POST);
                                         if (!isset($_POST['state'])){
@@ -201,10 +199,11 @@ if ($_POST){
                                                     $user_config->add('institution', $institution_id);
                                                 }
                                                 
-                                                $TEMPLATE->assign('institution_id', $institution_id);   
+                                                $TEMPLATE->assign('institution_id', $institution_id);  
+                                                load_Countries();
+                                                $TEMPLATE->assign('step', 4);
                                             }
-                                            load_Countries();
-                                            $TEMPLATE->assign('step', 4);
+                                            
                                             
                 //Admin in alle Lehrpläne und in institution einschreiben
             break;     
@@ -248,61 +247,58 @@ if ($_POST){
                                                 $new_user->role_id    = 1;
                                                 $new_user->confirmed  = 1;
                                                 $new_user->creator_id = -1;
-                                                $USER = $new_user;  //important! $USER is required in user.class.php
+                                                //$USER = $new_user;          //important! $USER is required in user.class.php
                                                 $user_id = $new_user->add();
-                                               
                                                 $new_user->creator_id           = $user_id;
-                                                $new_user->enroleToInstitution($_POST['institution_id']);
-                                                /*$user_config = new Config(); //wird über user->add gemacht
-                                                $user_config->add('user', $user_id);*/
-                                                $new_user->dedicate();
-                                                //Set creator_id of institution to admin_id
-                                                //$institution = new Institution(); 
+                                                $new_user->enroleToInstitution($_POST['institution_id']);                                         
+                                                $new_user->dedicate();                                         
+                                                
                                                 $institution->id            = $_POST['institution_id']; 
                                                 $institution->creator_id    = $user_id;
-                                                /*$institution->load();
-                                                $institution->creator_id    = $user_id;
-                                                $institution->update(); */
                                                 $institution->dedicate();
-                                                //Set institution_id in subjects_db
+                                                
                                                 $subjects = new Subject(); 
                                                 $subjects->institution_id   = $_POST['institution_id'];
                                                 $subjects->creator_id       = $user_id;
                                                 $subjects->dedicate();
-                                                //Set institution_id in grade_db
-                                                $grade = new Grade();
+                                                
+                                                $grade = new Grade();       //Set institution_id in grade_db
                                                 $grade->institution_id      = $_POST['institution_id'];
                                                 $grade->creator_id          = $user_id;
                                                 $grade->dedicate();
-                                                //Set institution_id in semester db
-                                                $semester = new Semester();
+                                                
+                                                $semester = new Semester(); //Set institution_id in semester db
                                                 $semester->institution_id      = $_POST['institution_id'];
                                                 $semester->creator_id          = $user_id;
                                                 $semester->dedicate();
-                                                //Set creator_id in files_db
-                                                $files = new File();
+                                                
+                                                $files = new File();        //Set creator_id in files_db
                                                 $files->creator_id          = $user_id;
                                                 $files->dedicate();
-                                                //Set creator_id in schooltypes
-                                                $schooltypes = new Schooltype();
+                                                
+                                                $schooltypes = new Schooltype();//Set creator_id in schooltypes
                                                 $schooltypes->creator_id          = $user_id;
                                                 $schooltypes->dedicate();
-                                                //Set creator_id in user_roles db
-                                                $roles = new Roles();
-                                                $roles->creator_id          = $user_id;
-                                                $roles->dedicate();
+                                                
                                                 $terminal_objective = new TerminalObjective();
                                                 $terminal_objective->creator_id = $user_id; 
                                                 $terminal_objective->dedicate();
+                                                
                                                 $enabling_objective = new EnablingObjective();
                                                 $enabling_objective->creator_id = $user_id;
                                                 $enabling_objective->dedicate();
+                                                
                                                 $group = new Group();
                                                 $group->creator_id = $user_id;
                                                 $group->dedicate();
+                                                
                                                 $curriculum = new Curriculum();
                                                 $curriculum->creator_id = $user_id;
                                                 $curriculum->dedicate();
+                                                
+                                                $roles = new Roles();       //Set creator_id in user_roles db
+                                                $roles->creator_id          = $user_id;
+                                                $roles->dedicate();         //it also deletes the -1 role
                                                 
                                                 $TEMPLATE->assign('step', 5);
                                                 session_destroy(); //important! reset $USER
@@ -325,15 +321,13 @@ if ($_POST){
  */                
 function writeConfigFile($file, $pattern, $replace){
     $lines = file($file);
-    //print_r($lines);
-    for ($i= 0; $i < count($lines); $i++){
-        
+    for ($i= 0; $i < count($lines); $i++){    
         if(preg_match(sprintf('#\%s*.*=#',$pattern), $lines[$i])){
             $lines[$i] = $pattern."='".$replace."';\n"; 
             break;
-            }
         }
-        file_put_contents($file,$lines);
+    }
+    file_put_contents($file,$lines);
 }
 
 /**
@@ -345,37 +339,25 @@ function load_Countries(){
     $country = new State(); 
     $countries = $country->getCountries();
     $TEMPLATE->assign('countries', $countries);
-
     $schooltype = new Schooltype();
     $schooltypes = $schooltype->getSchooltypes();
-$TEMPLATE->assign('schooltype', $schooltypes);
+    $TEMPLATE->assign('schooltype', $schooltypes);
 }
 
-function import_SQL($filename){
-    // Temporary variable, used to store current query
-$templine = '';
-// Read in entire file
-$lines = file($filename);
-// Loop through each line
-foreach ($lines as $line)
-{
-// Skip it if it's a comment
-if (substr($line, 0, 2) == '--' || $line == '')
-    continue;
-
-// Add this line to the current segment
-$templine .= $line;
-// If it has a semicolon at the end, it's the end of the query
-if (substr(trim($line), -1, 1) == ';')
-{
-    // Perform the query
-    $db = DB::prepare($templine);
-    $feedback = $db->execute();
-    // Reset temp variable to empty
+function import_SQL($filename){ // Temporary variable, used to store current query
     $templine = '';
-}
-}
-return $feedback; 
+    $lines = file($filename);       // Read in entire file
+    foreach ($lines as $line) {     // Loop through each line
+        if (substr($line, 0, 2) == '--' || $line == '')// Skip it if it's a comment
+            continue;
+            $templine .= $line;             // Add this line to the current segment
+            if (substr(trim($line), -1, 1) == ';'){ // If it has a semicolon at the end, it's the end of the query
+                $db = DB::prepare($templine);       // Perform the query
+                $feedback = $db->execute();
+                $templine = '';                     // Reset temp variable to empty
+            }
+    }
+    return $feedback; 
 }
 
 $TEMPLATE->assign('page_message', $PAGE->message);	

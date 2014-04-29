@@ -105,24 +105,27 @@ class Log {
     }
     
     public function getLogs() {
-        $db = DB::prepare('SELECT lg.*, us.username  
-                            FROM log AS lg, users AS us
-                            WHERE lg.user_id = us.id'); //DATE(creation_time) = CURDATE()
-        $db->execute();
-        while($result = $db->fetchObject()) { 
-            $this->id                = $result->id;
-            $this->creation_time     = $result->creation_time;
-            $this->user_id           = $result->user_id;
-            $this->username          = $result->username;
-            $this->ip                = $result->ip; 
-            $this->action            = $result->action;
-            $this->url               = $result->url;   
-            $this->info              = $result->info;   
-            $log[]                   = clone $this; 
-        }   
-        if (isset($log)){
-            return $log;
-        } else { return false;}
+        global $USER;
+        if (checkCapabilities('log:getLogs', $USER->role_id)){
+            $db = DB::prepare('SELECT lg.*, us.username  
+                                FROM log AS lg, users AS us
+                                WHERE lg.user_id = us.id'); //DATE(creation_time) = CURDATE()
+            $db->execute();
+            while($result = $db->fetchObject()) { 
+                $this->id                = $result->id;
+                $this->creation_time     = $result->creation_time;
+                $this->user_id           = $result->user_id;
+                $this->username          = $result->username;
+                $this->ip                = $result->ip; 
+                $this->action            = $result->action;
+                $this->url               = $result->url;   
+                $this->info              = $result->info;   
+                $log[]                   = clone $this; 
+            }   
+            if (isset($log)){
+                return $log;
+            } else { return false;}
+        }
     }
     
 }

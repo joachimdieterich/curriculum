@@ -34,7 +34,32 @@ include($functionfile);
 // Configure Timezone $$$ You may want to change this otherwise php will complain
 date_default_timezone_set('Europe/Berlin');
 
+
 if (isset($_GET['function'])){
+    $user_id =      (isset($_GET['userID']) && trim($_GET['userID'] != '') ? $_GET['userID'] : -1);
+    $token   =      (isset($_GET['token']) && trim($_GET['token'] != '') ? $_GET['token'] : -1); //security check to prevent access without login
+    global $USER;
+    if ($user_id == -1){
+        $upload_user = new User(); 
+        $upload_user->id = -1;
+        $upload_user->username = 'install'; 
+        $upload_user->role_id = -1; 
+        
+    } else {
+        $upload_user = new User(); 
+        $upload_user->load('id', $user_id); //Load upload User data
+        $USER = $upload_user;
+        //var_dump($USER);
+        /**
+        * Security check based on username token and current ip to prevent access without login
+        */
+        $authenticate = new Authenticate();
+        $authenticate->username = $upload_user->username;
+        $authenticate->token    = $token;
+        if (!$authenticate->check(getIp())){ 
+            throw new CurriculumException('Unberechtigter Zugriff!');
+        }//security 
+  }
     switch ($_GET['function']) {
         case "showMaterial": 
                             if (isset($_GET['ajax'])) {
@@ -147,7 +172,7 @@ if (isset($_GET['function'])){
                             }
                             break;  
                              
-            case "editenablingObjective": 
+       case "editenablingObjective": 
                             if (isset($_GET['ajax'])) {
                                 $enabling_objective = new EnablingObjective();
                                 $enabling_objective->id = $_GET['enablingObjectiveID'];

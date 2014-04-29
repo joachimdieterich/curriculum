@@ -23,30 +23,32 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `authenticate`
+-- Tabellenstruktur fÃ¼r Tabelle `authenticate`
 --
 
 DROP TABLE IF EXISTS `authenticate`;
-CREATE TABLE IF NOT EXISTS `authenticate` (
+CREATE TABLE `authenticate` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(250) DEFAULT NULL,
+  `user_id` int(11) DEFAULT NULL,
   `password` varchar(50) DEFAULT NULL,
-  `token` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `token` varchar(50) DEFAULT NULL,
+  `ip` int(10) unsigned DEFAULT NULL,
   `creation_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `creator_id` int(11) NOT NULL,
+  `creator_id` int(11) DEFAULT NULL,
   `status` int(11) NOT NULL DEFAULT '0',
-  `firstname` text NOT NULL,
-  `lastname` text NOT NULL,
-  `email` text NOT NULL,
-  `user_external_id` int(11) NOT NULL,
+  `firstname` text,
+  `lastname` text,
+  `email` text,
+  `user_external_id` int(11) DEFAULT NULL,
   `ws_username` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `capabilities`
+-- Tabellenstruktur fÃ¼r Tabelle `capabilities`
 --
 
 DROP TABLE IF EXISTS `capabilities`;
@@ -61,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `capabilities` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=40 ;
 
 --
--- Daten für Tabelle `capabilities`
+-- Daten fÃ¼r Tabelle `capabilities`
 --
 
 INSERT INTO `capabilities` (`id`, `capability`, `name`, `description`, `type`, `component`) VALUES
@@ -86,7 +88,7 @@ INSERT INTO `capabilities` (`id`, `capability`, `name`, `description`, `type`, `
 (23, 'user:updateRole', 'Benuzterrolle aktualisieren', 'Ability to update user roles', 'write', 'curriculum'),
 (24, 'user:delete', 'Benuzter lÃ¶schen', 'Ability to delete users', 'write', 'curriculum'),
 (25, 'user:changePassword', 'Eigenes Benutzerpasswort Ã¤ndern', 'Ability to change own userpassoword', 'write', 'curriculum'),
-(26, 'user:getPassword', 'Passwort aus Datenbank abfragen (! Nur für Webservice freigeben !)', 'Ability to get password', 'read', 'curriculum'),
+(26, 'user:getPassword', 'Passwort aus Datenbank abfragen (! Nur fÃ¼r Webservice freigeben !)', 'Ability to get password', 'read', 'curriculum'),
 (27, 'user:getGroupMembers', 'Mitglieder aus einer Lerngruppe anzeigen', 'Ability to read groupmembers', 'read', 'curriculum'),
 (28, 'user:listNewUsers', 'Neue Benutzer auflisten', 'Ability to list new registered users', 'read', 'curriculum'),
 (29, 'user:enroleToInstitution', 'Benutzer in Institution einschreiben', 'Ability to enrole users to an institution', 'write', 'curriculum'),
@@ -98,13 +100,76 @@ INSERT INTO `capabilities` (`id`, `capability`, `name`, `description`, `type`, `
 (36, 'user:getUsers', 'Lerngruppenliste (Lehrplanbezogen) anzeigen', 'Ability to get Grouplist (depending on curriculum)', 'read', 'curriculum'),
 (37, 'user:getNewUsers', 'Neue Benutzer (Institutsbezogen) anzeigen', 'Ability to get New Userlist (depending on institution)', 'read', 'curriculum'),
 (38, 'user:confirmUser', 'Neue Benutzer bestÃ¤tigen', 'Ability to confirm new users', 'write', 'curriculum'),
-(39, 'user:dedicate', 'Benutzer wÃ¤hrend Installationsprozess der erstellten Institution zuweisen', 'Only for installation purposes', 'write', 'curriculum');
+(39, 'user:dedicate', 'Benutzer wÃ¤hrend Installationsprozess der erstellten Institution zuweisen', 'Only for installation purposes', 'write', 'curriculum'),
+(40, 'mail:loadMail', 'Emails laden', 'Ability to load messages', 'read', 'mail'),
+(41, 'mail:postMail', 'Emails schreiben', 'Ability to write messages', 'write', 'mail'),
+(42, 'mail:loadInbox', 'Posteingang anzeigen ', 'Ability to load the inbox(mails)', 'read', 'mail'),
+(43, 'mail:loadOutbox', 'Postausgang anzeigen ', 'Ability to load the outbox(mails)', 'read', 'mail'),
+(44, 'mail:loadDeletedMessages', 'GelÃ¶schte Mails anzeigen ', 'Ability to load deleted mails', 'read', 'mail'),
+(45, 'file:solutionUpload', 'LÃ¶sungen einreichen ', 'Ability to upload solutions', 'write', 'file'),
+(46, 'file:loadMaterial', 'Material laden ', 'Ability to see materials', 'read', 'file'),
+(47, 'backup:addBackup', 'Backup erstellen ', 'Ability to add backup', 'write', 'curriculum'),
+(48, 'backup:loadBackup', 'Backup laden ', 'Ability to load backup', 'read', 'curriculum'),
+(49, 'backup:deleteBackup', 'Backup lÃ¶schen ', 'Ability to delete backup', 'write', 'curriculum'),
+(50, 'objectives:setStatus', 'Lernstand setzen ', 'Ability to set status of objectives', 'write', 'curriculum'),
+(51, 'file:upload', 'Dateien hochladen', 'Ability to upload files', 'write', 'curriculum'),
+(53, 'file:uploadURL', 'URL hochladen', 'Ability to upload URLs', 'write', 'curriculum'),
+(54, 'file:lastFiles', 'Zuletzt hochgeladene Dateien anzeigen', 'Ability to see last uploaded files', 'read', 'curriculum'),
+(55, 'file:curriculumFiles', 'Dateien des Lehrplanes anzeigen', 'Ability to see files of current curriculum', 'read', 'curriculum'),
+(56, 'file:solution', 'LÃ¶sungen im Dateifenster anzeigen', 'Ability to see solutionfiles', 'read', 'curriculum'),
+(57, 'file:myFiles', 'Meine Dateien im Dateifenster anzeigen', 'Ability to see my files', 'read', 'curriculum'),
+(58, 'file:myAvatars', 'Meine Avatars im Dateifenster anzeigen', 'Ability to see my avatar files', 'read', 'curriculum'),
+(59, 'objectives:addTerminalObjective', 'Themen hinzufÃ¼gen', 'Ability to add terminal Objectives', 'write', 'curriculum'),
+(60, 'objectives:orderTerminalObjectives', 'Themen sortieren', 'Ability to sort terminal Objectives', 'write', 'curriculum'),
+(61, 'objectives:updateTerminalObjectives', 'Themen bearbeiten', 'Ability to edit and update terminal Objectives', 'write', 'curriculum'),
+(62, 'objectives:deleteTerminalObjectives', 'Themen lÃ¶schen', 'Ability to delete terminal Objectives', 'write', 'curriculum'),
+(63, 'objectives:addEnablingObjective', 'Ziele hinzufÃ¼gen', 'Ability to add enabling Objectives', 'write', 'curriculum'),
+(64, 'objectives:updateEnablingObjectives', 'Ziele bearbeiten', 'Ability to edit and update enabling Objectives', 'write', 'curriculum'),
+(65, 'objectives:deleteEnablingObjectives', 'Ziele lÃ¶schen', 'Ability to delete enabling Objectives', 'write', 'curriculum'),
+(66, 'subject:add', 'Fach hinzufÃ¼gen', 'Ability to add subjects', 'write', 'curriculum'),
+(67, 'subject:update', 'Fach editieren', 'Ability to edit and update subjects', 'write', 'curriculum'),
+(68, 'subject:delete', 'Fach lÃ¶schen', 'Ability to delete subjects', 'write', 'curriculum'),
+(69, 'semester:add', 'Lernzeitrum hinzufÃ¼gen', 'Ability to add semester', 'write', 'curriculum'),
+(70, 'semester:update', 'Lernzeitrum editieren', 'Ability to edit and update semester', 'write', 'curriculum'),
+(71, 'semester:delete', 'Lernzeitrum lÃ¶schen', 'Ability to delete semester', 'write', 'curriculum'),
+(72, 'schooltype:add', 'Schultyp hinzufÃ¼gen', 'Ability to add schooltype', 'write', 'curriculum'),
+(73, 'schooltype:update', 'Schultyp Ã¤ndern', 'Ability to edit and update schooltype', 'write', 'curriculum'),
+(74, 'schooltype:delete', 'Schultyp lÃ¶schen', 'Ability to delete schooltype', 'write', 'curriculum'),
+(75, 'log:getLogs', 'Log-Daten einsehen', 'Ability to see log data', 'read', 'curriculum'),
+(76, 'institution:add', 'Institution hinzufÃ¼gen', 'Ability to add institution', 'write', 'curriculum'),
+(77, 'institution:delete', 'Institution lÃ¶schen', 'Ability to delete institution', 'write', 'curriculum'),
+(78, 'institution:update', 'Institution Ã¤ndern', 'Ability to edit and update institution', 'write', 'curriculum'),
+(79, 'group:add', 'Gruppe hinzufÃ¼gen', 'Ability to add group', 'write', 'curriculum'),
+(80, 'groups:update', 'Gruppe Ã¤ndern', 'Ability to edit and update group', 'write', 'curriculum'),
+(81, 'groups:delete', 'Gruppe lÃ¶schen', 'Ability to delete groups', 'write', 'curriculum'),
+(82, 'groups:expel', 'Lerngruppe aus Lehrplan ausschreiben ', 'Ability to enrole groups', 'write', 'curriculum'),
+(83, 'groups:enrol', 'Lerngruppe in Lehrplan einschreiben ', 'Ability to enrole groups', 'write', 'curriculum'),
+(84, 'groups:changeSemester', 'Lernzeitrum der Lerngruppe Ã¤ndern ', 'Ability to change semster of groups', 'write', 'curriculum'),
+(85, 'grade:add', 'Klassenstufe hinzufÃ¼gen ', 'Ability to add grade', 'write', 'curriculum'),
+(86, 'grade:update', 'Klassenstufe Ã¤ndern ', 'Ability to edit and update grade', 'write', 'curriculum'),
+(87, 'grade:delete', 'Klassenstufe lÃ¶schen ', 'Ability to delete grade', 'write', 'curriculum'),
+(88, 'file:update', 'Datei(beschreibungen)en Ã¤ndern', 'Ability to edit files', 'write', 'curriculum'),
+(89, 'file:delete', 'Dateien lÃ¶schen', 'Ability to delete files', 'write', 'curriculum'),
+(90, 'file:getSolutions', 'BenutzerlÃ¶sungen einsehen', 'Ability to see user solutions', 'read', 'curriculum'),
+(91, 'curriculum:add', 'Lehrplan anlegen', 'Ability to add curriculum', 'write', 'curriculum'),
+(92, 'curriculum:update', 'Lehrplan Ã¤ndern', 'Ability to edit curriculum', 'write', 'curriculum'),
+(93, 'curriculum:delete', 'Lehrplan lÃ¶schen', 'Ability to delete curriculum', 'write', 'curriculum'),
+(94, 'role:add', 'Rolle hinzufÃ¼gen', 'Ability to add user role', 'write', 'curriculum'),
+(95, 'role:update', 'Rolle Ã¤ndern', 'Ability to edit and update user role', 'write', 'curriculum'),
+(96, 'role:delete', 'Rolle lÃ¶schen', 'Ability to delete user role', 'write', 'curriculum'),
+(97, 'backup:getMyBackups', 'Backups meiner Kurse anzeigen', 'Ability to get my backups', 'read', 'curriculum'),
+(98, 'backup:getAllBackups', 'Backups aller Kurse anzeigen', 'Ability to get all backups', 'read', 'curriculum'),
+(99, 'config:mySettings', 'Meine Einstellungen bearbeiten', 'Ability to edit my settings', 'write', 'curriculum'),
+(100, 'config:Institution', 'Einstellungen von Institutionen bearbeiten', 'Ability to edit institutional settings', 'write', 'curriculum'),
+(101, 'dashboard:globalAdmin', 'Informationen fÃ¼r globale Administratoren anzeigen', 'Ability to see Info for global Admins', 'read', 'curriculum'),
+(102, 'dashboard:institutionalAdmin', 'Informationen fÃ¼r Administratoren (Institution) anzeigen', 'Ability to see Info for institutional Admins', 'read', 'curriculum');
+
 
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `config_institution`
+-- Tabellenstruktur fÃ¼r Tabelle `config_institution`
 --
 
 DROP TABLE IF EXISTS `config_institution`;
@@ -130,7 +195,7 @@ CREATE TABLE IF NOT EXISTS `config_institution` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `config_user`
+-- Tabellenstruktur fÃ¼r Tabelle `config_user`
 --
 
 DROP TABLE IF EXISTS `config_user`;
@@ -147,7 +212,7 @@ CREATE TABLE IF NOT EXISTS `config_user` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `context`
+-- Tabellenstruktur fÃ¼r Tabelle `context`
 --
 
 DROP TABLE IF EXISTS `context`;
@@ -160,7 +225,7 @@ CREATE TABLE IF NOT EXISTS `context` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
 
 --
--- Daten für Tabelle `context`
+-- Daten fÃ¼r Tabelle `context`
 --
 
 INSERT INTO `context` (`id`, `context`, `context_id`, `path`) VALUES
@@ -173,7 +238,7 @@ INSERT INTO `context` (`id`, `context`, `context_id`, `path`) VALUES
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `countries`
+-- Tabellenstruktur fÃ¼r Tabelle `countries`
 --
 
 DROP TABLE IF EXISTS `countries`;
@@ -191,7 +256,7 @@ CREATE TABLE IF NOT EXISTS `countries` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=244 ;
 
 --
--- Daten für Tabelle `countries`
+-- Daten fÃ¼r Tabelle `countries`
 --
 
 INSERT INTO `countries` (`code`, `en`, `de`, `id`, `creation_time`, `creator_id`) VALUES
@@ -442,7 +507,7 @@ INSERT INTO `countries` (`code`, `en`, `de`, `id`, `creation_time`, `creator_id`
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `cronjobs`
+-- Tabellenstruktur fÃ¼r Tabelle `cronjobs`
 --
 
 DROP TABLE IF EXISTS `cronjobs`;
@@ -458,7 +523,7 @@ CREATE TABLE IF NOT EXISTS `cronjobs` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `curriculum`
+-- Tabellenstruktur fÃ¼r Tabelle `curriculum`
 --
 
 DROP TABLE IF EXISTS `curriculum`;
@@ -480,7 +545,7 @@ CREATE TABLE IF NOT EXISTS `curriculum` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `curriculum_enrolments`
+-- Tabellenstruktur fÃ¼r Tabelle `curriculum_enrolments`
 --
 
 DROP TABLE IF EXISTS `curriculum_enrolments`;
@@ -498,7 +563,7 @@ CREATE TABLE IF NOT EXISTS `curriculum_enrolments` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `enablingObjectives`
+-- Tabellenstruktur fÃ¼r Tabelle `enablingObjectives`
 --
 
 DROP TABLE IF EXISTS `enablingObjectives`;
@@ -518,7 +583,7 @@ CREATE TABLE IF NOT EXISTS `enablingObjectives` (
 -- --------------------------------------------------------
 
 --
---  Tabellenstruktur für Tabelle `files`
+--  Tabellenstruktur fÃ¼r Tabelle `files`
 --
 
 DROP TABLE IF EXISTS `files`;
@@ -539,7 +604,7 @@ CREATE TABLE IF NOT EXISTS `files` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=149 ;
 
 --
--- Daten für Tabelle `files`
+-- Daten fÃ¼r Tabelle `files`
 --
 
 INSERT INTO `files` (`id`, `context_id`, `path`, `filename`, `creator_id`, `creation_time`, `type`, `cur_id`, `ena_id`, `ter_id`, `description`, `title`) VALUES
@@ -558,7 +623,7 @@ INSERT INTO `files` (`id`, `context_id`, `path`, `filename`, `creator_id`, `crea
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `files_backup`
+-- Tabellenstruktur fÃ¼r Tabelle `files_backup`
 --
 
 DROP TABLE IF EXISTS `files_backup`;
@@ -575,7 +640,7 @@ CREATE TABLE IF NOT EXISTS `files_backup` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `grade`
+-- Tabellenstruktur fÃ¼r Tabelle `grade`
 --
 
 DROP TABLE IF EXISTS `grade`;
@@ -590,7 +655,7 @@ CREATE TABLE IF NOT EXISTS `grade` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=43 ;
 
 --
--- Daten für Tabelle `grade`
+-- Daten fÃ¼r Tabelle `grade`
 --
 
 INSERT INTO `grade` (`id`, `grade`, `description`, `creation_time`, `creator_id`, `institution_id`) VALUES
@@ -611,7 +676,7 @@ INSERT INTO `grade` (`id`, `grade`, `description`, `creation_time`, `creator_id`
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `groups`
+-- Tabellenstruktur fÃ¼r Tabelle `groups`
 --
 
 DROP TABLE IF EXISTS `groups`;
@@ -630,7 +695,7 @@ CREATE TABLE IF NOT EXISTS `groups` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `groups_enrolments`
+-- Tabellenstruktur fÃ¼r Tabelle `groups_enrolments`
 --
 
 DROP TABLE IF EXISTS `groups_enrolments`;
@@ -648,7 +713,7 @@ CREATE TABLE IF NOT EXISTS `groups_enrolments` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `institution`
+-- Tabellenstruktur fÃ¼r Tabelle `institution`
 --
 
 DROP TABLE IF EXISTS `institution`;
@@ -668,7 +733,7 @@ CREATE TABLE IF NOT EXISTS `institution` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `institution_enrolments`
+-- Tabellenstruktur fÃ¼r Tabelle `institution_enrolments`
 --
 
 DROP TABLE IF EXISTS `institution_enrolments`;
@@ -688,7 +753,7 @@ CREATE TABLE IF NOT EXISTS `institution_enrolments` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `log`
+-- Tabellenstruktur fÃ¼r Tabelle `log`
 --
 
 DROP TABLE IF EXISTS `log`;
@@ -706,7 +771,7 @@ CREATE TABLE IF NOT EXISTS `log` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `message`
+-- Tabellenstruktur fÃ¼r Tabelle `message`
 --
 
 DROP TABLE IF EXISTS `message`;
@@ -716,7 +781,7 @@ CREATE TABLE IF NOT EXISTS `message` (
   `receiver_id` int(11) NOT NULL DEFAULT '0',
   `subject` text,
   `message` mediumtext,
-  `status` smallint(1) DEFAULT '0' COMMENT '0 = ungelesen, 1 = gelesen, -1 = gelöscht',
+  `status` smallint(1) DEFAULT '0' COMMENT '0 = ungelesen, 1 = gelesen, -1 = gelÃ¶scht',
   `creation_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
@@ -724,7 +789,7 @@ CREATE TABLE IF NOT EXISTS `message` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `repeat_interval`
+-- Tabellenstruktur fÃ¼r Tabelle `repeat_interval`
 --
 
 DROP TABLE IF EXISTS `repeat_interval`;
@@ -735,7 +800,7 @@ CREATE TABLE IF NOT EXISTS `repeat_interval` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
 
 --
--- Daten für Tabelle `repeat_interval`
+-- Daten fÃ¼r Tabelle `repeat_interval`
 --
 
 INSERT INTO `repeat_interval` (`id`, `repeat_interval`) VALUES
@@ -748,7 +813,7 @@ INSERT INTO `repeat_interval` (`id`, `repeat_interval`) VALUES
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `role_capabilities`
+-- Tabellenstruktur fÃ¼r Tabelle `role_capabilities`
 --
 
 DROP TABLE IF EXISTS `role_capabilities`;
@@ -767,192 +832,603 @@ CREATE TABLE IF NOT EXISTS `role_capabilities` (
 --
 
 INSERT INTO `role_capabilities` (`id`, `role_id`, `capability`, `permission`, `creation_time`, `creator_id`) VALUES
-(3, 1, 'menu:readMyCurricula', 1, '2013-10-14 10:44:35', -1),
-(4, 2, 'menu:readMyCurricula', 1, '2013-10-14 10:44:35', -1),
-(5, 3, 'menu:readMyCurricula', 1, '2013-10-14 10:44:35', -1),
-(6, 4, 'menu:readMyCurricula', 1, '2013-10-14 10:44:35', -1),
-(8, 1, 'menu:readInstitution', 1, '2013-10-14 11:01:07', -1),
-(9, 2, 'menu:readInstitution', 1, '2013-10-14 11:01:07', -1),
-(10, 3, 'menu:readInstitution', 1, '2013-10-14 11:01:07', -1),
-(11, 4, 'menu:readInstitution', 1, '2013-10-14 11:01:07', -1),
-(12, 1, 'menu:readProgress', 1, '2013-10-14 11:03:03', -1),
-(13, 3, 'menu:readProgress', 1, '2013-10-14 11:03:03', -1),
-(14, 4, 'menu:readProgress', 1, '2013-10-14 11:03:03', -1),
-(15, 1, 'menu:readCurricula', 1, '2013-10-14 11:09:50', -1),
-(16, 3, 'menu:readCurricula', 1, '2013-10-14 11:09:50', -1),
-(17, 4, 'menu:readCurricula', 1, '2013-10-14 11:09:50', -1),
-(18, 1, 'menu:readGroup', 1, '2013-10-14 11:12:49', -1),
-(19, 4, 'menu:readGroup', 1, '2013-10-14 11:12:49', -1),
-(20, 1, 'menu:readUserAdministration', 1, '2013-10-14 11:33:23', -1),
-(21, 3, 'menu:readUserAdministration', 1, '2013-10-14 11:33:23', -1),
-(22, 4, 'menu:readUserAdministration', 1, '2013-10-14 11:33:23', -1),
-(23, 1, 'menu:readGrade', 1, '2013-10-14 11:34:07', -1),
-(24, 4, 'menu:readGrade', 1, '2013-10-14 11:34:07', -1),
-(25, 1, 'menu:readSubject', 1, '2013-10-14 11:36:37', -1),
-(26, 4, 'menu:readSubject', 1, '2013-10-14 11:36:37', -1),
-(27, 1, 'menu:readSemester', 1, '2013-10-14 11:37:27', -1),
-(28, 4, 'menu:readSemester', 1, '2013-10-14 11:37:27', -1),
-(29, 1, 'menu:readBackup', 1, '2013-10-14 11:37:53', -1),
-(30, 3, 'menu:readBackup', 1, '2013-10-14 11:37:53', -1),
-(31, 4, 'menu:readBackup', 1, '2013-10-14 11:37:53', -1),
-(32, 1, 'menu:readConfirm', 1, '2013-10-14 11:39:46', -1),
-(33, 4, 'menu:readConfirm', 1, '2013-10-14 11:39:46', -1),
-(34, 1, 'menu:readInstitutionConfig', 1, '2013-10-14 11:43:08', -1),
-(35, 4, 'menu:readInstitutionConfig', 1, '2013-10-14 11:43:08', -1),
-(37, 1, 'menu:readProfileConfig', 1, '2013-10-14 11:43:52', -1),
-(38, 2, 'menu:readProfileConfig', 1, '2013-10-14 11:43:52', -1),
-(39, 3, 'menu:readProfileConfig', 1, '2013-10-14 11:43:52', -1),
-(40, 4, 'menu:readProfileConfig', 1, '2013-10-14 11:43:52', -1),
-(42, 1, 'menu:readLog', 1, '2013-10-25 06:50:56', -1),
-(43, 2, 'menu:readLog', 0, '2013-10-25 06:50:56', -1),
-(44, 3, 'menu:readLog', 0, '2013-10-25 06:50:56', -1),
-(45, 4, 'menu:readLog', 0, '2013-10-25 06:50:56', -1),
-(47, 1, 'page:showRoleForm', 1, '2013-11-17 16:24:34', -1),
-(48, 2, 'page:showRoleForm', 0, '2013-11-17 16:24:34', -1),
-(49, 3, 'page:showRoleForm', 0, '2013-11-17 16:24:34', -1),
-(50, 4, 'page:showRoleForm', 0, '2013-11-17 16:24:34', -1),
-(52, 1, 'menu:readRoles', 1, '2013-11-17 19:09:23', -1),
-(53, 2, 'menu:readRoles', 0, '2013-11-17 19:09:23', -1),
-(54, 3, 'menu:readRoles', 0, '2013-11-17 19:09:23', -1),
-(55, 4, 'menu:readRoles', 0, '2013-11-17 19:09:23', -1),
-(191, 0, 'menu:readInstitution', 0, '2013-11-26 23:45:20', 102),
-(192, 0, 'menu:readProgress', 0, '2013-11-26 23:45:20', 102),
-(193, 0, 'menu:readCurricula', 0, '2013-11-26 23:45:20', 102),
-(194, 0, 'menu:readUserAdministration', 0, '2013-11-26 23:45:20', 102),
-(195, 0, 'menu:readGrade', 0, '2013-11-26 23:45:20', 102),
-(196, 0, 'menu:readSubject', 0, '2013-11-26 23:45:20', 102),
-(197, 0, 'menu:readSemester', 0, '2013-11-26 23:45:20', 102),
-(198, 0, 'menu:readBackup', 0, '2013-11-26 23:45:20', 102),
-(199, 0, 'menu:readConfirm', 0, '2013-11-26 23:45:20', 102),
-(200, 0, 'menu:readInstitutionConfig', 0, '2013-11-26 23:45:20', 102),
-(201, 0, 'menu:readProfileConfig', 1, '2013-11-26 23:45:20', 102),
-(202, 0, 'menu:readMyCurricula', 1, '2013-11-26 23:45:20', 102),
-(203, 0, 'menu:readGroup', 0, '2013-11-26 23:45:20', 102),
-(204, 0, 'menu:readLog', 0, '2013-11-26 23:45:20', 102),
-(205, 0, 'page:showRoleForm', 0, '2013-11-26 23:45:20', 102),
-(206, 0, 'menu:readRoles', 0, '2013-11-26 23:45:20', 102),
-(207, 0, 'profile:updateMyProfile', 1, '2014-01-28 13:14:53', -1),
-(208, 1, 'profile:updateMyProfile', 1, '2014-01-28 13:14:53', -1),
-(209, 2, 'profile:updateMyProfile', 1, '2014-01-28 13:14:53', -1),
-(210, 3, 'profile:updateMyProfile', 1, '2014-01-28 13:14:53', -1),
-(211, 4, 'profile:updateMyProfile', 1, '2014-01-28 13:14:53', -1),
-(212, 0, 'profile:updateProfile', 0, '2014-01-29 13:59:27', -1),
-(213, 1, 'profile:updateProfile', 1, '2014-01-29 13:59:27', -1),
-(214, 2, 'profile:updateProfile', 0, '2014-01-29 13:59:27', -1),
-(215, 3, 'profile:updateProfile', 0, '2014-01-29 13:59:27', -1),
-(216, 4, 'profile:updateProfile', 0, '2014-01-29 13:59:27', -1),
-(217, 0, 'user:addUser', 0, '2014-02-02 18:23:35', -1),
-(218, 1, 'user:addUser', 1, '2014-02-02 18:23:35', -1),
-(219, 2, 'user:addUser', 0, '2014-02-02 18:23:35', -1),
-(220, 3, 'user:addUser', 1, '2014-02-02 18:23:35', -1),
-(221, 4, 'user:addUser', 1, '2014-02-02 18:23:35', -1),
-(222, 0, 'user:updateUser', 0, '2014-02-02 18:26:20', -1),
-(223, 1, 'user:updateUser', 1, '2014-02-02 18:26:20', -1),
-(224, 2, 'user:updateUser', 0, '2014-02-02 18:26:20', -1),
-(225, 3, 'user:updateUser', 1, '2014-02-02 18:26:20', -1),
-(226, 4, 'user:updateUser', 1, '2014-02-02 18:26:20', -1),
-(227, 0, 'user:updateRole', 0, '2014-02-06 08:54:58', -1),
-(228, 1, 'user:updateRole', 1, '2014-02-06 08:54:58', -1),
-(229, 2, 'user:updateRole', 0, '2014-02-06 08:54:58', -1),
-(230, 3, 'user:updateRole', 1, '2014-02-06 08:54:58', -1),
-(231, 4, 'user:updateRole', 1, '2014-02-06 08:54:58', -1),
-(232, 0, 'user:delete', 0, '2014-02-06 08:58:59', -1),
-(233, 1, 'user:delete', 1, '2014-02-06 08:58:59', -1),
-(234, 2, 'user:delete', 0, '2014-02-06 08:58:59', -1),
-(235, 3, 'user:delete', 1, '2014-02-06 08:58:59', -1),
-(236, 4, 'user:delete', 1, '2014-02-06 08:58:59', -1),
-(237, 0, 'user:changePassword', 1, '2014-02-06 09:14:03', -1),
-(238, 1, 'user:changePassword', 1, '2014-02-06 09:14:03', -1),
-(239, 2, 'user:changePassword', 1, '2014-02-06 09:14:03', -1),
-(240, 3, 'user:changePassword', 1, '2014-02-06 09:14:03', -1),
-(241, 4, 'user:changePassword', 1, '2014-02-06 09:14:03', -1),
-(242, 0, 'user:getPassword', 0, '2014-02-06 09:20:38', -1),
-(243, 1, 'user:getPassword', 1, '2014-02-06 09:20:38', -1),
-(244, 2, 'user:getPassword', 0, '2014-02-06 09:20:38', -1),
-(245, 3, 'user:getPassword', 0, '2014-02-06 09:20:38', -1),
-(246, 4, 'user:getPassword', 0, '2014-02-06 09:20:38', -1),
-(247, 0, 'user:getGroupMembers', 1, '2014-02-06 09:24:55', -1),
-(248, 1, 'user:getGroupMembers', 1, '2014-02-06 09:24:55', -1),
-(249, 2, 'user:getGroupMembers', 1, '2014-02-06 09:24:55', -1),
-(250, 3, 'user:getGroupMembers', 1, '2014-02-06 09:24:55', -1),
-(251, 4, 'user:getGroupMembers', 1, '2014-02-06 09:24:55', -1),
-(252, 0, 'user:listNewUsers', 0, '2014-02-06 09:30:33', -1),
-(253, 1, 'user:listNewUsers', 1, '2014-02-06 09:30:33', -1),
-(254, 2, 'user:listNewUsers', 0, '2014-02-06 09:30:33', -1),
-(255, 3, 'user:listNewUsers', 1, '2014-02-06 09:30:33', -1),
-(256, 4, 'user:listNewUsers', 1, '2014-02-06 09:30:33', -1),
-(257, 0, 'user:enroleToInstitution', 0, '2014-02-06 09:37:11', -1),
-(258, 1, 'user:enroleToInstitution', 1, '2014-02-06 09:37:11', -1),
-(259, 2, 'user:enroleToInstitution', 0, '2014-02-06 09:37:11', -1),
-(260, 3, 'user:enroleToInstitution', 0, '2014-02-06 09:37:11', -1),
-(261, 4, 'user:enroleToInstitution', 1, '2014-02-06 09:37:11', -1),
-(262, 0, 'user:enroleToGroup', 0, '2014-02-06 09:41:28', -1),
-(263, 1, 'user:enroleToGroup', 1, '2014-02-06 09:41:28', -1),
-(264, 2, 'user:enroleToGroup', 0, '2014-02-06 09:41:28', -1),
-(265, 3, 'user:enroleToGroup', 1, '2014-02-06 09:41:28', -1),
-(266, 4, 'user:enroleToGroup', 1, '2014-02-06 09:41:28', -1),
-(267, 0, 'user:expelFromGroup', 0, '2014-02-06 09:44:04', -1),
-(268, 1, 'user:expelFromGroup', 1, '2014-02-06 09:44:04', -1),
-(269, 2, 'user:expelFromGroup', 0, '2014-02-06 09:44:04', -1),
-(270, 3, 'user:expelFromGroup', 1, '2014-02-06 09:44:04', -1),
-(271, 4, 'user:expelFromGroup', 1, '2014-02-06 09:44:04', -1),
-(272, 0, 'user:import', 0, '2014-02-06 09:46:27', -1),
-(273, 1, 'user:import', 1, '2014-02-06 09:46:27', -1),
-(274, 2, 'user:import', 0, '2014-02-06 09:46:27', -1),
-(275, 3, 'user:import', 1, '2014-02-06 09:46:27', -1),
-(276, 4, 'user:import', 1, '2014-02-06 09:46:27', -1),
-(277, 0, 'user:userList', 1, '2014-02-06 09:56:33', -1),
-(278, 1, 'user:userList', 1, '2014-02-06 09:56:33', -1),
-(279, 2, 'user:userList', 1, '2014-02-06 09:56:33', -1),
-(280, 3, 'user:userList', 1, '2014-02-06 09:56:33', -1),
-(281, 4, 'user:userList', 1, '2014-02-06 09:56:33', -1),
-(282, 0, 'user:resetPassword', 0, '2014-02-06 10:16:43', -1),
-(283, 1, 'user:resetPassword', 1, '2014-02-06 10:16:43', -1),
-(284, 2, 'user:resetPassword', 1, '2014-02-06 10:16:43', -1),
-(285, 3, 'user:resetPassword', 1, '2014-02-06 10:16:43', -1),
-(286, 4, 'user:resetPassword', 1, '2014-02-06 10:16:43', -1),
-(287, 0, 'user:getUsers', 0, '2014-02-06 10:26:57', -1),
-(288, 1, 'user:getUsers', 1, '2014-02-06 10:26:57', -1),
-(289, 2, 'user:getUsers', 0, '2014-02-06 10:26:57', -1),
-(290, 3, 'user:getUsers', 1, '2014-02-06 10:26:57', -1),
-(291, 4, 'user:getUsers', 1, '2014-02-06 10:26:57', -1),
-(292, 0, 'user:getNewUsers', 0, '2014-02-06 10:32:03', -1),
-(293, 1, 'user:getNewUsers', 1, '2014-02-06 10:32:03', -1),
-(294, 2, 'user:getNewUsers', 0, '2014-02-06 10:32:03', -1),
-(295, 3, 'user:getNewUsers', 1, '2014-02-06 10:32:03', -1),
-(296, 4, 'user:getNewUsers', 1, '2014-02-06 10:32:03', -1),
-(297, 0, 'user:confirmUser', 0, '2014-02-06 10:37:18', -1),
-(298, 1, 'user:confirmUser', 1, '2014-02-06 10:37:18', -1),
-(299, 2, 'user:confirmUser', 0, '2014-02-06 10:37:18', -1),
-(300, 3, 'user:confirmUser', 1, '2014-02-06 10:37:18', -1),
-(301, 4, 'user:confirmUser', 1, '2014-02-06 10:37:18', -1),
-(302, 0, 'user:dedicate', 0, '2014-02-06 10:41:32', -1),
-(303, 1, 'user:dedicate', 0, '2014-02-06 10:41:32', -1),
-(304, 2, 'user:dedicate', 0, '2014-02-06 10:41:32', -1),
-(305, 3, 'user:dedicate', 0, '2014-02-06 10:41:32', -1),
-(306, 4, 'user:dedicate', 0, '2014-02-06 10:41:32', -1), 
-(307, 3, 'menu:readGroup', 1, '2013-10-14 11:12:49', -1),
-(308, 3, 'menu:readGrade', 0, '2013-10-14 11:12:49', -1),
-(309, 3, 'menu:readSubject', 0, '2013-10-14 11:12:49', -1),
-(310, 3, 'menu:readSemester', 0, '2013-10-14 11:12:49', -1),
-(311, 3, 'menu:readConfirm', 0, '2013-10-14 11:12:49', -1),
-(312, 3, 'menu:readInstitutionConfig', 1, '2013-10-14 11:12:49', -1),
-(314, 2, 'menu:readBackup', 0, '2013-10-14 11:12:49', -1),
-(315, 2, 'menu:readConfirm', 0, '2013-10-14 11:12:49', -1),
-(316, 2, 'menu:readCurricula', 0, '2013-10-14 11:12:49', -1),
-(317, 2, 'menu:readGrade', 0, '2013-10-14 11:12:49', -1), 
-(318, 2, 'menu:readInstitution', 1, '2013-10-14 11:12:49', -1),
-(319, 2, 'menu:readInstitutionConfig', 0, '2013-10-14 11:12:49', -1),
-(320, 2, 'menu:readProgress', 2, '2013-10-14 11:12:49', -1),
-(321, 2, 'menu:readSemester', 0, '2013-10-14 11:12:49', -1),
-(322, 2, 'menu:readUserAdministration', 0, '2013-10-14 11:12:49', -1),
-(323, 2, 'menu:readSubject', 0, '2013-10-14 11:12:49', -1)
-;
+(3, 1, 'menu:readMyCurricula', 1, '2013-10-14 08:44:35', -1),
+(4, 2, 'menu:readMyCurricula', 1, '2013-10-14 08:44:35', -1),
+(5, 3, 'menu:readMyCurricula', 1, '2013-10-14 08:44:35', -1),
+(6, 4, 'menu:readMyCurricula', 1, '2013-10-14 08:44:35', -1),
+(8, 1, 'menu:readInstitution', 1, '2013-10-14 09:01:07', -1),
+(9, 2, 'menu:readInstitution', 1, '2013-10-14 09:01:07', -1),
+(10, 3, 'menu:readInstitution', 1, '2013-10-14 09:01:07', -1),
+(11, 4, 'menu:readInstitution', 1, '2013-10-14 09:01:07', -1),
+(12, 1, 'menu:readProgress', 1, '2013-10-14 09:03:03', -1),
+(13, 3, 'menu:readProgress', 1, '2013-10-14 09:03:03', -1),
+(14, 4, 'menu:readProgress', 1, '2013-10-14 09:03:03', -1),
+(15, 1, 'menu:readCurricula', 1, '2013-10-14 09:09:50', -1),
+(16, 3, 'menu:readCurricula', 1, '2013-10-14 09:09:50', -1),
+(17, 4, 'menu:readCurricula', 1, '2013-10-14 09:09:50', -1),
+(18, 1, 'menu:readGroup', 1, '2013-10-14 09:12:49', -1),
+(19, 4, 'menu:readGroup', 1, '2013-10-14 09:12:49', -1),
+(20, 1, 'menu:readUserAdministration', 1, '2013-10-14 09:33:23', -1),
+(21, 3, 'menu:readUserAdministration', 1, '2013-10-14 09:33:23', -1),
+(22, 4, 'menu:readUserAdministration', 1, '2013-10-14 09:33:23', -1),
+(23, 1, 'menu:readGrade', 1, '2013-10-14 09:34:07', -1),
+(24, 4, 'menu:readGrade', 1, '2013-10-14 09:34:07', -1),
+(25, 1, 'menu:readSubject', 1, '2013-10-14 09:36:37', -1),
+(26, 4, 'menu:readSubject', 1, '2013-10-14 09:36:37', -1),
+(27, 1, 'menu:readSemester', 1, '2013-10-14 09:37:27', -1),
+(28, 4, 'menu:readSemester', 1, '2013-10-14 09:37:27', -1),
+(29, 1, 'menu:readBackup', 1, '2013-10-14 09:37:53', -1),
+(30, 3, 'menu:readBackup', 1, '2013-10-14 09:37:53', -1),
+(31, 4, 'menu:readBackup', 1, '2013-10-14 09:37:53', -1),
+(32, 1, 'menu:readConfirm', 1, '2013-10-14 09:39:46', -1),
+(33, 4, 'menu:readConfirm', 1, '2013-10-14 09:39:46', -1),
+(34, 1, 'menu:readInstitutionConfig', 1, '2013-10-14 09:43:08', -1),
+(35, 4, 'menu:readInstitutionConfig', 1, '2013-10-14 09:43:08', -1),
+(37, 1, 'menu:readProfileConfig', 1, '2013-10-14 09:43:52', -1),
+(38, 2, 'menu:readProfileConfig', 1, '2013-10-14 09:43:52', -1),
+(39, 3, 'menu:readProfileConfig', 1, '2013-10-14 09:43:52', -1),
+(40, 4, 'menu:readProfileConfig', 1, '2013-10-14 09:43:52', -1),
+(42, 1, 'menu:readLog', 1, '2013-10-25 04:50:56', -1),
+(43, 2, 'menu:readLog', 0, '2013-10-25 04:50:56', -1),
+(44, 3, 'menu:readLog', 0, '2013-10-25 04:50:56', -1),
+(45, 4, 'menu:readLog', 0, '2013-10-25 04:50:56', -1),
+(47, 1, 'page:showRoleForm', 1, '2013-11-17 15:24:34', -1),
+(48, 2, 'page:showRoleForm', 0, '2013-11-17 15:24:34', -1),
+(49, 3, 'page:showRoleForm', 0, '2013-11-17 15:24:34', -1),
+(50, 4, 'page:showRoleForm', 0, '2013-11-17 15:24:34', -1),
+(52, 1, 'menu:readRoles', 1, '2013-11-17 18:09:23', -1),
+(53, 2, 'menu:readRoles', 0, '2013-11-17 18:09:23', -1),
+(54, 3, 'menu:readRoles', 0, '2013-11-17 18:09:23', -1),
+(55, 4, 'menu:readRoles', 0, '2013-11-17 18:09:23', -1),
+(191, 0, 'menu:readInstitution', 0, '2013-11-26 22:45:20', 102),
+(192, 0, 'menu:readProgress', 0, '2013-11-26 22:45:20', 102),
+(193, 0, 'menu:readCurricula', 0, '2013-11-26 22:45:20', 102),
+(194, 0, 'menu:readUserAdministration', 0, '2013-11-26 22:45:20', 102),
+(195, 0, 'menu:readGrade', 0, '2013-11-26 22:45:20', 102),
+(196, 0, 'menu:readSubject', 0, '2013-11-26 22:45:20', 102),
+(197, 0, 'menu:readSemester', 0, '2013-11-26 22:45:20', 102),
+(198, 0, 'menu:readBackup', 0, '2013-11-26 22:45:20', 102),
+(199, 0, 'menu:readConfirm', 0, '2013-11-26 22:45:20', 102),
+(200, 0, 'menu:readInstitutionConfig', 0, '2013-11-26 22:45:20', 102),
+(201, 0, 'menu:readProfileConfig', 1, '2013-11-26 22:45:20', 102),
+(202, 0, 'menu:readMyCurricula', 1, '2013-11-26 22:45:20', 102),
+(203, 0, 'menu:readGroup', 0, '2013-11-26 22:45:20', 102),
+(204, 0, 'menu:readLog', 0, '2013-11-26 22:45:20', 102),
+(205, 0, 'page:showRoleForm', 0, '2013-11-26 22:45:20', 102),
+(206, 0, 'menu:readRoles', 0, '2013-11-26 22:45:20', 102),
+(207, 0, 'profile:updateMyProfile', 1, '2014-01-28 12:14:53', -1),
+(208, 1, 'profile:updateMyProfile', 1, '2014-01-28 12:14:53', -1),
+(209, 2, 'profile:updateMyProfile', 1, '2014-01-28 12:14:53', -1),
+(210, 3, 'profile:updateMyProfile', 1, '2014-01-28 12:14:53', -1),
+(211, 4, 'profile:updateMyProfile', 1, '2014-01-28 12:14:53', -1),
+(212, 0, 'profile:updateProfile', 0, '2014-01-29 12:59:27', -1),
+(213, 1, 'profile:updateProfile', 1, '2014-01-29 12:59:27', -1),
+(214, 2, 'profile:updateProfile', 0, '2014-01-29 12:59:27', -1),
+(215, 3, 'profile:updateProfile', 0, '2014-01-29 12:59:27', -1),
+(216, 4, 'profile:updateProfile', 0, '2014-01-29 12:59:27', -1),
+(217, 0, 'user:addUser', 0, '2014-02-02 17:23:35', -1),
+(218, 1, 'user:addUser', 1, '2014-02-02 17:23:35', -1),
+(219, 2, 'user:addUser', 0, '2014-02-02 17:23:35', -1),
+(220, 3, 'user:addUser', 1, '2014-02-02 17:23:35', -1),
+(221, 4, 'user:addUser', 1, '2014-02-02 17:23:35', -1),
+(222, 0, 'user:updateUser', 0, '2014-02-02 17:26:20', -1),
+(223, 1, 'user:updateUser', 1, '2014-02-02 17:26:20', -1),
+(224, 2, 'user:updateUser', 0, '2014-02-02 17:26:20', -1),
+(225, 3, 'user:updateUser', 1, '2014-02-02 17:26:20', -1),
+(226, 4, 'user:updateUser', 1, '2014-02-02 17:26:20', -1),
+(227, 0, 'user:updateRole', 0, '2014-02-06 07:54:58', -1),
+(228, 1, 'user:updateRole', 1, '2014-02-06 07:54:58', -1),
+(229, 2, 'user:updateRole', 0, '2014-02-06 07:54:58', -1),
+(230, 3, 'user:updateRole', 1, '2014-02-06 07:54:58', -1),
+(231, 4, 'user:updateRole', 1, '2014-02-06 07:54:58', -1),
+(232, 0, 'user:delete', 0, '2014-02-06 07:58:59', -1),
+(233, 1, 'user:delete', 1, '2014-02-06 07:58:59', -1),
+(234, 2, 'user:delete', 0, '2014-02-06 07:58:59', -1),
+(235, 3, 'user:delete', 1, '2014-02-06 07:58:59', -1),
+(236, 4, 'user:delete', 1, '2014-02-06 07:58:59', -1),
+(237, 0, 'user:changePassword', 1, '2014-02-06 08:14:03', -1),
+(238, 1, 'user:changePassword', 1, '2014-02-06 08:14:03', -1),
+(239, 2, 'user:changePassword', 1, '2014-02-06 08:14:03', -1),
+(240, 3, 'user:changePassword', 1, '2014-02-06 08:14:03', -1),
+(241, 4, 'user:changePassword', 1, '2014-02-06 08:14:03', -1),
+(242, 0, 'user:getPassword', 0, '2014-02-06 08:20:38', -1),
+(243, 1, 'user:getPassword', 1, '2014-02-06 08:20:38', -1),
+(244, 2, 'user:getPassword', 0, '2014-02-06 08:20:38', -1),
+(245, 3, 'user:getPassword', 0, '2014-02-06 08:20:38', -1),
+(246, 4, 'user:getPassword', 0, '2014-02-06 08:20:38', -1),
+(247, 0, 'user:getGroupMembers', 1, '2014-02-06 08:24:55', -1),
+(248, 1, 'user:getGroupMembers', 1, '2014-02-06 08:24:55', -1),
+(249, 2, 'user:getGroupMembers', 1, '2014-02-06 08:24:55', -1),
+(250, 3, 'user:getGroupMembers', 1, '2014-02-06 08:24:55', -1),
+(251, 4, 'user:getGroupMembers', 1, '2014-02-06 08:24:55', -1),
+(252, 0, 'user:listNewUsers', 0, '2014-02-06 08:30:33', -1),
+(253, 1, 'user:listNewUsers', 1, '2014-02-06 08:30:33', -1),
+(254, 2, 'user:listNewUsers', 0, '2014-02-06 08:30:33', -1),
+(255, 3, 'user:listNewUsers', 1, '2014-02-06 08:30:33', -1),
+(256, 4, 'user:listNewUsers', 1, '2014-02-06 08:30:33', -1),
+(257, 0, 'user:enroleToInstitution', 0, '2014-02-06 08:37:11', -1),
+(258, 1, 'user:enroleToInstitution', 1, '2014-02-06 08:37:11', -1),
+(259, 2, 'user:enroleToInstitution', 0, '2014-02-06 08:37:11', -1),
+(260, 3, 'user:enroleToInstitution', 0, '2014-02-06 08:37:11', -1),
+(261, 4, 'user:enroleToInstitution', 1, '2014-02-06 08:37:11', -1),
+(262, 0, 'user:enroleToGroup', 0, '2014-02-06 08:41:28', -1),
+(263, 1, 'user:enroleToGroup', 1, '2014-02-06 08:41:28', -1),
+(264, 2, 'user:enroleToGroup', 0, '2014-02-06 08:41:28', -1),
+(265, 3, 'user:enroleToGroup', 1, '2014-02-06 08:41:28', -1),
+(266, 4, 'user:enroleToGroup', 1, '2014-02-06 08:41:28', -1),
+(267, 0, 'user:expelFromGroup', 0, '2014-02-06 08:44:04', -1),
+(268, 1, 'user:expelFromGroup', 1, '2014-02-06 08:44:04', -1),
+(269, 2, 'user:expelFromGroup', 0, '2014-02-06 08:44:04', -1),
+(270, 3, 'user:expelFromGroup', 1, '2014-02-06 08:44:04', -1),
+(271, 4, 'user:expelFromGroup', 1, '2014-02-06 08:44:04', -1),
+(272, 0, 'user:import', 0, '2014-02-06 08:46:27', -1),
+(273, 1, 'user:import', 1, '2014-02-06 08:46:27', -1),
+(274, 2, 'user:import', 0, '2014-02-06 08:46:27', -1),
+(275, 3, 'user:import', 1, '2014-02-06 08:46:27', -1),
+(276, 4, 'user:import', 1, '2014-02-06 08:46:27', -1),
+(277, 0, 'user:userList', 1, '2014-02-06 08:56:33', -1),
+(278, 1, 'user:userList', 1, '2014-02-06 08:56:33', -1),
+(279, 2, 'user:userList', 1, '2014-02-06 08:56:33', -1),
+(280, 3, 'user:userList', 1, '2014-02-06 08:56:33', -1),
+(281, 4, 'user:userList', 1, '2014-02-06 08:56:33', -1),
+(282, 0, 'user:resetPassword', 0, '2014-02-06 09:16:43', -1),
+(283, 1, 'user:resetPassword', 1, '2014-02-06 09:16:43', -1),
+(284, 2, 'user:resetPassword', 1, '2014-02-06 09:16:43', -1),
+(285, 3, 'user:resetPassword', 1, '2014-02-06 09:16:43', -1),
+(286, 4, 'user:resetPassword', 1, '2014-02-06 09:16:43', -1),
+(287, 0, 'user:getUsers', 0, '2014-02-06 09:26:57', -1),
+(288, 1, 'user:getUsers', 1, '2014-02-06 09:26:57', -1),
+(289, 2, 'user:getUsers', 0, '2014-02-06 09:26:57', -1),
+(290, 3, 'user:getUsers', 1, '2014-02-06 09:26:57', -1),
+(291, 4, 'user:getUsers', 1, '2014-02-06 09:26:57', -1),
+(292, 0, 'user:getNewUsers', 0, '2014-02-06 09:32:03', -1),
+(293, 1, 'user:getNewUsers', 1, '2014-02-06 09:32:03', -1),
+(294, 2, 'user:getNewUsers', 0, '2014-02-06 09:32:03', -1),
+(295, 3, 'user:getNewUsers', 1, '2014-02-06 09:32:03', -1),
+(296, 4, 'user:getNewUsers', 1, '2014-02-06 09:32:03', -1),
+(297, 0, 'user:confirmUser', 0, '2014-02-06 09:37:18', -1),
+(298, 1, 'user:confirmUser', 1, '2014-02-06 09:37:18', -1),
+(299, 2, 'user:confirmUser', 0, '2014-02-06 09:37:18', -1),
+(300, 3, 'user:confirmUser', 1, '2014-02-06 09:37:18', -1),
+(301, 4, 'user:confirmUser', 1, '2014-02-06 09:37:18', -1),
+(302, 0, 'user:dedicate', 0, '2014-02-06 09:41:32', -1),
+(303, 1, 'user:dedicate', 0, '2014-02-06 09:41:32', -1),
+(304, 2, 'user:dedicate', 0, '2014-02-06 09:41:32', -1),
+(305, 3, 'user:dedicate', 0, '2014-02-06 09:41:32', -1),
+(306, 4, 'user:dedicate', 0, '2014-02-06 09:41:32', -1),
+(307, 3, 'menu:readGroup', 1, '2013-10-14 09:12:49', -1),
+(308, 3, 'menu:readGrade', 0, '2013-10-14 09:12:49', -1),
+(309, 3, 'menu:readSubject', 0, '2013-10-14 09:12:49', -1),
+(310, 3, 'menu:readSemester', 0, '2013-10-14 09:12:49', -1),
+(311, 3, 'menu:readConfirm', 0, '2013-10-14 09:12:49', -1),
+(312, 3, 'menu:readInstitutionConfig', 1, '2013-10-14 09:12:49', -1),
+(314, 2, 'menu:readBackup', 0, '2013-10-14 09:12:49', -1),
+(315, 2, 'menu:readConfirm', 0, '2013-10-14 09:12:49', -1),
+(316, 2, 'menu:readCurricula', 0, '2013-10-14 09:12:49', -1),
+(317, 2, 'menu:readGrade', 0, '2013-10-14 09:12:49', -1),
+(318, 2, 'menu:readInstitution', 1, '2013-10-14 09:12:49', -1),
+(319, 2, 'menu:readInstitutionConfig', 0, '2013-10-14 09:12:49', -1),
+(320, 2, 'menu:readProgress', 2, '2013-10-14 09:12:49', -1),
+(321, 2, 'menu:readSemester', 0, '2013-10-14 09:12:49', -1),
+(322, 2, 'menu:readUserAdministration', 0, '2013-10-14 09:12:49', -1),
+(323, 2, 'menu:readSubject', 0, '2013-10-14 09:12:49', -1),
+(324, 0, 'mail:loadMail', 1, '2014-04-02 14:59:25', -1),
+(325, 1, 'mail:loadMail', 1, '2014-04-02 14:59:25', -1),
+(326, 2, 'mail:loadMail', 1, '2014-04-02 14:59:25', -1),
+(327, 3, 'mail:loadMail', 1, '2014-04-02 14:59:25', -1),
+(328, 4, 'mail:loadMail', 1, '2014-04-02 14:59:25', -1),
+(329, 0, 'mail:postMail', 1, '2014-04-02 16:45:34', -1),
+(330, 1, 'mail:postMail', 1, '2014-04-02 16:45:34', -1),
+(331, 2, 'mail:postMail', 1, '2014-04-02 16:45:34', -1),
+(332, 3, 'mail:postMail', 1, '2014-04-02 16:45:34', -1),
+(333, 4, 'mail:postMail', 1, '2014-04-02 16:45:34', -1),
+(334, 0, 'mail:loadInbox', 1, '2014-04-02 16:53:56', -1),
+(335, 1, 'mail:loadInbox', 1, '2014-04-02 16:53:56', -1),
+(336, 2, 'mail:loadInbox', 1, '2014-04-02 16:53:56', -1),
+(337, 3, 'mail:loadInbox', 1, '2014-04-02 16:53:56', -1),
+(338, 4, 'mail:loadInbox', 1, '2014-04-02 16:53:56', -1),
+(339, 0, 'mail:loadOutbox', 1, '2014-04-02 16:56:10', -1),
+(340, 1, 'mail:loadOutbox', 1, '2014-04-02 16:56:10', -1),
+(341, 2, 'mail:loadOutbox', 1, '2014-04-02 16:56:10', -1),
+(342, 3, 'mail:loadOutbox', 1, '2014-04-02 16:56:10', -1),
+(343, 4, 'mail:loadOutbox', 1, '2014-04-02 16:56:10', -1),
+(344, 0, 'mail:loadDeletedMessages', 1, '2014-04-02 16:57:13', -1),
+(345, 1, 'mail:loadDeletedMessages', 1, '2014-04-02 16:57:13', -1),
+(346, 2, 'mail:loadDeletedMessages', 1, '2014-04-02 16:57:13', -1),
+(347, 3, 'mail:loadDeletedMessages', 1, '2014-04-02 16:57:13', -1),
+(348, 4, 'mail:loadDeletedMessages', 1, '2014-04-02 16:57:13', -1),
+(349, 0, 'file:solutionUpload', 1, '2014-04-03 13:11:13', -1),
+(350, 1, 'file:solutionUpload', 1, '2014-04-03 13:11:13', -1),
+(351, 2, 'file:solutionUpload', 1, '2014-04-03 13:11:13', -1),
+(352, 3, 'file:solutionUpload', 1, '2014-04-03 13:11:13', -1),
+(353, 4, 'file:solutionUpload', 1, '2014-04-03 13:11:13', -1),
+(354, 0, 'file:loadMaterial', 1, '2014-04-03 13:22:20', -1),
+(355, 1, 'file:loadMaterial', 1, '2014-04-03 13:22:20', -1),
+(356, 2, 'file:loadMaterial', 1, '2014-04-03 13:22:20', -1),
+(357, 3, 'file:loadMaterial', 1, '2014-04-03 13:22:20', -1),
+(358, 4, 'file:loadMaterial', 1, '2014-04-03 13:22:20', -1),
+(359, 0, 'backup:addBackup', 0, '2014-04-06 13:18:21', -1),
+(360, 1, 'backup:addBackup', 1, '2014-04-06 13:18:21', -1),
+(361, 2, 'backup:addBackup', 1, '2014-04-06 13:18:21', -1),
+(362, 3, 'backup:addBackup', 1, '2014-04-06 13:18:21', -1),
+(363, 4, 'backup:addBackup', 1, '2014-04-06 13:18:21', -1),
+(364, 0, 'backup:loadBackup', 0, '2014-04-06 13:20:28', -1),
+(365, 1, 'backup:loadBackup', 1, '2014-04-06 13:20:28', -1),
+(366, 2, 'backup:loadBackup', 1, '2014-04-06 13:20:28', -1),
+(367, 3, 'backup:loadBackup', 1, '2014-04-06 13:20:28', -1),
+(368, 4, 'backup:loadBackup', 1, '2014-04-06 13:20:28', -1),
+(369, 0, 'backup:deleteBackup', 0, '2014-04-06 13:24:09', -1),
+(370, 1, 'backup:deleteBackup', 1, '2014-04-06 13:24:09', -1),
+(371, 2, 'backup:deleteBackup', 1, '2014-04-06 13:24:09', -1),
+(372, 3, 'backup:deleteBackup', 1, '2014-04-06 13:24:09', -1),
+(373, 4, 'backup:deleteBackup', 1, '2014-04-06 13:24:09', -1),
+(374, 0, 'objectives:setStatus', 0, '2014-04-06 16:37:30', -1),
+(375, 1, 'objectives:setStatus', 1, '2014-04-06 16:37:30', -1),
+(376, 2, 'objectives:setStatus', 1, '2014-04-06 16:37:30', -1),
+(377, 3, 'objectives:setStatus', 1, '2014-04-06 16:37:30', -1),
+(378, 4, 'objectives:setStatus', 1, '2014-04-06 16:37:30', -1),
+(379, 0, 'file:upload', 1, '2014-04-16 06:03:40', -1),
+(380, 1, 'file:upload', 1, '2014-04-16 06:03:40', -1),
+(381, 2, 'file:upload', 1, '2014-04-16 06:03:40', -1),
+(382, 3, 'file:upload', 1, '2014-04-16 06:03:40', -1),
+(383, 4, 'file:upload', 1, '2014-04-16 06:03:40', -1),
+(384, 0, 'file:uploadURL', 1, '2014-04-16 06:04:37', -1),
+(385, 1, 'file:uploadURL', 1, '2014-04-16 06:04:37', -1),
+(386, 2, 'file:uploadURL', 1, '2014-04-16 06:04:37', -1),
+(387, 3, 'file:uploadURL', 1, '2014-04-16 06:04:37', -1),
+(388, 4, 'file:uploadURL', 1, '2014-04-16 06:04:37', -1),
+(389, 0, 'file:lastFiles', 1, '2014-04-16 06:12:35', -1),
+(390, 1, 'file:lastFiles', 1, '2014-04-16 06:12:35', -1),
+(391, 2, 'file:lastFiles', 1, '2014-04-16 06:12:35', -1),
+(392, 3, 'file:lastFiles', 1, '2014-04-16 06:12:35', -1),
+(393, 4, 'file:lastFiles', 1, '2014-04-16 06:12:35', -1),
+(394, 0, 'file:curriculumFiles', 0, '2014-04-16 06:20:37', -1),
+(395, 1, 'file:curriculumFiles', 1, '2014-04-16 06:20:37', -1),
+(396, 2, 'file:curriculumFiles', 1, '2014-04-16 06:20:37', -1),
+(397, 3, 'file:curriculumFiles', 1, '2014-04-16 06:20:37', -1),
+(398, 4, 'file:curriculumFiles', 1, '2014-04-16 06:20:37', -1),
+(399, 0, 'file:solution', 1, '2014-04-16 06:24:42', -1),
+(400, 1, 'file:solution', 1, '2014-04-16 06:24:42', -1),
+(401, 2, 'file:solution', 1, '2014-04-16 06:24:42', -1),
+(402, 3, 'file:solution', 1, '2014-04-16 06:24:42', -1),
+(403, 4, 'file:solution', 1, '2014-04-16 06:24:42', -1),
+(404, 0, 'file:myFiles', 1, '2014-04-16 06:26:26', -1),
+(405, 1, 'file:myFiles', 1, '2014-04-16 06:26:26', -1),
+(406, 2, 'file:myFiles', 1, '2014-04-16 06:26:26', -1),
+(407, 3, 'file:myFiles', 1, '2014-04-16 06:26:26', -1),
+(408, 4, 'file:myFiles', 1, '2014-04-16 06:26:26', -1),
+(409, 0, 'file:myAvatars', 1, '2014-04-16 06:28:40', -1),
+(410, 1, 'file:myAvatars', 1, '2014-04-16 06:28:40', -1),
+(411, 2, 'file:myAvatars', 1, '2014-04-16 06:28:40', -1),
+(412, 3, 'file:myAvatars', 1, '2014-04-16 06:28:40', -1),
+(413, 4, 'file:myAvatars', 1, '2014-04-16 06:28:40', -1),
+(414, 0, 'objectives:addTerminalObjective', 0, '2014-04-16 07:48:53', -1),
+(415, 1, 'objectives:addTerminalObjective', 1, '2014-04-16 07:48:53', -1),
+(416, 2, 'objectives:addTerminalObjective', 0, '2014-04-16 07:48:53', -1),
+(417, 3, 'objectives:addTerminalObjective', 1, '2014-04-16 07:48:53', -1),
+(418, 4, 'objectives:addTerminalObjective', 1, '2014-04-16 07:48:53', -1),
+(419, 0, 'objectives:orderTerminalObjectives', 0, '2014-04-16 07:55:13', -1),
+(420, 1, 'objectives:orderTerminalObjectives', 1, '2014-04-16 07:55:13', -1),
+(421, 2, 'objectives:orderTerminalObjectives', 0, '2014-04-16 07:55:13', -1),
+(422, 3, 'objectives:orderTerminalObjectives', 1, '2014-04-16 07:55:13', -1),
+(423, 4, 'objectives:orderTerminalObjectives', 1, '2014-04-16 07:55:13', -1),
+(424, 0, 'objectives:updateTerminalObjectives', 0, '2014-04-16 07:56:18', -1),
+(425, 1, 'objectives:updateTerminalObjectives', 1, '2014-04-16 07:56:18', -1),
+(426, 2, 'objectives:updateTerminalObjectives', 0, '2014-04-16 07:56:18', -1),
+(427, 3, 'objectives:updateTerminalObjectives', 1, '2014-04-16 07:56:18', -1),
+(428, 4, 'objectives:updateTerminalObjectives', 1, '2014-04-16 07:56:18', -1),
+(429, 0, 'objectives:deleteTerminalObjectives', 0, '2014-04-16 07:57:53', -1),
+(430, 1, 'objectives:deleteTerminalObjectives', 1, '2014-04-16 07:57:53', -1),
+(431, 2, 'objectives:deleteTerminalObjectives', 0, '2014-04-16 07:57:53', -1),
+(432, 3, 'objectives:deleteTerminalObjectives', 1, '2014-04-16 07:57:53', -1),
+(433, 4, 'objectives:deleteTerminalObjectives', 1, '2014-04-16 07:57:53', -1),
+(434, 0, 'objectives:addEnablingObjective', 0, '2014-04-16 08:03:38', -1),
+(435, 1, 'objectives:addEnablingObjective', 1, '2014-04-16 08:03:38', -1),
+(436, 2, 'objectives:addEnablingObjective', 0, '2014-04-16 08:03:38', -1),
+(437, 3, 'objectives:addEnablingObjective', 1, '2014-04-16 08:03:38', -1),
+(438, 4, 'objectives:addEnablingObjective', 1, '2014-04-16 08:03:38', -1),
+(439, 0, 'objectives:updateEnablingObjectives', 0, '2014-04-16 08:07:16', -1),
+(440, 1, 'objectives:updateEnablingObjectives', 1, '2014-04-16 08:07:16', -1),
+(441, 2, 'objectives:updateEnablingObjectives', 0, '2014-04-16 08:07:16', -1),
+(442, 3, 'objectives:updateEnablingObjectives', 1, '2014-04-16 08:07:16', -1),
+(443, 4, 'objectives:updateEnablingObjectives', 1, '2014-04-16 08:07:16', -1),
+(444, 0, 'objectives:deleteEnablingObjectives', 0, '2014-04-16 08:09:18', -1),
+(445, 1, 'objectives:deleteEnablingObjectives', 1, '2014-04-16 08:09:18', -1),
+(446, 2, 'objectives:deleteEnablingObjectives', 0, '2014-04-16 08:09:18', -1),
+(447, 3, 'objectives:deleteEnablingObjectives', 1, '2014-04-16 08:09:18', -1),
+(448, 4, 'objectives:deleteEnablingObjectives', 1, '2014-04-16 08:09:18', -1),
+(449, 0, 'objectives:orderEnablingObjectives', 0, '2014-04-16 08:11:25', -1),
+(450, 1, 'objectives:orderEnablingObjectives', 1, '2014-04-16 08:11:25', -1),
+(451, 2, 'objectives:orderEnablingObjectives', 0, '2014-04-16 08:11:25', -1),
+(452, 3, 'objectives:orderEnablingObjectives', 1, '2014-04-16 08:11:25', -1),
+(453, 4, 'objectives:orderEnablingObjectives', 1, '2014-04-16 08:11:25', -1),
+(454, 0, 'subject:add', 0, '2014-04-16 08:46:18', -1),
+(455, 1, 'subject:add', 1, '2014-04-16 08:46:18', -1),
+(456, 2, 'subject:add', 0, '2014-04-16 08:46:18', -1),
+(457, 3, 'subject:add', 0, '2014-04-16 08:46:18', -1),
+(458, 4, 'subject:add', 1, '2014-04-16 08:46:18', -1),
+(459, 0, 'subject:update', 0, '2014-04-16 08:47:09', -1),
+(460, 1, 'subject:update', 1, '2014-04-16 08:47:09', -1),
+(461, 2, 'subject:update', 0, '2014-04-16 08:47:09', -1),
+(462, 3, 'subject:update', 0, '2014-04-16 08:47:09', -1),
+(463, 4, 'subject:update', 1, '2014-04-16 08:47:09', -1),
+(464, 0, 'subject:delete', 0, '2014-04-16 12:10:43', -1),
+(465, 1, 'subject:delete', 1, '2014-04-16 12:10:43', -1),
+(466, 2, 'subject:delete', 0, '2014-04-16 12:10:43', -1),
+(467, 3, 'subject:delete', 0, '2014-04-16 12:10:43', -1),
+(468, 4, 'subject:delete', 1, '2014-04-16 12:10:43', -1),
+(469, 0, 'semester:add', 0, '2014-04-16 12:16:56', -1),
+(470, 1, 'semester:add', 1, '2014-04-16 12:16:56', -1),
+(471, 2, 'semester:add', 0, '2014-04-16 12:16:56', -1),
+(472, 3, 'semester:add', 0, '2014-04-16 12:16:56', -1),
+(473, 4, 'semester:add', 1, '2014-04-16 12:16:56', -1),
+(474, 0, 'semester:update', 0, '2014-04-16 12:18:31', -1),
+(475, 1, 'semester:update', 1, '2014-04-16 12:18:31', -1),
+(476, 2, 'semester:update', 0, '2014-04-16 12:18:31', -1),
+(477, 3, 'semester:update', 1, '2014-04-16 12:18:31', -1),
+(478, 4, 'semester:update', 1, '2014-04-16 12:18:31', -1),
+(479, 0, 'semester:delete', 0, '2014-04-16 12:20:19', -1),
+(480, 1, 'semester:delete', 1, '2014-04-16 12:20:19', -1),
+(481, 2, 'semester:delete', 0, '2014-04-16 12:20:19', -1),
+(482, 3, 'semester:delete', 0, '2014-04-16 12:20:19', -1),
+(483, 4, 'semester:delete', 1, '2014-04-16 12:20:19', -1),
+(484, 0, 'schooltype:add', 0, '2014-04-16 12:23:38', -1),
+(485, 1, 'schooltype:add', 1, '2014-04-16 12:23:38', -1),
+(486, 2, 'schooltype:add', 0, '2014-04-16 12:23:38', -1),
+(487, 3, 'schooltype:add', 0, '2014-04-16 12:23:38', -1),
+(488, 4, 'schooltype:add', 0, '2014-04-16 12:23:38', -1),
+(489, 0, 'schooltype:update', 0, '2014-04-16 12:24:23', -1),
+(490, 1, 'schooltype:update', 1, '2014-04-16 12:24:23', -1),
+(491, 2, 'schooltype:update', 0, '2014-04-16 12:24:23', -1),
+(492, 3, 'schooltype:update', 0, '2014-04-16 12:24:23', -1),
+(493, 4, 'schooltype:update', 0, '2014-04-16 12:24:23', -1),
+(494, 0, 'schooltype:delete', 0, '2014-04-16 12:25:27', -1),
+(495, 1, 'schooltype:delete', 1, '2014-04-16 12:25:27', -1),
+(496, 2, 'schooltype:delete', 0, '2014-04-16 12:25:27', -1),
+(497, 3, 'schooltype:delete', 0, '2014-04-16 12:25:27', -1),
+(498, 4, 'schooltype:delete', 0, '2014-04-16 12:25:27', -1),
+(499, 0, 'log:getLogs', 0, '2014-04-16 12:28:38', -1),
+(500, 1, 'log:getLogs', 1, '2014-04-16 12:28:38', -1),
+(501, 2, 'log:getLogs', 0, '2014-04-16 12:28:38', -1),
+(502, 3, 'log:getLogs', 0, '2014-04-16 12:28:38', -1),
+(503, 4, 'log:getLogs', 1, '2014-04-16 12:28:38', -1),
+(504, 0, 'institution:add', 0, '2014-04-16 12:31:57', -1),
+(505, 1, 'institution:add', 1, '2014-04-16 12:31:57', -1),
+(506, 2, 'institution:add', 0, '2014-04-16 12:31:57', -1),
+(507, 3, 'institution:add', 0, '2014-04-16 12:31:57', -1),
+(508, 4, 'institution:add', 0, '2014-04-16 12:31:57', -1),
+(509, 0, 'institution:delete', 0, '2014-04-16 12:32:43', -1),
+(510, 1, 'institution:delete', 1, '2014-04-16 12:32:43', -1),
+(511, 2, 'institution:delete', 0, '2014-04-16 12:32:43', -1),
+(512, 3, 'institution:delete', 0, '2014-04-16 12:32:43', -1),
+(513, 4, 'institution:delete', 0, '2014-04-16 12:32:43', -1),
+(514, 0, 'institution:update', 0, '2014-04-16 12:35:27', -1),
+(515, 1, 'institution:update', 1, '2014-04-16 12:35:27', -1),
+(516, 2, 'institution:update', 0, '2014-04-16 12:35:27', -1),
+(517, 3, 'institution:update', 0, '2014-04-16 12:35:27', -1),
+(518, 4, 'institution:update', 0, '2014-04-16 12:35:27', -1),
+(519, 0, 'groups:add', 0, '2014-04-16 12:39:56', -1),
+(520, 1, 'groups:add', 1, '2014-04-16 12:39:56', -1),
+(521, 2, 'groups:add', 0, '2014-04-16 12:39:56', -1),
+(522, 3, 'groups:add', 1, '2014-04-16 12:39:56', -1),
+(523, 4, 'groups:add', 1, '2014-04-16 12:39:56', -1),
+(524, 0, 'groups:update', 0, '2014-04-16 12:41:44', -1),
+(525, 1, 'groups:update', 1, '2014-04-16 12:41:44', -1),
+(526, 2, 'groups:update', 0, '2014-04-16 12:41:44', -1),
+(527, 3, 'groups:update', 1, '2014-04-16 12:41:44', -1),
+(528, 4, 'groups:update', 1, '2014-04-16 12:41:44', -1),
+(529, 0, 'groups:delete', 0, '2014-04-16 12:44:35', -1),
+(530, 1, 'groups:delete', 1, '2014-04-16 12:44:35', -1),
+(531, 2, 'groups:delete', 0, '2014-04-16 12:44:35', -1),
+(532, 3, 'groups:delete', 1, '2014-04-16 12:44:35', -1),
+(533, 4, 'groups:delete', 1, '2014-04-16 12:44:35', -1),
+(534, 0, 'groups:expel', 0, '2014-04-16 12:47:34', -1),
+(535, 1, 'groups:expel', 1, '2014-04-16 12:47:34', -1),
+(536, 2, 'groups:expel', 0, '2014-04-16 12:47:34', -1),
+(537, 3, 'groups:expel', 1, '2014-04-16 12:47:34', -1),
+(538, 4, 'groups:expel', 1, '2014-04-16 12:47:34', -1),
+(539, 0, 'groups:enrol', 0, '2014-04-16 12:48:53', -1),
+(540, 1, 'groups:enrol', 1, '2014-04-16 12:48:53', -1),
+(541, 2, 'groups:enrol', 0, '2014-04-16 12:48:53', -1),
+(542, 3, 'groups:enrol', 1, '2014-04-16 12:48:53', -1),
+(543, 4, 'groups:enrol', 1, '2014-04-16 12:48:53', -1),
+(544, 0, 'groups:changeSemester', 0, '2014-04-16 12:51:09', -1),
+(545, 1, 'groups:changeSemester', 1, '2014-04-16 12:51:09', -1),
+(546, 2, 'groups:changeSemester', 0, '2014-04-16 12:51:09', -1),
+(547, 3, 'groups:changeSemester', 1, '2014-04-16 12:51:09', -1),
+(548, 4, 'groups:changeSemester', 1, '2014-04-16 12:51:09', -1),
+(549, 0, 'grade:add', 0, '2014-04-16 12:54:58', -1),
+(550, 1, 'grade:add', 1, '2014-04-16 12:54:58', -1),
+(551, 2, 'grade:add', 0, '2014-04-16 12:54:58', -1),
+(552, 3, 'grade:add', 0, '2014-04-16 12:54:58', -1),
+(553, 4, 'grade:add', 1, '2014-04-16 12:54:58', -1),
+(554, 0, 'grade:update', 0, '2014-04-16 12:55:53', -1),
+(555, 1, 'grade:update', 1, '2014-04-16 12:55:53', -1),
+(556, 2, 'grade:update', 0, '2014-04-16 12:55:53', -1),
+(557, 3, 'grade:update', 0, '2014-04-16 12:55:53', -1),
+(558, 4, 'grade:update', 1, '2014-04-16 12:55:53', -1),
+(559, 0, 'grade:delete', 0, '2014-04-16 12:57:13', -1),
+(560, 1, 'grade:delete', 1, '2014-04-16 12:57:13', -1),
+(561, 2, 'grade:delete', 0, '2014-04-16 12:57:13', -1),
+(562, 3, 'grade:delete', 0, '2014-04-16 12:57:13', -1),
+(563, 4, 'grade:delete', 1, '2014-04-16 12:57:13', -1),
+(564, 0, 'file:update', 1, '2014-04-16 13:01:04', -1),
+(565, 1, 'file:update', 1, '2014-04-16 13:01:04', -1),
+(566, 2, 'file:update', 1, '2014-04-16 13:01:04', -1),
+(567, 3, 'file:update', 1, '2014-04-16 13:01:04', -1),
+(568, 4, 'file:update', 1, '2014-04-16 13:01:04', -1),
+(569, 0, 'file:delete', 1, '2014-04-16 13:02:54', -1),
+(570, 1, 'file:delete', 1, '2014-04-16 13:02:54', -1),
+(571, 2, 'file:delete', 1, '2014-04-16 13:02:54', -1),
+(572, 3, 'file:delete', 1, '2014-04-16 13:02:54', -1),
+(573, 4, 'file:delete', 1, '2014-04-16 13:02:54', -1),
+(574, 0, 'file:getSolutions', 0, '2014-04-16 13:06:03', -1),
+(575, 1, 'file:getSolutions', 1, '2014-04-16 13:06:03', -1),
+(576, 2, 'file:getSolutions', 1, '2014-04-16 13:06:03', -1),
+(577, 3, 'file:getSolutions', 1, '2014-04-16 13:06:03', -1),
+(578, 4, 'file:getSolutions', 1, '2014-04-16 13:06:03', -1),
+(579, 0, 'curriculum:add', 0, '2014-04-16 13:09:35', -1),
+(580, 1, 'curriculum:add', 1, '2014-04-16 13:09:35', -1),
+(581, 2, 'curriculum:add', 0, '2014-04-16 13:09:35', -1),
+(582, 3, 'curriculum:add', 1, '2014-04-16 13:09:35', -1),
+(583, 4, 'curriculum:add', 1, '2014-04-16 13:09:35', -1),
+(584, 0, 'curriculum:update', 0, '2014-04-16 13:11:48', -1),
+(585, 1, 'curriculum:update', 1, '2014-04-16 13:11:48', -1),
+(586, 2, 'curriculum:update', 1, '2014-04-16 13:11:48', -1),
+(587, 3, 'curriculum:update', 1, '2014-04-16 13:11:48', -1),
+(588, 4, 'curriculum:update', 1, '2014-04-16 13:11:48', -1),
+(589, 0, 'curriculum:delete', 0, '2014-04-16 13:13:01', -1),
+(590, 1, 'curriculum:delete', 1, '2014-04-16 13:13:01', -1),
+(591, 2, 'curriculum:delete', 0, '2014-04-16 13:13:01', -1),
+(592, 3, 'curriculum:delete', 1, '2014-04-16 13:13:01', -1),
+(593, 4, 'curriculum:delete', 1, '2014-04-16 13:13:01', -1),
+(594, 0, 'role:add', 0, '2014-04-17 05:41:02', -1),
+(595, 1, 'role:add', 1, '2014-04-17 05:41:02', -1),
+(596, 2, 'role:add', 0, '2014-04-17 05:41:02', -1),
+(597, 3, 'role:add', 0, '2014-04-17 05:41:02', -1),
+(598, 4, 'role:add', 1, '2014-04-17 05:41:02', -1),
+(599, 0, 'role:delete', 0, '2014-04-17 05:43:37', -1),
+(600, 1, 'role:delete', 1, '2014-04-17 05:43:37', -1),
+(601, 2, 'role:delete', 0, '2014-04-17 05:43:37', -1),
+(602, 3, 'role:delete', 0, '2014-04-17 05:43:37', -1),
+(603, 4, 'role:delete', 1, '2014-04-17 05:43:37', -1),
+(604, 0, 'backup:getMyBackups', 0, '2014-04-17 05:51:17', -1),
+(605, 1, 'backup:getMyBackups', 0, '2014-04-17 05:51:17', -1),
+(606, 2, 'backup:getMyBackups', 1, '2014-04-17 05:51:17', -1),
+(607, 3, 'backup:getMyBackups', 1, '2014-04-17 05:51:17', -1),
+(608, 4, 'backup:getMyBackups', 0, '2014-04-17 05:51:17', -1),
+(609, 0, 'backup:getAllBackups', 0, '2014-04-17 05:53:10', -1),
+(610, 1, 'backup:getAllBackups', 1, '2014-04-17 05:53:10', -1),
+(611, 2, 'backup:getAllBackups', 0, '2014-04-17 05:53:10', -1),
+(612, 3, 'backup:getAllBackups', 0, '2014-04-17 05:53:10', -1),
+(613, 4, 'backup:getAllBackups', 1, '2014-04-17 05:53:10', -1),
+(614, 0, 'config:mySettings', 1, '2014-04-17 06:03:32', -1),
+(615, 1, 'config:mySettings', 1, '2014-04-17 06:03:32', -1),
+(616, 2, 'config:mySettings', 1, '2014-04-17 06:03:32', -1),
+(617, 3, 'config:mySettings', 1, '2014-04-17 06:03:32', -1),
+(618, 4, 'config:mySettings', 1, '2014-04-17 06:03:32', -1),
+(619, 0, 'config:Institution', 0, '2014-04-17 06:04:59', -1),
+(620, 1, 'config:Institution', 1, '2014-04-17 06:04:59', -1),
+(621, 2, 'config:Institution', 0, '2014-04-17 06:04:59', -1),
+(622, 3, 'config:Institution', 0, '2014-04-17 06:04:59', -1),
+(623, 4, 'config:Institution', 1, '2014-04-17 06:04:59', -1),
+(624, 0, 'dashboard:globalAdmin', 0, '2014-04-17 06:16:12', -1),
+(625, 1, 'dashboard:globalAdmin', 1, '2014-04-17 06:16:12', -1),
+(626, 2, 'dashboard:globalAdmin', 0, '2014-04-17 06:16:12', -1),
+(627, 3, 'dashboard:globalAdmin', 0, '2014-04-17 06:16:12', -1),
+(628, 4, 'dashboard:globalAdmin', 0, '2014-04-17 06:16:12', -1),
+(629, 0, 'dashboard:institutionalAdmin', 0, '2014-04-17 06:18:00', -1),
+(630, 1, 'dashboard:institutionalAdmin', 0, '2014-04-17 06:18:00', -1),
+(631, 2, 'dashboard:institutionalAdmin', 0, '2014-04-17 06:18:00', -1),
+(632, 3, 'dashboard:institutionalAdmin', 0, '2014-04-17 06:18:00', -1),
+(633, 4, 'dashboard:institutionalAdmin', 1, '2014-04-17 06:18:00', -1),
+(634, -1, 'backup:addBackup', 1, '2014-04-27 08:01:14', 102),
+(635, -1, 'backup:deleteBackup', 1, '2014-04-27 08:01:15', 102),
+(636, -1, 'backup:getAllBackups', 1, '2014-04-27 08:01:15', 102),
+(637, -1, 'backup:getMyBackups', 1, '2014-04-27 08:01:15', 102),
+(638, -1, 'backup:loadBackup', 1, '2014-04-27 08:01:15', 102),
+(639, -1, 'config:Institution', 1, '2014-04-27 08:01:15', 102),
+(640, -1, 'config:mySettings', 1, '2014-04-27 08:01:15', 102),
+(641, -1, 'curriculum:add', 1, '2014-04-27 08:01:15', 102),
+(642, -1, 'curriculum:delete', 1, '2014-04-27 08:01:15', 102),
+(643, -1, 'curriculum:update', 1, '2014-04-27 08:01:15', 102),
+(644, -1, 'dashboard:globalAdmin', 1, '2014-04-27 08:01:15', 102),
+(645, -1, 'dashboard:institutionalAdmin', 1, '2014-04-27 08:01:15', 102),
+(646, -1, 'file:curriculumFiles', 1, '2014-04-27 08:01:15', 102),
+(647, -1, 'file:delete', 1, '2014-04-27 08:01:15', 102),
+(648, -1, 'file:getSolutions', 1, '2014-04-27 08:01:15', 102),
+(649, -1, 'file:lastFiles', 1, '2014-04-27 08:01:15', 102),
+(650, -1, 'file:loadMaterial', 1, '2014-04-27 08:01:15', 102),
+(651, -1, 'file:myAvatars', 1, '2014-04-27 08:01:15', 102),
+(652, -1, 'file:myFiles', 1, '2014-04-27 08:01:15', 102),
+(653, -1, 'file:solution', 1, '2014-04-27 08:01:15', 102),
+(654, -1, 'file:solutionUpload', 1, '2014-04-27 08:01:15', 102),
+(655, -1, 'file:update', 1, '2014-04-27 08:01:15', 102),
+(656, -1, 'file:upload', 1, '2014-04-27 08:01:15', 102),
+(657, -1, 'file:uploadURL', 1, '2014-04-27 08:01:15', 102),
+(658, -1, 'grade:add', 1, '2014-04-27 08:01:15', 102),
+(659, -1, 'grade:delete', 1, '2014-04-27 08:01:15', 102),
+(660, -1, 'grade:update', 1, '2014-04-27 08:01:15', 102),
+(661, -1, 'group:add', 1, '2014-04-27 08:01:15', 102),
+(662, -1, 'groups:changeSemester', 1, '2014-04-27 08:01:15', 102),
+(663, -1, 'groups:delete', 1, '2014-04-27 08:01:15', 102),
+(664, -1, 'groups:enrol', 1, '2014-04-27 08:01:15', 102),
+(665, -1, 'groups:expel', 1, '2014-04-27 08:01:15', 102),
+(666, -1, 'groups:update', 1, '2014-04-27 08:01:15', 102),
+(667, -1, 'institution:add', 1, '2014-04-27 08:01:15', 102),
+(668, -1, 'institution:delete', 1, '2014-04-27 08:01:15', 102),
+(669, -1, 'institution:update', 1, '2014-04-27 08:01:15', 102),
+(670, -1, 'log:getLogs', 1, '2014-04-27 08:01:15', 102),
+(671, -1, 'mail:loadDeletedMessages', 1, '2014-04-27 08:01:15', 102),
+(672, -1, 'mail:loadInbox', 1, '2014-04-27 08:01:15', 102),
+(673, -1, 'mail:loadMail', 1, '2014-04-27 08:01:15', 102),
+(674, -1, 'mail:loadOutbox', 1, '2014-04-27 08:01:15', 102),
+(675, -1, 'mail:postMail', 1, '2014-04-27 08:01:15', 102),
+(676, -1, 'menu:readBackup', 1, '2014-04-27 08:01:15', 102),
+(677, -1, 'menu:readConfirm', 1, '2014-04-27 08:01:15', 102),
+(678, -1, 'menu:readCurricula', 1, '2014-04-27 08:01:15', 102),
+(679, -1, 'menu:readGrade', 1, '2014-04-27 08:01:15', 102),
+(680, -1, 'menu:readGroup', 1, '2014-04-27 08:01:15', 102),
+(681, -1, 'menu:readInstitution', 1, '2014-04-27 08:01:15', 102),
+(682, -1, 'menu:readInstitutionConfig', 1, '2014-04-27 08:01:15', 102),
+(683, -1, 'menu:readLog', 1, '2014-04-27 08:01:15', 102),
+(684, -1, 'menu:readMyCurricula', 1, '2014-04-27 08:01:15', 102),
+(685, -1, 'menu:readProfileConfig', 1, '2014-04-27 08:01:15', 102),
+(686, -1, 'menu:readProgress', 1, '2014-04-27 08:01:15', 102),
+(687, -1, 'menu:readRoles', 1, '2014-04-27 08:01:15', 102),
+(688, -1, 'menu:readSemester', 1, '2014-04-27 08:01:15', 102),
+(689, -1, 'menu:readSubject', 1, '2014-04-27 08:01:15', 102),
+(690, -1, 'menu:readUserAdministration', 1, '2014-04-27 08:01:15', 102),
+(691, -1, 'objectives:addEnablingObjective', 1, '2014-04-27 08:01:15', 102),
+(692, -1, 'objectives:addTerminalObjective', 1, '2014-04-27 08:01:15', 102),
+(693, -1, 'objectives:deleteEnablingObjectives', 1, '2014-04-27 08:01:15', 102),
+(694, -1, 'objectives:deleteTerminalObjectives', 1, '2014-04-27 08:01:15', 102),
+(695, -1, 'objectives:orderTerminalObjectives', 1, '2014-04-27 08:01:15', 102),
+(696, -1, 'objectives:setStatus', 1, '2014-04-27 08:01:15', 102),
+(697, -1, 'objectives:updateEnablingObjectives', 1, '2014-04-27 08:01:15', 102),
+(698, -1, 'objectives:updateTerminalObjectives', 1, '2014-04-27 08:01:15', 102),
+(699, -1, 'page:showRoleForm', 1, '2014-04-27 08:01:15', 102),
+(700, -1, 'role:add', 1, '2014-04-27 08:01:15', 102),
+(701, -1, 'role:delete', 1, '2014-04-27 08:01:15', 102),
+(702, -1, 'role:update', 1, '2014-04-27 08:01:15', 102),
+(703, -1, 'schooltype:add', 1, '2014-04-27 08:01:15', 102),
+(704, -1, 'schooltype:delete', 1, '2014-04-27 08:01:15', 102),
+(705, -1, 'schooltype:update', 1, '2014-04-27 08:01:15', 102),
+(706, -1, 'semester:add', 1, '2014-04-27 08:01:15', 102),
+(707, -1, 'semester:delete', 1, '2014-04-27 08:01:15', 102),
+(708, -1, 'semester:update', 1, '2014-04-27 08:01:15', 102),
+(709, -1, 'subject:add', 1, '2014-04-27 08:01:15', 102),
+(710, -1, 'subject:delete', 1, '2014-04-27 08:01:15', 102),
+(711, -1, 'subject:update', 1, '2014-04-27 08:01:15', 102),
+(712, -1, 'user:addUser', 1, '2014-04-27 08:01:15', 102),
+(713, -1, 'user:changePassword', 1, '2014-04-27 08:01:15', 102),
+(714, -1, 'user:confirmUser', 1, '2014-04-27 08:01:15', 102),
+(715, -1, 'user:dedicate', 1, '2014-04-27 08:01:15', 102),
+(716, -1, 'user:delete', 1, '2014-04-27 08:01:15', 102),
+(717, -1, 'user:enroleToGroup', 1, '2014-04-27 08:01:15', 102),
+(718, -1, 'user:enroleToInstitution', 1, '2014-04-27 08:01:15', 102),
+(719, -1, 'user:expelFromGroup', 1, '2014-04-27 08:01:15', 102),
+(720, -1, 'user:getGroupMembers', 1, '2014-04-27 08:01:15', 102),
+(721, -1, 'user:getNewUsers', 1, '2014-04-27 08:01:15', 102),
+(722, -1, 'user:getPassword', 1, '2014-04-27 08:01:15', 102),
+(723, -1, 'user:getUsers', 1, '2014-04-27 08:01:15', 102),
+(724, -1, 'user:import', 1, '2014-04-27 08:01:15', 102),
+(725, -1, 'user:listNewUsers', 1, '2014-04-27 08:01:15', 102),
+(726, -1, 'user:resetPassword', 1, '2014-04-27 08:01:15', 102),
+(727, -1, 'user:updateRole', 1, '2014-04-27 08:01:15', 102),
+(728, -1, 'user:updateUser', 1, '2014-04-27 08:01:15', 102),
+(729, -1, 'user:userList', 1, '2014-04-27 08:01:15', 102),
+(730, 0, 'role:update', 0, '2014-04-27 08:09:51', -1),
+(731, 1, 'role:update', 1, '2014-04-27 08:09:51', -1),
+(732, 2, 'role:update', 0, '2014-04-27 08:09:51', -1),
+(733, 3, 'role:update', 0, '2014-04-27 08:09:51', -1),
+(734, 4, 'role:update', 1, '2014-04-27 08:09:51', -1);
+
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `schooltype`
+-- Tabellenstruktur fÃ¼r Tabelle `schooltype`
 --
 
 DROP TABLE IF EXISTS `schooltype`;
@@ -968,7 +1444,7 @@ CREATE TABLE IF NOT EXISTS `schooltype` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=31 ;
 
 --
--- Daten für Tabelle `schooltype`
+-- Daten fÃ¼r Tabelle `schooltype`
 --
 
 INSERT INTO `schooltype` (`id`, `schooltype`, `description`, `country_id`, `state_id`, `creation_time`, `creator_id`) VALUES
@@ -982,7 +1458,7 @@ INSERT INTO `schooltype` (`id`, `schooltype`, `description`, `country_id`, `stat
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `semester`
+-- Tabellenstruktur fÃ¼r Tabelle `semester`
 --
 
 DROP TABLE IF EXISTS `semester`;
@@ -1001,7 +1477,7 @@ CREATE TABLE IF NOT EXISTS `semester` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `state`
+-- Tabellenstruktur fÃ¼r Tabelle `state`
 --
 
 DROP TABLE IF EXISTS `state`;
@@ -1015,7 +1491,7 @@ CREATE TABLE IF NOT EXISTS `state` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=28 ;
 
 --
--- Daten für Tabelle `state`
+-- Daten fÃ¼r Tabelle `state`
 --
 
 INSERT INTO `state` (`id`, `state`, `country_code`, `creation_time`, `creator_id`) VALUES
@@ -1049,7 +1525,7 @@ INSERT INTO `state` (`id`, `state`, `country_code`, `creation_time`, `creator_id
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `subjects`
+-- Tabellenstruktur fÃ¼r Tabelle `subjects`
 --
 
 DROP TABLE IF EXISTS `subjects`;
@@ -1065,7 +1541,7 @@ CREATE TABLE IF NOT EXISTS `subjects` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=37 ;
 
 --
--- Daten für Tabelle `subjects`
+-- Daten fÃ¼r Tabelle `subjects`
 --
 
 INSERT INTO `subjects` (`id`, `subject`, `description`, `creation_time`, `creator_id`, `institution_id`, `subject_short`) VALUES
@@ -1089,7 +1565,7 @@ INSERT INTO `subjects` (`id`, `subject`, `description`, `creation_time`, `creato
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `terminalObjectives`
+-- Tabellenstruktur fÃ¼r Tabelle `terminalObjectives`
 --
 
 DROP TABLE IF EXISTS `terminalObjectives`;
@@ -1110,7 +1586,7 @@ CREATE TABLE IF NOT EXISTS `terminalObjectives` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `users`
+-- Tabellenstruktur fÃ¼r Tabelle `users`
 --
 
 DROP TABLE IF EXISTS `users`;
@@ -1138,7 +1614,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `user_accomplished`
+-- Tabellenstruktur fÃ¼r Tabelle `user_accomplished`
 --
 
 DROP TABLE IF EXISTS `user_accomplished`;
@@ -1155,7 +1631,7 @@ CREATE TABLE IF NOT EXISTS `user_accomplished` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `user_roles`
+-- Tabellenstruktur fÃ¼r Tabelle `user_roles`
 --
 
 DROP TABLE IF EXISTS `user_roles`;
@@ -1170,15 +1646,17 @@ CREATE TABLE IF NOT EXISTS `user_roles` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
 
 --
--- Daten für Tabelle `user_roles`
+-- Daten fÃ¼r Tabelle `user_roles`
 --
 
+
 INSERT INTO `user_roles` (`id`, `role_id`, `role`, `description`, `creation_time`, `creator_id`) VALUES
-(1, 0, 'Student', 'Benutzer hat nur Leserechte', '2013-08-09 07:06:00', 2),
-(2, 1, 'Administrator', 'Benutzer hat alle Rechte', '2013-08-09 07:06:00', 2),
-(3, 2, 'Tutor', 'Benutzer darf Kompetenzraster bearbeiten', '2013-08-09 07:06:00', 2),
-(4, 3, 'Lehrer', 'Benutzer darf Kompetenzraster erstellen', '2013-08-09 07:06:00', 2),
-(9, 4, 'Administrator (Insitution)', 'Benutzer darf Institution / Schule verwalten', '2013-08-09 07:06:00', 2);
+(1, 0, 'Student', 'Benutzer hat nur Leserechte', '2013-08-09 07:06:00', 102),
+(2, 1, 'Administrator', 'Benutzer hat alle Rechte', '2013-08-09 07:06:00', 102),
+(3, 2, 'Tutor', 'Benutzer darf Kompetenzraster bearbeiten', '2013-08-09 07:06:00', 102),
+(4, 3, 'Lehrer', 'Benutzer darf Kompetenzraster erstellen', '2013-08-09 07:06:00', 102),
+(5, 4, 'Administrator (Insitution)', 'Benutzer darf Institution / Schule verwalten', '2013-08-09 07:06:00', 102),
+(6, 5, 'install', 'system', '2014-04-27 08:01:14', 102);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

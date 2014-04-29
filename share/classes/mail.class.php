@@ -105,20 +105,22 @@ class Mail {
      * @param int $id 
      */
     public function loadMail($id){
-       $db = DB::prepare('SELECT * FROM message WHERE id = ?');
-       $db->execute(array($id));
-       $result = $db->fetchObject();
-        if ($result){
-            $this->id           = $result->id;
-            $this->sender_id    = $result->sender_id;
-            $this->receiver_id  = $result->receiver_id;
-            $this->subject      = $result->subject;
-            $this->message      = $result->message;
-            $this->creation_time = $result->creation_time;
-            $this->status       = $result->status;    
-        } else {
-            //$this->institutions[] = NULL;
-        }  
+        if (checkCapabilities('mail:loadMail', $_SESSION['USER']->role_id)){ //$_SESSION is used to work with request script
+            $db = DB::prepare('SELECT * FROM message WHERE id = ?');
+            $db->execute(array($id));
+            $result = $db->fetchObject();
+                if ($result){
+                    $this->id           = $result->id;
+                    $this->sender_id    = $result->sender_id;
+                    $this->receiver_id  = $result->receiver_id;
+                    $this->subject      = $result->subject;
+                    $this->message      = $result->message;
+                    $this->creation_time = $result->creation_time;
+                    $this->status       = $result->status;    
+                } else {
+                    //$this->institutions[] = NULL;
+                } 
+        }
     }
     
     /**
@@ -126,8 +128,12 @@ class Mail {
      * @return boolean 
      */
     public function postMail(){
-        $db = DB::prepare('INSERT INTO message (sender_id,receiver_id,subject,message,status) VALUES (?,?,?,?,0)');
-        return $db->execute(array($this->sender_id, $this->receiver_id, $this->subject, $this->message));
+        if (checkCapabilities('mail:postMail', $_SESSION['USER']->role_id)){
+            $db = DB::prepare('INSERT INTO message (sender_id,receiver_id,subject,message,status) VALUES (?,?,?,?,0)');
+            return $db->execute(array($this->sender_id, $this->receiver_id, $this->subject, $this->message));
+        } else {
+            return false; 
+        } 
     }
     
     /**

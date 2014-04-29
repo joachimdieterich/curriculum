@@ -64,22 +64,25 @@ class Roles {
      * @return mixed 
      */
     public function add(){
-        $db = DB::prepare('SELECT MAX(role_id) as max FROM user_roles');
-        $db->execute();
-        $result = $db->fetchObject();
-        $this->role_id = $result->max + 1; 
-        $db = DB::prepare('INSERT INTO user_roles (role_id, role, description,creator_id) VALUES (?,?,?,?)');
-        $write_role = $db->execute(array($this->role_id, $this->role, $this->description, $this->creator_id));
-        foreach($this->capabilities as $key=>$value) {
-            foreach ($value as $v_key => $v_value) {
-            $db = DB::prepare('INSERT INTO role_capabilities (role_id, capability, permission, creator_id) VALUES (?, ?, ?, ?)');
-            $write_role_capabilities = $db->execute(array($this->role_id, $v_key, $v_value, $this->creator_id));
+        global $USER;
+        if (checkCapabilities('role:add', $USER->role_id)){
+            $db = DB::prepare('SELECT MAX(role_id) as max FROM user_roles');
+            $db->execute();
+            $result = $db->fetchObject();
+            $this->role_id = $result->max + 1; 
+            $db = DB::prepare('INSERT INTO user_roles (role_id, role, description,creator_id) VALUES (?,?,?,?)');
+            $write_role = $db->execute(array($this->role_id, $this->role, $this->description, $this->creator_id));
+            foreach($this->capabilities as $key=>$value) {
+                foreach ($value as $v_key => $v_value) {
+                    $db = DB::prepare('INSERT INTO role_capabilities (role_id, capability, permission, creator_id) VALUES (?, ?, ?, ?)');
+                    $write_role_capabilities = $db->execute(array($this->role_id, $v_key, $v_value, $this->creator_id));
+                }
             }
-        }
-        if ($write_role == true AND $write_role_capabilities == true){
-            return true;
-        } else {
-            return false;
+            if ($write_role == true AND $write_role_capabilities == true){
+                return true;
+            } else {
+                return false;
+            }
         }
     }
     
@@ -88,30 +91,33 @@ class Roles {
      * @return boolean 
      */
     public function update(){
-        $db = DB::prepare('UPDATE user_roles SET role = ?, description = ?,creator_id = ? WHERE role_id = ?');
-        $update_role = $db->execute(array($this->role, $this->description, $this->creator_id, $this->role_id));
-        //object_to_array($this->capabilities);
-        foreach($this->capabilities as $key=>$value) {
-            foreach ($value as $v_key => $v_value) {
-            $db = DB::prepare('SELECT role_id FROM role_capabilities WHERE role_id = ? AND capability = ?');
-            $db->execute(array($this->role_id, $v_key));
-            $result = $db->fetchObject();            
-                if (isset($result->role_id)){       
-                    $db = DB::prepare('UPDATE role_capabilities SET permission= '.$v_value.', creator_id = ?
-                                        WHERE role_id = ? AND capability = ?');
-                    $update_role_capabilities = $db->execute(array($this->creator_id, $this->role_id, $v_key));
-                } else {
-                    $db = DB::prepare('INSERT INTO role_capabilities (role_id, capability, permission, creator_id) 
-                                        VALUES (?, ?, ?, ?)');
-                    $update_role_capabilities = $db->execute(array($this->role_id, $v_key, $v_value, $this->creator_id));
+        global $USER;
+        if (checkCapabilities('role:update', $USER->role_id)){
+            $db = DB::prepare('UPDATE user_roles SET role = ?, description = ?,creator_id = ? WHERE role_id = ?');
+            $update_role = $db->execute(array($this->role, $this->description, $this->creator_id, $this->role_id));
+            //object_to_array($this->capabilities);
+            foreach($this->capabilities as $key=>$value) {
+                foreach ($value as $v_key => $v_value) {
+                $db = DB::prepare('SELECT role_id FROM role_capabilities WHERE role_id = ? AND capability = ?');
+                $db->execute(array($this->role_id, $v_key));
+                $result = $db->fetchObject();            
+                    if (isset($result->role_id)){       
+                        $db = DB::prepare('UPDATE role_capabilities SET permission= '.$v_value.', creator_id = ?
+                                            WHERE role_id = ? AND capability = ?');
+                        $update_role_capabilities = $db->execute(array($this->creator_id, $this->role_id, $v_key));
+                    } else {
+                        $db = DB::prepare('INSERT INTO role_capabilities (role_id, capability, permission, creator_id) 
+                                            VALUES (?, ?, ?, ?)');
+                        $update_role_capabilities = $db->execute(array($this->role_id, $v_key, $v_value, $this->creator_id));
+                    }
                 }
             }
-        }
-        
-        if ($update_role == true AND $update_role_capabilities == true){
-            return true;
-        } else {
-            return false;
+
+            if ($update_role == true AND $update_role_capabilities == true){
+                return true;
+            } else {
+                return false;
+            }
         }
     }
     
@@ -120,23 +126,26 @@ class Roles {
      * @return mixed 
      */
     public function delete($creator_id = null){
-        if ($creator_id != null) { // if function is called by request-php --> required by checkCapabilities()
-            $user = new USER();
+        global $USER;
+        if (checkCapabilities('role:delete', $USER->role_id)){
+           /* if ($creator_id != null) { // if function is called by request-php --> required by checkCapabilities()
+                $user = new USER();
 
-            $user->load('id', $creator_id);
-            $role_id = $user->role_id;
-        } else {
-            $role_id = $USER->role-id;
-        } 
-        $db = DB::prepare('DELETE FROM user_roles WHERE role_id = ?');
-        $delete_role =  $db->execute(array($this->role_id));
-        $db = DB::prepare('DELETE FROM role_capabilities WHERE role_id= ?');
-        $delete_role_capabilities = $db->execute(array($this->role_id));
-       if ($delete_role == true AND $delete_role_capabilities == true){
-            return true;
-        } else {
-            return false;
-        } 
+                $user->load('id', $creator_id);
+                $role_id = $user->role_id;
+            } else {
+                $role_id = $USER->role-id;
+            } */
+            $db = DB::prepare('DELETE FROM user_roles WHERE role_id = ?');
+            $delete_role =  $db->execute(array($this->role_id));
+            $db = DB::prepare('DELETE FROM role_capabilities WHERE role_id= ?');
+            $delete_role_capabilities = $db->execute(array($this->role_id));
+        if ($delete_role == true AND $delete_role_capabilities == true){
+                return true;
+            } else {
+                return false;
+            } 
+        }
     } 
     
     /**
@@ -144,7 +153,7 @@ class Roles {
      */
     public function load(){
         $db = DB::prepare('SELECT * FROM user_roles WHERE role_id = ?');
-        $db->execute(array($this->role_id));             
+        $db->execute(array($this->role_id)); 
         $result = $db->fetchObject();
         $this->role_id      = $result->role_id;
         $this->role         = $result->role;
@@ -183,6 +192,10 @@ class Roles {
         $dedicate_capabilities =  $db->execute(array($this->creator_id));
         
         if ($dedicate_roles  == true AND $dedicate_capabilities == true){
+            $db = DB::prepare('DELETE FROM user_roles WHERE role_id = -1');
+            $dedicate_roles =  $db->execute();
+            $db = DB::prepare('DELETE FROM role_capabilities WHERE role_id = -1');
+            $dedicate_roles =  $db->execute();
             return true;
         } else {
             return false;

@@ -1,4 +1,4 @@
-<?php
+fget<?php
 /**
  *  This file is part of curriculum - http://www.joachimdieterich.de
  * 
@@ -27,20 +27,13 @@
  */
 class Server {
 
-    //generates Unique Token
+    //generates Unique Token 
     /**
      * get token
      * @return string 
      */
-    function getToken() { 
-        $s = strtoupper(md5(uniqid(rand(),true))); 
-        $uniquetoken = 
-            substr($s,0,8) . 
-            substr($s,8,4) . 
-            substr($s,12,4). 
-            substr($s,16,4). 
-            substr($s,20); 
-        return $uniquetoken;
+     function getToken() { 
+        return getToken();//--> this function is now included in function.php
     }
     
     /**

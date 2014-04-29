@@ -87,14 +87,17 @@ class Subject {
      * @return boolean 
      */
     public function add(){
-        $db = DB::prepare('SELECT COUNT(id) FROM subjects WHERE UPPER(subject) = UPPER(?) AND institution_id = ?');
-        $db->execute(array($this->subject, $this->institution_id));
-        if($db->fetchColumn() >= 1) { 
-            return 'Diesen Fächernamen gibt es bereits.';
-        } else {
-            $db = DB::prepare('INSERT INTO subjects (subject,subject_short,description,creator_id,institution_id) 
-                                            VALUES (?,?,?,?,?)');
-            return $db->execute(array($this->subject, $this->subject_short, $this->description, $this->creator_id, $this->institution_id));
+        global $USER;
+        if (checkCapabilities('subject:add', $USER->role_id)){
+            $db = DB::prepare('SELECT COUNT(id) FROM subjects WHERE UPPER(subject) = UPPER(?) AND institution_id = ?');
+            $db->execute(array($this->subject, $this->institution_id));
+            if($db->fetchColumn() >= 1) { 
+                return 'Diesen Fächernamen gibt es bereits.';
+            } else {
+                $db = DB::prepare('INSERT INTO subjects (subject,subject_short,description,creator_id,institution_id) 
+                                                VALUES (?,?,?,?,?)');
+                return $db->execute(array($this->subject, $this->subject_short, $this->description, $this->creator_id, $this->institution_id));
+            }
         }
     }
     
@@ -103,30 +106,36 @@ class Subject {
      * @return boolean 
      */
     public function update(){
-        $db = DB::prepare('UPDATE subjects  SET subject = ?, subject_short = ?, description = ?, creator_id = ? WHERE id = ?');
-        return $db->execute(array($this->subject, $this->subject_short, $this->description, $this->creator_id, $this->id));
+        global $USER;
+        if (checkCapabilities('subject:update', $USER->role_id)){
+            $db = DB::prepare('UPDATE subjects  SET subject = ?, subject_short = ?, description = ?, creator_id = ? WHERE id = ?');
+            return $db->execute(array($this->subject, $this->subject_short, $this->description, $this->creator_id, $this->id));
+        }
     }
     /**
      * Delete current subject
      * @return boolean 
      */
     public function delete($creator_id = null){
-        if ($creator_id != null) { // if function is called by request-php --> required by checkCapabilities()
+        /*if ($creator_id != null) { // if function is called by request-php --> required by checkCapabilities()
             $user = new USER();
 
             $user->load('id', $creator_id);
             $role_id = $user->role_id;
         } else {
-            $role_id = $USER->role-id;
-        } 
-        $db = DB::prepare('SELECT id FROM curriculum WHERE subject_id = ?');
-        $db->execute(array($this->id));
-        $result = $db->fetchObject();
-        if ($result){
-            return false;
-        } else { //delete only, if no enrolments exists
-            $db = DB::prepare('DELETE FROM subjects WHERE id = ?');
-            return $db->execute(array($this->id));
+            $role_id = $USER->role_id;
+        } */
+        global $USER;
+        if (checkCapabilities('subject:delete', $USER->role_id)){
+            $db = DB::prepare('SELECT id FROM curriculum WHERE subject_id = ?');
+            $db->execute(array($this->id));
+            $result = $db->fetchObject();
+            if ($result){
+                return false;
+            } else { //delete only, if no enrolments exists
+                $db = DB::prepare('DELETE FROM subjects WHERE id = ?');
+                return $db->execute(array($this->id));
+            }
         }
     }
 

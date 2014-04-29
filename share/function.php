@@ -307,14 +307,25 @@ function addMessage($message){
  * checks capability for a given role
  * @param string $capability
  * @param int $role_id
+ * @param boolean $thow_exeption 
  * @return boolean 
  */
-function checkCapabilities($capability = null, $role_id = null){
+function checkCapabilities($capability = null, $role_id = null, $thow_exception = true){
     $capabilities = new Capability();
     $capabilities->capability = $capability; 
     $capabilities->role_id    = $role_id; 
     
-    return $capabilities->checkCapability();
+    if ($capabilities->checkCapability()){
+        return true;
+    } else {
+        if ($thow_exception){
+            $role = new Roles();
+            $role->role_id = $capabilities->role_id;
+            $role->load();
+            throw new CurriculumException('Als <strong>'.$role->role.'</strong> verfügen Sie nicht über die erforderliche Berechtigung ('.$capabilities->capability.').');
+        }
+        return false; 
+    }
 }
 
 /**
@@ -363,4 +374,36 @@ function array2str($array, $pre = ' ', $pad = '', $sep = ', ')
         }
 }
 
+/**
+    * get token
+    * @return string 
+    */
+function getToken() { 
+    $s = strtoupper(md5(uniqid(rand(),true))); 
+    $uniquetoken = 
+        substr($s,0,8) . 
+        substr($s,8,4) . 
+        substr($s,12,4). 
+        substr($s,16,4). 
+        substr($s,20); 
+    return $uniquetoken;
+}
+
+
+/**
+ * gets real ip and converts it for db
+ * to get the ip from db use SELECT INET_NTOA(ip) FROM 'table'
+ * @return type 
+ */
+function getIp() {
+    if (!empty($_SERVER['HTTP_CLIENT_IP'])){                //Test if it is a shared client
+        $ip=$_SERVER['HTTP_CLIENT_IP'];
+    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])){    //Is it a proxy address
+        $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+    } else {
+        $ip=$_SERVER['REMOTE_ADDR'];
+    }
+    //The value of $ip at this point would look something like: "192.0.34.166"
+    return ip2long($ip);//The $ip would now look something like: 1073732954
+}
 ?>

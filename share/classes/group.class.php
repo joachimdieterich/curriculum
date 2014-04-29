@@ -95,20 +95,23 @@ class Group {
      * @return boolean 
      */
     public function add($condition = false){
-        switch ($condition) {
-            case 'semester': $db = DB::prepare('SELECT COUNT(id) FROM groups WHERE groups = ? AND semester_id = ?');
-                             $db->execute(array($this->group, $this->semester_id));
+        global $USER;
+        if (checkCapabilities('groups:add', $USER->role_id)){
+            switch ($condition) {
+                case 'semester': $db = DB::prepare('SELECT COUNT(id) FROM groups WHERE groups = ? AND semester_id = ?');
+                                $db->execute(array($this->group, $this->semester_id));
+                    break;
+                default:         $db = DB::prepare('SELECT COUNT(id) FROM groups WHERE groups = ?');
+                                $db->execute(array($this->group));    
                 break;
-            default:         $db = DB::prepare('SELECT COUNT(id) FROM groups WHERE groups = ?');
-                             $db->execute(array($this->group));    
-               break;
-        }
-        if($db->fetchColumn() >= 1) { 
-            return false;
-        } else {     
-            $db = DB::prepare('INSERT INTO groups (groups,description,grade_id,semester_id,institution_id,creator_id) 
-                                                  VALUES (?,?,?,?,?,?)');
-            return $db->execute(array($this->group, $this->description, $this->grade_id, $this->semester_id, $this->institution_id, $this->creator_id));
+            }
+            if($db->fetchColumn() >= 1) { 
+                return false;
+            } else {     
+                $db = DB::prepare('INSERT INTO groups (groups,description,grade_id,semester_id,institution_id,creator_id) 
+                                                    VALUES (?,?,?,?,?,?)');
+                return $db->execute(array($this->group, $this->description, $this->grade_id, $this->semester_id, $this->institution_id, $this->creator_id));
+            }
         }
     }
     
@@ -117,8 +120,11 @@ class Group {
      * @return boolean 
      */
     public function update(){
-        $db = DB::prepare('UPDATE groups SET groups = ?, description = ?, grade_id = ?, semester_id = ?, institution_id = ?,creator_id = ? WHERE id = ?');
-        return $db->execute(array($this->group, $this->description, $this->grade_id, $this->semester_id, $this->institution_id, $this->creator_id, $this->id));
+        global $USER;
+        if (checkCapabilities('groups:update', $USER->role_id)){
+            $db = DB::prepare('UPDATE groups SET groups = ?, description = ?, grade_id = ?, semester_id = ?, institution_id = ?,creator_id = ? WHERE id = ?');
+            return $db->execute(array($this->group, $this->description, $this->grade_id, $this->semester_id, $this->institution_id, $this->creator_id, $this->id));
+        }
     }
     
     /**
@@ -126,22 +132,26 @@ class Group {
      * @return mixed 
      */
     public function delete($creator_id = null){
-        if ($creator_id != null) { // if function is called by request-php --> required by checkCapabilities()
+        /*if ($creator_id != null) { // if function is called by request-php --> required by checkCapabilities()
             $user = new USER();
 
             $user->load('id', $creator_id);
             $role_id = $user->role_id;
         } else {
             $role_id = $USER->role-id;
-        } 
-        $db = DB::prepare('SELECT id FROM curriculum_enrolments WHERE group_id = ? AND status = 1');
-        $result = $db->fetchObject();
-        if ($result){
-            return false;
-        } else {
-            $db = DB::prepare('DELETE FROM groups WHERE id = ?');
-            return $db->execute(array($this->id));
-        } 
+        } */
+        global $USER;
+        if (checkCapabilities('groups:delete', $USER->role_id)){
+            $db = DB::prepare('SELECT id FROM curriculum_enrolments WHERE group_id = ? AND status = 1');
+            $db->execute(array($this->id));
+            $result = $db->fetchObject();
+            if ($result){
+                return false;
+            } else {
+                $db = DB::prepare('DELETE FROM groups WHERE id = ?');
+                return $db->execute(array($this->id));
+            } 
+        }
     } 
     
     /**
@@ -184,11 +194,14 @@ class Group {
      * @return boolean 
      */
     public function expel($user_id, $curriculum_id){
-        if ($this->checkEnrolment($curriculum_id)) {
-            $db = DB::prepare('UPDATE curriculum_enrolments SET status = 0, creator_id = ?, creation_time = NOW()
-                                WHERE group_id = ? AND curriculum_id = ?'); //Status 0 == not enroled
-            return $db->execute(array($user_id, $this->id, $curriculum_id));
-        } 
+        global $USER;
+        if (checkCapabilities('groups:expel', $USER->role_id)){
+            if ($this->checkEnrolment($curriculum_id)) {
+                $db = DB::prepare('UPDATE curriculum_enrolments SET status = 0, creator_id = ?, creation_time = NOW()
+                                    WHERE group_id = ? AND curriculum_id = ?'); //Status 0 == not enroled
+                return $db->execute(array($user_id, $this->id, $curriculum_id));
+            } 
+        }
     }
     
     /**
@@ -198,14 +211,17 @@ class Group {
      * @return boolean 
      */
     public function enrol($user_id, $curriculum_id){
-        if ($this->checkEnrolment($curriculum_id, 0)) {
-            $db = DB::prepare('UPDATE curriculum_enrolments SET status = 1, creator_id = ?, creation_time = NOW()
-                                WHERE group_id = ? AND curriculum_id = ?'); //Status 1 == eingeschrieben
-            return $db->execute(array($user_id, $this->id, $curriculum_id)); 
-        } else {
-            $db = DB::prepare('INSERT INTO curriculum_enrolments (status,group_id,curriculum_id,creator_id) 
-                                VALUES (1,?,?,?)');//Status 1 == eingeschrieben
-            return $db->execute(array($this->id, $curriculum_id, $user_id));
+        global $USER;
+        if (checkCapabilities('groups:enrol', $USER->role_id)){
+            if ($this->checkEnrolment($curriculum_id, 0)) {
+                $db = DB::prepare('UPDATE curriculum_enrolments SET status = 1, creator_id = ?, creation_time = NOW()
+                                    WHERE group_id = ? AND curriculum_id = ?'); //Status 1 == eingeschrieben
+                return $db->execute(array($user_id, $this->id, $curriculum_id)); 
+            } else {
+                $db = DB::prepare('INSERT INTO curriculum_enrolments (status,group_id,curriculum_id,creator_id) 
+                                    VALUES (1,?,?,?)');//Status 1 == eingeschrieben
+                return $db->execute(array($this->id, $curriculum_id, $user_id));
+            }
         }
     }
     
@@ -215,20 +231,23 @@ class Group {
      */
     public function changeSemester(){
         global $USER;
-        // Load group members
-        $users = new User(); 
-        $group_members = $users->getGroupMembers('group', $this->id); 
-        // Load new group id
-        $db = DB::prepare('SELECT id FROM groups WHERE UPPER(groups) = UPPER(?) AND semester_id = ?');
-        $db->execute(array($this->group, $this->semester_id));
-        $result = $db->fetchObject(); 
-        $this->id = $result->id;
-        $this->load();
-        if  (count($group_members) > 0){ //if there are Group members
-            foreach($group_members as $key=>$value) { //Die Benutzer in die neue Lerngruppe einschreiben
-                $users->id = $value;
-                $users->enroleToGroup($this->id, $USER->id);  
-            } 
+        if (checkCapabilities('groups:changeSemester', $USER->role_id)){
+            global $USER;
+            // Load group members
+            $users = new User(); 
+            $group_members = $users->getGroupMembers('group', $this->id); 
+            // Load new group id
+            $db = DB::prepare('SELECT id FROM groups WHERE UPPER(groups) = UPPER(?) AND semester_id = ?');
+            $db->execute(array($this->group, $this->semester_id));
+            $result = $db->fetchObject(); 
+            $this->id = $result->id;
+            $this->load();
+            if  (count($group_members) > 0){ //if there are Group members
+                foreach($group_members as $key=>$value) { //Die Benutzer in die neue Lerngruppe einschreiben
+                    $users->id = $value;
+                    $users->enroleToGroup($this->id, $USER->id);  
+                } 
+            }
         }
     }
     /**

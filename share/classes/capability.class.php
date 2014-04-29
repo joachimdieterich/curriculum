@@ -102,11 +102,11 @@ class Capability {
     public function checkCapability(){
         $db = DB::prepare('SELECT permission FROM role_capabilities WHERE capability = ? AND role_id = ?'); 
         $db->execute(array($this->capability, $this->role_id));
-
         $result = $db->fetchObject();
-        $perminssion = $result->permission; 
-        if (!isset($perminssion)){
-            $perminssion = false; 
+        if ($result) {
+             $perminssion = $result->permission; 
+        } else {
+             $perminssion = false; 
         }
         return $perminssion;
     }

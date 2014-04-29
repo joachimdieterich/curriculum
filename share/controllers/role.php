@@ -22,7 +22,6 @@
 */
 global $USER, $PAGE, $TEMPLATE;
 $TEMPLATE->assign('page_title', 'Rollen verwalten');
-//throw new CurriculumException("Sie verfügen nicht über ausreichende Berechtigungen");
 if (isset($_GET['function']) AND checkCapabilities('page:showRoleForm', $USER->role_id)) {
      switch ($_GET['function']) {
         case "newRole": 
@@ -44,12 +43,10 @@ if (isset($_GET['edit'])) {
     $edit_role->load();
     
     $edit_capabilities = new Capability();
-    //var_dump($edit_capabilities->getCapabilities($edit_role->role_id));
     $TEMPLATE->assign('capabilities', $edit_capabilities->getCapabilities($edit_role->role_id)); 
     $TEMPLATE->assign('id',           $edit_role->role_id);
     $TEMPLATE->assign('role',         $edit_role->role);                
     $TEMPLATE->assign('description',  $edit_role->description);  
-     
 } 
 
 if($_POST){
