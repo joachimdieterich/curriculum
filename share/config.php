@@ -26,7 +26,7 @@ global $CFG, $DB;
 $CFG = new stdClass();
 
 /**
- * Applicationn !IMPORTANT! Do not change manually
+ * Application !IMPORTANT! Do not change manually
  */
 $CFG->app_title='curriculum 0.9';
 $CFG->app_footer                = 'curriculum 0.9 BETA - 2012-2013 www.joachimdieterich.de';
@@ -39,7 +39,7 @@ $CFG->debug                     = true;
 $CFG->db_host='127.0.0.1';
 $CFG->db_user='root';
 $CFG->db_password ='root';
-$CFG->db_name='install';
+$CFG->db_name='test';
 
 $DB = new PDO('mysql:host='.$CFG->db_host.';dbname='.$CFG->db_name.';charset=utf8', $CFG->db_user, $CFG->db_password ); 
 $DB->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -47,7 +47,7 @@ $DB->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 /**
  * Paths - do not edit
  */
-$CFG->BASE_URL='/curriculum/';                               // URL to index //Pfad von 
+$CFG->BASE_URL='/curriculum/';
 $CFG->document_root             = dirname(__FILE__).'/../public/';
 $CFG->controllers_root          = dirname(__FILE__).'/controllers/'; 
 $CFG->user_root                 = dirname(__FILE__).'/../curriculumdata/userdata/';

@@ -31,7 +31,6 @@ if($_GET){
                                     $edit_semester->id = $_GET['id'];
                                     $edit_semester->load();
 
-                                    //$TEMPLATE->assign('semester',             $edit_semester);
                                     $TEMPLATE->assign('id',             $edit_semester->id);
                                     $TEMPLATE->assign('semester',       $edit_semester->semester );                
                                     $TEMPLATE->assign('description',    $edit_semester->description);
@@ -50,13 +49,11 @@ if($_GET){
              
 if($_POST){
     switch ($_POST) {
-
-
        case isset($_POST['addSemester']):
        case isset($_POST['updateSemester']):
                     $new_semester = new Semester();
                     if (isset($_POST['id'])){
-                    $new_semester->id             = $_POST['id'];    
+                        $new_semester->id             = $_POST['id'];    
                     }
                     $new_semester->semester       = $_POST['semester'];    
                     $new_semester->description    = $_POST['description'];  
@@ -92,7 +89,6 @@ if($_POST){
     }   
     $TEMPLATE->assign('page_message', $PAGE->message);
 }
-
 /*******************************************************************************
  * END POST / GET 
  */ 

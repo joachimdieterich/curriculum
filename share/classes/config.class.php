@@ -208,7 +208,7 @@ class Config {
                                                             institution_paginator_limit,institution_standard_role, institution_standard_country,
                                                             institution_standard_state, institution_csv_size, institution_avatar_size, institution_material_size,
                                                             institution_acc_days, institution_language, institution_timeout) 
-                                                       VALUES (?,?,?,?,?,?,?,?,?,?,?,?)');     
+                                                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?)');     
                                     return $db->execute(array($this->institution_id, $this->institution_filepath, $this->institution_paginator_limit,$this->institution_standard_role, $this->institution_standard_country, $this->institution_standard_state, $this->institution_csv_size, $this->institution_avatar_size, $this->institution_material_size, $this->institution_acc_days, $this->institution_language, $this->institution_timeout));
                                     break; 
                 case 'user':        $this->user_id = $id; 

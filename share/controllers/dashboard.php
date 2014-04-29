@@ -20,7 +20,6 @@
 * http://www.gnu.org/copyleft/gpl.html      
 */
 global $USER, $PAGE, $TEMPLATE, $LOG;
-
   /** Load last accomplished Objectives */
   include ('./../lang/'.$USER->language.'/dashboard.php');                      //includes language pack
   $acc_objectives = new EnablingObjective();
@@ -34,43 +33,32 @@ global $USER, $PAGE, $TEMPLATE, $LOG;
   $TEMPLATE->assign('myClasses', $groups->getGroups('user', $USER->id));
     
   /** Shows additional information depending on user role */
-  switch ($USER->role_id) {
-    case 0:     // Student
-          break;
-    case 1:     // Administrator (sidewide)
-                /** Load new registered institutions */
-                $institution = new Institution();
-                $new_instituions =  $institution->getNewInsitutions();
-                if($new_instituions){
-                    $PAGE->message[] = 'Es wurden '.$new_instituions.' neue Institution(en) registriert. Sie können diese unter "Freigabe" bestätigen';
-                }  
-                /**Load new registered users */
-                $new_users = $USER->getNewUsers();
-                if ($new_users){
-                    $PAGE->message[] = 'Es wurden '.$new_users.' neue Benutzer registriert. Sie können diese unter "Freigabe" bestätigen';
-                }
-                if ($cronjob->check_cronjob()){
-                    $TEMPLATE->assign('cronjob', 'Es wurde zuletzt am '.$cronjob->creation_time.' geprüft, ob Ziele abgelaufen sind.<br>');//Check last Cronjob execution
-                }
-          break;
-    case 2:     //  Tutor
-          break;
-    case 3:     //  Teacher
-          break;
-    case 4:     //  Administrator (institution)
-                /** Load new registered users */
-                $new_users = $USER->getNewUsers('institution', $USER->institutions);
-                if ($new_users){
-                    $PAGE->message[] = 'Es wurden '.$new_users.' neue Benutzer registriert. Sie können diese unter "Freigabe" bestätigen';                
-                }
-                if ($cronjob->check_cronjob()){
-                    $TEMPLATE->assign('cronjob', 'Es wurde zuletzt am '.$cronjob->creation_time.' geprüft, ob Ziele abgelaufen sind.<br>');//Check last Cronjob execution
-                }
-          break;
-
-    default:
-        break;
-}
+  if (checkCapabilities('dashboard:globalAdmin', $USER->role_id)){
+        /** Load new registered institutions */
+        $institution = new Institution();
+        $new_instituions =  $institution->getNewInsitutions();
+        if($new_instituions){
+            $PAGE->message[] = 'Es wurden '.$new_instituions.' neue Institution(en) registriert. Sie können diese unter "Freigabe" bestätigen';
+        }  
+        /**Load new registered users */
+        $new_users = $USER->getNewUsers();
+        if ($new_users){
+            $PAGE->message[] = 'Es wurden '.$new_users.' neue Benutzer registriert. Sie können diese unter "Freigabe" bestätigen';
+        }
+        if ($cronjob->check_cronjob()){
+            $TEMPLATE->assign('cronjob', 'Es wurde zuletzt am '.$cronjob->creation_time.' geprüft, ob Ziele abgelaufen sind.<br>');//Check last Cronjob execution
+        }
+  } else if (checkCapabilities('dashboard:institutionalAdmin', $USER->role_id)){
+        /** Load new registered users */
+        $new_users = $USER->getNewUsers('institution', $USER->institutions);
+        if ($new_users){
+            $PAGE->message[] = 'Es wurden '.$new_users.' neue Benutzer registriert. Sie können diese unter "Freigabe" bestätigen';                
+        }
+        if ($cronjob->check_cronjob()){
+            $TEMPLATE->assign('cronjob', 'Es wurde zuletzt am '.$cronjob->creation_time.' geprüft, ob Ziele abgelaufen sind.<br>');//Check last Cronjob execution
+        }  
+  }
+ 
   
 /** assign messages */
 if (isset($PAGE->message)){

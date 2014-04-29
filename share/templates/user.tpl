@@ -14,7 +14,7 @@
     <div class="space-top-padding gray-gradient border-bottom-radius box-shadow ">
         
         <p class="floatleft gray-gradient cssimgbtn border-radius gray-border">
-            <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=teacherProfile">Benutzer hinzufügen</a>
+            <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=profileAdmin">Benutzer hinzufügen</a>
             <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=userImport&reset=true">Benutzerliste importieren</a>
         </p>
         <p>&nbsp;</p><p>&nbsp;</p>

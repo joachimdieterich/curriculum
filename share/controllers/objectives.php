@@ -39,25 +39,22 @@ list ($selected_curriculum, $selected_group) = explode('_', $selected_curriculum
     
 if ($selected_curriculum != '' AND $selected_user_id != '') {
     $user = new User(); 
-    $user->load('id', $selected_user_id);
+    $user->load('id', $selected_user_id, false);
     $TEMPLATE->assign('user', $user);
     
-    //load course members
-    $group = new Group();
+    $group = new Group();   
     $TEMPLATE->assign('group', $group->getGroups('course', $selected_group));
-    
-    //load terminal objectives
-    $terminal_objectives = new TerminalObjective();
+      
+    $terminal_objectives = new TerminalObjective();         //load terminal objectives
     $TEMPLATE->assign('terminalObjectives', $terminal_objectives->getObjectives('curriculum', $selected_curriculum));
     
-    //load enabling objectives
-    $enabling_objectives = new EnablingObjective();
+    $enabling_objectives = new EnablingObjective();         //load enabling objectives
     $enabling_objectives->curriculum_id = $selected_curriculum;
     $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('user', $selected_user_id));
     
     $show_course = true; // setzen
 }    
-// curriculum des aktuellen users laden 
+// load curriculum of actual user 
 if ($selected_curriculum != '') {    
     $course_user = new User();
     $course_user->id = $USER->id;
@@ -65,13 +62,12 @@ if ($selected_curriculum != '') {
     if (is_array($users)){
         $user_id_list = array_map(function($user) { return $user->id; }, $users); 
         setPaginator('userPaginator', $TEMPLATE, $users, 'results', 'index.php?action=objectives&course='.$selected_curriculumforURL); //set Paginator    
-        //Schüler-Solutions laden
+        //User-Solutions laden
         $files = new File(); 
         $TEMPLATE->assign('addedSolutions', $files->getSolutions('course', $selected_curriculum, $user_id_list)); 
     } else {
         $showuser = true;
     }  
-   
 }
 /*******************************************************************************
  * END POST / GET  

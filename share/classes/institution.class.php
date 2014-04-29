@@ -95,17 +95,20 @@ class Institution {
      *  add institution to db   
      */
     public function add() {
-        $db = DB::prepare('SELECT COUNT(id) FROM institution WHERE institution = ?');
-        $db->execute(array($this->institution));
-        if($db->fetchColumn() >= 1) { 
-            return false;
-        } else {
-            $db = DB::prepare('INSERT INTO institution (institution, description, schooltype_id, country_id, state_id, creator_id, confirmed) 
-                                VALUES (?,?,?,?,?,?,?)');
-            if ($db->execute(array($this->institution, $this->description, $this->schooltype_id, $this->country_id, $this->state_id, $this->creator_id, $this->confirmed))){    
-                return DB::lastInsertId();
-            } else return false; 
-            
+        global $USER;
+        if (checkCapabilities('institution:add', $USER->role_id)){
+            $db = DB::prepare('SELECT COUNT(id) FROM institution WHERE institution = ?');
+            $db->execute(array($this->institution));
+            if($db->fetchColumn() >= 1) { 
+                return false;
+            } else {
+                $db = DB::prepare('INSERT INTO institution (institution, description, schooltype_id, country_id, state_id, creator_id, confirmed) 
+                                    VALUES (?,?,?,?,?,?,?)');
+                if ($db->execute(array($this->institution, $this->description, $this->schooltype_id, $this->country_id, $this->state_id, $this->creator_id, $this->confirmed))){    
+                    return DB::lastInsertId();
+                } else return false; 
+
+            }
         }
     }
     
@@ -114,8 +117,11 @@ class Institution {
      * @return boolean 
      */
     public function deleteInstitution(){
-        $db = DB::prepare('DELETE FROM institution WHERE id = ?');
-        return $db->execute(array($this->id));
+        global $USER;
+        if (checkCapabilities('institution:delete', $USER->role_id)){
+            $db = DB::prepare('DELETE FROM institution WHERE id = ?');
+            return $db->execute(array($this->id));
+        }
     }
     
     /**
@@ -123,21 +129,24 @@ class Institution {
      * @return boolean 
      */
     public function update($install = false){
-        if ($install){
-            $db = DB::prepare('UPDATE institution SET institution = ?, description= ?, schooltype_id= ?, country_id= ?, state_id= ?, creator_id= ?, confirmed = ?');
-             if ($db->execute(array($this->institution, $this->description, $this->schooltype_id, $this->country_id, $this->state_id, $this->creator_id, $this->confirmed))){
-                $db = DB::prepare('SELECT id FROM institution WHERE institution = ?');
-                $db->execute(array($this->institution));
-                $result = $db->fetchObject();
-                if ($result) {
-                    $this->id          = $result->id; 
-                    return $this->id;
-                } else { return false; }
-             }
-        } else {
-            $db = DB::prepare('UPDATE institution SET institution = ?, description= ?, schooltype_id= ?, country_id= ?, state_id= ?, creator_id= ?, confirmed = ? 
-                                    WHERE id = ?');
-            return $db->execute(array($this->institution, $this->description, $this->schooltype_id, $this->country_id, $this->state_id, $this->creator_id, $this->confirmed, $this->id));
+        global $USER;
+        if (checkCapabilities('institution:update', $USER->role_id)){
+            if ($install){
+                $db = DB::prepare('UPDATE institution SET institution = ?, description= ?, schooltype_id= ?, country_id= ?, state_id= ?, creator_id= ?, confirmed = ?');
+                if ($db->execute(array($this->institution, $this->description, $this->schooltype_id, $this->country_id, $this->state_id, $this->creator_id, $this->confirmed))){
+                    $db = DB::prepare('SELECT id FROM institution WHERE institution = ?');
+                    $db->execute(array($this->institution));
+                    $result = $db->fetchObject();
+                    if ($result) {
+                        $this->id          = $result->id; 
+                        return $this->id;
+                    } else { return false; }
+                }
+            } else {
+                $db = DB::prepare('UPDATE institution SET institution = ?, description= ?, schooltype_id= ?, country_id= ?, state_id= ?, creator_id= ?, confirmed = ? 
+                                        WHERE id = ?');
+                return $db->execute(array($this->institution, $this->description, $this->schooltype_id, $this->country_id, $this->state_id, $this->creator_id, $this->confirmed, $this->id));
+            }
         }
     }
     

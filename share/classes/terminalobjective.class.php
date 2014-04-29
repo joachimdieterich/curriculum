@@ -78,54 +78,58 @@ class TerminalObjective {
      * @return mixed 
      */
     public function add(){
-        $db = DB::prepare('SELECT MAX(order_id) as max FROM terminalObjectives WHERE curriculum_id = ?');
-        $db->execute(array($this->curriculum_id));
-        $result = $db->fetchObject();
-        $this->order_id = $result->max+1;
-
-            //object_to_array($this);
-        $db = DB::prepare('INSERT INTO terminalObjectives (terminal_objective,description,curriculum_id,order_id,creator_id) 
-                    VALUES (?,?,?,?,?)');
-        return $db->execute(array($this->terminal_objective, $this->description, $this->curriculum_id, $this->order_id, $this->creator_id));
+        global $USER;
+        if (checkCapabilities('objectives:addTerminalObjective', $USER->role_id)){
+            $db = DB::prepare('SELECT MAX(order_id) as max FROM terminalObjectives WHERE curriculum_id = ?');
+            $db->execute(array($this->curriculum_id));
+            $result = $db->fetchObject();
+            $this->order_id = $result->max+1;
+            $db = DB::prepare('INSERT INTO terminalObjectives (terminal_objective,description,curriculum_id,order_id,creator_id) 
+                        VALUES (?,?,?,?,?)');
+            return $db->execute(array($this->terminal_objective, $this->description, $this->curriculum_id, $this->order_id, $this->creator_id));
+        }      
     }
     
     public function order($direction = null){
-        switch ($direction) {
-            case 'down': if ($this->order_id == 1){
-                            // order_id kann nicht kleiner sein
-                            } else {
-                                $db = DB::prepare('SELECT id FROM terminalObjectives 
-                                                    WHERE curriculum_id = ? AND order_id = ?');
-                                $db->execute(array($this->curriculum_id, ($this->order_id-1)));
+        global $USER;
+        if (checkCapabilities('objectives:orderTerminalObjectives', $USER->role_id)){
+            switch ($direction) {
+                case 'down': if ($this->order_id == 1){
+                                // order_id kann nicht kleiner sein
+                                } else {
+                                    $db = DB::prepare('SELECT id FROM terminalObjectives 
+                                                        WHERE curriculum_id = ? AND order_id = ?');
+                                    $db->execute(array($this->curriculum_id, ($this->order_id-1)));
+                                    $result = $db->fetchObject();
+                                    $replace_id = $result->id; 
+                                    $db = DB::prepare('UPDATE terminalObjectives SET order_id = ? WHERE id = ?');
+                                    $db->execute(array($this->order_id, $replace_id));
+                                    $db = DB::prepare('UPDATE terminalObjectives SET order_id = ? WHERE id = ?');
+                                    $db->execute(array(($this->order_id-1), $this->id));
+                                }
+                    break;
+                case 'up':      $db = DB::prepare('SELECT MAX(order_id) as max FROM terminalObjectives WHERE curriculum_id = ?');
+                                $db->execute(array($this->curriculum_id));
                                 $result = $db->fetchObject();
-                                $replace_id = $result->id; 
-                                $db = DB::prepare('UPDATE terminalObjectives SET order_id = ? WHERE id = ?');
-                                $db->execute(array($this->order_id, $replace_id));
-                                $db = DB::prepare('UPDATE terminalObjectives SET order_id = ? WHERE id = ?');
-                                $db->execute(array(($this->order_id-1), $this->id));
-                            }
-                break;
-            case 'up':      $db = DB::prepare('SELECT MAX(order_id) as max FROM terminalObjectives WHERE curriculum_id = ?');
-                            $db->execute(array($this->curriculum_id));
-                            $result = $db->fetchObject();
-                            if ($this->order_id == $result->max){
-                            // order_id darf nicht größer als maximale order_id sein
-                            } else {
-                                $db = DB::prepare('SELECT id FROM terminalObjectives 
-                                                    WHERE curriculum_id = ? AND order_id = ?');
-                                $db->execute(array($this->curriculum_id, ($this->order_id+1)));
-                                $result = $db->fetchObject();
-                                $replace_id = $result->id;
-                                $db = DB::prepare('UPDATE terminalObjectives SET order_id = ? WHERE id = ?');
-                                $db->execute(array($this->order_id, $replace_id));
-                                $db = DB::prepare('UPDATE terminalObjectives SET order_id = ? WHERE id = ?');
-                                $db->execute(array(($this->order_id+1), $this->id));
-                            }
-                break;
+                                if ($this->order_id == $result->max){
+                                // order_id darf nicht größer als maximale order_id sein
+                                } else {
+                                    $db = DB::prepare('SELECT id FROM terminalObjectives 
+                                                        WHERE curriculum_id = ? AND order_id = ?');
+                                    $db->execute(array($this->curriculum_id, ($this->order_id+1)));
+                                    $result = $db->fetchObject();
+                                    $replace_id = $result->id;
+                                    $db = DB::prepare('UPDATE terminalObjectives SET order_id = ? WHERE id = ?');
+                                    $db->execute(array($this->order_id, $replace_id));
+                                    $db = DB::prepare('UPDATE terminalObjectives SET order_id = ? WHERE id = ?');
+                                    $db->execute(array(($this->order_id+1), $this->id));
+                                }
+                    break;
 
-            default:
-                break;
-        }     
+                default:
+                    break;
+            }  
+        }
     }
     
     /**
@@ -133,8 +137,11 @@ class TerminalObjective {
      * @return boolean 
      */
     public function update(){
-        $db = DB::prepare('UPDATE terminalObjectives SET terminal_objective = ?, description = ? WHERE id = ?');
-        return $db->execute(array($this->terminal_objective, $this->description, $this->id));
+        global $USER;
+        if (checkCapabilities('objectives:updateTerminalObjectives', $USER->role_id)){
+            $db = DB::prepare('UPDATE terminalObjectives SET terminal_objective = ?, description = ? WHERE id = ?');
+            return $db->execute(array($this->terminal_objective, $this->description, $this->id));
+        }
     }
     
     /**
@@ -142,8 +149,11 @@ class TerminalObjective {
      * @return boolean 
      */
     public function delete(){
-        $db = DB::prepare('DELETE FROM terminalObjectives WHERE id = ?');
-        return $db->execute(array($_GET['terminalObjectiveID']));
+        global $USER;
+        if (checkCapabilities('objectives:deleteTerminalObjectives', $USER->role_id)){
+            $db = DB::prepare('DELETE FROM terminalObjectives WHERE id = ?');
+            return $db->execute(array($_GET['terminalObjectiveID']));
+        }
     } 
     
     /**
@@ -165,7 +175,7 @@ class TerminalObjective {
         }    
     }
     /**
-     * get objectives depending on dependency
+     * get objectives on dependency
      * @param string $dependency
      * @param int $id
      * @param boolean $load_enabling_objectives

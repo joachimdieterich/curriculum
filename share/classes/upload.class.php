@@ -78,6 +78,8 @@ class file_upload {
                                 '.png'=>'image/png', 
                                 '.tiff'=>'image/tiff',
                                 '.doc'=>'application/msword',
+                                '.xls'=>'application/msexcel',
+                                '.xla'=>'application/msexcel',
                                 '.docx'=>'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                                 '.ppt'=>'application/vnd.ms-powerpoint',
                                 '.pptx'=>'application/vnd.openxmlformats-officedocument.presentationml.presentation',

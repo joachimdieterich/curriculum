@@ -24,54 +24,20 @@
 
 global $CFG, $USER, $TEMPLATE, $PAGE, $LOG;
   $LOG->add($USER->id, 'view', $PAGE->url, 'allConfig'); 
- 
   $language = read_folder_directory('./../lang/', 'thisDir');
   $TEMPLATE->assign('language', $language);
- //Je nach Rolle sollen unterschiedliche Möglichkeiten angezeigt werden.
+  
 if($_POST) {
-  switch ($USER->role_id) {
-        case "0":   //Student $PAGE->message[] = 'Student';
-        case "2":   //Tutor
-        case "3":   //Lehrer 
-                    $upd_config = new Config('institution', $USER->institutions["id"]);
-                    $upd_config->user_id                    = $_POST['user_id'];
-                    $upd_config->user_language              = $language[$_POST['user_language']]['dir'];
-                    $upd_config->user_paginator_limit       = $_POST['user_paginator_limit'];
-                    //$this->user_filepath                  = $_POST['user_filepath'];
-                    $upd_config->user_acc_days               = $_POST['user_acc_days'];
-
-                    $gump = new Gump(); /* Validation */
-                    $gump->validation_rules(array(
-                    'user_id'                  => 'required',
-                    'user_language'            => 'required',
-                    'user_paginator_limit'     => 'required|integer',
-                    'user_acc_days'            => 'required|integer'
-                    ));
-                    $validated_data = $gump->run($_POST);
-
-                    if($validated_data === false) {/* validation failed */
-                        foreach($upd_config as $key => $value){
-                        $TEMPLATE->assign($key, $value);
-                        } 
-                        $TEMPLATE->assign('v_error', $gump->get_readable_errors());     
-                    } else {/* validation successful */
-                            $upd_config->update('user');    
-                    }
-                  break;
-                  
-        case "1":   //Admin(sidewide) $PAGE->message[] = 'Admin(sidewide)';
-        case "4":   //Admin(institution) 
-                    $upd_config = new Config('institution', $USER->institutions["id"]);
+  if (checkCapabilities('config:Institution', $USER->role_id)){
+      $upd_config = new Config('institution', $USER->institutions["id"]);
                     /* user settings */
                     $upd_config->user_id                        = $_POST['user_id'];
                     $upd_config->user_language                  = $language[$_POST['user_language']]['dir'];
                     $upd_config->user_paginator_limit           = $_POST['user_paginator_limit'];
-                    //$this->user_filepath                      = $_POST['user_filepath'];
                     $upd_config->user_acc_days                  = $_POST['user_acc_days'];
                     
                     /* institution settings */
                     $upd_config->institution_id                 = $_POST['institution_id'];
-                    //$upd_config->institution_filepath         = $_POST['institution_filepath'];
                     $upd_config->institution_paginator_limit    = $_POST['institution_paginator_limit'];
                     $upd_config->institution_standard_role      = $_POST['institution_std_role'];
                     $upd_config->institution_standard_country   = $_POST['institution_standard_country'];
@@ -91,7 +57,7 @@ if($_POST) {
                     'user_acc_days'                 => 'required|integer',
                     'institution_id'                => 'required|integer',
                     'institution_paginator_limit'   => 'required|integer',
-                    'institution_std_role'     => 'required',
+                    'institution_std_role'          => 'required',
                     'institution_standard_country'  => 'required|integer',
                     'institution_standard_state'    => 'required|integer',
                     'institution_csv_size'          => 'required|integer',
@@ -110,31 +76,51 @@ if($_POST) {
                         $TEMPLATE->assign('v_error', $gump->get_readable_errors()); 
                         echo 'true';
                     } else {/* validation successful */
-                        
                         if ($upd_config->update('institution')){
                             $PAGE->message[] = 'Einstellungen wurden gespeichert.';
                         }
                     }
-                    break;
-       
-} //end switch
+  } else if (checkCapabilities('config:mySettings', $USER->role_id)){
+      $upd_config = new Config('institution', $USER->institutions["id"]);
+                    $upd_config->user_id                    = $_POST['user_id'];
+                    $upd_config->user_language              = $language[$_POST['user_language']]['dir'];
+                    $upd_config->user_paginator_limit       = $_POST['user_paginator_limit'];
+                    $upd_config->user_acc_days               = $_POST['user_acc_days'];
+
+                    $gump = new Gump(); /* Validation */
+                    $gump->validation_rules(array(
+                    'user_id'                  => 'required',
+                    'user_language'            => 'required',
+                    'user_paginator_limit'     => 'required|integer',
+                    'user_acc_days'            => 'required|integer'
+                    ));
+                    $validated_data = $gump->run($_POST);
+
+                    if($validated_data === false) {/* validation failed */
+                        foreach($upd_config as $key => $value){
+                        $TEMPLATE->assign($key, $value);
+                        } 
+                        $TEMPLATE->assign('v_error', $gump->get_readable_errors());     
+                    } else {/* validation successful */
+                            $upd_config->update('user');    
+                    }
+  }
 } 
 /************************************************************************************
  * END POST / GET 
  */   
     
-    //Load default values
-    $config = new Config('institution', $USER->institutions["id"]);
+    $config = new Config('institution', $USER->institutions["id"]);     //Load default values
     while (list($key, $value) = each($config)) { 
         $TEMPLATE->assign($key, $value);
     }
     $state = new State();
     $TEMPLATE->assign('countries', $state->getCountries());             //getCountries
     $state->load($config->institution_standard_country);
-    $TEMPLATE->assign('states', $state->getStates());                                //getStates
+    $TEMPLATE->assign('states', $state->getStates());                   //getStates
     $roles = new Roles(); 
-    $TEMPLATE->assign('roles', $roles->get());                                 //getRoles
-    $TEMPLATE->assign('byte',convertMbToByte($CFG->post_max_size));//Dateigröße in Byte
+    $TEMPLATE->assign('roles', $roles->get());                          //getRoles
+    $TEMPLATE->assign('byte',convertMbToByte($CFG->post_max_size));     //Dateigröße in Byte
     $TEMPLATE->assign('message',$PAGE->message);
     $TEMPLATE->assign('page_title', 'Systemeinstellungen von curriculum');
 ?>

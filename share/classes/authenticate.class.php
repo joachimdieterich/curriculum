@@ -44,6 +44,11 @@ class Authenticate {
      */
     public $token           = null; 
     /**
+     * real ip of user (as int value)
+     * @var int 
+     */
+    public $ip              = null;
+    /**
      * time of creation 
      * @var timestring
      */
@@ -99,11 +104,15 @@ class Authenticate {
                             $db->execute(array($this->username, $this->password));
                             $result = $db->fetchObject();
                 break;
+            case 'username':$db = DB::prepare('SELECT * FROM authenticate WHERE UPPER(username) = UPPER(?)');
+                            $db->execute(array($this->username));
+                            $result = $db->fetchObject();
+                            break;
 
             default:
                 break;
         }
-       
+
         $this->id               = $result->id;
         $this->username         = $result->username;
         $this->password         = $result->password;
@@ -115,6 +124,18 @@ class Authenticate {
         $this->email            = $result->email;    
         $this->user_external_id = $result->user_external_id;    
         $this->ws_username      = $result->ws_username;  
+        $this->token            = $result->token;
+        $this->ip               = $result->ip;
     }
+    
+    public function check($ip){
+        $db = DB::prepare('SELECT ip FROM authenticate WHERE token = ? AND username = ?');
+        $db->execute(array($this->token, $this->username));
+        $result = $db->fetchObject();
+        if ($result->ip == $ip){return true;} else {return false;}
+         
+                            
+    }
+    
 }
 ?>

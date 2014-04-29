@@ -59,12 +59,21 @@ $multipleFiles = (isset($_GET['multiple']) && trim($_GET['multiple'] != '') ? $_
 
 $context =      (isset($_GET['context']) && trim($_GET['context'] != '') ? $_GET['context'] : $_POST['context']);
 $user_id =      (isset($_GET['userID']) && trim($_GET['userID'] != '') ? $_GET['userID'] : $_POST['userID']);
-$last_login =   (isset($_GET['last_login']) && trim($_GET['last_login'] != '') ? $_GET['last_login'] : $_POST['last_login']); //security check to prevent access without login
+$token   =      (isset($_GET['token']) && trim($_GET['token'] != '') ? $_GET['token'] : $_POST['token']); //security check to prevent access without login
 
 $upload_user = new User(); 
 $upload_user->load('id', $user_id); //Load upload User data
 
-if ($upload_user->last_login != $last_login){die("forbidden");}//security check to prevent access without login
+/**
+ * Security check based on username token and current ip to prevent access without login
+ */
+$authenticate = new Authenticate();
+$authenticate->username = $upload_user->username;
+$authenticate->token    = $token;
+if (!$authenticate->check(getIp())){
+    throw new CurriculumException('Unberechtigter Zugriff!');
+}//security 
+
 
 if (isset($context)) {
         $contextPath = $file->getContextPath($context);
@@ -90,7 +99,8 @@ $extendUserPath = $file->getContextPath('userFiles').''.$upload_user->id.'/';
          
 if (isset($_POST['Submit'])) {
     switch ($_POST['Submit']) {
-        case "Datei hochladen": $my_upload = new file_upload;
+        case "Datei hochladen": 
+                                $my_upload = new file_upload;
         
                                 $my_upload->upload_dir = $_SERVER['DOCUMENT_ROOT'].$data_dir.$file->getContextPath($context).$extendUploadPath; //Set current uploaddir;
                                 $my_upload->extensions = array(".png", ".jpg", ".jpeg", ".gif", ".pdf", ".doc", ".docx", ".ppt", ".pptx", ".txt", ".rtf", ".bmp", ".tiff", ".tif", ".mpg", ".mpeg" , ".mpe", ".mp3", ".m4a", ".qt", ".mov", ".mp4", ".avi", ".aif", ".aiff", ".wav", ".zip", ".rar", ".mid"); // allowed extensions
@@ -393,21 +403,36 @@ $(document).ready(function() {
         <div id="fileupload" class="border-bottom-radius gray-gradient">
             <div class="floatleft ">    
             <nav>
-                <ul class="group">
+                <ul class="group"> <!-- Menu -->
                     <!--<li><p><?php echo 'test'.$multipleFiles; ?></p></li>-->
+                    <?php if (checkCapabilities('file:upload', $upload_user->role_id, false)){ //don't throw exeption!?>
                     <li><p><a id="fileuplbtn" href="#Anker">Datei hochladen</a></p></li>
-                    <?php if ($context != 'avatar'){ // nur anzeigen wenn nicht avatar?> 
-                        <li><p><a id="fileURLbtn" href="#Anker">Datei-URL verknüpfen</a></p></li>
-                        <li><p><a id="filelastuploadbtn" href="#Anker">Letzte Dateien</a></p></li>
-                        <?php if ($context == 'curriculum'){ // nur anzeigen wenn in der Curriculumansicht?>
+                    <?php }
+                        
+                    if ($context != 'avatar'){ // nur anzeigen wenn nicht avatar
+                        if (checkCapabilities('file:uploadURL', $upload_user->role_id, false)){ //don't throw exeption!?>
+                            <li><p><a id="fileURLbtn" href="#Anker">Datei-URL verknüpfen</a></p></li>
+                        <?php }
+                        if (checkCapabilities('file:lastFiles', $upload_user->role_id, false)){ //don't throw exeption!?>    
+                            <li><p><a id="filelastuploadbtn" href="#Anker">Letzte Dateien</a></p></li>
+                        <?php } 
+                        if ($context == 'curriculum'){ // nur anzeigen wenn in der Curriculumansicht
+                            if (checkCapabilities('file:curriculumFiles', $upload_user->role_id, false)){ //don't throw exeption!?>    
                             <li><p><a id="curriculumfilesbtn" href="#Anker">Aktueller Lehrplan</a></p></li>
-                        <?php } ?>
-                        <?php if ($context == 'userView'){ // nur anzeigen wenn in der Curriculumansicht?>
+                        <?php }
+                        } 
+                        if ($context == 'userView'){ // nur anzeigen wenn in der Curriculumansicht
+                            if (checkCapabilities('file:solution', $upload_user->role_id, false)){ //don't throw exeption!?>    
                             <li><p><a id="solutionfilesbtn" href="#Anker">Meine Abgaben</a></p></li>
-                        <?php } ?>    
-                        <li><p><a id="myfilesbtn" href="#Anker">Meine Dateien</a></p></li>
-                    <?php } ?>
-                        <li><p><a id="avatarfilesbtn" href="#Anker">Meine Avatare</a></p></li>
+                        <?php }
+                        }  
+                        if (checkCapabilities('file:myFiles', $upload_user->role_id, false)){ //don't throw exeption!?>        
+                            <li><p><a id="myfilesbtn" href="#Anker">Meine Dateien</a></p></li>
+                    <?php }
+                    }
+                        if (checkCapabilities('file:myAvatars', $upload_user->role_id, false)){ //don't throw exeption!?>        
+                            <li><p><a id="avatarfilesbtn" href="#Anker">Meine Avatare</a></p></li>
+                        <?php }?>
                 </ul>
                 <div id="div_FilePreview" style="display:none;">
         <img id="img_FilePreview" class="border-radius gray-border" src="" alt="Vorschau">

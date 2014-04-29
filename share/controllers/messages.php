@@ -30,11 +30,9 @@ if ($_GET){
 }
 
 if ($_POST){
-
     if(isset($_POST['showInbox']))      { $TEMPLATE->assign('showInbox', true); }
     if(isset($_POST['showOutbox']))     { $TEMPLATE->assign('showOutbox', true); }
     if(isset($_POST['shownewMessage'])) { $TEMPLATE->assign('shownewMessage', true); }
-    
     if(isset($_POST['sendMessage'])) {
         $newMail = new Mail();
         $newMail->receiver_id   = $_POST['receiver_id'];
@@ -53,18 +51,12 @@ if ($_POST){
         $validated_data = $gump->run($_POST);
 
         if($validated_data === false) {
-            /**
-            * validation failed 
-            */
             foreach($newMail as $key => $value){
             $TEMPLATE->assign($key, $value);
             } 
             $TEMPLATE->assign('v_error', $gump->get_readable_errors());     
             $TEMPLATE->assign('shownewMessage', true); 
         } else {
-            /**
-            * validation successful 
-            */
             if ($newMail->postMail()){
                 $PAGE->message[] = 'Nachricht an erfolgreich gesendet.';     
             }
@@ -108,9 +100,6 @@ if ($USER->getGroupMembers()){
 /**
  * setContenttitle & log
  */
-
-
 $TEMPLATE->assign('page_title', 'Nachrichten');    
 $TEMPLATE->assign('page_message', $PAGE->message);
-//addLog($USER->id, 'view', curPageURL(), 'messages'); //Addlog
 ?>

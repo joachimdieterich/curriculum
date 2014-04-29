@@ -28,8 +28,7 @@ if(isset($_GET['reset']) OR (isset($_POST['reset']))){
 // Formular für neuen Rollentyp anzeigen
 if($_POST){
     $new_user = new User(); 
-    // Benutzer freigeben
-    if(isset($_POST['confirmUser'])) {
+    if(isset($_POST['confirmUser'])) {    // confirm users
         foreach ( $_POST['id_user'] as $check ) { 
             if($check == "none") {// no selection = none
                 if (count($_POST['id_user']) == 1){

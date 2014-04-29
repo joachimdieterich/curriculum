@@ -25,14 +25,11 @@ global $TEMPLATE;
 $user = new User();
 $message = '';              //Achtung, nicht $PAGE-> da Sessionabhängig! die Session wird  nach der Anmeldung erzeugt
 $TEMPLATE->assign('page_title', 'Login');
-//addLog($_SESSION['username'], 'view', curPageURL(), 'login'); //Addlog
 $TEMPLATE->assign('my_username', ''); //Loginname setzen für header setzen --> Leer
 
 if((isset($_POST['login']) OR isset($_GET['username'])) AND !isset($_GET['newregister']) ) {
-    
     $user->username = (isset($_GET['username']) && trim($_GET['username'] != '') ? $_GET['username'] : $_POST['username']);     
     $user->password = (isset($_GET['password']) && trim($_GET['password'] != '') ? $_GET['password'] : md5($_POST['password']));
-
     $TEMPLATE->assign('username', $user->username);  //wenn Benutzername eingegeben wurde und zb password falsch name wieder anzeigen
 
     if($user->checkLoginData()) { 
@@ -43,9 +40,7 @@ if((isset($_POST['login']) OR isset($_GET['username'])) AND !isset($_GET['newreg
             $PAGE->message[] =  'Benutzername bzw. Passwort falsch.';   
     }  
 }
-/*elseif (isset($_POST['register'])){
-    header('Location:index.php?action=register'); //
-}*/
+
 elseif (isset($_GET['newregister'])){  //nur ausführen wenn seite nicht automatisch von registerview zurüchgeleitet wurde  
     $TEMPLATE->assign('username', $_GET['username']);  //wenn Benutzername eingegeben wurde und zb password falsch name wieder anzeigen
 }

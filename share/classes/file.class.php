@@ -105,9 +105,12 @@ class File {
      * @return mixed 
      */
     public function add(){
-        $db = DB::prepare('INSERT INTO files (title, filename, description, type, path, context_id, creator_id, cur_id, ter_id, ena_id) 
-                            VALUES (?,?,?,?,?,?,?,?,?,?)');
-        return $db->execute(array($this->title, $this->filename, $this->description, $this->type, $this->path, $this->context_id, $this->creator_id, $this->curriculum_id, $this->terminal_objective_id, $this->enabling_objective_id));
+        global $USER;
+        if (checkCapabilities('file:upload', $USER->role_id)){
+            $db = DB::prepare('INSERT INTO files (title, filename, description, type, path, context_id, creator_id, cur_id, ter_id, ena_id) 
+                                VALUES (?,?,?,?,?,?,?,?,?,?)');
+            return $db->execute(array($this->title, $this->filename, $this->description, $this->type, $this->path, $this->context_id, $this->creator_id, $this->curriculum_id, $this->terminal_objective_id, $this->enabling_objective_id));
+        }
     }
     
     /**
@@ -115,8 +118,11 @@ class File {
      * @return boolean 
      */
     public function update(){
-        $db = DB::prepare('UPDATE files SET title = ?, filename = ?, description = ?, type = ?, path = ?, context_id = ?, creator_id = ?, cur_id = ?, ter_id = ?, ena_id = ? WHERE id = ?');
-        return $db->execute(array($this->title, $this->filename, $this->description, $this->type, $this->path, $this->context_id, $this->creator_id, $this->curriculum_id, $this->terminal_objective_id, $this->enabling_objective_id, $this->id));
+        global $USER;
+        if (checkCapabilities('file:update', $USER->role_id)){
+            $db = DB::prepare('UPDATE files SET title = ?, filename = ?, description = ?, type = ?, path = ?, context_id = ?, creator_id = ?, cur_id = ?, ter_id = ?, ena_id = ? WHERE id = ?');
+            return $db->execute(array($this->title, $this->filename, $this->description, $this->type, $this->path, $this->context_id, $this->creator_id, $this->curriculum_id, $this->terminal_objective_id, $this->enabling_objective_id, $this->id));
+        }
     }
     
     /**
@@ -124,50 +130,52 @@ class File {
      * @return mixed 
      */
     public function delete(){
-        global $CFG;
-        $this->load();
-        $db = DB::prepare('DELETE FROM files WHERE id=?');
-        if ($db->execute(array($this->id))){/* unlink file*/
-            switch ($this->context_id) {
-                case 1: 
-                        $return = (unlink($CFG->user_root.$this->creator_id.'/'.$this->filename)); //Datei vom Server löschen     
-                    break;
-                case 2:
-                        $return = (unlink($CFG->curriculum_root.$this->curriculum_id.'/'.$this->terminal_objective_id.'/'.$this->enabling_objective_id.'/'.$this->filename)); //Datei vom Server löschen     
-                    break;
-                case 3: // evtl erst checken, ob Avatar verwendet wird.
-                        /*$query = sprintf("SELECT fl.*, users.avatar
-                                                FROM files AS fl
-                                                LEFT JOIN users ON users.avatar = files.filename 
-                                                WHERE files.id = '%s'",
-                                        mysql_real_escape_string($_GET['fileID']));
-                            $result = mysql_query($query);
-                            if ($result && mysql_num_rows($result)){
-                                if (mysql_num_rows($result) == 1){
-                                    $dbuser = mysql_result($result, 0, "avatar"); 
-                                    $dbfilename =mysql_result($result, 0, "filename");
-                                    if ($dbuser == NULL && $dbfilename == NULL){
-                                        $filEnrExists = false;
+        global $CFG, $USER;
+        if (checkCapabilities('file:delete', $USER->role_id)){
+            $this->load();
+            $db = DB::prepare('DELETE FROM files WHERE id=?');
+            if ($db->execute(array($this->id))){/* unlink file*/
+                switch ($this->context_id) {
+                    case 1: 
+                            $return = (unlink($CFG->user_root.$this->creator_id.'/'.$this->filename)); //Datei vom Server löschen     
+                        break;
+                    case 2:
+                            $return = (unlink($CFG->curriculum_root.$this->curriculum_id.'/'.$this->terminal_objective_id.'/'.$this->enabling_objective_id.'/'.$this->filename)); //Datei vom Server löschen     
+                        break;
+                    case 3: // evtl erst checken, ob Avatar verwendet wird.
+                            /*$query = sprintf("SELECT fl.*, users.avatar
+                                                    FROM files AS fl
+                                                    LEFT JOIN users ON users.avatar = files.filename 
+                                                    WHERE files.id = '%s'",
+                                            mysql_real_escape_string($_GET['fileID']));
+                                $result = mysql_query($query);
+                                if ($result && mysql_num_rows($result)){
+                                    if (mysql_num_rows($result) == 1){
+                                        $dbuser = mysql_result($result, 0, "avatar"); 
+                                        $dbfilename =mysql_result($result, 0, "filename");
+                                        if ($dbuser == NULL && $dbfilename == NULL){
+                                            $filEnrExists = false;
+                                        }
+                                    } else {
+                                        $filEnrExists = true; 
                                     }
-                                } else {
-                                    $filEnrExists = true; 
-                                }
-                            } else {$filEnrExists = false;} */
-                        $return = (unlink($CFG->avatar_root.$this->filename)); //Datei vom Server löschen     
-                    break;
-                case 4:
-                        $return = (unlink($CFG->solutions_root.$this->curriculum_id.'/'.$this->terminal_objective_id.'/'.$this->enabling_objective_id.'/'.$this->filename)); //Datei vom Server löschen     
-                    break;
-                case 5:
-                        $return = (unlink($CFG->subjects_root.$this->filename)); //Datei vom Server löschen     
-                    break;
+                                } else {$filEnrExists = false;} */
+                            $return = (unlink($CFG->avatar_root.$this->filename)); //Datei vom Server löschen     
+                        break;
+                    case 4:
+                            $return = (unlink($CFG->solutions_root.$this->curriculum_id.'/'.$this->terminal_objective_id.'/'.$this->enabling_objective_id.'/'.$this->filename)); //Datei vom Server löschen     
+                        break;
+                    case 5:
+                            $return = (unlink($CFG->subjects_root.$this->filename)); //Datei vom Server löschen     
+                        break;
 
-                default: $return = false; 
-                    break;
+                    default: $return = false; 
+                        break;
+                }
+                return $return; 
+            } else {
+                return false;
             }
-            return $return; 
-        } else {
-            return false;
         }
     } 
     
@@ -199,38 +207,41 @@ class File {
      * @param string $user_ids 
      */
     public function getSolutions($dependency = null, $course_id = null, $user_ids = null){
-        switch ($dependency) {
-            case 'course':  if (is_array($user_ids)){
-                                $user_ids = implode(", ", $user_ids);
-                            }
-                            $db = DB::prepare('SELECT fl.*, us.firstname, us.lastname FROM files AS fl, users AS us
-                                WHERE fl.cur_id = ? AND fl.creator_id IN ('.$user_ids.')
-                                AND fl.creator_id = us.id AND fl.context_id = 4');
-                            $db->execute(array($course_id));  
-                            break;
-            default:        break;
+        global $USER;
+        if (checkCapabilities('file:getSolutions', $USER->role_id)){
+            switch ($dependency) {
+                case 'course':  if (is_array($user_ids)){
+                                    $user_ids = implode(", ", $user_ids);
+                                }
+                                $db = DB::prepare('SELECT fl.*, us.firstname, us.lastname FROM files AS fl, users AS us
+                                    WHERE fl.cur_id = ? AND fl.creator_id IN ('.$user_ids.')
+                                    AND fl.creator_id = us.id AND fl.context_id = 4');
+                                $db->execute(array($course_id));  
+                                break;
+                default:        break;
+            }
+            $files = array(); //Array of files
+            while($result = $db->fetchObject()) { 
+                    $this->id                    = $result->id;
+                    $this->title                 = $result->title;
+                    $this->filename              = $result->filename;
+                    $this->description           = $result->description;
+                    $this->path                  = $result->path;
+                    $this->filetype              = $result->type;
+                    $this->context_id            = $result->context_id;
+                    $this->curriculum_id         = $result->cur_id;
+                    $this->terminal_objective_id = $result->ter_id;
+                    $this->enabling_objective_id = $result->ena_id;
+                    $this->creation_time         = $result->creation_time;
+                    $this->creator_id            = $result->creator_id;
+                    $this->firstname             = $result->firstname;
+                    $this->lastname              = $result->lastname;
+                    $files[] = clone $this;        //it has to be clone, to get the object and not the reference
+            } 
+            if (isset($files)) {  
+                return $files;
+            } else {return false;}
         }
-        $files = array(); //Array of files
-        while($result = $db->fetchObject()) { 
-                $this->id                    = $result->id;
-                $this->title                 = $result->title;
-                $this->filename              = $result->filename;
-                $this->description           = $result->description;
-                $this->path                  = $result->path;
-                $this->filetype              = $result->type;
-                $this->context_id            = $result->context_id;
-                $this->curriculum_id         = $result->cur_id;
-                $this->terminal_objective_id = $result->ter_id;
-                $this->enabling_objective_id = $result->ena_id;
-                $this->creation_time         = $result->creation_time;
-                $this->creator_id            = $result->creator_id;
-                $this->firstname             = $result->firstname;
-                $this->lastname              = $result->lastname;
-                $files[] = clone $this;        //it has to be clone, to get the object and not the reference
-        } 
-        if (isset($files)) {  
-            return $files;
-        } else {return false;}
         
     }
     

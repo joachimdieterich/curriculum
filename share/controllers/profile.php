@@ -23,12 +23,7 @@
 * http://www.gnu.org/copyleft/gpl.html      
 */
 global $CFG, $USER, $PAGE, $TEMPLATE;
-
-  $TEMPLATE->assign('page_title', 'Profil bearbeiten');
-
-/**
- * create new User object 
- */
+$TEMPLATE->assign('page_title', 'Profil bearbeiten');
 $currentUser = new User(); 
 
 /*******************************************************************************
@@ -41,9 +36,7 @@ if(isset($_GET['function'])) {
                             $currentUser->load('id', $currentUser->id);      
                         }
                         break;
-
-        default:
-            break;
+        default:        break;
     }
 }
   
@@ -51,9 +44,7 @@ if(isset($_GET['function'])) {
  * If $_POST is set 
  */
 if($_POST) {    
-        /**
-        * set currentUser  
-        */
+        /*set currentUser */
         $currentUser->id         = $_POST['userID'];
         $currentUser->username   = $_POST['username'];
         $currentUser->firstname  = $_POST['firstname'];
@@ -74,13 +65,11 @@ if($_POST) {
                 $PAGE->message[] =  $CFG->avatar_root.$currentUser->avatar.' existiert nicht';
             }
             if ($currentUser->update()){
-                /**
-                * reload session data for user if updated user == session user
-                */
+                /* reload session data for user if updated user == session user*/
                 if ($currentUser->id == $USER->id){
                     session_reload_user();  
                 }
-                if ($PAGE->previous_action == 'user'){                       //todo: more options adminUser usw.  
+                if ($PAGE->previous_action == 'user'){                     
                     header('Location:index.php?action=user');
                 } else {
                     header('Location:index.php?action=dashboard');
@@ -88,9 +77,8 @@ if($_POST) {
             }        
         } else { /* validation failed */
             $TEMPLATE->assign('v_error', $validated_data); 
-        } 
-
-        $TEMPLATE->assign('page_message', $PAGE->message);  	
+        }      
+    $TEMPLATE->assign('page_message', $PAGE->message);  	
 }
 
 /*******************************************************************************
@@ -99,15 +87,13 @@ if($_POST) {
 if (empty($currentUser->id)){
     $currentUser->load('username', $USER->username);     
 }
-/**
- * assign $currentUser to $TEMPLATE 
- */
+/*  assign $currentUser to $TEMPLATE */
 foreach($currentUser as $key => $value){
    $TEMPLATE->assign($key, $value);
 } 
         
 $country = new State(); 
-    $countries = $country->getCountries();
-    $TEMPLATE->assign('countries', $countries);
-    $TEMPLATE->assign('states', $country->getStates('profile', $currentUser->country_id));
+$countries = $country->getCountries();
+$TEMPLATE->assign('countries', $countries);
+$TEMPLATE->assign('states', $country->getStates('profile', $currentUser->country_id));
 ?>

@@ -67,19 +67,22 @@ class Schooltype {
      * @return mixed 
      */
     public function add(){
-        $db = DB::prepare('SELECT COUNT(id) FROM schooltype WHERE schooltype = ?');                      
-        $db->execute(array($this->schooltype));
-        if($db->fetchColumn() >= 1) { 
-            return false;
-        } else {
-            $db = DB::prepare('INSERT INTO schooltype (schooltype, description, country_id, state_id, creator_id) 
-                                VALUES (?,?,?,?,?)');
-            $result = $db->execute(array($this->schooltype, $this->description, $this->country_id, $this->state_id, $this->creator_id));
+        global $USER;
+        if (checkCapabilities('schooltype:add', $USER->role_id)){
+            $db = DB::prepare('SELECT COUNT(id) FROM schooltype WHERE schooltype = ?');                      
+            $db->execute(array($this->schooltype));
+            if($db->fetchColumn() >= 1) { 
+                return false;
+            } else {
+                $db = DB::prepare('INSERT INTO schooltype (schooltype, description, country_id, state_id, creator_id) 
+                                    VALUES (?,?,?,?,?)');
+                $result = $db->execute(array($this->schooltype, $this->description, $this->country_id, $this->state_id, $this->creator_id));
 
-            if ($result){
-                return DB::lastInsertId();
-            } else return false; 
-            
+                if ($result){
+                    return DB::lastInsertId();
+                } else return false; 
+
+            }
         }
     }
     
@@ -88,8 +91,11 @@ class Schooltype {
      * @return boolean 
      */
     public function update(){
-        $db = DB::prepare('UPDATE schooltype SET schooltype = ?, description = ?, country_id = ?, state_id = ?,creator_id = ? WHERE id = ?');
-        return $db->execute(array($this->schooltype, $this->description, $this->country_id, $this->state_id, $this->creator_id, $this->id));
+        global $USER;
+        if (checkCapabilities('schooltype:update', $USER->role_id)){
+            $db = DB::prepare('UPDATE schooltype SET schooltype = ?, description = ?, country_id = ?, state_id = ?,creator_id = ? WHERE id = ?');
+            return $db->execute(array($this->schooltype, $this->description, $this->country_id, $this->state_id, $this->creator_id, $this->id));
+        }
     }
     
     /**
@@ -97,15 +103,18 @@ class Schooltype {
      * @return mixed 
      */
     public function delete(){
-        $db = DB::prepare('SELECT id FROM curriculum WHERE schooltype_id = ?');
-        $db->execute(array($this->id));
-        $result = $db->fetchObject();
-        if ($result){
-            return false;
-        } else {
-            $db = DB::prepare('DELETE FROM schooltype WHERE id = ?');
-            return $db->execute(array($this->id));
-        } 
+        global $USER;
+        if (checkCapabilities('schooltype:delete', $USER->role_id)){
+            $db = DB::prepare('SELECT id FROM curriculum WHERE schooltype_id = ?');
+            $db->execute(array($this->id));
+            $result = $db->fetchObject();
+            if ($result){
+                return false;
+            } else {
+                $db = DB::prepare('DELETE FROM schooltype WHERE id = ?');
+                return $db->execute(array($this->id));
+            } 
+        }
     } 
     
     /**

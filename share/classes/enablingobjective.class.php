@@ -125,14 +125,17 @@ class EnablingObjective {
      * @return mixed 
      */
     public function add(){
-        $db = DB::prepare('SELECT MAX(order_id)AS max FROM enablingObjectives WHERE terminal_objective_id = ?');
-        $db->execute(array($this->terminal_objective_id));
-        $result = $db->fetchObject();
-        $this->order_id = $result->max+1;
-        $db = DB::prepare('INSERT INTO enablingObjectives 
-                    (enabling_objective,description,terminal_objective_id,curriculum_id,repeat_interval,order_id,creator_id) 
-                    VALUES (?,?,?,?,?,?,?)');        
-        return $db->execute(array($this->enabling_objective, $this->description, $this->terminal_objective_id, $this->curriculum_id, $this->repeat_interval, $this->order_id, $this->creator_id));
+        global $USER;
+        if (checkCapabilities('objectives:addEnablingObjective', $USER->role_id)){
+            $db = DB::prepare('SELECT MAX(order_id)AS max FROM enablingObjectives WHERE terminal_objective_id = ?');
+            $db->execute(array($this->terminal_objective_id));
+            $result = $db->fetchObject();
+            $this->order_id = $result->max+1;
+            $db = DB::prepare('INSERT INTO enablingObjectives 
+                        (enabling_objective,description,terminal_objective_id,curriculum_id,repeat_interval,order_id,creator_id) 
+                        VALUES (?,?,?,?,?,?,?)');        
+            return $db->execute(array($this->enabling_objective, $this->description, $this->terminal_objective_id, $this->curriculum_id, $this->repeat_interval, $this->order_id, $this->creator_id));
+        }
     }
     
     /**
@@ -140,9 +143,12 @@ class EnablingObjective {
      * @return boolean 
      */
     public function update(){
-        $db = DB::prepare('UPDATE enablingObjectives SET enabling_objective = ?, description = ?, repeat_interval = ? 
-                    WHERE id = ?');
-         return $db->execute(array($this->enabling_objective, $this->description, $this->repeat_interval, $this->id));
+        global $USER;
+        if (checkCapabilities('objectives:updateEnablingObjectives', $USER->role_id)){
+            $db = DB::prepare('UPDATE enablingObjectives SET enabling_objective = ?, description = ?, repeat_interval = ? 
+                        WHERE id = ?');
+            return $db->execute(array($this->enabling_objective, $this->description, $this->repeat_interval, $this->id));
+        }
     }
     
     /**
@@ -150,8 +156,11 @@ class EnablingObjective {
      * @return boolean 
      */
     public function delete(){
-        $db = DB::prepare('DELETE FROM enablingObjectives WHERE id = ?');
-        return $db->execute(array($this->id));
+        global $USER;
+        if (checkCapabilities('objectives:deleteEnablingObjectives', $USER->role_id)){
+            $db = DB::prepare('DELETE FROM enablingObjectives WHERE id = ?');
+            return $db->execute(array($this->id));
+        }
     } 
     
     /**
@@ -305,43 +314,46 @@ class EnablingObjective {
     }  
     
     public function order($direction = null){
-        switch ($direction) {
-            case 'down': if ($this->order_id == 1){
-                            // order_id kann nicht kleiner sein
-                            } else {
-                                $db = DB::prepare('SELECT id FROM enablingObjectives 
-                                                    WHERE terminal_objective_id = ? AND order_id = ?');
-                                $db->execute(array($this->terminal_objective_id, ($this->order_id-1)));
-                                $result = $db->fetchObject();
-                                $db = DB::prepare('UPDATE enablingObjectives SET order_id = ? WHERE id = ?');
-                                $db->execute(array($this->order_id, $result->id));
-                                
-                                $db = DB::prepare('UPDATE enablingObjectives SET order_id = ? WHERE id = ?');
-                                $db->execute(array(($this->order_id-1), $this->id));
-                            }
-                break;
-            case 'up':      $db = DB::prepare('SELECT MAX(order_id) as max FROM enablingObjectives WHERE terminal_objective_id = ?');
-                            $db->execute(array($this->terminal_objective_id));
-                            $result = $db->fetchObject();
-                            if ($this->order_id == $result->max){
-                            // order_id darf nicht größer als maximale order_id sein
-                            } else {
-                                $db = DB::prepare('SELECT id FROM enablingObjectives WHERE terminal_objective_id = ? AND order_id = ?');
-                                $db->execute(array($this->terminal_objective_id, ($this->order_id+1)));
-                                $result = $db->fetchObject();
-                                $replace_id = $result->id;
-                                
-                                $db = DB::prepare('UPDATE enablingObjectives SET order_id = ? WHERE id = ?');
-                                $db->execute(array($this->order_id, $replace_id));
-                                       
-                                $db = DB::prepare('UPDATE enablingObjectives SET order_id = ? WHERE id = ?');
-                                $db->execute(array(($this->order_id+1), $this->id));
-                            }
-                break;
+        global $USER;
+        if (checkCapabilities('objectives:orderEnablingObjectives', $USER->role_id)){
+            switch ($direction) {
+                case 'down': if ($this->order_id == 1){
+                                // order_id kann nicht kleiner sein
+                                } else {
+                                    $db = DB::prepare('SELECT id FROM enablingObjectives 
+                                                        WHERE terminal_objective_id = ? AND order_id = ?');
+                                    $db->execute(array($this->terminal_objective_id, ($this->order_id-1)));
+                                    $result = $db->fetchObject();
+                                    $db = DB::prepare('UPDATE enablingObjectives SET order_id = ? WHERE id = ?');
+                                    $db->execute(array($this->order_id, $result->id));
 
-            default:
-                break;
-        }     
+                                    $db = DB::prepare('UPDATE enablingObjectives SET order_id = ? WHERE id = ?');
+                                    $db->execute(array(($this->order_id-1), $this->id));
+                                }
+                    break;
+                case 'up':      $db = DB::prepare('SELECT MAX(order_id) as max FROM enablingObjectives WHERE terminal_objective_id = ?');
+                                $db->execute(array($this->terminal_objective_id));
+                                $result = $db->fetchObject();
+                                if ($this->order_id == $result->max){
+                                // order_id darf nicht größer als maximale order_id sein
+                                } else {
+                                    $db = DB::prepare('SELECT id FROM enablingObjectives WHERE terminal_objective_id = ? AND order_id = ?');
+                                    $db->execute(array($this->terminal_objective_id, ($this->order_id+1)));
+                                    $result = $db->fetchObject();
+                                    $replace_id = $result->id;
+
+                                    $db = DB::prepare('UPDATE enablingObjectives SET order_id = ? WHERE id = ?');
+                                    $db->execute(array($this->order_id, $replace_id));
+
+                                    $db = DB::prepare('UPDATE enablingObjectives SET order_id = ? WHERE id = ?');
+                                    $db->execute(array(($this->order_id+1), $this->id));
+                                }
+                    break;
+
+                default:
+                    break;
+            }     
+        }
     }
     
     
@@ -434,19 +446,21 @@ class EnablingObjective {
      * @return boolean 
      */
     public function setAccomplishedStatus($dependency = null, $user_id = null, $creator_id = null, $status = 2) {
+        global $USER;
         switch ($dependency) {
             case 'cron':    $db = DB::prepare('UPDATE user_accomplished SET status_id = ? WHERE enabling_objectives_id = ?');
                             return $db->execute(array($status, $this->id));
                             break;
-            
-            case 'teacher': $db = DB::prepare('SELECT COUNT(id) FROM user_accomplished WHERE enabling_objectives_id = ? AND user_id = ?');
-                            $db->execute(array($this->id, $user_id));
-                            if($db->fetchColumn() >= 1) { 
-                                $db = DB::prepare('UPDATE user_accomplished SET status_id = ?, creator_id = ? WHERE enabling_objectives_id = ? AND user_id = ?');
-                                return $db->execute(array($status, $creator_id, $this->id, $user_id));
-                            } else {
-                                    $db = DB::prepare('INSERT INTO user_accomplished(enabling_objectives_id,user_id,status_id,creator_id) VALUES (?,?,?,?)');
-                                    return $db->execute(array($this->id, $user_id, $status, $creator_id));
+            case 'teacher': if(checkCapabilities('objectives:setStatus', $USER->role_id)){
+                                $db = DB::prepare('SELECT COUNT(id) FROM user_accomplished WHERE enabling_objectives_id = ? AND user_id = ?');
+                                $db->execute(array($this->id, $user_id));
+                                if($db->fetchColumn() >= 1) { 
+                                    $db = DB::prepare('UPDATE user_accomplished SET status_id = ?, creator_id = ? WHERE enabling_objectives_id = ? AND user_id = ?');
+                                    return $db->execute(array($status, $creator_id, $this->id, $user_id));
+                                } else {
+                                        $db = DB::prepare('INSERT INTO user_accomplished(enabling_objectives_id,user_id,status_id,creator_id) VALUES (?,?,?,?)');
+                                        return $db->execute(array($this->id, $user_id, $status, $creator_id));
+                                }
                             }
                             break;
             default:        break;

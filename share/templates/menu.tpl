@@ -7,7 +7,7 @@
                 <p><a href="index.php?action=profile">Profil bearbeiten</a><p>
                 <p><a href="index.php?action=password">Password ändern</a><p> 
                 <p><a href="index.php?action=messages">Mitteilungen</a><p> 
-                <p><a href="assets/scripts/libs/modal-upload/uploadframe.php?userID={$my_id}&last_login={$my_last_login}&context=userFiles&target=NULL&format=1&placeValuesBeforeTB_=savedValues&TB_iframe=true&width=710&modal=true" class="thickbox">Meine Dateien</a><p>      
+                <p><a href="assets/scripts/libs/modal-upload/uploadframe.php?userID={$my_id}&token={$my_token}&context=userFiles&target=NULL&format=1&placeValuesBeforeTB_=savedValues&TB_iframe=true&width=710&modal=true" class="thickbox">Meine Dateien</a><p>      
             <p>Letzter Login: {$my_last_login}</p>
             </div> 
         </ul>
