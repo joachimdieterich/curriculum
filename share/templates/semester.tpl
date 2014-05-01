@@ -25,11 +25,13 @@
         {validate_msg field='semester'}
 	<p><label>Beschreibung*:</label><input class='inputformlong' name='description' {if isset($description)}value='{$description}'{/if}/></p>
 	{validate_msg field='description'}
-        <p><label>Lernzeitraum-Beginn*:</label><input class='inputformlong' id='begin' name='begin' {if isset($begin)}value='{$begin}'{/if}/>
-                  <img src="{$media_url}scripts/libs/datetimepickerImages/cal.gif" onclick="javascript:NewCssCal('begin', 'yyyyMMdd','dropdown',true,'24',true)" style="cursor:pointer"/></p>
+        <p><label>Lernzeitraum-Beginn*:</label><!--<input class='inputformlong' id='begin' name='begin' {if isset($begin)}value='{$begin}'{/if}/>-->
+                                               <input type='date' id='begin' name='begin' {if isset($begin)}value='{$begin}'{/if}/>
+                 <!-- <img src="{$media_url}scripts/libs/datetimepickerImages/cal.gif" onclick="javascript:NewCssCal('begin', 'yyyyMMdd','dropdown',true,'24',true)" style="cursor:pointer"/></p>-->
 	{validate_msg field='begin'}
-        <p><label>Lernzeitraum-Ende*:</label><input class='inputformlong' id='end' name='end' {if isset($end)}value='{$end}'{/if}/>
-                  <img src="{$media_url}scripts/libs/datetimepickerImages/cal.gif" onclick="javascript:NewCssCal('end', 'yyyyMMdd','dropdown',true,'24',true)" style="cursor:pointer"/></p></p>
+        <p><label>Lernzeitraum-Ende*:</label><!--<input class='inputformlong' id='end' name='end' {if isset($end)}value='{$end}'{/if}/>-->
+            <input type='date'class='inputformlong' id='end' name='end' {if isset($end)}value='{$end}'{/if}/>
+                  <!--<img src="{$media_url}scripts/libs/datetimepickerImages/cal.gif" onclick="javascript:NewCssCal('end', 'yyyyMMdd','dropdown',true,'24',true)" style="cursor:pointer"/></p></p>-->
         {validate_msg field='end'}
         {if count($my_institutions['id']) > 1}
             <p><label>Institution / Schule*: </label>{html_options id='institution' name='institution' values=$my_institutions['id'] output=$my_institutions['institution']}</p>
@@ -89,9 +91,9 @@
         </form>              
         <p>&nbsp;</p>
 </div>
-        <script type='text/javascript'>
+       {* <script type='text/javascript'>
 	document.getElementById('semester').focus();
-	</script>
+	</script>*}
 {/block}
 
 {block name=sidebar}{$smarty.block.parent}{/block}

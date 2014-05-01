@@ -107,7 +107,7 @@ class Semester {
         if (checkCapabilities('semester:add', $USER->role_id)){
             $db = DB::prepare('SELECT COUNT(id) FROM semester WHERE UPPER(semester) = UPPER(?) AND institution_id = ?');
             $db->execute(array($this->semester, $this->institution_id));
-            if($db->fetchColumn >= 1) { 
+            if($db->fetchColumn() >= 1) { 
                 return 'Diesen Lernzeitraum gibt es bereits.';
             } else {
                 $db = DB::prepare('INSERT INTO semester (semester,description,begin,end,creation_time,creator_id,institution_id)
