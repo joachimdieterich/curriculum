@@ -34,32 +34,28 @@ include($functionfile);
 // Configure Timezone $$$ You may want to change this otherwise php will complain
 date_default_timezone_set('Europe/Berlin');
 
-
+global $USER;
 if (isset($_GET['function'])){
-    $user_id =      (isset($_GET['userID']) && trim($_GET['userID'] != '') ? $_GET['userID'] : -1);
-    $token   =      (isset($_GET['token']) && trim($_GET['token'] != '') ? $_GET['token'] : -1); //security check to prevent access without login
-    global $USER;
-    if ($user_id == -1){
+    
+    if ($_SESSION['USER']->id == -1){
         $upload_user = new User(); 
         $upload_user->id = -1;
         $upload_user->username = 'install'; 
         $upload_user->role_id = -1; 
-        
     } else {
         $upload_user = new User(); 
-        $upload_user->load('id', $user_id); //Load upload User data
-        $USER = $upload_user;
-        //var_dump($USER);
+        $USER = $_SESSION['USER'];
         /**
         * Security check based on username token and current ip to prevent access without login
         */
         $authenticate = new Authenticate();
-        $authenticate->username = $upload_user->username;
-        $authenticate->token    = $token;
+        $authenticate->username = $_SESSION['USER']->username;
+        $authenticate->token    = $_SESSION['USER']->token;
         if (!$authenticate->check(getIp())){ 
             throw new CurriculumException('Unberechtigter Zugriff!');
         }//security 
   }
+  
     switch ($_GET['function']) {
         case "showMaterial": 
                             if (isset($_GET['ajax'])) {

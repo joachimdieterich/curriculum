@@ -132,9 +132,7 @@ class Authenticate {
         $db = DB::prepare('SELECT ip FROM authenticate WHERE token = ? AND username = ?');
         $db->execute(array($this->token, $this->username));
         $result = $db->fetchObject();
-        if ($result->ip == $ip){return true;} else {return false;}
-         
-                            
+        if ($result->ip == $ip){return true;} else {return false;}                          
     }
     
 }

@@ -41,8 +41,8 @@ function unmask(ID,checked){
     }
 
 /* XMLObject für SQL Abfragen*/
-function showMaterial(userID, userToken, curriculumID, terminalObjectiveID, enablingObjectiveID) {
-    var url = "assets/scripts/request.php?ajax=on&function=showMaterial&userID="+ userID +"&token="+ userToken +"&curriculumID="+ curriculumID +"&terminalObjectiveID="+ terminalObjectiveID +"&enablingObjectiveID="+ enablingObjectiveID;
+function showMaterial(curriculumID, terminalObjectiveID, enablingObjectiveID) {
+    var url = "assets/scripts/request.php?ajax=on&function=showMaterial&curriculumID="+ curriculumID +"&terminalObjectiveID="+ terminalObjectiveID +"&enablingObjectiveID="+ enablingObjectiveID;
 
 req = XMLobject();
     if(req) {        
@@ -52,8 +52,8 @@ req = XMLobject();
     }
 }
 
-function addterminalObjective(userID, userToken, curriculumID) {
-    var url = "assets/scripts/request.php?ajax=on&function=addterminalObjective&userID="+ userID +"&token="+ userToken +"&curriculumID="+ curriculumID;
+function addterminalObjective(curriculumID) {
+    var url = "assets/scripts/request.php?ajax=on&function=addterminalObjective&curriculumID="+ curriculumID;
     
     req = XMLobject();
     if(req) {        
@@ -63,8 +63,8 @@ function addterminalObjective(userID, userToken, curriculumID) {
     }
 }
 
-function addenablingObjective(userID, userToken, curriculumID, terminalObjectiveID) {
-    var url = "assets/scripts/request.php?ajax=on&function=addenablingObjective&userID="+ userID +"&token="+ userToken +"&curriculumID="+ curriculumID+"&terminalObjectiveID="+ terminalObjectiveID;
+function addenablingObjective(curriculumID, terminalObjectiveID) {
+    var url = "assets/scripts/request.php?ajax=on&function=addenablingObjective&curriculumID="+ curriculumID+"&terminalObjectiveID="+ terminalObjectiveID;
     
     req = XMLobject();
     if(req) {        
@@ -78,10 +78,10 @@ function deleteObjective() {
 
     if (confirm("Thema bzw. Ziel wirklich löschen?")) {   //Meldung "Wirklich löschen?"
         if (arguments.length == 2) {
-        var url = "assets/scripts/request.php?ajax=on&function=deleteObjective&userID="+ arguments[0] +"&token="+ arguments[1] +"&curriculumID="+ arguments[2] +"&terminalObjectiveID="+ arguments[3] +"&enablingObjectiveID=notset"; 
+        var url = "assets/scripts/request.php?ajax=on&function=deleteObjective&curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1] +"&enablingObjectiveID=notset"; 
         }
         else if (arguments.length == 3) { 
-        var url = "assets/scripts/request.php?ajax=on&function=deleteObjective&userID="+ arguments[0] +"&token="+ arguments[1] +"&curriculumID="+ arguments[2] +"&terminalObjectiveID="+ arguments[3] +"&enablingObjectiveID="+ arguments[4]; 
+        var url = "assets/scripts/request.php?ajax=on&function=deleteObjective&curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1] +"&enablingObjectiveID="+ arguments[2]; 
         }
         
         req = XMLobject();
