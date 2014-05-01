@@ -72,10 +72,11 @@ class Roles {
             $this->role_id = $result->max + 1; 
             $db = DB::prepare('INSERT INTO user_roles (role_id, role, description,creator_id) VALUES (?,?,?,?)');
             $write_role = $db->execute(array($this->role_id, $this->role, $this->description, $this->creator_id));
+            
             foreach($this->capabilities as $key=>$value) {
                 foreach ($value as $v_key => $v_value) {
-                    $db = DB::prepare('INSERT INTO role_capabilities (role_id, capability, permission, creator_id) VALUES (?, ?, ?, ?)');
-                    $write_role_capabilities = $db->execute(array($this->role_id, $v_key, $v_value, $this->creator_id));
+                    $db = DB::prepare('INSERT INTO role_capabilities (role_id, capability, permission, creator_id) VALUES (?, ?, '.$v_value.', ?)');
+                    $write_role_capabilities = $db->execute(array($this->role_id, $v_key, $this->creator_id));
                 }
             }
             if ($write_role == true AND $write_role_capabilities == true){
