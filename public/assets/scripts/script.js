@@ -264,7 +264,9 @@ function answer() {
            if (req.responseText.length != 1){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen
                       if (document.getElementById('popup')){
                            document.getElementById('popup').innerHTML = req.responseText;
-                           $('#popup').modal();
+                           
+                           $('#popup').show();
+                          
                       } else {
                           alert(req.responseText); //unschön, aber #popup ist vom modalframe aus nicht verfügbar
                       }

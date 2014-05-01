@@ -296,7 +296,7 @@ button {  width: auto; overflow: auto; }
 .mid_btn {background-image: url('../images/png/filetypes/midi-48_32.png');}
 
 /* Borderradius*/
-.border-radius, .menu, .filelist, #popup, nav div > img, #printUser, #printUserImg, #printFooter{
+.border-radius, .menu, .filelist, .modal, nav div > img, #printUser, #printUserImg, #printFooter{
     border-radius: 6px;
     -o-border-radius: 6px;
     -moz-border-radius: 6px;
@@ -331,7 +331,7 @@ button {  width: auto; overflow: auto; }
 }
 
 /* Farbverlauf */
-.gray-gradient, .menu, #popup, input[type="submit"], #messagebox, .boxheader, #contenttablehead, #printUser, #printFooter  {
+.gray-gradient, .menu, .modal, input[type="submit"], #messagebox, .boxheader, #contenttablehead, #printUser, #printFooter  {
     background: -webkit-gradient(linear, 0 0, 0 100%, from(#f2f2f2), to(#bfbfbf));
     background: -moz-linear-gradient(top, #f2f2f2, #bfbfbf);
     -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#f2f2f2', endColorstr='#bfbfbf')";
@@ -341,7 +341,7 @@ button {  width: auto; overflow: auto; }
 }
 
 /* Boxschatten */
-.box-shadow, .menu, #popup, #messagebox, #printUser, #printFooter, .tzSelect, .tzSelect li {
+.box-shadow, .menu, .modal, #messagebox, #printUser, #printFooter, .tzSelect, .tzSelect li {
     -webkit-box-shadow: 0 1px 2px hsla(0,0%,0%,0.25);
     -moz-box-shadow: 0 1px 2px hsla(0,0%,0%,0.25);
     -o-box-shadow: 0 1px 2px hsla(0,0%,0%,0.25);
@@ -918,20 +918,24 @@ input.btnunmarkList     { background: url('../images/png/unmarkList64x64.png'); 
                       margin-top:1px;
                       _margin-bottom:1px; }
 
-/* SimpleModal Basic Modal Dialog
- * http://www.ericmmartin.com/projects/simplemodal/
- * http://code.google.com/p/simplemodal/
- * Copyright (c) 2010 Eric Martin - http://ericmmartin.com
- * Licensed under the MIT license:
- * http://www.opensource.org/licenses/mit-license.php
- * Revision: $Id: basic.css 257 2010-07-27 23:06:56Z emartin24 $*/
-/* IE 6 hacks */
-#simplemodal-container a.modalCloseImg, .messageboxClose {background:none; right:-14px; width:22px; height:26px; filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/basic/x.png',sizingMethod='scale');}
+/*popup*/
+.modal {
+    display: none;
+    cursor:wait;
+    width:600px;
+    position:fixed;
+    top:50%;
+    left:50%;
+    margin-top:-100px; /* negative half the size of height */
+    margin-left:-300px; /* negative half the size of width */
+    z-index:10000;/* place overlay on top of other elements */
+}
+
+/*.popup a.modalCloseImg, .messageboxClose {background:url(../images/basic/x.png) no-repeat; width:25px; height:29px; display:inline; z-index:99; position:absolute; top:0px; right:-13px; cursor:pointer;}*/
 
 iframe { width: 600px;
          height: 400px; }
 
-#popup { display:none; }
 #popupcontent, .modalcontent {
         padding-top: 10px;
         text-indent: 0px;
@@ -998,107 +1002,6 @@ iframe { width: 600px;
     width: 100%;
     background: #bfbfbf;
 }
-
-/* Overlay */
-#simplemodal-overlay {background-color:#000; cursor:wait;}
-/* Container */ /*height in der nächsten Zeile ist für die Höhe des Popups zuständig*/
-#simplemodal-container {height:360px; width:600px; /*color:#bbb; background-color:#333; border:4px solid #444; padding:12px;*/}
-#simplemodal-container .simplemodal-data {/*padding:8px;*/}
-#simplemodal-container code {/*background:#141414; border-left:3px solid #65B43D; color:#bbb; */display:block; /*font-size:12px; margin-bottom:12px; padding:4px 6px 6px;*/}
-#simplemodal-container a.modalCloseImg, .messageboxClose {background:url(../images/basic/x.png) no-repeat; width:25px; height:29px; display:inline; z-index:99; position:absolute; top:0px; right:-13px; cursor:pointer;}
-
-/* ----------------------------------------------------------------------------------------------------------------*/
-/* -->>> fancy selectbox http://demo.tutorialzine.com/2010/11/better-select-jquery-css3/select-jquery.html <<<-----*/
-/* ----------------------------------------------------------------------------------------------------------------*/
-.tzSelect{
-	/* This is the container of the new select element */
-	height:34px;
-	display:block;
-        min-width: 500px;
-	position:relative;
-	color:#666666;
-	font:15px Calibri,Arial,sans-serif;
-        background: -webkit-gradient(linear, 0 0, 0 100%, from(#f2f2f2), to(#bfbfbf));
-        background: -moz-linear-gradient(top, #f2f2f2, #bfbfbf);
-        -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#f2f2f2', endColorstr='#bfbfbf')";
-        z-index: 90;
-}
-
-.tzSelect .selectBox{
-	position:absolute;
-	height:100%;
-	width:100%;
-	
-	/* Font settings */
-	font:13px/34px "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-	text-align:center;
-	text-shadow:1px 1px 0 #EEEEEE;
-	color:#666666;
-        background: -webkit-gradient(linear, 0 0, 0 100%, from(#f2f2f2), to(#bfbfbf));
-        background: -moz-linear-gradient(top, #f2f2f2, #bfbfbf);
-        -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#f2f2f2', endColorstr='#bfbfbf')";
-	cursor:pointer;
-}
-
-.tzSelect .selectBox:hover,
-.tzSelect .selectBox.expanded{
-        background: -webkit-gradient(linear, 0 0, 0 100%, from(#f2f2f2), to(#8f8f8f));
-        background: -moz-linear-gradient(top, #f2f2f2, #8f8f8f);
-        -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#f2f2f2', endColorstr='#8f8f8f')";
-	color:#2c5667;
-	text-shadow:1px 1px 0 #9bc2d0;
-}
-
-.tzSelect .dropDown{
-	position:absolute;
-	top:34px;
-	left:0;
-        margin-left: 0px ;
-	width:100%;
-	list-style:none;
-	-moz-box-sizing:border-box;
-	-webkit-box-sizing:border-box;
-	box-sizing:border-box;
-}
-
-.tzSelect li{
-	height:64px;
-	cursor:pointer;
-	position:relative;
-        background: -webkit-gradient(linear, 0 0, 0 100%, from(#f2f2f2), to(#bfbfbf));
-        background: -moz-linear-gradient(top, #f2f2f2, #bfbfbf);
-        -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#f2f2f2', endColorstr='#bfbfbf')";
-}
-
-.tzSelect li:hover{
-	background: -webkit-gradient(linear, 0 0, 0 100%, from(#f2f2f2), to(#8f8f8f));
-        background: -moz-linear-gradient(top, #f2f2f2, #8f8f8f);
-        -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#f2f2f2', endColorstr='#8f8f8f')";
-	color:#2c5667;
-	text-shadow:1px 1px 0 #9bc2d0;
-}
-
-.tzSelect li span{
-	left:88px;
-	position:absolute;
-	top:10px;
-}
-
-.tzSelect li i{
-	color:#999999;
-	display:block;
-	font-size:12px;
-}
-
-.tzSelect li img{
-	left:9px;
-	position:absolute;
-	top:5px;
-        height: 56px;
-}
-/* ----------------------------------------------------------------------------------------------------------------*/
-/* -->>> fancy selectbox http://demo.tutorialzine.com/2010/11/better-select-jquery-css3/select-jquery.html <<<-----*/
-/* ----------------------------------------------------------------------------------------------------------------*/
 
 /* Layout -------------------------------------------------------------------------- */
 #page { width: 100%;

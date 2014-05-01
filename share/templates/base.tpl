@@ -18,6 +18,7 @@
         <meta charset="utf-8">
         {*<link href='http://fonts.googleapis.com/css?family=Ubuntu:400,700' rel='stylesheet' type='text/css'>*}
         <link rel="stylesheet" href="{$media_url}stylesheets/all.css?1" media="all">
+        <link rel="stylesheet" href="{$media_url}stylesheets/date.css" media="all">
         {block name=additional_stylesheets}{/block}
 
         <title>{block name=title}Willkommen!{/block} | {$app_title}</title>
@@ -79,7 +80,7 @@
                         {block name=sidebar} {/block}
 
                         <!-- Popup -->     
-                        <div id="popup" ></div> 
+                        <div id="popup" class="modal" ></div> 
                         <!-- end Popup --> 
 
                     </div> <!-- end #sidebar -->
@@ -103,9 +104,8 @@
             </div>                          
         </div> <!-- end #page -->
         
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js">
-        </script> 
-        
+        <script src="http://cdn.jquerytools.org/1.2.7/full/jquery.tools.min.js"></script>
+
         <script>!window.jQuery && document.write(unescape('%3Cscript src="{$media_url}scripts/libs/jquery/jquery-1.4.4.min.js"%3E%3C/script%3E'))</script>
         <script src="{$media_url}scripts/script.js"></script>
         <script src="{$media_url}scripts/selectScript.js"></script>
@@ -116,15 +116,26 @@
                 setTimeout(function() { $("#messagebox").slideToggle(); }, {$message_timeout}); 
                 });
             </script>
-            
         {/block}
         
-        <script src="{$media_url}scripts/libs/simplemodal/jquery.simplemodal-1.4.2.js"></script>
         <script type="text/javascript" src="{$media_url}scripts/libs/modal-upload/thickbox.js"></script>  
-        <script type="text/javascript" src="{$media_url}scripts/libs/datetimepicker_css.js"></script>  
         <!--[if lt IE 7 ]>
             <script src="{$media_url}scripts/libs/dd_belatedpng/dd_belatedpng.js"></script>
             <script>DD_belatedPNG.fix('img, .trans-bg');</script>
         <![endif]--> 
+
+        <!-- jquery tools -->
+        <!-- dateinput styling -->
+        <script> $(":date").dateinput({
+            format: 'yyyy-mm-dd 12:00:00',	// the format displayed for the user
+            selectors: true,             	// whether month/year dropdowns are shown
+            min: -100,                    // min selectable day (100 days backwards)
+            max: 100,                    	// max selectable day (100 days onwards)
+            offset: [10, 20],            	// tweak the position of the calendar
+            speed: 'fast',               	// calendar reveal speed
+            firstDay: 1                  	// which day starts a week. 0 = sunday, 1 = monday etc..
+            });
+        </script>   
+        <!-- end jquery tools -->
     </body>
 </html>
