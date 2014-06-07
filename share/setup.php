@@ -89,14 +89,6 @@ global $CURRICULUM;
 global $LOG;
 
 /*
- * Database setup
- */
-$conn = mysql_connect($CFG->db_host,$CFG->db_user,$CFG->db_password);
-if ($conn){ // if connected - else "install mode"
-    mysql_select_db($CFG->db_name);
-}
-
-/*
  *  Configure Timezone
  */
 date_default_timezone_set('Europe/Berlin');
