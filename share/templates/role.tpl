@@ -41,7 +41,7 @@
              <p><label>{$capabilities[cap]->name}</label>
                 <input type="radio" name="{$capabilities[cap]->capability}" value="true"{if $capabilities[cap]->permission eq 1}checked{/if}> erlaubt
                 <input type="radio" name="{$capabilities[cap]->capability}" value="false"{if $capabilities[cap]->permission eq 0}checked{/if}> nicht erlaubt
-            <p style=font-size:80%;">{$capabilities[cap]->capability}</p></br>
+             <p style=font-size:80%;">{$capabilities[cap]->capability}</p></br>
             </p>   
             {assign var="section" value=$capabilities[cap]->capability|substr:0:$colon}
         {/section}    

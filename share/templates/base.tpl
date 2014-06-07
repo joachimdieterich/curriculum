@@ -19,6 +19,8 @@
         {*<link href='http://fonts.googleapis.com/css?family=Ubuntu:400,700' rel='stylesheet' type='text/css'>*}
         <link rel="stylesheet" href="{$media_url}stylesheets/all.css?1" media="all">
         <link rel="stylesheet" href="{$media_url}stylesheets/date.css" media="all">
+       
+        
         {block name=additional_stylesheets}{/block}
 
         <title>{block name=title}Willkommen!{/block} | {$app_title}</title>

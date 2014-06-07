@@ -64,7 +64,7 @@ if (isset($_GET['function'])){
                                 echo '<div class="border-top-radius contentheader">Material</div>
                                       <div id="popupcontent">';
                                 if (!$files){
-                                    echo 'Es gibt leider kein Material zum gewählten Lernziel.';
+                                    echo 'Es gibt leider kein Material zum gewählten Lernziel.<p><label></label><input type="submit" value="OK" onclick="reloadPage()"></p>';
                                 } else {
                                     for($i = 0; $i < count($files); $i++) {  
                                         echo '<input type="hidden" name="id" id="id" value='.$files[$i]->id.'/>

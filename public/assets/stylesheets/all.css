@@ -931,7 +931,7 @@ input.btnunmarkList     { background: url('../images/png/unmarkList64x64.png'); 
     z-index:10000;/* place overlay on top of other elements */
 }
 
-/*.popup a.modalCloseImg, .messageboxClose {background:url(../images/basic/x.png) no-repeat; width:25px; height:29px; display:inline; z-index:99; position:absolute; top:0px; right:-13px; cursor:pointer;}*/
+.popup, a.modalCloseImg, .messageboxClose {background:url(../images/basic/x.png) no-repeat; width:25px; height:29px; display:inline; z-index:10001; position:absolute; top:0px; right:-13px; cursor:pointer;}
 
 iframe { width: 600px;
          height: 400px; }
