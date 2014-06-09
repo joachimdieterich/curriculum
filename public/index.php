@@ -25,7 +25,7 @@ try { // Error handling
     require_once('../share/setup.php');
     require_once('../share/function.php');      //php-Funktionen implementieren
 
-    global $CFG, $PAGE, $TEMPLATE, $LOG;
+    global $CFG, $PAGE, $TEMPLATE, $LOG, $USER;
 
     /**
     * Create LOG Object 
@@ -52,8 +52,9 @@ try { // Error handling
             if (isset($_SESSION['username'])) {
                 include ('../share/session.php');       // first build session, then do the login-check!
                 include ('../share/login-check.php');   //checkt ob man eingeloggt ist
-                    if ($_SESSION['authenticated']) {
+                    if ($_SESSION['authenticated']){   
                     $TEMPLATE->assign('loginname', $_SESSION['username']);
+                    $TEMPLATE->assign('stat_users_Online', $USER->usersOnline($USER->institutions));
                     }
                 } else {
                     $PAGE->message[] = 'Sie sind nicht angemeldet.';

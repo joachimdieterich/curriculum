@@ -25,7 +25,7 @@
                     <!--<div class="printUserHeader">Benutzer</div>-->
                     <div><img id="printUserImg" src="{if isset($avatar)}{$avatar_url}{$avatar}{/if}"></div>
                     <div><p><strong>{if isset($firstname)}{$firstname}{/if} {if isset($lastname)}{$lastname}{/if}</strong></p>
-                    <p>{if isset($group)}{$group->groups}</p>
+                    <p>{if isset($group) AND isset($group->groups)}{$group->groups}</p>
                     <p>{$group->semester}{/if}</p>    
                     <p class="printUserLogin">Letzter Login: {if isset($last_login)}{$last_login}{/if}</p></div> 
               </div>
@@ -67,11 +67,11 @@
                             <div class="box gray-gradient border-radius box-shadow gray-border {if $ena->accomplished_status_id eq 1} boxgreen {else} boxred{/if}">
                                 <div class="boxheader border-top-radius ">
                                     {if isset($ena->accomplished_users) and isset($ena->enroled_users) and isset($ena->accomplished_percent)}
-                                        {$ena->accomplished_users} von {$ena->enroled_users} ({$ena->accomplished_percent}%)<!--Ziel--> 
+                                       {$ena->accomplished_users} von {$ena->enroled_users} ({$ena->accomplished_percent}%)<!--Ziel--> 
 
                                     {/if}
                                     {if !isset($showaddObjectives) AND $file_solutionUpload eq true}
-                                        <a href="assets/scripts/libs/modal-upload/uploadframe.php?userID={$my_id}&last_login={$my_last_login}&context=userView&curID={$con->curriculum_id}&terID={$ter->id}&enaID={$ena->id}&placeValuesBeforeTB_=savedValues&TB_iframe=true&width=700&modal=true" class="thickbox">
+                                        <a href="assets/scripts/libs/modal-upload/uploadframe.php?userID={$my_id}&token={$my_token}&last_login={$my_last_login}&context=userView&curID={$con->curriculum_id}&terID={$ter->id}&enaID={$ena->id}&placeValuesBeforeTB_=savedValues&TB_iframe=true&width=700&modal=true" class="thickbox">
                                         <input class="addsolutionbtn floatright" type="button" name="addMaterial"></a>
                                         {if $solutions != false}
                                             {foreach key=solID item=sol from=$solutions}
@@ -81,14 +81,15 @@
                                             {/foreach}
                                         {/if}
 
-                                    {/if} {if isset($showaddObjectives)}
+                                    {/if}
+                                    {if isset($showaddObjectives)}
                                         <input class="rightbtn floatright" type="button" name="orderright" onclick="order('up', {$ena->order_id},{$con->curriculum_id},{$ter->id},{$ena->id})" />
                                         <input class="deletebtn floatright" type="button" name="delete" onclick="deleteObjective({$con->curriculum_id},{$ter->id},{$ena->id})" />
                                         <input class="editbtn floatright" type="button" name="edit" onclick="editObjective({$con->curriculum_id},{$ter->id},{$ena->id})">
                                         {if $ena->order_id neq '1'}
                                             <input class="leftbtn" type="button" name="orderleft" onclick="order('down', {$ena->order_id},{$con->curriculum_id},{$ter->id},{$ena->id})" />
                                         {/if}
-                                {/if}   
+                                     {/if}   
 
                                 </div>
                                 <div class="boxwrap">
@@ -102,13 +103,14 @@
                                 <div class="boxfooter border-bottom-radius">
                                     {if isset($showaddObjectives)}
                                         
-                                        <a href="assets/scripts/libs/modal-upload/uploadframe.php?userID={$my_id}&last_login={$my_last_login}&context=curriculum&curID={$con->curriculum_id}&terID={$ter->id}&enaID={$ena->id}&placeValuesBeforeTB_=savedValues&TB_iframe=true&width=700&modal=true" class="thickbox">
+                                        <a href="assets/scripts/libs/modal-upload/uploadframe.php?userID={$my_id}&token={$my_token}&last_login={$my_last_login}&context=curriculum&curID={$con->curriculum_id}&terID={$ter->id}&enaID={$ena->id}&placeValuesBeforeTB_=savedValues&TB_iframe=true&width=700&modal=true" class="thickbox">
                                         <input class="addmaterialbtn floatright" type="button" name="addMaterial"></a>
                                         <input class="editbtn floatright" type="button" name="editMaterial" onclick="editMaterial({$con->curriculum_id},{$ter->id},{$ena->id})">
                                     {/if}  
                                     {if  $file_loadMaterial eq true}
                                         <a class="text" onclick="showMaterial({$con->curriculum_id}, {$ter->id}, {$ena->id})">Material</a>
                                     {/if}
+                                    <input class="helpbtn floatright" type="button" name="editMaterial" onclick="getHelp({$page_group}, {$con->curriculum_id},{$ter->id},{$ena->id})">
                                 </div> 
 
                             </td>

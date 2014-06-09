@@ -41,8 +41,19 @@ function unmask(ID,checked){
     }
 
 /* XMLObject für SQL Abfragen*/
-function showMaterial(curriculumID, terminalObjectiveID, enablingObjectiveID) {
+function showMaterial( curriculumID, terminalObjectiveID, enablingObjectiveID) {
     var url = "assets/scripts/request.php?ajax=on&function=showMaterial&curriculumID="+ curriculumID +"&terminalObjectiveID="+ terminalObjectiveID +"&enablingObjectiveID="+ enablingObjectiveID;
+
+req = XMLobject();
+    if(req) {        
+        req.onreadystatechange = answer;
+        req.open("GET", url, true);
+        req.send(null);
+    }
+}
+
+function getHelp(group,curriculumID, terminalObjectiveID, enablingObjectiveID) {
+    var url = "assets/scripts/request.php?ajax=on&function=getHelp&group="+ group +"&curriculumID="+ curriculumID +"&terminalObjectiveID="+ terminalObjectiveID +"&enablingObjectiveID="+ enablingObjectiveID;
 
 req = XMLobject();
     if(req) {        

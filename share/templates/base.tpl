@@ -52,9 +52,9 @@
                 <header id="header">
                     <div class="floatright">
                         {if $my_username eq ''} Sie sind nicht angemeldet. 
-                    {else} {if $my_role_id != -1}Sie sind als <strong>{$my_username}</strong> ({$my_role_name}) angemeldet. <a href="index.php?action=logout">Logout</a>{/if}
+                    {else} {if $my_role_id != -1}({$stat_users_Online} User online) | Sie sind als <strong>{$my_username}</strong> ({$my_role_name}) angemeldet. <a href="index.php?action=logout">Logout</a>{/if}
+                       
                     {/if}
-
                     </div>
                     <hgroup>
                         <img src="{$request_url}assets/images/basic/logo.png"/><h1><a  href="index.php?action=dashboard">{$app_title}</a></h1>

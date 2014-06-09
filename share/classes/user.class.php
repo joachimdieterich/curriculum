@@ -58,6 +58,11 @@ class User {
      */
     public $last_login = null; 
     /**
+     * last action 
+     * @var timestamp
+     */
+    public $last_action = null; 
+    /**
      * email adress
      * @var string
      */
@@ -156,7 +161,7 @@ class User {
      */
     public function __construct($user_value = null) {
         if ($user_value != null){
-            $this->load('id', $user_value); //load user by id
+            $this->load('id', $user_value, true); //load user by id
         }
     }
     
@@ -165,7 +170,7 @@ class User {
      * @param string $key
      * @param string $user_value 
      */
-    public function load($key, $user_value, $get_auth = true) {
+    public function load($key, $user_value, $get_auth = false) {
         
         if ($key == 'username'){
             $db = DB::prepare('SELECT * FROM users WHERE UPPER('.$key.') = UPPER(?)');
@@ -244,7 +249,9 @@ class User {
             $authenticate = new Authenticate();
             $authenticate->username = $this->username;
             $authenticate->getUser('username');
-            $this->token  = $authenticate->token;
+            if (isset($authenticate->token)){
+                $this->token  = $authenticate->token;
+            } 
         }
        
     }
@@ -608,7 +615,7 @@ class User {
             }
             
             while($result = $db->fetchObject()) { 
-                    $this->load('id', $result->id, false);
+                    $this->load('id', $result->id);
                     $users[] = clone $this;
             } 
             if (isset($users)){
@@ -749,7 +756,7 @@ class User {
   
                                 while($result = $db->fetchObject()) {  
                                         $this->id           = $result->id;
-                                        $this->load('id', $this->id, false);
+                                        $this->load('id', $this->id);
                                         $users[] = clone $this; 
                                 }
                                 break;
@@ -839,6 +846,30 @@ class User {
    }
    
    /**
+    *
+    * @param type $institution_id
+    * @return int 
+    */
+   public function usersOnline (){
+        //set last_action
+        $db = DB::prepare('UPDATE users SET last_action = NOW() WHERE id = ?');        
+        $db->execute(array($this->id));
+        //get users online
+        $db = DB::prepare('SELECT COUNT(id) FROM users WHERE TIMESTAMPDIFF(MINUTE,last_action,NOW()) < (SELECT institution_timeout FROM config_institution WHERE institution_id IN (?))');
+        $db->execute(array(implode(',',$this->institutions["id"])));
+        return $db->fetchColumn();
+    }
+    
+   public function userLogout(){
+        $db = DB::prepare('SELECT last_action FROM users WHERE id = ?');
+        $db->execute(array($this->id));
+        $this->last_action = $db->fetchColumn();
+        //set last_action
+        $db = DB::prepare('UPDATE users SET last_action = TIMESTAMPADD(MINUTE,-(SELECT institution_timeout FROM config_institution WHERE institution_id IN (?)), ?) WHERE id = ?');        
+        $db->execute(array(implode(',',$this->institutions["id"]), $this->last_action, $this->id));
+   }
+           
+   /**
     * get users confirmed status
     * @return int
     */
@@ -887,6 +918,15 @@ class User {
         return false; //changed $data = '' to false. ??? not fully tested yet
     }
     
+    public function exist(){
+        $db = DB::prepare('SELECT COUNT(id) FROM users WHERE id = ?');  
+        $db->execute(array($this->id));
+        $count = $db->fetchColumn();
+        if ($count > 0){
+            return true; 
+        } else {return false;}
+    }
+    
     /**
     * function used during the install process to set up creator id to new admin
     * @return boolean
@@ -898,5 +938,6 @@ class User {
             return $db->execute(array($this->creator_id));
         }
     }
+   
 }
 ?>

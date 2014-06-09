@@ -49,17 +49,18 @@ class Mailbox {
     public function __construct() {
        
     }
+    
     /**
      * load a mail over id
      * @param int $id 
      */
-    public function loadMail($id){
+   /* public function loadMail($id){
         global $USER; 
         if (checkCapabilities('mail:loadMail', $USER->role_id)){ //check capability
             $getMail = new Mail();
             $this->inbox[] = $getMail->loadMail($id);  
         }
-    }
+    }*/
     /**
      * load inbox of a user
      * @param int $user_id 
@@ -78,6 +79,7 @@ class Mailbox {
         global $USER; 
         if (checkCapabilities('mail:loadOutbox', $USER->role_id)){ //check capability
             $this->loadMailbox($user_id, 'sender_id');
+            
         }
     }
     /**
@@ -98,7 +100,7 @@ class Mailbox {
      * @param int $user_id
      * @param string $mailbox 
      */
-    private function loadMailbox($user_id, $mailbox = 'delete'){
+    private function loadMailbox($user_id, $mailbox = 'delete'){ 
         if ($mailbox != 'deleted'){
             $db = DB::prepare('SELECT * FROM message WHERE '.$mailbox.' = ? ORDER BY id DESC');
             $db->execute(array($user_id));
@@ -148,22 +150,6 @@ class Mailbox {
                 default:            break;
             }
         }
-        if (isset($this->inbox) OR isset($this->outbox) OR isset($this->deleted_messages)){
-            // nothing to do
-        } else { switch ($mailbox) {
-                    case 'receiver_id': //inbox
-                                        $this->inbox[]            = null;
-                                        break;
-                    case 'sender_id':   // outbox
-                                        $this->outbox[]           = null;
-                                        break;
-                    case 'deleted':     // deleted messages
-                                        $this->deleted_messages[] = null;
-                                        break;
-                    default:            break;
-                }           
-        }
-        
     }    
 }
 ?>

@@ -440,6 +440,21 @@ class EnablingObjective {
         } else {return false;}  
     }
     
+    public function getAccomplishedUsers($group){
+        $db = DB::prepare('SELECT ua.user_id
+                              FROM user_accomplished AS ua
+                              INNER JOIN groups_enrolments AS gr ON gr.user_id = ua.user_id 
+                                    WHERE ua.enabling_objectives_id = ? AND gr.group_id = ?
+                                    AND gr.status = 1 AND ua.status_id = 1');
+                                    $db->execute(array($this->id, $group));
+                                    while($result = $db->fetchObject()) {
+                                        $users[] = $result->user_id; 
+                                    }
+                                    
+                                    if (isset($users)){
+                                        return $users;
+                                    } else {return false;}
+    }
     /**
      * set accomplished status of enabling objective in db
      * @param int $status

@@ -63,9 +63,11 @@
                          {$outbox[mail]->subject|truncate:70:"...":true}</td>
             </tr>
         {/section}
-        {else}<tr><td><p>Keine Nachrichten vorhanden</p></td></tr>{/if}
         </table>
         <p>{paginate_prev id="outboxPaginator"} {paginate_middle id="outboxPaginator"} {paginate_next id="outboxPaginator"}</p>
+        {else}<tr><td><p>Keine Nachrichten vorhanden</p></td></tr>{/if}
+        
+        
      
   </div>
         <div id="mailbox" ></div>   
@@ -97,9 +99,10 @@
                          {$inbox[mail]->subject|truncate:70:"...":true}</td>
             </tr>
         {/section}
-        {else}<tr><td><p>Keine Nachrichten vorhanden</p></td></tr>{/if}
         </table>
         <p>{paginate_prev id="inboxPaginator"} {paginate_middle id="inboxPaginator"} {paginate_next id="inboxPaginator"}</p>
+        {else}<tr><td><p>Keine Nachrichten vorhanden</p></td></tr>{/if}
+        
      
   </div>
         <div id="mailbox" ></div>   
