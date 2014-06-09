@@ -33,7 +33,7 @@ global $USER, $PAGE, $TEMPLATE, $LOG;
   $TEMPLATE->assign('myClasses', $groups->getGroups('user', $USER->id));
     
   /** Shows additional information depending on user role */
-  if (checkCapabilities('dashboard:globalAdmin', $USER->role_id)){
+  if (checkCapabilities('dashboard:globalAdmin', $USER->role_id, false)){
         /** Load new registered institutions */
         $institution = new Institution();
         $new_instituions =  $institution->getNewInsitutions();
@@ -48,7 +48,7 @@ global $USER, $PAGE, $TEMPLATE, $LOG;
         if ($cronjob->check_cronjob()){
             $TEMPLATE->assign('cronjob', 'Es wurde zuletzt am '.$cronjob->creation_time.' geprüft, ob Ziele abgelaufen sind.<br>');//Check last Cronjob execution
         }
-  } else if (checkCapabilities('dashboard:institutionalAdmin', $USER->role_id)){
+  } else if (checkCapabilities('dashboard:institutionalAdmin', $USER->role_id, false)){
         /** Load new registered users */
         $new_users = $USER->getNewUsers('institution', $USER->institutions);
         if ($new_users){

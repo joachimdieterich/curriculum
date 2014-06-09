@@ -91,7 +91,7 @@ class Authenticate {
  
     
     /**
-     * get user via token 
+     * get user via token / username (and password)
      * @param string $dependency 
      */
     public function getUser($dependency = null){
@@ -112,26 +112,28 @@ class Authenticate {
             default:
                 break;
         }
-
-        $this->id               = $result->id;
-        $this->username         = $result->username;
-        $this->password         = $result->password;
-        $this->creation_time    = $result->creation_time;
-        $this->creator_id       = $result->creator_id;
-        $this->status           = $result->status;           // 1 == User exists, 0 == Register New User
-        $this->firstname        = $result->firstname;
-        $this->lastname         = $result->lastname;    
-        $this->email            = $result->email;    
-        $this->user_external_id = $result->user_external_id;    
-        $this->ws_username      = $result->ws_username;  
-        $this->token            = $result->token;
-        $this->ip               = $result->ip;
+        
+            $this->id               = $result->id;
+            $this->username         = $result->username;
+            $this->password         = $result->password;
+            $this->creation_time    = $result->creation_time;
+            $this->creator_id       = $result->creator_id;
+            $this->status           = $result->status;           // 1 == User exists, 0 == Register New User
+            $this->firstname        = $result->firstname;
+            $this->lastname         = $result->lastname;    
+            $this->email            = $result->email;    
+            $this->user_external_id = $result->user_external_id;    
+            $this->ws_username      = $result->ws_username;  
+            $this->token            = $result->token;
+            $this->ip               = $result->ip;
+           
     }
     
     public function check($ip){
         $db = DB::prepare('SELECT ip FROM authenticate WHERE token = ? AND username = ?');
         $db->execute(array($this->token, $this->username));
         $result = $db->fetchObject();
+        
         if ($result->ip == $ip){return true;} else {return false;}                          
     }
     

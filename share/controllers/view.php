@@ -22,7 +22,10 @@
 */
 global $USER, $PAGE, $TEMPLATE;
 $function = '';
+
+$TEMPLATE->assign('page_group',     $PAGE->group);
 if ($_GET){ 
+    
     switch ($_GET) {
         case isset($_GET['group']): $PAGE->group = $_GET['group'];
                                     $group = new Group(); 
@@ -129,8 +132,8 @@ if ((isset($_GET['function']) AND $_GET['function'] == 'addObjectives') || (isse
 $courses = new Course(); // Load course
 
 //capabilies
-$TEMPLATE->assign('file_solutionUpload', checkCapabilities('file:solutionUpload', $USER->role_id));  
-$TEMPLATE->assign('file_loadMaterial', checkCapabilities('file:loadMaterial', $USER->role_id));  
+$TEMPLATE->assign('file_solutionUpload', checkCapabilities('file:solutionUpload', $USER->role_id), false);  
+$TEMPLATE->assign('file_loadMaterial', checkCapabilities('file:loadMaterial', $USER->role_id), false);  
 
 //load terminal objectives
 $terminal_objectives = new TerminalObjective();

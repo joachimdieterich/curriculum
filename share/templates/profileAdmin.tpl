@@ -48,7 +48,7 @@
             {validate_msg field='password'}
             <p><label>Passwort anzeigen: </label><input type="checkbox" class="centervertical" name='showpassword'  {if isset($showpassword)}checked{/if} onclick="unmask('password', this.checked);"/></p>
             <p><label>Passwortänderung: </label><input type="checkbox" class="centervertical" name='confirmed'  {if isset($confirmed)}checked{/if}/></p>
-            <p><label>Avatar: </label><input class="inputform" id="myfile" name='avatar' value={$newUserAvatar} readonly  onclick="tb_show('','assets/scripts/libs/modal-upload/uploadframe.php?userID={$my_id}&last_login={$my_last_login}&context=avatar&target=myfile&format=1&multiple=false&placeValuesBeforeTB_=savedValues&TB_iframe=true&width=710&modal=true')" href="#" class="thickbox"/>
+            <p><label>Avatar: </label><input class="inputform" id="myfile" name='avatar' value={$newUserAvatar} readonly  onclick="tb_show('','assets/scripts/libs/modal-upload/uploadframe.php?userID={$my_id}&token={$my_token}&last_login={$my_last_login}&context=avatar&target=myfile&format=1&multiple=false&placeValuesBeforeTB_=savedValues&TB_iframe=true&width=710&modal=true')" href="#" class="thickbox"/>
             {validate_msg field='avatar'}
             {if count($my_institutions['id']) > 1}
                 <p><label>Institution / Schule*: </label>{html_options id='institution' name='institution' values=$my_institutions['id'] output=$my_institutions['institution']}</p>

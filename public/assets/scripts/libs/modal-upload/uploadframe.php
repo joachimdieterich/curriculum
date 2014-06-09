@@ -23,7 +23,7 @@
 */
 
 include_once '../../../../../share/config.php'; //Läd die config.php
-global $CFG, $PAGE;
+global $CFG, $PAGE, $USER;
 include_once $_SERVER['DOCUMENT_ROOT'].$CFG->BASE_URL.'share/include.php';
 include_once $_SERVER['DOCUMENT_ROOT'].$CFG->BASE_URL.'share/function.php';      //php-Funktionen includen
 
@@ -62,18 +62,19 @@ $user_id =      (isset($_GET['userID']) && trim($_GET['userID'] != '') ? $_GET['
 $token   =      (isset($_GET['token']) && trim($_GET['token'] != '') ? $_GET['token'] : $_POST['token']); //security check to prevent access without login
 
 $upload_user = new User(); 
-$upload_user->load('id', $user_id); //Load upload User data
+$upload_user->load('id', $user_id, true); //Load upload User data
+$USER = $upload_user;           //Hack - $USER not defined but required on upload
+$_SESSION['USER'] = $USER;      //Hack - $_SESSION['USER'] not defined but required on upload
 
 /**
  * Security check based on username token and current ip to prevent access without login
  */
 $authenticate = new Authenticate();
 $authenticate->username = $upload_user->username;
-$authenticate->token    = $token;
+$authenticate->getUser('username');
 if (!$authenticate->check(getIp())){
     throw new CurriculumException('Unberechtigter Zugriff!');
 }//security 
-
 
 if (isset($context)) {
         $contextPath = $file->getContextPath($context);
@@ -453,7 +454,7 @@ $(document).ready(function() {
 		<p><input name="target" type="hidden" value="<?php echo $targetID; ?>" /></p>
 		<p><input name="format" type="hidden" value="<?php echo $returnFormat; ?>" /></p>
 		<p><input name="multiple" type="hidden" value="<?php echo $multipleFiles; ?>" /></p>
-                <p><input name="last_login" type="hidden" value="<?php echo $last_login; ?>" /></p>
+                <p><input name="token" type="hidden" value="<?php echo $token; ?>" /></p>
                 <p><label>Titel*: </label><input class="inputform" id="titel" name="title" /></p>
                 <?php
                 if (isset($v_error['title']['message'][0])){
@@ -491,7 +492,7 @@ $(document).ready(function() {
                     <p><input name="curID" type="hidden" value="<?php echo $curriculum_id; ?>" /></p>
                     <p><input name="terID" type="hidden" value="<?php echo $terminal_objective_id; ?>" /></p>
                     <p><input name="enaID" type="hidden" value="<?php echo $enabling_objective->id; ?>" /></p>
-                    <p><input name="last_login" type="hidden" value="<?php echo $last_login; ?>" /></p>
+                    <p><input name="token" type="hidden" value="<?php echo $token; ?>" /></p>
                     <p><label>Titel: </label><input class="inputform" id="titel" name="title" /></p>
                     <?php
                     if (isset($v_error['title']['message'][0])){

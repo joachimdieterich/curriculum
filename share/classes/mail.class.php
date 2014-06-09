@@ -110,13 +110,13 @@ class Mail {
             $db->execute(array($id));
             $result = $db->fetchObject();
                 if ($result){
-                    $this->id           = $result->id;
-                    $this->sender_id    = $result->sender_id;
-                    $this->receiver_id  = $result->receiver_id;
-                    $this->subject      = $result->subject;
-                    $this->message      = $result->message;
+                    $this->id            = $result->id;
+                    $this->sender_id     = $result->sender_id;
+                    $this->receiver_id   = $result->receiver_id;
+                    $this->subject       = $result->subject;
+                    $this->message       = $result->message;
                     $this->creation_time = $result->creation_time;
-                    $this->status       = $result->status;    
+                    $this->status        = $result->status;    
                 } else {
                     //$this->institutions[] = NULL;
                 } 

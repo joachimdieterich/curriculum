@@ -13,7 +13,7 @@
         </ul>
     </nav>
 
-    {if checkCapabilities('menu:readMyCurricula', $my_role_id)}
+    {if checkCapabilities('menu:readMyCurricula', $my_role_id, false)}
         <nav role="curriculum" class="menu">
             <ul class="group">
                 <li class="border-top-radius contentheader">Meine Lehrpläne</li>
@@ -29,7 +29,7 @@
 
 
     {*if $my_role_id != -1*}
-    {if checkCapabilities('menu:readInstitution', $my_role_id)}
+    {if checkCapabilities('menu:readInstitution', $my_role_id, false)}
         <nav role="edit" class="menu">
             <ul class="group">
                 <li class="border-top-radius contentheader">Meine Institution</li>
@@ -63,7 +63,7 @@
                 {if checkCapabilities('menu:readConfirm', $my_role_id)}            
                     <li><p><a href="index.php?action=confirm&reset=true">Freigaben</a></p></li>
                 {/if}
-                {if checkCapabilities('menu:readProfileConfig', $my_role_id) or checkCapabilities('menu:readInstitutionConfig', $my_role_id)}
+                {if checkCapabilities('menu:readProfileConfig', $my_role_id) or checkCapabilities('menu:readInstitutionConfig', $my_role_id, false)}
                 <li><p><a href="index.php?action=config">Einstellungen</a></p></li>
                 {/if}
             </ul>
@@ -71,7 +71,7 @@
     {/if}
 
 
-    {if checkCapabilities('menu:readLog', $my_role_id)}
+    {if checkCapabilities('menu:readLog', $my_role_id, false)}
         <nav role="log" class="menu">
             <ul class="group">
                 <li class="border-top-radius contentheader">Administration Log</li>

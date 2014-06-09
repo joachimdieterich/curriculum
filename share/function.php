@@ -406,4 +406,6 @@ function getIp() {
     //The value of $ip at this point would look something like: "192.0.34.166"
     return ip2long($ip);//The $ip would now look something like: 1073732954
 }
+
+
 ?>

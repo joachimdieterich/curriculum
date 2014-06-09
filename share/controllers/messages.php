@@ -27,6 +27,16 @@ $TEMPLATE->assign('timestamp', time());  //hack, damit bei wiederholten anklicke
 if ($_GET){
    if(isset($_GET['showInbox']))   { $TEMPLATE->assign('showInbox', true); } 
    if(isset($_GET['showOutbox']))  { $TEMPLATE->assign('showOutbox', true);} 
+   if(isset($_GET['shownewMessage']))  { //for Help requests
+       $TEMPLATE->assign('shownewMessage', true);
+       if(isset($_GET['help_request'])) {
+            $TEMPLATE->assign('receiver_id', $_GET['receiver_id']);
+            $enabling_objective = new EnablingObjective();
+            $enabling_objective->id = $_GET['subject'];
+            $enabling_objective->load();
+            $TEMPLATE->assign('subject', 'Benutzer '.$USER->username.' braucht Hilfe beim Lernziel: '.$enabling_objective->enabling_objective);
+       }
+   } 
 }
 
 if ($_POST){

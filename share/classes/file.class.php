@@ -208,7 +208,7 @@ class File {
      */
     public function getSolutions($dependency = null, $course_id = null, $user_ids = null){
         global $USER;
-        if (checkCapabilities('file:getSolutions', $USER->role_id)){
+        if (checkCapabilities('file:getSolutions', $USER->role_id, false)){
             switch ($dependency) {
                 case 'course':  if (is_array($user_ids)){
                                     $user_ids = implode(", ", $user_ids);

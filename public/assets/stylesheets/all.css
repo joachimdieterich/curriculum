@@ -201,7 +201,7 @@ button {  width: auto; overflow: auto; }
 .pointer { cursor: pointer; }
 
 .printbtn, .editbtn, .deletebtn, .addbtn, .addmaterialbtn, .leftbtn, .rightbtn, .upbtn, .downbtn, 
-.addsolutionbtn, .okbtn, .notbtn, .groupbtn, .calbtn, .listbtn, .downloadbtn{ 
+.addsolutionbtn, .okbtn, .notbtn, .groupbtn, .calbtn, .listbtn, .downloadbtn, .helpbtn{ 
     background-repeat: no-repeat;
     background-size: contain;
     background-color: transparent;
@@ -241,6 +241,7 @@ button {  width: auto; overflow: auto; }
 .editbtn        { background-image: url('../images/png/glyphicons_151_edit.png'); }
 .deletebtn      { background-image: url('../images/png/glyphicons_191_circle_minus.png'); }
 .groupbtn       { background-image: url('../images/png/glyphicons_043_group.png'); }
+.helpbtn         { background-image: url('../images/png/glyphicons_194_circle_question_mark.png'); }
 .downloadbtn    { background-image: url('../images/png/glyphicons_200_download.png');
                   margin-left: -4px;}
 .okbtn          { background-image: url('../images/png/glyphicons_206_ok_2.png'); }

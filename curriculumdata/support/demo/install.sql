@@ -1596,6 +1596,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `password` varchar(50) DEFAULT NULL,
   `role_id` int(11) NOT NULL DEFAULT '0',
   `last_login` timestamp NULL DEFAULT NULL,
+  `last_action` timestamp NULL DEFAULT NULL,
   `email` text NOT NULL,
   `confirmed` tinyint(1) NOT NULL DEFAULT '0',
   `firstname` text NOT NULL,

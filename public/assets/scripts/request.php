@@ -50,7 +50,8 @@ if (isset($_GET['function'])){
         */
         $authenticate = new Authenticate();
         $authenticate->username = $_SESSION['USER']->username;
-        $authenticate->token    = $_SESSION['USER']->token;
+        $authenticate->getUser('username');
+        
         if (!$authenticate->check(getIp())){ 
             throw new CurriculumException('Unberechtigter Zugriff!');
         }//security 
@@ -84,6 +85,28 @@ if (isset($_GET['function'])){
                                 echo '</div></div>';
                             }
                             break;  
+        case "getHelp": 
+                            if (isset($_GET['ajax'])) {
+                                $enabling_objective = new EnablingObjective();
+                                $enabling_objective->id = $_GET['enablingObjectiveID'];
+                                $enabling_objective->load();
+                                $result = $enabling_objective->getAccomplishedUsers($_GET['group']);
+                                
+                                echo '<div class="border-top-radius contentheader">Hilfe</div>
+                                      <div id="popupcontent">';
+                                if ($result){
+                                echo 'Folgende Benutzer haben das Lernziel: <br><br>"',$enabling_objective->enabling_objective,'"<br><br> bereits erreicht und können dir helfen:<br><br>';
+                                
+                                $users = new User();
+                                    for($i = 0; $i < count($result); $i++) {
+                                      $users->load('id', $result[$i]);
+                                      echo $users->username, ': <a href="index.php?action=messages&shownewMessage&help_request=true&receiver_id=',$users->id,'&subject=',$enabling_objective->id,'">Benutzer kontaktieren</a><br>';
+                                    }
+                                } else {echo 'Leider gibt es keinen Benutzer, der dieses Lernziel erreicht hat';}
+                                echo '<br><input type="submit" name="Submit" value="Fenster schließen" onclick="reloadPage()"/>';
+                                echo '</div></div>';
+                            }
+                            break;                      
 
         case "editMaterial": if (isset($_GET['ajax'])) {
                                 $file = new File(); 
@@ -333,15 +356,30 @@ if (isset($_GET['function'])){
                                 $mail->setStatus(true);
                                 $mail->loadMail($mail->id);
 
-                                // wenn Absender = -1 dann Systemmeldung
+                                // If sender = -1 --> System
                                 if ($mail->sender_id == -1){
                                    $sender_id = 'Curriculum-Nachrichtensystem'; 
                                 } else {
                                     $sender = new User();
-                                    $sender->load('id', $mail->sender_id);
+                                    $sender->id = $mail->sender_id;
+                                    if ($sender->exist()){                      //if User was deleted
+                                            $sender->load('id', $mail->sender_id, false);
+                                    } else {
+                                        $sender->firstname = 'Gelöschter';
+                                        $sender->lastname  = 'Benutzer';
+                                        $sender->username  = '';
+                                    }
                                 }
+                                
                                 $receiver = new User();
-                                $receiver->load('id', $mail->receiver_id);
+                                $receiver->id = $mail->receiver_id;
+                                if ($receiver->exist()){
+                                    $receiver->load('id', $mail->receiver_id, false);
+                                } else {
+                                    $receiver->firstname = 'Gelöschter';
+                                    $receiver->lastname  = 'Benutzer';
+                                    $receiver->username  = '';
+                                }
                                  
                                 echo '<p class="mailheader"><label class="mailheader">Von:</label>';
                                 echo $sender->firstname.' '.$sender->lastname.' ('.$sender->username.')</p>';

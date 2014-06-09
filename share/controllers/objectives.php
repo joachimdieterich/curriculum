@@ -39,7 +39,7 @@ list ($selected_curriculum, $selected_group) = explode('_', $selected_curriculum
     
 if ($selected_curriculum != '' AND $selected_user_id != '') {
     $user = new User(); 
-    $user->load('id', $selected_user_id, false);
+    $user->load('id', $selected_user_id);
     $TEMPLATE->assign('user', $user);
     
     $group = new Group();   
