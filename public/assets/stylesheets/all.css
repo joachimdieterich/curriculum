@@ -401,6 +401,7 @@ button {  width: auto; overflow: auto; }
     top :0px; left:0px; right:0px;
     width: 100%;
     height: 20px;
+    font-size: 90%;
 }
 .boxscroll{
     width: 160px; /*20px more than box to hide scrollbar*/

@@ -109,8 +109,7 @@ class Mailbox {
                         AND msg.status = -1 ORDER BY msg.id DESC');
             $db->execute(array($user_id, $user_id));        
         }
-       $result = $db->fetchObject();
-        
+       
         while ($result = $db->fetchObject()) {
             $getMail = new Mail();
             $getMail->id                 = $result->id;
@@ -140,6 +139,7 @@ class Mailbox {
             switch ($mailbox) {
                 case 'receiver_id': //inbox
                                     $this->inbox[]            = $getMail;
+                                    //object_to_array($getMail);
                                     break;
                 case 'sender_id': // outbox
                                     $this->outbox[]           = $getMail;

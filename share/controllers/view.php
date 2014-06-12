@@ -22,12 +22,10 @@
 */
 global $USER, $PAGE, $TEMPLATE;
 $function = '';
-
-$TEMPLATE->assign('page_group',     $PAGE->group);
 if ($_GET){ 
-    
     switch ($_GET) {
         case isset($_GET['group']): $PAGE->group = $_GET['group'];
+                                    $TEMPLATE->assign('page_group',     $PAGE->group);
                                     $group = new Group(); 
                                     $group->id = $_GET['group'];
                                     $group->load(); 
