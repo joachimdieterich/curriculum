@@ -25,8 +25,8 @@ global $PAGE, $USER, $TEMPLATE;
 $TEMPLATE->assign('timestamp', time());  //hack, damit bei wiederholten anklicken eines postfachs die funktion detect_reload() nicth ausgelöst wird
 
 if ($_GET){
-   if(isset($_GET['showInbox']))   { $TEMPLATE->assign('showInbox', true); } 
-   if(isset($_GET['showOutbox']))  { $TEMPLATE->assign('showOutbox', true);} 
+   if(isset($_GET['showInbox']))   { $TEMPLATE->assign('showInbox', true); inbox();} 
+   if(isset($_GET['showOutbox']))  { $TEMPLATE->assign('showOutbox', true); outbox();} 
    if(isset($_GET['shownewMessage']))  { //for Help requests
        $TEMPLATE->assign('shownewMessage', true);
        if(isset($_GET['help_request'])) {
@@ -40,8 +40,8 @@ if ($_GET){
 }
 
 if ($_POST){
-    if(isset($_POST['showInbox']))      { $TEMPLATE->assign('showInbox', true); }
-    if(isset($_POST['showOutbox']))     { $TEMPLATE->assign('showOutbox', true); }
+    if(isset($_POST['showInbox']))      { $TEMPLATE->assign('showInbox', true); inbox();}
+    if(isset($_POST['showOutbox']))     { $TEMPLATE->assign('showOutbox', true); outbox();}
     if(isset($_POST['shownewMessage'])) { $TEMPLATE->assign('shownewMessage', true); }
     if(isset($_POST['sendMessage'])) {
         $newMail = new Mail();
@@ -78,25 +78,37 @@ if ($_POST){
  * End POST / GET
  */
 
-$mailbox = new Mailbox();
+
 
 /**
  * load users Outbox 
  */
-$mailbox->loadOutbox($USER->id);
-setPaginator('outboxPaginator', $TEMPLATE, $mailbox->outbox, 'outbox', 'index.php?action=messages&showOutbox=showOutbox'); //set Paginator    
+function outbox(){
+    global $USER, $TEMPLATE;
+    $mailbox = new Mailbox();
+    $mailbox->loadOutbox($USER->id);
+    setPaginator('outboxPaginator', $TEMPLATE, $mailbox->outbox, 'outbox', 'index.php?action=messages&showOutbox=showOutbox'); //set Paginator    
+}
 
 /**
  * load users Inbox 
  */
-$mailbox->loadInbox($USER->id);
-setPaginator('inboxPaginator', $TEMPLATE, $mailbox->inbox, 'inbox', 'index.php?action=messages&showInbox=showInbox'); //set Paginator    
+function inbox(){
+    global $USER, $TEMPLATE;
+    $mailbox = new Mailbox();
+    $mailbox->loadInbox($USER->id);
+    setPaginator('inboxPaginator', $TEMPLATE, $mailbox->inbox, 'inbox', 'index.php?action=messages&showInbox=showInbox'); //set Paginator    
+}
 
 /**
  * load users Deleted messages --> not used yet
  */
-$mailbox->loadDeletedMessages($USER->id);
-setPaginator('deleted_messagesPaginator', $TEMPLATE, $mailbox->deleted_messages, 'deleted', 'index.php?action=messages&showDeleted=showDeleted'); //set Paginator    
+function deletbox(){
+    global $USER, $TEMPLATE;
+    $mailbox = new Mailbox();
+    $mailbox->loadDeletedMessages($USER->id);
+    setPaginator('deleted_messagesPaginator', $TEMPLATE, $mailbox->deleted_messages, 'deleted', 'index.php?action=messages&showDeleted=showDeleted'); //set Paginator    
+}
 
 /**
  * Load userlist 

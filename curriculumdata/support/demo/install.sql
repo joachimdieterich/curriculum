@@ -1262,7 +1262,7 @@ INSERT INTO `role_capabilities` (`id`, `role_id`, `capability`, `permission`, `c
 (571, 2, 'file:delete', 1, '2014-04-16 13:02:54', -1),
 (572, 3, 'file:delete', 1, '2014-04-16 13:02:54', -1),
 (573, 4, 'file:delete', 1, '2014-04-16 13:02:54', -1),
-(574, 0, 'file:getSolutions', 0, '2014-04-16 13:06:03', -1),
+(574, 0, 'file:getSolutions', 1, '2014-04-16 13:06:03', -1),
 (575, 1, 'file:getSolutions', 1, '2014-04-16 13:06:03', -1),
 (576, 2, 'file:getSolutions', 1, '2014-04-16 13:06:03', -1),
 (577, 3, 'file:getSolutions', 1, '2014-04-16 13:06:03', -1),
