@@ -64,7 +64,7 @@ if ($_POST){
                                                 $terminal_objective->update();  
                                             } else {
                                                 $terminal_objective->add();
-                                                //???$TEMPLATE->assign('scrollto', $terminal_objective->terminal_objective); //damit man nicht jedes mal scrollen muss = sprungmarke
+                                                //???$TEMPLATE->assign('scrollto', $terminal_objective->terminal_objective); //sprungmarke
                                             }
                                             $curriculum = $_POST['curriculum_id'];
                                         }

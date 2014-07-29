@@ -183,7 +183,23 @@ if (isset($_POST['Submit'])) {
                                             $file->terminal_objective_id = $terminal_objective_id;
                                             $file->enabling_objective_id = $enabling_objective->id;
                                             $file->add();
+                                            
+                                            if ($context == "userView") { // --> upload of solution file
+                                                $course = new Course(); 
+                                                $teachers = $course->getTeacher($upload_user->id, $enabling_objective->curriculum_id); // get Teachers
 
+                                                $mail = new Mail();
+                                                for($i = 0; $i < count($teachers); ++$i) {
+                                                    $mail->sender_id = $upload_user->id;
+                                                    $mail->receiver_id = $teachers[$i]; //current Teacher
+                                                    $mail->subject = $upload_user->firstname.' '.$upload_user->lastname.' ('.$upload_user->username.') hat eine Lösung eingereicht.';
+                                                    $mail->message = $upload_user->firstname.' '.$upload_user->lastname.' ('.$upload_user->username.') hat zum Lernziel: <br> "'.$enabling_objective->enabling_objective.'" folgende Lösung eingereicht:<br> 
+                                                        Link zur Lösung: <a href="'.$file->path.'"> Lösung öffnen...</a> <br> <br>
+                                                        <p class=" pointer" onclick="setAccomplishedObjectivesBySolution('.$teachers[$i].', '.$upload_user->id.', '.$enabling_objective->id.', 1)">Ziel freischalten</p><br>
+                                                        <p class=" pointer" onclick="setAccomplishedObjectivesBySolution('.$teachers[$i].', '.$upload_user->id.', '.$enabling_objective->id.', 0)">Ziel deaktivieren</p>'; 
+                                                    $mail->postMail();
+                                                }
+                                            }                        
                                                 $PAGE->message[] = 'Material wurde erfolgreich hinzugefügt.';
                                                 //Fenster ausblenden
                                                 ?> <script type="text/javascript">

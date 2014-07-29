@@ -44,6 +44,7 @@
         </script>
         {/if}
         <script src="{$media_url}scripts/libs/modernizr/modernizr-1.6.min.js"></script>
+        <script src="{$media_url}scripts/Chart.js"></script>
     </head>
 
     <body>

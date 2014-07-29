@@ -106,11 +106,13 @@
                                         <a href="assets/scripts/libs/modal-upload/uploadframe.php?userID={$my_id}&token={$my_token}&last_login={$my_last_login}&context=curriculum&curID={$con->curriculum_id}&terID={$ter->id}&enaID={$ena->id}&placeValuesBeforeTB_=savedValues&TB_iframe=true&width=700&modal=true" class="thickbox">
                                         <input class="addmaterialbtn floatright" type="button" name="addMaterial"></a>
                                         <input class="editbtn floatright" type="button" name="editMaterial" onclick="editMaterial({$con->curriculum_id},{$ter->id},{$ena->id})">
+                                    {else}
+                                        <input class="helpbtn floatright" type="button" name="help" onclick="getHelp({$page_group}, {$con->curriculum_id},{$ter->id},{$ena->id})">
                                     {/if}  
                                     {if  $file_loadMaterial eq true}
                                         <a class="text" onclick="showMaterial({$con->curriculum_id}, {$ter->id}, {$ena->id})">Material</a>
                                     {/if}
-                                    <input class="helpbtn floatright" type="button" name="editMaterial" onclick="getHelp({$page_group}, {$con->curriculum_id},{$ter->id},{$ena->id})">
+                                    
                                 </div> 
 
                             </td>
