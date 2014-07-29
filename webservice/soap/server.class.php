@@ -1,4 +1,4 @@
-fget<?php
+<?php
 /**
  *  This file is part of curriculum - http://www.joachimdieterich.de
  * 

@@ -398,6 +398,52 @@ class EnablingObjective {
     }
     
     /**
+     * get data for user report
+     * @global int $USER
+     * @param int $id
+     * @return object 
+     */
+    public function getReport($id = null){     
+        $db = DB::prepare('SELECT * FROM user_accomplished WHERE user_id = ? AND status_id = 1 ORDER BY accomplished_time');
+        if ($id == null) {
+            global $USER;
+            $db->execute(array($USER->id));
+        } else {
+            $db->execute(array($id));
+        }
+        while($result = $db->fetchObject()) { 
+            $this->id                      = $result->enabling_objectives_id;
+            $this->accomplished_status_id  = $result->status_id;   
+            $this->accomplished_time       = $result->accomplished_time;    
+            
+            $objectives[]                  = clone $this; 
+        }
+    if (isset($objectives)){
+    } else {
+        $objectives = NULL;
+        }
+    return $objectives;
+    }
+    
+    /**
+     * get percentage of completion
+     * @param int $cur
+     * @param int $id
+     * @return int 
+     */
+    public function getPercentageOfCompletion($cur = null, $id = null){
+    $db = DB::prepare('SELECT COUNT(id) FROM enablingObjectives WHERE curriculum_id = ?');
+    $db->execute(array($cur));
+    $ena_count = $db->fetchColumn();
+    
+    $db = DB::prepare('SELECT COUNT(en.id) FROM enablingObjectives AS en, user_accomplished AS ua 
+        WHERE en.curriculum_id = ? AND ua.user_id = ? AND ua.status_id = 1 AND ua.enabling_objectives_id = en.id');
+    $db->execute(array($cur,$id));
+    $ena_acc_count =  $db->fetchColumn();
+    return round($ena_acc_count/$ena_count*100,2); 
+    }
+    
+    /**
     * get repeat interval 
     * @param int $repeat_id
     * @return array 

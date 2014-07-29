@@ -43,6 +43,7 @@
                         <!--<td>Benutzername</td>-->
                         <td>Vorname</td>
                         <td>Nachname</td>
+                        <td>erledigt</td>
                         <!--<td>Email</td>-->
                         <!--<td>PLZ</td>-->
                         <!--<td>Ort</td>-->
@@ -52,12 +53,13 @@
 		</tr>
                 {* display results *}    
                 {section name=res loop=$results}
-                    <tr class="{if isset($selected_user_id) AND $selected_user_id eq $results[res]->id} activecontenttablerow {else}contenttablerow{/if}" id="row{$smarty.section.res.index}" onclick="window.location.assign('index.php?action=objectives&course='+document.getElementById('course').value+'&userID='+document.getElementById('userID{$smarty.section.res.index}').value);">
+                    <tr class="{if isset($selected_user_id) AND $selected_user_id eq $results[res]->id} activecontenttablerow {else}contenttablerow{/if}{if $results[res]->completed eq 100} completed{/if}" id="row{$smarty.section.res.index}" onclick="window.location.assign('index.php?action=objectives&course='+document.getElementById('course').value+'&userID='+document.getElementById('userID{$smarty.section.res.index}').value);">
                        <td><input class="invisible" type="checkbox" id="userID{$smarty.section.res.index}" name="userID" value={$results[res]->id} {if isset($selected_user_id) AND $selected_user_id eq $results[res]->id} checked{/if}/></td>
                        <!--<td><img src="{$avatar_url}{$results[res]->avatar}" alt="Profilfoto" width="18"></td>-->
                        <!--<td>{$results[res]->username}</td>-->
                        <td>{$results[res]->firstname}</td>
                        <td>{$results[res]->lastname}</td>
+                       <td>{$results[res]->completed}</td>
                        <!--<td>{$results[res]->email}</td>-->
                        <!--<td>{$results[res]->postalcode}</td>-->
                        <!--<td>{$results[res]->city}</td-->

@@ -98,7 +98,9 @@ if (isset($_GET['function'])){
                                 echo 'Folgende Benutzer haben das Lernziel: <br><br>"',$enabling_objective->enabling_objective,'"<br><br> bereits erreicht und können dir helfen:<br><br>';
                                 
                                 $users = new User();
-                                    for($i = 0; $i < count($result); $i++) {
+                                    //for($i = 0; $i < count($result); $i++) {
+                                    if (count($result)> 10){$max = 10;} else {$max = count($result);}
+                                    for($i = 0; $i < $max; $i++) {
                                       $users->load('id', $result[$i]);
                                       echo $users->username, ': <a href="index.php?action=messages&shownewMessage&help_request=true&receiver_id=',$users->id,'&subject=',$enabling_objective->id,'">Benutzer kontaktieren</a><br>';
                                     }

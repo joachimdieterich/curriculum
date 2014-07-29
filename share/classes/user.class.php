@@ -128,7 +128,7 @@ class User {
      */
     public $creation_time = null; 
     /**
-     * timestamp of creator user
+     * id of creator user
      * @var int
      */
     public $creator_id = null; 
@@ -140,8 +140,7 @@ class User {
     /**
      * array of enrolments
      * @var array
-     */
-    
+     */    
     public $enrolments = array();
     /**
      * role capabilities 
@@ -153,7 +152,11 @@ class User {
      * @var string 
      */
     public $token = null;
-    
+    /**
+     * percentage of curriculum completion
+     * @var int 
+     */
+    public $completed = null; 
     
     /**
      * User class constructor
@@ -753,6 +756,21 @@ class User {
                                                     (SELECT institution_id FROM institution_enrolments WHERE user_id = ?))                                                       
                                                     ORDER by us.lastname');
                                 $db->execute(array($id, $this->id)); 
+  
+                                while($result = $db->fetchObject()) {  
+                                        $this->id           = $result->id;
+                                        $this->load('id', $this->id);
+                                        $ena = new EnablingObjective();
+                                        $this->completed = $ena->getPercentageOfCompletion($id, $this->id);
+                                        $users[] = clone $this; 
+                                }
+                                break;
+                case 'institution':  $db = DB::prepare('SELECT DISTINCT us.* FROM users AS us
+                                                    INNER JOIN groups_enrolments AS gr ON us.id = gr.user_id 
+                                                    AND gr.group_id = ANY (SELECT id FROM groups WHERE institution_id = ANY 
+                                                    (SELECT institution_id FROM institution_enrolments WHERE user_id = ?))                                                       
+                                                    ORDER by us.lastname');
+                                $db->execute(array($this->id)); 
   
                                 while($result = $db->fetchObject()) {  
                                         $this->id           = $result->id;
