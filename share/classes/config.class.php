@@ -118,7 +118,7 @@ class Config {
      * timestamp of creation
      * @var timestamp
      */
-    public $creation_time                   = null; //evtl. überflüssig ???
+    public $creation_time                   = null; //todo: evtl. überflüssig 
     /**
      * update timestamp
      * @var timestamp

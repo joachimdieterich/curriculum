@@ -51,7 +51,7 @@ class Curriculum {
      * id of grade
      * @var int 
      */
-    public $grade_id = 8; //??? std vars setzten 
+    public $grade_id = 8; //todo: std vars setzten 
     /**
      * name of grade
      * @var string
@@ -61,7 +61,7 @@ class Curriculum {
      * id of subject
      * @var int
      */
-    public $subject_id = 1; 
+    public $subject_id = 1; //todo: std vars setzten 
     /**
      * name of subject
      * @var type 
@@ -71,17 +71,17 @@ class Curriculum {
      * id of schooltype
      * @var int
      */ 
-    public $schooltype_id = 1; 
+    public $schooltype_id = 1; //todo: std vars setzten 
     /**
      * id of state
      * @var int
      */
-    public $state_id = 11; 
+    public $state_id = 11; //todo: std vars setzten 
     /**
      * id of country
      * @var int
      */
-    public $country_id = 56; 
+    public $country_id = 56; //todo: std vars setzten 
     /**
      * id of icon
      * @var int

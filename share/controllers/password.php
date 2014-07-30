@@ -24,7 +24,7 @@ global $USER, $PAGE, $TEMPLATE;
 
 switch ($PAGE->login) {
     case 'first':   //wird über die login.php gesetzt
-                 $PAGE->message[] ="Willkommen auf curriculum! Sie melden sich das erste mal auf curriculum an. Bitte ändern Sie daher das vorgegebene Passwort um unbefugten Zugriff zu vermeiden."; //??? Texte in globale language datei
+                 $PAGE->message[] ="Willkommen auf curriculum! Sie melden sich das erste mal auf curriculum an. Bitte ändern Sie daher das vorgegebene Passwort um unbefugten Zugriff zu vermeiden."; //todo: Texte in globale language datei
         break;
     
     case 'webservice': //wird über die login.php gesetzt

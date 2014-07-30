@@ -402,10 +402,10 @@ class User {
                 default:        $db = DB::prepare('SELECT DISTINCT usr.id, usr.firstname, usr.lastname, usr.username 
                                         FROM users AS usr, groups_enrolments AS cle 
                                         WHERE cle.group_id IN (SELECT DISTINCT group_id FROM groups_enrolments WHERE user_id = ?)
-                                        AND usr.id = cle.user_id');//??? WHERE Mailempfang erlaubt!!!
+                                        AND usr.id = cle.user_id');//todo: Bedingung einbauen damit nur Personen angezeigt werden die den  Mailempfang erlaubt haben!!!
                                 $db->execute(array($this->id));
                                 while($result = $db->fetchObject()) { 
-                                        $class_members["id"][]     = $result->id;  //??? besser als object realisieren
+                                        $class_members["id"][]     = $result->id;  //todo: besser als object realisieren
                                         $class_members["user"][]   = $result->firstname.' '.$result->lastname.' ('.$result->username.')'; 
                                 } 
                                 if (isset($class_members)){
@@ -555,7 +555,7 @@ class User {
                         if (!isset($state_position))          {$this->state_id      = $CFG->standard_state;}                  else {$this->state_id      = $data[$state_position];}
                         if (!isset($country_position))        {$this->country_id    = $CFG->standard_country;}                  else {$this->country_id    = $data[$country_position];}
                         if (!isset($avatar_position))         {$this->avatar     = 'noprofile.jpg';}     else {$this->avatar     = $data[$avatar_position];}
-                        if (!isset($password_position))       {$this->password   = 'Reis1834';}          else {$this->password   = $data[$password_position];} //??? standard password global regeln
+                        if (!isset($password_position))       {$this->password   = 'password';}          else {$this->password   = $data[$password_position];} //todo: besser Fehlermeldung, wenn Passwort nicht gesetzt
                         if (!isset($role_id_position))        {$this->role_id    = $this->role_id;}      else {$this->role_id    = $data[$role_id_position];}
                         if (!isset($confirmed_position))      {$this->confirmed  = '3';}                 else {$this->confirmed  = $data[$confirmed_position];}
 
@@ -598,7 +598,7 @@ class User {
                                         $db = DB::prepare('SELECT us.id FROM users AS us WHERE us.id = ANY (SELECT user_id FROM institution_enrolments 
                                                         WHERE institution_id = ANY (SELECT institution_id FROM institution_enrolments 
                                                         WHERE user_id = ?)) ORDER by us.lastname');
-                                        $db->execute(array($this->id)); //Bisher werden nur Benutzer der Institution angezeigt, an der man angemeldet ist. ???Side-Admin muss aber alle sehen können 
+                                        $db->execute(array($this->id)); //Bisher werden nur Benutzer der Institution angezeigt, an der man angemeldet ist. todo: Side-Admin muss alle Benutzer sehen können 
                                     }
                                     break;
                 case 'group':       $db = DB::prepare('SELECT us.id FROM users AS us, groups_enrolments AS gre 
@@ -932,8 +932,9 @@ class User {
         } 
         if (isset($data)){
             return $data;
+        } else {
+            return false;
         }
-        return false; //changed $data = '' to false. ??? not fully tested yet
     }
     
     public function exist(){

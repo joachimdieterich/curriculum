@@ -63,8 +63,8 @@ if ($_POST){
                                                 $terminal_objective->id                 = $_POST['id'];
                                                 $terminal_objective->update();  
                                             } else {
-                                                $terminal_objective->add();
-                                                //???$TEMPLATE->assign('scrollto', $terminal_objective->terminal_objective); //sprungmarke
+                                                $scrollto = $terminal_objective->add();
+                                                $TEMPLATE->assign('scrollto', 'ter_'.$scrollto); //erspart das scrollen
                                             }
                                             $curriculum = $_POST['curriculum_id'];
                                         }
@@ -101,8 +101,8 @@ if ($_POST){
                                                 $enabling_objective->id                     = $_POST['id'];
                                                 $enabling_objective->update(); 
                                             } else {
-                                                $enabling_objective->add();
-                                                $TEMPLATE->assign('scrollto', $enabling_objective->terminal_objective_id); //damit man nicht jedes mal scrollen muss = sprungmarke
+                                                $scrollto = $enabling_objective->add();
+                                                $TEMPLATE->assign('scrollto', 'ena_'.$scrollto); //erspart das scrollen
                                             }
                                             $curriculum = $_POST['curriculum_id'];
                                         }

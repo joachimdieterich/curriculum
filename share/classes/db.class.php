@@ -71,18 +71,19 @@ class DB {
         return self::$objInstance;
    
     } # end method
-   
+    
     /*
      * Passes on any static calls to this class onto the singleton PDO instance
      * @param $chrMethod, $arrArguments
      * @return $mix
      */
     final public static function __callStatic( $chrMethod, $arrArguments ) {
-           
         $objInstance = self::getInstance();
         return call_user_func_array(array($objInstance, $chrMethod), $arrArguments);
        
     } # end method
+    
+    
 }
 
 ?>

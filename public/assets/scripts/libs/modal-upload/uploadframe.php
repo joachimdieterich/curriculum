@@ -172,8 +172,8 @@ if (isset($_POST['Submit'])) {
                                             $showurlForm = true;
                                         } else {
                                             if (filter_var($_POST['fileURL'], FILTER_VALIDATE_URL)){
-                                            $file->filename = $_POST['fileURL']; //??? doppelt gespeichert... muss noch optimiert werden
-                                            $file->path = $_POST['fileURL'];     //??? doppelt gespeichert... muss noch optimiert werden
+                                            $file->filename = $_POST['fileURL']; //todo: doppelt gespeichert... muss noch optimiert werden
+                                            $file->path = $_POST['fileURL'];     //todo: doppelt gespeichert... muss noch optimiert werden
                                             $file->type = '.url';
                                             $file->title = $_POST['title'];
                                             $file->description = $_POST['description'];

@@ -134,12 +134,11 @@ function loginNewUser($username, $password, $creation_time= 0){
         $new_user->email        = $authenticate->email;
         $new_user->password     = $authenticate->password;
         $new_user->confirmed    = 1;
-        //??? experimental
+        // experimental
         $new_user->creator_id   = -1; //shoult be id of webservice
-        object_to_array($new_user);
         global $USER; 
         $USER->role_id = 1;
-        //??? experimental
+        // experimental
         if ($new_user->add() == false) {  //Wenn Benutzeranlegung in DB fehlgeschlagen ist
             $PAGE->message[] = 'Der Benuzerkonnte ist bereits vergeben. Bitte verwenden sie einen anderen Benutzernamen. ';
         } else {
