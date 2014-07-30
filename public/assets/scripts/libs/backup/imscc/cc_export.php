@@ -205,10 +205,10 @@ function manifestItems($url, $folder, $cur, &$resourceTagItems){
                 for ($k = 0;$k < count($cur->terminal_objectives[$i]->enabling_objectives[$j]->files);$k++){
                     if ($cur->terminal_objectives[$i]->enabling_objectives[$j]->files[$k]){
                         $manifestItems[] = '<item identifier="I_'.$cur->terminal_objectives[$i]->enabling_objectives[$j]->id.''.$cur->terminal_objectives[$i]->enabling_objectives[$j]->files[$k]->id.'" identifierref="I_'.$cur->terminal_objectives[$i]->enabling_objectives[$j]->id.''.$cur->terminal_objectives[$i]->enabling_objectives[$j]->files[$k]->id.'_R">'; //>Wenn Material rein soll    
-                        $manifestItems[] = '<title>'.$cur->terminal_objectives[$i]->enabling_objectives[$j]->files[$k]->description.'</title>';         //???evtl später ändern - sonst ist der "Titel" immer der Name der db und die Description beschreibt weiter
+                        $manifestItems[] = '<title>'.$cur->terminal_objectives[$i]->enabling_objectives[$j]->files[$k]->description.'</title>';         
                         $manifestItems[] = '</item>';
 
-                        //Add item to ressource Tag ///??? der Ressource-Type muss hier überprüft werden zzt. nur URL's
+                        //Add item to ressource Tag ///todo: der Ressource-Type muss hier überprüft werden zzt. nur URL's
                         //Case URL
                         if ($cur->terminal_objectives[$i]->enabling_objectives[$j]->files[$k]->type = 'url'){
                             $resourceTagItems[] = '<resource identifier="I_'.$cur->terminal_objectives[$i]->enabling_objectives[$j]->id.''.$cur->terminal_objectives[$i]->enabling_objectives[$j]->files[$k]->id.'_R" type="imswl_xmlv1p1">';
@@ -222,7 +222,7 @@ function manifestItems($url, $folder, $cur, &$resourceTagItems){
                         }
                         // Create new Ressource Folder and File
                         $resourceFolderName = "/i_".$cur->terminal_objectives[$i]->enabling_objectives[$j]->id."".$cur->terminal_objectives[$i]->enabling_objectives[$j]->files[$k]->id."_FURL";
-                        newUrlResource($resourceURL, $resourceFolderName , $cur->terminal_objectives[$i]->enabling_objectives[$j]->files[$k]->description, implode('/', array_slice(explode('/', 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']), 0, -1)).'/'.$cur->terminal_objectives[$i]->enabling_objectives[$j]->files[$k]->context_path.$cur->terminal_objectives[$i]->enabling_objectives[$j]->files[$k]->path.$cur->terminal_objectives[$i]->enabling_objectives[$j]->files[$k]->filename); //??? pfad stimmt wahrscheinlich nicht
+                        newUrlResource($resourceURL, $resourceFolderName , $cur->terminal_objectives[$i]->enabling_objectives[$j]->files[$k]->description, implode('/', array_slice(explode('/', 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']), 0, -1)).'/'.$cur->terminal_objectives[$i]->enabling_objectives[$j]->files[$k]->context_path.$cur->terminal_objectives[$i]->enabling_objectives[$j]->files[$k]->path.$cur->terminal_objectives[$i]->enabling_objectives[$j]->files[$k]->filename); //todo pfad überprüfen stimmt wahrscheinlich nicht
                         //End Case URL
                     }
                 }
@@ -386,7 +386,7 @@ function newUrlResource($url, $folder, $title, $webLink){
  function urlResourceContent($title, $webLink){
      $urlResourceContent[] = '<title>'.$title.'</title>';
      $urlResourceContent[] = '<url href="'.str_replace("&", "-and-", $webLink).'" target="_self"/>'; //öffnet Weblink  in einem neuen Fenster
-     //str_replace, da sonst & zeichen einen fehler beim import in moodle verursacehn --> fehler bei moodle! ??? per developer forum angefragt wie es zu lösen ist
+     //str_replace, da sonst '&'  einen fehler beim import in moodle verursacehn --> fehler bei moodle!
      
      return $urlResourceContent;
  }

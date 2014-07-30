@@ -134,7 +134,8 @@ class EnablingObjective {
             $db = DB::prepare('INSERT INTO enablingObjectives 
                         (enabling_objective,description,terminal_objective_id,curriculum_id,repeat_interval,order_id,creator_id) 
                         VALUES (?,?,?,?,?,?,?)');        
-            return $db->execute(array($this->enabling_objective, $this->description, $this->terminal_objective_id, $this->curriculum_id, $this->repeat_interval, $this->order_id, $this->creator_id));
+            $db->execute(array($this->enabling_objective, $this->description, $this->terminal_objective_id, $this->curriculum_id, $this->repeat_interval, $this->order_id, $this->creator_id));
+            return DB::lastInsertId(); //returns id 
         }
     }
     

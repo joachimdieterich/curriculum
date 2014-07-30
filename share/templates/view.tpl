@@ -45,7 +45,7 @@
                                         {*{$ter->order_id}*}
                                 {/if}<!--Thema-->
                                 </div>
-                                <div id="Anker_{$ter->id}" class="boxwrap">
+                                <div id="ter_{$ter->id}" class="boxwrap">
                                     <div class="boxscroll">
                                         <div class="boxcontent">
                                             {$ter->terminal_objective}<!--{$ter->description}-->
@@ -92,7 +92,7 @@
                                      {/if}   
 
                                 </div>
-                                <div class="boxwrap">
+                                <div id="ena_{$ena->id}" class="boxwrap">
                                     <div class="boxscroll">
                                     <div class="boxcontent">
                                         
@@ -164,7 +164,7 @@
  <!--jump to actual row-->      
 {if isset($scrollto)}
 <script type="text/javascript">
-window.location.hash="Anker_{$scrollto}"; //diese funktion global machen  ??? --> das manuelle scrollen ist sonst sehr nervig!
+window.location.hash="{$scrollto}"; //todo: diese funktion auf allen Seiten implementieren --> das manuelle scrollen ist sehr nervig!
 </script>      
 {/if}
             
