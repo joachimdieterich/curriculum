@@ -28,7 +28,7 @@ global $USER;
 $USER = new User();
 $USER->role_id = -1;
 $USER->id = -1; 
-if (isset($_POST['step_5'])){ //Solves warning in Step 5
+if (!isset($_POST['step_5'])){ //Solves warning in Step 5
     $_SESSION['USER']->id = $USER->id; 
 }
 
