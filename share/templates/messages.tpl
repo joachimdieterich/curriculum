@@ -29,8 +29,6 @@
             <p><label>An:</label>{html_options name='receiver_id' values=$class_members.id output=$class_members.user}</p>  
         {/if}  
       
-        {*Vorerst sollen nur Nachrichten (zwecks Feedback) an mich geschickt werden können*}
-        {*  <p><label>An:</label><input class='inputformlong' type='text' name='subject' id='subject' value='Administrator' {if isset($inputusers)}value='{$inputusers}'{/if} readonly/></p> *}
         <p><label>Betreff: </label><input class='inputformlong' type='text' name='subject' id='subject' {if isset($subject)}value='{$subject}'{/if}/></p> 
         {validate_msg field='subject'}
         <p><label>Nachricht: </label>{validate_msg field='message_text'}

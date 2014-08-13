@@ -244,6 +244,72 @@ class Curriculum {
    }
    
    /**
+    *
+    * @global type $CFG
+    * @global type $USER
+    * @param int $institution_id
+    * @param string $import_file
+    * @param string $delimiter
+    * @return boolean 
+    */
+   public function import($import_file, $delimiter = ';'){
+        global $CFG, $USER;
+        if(checkCapabilities('curriculum:import', $USER->role_id)){
+            $row = 1;   //row counter
+            ini_set("auto_detect_line_endings", true);
+            if (($handle = fopen($import_file, "r")) !== FALSE) {
+                while (($data = fgetcsv($handle, 1000, $delimiter)) !== FALSE) {
+                        $num = count($data);        
+                    if ($row == 1) {	// Hier werden die Felder verknüpft.
+                        for ($c=0; $c < $num; $c++) {
+                            if ($data[$c] == "type")            {$type_pos       = $c;}
+                            if ($data[$c] == "name")            {$name_pos       = $c;}
+                            if ($data[$c] == "description")     {$description_pos= $c;}
+                            if ($data[$c] == "repeat_interval") {$interval_pos= $c;}
+                        }    
+                    }
+                    $row++; //Tielzeile überspringen
+                    if ($row > 2) {	
+                        $this->role_id = 0; //reset role id to avoid wrong permissions
+                        if (!isset($type_pos))       {$type       = '';} else {$type        = $data[$type_pos];}
+                        if (!isset($name_pos))       {$name       = '';} else {$name        = $data[$name_pos];}
+                        if (!isset($description_pos)){$description= '';} else {$description = $data[$description_pos];}
+                        if (!isset($interval_pos)){$interval= -1;}       else {$interval = $data[$interval_pos];}
+                        switch ($type) {
+                            case 1: echo "ropic";
+                                    $topic = new TerminalObjective();
+                                    $topic->terminal_objective  = $name;
+                                    $topic->description         = $description;
+                                    $topic->curriculum_id       = $this->id;
+                                    $topic->creator_id          = $USER->id;
+                                    $topic_id = $topic->add();
+                                break;
+                            case 2: $objective = new EnablingObjective();
+                                    $objective->enabling_objective  = $name;
+                                    $objective->description         = $description;
+                                    $objective->terminal_objective_id = $topic_id; 
+                                    $objective->curriculum_id           = $this->id;
+                                    $objective->repeat_interval         = $interval;
+                                    $objective->creator_id              = $USER->id;
+                                    $objective->add();
+                                break;
+                            default:
+                                break;
+                        }   
+                    }
+                }
+            }
+            fclose($handle);
+            if (isset($error)){ //if there are any error messages
+                return $error;
+            } else {
+                return true;    
+            }
+        }
+    }
+   
+   
+   /**
     * function used during the install process to set up creator id to new admin
     * @return boolean
     */

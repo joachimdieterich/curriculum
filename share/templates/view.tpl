@@ -16,7 +16,10 @@
     
     <div class="space-top-padding gray-gradient border-bottom-radius box-shadow"><p>Beschreibung: {$con->description} ({$con->schooltype})</p>
             <p>Bundesland: {$con->state} ({$con->country})</p>
-            
+        {*<form name="file" enctype="multipart/form-data" action="index.php?action=view&function=addObjectives" method="post">  
+            <input type='hidden' name='curriculum_id' value='{$con->curriculum} '/>
+            <p><label>Themen/Ziele importieren: </label><input type="file" name="datei" value=""><input type="submit" name="import" value="Importieren"> </p>    
+        </form>*}
         <div id="printContent" class="scroll">            
             <!--For printing only-->
             <div class="printOnly" >

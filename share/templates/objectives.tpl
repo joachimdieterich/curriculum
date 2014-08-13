@@ -33,7 +33,6 @@
           <p>&nbsp;</p>
          
         {if isset($userPaginator)}   
-           
         {* display pagination header *}
         <p>Datensätze {$userPaginator.first}-{$userPaginator.last} von {$userPaginator.total} werden angezeigt.</p>
     
@@ -79,7 +78,14 @@
       {elseif $showuser eq true} <p>Keine eingeschriebenen Benutzer</p><p>&nbsp;</p>{/if}
         {if $show_course != '' and $terminalObjectives != false or !isset($selected_user_id)} 
         {* course anzeigen *}
-        
+         <form method='post' action='index.php?action=objectives&next={$currentUrlId}'>
+            <input type='hidden' name='sel_curriculum' value='{$sel_curriculum}'/>
+            <input type='hidden' name='sel_user_id' value='{$selected_user_id}'/>
+            <input type='hidden' name='sel_group_id' value='{$sel_group_id}'/>
+            <p><input type='submit' name="printCertificate" value='Zertifikat erstellen' /> 
+            <input type='submit' name="printAllCertificate" value='Alle Zertifikate erstellen' /></p>
+         </form>
+
         <div id="printContent" class="scroll">
             <!--For printing only-->
             <div class="printOnly" >
