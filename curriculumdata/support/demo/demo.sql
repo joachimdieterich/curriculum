@@ -718,6 +718,23 @@ INSERT INTO `semester` (`id`, `semester`, `description`, `begin`, `end`, `creati
 (5, 'Wintersemester 2013-2014', 'Wintersemester 2013-2014', '2013-10-01 16:36:09', '2014-03-31 16:36:26', '2013-09-07 16:36:34', 77, 56);
 
 -- --------------------------------------------------------
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur fÃ¼r Tabelle `subjects`
+--
+
+DROP TABLE IF EXISTS `subjects`;
+CREATE TABLE IF NOT EXISTS `subjects` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `subject` varchar(200) DEFAULT NULL,
+  `description` varchar(2048) DEFAULT NULL,
+  `creation_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `creator_id` int(11) NOT NULL,
+  `institution_id` int(10) DEFAULT NULL,
+  `subject_short` varchar(10) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=37 ;
 
 --
 -- Daten für Tabelle `subjects`
@@ -859,6 +876,21 @@ INSERT INTO `users` (`id`, `username`, `password`, `role_id`, `email`, `confirme
 (101, 'brittastuber', '663f59787220364dff25287148c63cb5', 0, 'brittastuber@joachimdieterich.de', 3, 'Britta', 'Stuber', '', '', '11', '56', 'noprofile.jpg', '2013-09-07 07:49:36', 77);
 
 -- --------------------------------------------------------
+
+--
+-- Tabellenstruktur fÃ¼r Tabelle `user_roles`
+--
+
+DROP TABLE IF EXISTS `user_roles`;
+CREATE TABLE IF NOT EXISTS `user_roles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `role_id` int(11) NOT NULL DEFAULT '0',
+  `role` varchar(250) DEFAULT NULL,
+  `description` varchar(2048) DEFAULT NULL,
+  `creation_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `creator_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
 
 --
 -- Daten für Tabelle `user_roles`

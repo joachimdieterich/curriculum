@@ -76,7 +76,7 @@
                 </select>
                 
             {validate_msg field='countries'}
-
+            
             {if !isset($showeditCurriculumForm)}
                 <p><label></label><input type='submit' name="back" value='zurück'/><input type='submit' name="add" value='Lehrplan hinzufügen' /></p>
             {/if}

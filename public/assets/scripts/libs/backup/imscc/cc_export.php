@@ -411,8 +411,10 @@ function zipBackup($url, $backupURL, $timestamp_folder, $cur_id, $userID){
     
     $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($url.''.$timestamp_folder));    // initialize an iterator // pass it the directory to be processed
     
-    foreach ($iterator as $key=>$value) {                                               // iterate over the directory // add each file found to the archive
-        $zip->addFile(realpath($key), str_replace($url, '/', $key)) or die ("ERROR: Could not add file: $key"); //str_replace: $url abschneiden, da sonst der komplette Pfad als Ordnerstuktur in der zip erscheinz
+    foreach ($iterator as $key=>$value) {     // iterate over the directory // add each file found to the archive
+        if (substr($key, -2) != '/.' AND substr($key, -3) != '/..'){   //exclude . and ..
+            $zip->addFile(realpath($key), str_replace($url, '/', $key)) or die ("ERROR: Could not add file: $key"); //str_replace: $url abschneiden, da sonst der komplette Pfad als Ordnerstuktur in der zip erscheinz
+        }
     }
     $zip->close();
                                                                           // close and save archive

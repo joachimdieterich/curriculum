@@ -34,9 +34,31 @@ $selected_curriculumforURL = $selected_curriculum;
 $selected_user_id = (isset($_GET['userID']) && trim($_GET['userID'] != '') ? $_GET['userID'] : '');
 $TEMPLATE->assign('selected_curriculum', $selected_curriculum);
 $TEMPLATE->assign('selected_user_id', $selected_user_id);
-
 list ($selected_curriculum, $selected_group) = explode('_', $selected_curriculum); //$selected_curriculum enthält curriculumid_groupid (zb. 32_24) wenn nur '_' gesetzt ist werden beide variabeln ''
+$TEMPLATE->assign('sel_curriculum', $selected_curriculum); //only selected curriculum without group
+$TEMPLATE->assign('sel_group_id', $selected_group); //only selected curriculum without group
+if (isset($_POST['printCertificate'])){
+    $pdf = new Pdf();
+    $pdf->user_id = $_POST['sel_user_id'];
+    $pdf->curriculum_id = $_POST['sel_curriculum'];
+    $TEMPLATE->assign('sel_curriculum', $_POST['sel_curriculum']);
+    $TEMPLATE->assign('selected_user_id', $_POST['sel_user_id']);
+    $TEMPLATE->assign('sel_group_id', $_POST['sel_group_id']); 
+
+    $pdf->generate_pdf();
+}
+if (isset($_POST['printAllCertificate'])){
+    $pdf = new Pdf();
+    $pdf->user_id = $_POST['sel_user_id'];
+    $pdf->curriculum_id = $_POST['sel_curriculum'];
     
+    $pdf->group_id = $_POST['sel_group_id'];
+    $TEMPLATE->assign('sel_curriculum', $_POST['sel_curriculum']);
+    $TEMPLATE->assign('selected_user_id', $_POST['sel_user_id']);
+    $TEMPLATE->assign('sel_group', $_POST['sel_group_id']); 
+    $pdf->generate_pdf();
+}
+ 
 if ($selected_curriculum != '' AND $selected_user_id != '') {
     $user = new User(); 
     $user->load('id', $selected_user_id);

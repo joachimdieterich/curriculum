@@ -20,7 +20,7 @@
 *                                                                       
 * http://www.gnu.org/copyleft/gpl.html      
 */
-global $USER, $PAGE, $TEMPLATE;
+global $CFG, $USER, $PAGE, $TEMPLATE, $INSTITUTION;
 $function = '';
 if ($_GET){ 
     switch ($_GET) {
@@ -40,7 +40,15 @@ if ($_GET){
 
 
 if ($_POST){
-    switch ($_POST) {
+    switch ($_POST) { 
+        case isset($_POST['import'])     :  if($_FILES['datei']['size'] <  $INSTITUTION->institution_csv_size) {
+                                                move_uploaded_file($_FILES['datei']['tmp_name'], $CFG->document_root.'assets/tmp/'.$_FILES['datei']['name']); 
+                                                $new_curriculum = new Curriculum();
+                                                $new_curriculum->id = $_POST['curriculum_id'];
+                                                $new_curriculum->import($CFG->document_root.'assets/tmp/'.$_FILES['datei']['name']);
+                                            }
+                                           
+                                          break;      
         case isset($_POST['add_terminal_objective']):
         case isset($_POST['update_terminal_objective']): $gump = new Gump(); /* Validation */
                                         $terminal_objective = new TerminalObjective();

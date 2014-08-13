@@ -28,7 +28,11 @@ global $USER;
 $USER = new User();
 $USER->role_id = -1;
 $USER->id = -1; 
-$_SESSION['USER']->id = $USER->id;
+
+if (isset($_POST['step_5'])){ //Solves warning in Step 5
+    $_SESSION['USER']->id = $USER->id; 
+}
+
 
 $TEMPLATE->assign('db_host', '127.0.0.1');
 $TEMPLATE->assign('page_title', 'Curriculum installieren');
@@ -302,10 +306,11 @@ if ($_POST){
                                                 $roles->dedicate();         //it also deletes the -1 role
                                                 
                                                 $TEMPLATE->assign('step', 5);
-                                                session_destroy(); //important! reset $USER
+                                                
                                             }
             break;
         case isset($_POST['step_5']):
+                        session_destroy(); //important! reset $USER
                         header('Location:index.php?action=login');
             break;
         
