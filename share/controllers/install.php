@@ -33,7 +33,6 @@ if (isset($_POST['step_5'])){ //Solves warning in Step 5
     $_SESSION['USER']->id = $USER->id; 
 }
 
-
 $TEMPLATE->assign('db_host', '127.0.0.1');
 $TEMPLATE->assign('page_title', 'Curriculum installieren');
 $TEMPLATE->assign('my_username', '');
