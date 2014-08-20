@@ -38,6 +38,7 @@
             
              <table> <!-- sollte per css noch unten einen abstand zum nächsthöheren div bekommen-->
                 {if $terminal_objectives != false}
+                 {assign var="sol_btn" value="false"}   
                  {foreach key=terid item=ter from=$terminal_objectives}
                     <tr><td class="boxleftpadding"><div class="box gray-gradient border-radius box-shadow gray-border ">
                                 <div class="boxheader border-top-radius">
@@ -80,12 +81,12 @@
                                         <input class="addsolutionbtn floatright" type="button" name="addMaterial"></a>
                                         {if $solutions != false}
                                             {foreach key=solID item=sol from=$solutions}
-                                                {if $sol->enabling_objective_id eq $ena->id}
+                                                {if $sol->enabling_objective_id eq $ena->id AND $sol_btn neq $ena->id}
                                                     <input class="okbtn floatright" type="button" name="submitedMaterial"> 
+                                                    {assign var="sol_btn" value=$ena->id}
                                                 {/if}
                                             {/foreach}
                                         {/if}
-
                                     {/if}
                                     {if isset($showaddObjectives)}
                                         <input class="rightbtn floatright" type="button" name="orderright" onclick="order('up', {$ena->order_id},{$con->curriculum_id},{$ter->id},{$ena->id})" />
@@ -95,12 +96,10 @@
                                             <input class="leftbtn" type="button" name="orderleft" onclick="order('down', {$ena->order_id},{$con->curriculum_id},{$ter->id},{$ena->id})" />
                                         {/if}
                                      {/if}   
-
                                 </div>
                                 <div id="ena_{$ena->id}" class="boxwrap">
                                     <div class="boxscroll">
-                                    <div class="boxcontent">
-                                        
+                                    <div class="boxcontent">    
                                         {$ena->enabling_objective}<!--{$ena->description}-->
                                     </div>
                                     </div>
