@@ -10,7 +10,7 @@
 {block name=content} 
 
 <div class=" border-radius gray-border">	
-    <div class="border-top-radius contentheader ">{$page_title}<div class="printbtn floatright" onclick="printPage('printContent');"> </div></div>
+    <div class="border-top-radius contentheader ">{$page_title}{*<div class="printbtn floatright" onclick="printPage('printContent');"> </div>*}</div>
     <div class="space-top-padding gray-gradient border-bottom-radius box-shadow ">
       
         {if isset($user->avatar) and $user->avatar != 'noprofile.jpg'}
@@ -35,42 +35,27 @@
         {if isset($userPaginator)}   
         {* display pagination header *}
         <p>Datensätze {$userPaginator.first}-{$userPaginator.last} von {$userPaginator.total} werden angezeigt.</p>
-    
-		<table id="contentsmalltable">
+    		<table id="contentsmalltable">
 		<tr id="contenttablehead">
-			<td></td><!--<td>Avatar</td>-->
+			<td></td>
                         <!--<td>Benutzername</td>-->
                         <td>Vorname</td>
                         <td>Nachname</td>
                         <td>erledigt</td>
-                        <!--<td>Email</td>-->
-                        <!--<td>PLZ</td>-->
-                        <!--<td>Ort</td>-->
-                        <!--<td>Bundesland</td>-->
-                        <!--<td>Land</td>-->
-                        <!--<td>Gruppe</td>-->
 		</tr>
                 {* display results *}    
                 {section name=res loop=$results}
                     <tr class="{if isset($selected_user_id) AND $selected_user_id eq $results[res]->id} activecontenttablerow {else}contenttablerow{/if}{if $results[res]->completed eq 100} completed{/if}" id="row{$smarty.section.res.index}" onclick="window.location.assign('index.php?action=objectives&course='+document.getElementById('course').value+'&userID='+document.getElementById('userID{$smarty.section.res.index}').value);">
                        <td><input class="invisible" type="checkbox" id="userID{$smarty.section.res.index}" name="userID" value={$results[res]->id} {if isset($selected_user_id) AND $selected_user_id eq $results[res]->id} checked{/if}/></td>
-                       <!--<td><img src="{$avatar_url}{$results[res]->avatar}" alt="Profilfoto" width="18"></td>-->
                        <!--<td>{$results[res]->username}</td>-->
                        <td>{$results[res]->firstname}</td>
                        <td>{$results[res]->lastname}</td>
                        <td>{$results[res]->completed}</td>
-                       <!--<td>{$results[res]->email}</td>-->
-                       <!--<td>{$results[res]->postalcode}</td>-->
-                       <!--<td>{$results[res]->city}</td-->
-                       <!--<td>{$results[res]->state}</td>-->
-                       <!--<td>{$results[res]->country}</td>-->
-                       <!--<td>{$results[res]->role_id}</td>-->
                     </tr>
                 {/section}
 		</table>
         {* display pagination info *}
-        <p>{paginate_prev id="userPaginator"} {paginate_middle id="userPaginator"} {paginate_next id="userPaginator"}</p>
-        
+        <p>{paginate_prev id="userPaginator"} {paginate_middle id="userPaginator"} {paginate_next id="userPaginator"}</p>       
        
          <!--Hack für problem, dass kein Array gepostet wird, wenn nichts angewählt wird-->
         <input class="invisible" type="checkbox" name="userID" value="none" checked />
@@ -85,10 +70,10 @@
             <p><input type='submit' name="printCertificate" value='Zertifikat erstellen' /> 
             <input type='submit' name="printAllCertificate" value='Alle Zertifikate erstellen' /></p>
          </form>
-
         <div id="printContent" class="scroll">
             <!--For printing only-->
-            <div class="printOnly" >
+            
+            {*<div class="printOnly" >
                 <div id="printHeader"><p>{$app_title}</p></div>
                 <div id="printUser">
                     <!--<div class="printUserHeader">Benutzer</div>-->
@@ -98,7 +83,7 @@
                     <p>{$group[0]->semester}</p>
                     <p class="printUserLogin">Letzter Login: {$last_login}</p></div> 
                 
-              </div>
+              </div>*}
              <!-- end For printing only--> 
              <table> <!-- sollte per css noch unten einen abstand zum nächsthöheren div bekommen-->
                 {foreach key=terid item=ter from=$terminalObjectives}
@@ -162,7 +147,7 @@
         <p>&nbsp;</p>
         </div>   
         <!--For printing only-->
-        <div id="printFooter" >
+        {*<div id="printFooter" >
             <table>
                 <tr>
                     <td><p>Erklärungen:</p></td>
@@ -171,10 +156,9 @@
                     <td><div class="boxred boxlegende"></div></td>
                     <td><p>Ziel wurde noch nicht erreicht</p></td>
                 </tr>
-            </table>
-            
+            </table>  
         </div>
-        <!--end For printing only--> 
+        <!--end For printing only--> *}
         {else}
             {if isset($selected_user_id) and $show_course != ''}
                 <p>Es wurden noch keine Lernziele eingegeben.</p>

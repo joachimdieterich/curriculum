@@ -12,16 +12,17 @@
     
     {foreach key=curid name=curriculum item=con from=$course}
     <div class="border-top-radius contentheader">Lehrplan: {$con->curriculum} (Klasse {$con->grade}: {$con->subject})
-        <div class="printbtn floatright" onclick="printPage('printContent');"> </div></div>
+        {*<div class="printbtn floatright" onclick="printPage('printContent');"> </div>*}</div>
     
     <div class="space-top-padding gray-gradient border-bottom-radius box-shadow"><p>Beschreibung: {$con->description} ({$con->schooltype})</p>
             <p>Bundesland: {$con->state} ({$con->country})</p>
         {*<form name="file" enctype="multipart/form-data" action="index.php?action=view&function=addObjectives" method="post">  
             <input type='hidden' name='curriculum_id' value='{$con->curriculum} '/>
             <p><label>Themen/Ziele importieren: </label><input type="file" name="datei" value=""><input type="submit" name="import" value="Importieren"> </p>    
-        </form>*}
-        <div id="printContent" class="scroll">            
-            <!--For printing only-->
+        </form>*} 
+        <div id="printContent" class="scroll"> 
+            {*<!--For printing only - replaced by PDF print -> ojectives.tpl-->
+            
             <div class="printOnly" >
                 <div id="printHeader"><p>{$app_title} :: {$con->curriculum}</p></div>
                 <div id="printUser">
@@ -32,8 +33,9 @@
                     <p>{$group->semester}{/if}</p>    
                     <p class="printUserLogin">Letzter Login: {if isset($last_login)}{$last_login}{/if}</p></div> 
               </div>
+              </div>*}
              <!-- end For printing only-->       
-            </div>
+            
              <table> <!-- sollte per css noch unten einen abstand zum nächsthöheren div bekommen-->
                 {if $terminal_objectives != false}
                  {foreach key=terid item=ter from=$terminal_objectives}
@@ -146,7 +148,7 @@
           {/foreach}		
         </table>
         <p>&nbsp;</p>
-        <!--For printing only-->
+        {*<!--For printing only-->
         <div id="printFooter" >
             <table>
                 <tr>
@@ -159,7 +161,7 @@
             </table>
             
         </div>
-        <!--end For printing only-->
+        <!--end For printing only-->*}
         </div>                
     </div> 
 </div>
