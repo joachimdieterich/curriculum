@@ -441,7 +441,7 @@ function hideUploadframe(){
 }
 
 //Druckfunktion
-function printPage(printpage){
+/*function printPage(printpage){
     var headstr = "<html><head><title></title></head><body>";
     var footstr = "</body>";
    //var newstr = document.all.item(printpage).innerHTML; 
@@ -451,7 +451,7 @@ function printPage(printpage){
     window.print();
     document.body.innerHTML = oldstr;
     return false;
-}
+}*/
 
 function confirmDialog(text) {
     if (confirm(text)){
