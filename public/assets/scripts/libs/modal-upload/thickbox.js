@@ -3,18 +3,24 @@
  * By Cody Lindley (http://www.codylindley.com)
  * Copyright (c) 2007 cody lindley
  * Licensed under the MIT License: http://www.opensource.org/licenses/mit-license.php
-*/
-		  
-var tb_pathToImage = '../public/assets/images/basic/loadingAnimation.gif';
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+//var tb_pathToImage = '../public/assets/images/basic/loadingAnimation.gif';
 
 /*!!!!!!!!!!!!!!!!! edit below this line at your own risk !!!!!!!!!!!!!!!!!!!!!!!*/
 
 //on page load call tb_init
 $(document).ready(function(){   
 	tb_init('a.thickbox, area.thickbox, input.thickbox, td.thickbox');//pass where to apply thickbox
-	imgLoader = new Image();// preload image
-	imgLoader.src = tb_pathToImage;
-        
+	//imgLoader = new Image();// preload image
+	//imgLoader.src = tb_pathToImage;        
 });
 
 //add thickbox to href & area elements that have a class of .thickbox
@@ -54,7 +60,7 @@ function tb_show(caption, url, imageGroup) {//function called when the user clic
 		}
 		
 		if(caption===null){caption="";}
-		$("body").append("<div id='TB_load'><img src='"+imgLoader.src+"' /></div>");//add loader to the page
+		//$("body").append("<div id='TB_load'><img src='"+imgLoader.src+"' /></div>");//add loader to the page
 		$('#TB_load').show();//show loader
 		
 		var baseURL;

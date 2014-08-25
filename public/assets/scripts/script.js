@@ -174,12 +174,12 @@ function deleteFile() {
     if (confirm("Datei wirklich löschen?")) {   //Meldung "Wirklich löschen?"
         //Link unterscheidet sich von den anderen funktionen, da diese funktion vom upload_frame aufgerufen wird
         var url = "../../../../assets/scripts/request.php?ajax=on&function=deleteFile&fileID="+ arguments[1]; 
-        var prefix = arguments[0];
+        //var prefix = arguments[0];
         var fileID = arguments[1]
         req = XMLobject();
         if(req) {        
             req.onreadystatechange = function(){
-                    hideFile(prefix+''+fileID);
+                    hideFile(fileID);
                 }
             req.open("GET", url, true);
             req.send(null);
@@ -296,7 +296,21 @@ function hideFile() { //nach dem löschen wird das thumbnail ausgeblendet
             
            if (req.responseText.length != 1){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen
                alert(req.responseText); //unschön, aber #popup ist vom modalframe aus nicht 
-               document.getElementById('row'+arguments[0]).style.visibility='hidden';           
+               if (document.getElementById('row_filelastupload'+arguments[0])) {
+                   document.getElementById('row_filelastupload'+arguments[0]).style.visibility='hidden'; 
+               }
+               if (document.getElementById('row_curriculumfiles'+arguments[0])) {          
+                   document.getElementById('row_curriculumfiles'+arguments[0]).style.visibility='hidden';
+               }
+               if (document.getElementById('row_solutionfiles'+arguments[0])) {          
+                   document.getElementById('row_solutionfiles'+arguments[0]).style.visibility='hidden';
+               }
+               if (document.getElementById('row_avatarfiles'+arguments[0])) {          
+                   document.getElementById('row_avatarfiles'+arguments[0]).style.visibility='hidden';           
+               }
+               if (document.getElementById('row_myfiles'+arguments[0])) {          
+                   document.getElementById('row_myfiles'+arguments[0]).style.visibility='hidden';           
+               }
            } else {
                window.location.reload();
            }
