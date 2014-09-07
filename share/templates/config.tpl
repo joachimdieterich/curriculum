@@ -18,8 +18,15 @@
             
             <input type='hidden' name='user_id' id='user_id' {if isset($user_id)}value='{$user_id}'{/if} /> 
             
+            <p><h3>Lernzeitraum</h3></p>
+            <p >Legt fest, welcher der aktuelle Lernzeitraum ist</p>
+            <p><label>Lernzeitraum: </label>
+                    <select name="user_semester"> 
+                    {section name=res loop=$mySemester}  
+                            <OPTION label="{$mySemester[res]->semester}" value={$mySemester[res]->id} {if $mySemester[res]->id eq $user_semester}selected{/if}>{$mySemester[res]->semester}</OPTION>{/section}
+                </select>{validate_msg field='user_semester'}<p>&nbsp;</p><p>&nbsp;</p>
             <p><h3>Sprache</h3></p>
-            <p >Legt die Menüsprache von curriculum fest</p>
+            <p >Legt die Menüsprache fest</p>
             <p><label>Sprache: </label>
                     <SELECT name='user_language' id='user_language' />
                     {foreach key=langid item=lan from=$language}

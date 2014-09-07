@@ -19,8 +19,8 @@
                 <p>Geben Sie Ihren Anmeldenamen und das Kennwort ein.</p>
                 <p>(Cookies sowie Javascript müssen in Ihrem Browser aktiviert sein!)</p>
                 <p><h3>&nbsp;</h3></p>
-                <p><label >Benutzername: </label><input class="inputform" type='text' name='username' id='username' {if isset($username)}value='{$username}'{/if}></p>
-                <p><label >Passwort:  </label><input class="inputform" type='password' name='password' ></p>
+                <p><label >Benutzername: </label><input type='text' name='username' id='username' {if isset($username)}value='{$username}'{/if}></p>
+                <p><label >Passwort:  </label><input type='password' name='password' ></p>
                 <p class="linie">&nbsp;</p>
                 <p><label ></label><input type='submit' name='login' value='Anmelden' >
                 {*<input type='submit' name='register' value='Registrieren' >

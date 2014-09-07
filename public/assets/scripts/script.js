@@ -536,7 +536,6 @@ function setStates() {
         }
     }   
 }
-// end Message functions
 
 //icon function
 function showSubjectIcon(path, icon){

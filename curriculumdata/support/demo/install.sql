@@ -206,6 +206,7 @@ CREATE TABLE IF NOT EXISTS `config_user` (
   `user_paginator_limit` smallint(6) DEFAULT NULL,
   `user_acc_days` smallint(6) DEFAULT NULL,
   `user_language` varchar(10) DEFAULT NULL,
+  `user_semester` int(10) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=138 ;
 
@@ -592,6 +593,8 @@ CREATE TABLE IF NOT EXISTS `files` (
   `context_id` int(10) DEFAULT NULL,
   `path` varchar(255) NOT NULL DEFAULT '',
   `filename` varchar(255) NOT NULL DEFAULT '',
+  `author` varchar(255) NOT NULL DEFAULT '',
+  `licence` varchar(255) NOT NULL DEFAULT '',
   `creator_id` int(10) DEFAULT NULL,
   `creation_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `type` varchar(5) DEFAULT NULL,
@@ -599,7 +602,7 @@ CREATE TABLE IF NOT EXISTS `files` (
   `ena_id` int(11) DEFAULT '-1',
   `ter_id` int(11) DEFAULT '-1',
   `description` varchar(2048) DEFAULT NULL,
-  `title` text,
+  `title` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=149 ;
 

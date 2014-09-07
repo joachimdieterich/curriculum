@@ -23,10 +23,12 @@
               <select {*class="makeMeFancy"*} id='course' name='course' onchange="window.location.assign('index.php?action=objectives&course='+this.value);"> {*_blank global regeln*}
                   <option value="-1" data-skip="1">Lehrplan wählen...</option>
                   {section name=res loop=$courses}
-                    <option value="{$courses[res]->id}" 
-                    {if $courses[res]->id eq $selected_curriculum} selected {/if} 
-                    data-icon="{$data_url}subjects/{$courses[res]->icon}" data-html-text="{$courses[res]->group} - {$courses[res]->curriculum}&lt;i&gt;
-                    {$courses[res]->description}&lt;/i&gt;">{$courses[res]->group} - {$courses[res]->curriculum}</option>  
+                      {if $courses[res]->semester_id eq $my_semester}
+                        <option value="{$courses[res]->id}" 
+                        {if $courses[res]->id eq $selected_curriculum} selected {/if} 
+                        data-icon="{$data_url}subjects/{$courses[res]->icon}" data-html-text="{$courses[res]->group} - {$courses[res]->curriculum}&lt;i&gt;
+                        {$courses[res]->description}&lt;/i&gt;">{$courses[res]->group} - {$courses[res]->curriculum}</option>  
+                      {/if}
                   {/section} 
               </select>    </p>
         {else}<p><strong>Sie haben noch keine Lehrpläne angelegt bzw. noch keine Klassen eingeschrieben.</strong></p>{/if}

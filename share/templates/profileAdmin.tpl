@@ -18,37 +18,37 @@
         </div>-->
 	
         <form method='post' action='index.php?action=profileAdmin'>	
-            <p><label>Benutzername*:</label><input class="inputform" name='username' id='username' {if isset($username)}value='{$username}'{/if} /></p>
+            <p><label>Benutzername*:</label><input  name='username' id='username' {if isset($username)}value='{$username}'{/if} /></p>
             {validate_msg field='username'}
-            <p><label>Vorname*: </label><input class="inputform" name='firstname'{if isset($firstname)}value='{$firstname}'{/if}/></p>
+            <p><label>Vorname*: </label><input  name='firstname'{if isset($firstname)}value='{$firstname}'{/if}/></p>
             {validate_msg field='firstname'}
-            <p><label>Nachname*: </label><input class="inputform" name='lastname'{if isset($lastname)}value='{$lastname}'{/if}/></p>
+            <p><label>Nachname*: </label><input  name='lastname'{if isset($lastname)}value='{$lastname}'{/if}/></p>
             {validate_msg field='lastname'}
-            <p><label>Email*: </label><input class="inputform" name='email'{if isset($email)}value='{$email}'{/if}/></p>
+            <p><label>Email*: </label><input  name='email'{if isset($email)}value='{$email}'{/if}/></p>
             {validate_msg field='email'}
-            <p><label>PLZ: </label><input class="inputform" name='postalcode'{if isset($postalcode)}value='{$postalcode}'{/if}/></p>
+            <p><label>PLZ: </label><input  name='postalcode'{if isset($postalcode)}value='{$postalcode}'{/if}/></p>
             {validate_msg field='postalcode'}
-            <p><label>Ort: </label><input class="inputform" name='city' {if isset($city)}value='{$city}'{/if}/></p>
+            <p><label>Ort: </label><input  name='city' {if isset($city)}value='{$city}'{/if}/></p>
             {validate_msg field='city'}
-            <p><label>Bundesland: </label><input class="inputform" name='state'  {if isset($state)}value='{$state}'{/if}/></p>
+            <p><label>Bundesland: </label><input  name='state'  {if isset($state)}value='{$state}'{/if}/></p>
             {validate_msg field='state'}
-            <p><label>Land: </label><select name="country" onchange="loadStates(this.value, 'state', {$state_id});">
+            <p><label>Land: </label><select name="country"  onchange="loadStates(this.value, 'state', {$state_id});">
                     {section name=res loop=$countries}  
                         <OPTION label="{$countries[res]->de}" value={$countries[res]->id} {if $countries[res]->id eq $country_id}selected{/if}>{$countries[res]->de}</OPTION>
                     {/section}
                 </select></p>      
                 {validate_msg field='country'}
-            <p id="states"><label>Bundesland: </label><select name="state">
+            <p id="states"><label>Bundesland: </label><select name="state" >
                     {section name=s_id loop=$states}
                         <OPTION label="{$states[s_id]->state}" value="{$states[s_id]->id}" {if $states[s_id]->id eq $state_id}selected{/if}>{$states[s_id]->state}</OPTION>
                     {/section}   
                 </select></p>
             {validate_msg field='state'}
-            <p><label>Passwort*: </label><input class="inputform" type='password' id='password' name='password' {if isset($password)}value='{$password}'{/if}/></p>
+            <p><label>Passwort*: </label><input  type='password' id='password' name='password' {if isset($password)}value='{$password}'{/if}/></p>
             {validate_msg field='password'}
             <p><label>Passwort anzeigen: </label><input type="checkbox" class="centervertical" name='showpassword'  {if isset($showpassword)}checked{/if} onclick="unmask('password', this.checked);"/></p>
             <p><label>Passwortänderung: </label><input type="checkbox" class="centervertical" name='confirmed'  {if isset($confirmed)}checked{/if}/></p>
-            <p><label>Avatar: </label><input class="inputform" id="myfile" name='avatar' value={$newUserAvatar} readonly  onclick="tb_show('','assets/scripts/libs/modal-upload/uploadframe.php?userID={$my_id}&token={$my_token}&last_login={$my_last_login}&context=avatar&target=myfile&format=1&multiple=false&placeValuesBeforeTB_=savedValues&TB_iframe=true&width=710&modal=true')" href="#" class="thickbox"/>
+            <p><label>Avatar: </label><input  id="myfile" name='avatar' value={$newUserAvatar} readonly  onclick="tb_show('','assets/scripts/libs/modal-upload/uploadframe.php?userID={$my_id}&token={$my_token}&last_login={$my_last_login}&context=avatar&target=myfile&format=1&multiple=false&placeValuesBeforeTB_=savedValues&TB_iframe=true&width=710&modal=true')" href="#" class="thickbox"/>
             {validate_msg field='avatar'}
             {if count($my_institutions['id']) > 1}
                 <p><label>Institution / Schule*: </label>{html_options id='institution' name='institution' values=$my_institutions['id'] output=$my_institutions['institution']}</p>

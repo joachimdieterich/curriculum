@@ -62,14 +62,14 @@
             </p>
             {validate_msg field='schooltype'}
             <p><label>Bundesland/Region: </label>
-                <select name="state">
+                <select name="state" class='inputformlong'>
                     {section name=res loop=$states}  
                         <option label={$states[res]->state} value={$states[res]->id} {if $state_id eq $states[res]->id}selected="selected"{/if}>{$states[res]->state}</option>
                     {/section}
                 </select>
             {validate_msg field='state'}
             <p><label>Land: </label>
-                <select name="country">
+                <select name="country" class='inputformlong'>
                     {section name=res loop=$countries}  
                         <option label={$countries[res]->de} value={$countries[res]->id} {if $state_id eq $countries[res]->id}selected="selected"{/if}>{$countries[res]->de}</option>
                     {/section}

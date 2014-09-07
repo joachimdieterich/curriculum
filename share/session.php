@@ -33,18 +33,22 @@ if (isset($_SESSION['USER'])){                                                  
     }       
     /** Get $USER from Session */
     $USER               =  $_SESSION['USER'];
-    $_SESSION['USER']   =& $USER;
+    
     
 } else {
     $USER->load('username', $_SESSION['username']);                               //Get $USER Object //Über DB funktion realisieren
     foreach($USER as $key => $value){
     $TEMPLATE->assign('my_'.$key, $value);
     }
-
-     /** Store $USER in Session */
+    
+     /** Store $USER and other Data in Session */
     $_SESSION['USER'] =  new stdClass();
     $_SESSION['USER'] =& $USER;
-}
+    
+    $semester = new Semester();
+    $_SESSION['SEMESTER'] = $semester->getMySemesters($USER->id);
+
+ }
 /**
  * $USER session functions 
  */

@@ -113,7 +113,8 @@ if (isset($_POST['Submit'])) {
                                 $gump = new Gump(); /* Validation */
                                         $gump->validation_rules(array(
                                         'title'     => 'required',
-                                        'description'    => 'required'
+                                        'author'    => 'required', 
+                                        'licence'   => 'required'
                                         ));
                                         $validated_data = $gump->run($_POST);
                                         if($validated_data === false) {/* validation failed */
@@ -128,9 +129,10 @@ if (isset($_POST['Submit'])) {
                                                     //in datenbank eintragen
                                                     $file->filename = str_replace(' ', '_', $my_upload->the_file);
 
-
                                                         $file->title = $_POST['title'];
                                                         $file->description = $_POST['description'];
+                                                        $file->author = $_POST['author'];
+                                                        $file->licence = $_POST['licence'];
                                                         $file->type = $my_upload->get_extension($my_upload->the_file);
                                                         $file->path = $extendUploadPath;
                                                         $file->context_id = $file->getContextId($context);
@@ -230,14 +232,23 @@ if (isset($_POST['Submit'])) {
 
 <script type="text/javascript">
 
-function previewFile(URL) {
+function previewFile(URL, POSTFIX, TITLE, DESCRIPTON, AUTHOR, LICENCE) {
    document.getElementById('img_FilePreview').src = URL; //Gibt kompletten Link aus  
    document.getElementById('div_FilePreview').style.display = 'block'; 
+   document.getElementById(POSTFIX + 'p_author').innerHTML =  AUTHOR; 
+   document.getElementById(POSTFIX + 'p_licence').innerHTML =  LICENCE;
+   document.getElementById(POSTFIX + 'p_title').innerHTML =  TITLE; 
+   document.getElementById(POSTFIX + 'p_description').innerHTML =  DESCRIPTON;  
+   document.getElementById(POSTFIX + 'p_information').style.display = 'block'; 
+   document.getElementById(POSTFIX + 'p_information').style.visibility = 'visible'; 
+   
    
 }
 
-function exitpreviewFile() {
+function exitpreviewFile(POSTFIX) {
    document.getElementById('div_FilePreview').style.display = 'none';  
+   document.getElementById(POSTFIX + 'p_information').style.visibility = 'hidden';  
+   
 }   
 
 //Funktion zum auslesen von Checkboxes
@@ -413,9 +424,7 @@ $(document).ready(function() {
 </script>
 </head>
 <body id="uploadframe_body" name="Anker" >
-
-
-    
+<div class="messageboxClose" onclick="self.parent.tb_remove();"></div>    
 <div id="uploadframe" class="border-top-radius contentheader">Datei hochladen</div>
         <div id="fileupload" class="border-bottom-radius gray-gradient">
             <div class="floatleft ">    
@@ -471,32 +480,53 @@ $(document).ready(function() {
 		<p><input name="format" type="hidden" value="<?php echo $returnFormat; ?>" /></p>
 		<p><input name="multiple" type="hidden" value="<?php echo $multipleFiles; ?>" /></p>
                 <p><input name="token" type="hidden" value="<?php echo $token; ?>" /></p>
-                <p><label>Titel*: </label><input class="inputform" id="titel" name="title" /></p>
+                <p><label>Titel*: </label><input  id="titel" name="title" /></p>
                 <?php
                 if (isset($v_error['title']['message'][0])){
                     echo $v_error['title']['message'][0];
                 }
                 ?>
-                <p><label>Beschreibung*: </label><input class="inputform" id="description" name="description" /></p>
+                <p><label>Beschreibung: </label><input  id="description" name="description" /></p>
                 <?php
                 if (isset($v_error['description']['message'][0])){
                     echo $v_error['description']['message'][0];
                 }
                 ?>
+                <p><label>Author*: </label><input  id="author" name="author" value="<?php echo $upload_user->firstname.' '.$upload_user->lastname;?>"/></p>
+                <?php
+                if (isset($v_error['author']['message'][0])){
+                    echo $v_error['author']['message'][0];
+                }
+                ?>
+                <p><label>Lizenz: </label><select id="licence" name="licence" class="centervertical">
+                                        <option value="1" data-skip="1">Sonstige</option>
+                                        <option value="2" data-skip="1" selected>Alle Rechte vorbehalten</option>
+                                        <option value="3" data-skip="1">Public Domain</option>
+                                        <option value="4" data-skip="1">CC</option>
+                                        <option value="5" data-skip="1">CC - keine Bearbeitung</option>;
+                                        <option value="6" data-skip="1">CC - keine kommerzielle Nutzung - keine Bearbeitung</option>;
+                                        <option value="7" data-skip="1">CC - keine kommerzielle Nutzung</option>;
+                                        <option value="8" data-skip="1">CC - keine kommerzielle Nutzung - Weitergabe unter gleichen Bedingungen</option>;
+                                        <option value="9" data-skip="1">CC - Weitergabe unter gleichen Bedingungen</option>;
+                                  </select></p></p>
+                <?php
+                if (isset($v_error['licence']['message'][0])){
+                    echo $v_error['licence']['message'][0];
+                } 
+               ?>
                 <p><input name="upload" type="file" size="15" />
                 <input id="uploadbtn" type="submit" name="Submit" value="Datei hochladen" />
 		</form>
                 <p id='TB_progressBar' style="display:none;"><img src="<?php echo $CFG->BASE_URL.'public/assets/images/basic/loadingAnimation.gif' ?>"/></p>
 		<p class="text ">&nbsp;<?php echo $error; ?></p>
                 <div class="uploadframe_footer">
-                    <input type="submit" name="Submit" value="Fenster schließen" onclick="self.parent.tb_remove();"/>
-                        <?php if ($context == 'curriculum'){ // nur anzeigen wenn in der Curriculumansicht
-                                if (isset($material_link)) { //Verhindert Fehlermeldung
-                                    echo $material_link;
-                                    } 
-                              } else {
-                                echo $copy_link;
-                              }?>
+                    <?php if ($context == 'curriculum'){ // nur anzeigen wenn in der Curriculumansicht
+                            if (isset($material_link)) { //Verhindert Fehlermeldung
+                                echo $material_link;
+                                } 
+                            } else {
+                            echo $copy_link;
+                    }?>
                 </div>
             </div>
             
@@ -509,13 +539,13 @@ $(document).ready(function() {
                     <p><input name="terID" type="hidden" value="<?php echo $terminal_objective_id; ?>" /></p>
                     <p><input name="enaID" type="hidden" value="<?php echo $enabling_objective->id; ?>" /></p>
                     <p><input name="token" type="hidden" value="<?php echo $token; ?>" /></p>
-                    <p><label>Titel: </label><input class="inputform" id="titel" name="title" /></p>
+                    <p><label>Titel: </label><input  id="titel" name="title" /></p>
                     <?php
                     if (isset($v_error['title']['message'][0])){
                         echo $v_error['title']['message'][0];
                     }
                     ?>
-                    <p><label>Beschreibung: </label><input class="inputform" id="description" name="description" /></p>
+                    <p><label>Beschreibung: </label><input  id="description" name="description" /></p>
                     <?php
                     if (isset($v_error['description']['message'][0])){
                         echo $v_error['description']['message'][0];
@@ -527,9 +557,7 @@ $(document).ready(function() {
 		</form>
 		<p class="text">&nbsp;<?php echo $error; ?></p>
                 <p><?php echo $copy_link; ?></p>
-                <div class="uploadframe_footer">
-                    <input type="submit" name="Submit" value="Fenster schließen" onclick="self.parent.tb_remove();"/>
-                </div>
+                <div class="uploadframe_footer"></div>
             </div>
             
             <!--FileLastUpload div-->

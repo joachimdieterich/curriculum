@@ -33,7 +33,7 @@
 	<p><label>Beschreibung: </label><input class='inputformlong' type='description' name='description' {if isset($description)}value='{$description}'{/if}/></p>
         {validate_msg field='description'}
         <p><label>Klassenstufe:</label>
-          <select name="grade">
+          <select name="grade" class='inputformlong'>
               {section name=res loop=$grade}  
                 <option label="{$grade[res]->grade}" value={$grade[res]->id} {if $grade_id eq $grade[res]->id}selected="selected"{/if}>{$grade[res]->grade}</option>
               {/section}
@@ -41,7 +41,7 @@
         {validate_msg field='grade'}
         {if isset($semester)}
             <p><label>Lernzeitraum: </label>
-            <select name="semester">
+            <select name="semester" class='inputformlong'>
                 {section name=res loop=$semester}  
                     <option label="{$semester[res]->semester}" value={$semester[res]->id} {if $semester_id eq $semester[res]->id}selected="selected"{/if}>{$semester[res]->semester}</option>
                 {/section}
@@ -121,7 +121,7 @@
             {if isset($curriculum_list)}
             <p><h3>Markierte Lerngruppe(n)in Lehrplan ein- und ausschreiben:</h3>
             <p class="floatleft">
-                <select class='inputform floatleft' name="curriculum">
+                <select class='floatleft' name="curriculum">
                     {section name=res loop=$curriculum_list}  
                         <option label="{$curriculum_list[res]->curriculum} | {$curriculum_list[res]->grade} | {$curriculum_list[res]->description}" value="{$curriculum_list[res]->id}">{$curriculum_list[res]->curriculum} | {$curriculum_list[res]->grade} | {$curriculum_list[res]->description}</option>
                     {/section}

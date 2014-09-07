@@ -55,6 +55,13 @@ try { // Error handling
                     if ($_SESSION['authenticated']){   
                     $TEMPLATE->assign('loginname', $_SESSION['username']);
                     $TEMPLATE->assign('stat_users_Online', $USER->usersOnline($USER->institutions));
+                    $TEMPLATE->assign('mySemester', $_SESSION['SEMESTER']);
+                    //object_to_array($_SESSION['SEMESTER']);
+                        if(isset($_POST['mySemester'])){
+                            $USER->semester = $_POST['mySemester'];
+                            $TEMPLATE->assign('my_semester', $USER->semester);
+                            $PAGE->action = 'dashboard';   
+                        }
                     }
                 } else {
                     $PAGE->message[] = 'Sie sind nicht angemeldet.';
