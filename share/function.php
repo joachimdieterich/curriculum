@@ -247,8 +247,27 @@ function renderList($formname, $files, $data_dir, $ID_Postfix, $targetID, $retur
             <?php //wenn filetype unbekannt dann var setzen!!!
             echo '<div  class="filelist filenail" id="row'.$ID_Postfix.''.$files[$i]->id.'"' ?>  
                 onclick="checkfile('<?php echo $ID_Postfix.''.$files[$i]->id;?>')"  
-                onmouseover="previewFile('<?php echo $data_dir.''.$files[$i]->context_path.''.$files[$i]->path.''.$files[$i]->filename;?>')" 
-                onmouseout="exitpreviewFile()"> <?php
+                onmouseover="previewFile('<?php echo $data_dir.''.$files[$i]->context_path.''.$files[$i]->path.''.$files[$i]->filename;?>', 
+                '<?php echo $ID_Postfix;?>', 
+                '<?php if ($files[$i]->title != '')         echo $files[$i]->title;?>', 
+                '<?php if ($files[$i]->description != '')   echo $files[$i]->description;?>', 
+                '<?php if ($files[$i]->author != '')        echo $files[$i]->author;?>', 
+                '<?php 
+                switch ($files[$i]->licence) {
+                    case 1: echo 'Sonstige'; break;
+                    case 2: echo 'Alle Rechte vorbehalten'; break;
+                    case 3: echo 'Public Domain'; break;
+                    case 4: echo 'CC'; break;
+                    case 5: echo 'CC - keine Bearbeitung'; break;
+                    case 6: echo 'CC - keine kommerzielle Nutzung - keine Bearbeitung'; break;
+                    case 7: echo 'CC - keine kommerzielle Nutzung'; break;
+                    case 8: echo 'CC - keine kommerzielle Nutzung - Weitergabe unter gleichen Bedingungen'; break;
+                    case 9: echo 'CC - Weitergabe unter gleichen Bedingungen'; break;
+                    default:
+                        break;
+                }
+                ?>')" 
+                onmouseout="exitpreviewFile('<?php echo $ID_Postfix; ?>')"> <?php
             echo    '<a href="'.$data_dir.''.$files[$i]->context_path.''.$files[$i]->path.''.$files[$i]->filename.'"  target="_blank">
                      <div class="downloadbtn floatleft"></div>
                      </a><div class="deletebtn floatright" style="margin-right: -4px !important; "'?>  
@@ -270,7 +289,14 @@ function renderList($formname, $files, $data_dir, $ID_Postfix, $targetID, $retur
     </div>
 </form>
 <div class="uploadframe_footer">
-    <input type="submit" name="Submit" value="Fenster schließen" onclick="self.parent.tb_remove();"/>
+    <div id="<?php echo $ID_Postfix; ?>p_information" class="floatleft" style="width:593px; visibility:hidden;">
+        <table>
+            <tr><td class="p_info"><strong>Titel:</strong></td>        <td id="<?php echo $ID_Postfix; ?>p_title" class="p_info "></td></tr>
+            <tr><td class="p_info"><strong>Beschreibung:</strong></td> <td id="<?php echo $ID_Postfix; ?>p_description" class="p_info "></td></tr>
+            <tr><td class="p_info"><strong>Author:</strong></td>       <td id="<?php echo $ID_Postfix; ?>p_author" class="p_info "></td></tr>
+            <tr><td class="p_info"><strong>Lizenz</strong></td>        <td id="<?php echo $ID_Postfix; ?>p_licence" class="p_info "></td></tr>
+        </table>
+    </div>
     <?php if ($targetID != 'NULL'){ // verhindert, dass der Button angezeigt wird wenn das Target NULL ist
     ?>
     <input type="submit"  value="Datei(en) verwenden" onclick="iterateListControl('<?php echo 'div'.$ID_Postfix ?>','<?php echo $ID_Postfix ?>','<?php echo $targetID;?>','<?php echo $returnFormat;?>','<?php echo $multipleFiles;?>');"/>

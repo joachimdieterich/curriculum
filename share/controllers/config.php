@@ -32,6 +32,7 @@ if($_POST) {
       $upd_config = new Config('institution', $USER->institutions["id"]);
                     /* user settings */
                     $upd_config->user_id                        = $_POST['user_id'];
+                    $upd_config->user_semester                  = $_POST['user_semester'];
                     $upd_config->user_language                  = $language[$_POST['user_language']]['dir'];
                     $upd_config->user_paginator_limit           = $_POST['user_paginator_limit'];
                     $upd_config->user_acc_days                  = $_POST['user_acc_days'];
@@ -52,6 +53,7 @@ if($_POST) {
                     $gump = new Gump(); /* Validation */
                     $gump->validation_rules(array(
                     'user_id'                       => 'required',
+                    'user_semester'                 => 'required',
                     'user_language'                 => 'required',
                     'user_paginator_limit'          => 'required|integer',
                     'user_acc_days'                 => 'required|integer',
@@ -83,6 +85,7 @@ if($_POST) {
   } else if (checkCapabilities('config:mySettings', $USER->role_id)){
       $upd_config = new Config('institution', $USER->institutions["id"]);
                     $upd_config->user_id                    = $_POST['user_id'];
+                    $upd_config->user_semester              = $_POST['user_semester'];
                     $upd_config->user_language              = $language[$_POST['user_language']]['dir'];
                     $upd_config->user_paginator_limit       = $_POST['user_paginator_limit'];
                     $upd_config->user_acc_days               = $_POST['user_acc_days'];
@@ -90,6 +93,7 @@ if($_POST) {
                     $gump = new Gump(); /* Validation */
                     $gump->validation_rules(array(
                     'user_id'                  => 'required',
+                    'user_semester'            => 'required',    
                     'user_language'            => 'required',
                     'user_paginator_limit'     => 'required|integer',
                     'user_acc_days'            => 'required|integer'

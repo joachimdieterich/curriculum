@@ -75,15 +75,27 @@ class File {
      */
     public $creator_id = null; 
     /**
-     * firstname
+     * firstname of creator
      * @var string 
      */
     public $firstname = null; 
     /**
-     * lastname
+     * lastname of creator
      * @var string 
      */
-    public $lastname = null; 
+    public $lastname = null;
+    /**
+     * author of file 
+     * @since 0.9
+     * @var string
+     */
+    public $author = null; 
+        /**
+     * licence
+     * @since 0.9
+     * @var string
+     */
+    public $licence = null; 
     /**
      * id of curriculum
      * @var int
@@ -107,9 +119,9 @@ class File {
     public function add(){
         global $USER;
         if (checkCapabilities('file:upload', $USER->role_id)){
-            $db = DB::prepare('INSERT INTO files (title, filename, description, type, path, context_id, creator_id, cur_id, ter_id, ena_id) 
-                                VALUES (?,?,?,?,?,?,?,?,?,?)');
-            return $db->execute(array($this->title, $this->filename, $this->description, $this->type, $this->path, $this->context_id, $this->creator_id, $this->curriculum_id, $this->terminal_objective_id, $this->enabling_objective_id));
+            $db = DB::prepare('INSERT INTO files (title, filename, description, author, licence, type, path, context_id, creator_id, cur_id, ter_id, ena_id) 
+                                VALUES (?,?,?,?,?,?,?,?,?,?,?,?)');
+            return $db->execute(array($this->title, $this->filename, $this->description, $this->author, $this->licence, $this->type, $this->path, $this->context_id, $this->creator_id, $this->curriculum_id, $this->terminal_objective_id, $this->enabling_objective_id));
         }
     }
     
@@ -120,8 +132,8 @@ class File {
     public function update(){
         global $USER;
         if (checkCapabilities('file:update', $USER->role_id)){
-            $db = DB::prepare('UPDATE files SET title = ?, filename = ?, description = ?, type = ?, path = ?, context_id = ?, creator_id = ?, cur_id = ?, ter_id = ?, ena_id = ? WHERE id = ?');
-            return $db->execute(array($this->title, $this->filename, $this->description, $this->type, $this->path, $this->context_id, $this->creator_id, $this->curriculum_id, $this->terminal_objective_id, $this->enabling_objective_id, $this->id));
+            $db = DB::prepare('UPDATE files SET title = ?, filename = ?, description = ?, author = ?, type = ?, path = ?, context_id = ?, creator_id = ?, cur_id = ?, ter_id = ?, ena_id = ? WHERE id = ?');
+            return $db->execute(array($this->title, $this->filename, $this->description, $this->author, $this->licence, $this->type, $this->path, $this->context_id, $this->creator_id, $this->curriculum_id, $this->terminal_objective_id, $this->enabling_objective_id, $this->id));
         }
     }
     
@@ -190,6 +202,8 @@ class File {
         $this->title                 = $result->title;
         $this->filename              = $result->filename;
         $this->description           = $result->description;
+        $this->author                = $result->author;
+        $this->licence               = $result->licence;
         $this->path                  = $result->path;
         $this->filetype              = $result->type;
         $this->context_id            = $result->context_id;
@@ -226,6 +240,8 @@ class File {
                     $this->title                 = $result->title;
                     $this->filename              = $result->filename;
                     $this->description           = $result->description;
+                    $this->author                = $result->author;
+                    $this->licence               = $result->licence;
                     $this->path                  = $result->path;
                     $this->filetype              = $result->type;
                     $this->context_id            = $result->context_id;
@@ -294,6 +310,8 @@ class File {
                 $this->title                 = $result->title;
                 $this->filename              = $result->filename;
                 $this->description           = $result->description;
+                $this->author                = $result->author;
+                $this->licence               = $result->licence;
                 $this->path                  = $result->path;
                 $this->filetype              = $result->type;
                 $this->context_id            = $result->context_id;

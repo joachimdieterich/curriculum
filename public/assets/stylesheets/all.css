@@ -64,7 +64,10 @@ table { border-collapse:collapse; border-spacing:0; }
 
 hr { display:block; height:1px; border:0; border-top:1px solid #ccc; margin:1em 0; padding:0; }
 
-input, select { vertical-align:middle; }
+input, select { 
+    vertical-align: middle;  
+    width:          210px;
+}
 /* END RESET CSS */
 
 /* font normalization inspired by  from the YUI Library's fonts.css: developer.yahoo.com/yui/ */
@@ -458,7 +461,6 @@ button {  width: auto; overflow: auto; }
 .right { padding-right:  10px;    
          text-align:     right; }
 .block          { display: inline-table; }
-.inputform      { width:  	210px; }
 .inputformlong  { width:        500px; }
 .error          { color:          red; }
 .floatleft  { float: left; }
@@ -574,6 +576,11 @@ nav {
     width: 185px;
 }
 
+nav select{
+    margin-left: 10px;
+    width: 170px;
+}
+
 nav a, .contentlist a {
     text-decoration: none;
 }
@@ -631,8 +638,8 @@ nav div > img {
 .messageboxClose {
     background-image: url('../images/basic/x.png'); /* 16x16 px */
     background-repeat: no-repeat; 
-    margin-top: -14px;
-    margin-left: -14px;
+    /*margin-top: -14px;
+    margin-left: -14px;*/
     height: 28px;
     width: 28px;
     opacity:0.7;
@@ -698,6 +705,12 @@ nav div > img {
 
 .filenail:hover .filelink, .activefilenail .filelink{ /*damit der Text lesbar bleibt*/
     color: #ffffff;
+}
+
+.p_info{
+    font-size:10px;
+    color: #444;
+    display: inline-block;
 }
 
 #contenttable td {
@@ -937,10 +950,10 @@ input.btnunmarkList     { background: url('../images/png/unmarkList64x64.png'); 
     z-index:10000;/* place overlay on top of other elements */
 }
 
-.popup, a.modalCloseImg, .messageboxClose {background:url(../images/basic/x.png) no-repeat; width:25px; height:29px; display:inline; z-index:10001; position:absolute; top:0px; right:-13px; cursor:pointer;}
+.popup, a.modalCloseImg, .messageboxClose {background:url(../images/basic/x.png) no-repeat; width:25px; height:29px; display:inline; z-index:10001; position:absolute; top:0px; right:0px; cursor:pointer;}
 
 iframe { width: 600px;
-         height: 400px; }
+         height: 500px; }
 
 #popupcontent, .modalcontent {
         padding-top: 10px;
@@ -1001,11 +1014,12 @@ iframe { width: 600px;
     display: block;
     border-top: 2px groove hsl(0,0%,100%);
     margin-top: 1px;
-    position: absolute;
+    position: absolute;  
     padding-top: 5px;
-    text-indent: 10px;
+    padding-left: 10px;
     bottom:0px; left:0px; right:0px;
     width: 100%;
+    min-height: 20px;
     background: #bfbfbf;
 }
 
@@ -1025,7 +1039,7 @@ iframe { width: 600px;
 .visuallyhidden { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; width: 1px; }
 
 /* Hide visually and from screenreaders, but maintain layout */
-.invisible { visibility: collapse; }
+.invisible { visibility: collapse; width: 8px;}
 
 /* >> The Magnificent CLEARFIX: Updated to prevent margin-collapsing on child elements << j.mp/bestclearfix */
 .clearfix:before, .clearfix:after, .group:before, .group:after { content: "\0020"; display: block; height: 0; visibility: hidden; }

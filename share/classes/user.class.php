@@ -122,6 +122,8 @@ class User {
      * @var string
      */
     public $language = null; 
+    
+    public $semester = null; 
     /**
      * timestamp of creation
      * @var timestamp
@@ -217,7 +219,7 @@ class User {
         $role = new Roles(); 
         $role->role_id           = $this->role_id;
         $role->load(); 
-        $this->role_name         = $role->role;
+        $this->role_name         = $role->role;       
         $this->enrolments        = $this->get_user_enrolments();
         $db = DB::prepare('SELECT * FROM config_user WHERE user_id = ?');
         $db->execute(array($this->id));
@@ -225,7 +227,20 @@ class User {
         $this->language          = $result->user_language;
         $this->acc_days          = $result->user_acc_days;
         $this->paginator_limit   = $result->user_paginator_limit;
-        
+        if ($result->user_semester == NULL){                                //Update User config -> new field user_semester
+            $upd_config = new Config();
+            $upd_config->user_language = $this->language;
+            $upd_config->user_semester = $this->enrolments[0]->semester_id;
+            $upd_config->user_filepath = $result->user_filepath;
+            $upd_config->user_filepath = $this->paginator_limit;
+            $upd_config->user_filepath = $this->acc_days;
+            $upd_config->user_id = $this->id;
+            $upd_config->updateUser();
+            $this->semester          = $result->user_semester;
+        } else {
+            $this->semester          = $result->user_semester;
+        }
+             
         /**
          * ! users can be enroled in more than one institution 
          */
@@ -918,7 +933,7 @@ class User {
      * @return string | array
      */
    public function get_user_enrolments() { 
-        $db = DB::prepare('SELECT cu.curriculum, cu.id, cu.grade_id, gp.id AS group_id, gp.groups, fl.filename 
+        $db = DB::prepare('SELECT cu.curriculum, cu.id, cu.grade_id, gp.id AS group_id, gp.semester_id, gp.groups, fl.filename 
                             FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp, files AS fl
                             WHERE cu.id = ce.curriculum_id AND ce.status = 1 AND gp.id = ce.group_id AND cu.icon_id = fl.id
                             AND ce.group_id = ANY (SELECT group_id FROM groups_enrolments 
@@ -928,7 +943,6 @@ class User {
         
         while($result = $db->fetchObject()) { 
                 $data[] = $result;         
-                
         } 
         if (isset($data)){
             return $data;

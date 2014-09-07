@@ -2,13 +2,20 @@
     <nav role="user" class="menu">
     <ul class="group">
             <li class="border-top-radius contentheader">Mein Profil</li>
+            <form method='post' action='index.php'>
+                <select name="mySemester" onchange="this.form.submit()">
+                {section name=res loop=$mySemester}  
+                            <OPTION label="{$mySemester[res]->semester}" value={$mySemester[res]->id} {if isset($my_semester)}{if $mySemester[res]->id eq $my_semester}selected{/if}{/if}>{$mySemester[res]->semester}</OPTION>{/section}
+                </select>
+            </form>
             <div ><img src="{$avatar_url}{$my_avatar}"></div>
             <div ><p><strong>{$my_firstname} {$my_lastname}</strong></p>
                 <p><a href="index.php?action=profile">Profil bearbeiten</a><p>
                 <p><a href="index.php?action=password">Password ändern</a><p> 
                 <p><a href="index.php?action=messages">Mitteilungen</a><p> 
                 <p><a href="assets/scripts/libs/modal-upload/uploadframe.php?userID={$my_id}&token={$my_token}&context=userFiles&target=NULL&format=1&placeValuesBeforeTB_=savedValues&TB_iframe=true&width=710&modal=true" class="thickbox">Meine Dateien</a><p>      
-            <p>Letzter Login: {$my_last_login}</p>
+            
+                <p>Letzter Login: {$my_last_login}</p>
             </div> 
         </ul>
     </nav>
@@ -19,7 +26,9 @@
                 <li class="border-top-radius contentheader">Meine Lehrpläne</li>
                 {if $my_enrolments != ''}
                     {foreach item=cur_menu from=$my_enrolments}
+                        {if $cur_menu->semester_id eq $my_semester}
                         <li><p><a href="index.php?action=view&curriculum={$cur_menu->id}&group={$cur_menu->group_id}">{$cur_menu->curriculum}<span> {$cur_menu->groups}</span></a></p></li>
+                        {/if}
                     {/foreach}
                 {else}<li><p>Sie sind in keinem Lehrplan eingeschrieben</p></li>
                 {/if}    

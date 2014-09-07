@@ -125,6 +125,7 @@ class Config {
      */
     public $update_time                     = null; 
     
+    public $user_semester                   = null;
  
     /**
      * constructor for config class
@@ -177,6 +178,7 @@ class Config {
                                 $this->user_paginator_limit       = $result->user_paginator_limit;
                                 $this->user_acc_days              = $result->user_acc_days;
                                 $this->user_language              = $result->user_language; 
+                                $this->user_semester              = $result->user_semester;
                 break;
             case 'user':        $this->user_id = $id;
                                 $db = DB::prepare('SELECT * FROM config_user WHERE user_id = ?'); 
@@ -187,6 +189,7 @@ class Config {
                                 $this->user_paginator_limit       = $result->user_paginator_limit;
                                 $this->user_acc_days              = $result->user_acc_days;
                                 $this->user_language              = $result->user_language; 
+                                $this->user_semester              = $result->user_semester; 
                 break;
 
             default:
@@ -212,8 +215,8 @@ class Config {
                                     return $db->execute(array($this->institution_id, $this->institution_filepath, $this->institution_paginator_limit,$this->institution_standard_role, $this->institution_standard_country, $this->institution_standard_state, $this->institution_csv_size, $this->institution_avatar_size, $this->institution_material_size, $this->institution_acc_days, $this->institution_language, $this->institution_timeout));
                                     break; 
                 case 'user':        $this->user_id = $id; 
-                                    $db = DB::prepare('INSERT INTO config_user(user_id, user_paginator_limit, user_acc_days, user_language) VALUES (?,?,?,?)');
-                                    return $db->execute(array($this->user_id, $this->user_paginator_limit, $this->user_acc_days, $this->user_language));
+                                    $db = DB::prepare('INSERT INTO config_user(user_id, user_paginator_limit, user_acc_days, user_language, user_semester) VALUES (?,?,?,?,?)');
+                                    return $db->execute(array($this->user_id, $this->user_paginator_limit, $this->user_acc_days, $this->user_language, $this->user_semester));
                                     break; 
                 default:            break; 
             }
@@ -279,7 +282,7 @@ class Config {
                                                             institution_language,
                                                             institution_timeout,
                                                             update_time) 
-                                                       VALUES (?,?,?,?, ?, ?, ?, ?, ?, ?, NOW())'); 
+                                                       VALUES (?,?,?,?,?,?,?,?,?,?, NOW())'); 
                                 return $db->execute(array($this->institution_paginator_limit, $this->institution_standard_role, $this->institution_standard_country, $this->institution_standard_state, $this->institution_csv_size, $this->institution_avatar_size, $this->institution_material_size, $this->institution_acc_days, $this->institution_language, $this->institution_timeout, $this->institution_id));   	
                                 }
                 break;
@@ -297,12 +300,12 @@ class Config {
         $db = DB::prepare('SELECT COUNT(user_id) FROM config_user WHERE user_id = ?');
         $db->execute(array($this->user_id));
         if($db->fetchColumn() >= 1) { 
-            $db = DB::prepare('UPDATE config_user  SET user_language = ?, user_filepath = ?,
+            $db = DB::prepare('UPDATE config_user  SET user_language = ?, user_semester = ?, user_filepath = ?,
                                     user_paginator_limit = ?, user_acc_days = ? WHERE user_id = ?');                   
-            return $db->execute(array($this->user_language, $this->user_filepath, $this->user_paginator_limit, $this->user_acc_days,$this->user_id)); 
+            return $db->execute(array($this->user_language, $this->user_semester, $this->user_filepath, $this->user_paginator_limit, $this->user_acc_days,$this->user_id)); 
         } else { 
-            $db = DB::prepare('INSERT INTO config_user(user_language, user_filepath, user_paginator_limit, user_acc_days, user_id) VALUES (?,?,?,?,?)');                    
-            return $db->execute(array($this->user_language, $this->user_filepath, $this->user_paginator_limit, $this->user_acc_days, $this->user_id));
+            $db = DB::prepare('INSERT INTO config_user(user_language, user_semester, user_filepath, user_paginator_limit, user_acc_days, user_id) VALUES (?,?,?,?,?)');                    
+            return $db->execute(array($this->user_language, $this->user_semester, $this->user_filepath, $this->user_paginator_limit, $this->user_acc_days, $this->user_id));
         }
     }
 }

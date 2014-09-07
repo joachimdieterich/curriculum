@@ -72,7 +72,7 @@
         <p>Markierte Benutzer in Lerngruppe ein bzw. ausschreiben</p>
         {if isset($groups_array)}
         <p><label>Lerngruppe:</label>
-            <select class='inputformlong' name="groups">
+            <select name="groups">
                 {section name=res loop=$groups_array}  
                 <option label="{$groups_array[res]->group}" value={$groups_array[res]->id}> {$groups_array[res]->group} | {$groups_array[res]->semester} | {$groups_array[res]->institution}</option>
                 {/section}
@@ -83,17 +83,16 @@
         <p>&nbsp;</p>
         <p><h3>Rolle</h3></p>
         <p><label>Benutzer-Rolle festlegen</label>
-        <SELECT class="centervertical" name='roles' id='roles' />
+        <SELECT  name='roles' id='roles' />
             {foreach key=rolid item=rol from=$roles}
                 <OPTION  value="{$rol->role_id}">{$rol->role}</OPTION>
             {/foreach} 
-            </SELECT></p> 
-       <p><input type='submit' name='setRole' value='Rolle zuweisen' /></p>
+            </SELECT><input type='submit' name='setRole' value='Rolle zuweisen' /></p>
            
         <p>&nbsp;</p>
         <p><h3>Passwort zurücksetzen</h3></p>
         <p>Neues Passwort für markierte Benutzer festlegen. Passwort muss mind. 6 Zeichen lang sein. </p>
-        <p><label>Neues Passwort:</label><input class="inputform" type='password' name='password' id='password'  {if isset($password)}value='{$password}'{/if}/>
+        <p><label>Neues Passwort:</label><input  type='password' name='password' id='password'  {if isset($password)}value='{$password}'{/if}/>
             <input type='submit' name='resetPassword' value='Passwort zurücksetzen' /></p>
         {validate_msg field='password'}
         <p><label>Passwort anzeigen: </label><input type="checkbox" class="centervertical" name='showpassword'  {if isset($inputshowpassword)}checked{/if} onclick="unmask('password', this.checked);"/></p>

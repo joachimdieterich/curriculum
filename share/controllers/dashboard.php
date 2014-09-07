@@ -22,6 +22,9 @@
 global $USER, $PAGE, $TEMPLATE, $LOG;
   /** Load last accomplished Objectives */
   include ('./../lang/'.$USER->language.'/dashboard.php');                      //includes language pack
+  
+  
+  
   $acc_objectives = new EnablingObjective();
   $TEMPLATE->assign('enabledObjectives', $acc_objectives->getLastEnablingObjectives()); 
   $institution = new Institution();

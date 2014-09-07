@@ -32,13 +32,13 @@
             {*Serverdaten-Datenbank *}
                 <p>&nbsp;</p>
                 <p><h3>Datenbank</h3></p>
-                <p><label>DB Host*: </label><input class="inputform" name='db_host'{if isset($db_host)}value='{$db_host}'{/if}/><label>= localhost</label></p>
+                <p><label>DB Host*: </label><input name='db_host'{if isset($db_host)}value='{$db_host}'{/if}/><label>= localhost</label></p>
                 {validate_msg field='db_host'}
-                <p><label>DB User*: </label><input class="inputform" name='db_user'{if isset($db_user)}value='{$db_user}'{/if}/></p>
+                <p><label>DB User*: </label><input name='db_user'{if isset($db_user)}value='{$db_user}'{/if}/></p>
                 {validate_msg field='db_user'}
-                <p><label>DB Password*: </label><input class="inputform" name='db_password'{if isset($db_password)}value='{$db_password}'{/if}/></p>
+                <p><label>DB Password*: </label><input name='db_password'{if isset($db_password)}value='{$db_password}'{/if}/></p>
                 {validate_msg field='db_password'}
-                <p><label>DB Name*: </label><input class="inputform" name='db_name'{if isset($db_name)}value='{$db_name}'{/if}/></p>
+                <p><label>DB Name*: </label><input name='db_name'{if isset($db_name)}value='{$db_name}'{/if}/></p>
                 {validate_msg field='db_name'}
                 {*<p><label>Bestehende Daten sichern?</label><input class="centervertical" type="checkbox" name="dump"/>!Achtung! nachdem die Datei automatisch herunter geladen wurde, müssen sie erneut auf "weiter" klicken!</p>*}{*realized but useless yet*}
                 <p><label>&nbsp;</label><input type='submit' name='step_1' value='weiter' /></p>
@@ -48,7 +48,7 @@
                 {*Serverdaten*}
                 <p>&nbsp;</p>
                 <p><h3>Titel und URL</h3></p>
-                <p><label>Name der Seite*: </label><input class="inputform" name='app_title'{if isset($app_title)}value='{$app_title}'{/if}/></p>
+                <p><label>Name der Seite*: </label><input name='app_title'{if isset($app_title)}value='{$app_title}'{/if}/></p>
                 {validate_msg field='app_title'}
                 <p><label>Beispieldaten installieren</label><input class="centervertical" type="checkbox" name="demo"/></p>{*not yet available - dedication incorrect*}
                 <p><label>&nbsp;</label><input type='submit' name='step_2' value='weiter' /></p>
@@ -95,17 +95,17 @@
             <p>&nbsp;</p>
             <p><h3>Administrator</h3></p>
             <input type='hidden' name='institution_id' id='institution_id' {if isset($institution_id)}value='{$institution_id}'{/if} />   
-            <p><label>Benutzername*:</label><input class="inputform" id='username' name='username' {if isset($username)}value='{$username}'{/if} /></p>
+            <p><label>Benutzername*:</label><input id='username' name='username' {if isset($username)}value='{$username}'{/if} /></p>
             {validate_msg field='username'}
-            <p><label>Vorname*: </label><input class="inputform" name='firstname'{if isset($firstname)}value='{$firstname}'{/if}/></p>
+            <p><label>Vorname*: </label><input name='firstname'{if isset($firstname)}value='{$firstname}'{/if}/></p>
             {validate_msg field='firstname'}
-            <p><label>Nachname*: </label><input class="inputform" name='lastname'{if isset($lastname)}value='{$lastname}'{/if}/></p>
+            <p><label>Nachname*: </label><input name='lastname'{if isset($lastname)}value='{$lastname}'{/if}/></p>
             {validate_msg field='lastname'}
-            <p><label>Email*: </label><input class="inputform" name='email'{if isset($email)}value='{$email}'{/if}/></p>
+            <p><label>Email*: </label><input name='email'{if isset($email)}value='{$email}'{/if}/></p>
             {validate_msg field='email'}
-            <p><label>PLZ*: </label><input class="inputform" name='postalcode'{if isset($postalcode)}value='{$postalcode}'{/if}/></p>
+            <p><label>PLZ*: </label><input name='postalcode'{if isset($postalcode)}value='{$postalcode}'{/if}/></p>
             {validate_msg field='postalcode'}
-            <p><label>Ort*: </label><input class="inputform" name='city' {if isset($city)}value='{$city}'{/if}/></p>
+            <p><label>Ort*: </label><input name='city' {if isset($city)}value='{$city}'{/if}/></p>
             {validate_msg field='city'}
             <p><label>Land: </label><select name='country' onchange="loadStates(this.value);">
                     {section name=res loop=$countries}  
@@ -121,7 +121,7 @@
                     {/foreach} 
                     </SELECT>*}
                 </p>
-            <p><label>Passwort*: </label></td><td><input class="inputform" type="password" name='password' {if isset($password)}value='{$password}'{/if}/></p>                                       
+            <p><label>Passwort*: </label></td><td><input type="password" name='password' {if isset($password)}value='{$password}'{/if}/></p>                                       
             {validate_msg field='password'}
                 <p><label>&nbsp;</label><input type='submit' name='step_4' value='weiter' /></p>
             {/if}

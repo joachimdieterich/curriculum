@@ -38,6 +38,11 @@ class Course {
      */
     public $course = null; 
     /**
+     * semester id
+     * @var int
+     */
+    public $semester_id = null; 
+    /**
      * id of curriculum
      * @var int
      */
@@ -96,7 +101,7 @@ class Course {
      */
     public function getCourse($dependency = null, $id = null){
         switch ($dependency) {
-            case 'admin': $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, gp.groups, gp.id AS gpid, fl.filename
+            case 'admin': $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, gp.groups, gp.semester_id, gp.id AS gpid, fl.filename
                                             FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp, files AS fl
                                             WHERE cu.id = ce.curriculum_id
                                             AND cu.icon_id = fl.id
@@ -108,6 +113,7 @@ class Course {
                             $db->execute(array($id));
                             while($result = $db->fetchObject()) { 
                                 $this->id            = $result->id.'_'.$result->gpid;
+                                $this->semester_id   = $result->semester_id;
                                 $this->course        = $result->groups.' | '.$result->curriculum.' | '.$result->description; 
                                 $this->curriculum_id = $result->id;
                                 $this->curriculum    = $result->curriculum;
@@ -117,7 +123,7 @@ class Course {
                                 $course[] = clone $this;        //it has to be clone, to get the object and not the reference
                             }              
                             break; 
-            case 'teacher': $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, gp.groups
+            case 'teacher': $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, gp.groups, gp.semester_id
                                             FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp
                                             WHERE cu.id = ce.curriculum_id
                                             AND gp.id = ce.group_id
@@ -129,6 +135,7 @@ class Course {
                             $db->execute(array($id, $id));
                             while($result = $db->fetchObject()) { 
                                 $this->id            = $result->id.'_'.$result->gpid;
+                                $this->semester_id   = $result->semester_id;
                                 $this->course        = $result->groups.' | '.$result->curriculum.' | '.$result->description; 
                                 $this->curriculum_id = $result->id;
                                 $this->curriculum    = $result->curriculum;
