@@ -2,12 +2,14 @@
     <nav role="user" class="menu">
     <ul class="group">
             <li class="border-top-radius contentheader">Mein Profil</li>
+            {if $my_semester != NULL}
             <form method='post' action='index.php'>
                 <select name="mySemester" onchange="this.form.submit()">
                 {section name=res loop=$mySemester}  
                             <OPTION label="{$mySemester[res]->semester}" value={$mySemester[res]->id} {if isset($my_semester)}{if $mySemester[res]->id eq $my_semester}selected{/if}{/if}>{$mySemester[res]->semester}</OPTION>{/section}
                 </select>
             </form>
+            {/if}    
             <div ><img src="{$avatar_url}{$my_avatar}"></div>
             <div ><p><strong>{$my_firstname} {$my_lastname}</strong></p>
                 <p><a href="index.php?action=profile">Profil bearbeiten</a><p>

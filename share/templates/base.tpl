@@ -131,13 +131,12 @@
         <!-- jquery tools -->
         <!-- dateinput styling -->
         <script> $(":date").dateinput({
-            format: 'yyyy-mm-dd 12:00:00',	// the format displayed for the user
-            selectors: true,             	// whether month/year dropdowns are shown
-            min: -100,                    // min selectable day (100 days backwards)
-            max: 100,                    	// max selectable day (100 days onwards)
+            format: 'yyyy-mm-dd 00:00:00',	// the format displayed for the user
+            selectors: true,             	// whether month/year dropdowns are shown          
             offset: [10, 20],            	// tweak the position of the calendar
             speed: 'fast',               	// calendar reveal speed
-            firstDay: 1                  	// which day starts a week. 0 = sunday, 1 = monday etc..
+            firstDay: 1,                  	// which day starts a week. 0 = sunday, 1 = monday etc..
+            yearRange: [-20, 20] 
             });
         </script>   
         <!-- end jquery tools -->

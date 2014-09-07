@@ -227,7 +227,7 @@ class User {
         $this->language          = $result->user_language;
         $this->acc_days          = $result->user_acc_days;
         $this->paginator_limit   = $result->user_paginator_limit;
-        if ($result->user_semester == NULL){                                //Update User config -> new field user_semester
+        if ($result->user_semester == NULL && $this->enrolments != false){                                //Update User config -> new field user_semester
             $upd_config = new Config();
             $upd_config->user_language = $this->language;
             $upd_config->user_semester = $this->enrolments[0]->semester_id;
