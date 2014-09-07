@@ -21,10 +21,13 @@
             <p><h3>Lernzeitraum</h3></p>
             <p >Legt fest, welcher der aktuelle Lernzeitraum ist</p>
             <p><label>Lernzeitraum: </label>
+                    {if $my_semester != NULL}
                     <select name="user_semester"> 
                     {section name=res loop=$mySemester}  
                             <OPTION label="{$mySemester[res]->semester}" value={$mySemester[res]->id} {if $mySemester[res]->id eq $user_semester}selected{/if}>{$mySemester[res]->semester}</OPTION>{/section}
-                </select>{validate_msg field='user_semester'}<p>&nbsp;</p><p>&nbsp;</p>
+                    </select>
+                    {else}Sie müssen zuerst einen Lernzeitraum anlegen{/if}{validate_msg field='user_semester'}<p>&nbsp;</p><p>&nbsp;</p>
+                    
             <p><h3>Sprache</h3></p>
             <p >Legt die Menüsprache fest</p>
             <p><label>Sprache: </label>
