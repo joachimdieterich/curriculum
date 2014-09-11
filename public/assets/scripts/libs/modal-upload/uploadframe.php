@@ -166,7 +166,9 @@ if (isset($_POST['Submit'])) {
                                 $gump = new Gump(); /* Validation */
                                         $gump->validation_rules(array(
                                         'title'     => 'required',
-                                        'description'    => 'required'
+                                        'description'    => 'required',
+                                        'url_author'    => 'required', 
+                                        'url_licence'   => 'required'
                                         ));
                                         $validated_data = $gump->run($_POST);
                                         if($validated_data === false) {/* validation failed */
@@ -179,6 +181,8 @@ if (isset($_POST['Submit'])) {
                                             $file->type = '.url';
                                             $file->title = $_POST['title'];
                                             $file->description = $_POST['description'];
+                                            $file->author = $_POST['url_author'];
+                                            $file->licence = $_POST['url_licence'];
                                             $file->context_id = $file->getContextId($context);
                                             $file->creator_id = $upload_user->id;
                                             $file->curriculum_id = $curriculum_id;
@@ -551,6 +555,28 @@ $(document).ready(function() {
                         echo $v_error['description']['message'][0];
                     }
                     ?>
+                    <p><label>Author*: </label><input  id="url_author" name="url_author" value="<?php echo $upload_user->firstname.' '.$upload_user->lastname;?>"/></p>
+                <?php
+                if (isset($v_error['url_author']['message'][0])){
+                    echo $v_error['url_author']['message'][0];
+                }
+                ?>
+                <p><label>Lizenz: </label><select id="url_licence" name="url_licence" class="centervertical">
+                                        <option value="1" data-skip="1">Sonstige</option>
+                                        <option value="2" data-skip="1" selected>Alle Rechte vorbehalten</option>
+                                        <option value="3" data-skip="1">Public Domain</option>
+                                        <option value="4" data-skip="1">CC</option>
+                                        <option value="5" data-skip="1">CC - keine Bearbeitung</option>;
+                                        <option value="6" data-skip="1">CC - keine kommerzielle Nutzung - keine Bearbeitung</option>;
+                                        <option value="7" data-skip="1">CC - keine kommerzielle Nutzung</option>;
+                                        <option value="8" data-skip="1">CC - keine kommerzielle Nutzung - Weitergabe unter gleichen Bedingungen</option>;
+                                        <option value="9" data-skip="1">CC - Weitergabe unter gleichen Bedingungen</option>;
+                                  </select></p></p>
+                <?php
+                if (isset($v_error['url_licence']['message'][0])){
+                    echo $v_error['url_licence']['message'][0];
+                } 
+               ?>
                     <p>URL:</p>
                     <p><input class="inputformlong" name="fileURL" type="input" /></p>
                     <p><input  type="submit" name="Submit" value="URL einfügen"  /></p>

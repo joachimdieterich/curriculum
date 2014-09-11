@@ -100,7 +100,7 @@ class Semester {
     
     public function getMySemesters($user_id){
         $semesters = array();
-        $db = DB::prepare('SELECT se.id, se.semester, se.description, se.begin, se.end, 
+        $db = DB::prepare('SELECT DISTINCT se.id, se.semester, se.description, se.begin, se.end, 
                                 se.creation_time, se.creator_id, us.username
                         FROM semester AS se, users AS us, groups AS gr, groups_enrolments AS ge
                         WHERE gr.semester_id = se.id AND gr.id = ge.group_id AND us.id = ge.user_id AND ge.user_id = ?');
