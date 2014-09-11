@@ -36,7 +36,7 @@ if (isset($_SESSION['USER'])){                                                  
     
     
 } else {
-    $USER->load('username', $_SESSION['username']);                               //Get $USER Object //Über DB funktion realisieren
+    $USER->load('username', $_SESSION['username'],true);                               //Get $USER Object //Über DB funktion realisieren
     foreach($USER as $key => $value){
     $TEMPLATE->assign('my_'.$key, $value);
     }
@@ -55,9 +55,9 @@ if (isset($_SESSION['USER'])){                                                  
 function session_reload_user(){
     global $USER, $TEMPLATE;
 
-    $USER->load('username', $_SESSION['username']);
+    $USER->load('username', $_SESSION['username'], true);
     $_SESSION['USER'] =& $USER;
-    $USER->load('username', $_SESSION['username']);                               //Get $USER Object //Über DB funktion realisieren
+    $USER->load('username', $_SESSION['username'], true);                               //Get $USER Object //Über DB funktion realisieren
     
     foreach($USER as $key => $value){
     $TEMPLATE->assign('my_'.$key, $value);

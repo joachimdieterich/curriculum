@@ -81,7 +81,9 @@ if (isset($_GET['function'])){
                                         echo '<lable></label><p class="materialtxt">'.$files[$i]->description .' &nbsp;</p>'; // Leerzeichen  &nbsp; wichtig bei fehlender Beschreibung sonst wird es falsch dargestellt
                                         echo '<div class="materialseperator"></div><div class="materialseperator2"></div>';
                                     }
+                                    echo '<input type="submit" name="Submit" value="Fenster schließen" onclick="reloadPage()"/>';
                                 }
+                                
                                 echo '</div></div>';
                             }
                             break;  
