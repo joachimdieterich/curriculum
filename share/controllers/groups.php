@@ -224,9 +224,11 @@ function loadeditFormData ($TEMPLATE, $check) {
 $TEMPLATE->assign('page_title', 'Lerngruppen verwalten');  
 
 //Load curricula
-$curricula = new Curriculum();
-$result = $curricula->getCurricula('creator', $USER->id); 
-$TEMPLATE->assign('curriculum_list', $result);
+if (checkCapabilities('groups:enrol', $USER->role_id)) {
+    $curricula = new Curriculum();
+    $result = $curricula->getCurricula('user', $USER->id); 
+    $TEMPLATE->assign('curriculum_list', $result);
+}
 
 //Load Grades
 $grades = new Grade();
