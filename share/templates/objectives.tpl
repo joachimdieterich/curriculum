@@ -20,7 +20,7 @@
         {/if}    
         {if isset($courses)}
           <p>
-              <select {*class="makeMeFancy"*} id='course' name='course' onchange="window.location.assign('index.php?action=objectives&course='+this.value);"> {*_blank global regeln*}
+              <select id='course' name='course' onchange="window.location.assign('index.php?action=objectives&course='+this.value);"> {*_blank global regeln*}
                   <option value="-1" data-skip="1">Lehrplan wählen...</option>
                   {section name=res loop=$courses}
                       {if $courses[res]->semester_id eq $my_semester}

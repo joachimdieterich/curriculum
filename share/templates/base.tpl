@@ -16,10 +16,8 @@
     
     <head>
         <meta charset="utf-8">
-        {*<link href='http://fonts.googleapis.com/css?family=Ubuntu:400,700' rel='stylesheet' type='text/css'>*}
         <link rel="stylesheet" href="{$media_url}stylesheets/all.css?1" media="all">
         <link rel="stylesheet" href="{$media_url}stylesheets/date.css" media="all">
-       
         
         {block name=additional_stylesheets}{/block}
 
@@ -39,7 +37,7 @@
                 "emoticons paste"
             ],
             toolbar1: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
-            toolbar2: "print preview media | forecolor backcolor emoticons",
+            toolbar2: "print preview media | forecolor backcolor emoticons"
             
         });
         </script>
@@ -112,7 +110,6 @@
 
         <script>!window.jQuery && document.write(unescape('%3Cscript src="{$media_url}scripts/libs/jquery/jquery-1.4.4.min.js"%3E%3C/script%3E'))</script>
         <script src="{$media_url}scripts/script.js"></script>
-        <script src="{$media_url}scripts/selectScript.js"></script>
         
         {block name=additional_scripts}
             <script type='text/javascript'>

@@ -604,17 +604,17 @@ class User {
         global $CFG, $USER;
         if(checkCapabilities('user:userList', $USER->role_id)){
             switch ($dependency) {
-                case 'institution': if ($this->role_id == 3 OR $this->role_id == 2){ // 3 = Rolle Lehrer, 2 = Tutor //Bedingung Lehrer müssen in die Klasse eingeschrieben sein, oder sie erstellt haben    
+                case 'institution': /*if ($this->role_id == 3 OR $this->role_id == 2){ // 3 = Rolle Lehrer, 2 = Tutor //Bedingung Lehrer müssen in die Klasse eingeschrieben sein, oder sie erstellt haben    
                                         $db = DB::prepare('SELECT us.id FROM users AS us WHERE us.id = ANY (SELECT user_id FROM institution_enrolments 
                                                         WHERE institution_id = ANY (SELECT institution_id FROM institution_enrolments 
                                                         WHERE user_id = ?)) AND us.creator_id = ? ORDER by us.lastname');
                                         $db->execute(array($this->id, $this->id));
-                                    } else if ($this->role_id == 4 OR $this->role_id == 1){ //4 = Institutions-Admin, 1= sidewide Admin
+                                    } else if ($this->role_id == 4 OR $this->role_id == 1){*/ //4 = Institutions-Admin, 1= sidewide Admin
                                         $db = DB::prepare('SELECT us.id FROM users AS us WHERE us.id = ANY (SELECT user_id FROM institution_enrolments 
                                                         WHERE institution_id = ANY (SELECT institution_id FROM institution_enrolments 
                                                         WHERE user_id = ?)) ORDER by us.lastname');
                                         $db->execute(array($this->id)); //Bisher werden nur Benutzer der Institution angezeigt, an der man angemeldet ist. todo: Side-Admin muss alle Benutzer sehen können 
-                                    }
+                                    //}
                                     break;
                 case 'group':       $db = DB::prepare('SELECT us.id FROM users AS us, groups_enrolments AS gre 
                                                         WHERE gre.user_id = us.id AND gre.status = 1 AND gre.group_id = ?');

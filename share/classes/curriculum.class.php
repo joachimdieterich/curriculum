@@ -207,13 +207,16 @@ class Curriculum {
                                         $curriculum[] = $result; 
                             }
                 break; 
-            case 'user':    $db = DB::prepare('SELECT cu.*, co.de, st.state, sc.schooltype, gr.grade, su.subject, fl.filename  
-                                            FROM curriculum AS cu, countries AS co, state AS st, schooltype AS sc, grade AS gr, subjects AS su, files AS fl
+            case 'user':    $db = DB::prepare('SELECT DISTINCT cu.*, co.de, st.state, sc.schooltype, gr.grade, su.subject, fl.filename  
+                                            FROM curriculum AS cu, groups_enrolments AS ce, curriculum_enrolments AS cure, countries AS co, state AS st, schooltype AS sc, grade AS gr, subjects AS su, files AS fl
                                             WHERE  cu.country_id = co.id AND cu.state_id = st.id 
                                             AND cu.schooltype_id = sc.id AND cu.grade_id = gr.id 
-                                            AND cu.subject_id = su.id AND cu.creator_id = ?
-                                            AND cu.icon_id = fl.id');
-                            $db->execute(array($id));
+                                            AND cu.subject_id = su.id AND cu.icon_id = fl.id 
+                                            AND cu.id = cure.curriculum_id
+                                            AND cure.group_id = ce.group_id
+                                            AND ce.status = 1
+                                            AND (cu.creator_id = ? OR ce.user_id = ?)');
+                            $db->execute(array($id, $id));
                             while($result = $db->fetchObject()) {
                                 $curriculum[] = $result; //result Data wird an setPaginator vergeben
                             } 

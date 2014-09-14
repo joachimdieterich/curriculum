@@ -262,7 +262,7 @@ class Group {
                             $db->execute(array($id));
                 break;
 
-            case 'group':   if ($USER->role_id == 3 OR $USER->role_id == 2){ // 3 = Rolle Lehrer, 2 = Tutor //Bedingung Lehrer müssen in die Klasse eingeschrieben sein, oder sie erstellt haben    
+            case 'group':   /*if ($USER->role_id == 3 OR $USER->role_id == 2){ // 3 = Rolle Lehrer, 2 = Tutor //Bedingung Lehrer müssen in die Klasse eingeschrieben sein, oder sie erstellt haben    
                             $db = DB::prepare('SELECT DISTINCT gp.*, gr.grade, yr.semester, ins.institution, us.username 
                                 FROM groups AS gp, groups_enrolments AS gpe, grade AS gr, semester AS yr, institution AS ins, users AS us
                                 WHERE gp.id = ANY (SELECT id FROM groups_enrolments 
@@ -273,7 +273,7 @@ class Group {
                                 AND ins.id = gp.institution_id 
                                 AND us.id = gp.creator_id');
                             $db->execute(array($id,$id));
-                        } else if ($USER->role_id == 4 OR $USER->role_id == 1){
+                        } else if ($USER->role_id == 4 OR $USER->role_id == 1){*/
                             $db = DB::prepare('SELECT gp.*, gr.grade, yr.semester, ins.institution, us.username 
                                 FROM groups AS gp, grade AS gr, semester AS yr, institution AS ins, users AS us
                                 WHERE gp.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE user_id = ?)
@@ -282,7 +282,7 @@ class Group {
                                 AND ins.id = gp.institution_id 
                                 AND us.id = gp.creator_id');
                             $db->execute(array($id));
-                        }
+                        /*}*/
                  break;
             case 'user': $db = DB::prepare('SELECT gp.*, gr.grade, sem.semester, ins.institution AS institution_id, usr.username AS creator_id
                                                 FROM groups AS gp, semester AS sem, institution AS ins, users AS usr, grade AS gr
