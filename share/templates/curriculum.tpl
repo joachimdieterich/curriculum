@@ -25,12 +25,12 @@
             </div>
             <form id='add' method='post' action='index.php?action=curriculum&next={if isset($currentUrlId)}{$currentUrlId}{/if}'>
             <input class="invisible" type="text" id="edit_curriculum_id" name="edit_curriculum_id" {if isset($edit_curriculum_id)}value='{$edit_curriculum_id}'{/if}>
-            <p><label>Lehrplan-Name*: </label><input class='inputformlong' type='text' name='curriculum' id='curriculum' {if isset($curriculum)}value='{$curriculum}'{/if} /></p>   
+            <p><label>Lehrplan-Name*: </label><input class='inputlarge' type='text' name='curriculum' id='curriculum' {if isset($curriculum)}value='{$curriculum}'{/if} /></p>   
             {validate_msg field='curriculum'}
-            <p><label>Beschreibung*: </label><input class='inputformlong' type='description' name='description' {if isset($description)}value='{$description}'{/if}/></p>
+            <p><label>Beschreibung*: </label><input class='inputlarge' type='description' name='description' {if isset($description)}value='{$description}'{/if}/></p>
             {validate_msg field='description'}
             <p><label>Fach: </label>
-                <select class='inputformlong' name="subject">
+                <select class='inputlarge' name="subject">
                 {section name=res loop=$subjects}  
                 <option label={$subjects[res]->subject} value={$subjects[res]->id} {if $subject_id eq $subjects[res]->id}selected="selected"{/if}>{$subjects[res]->subject}</option>
                 {/section}
@@ -38,7 +38,7 @@
             </p>
             {validate_msg field='subject'}
             <p><label>Fach-Icon: </label>
-                <select class='inputformlong' name="icon" onchange="showSubjectIcon('{$subjects_url}', this.options[this.selectedIndex].innerHTML);">
+                <select class='inputlarge' name="icon" onchange="showSubjectIcon('{$subjects_url}', this.options[this.selectedIndex].innerHTML);">
                 {section name=res loop=$icons}  
                 <option label={$icons[res]->title} value={$icons[res]->id} {if $icon_id eq $icons[res]->id}selected="selected"{/if}>{$icons[res]->filename}</option>
                 {/section}
@@ -46,7 +46,7 @@
             </p>
             {validate_msg field='icon'}
             <p><label>Klassenstufe: </label>
-                <select class='inputformlong' name="grade">
+                <select class='inputlarge' name="grade">
                 {section name=res loop=$grades}  
                 <option label="{$grades[res]->grade}" value={$grades[res]->id} {if $grade_id eq $grades[res]->id}selected="selected"{/if}>{$grades[res]->grade}</option>
                 {/section}
@@ -54,7 +54,7 @@
             </p>
             {validate_msg field='grade'}
             <p><label>Schultyp: </label>
-                <select class='inputformlong' name="schooltype">
+                <select class='inputlarge' name="schooltype">
                 {section name=res loop=$schooltypes}  
                 <option label={$schooltypes[res]->schooltype} value={$schooltypes[res]->id} {if $schooltype_id eq $schooltypes[res]->id}selected="selected"{/if}>{$schooltypes[res]->schooltype}</option>
                 {/section}
@@ -62,14 +62,14 @@
             </p>
             {validate_msg field='schooltype'}
             <p><label>Bundesland/Region: </label>
-                <select name="state" class='inputformlong'>
+                <select name="state" class='inputlarge'>
                     {section name=res loop=$states}  
                         <option label={$states[res]->state} value={$states[res]->id} {if $state_id eq $states[res]->id}selected="selected"{/if}>{$states[res]->state}</option>
                     {/section}
                 </select>
             {validate_msg field='state'}
             <p><label>Land: </label>
-                <select name="country" class='inputformlong'>
+                <select name="country" class='inputlarge'>
                     {section name=res loop=$countries}  
                         <option label={$countries[res]->de} value={$countries[res]->id} {if $state_id eq $countries[res]->id}selected="selected"{/if}>{$countries[res]->de}</option>
                     {/section}

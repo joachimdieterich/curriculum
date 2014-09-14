@@ -74,9 +74,9 @@ if (isset($_GET['function'])){
                                         <input type="hidden" name="enabling_objective_id" id="enabling_objective_id" value='.$_GET['enablingObjectiveID'].'/>
                                         <label class="'.ltrim ($files[$i]->filetype, '.').'_btn floatleft"> </label>';
                                         if ($files[$i]->filetype == '.url') {
-                                                echo '<p class="materialtxt"> <a href='.$files[$i]->path.'>'.$files[$i]->title.'</a><br></p>';
+                                                echo '<p class="materialtxt"> <a href="'.$files[$i]->path.'" target="_blank">'.$files[$i]->title.'</a><br></p>';
                                             } else {
-                                                echo '<p class="materialtxt"> <a href="../curriculumdata/curriculum/'.$_GET['curriculumID'].'/'.$_GET['terminalObjectiveID'].'/'.$_GET['enablingObjectiveID'].'/'. $files[$i]->filename .'">'.$files[$i]->title.'</a><br></p>';
+                                                echo '<p class="materialtxt"> <a href="../curriculumdata/curriculum/'.$_GET['curriculumID'].'/'.$_GET['terminalObjectiveID'].'/'.$_GET['enablingObjectiveID'].'/'. $files[$i]->filename .'" target="_blank">'.$files[$i]->title.'</a><br></p>';
                                             }
                                         echo '<lable></label><p class="materialtxt">'.$files[$i]->description .' &nbsp;</p>'; // Leerzeichen  &nbsp; wichtig bei fehlender Beschreibung sonst wird es falsch dargestellt
                                         echo '<div class="materialseperator"></div><div class="materialseperator2"></div>';
@@ -128,7 +128,7 @@ if (isset($_GET['function'])){
                                                 <input type="hidden" name="enabling_objective_id" id="enabling_objective_id" value='.$_GET['enablingObjectiveID'].'/>
                                                 <label class="'.$files[$i]->type.'_btn floatleft"> </label>
                                                 <p class="materialtxt">Titel der Datei:<br>
-                                                <input class="inputformlong" type="text" id="linkMaterial" name="linkMaterial" value="'.$files[$i]->title.'"/></p>';
+                                                <input class="inputlarge" type="text" id="linkMaterial" name="linkMaterial" value="'.$files[$i]->title.'"/></p>';
                                         echo '<p class="materialtxt"><input type="submit" name="update_material" value="Material aktualisieren" />
                                             <input type="submit" name="deleteMaterial" value="Material löschen" /></p>';
                                         echo '</form>';
@@ -146,8 +146,8 @@ if (isset($_GET['function'])){
                                 echo '<div class="border-top-radius contentheader">Thema hinzufügen</div>
                                 <div id="popupcontent"><form method="post" action="index.php?action=view&function=addObjectives">
                                 <input type="hidden" name="curriculum_id" id="curriculum_id" value='.$_GET['curriculumID'].'> 
-                                <p><label>Thema: </label><input class="inputformlong" type="text" name="terminal_objective" /></p>
-                                <p><label>Beschreibung: </label><input class="inputformlong" type="description" name="description" /></p>
+                                <p><label>Thema: </label><input class="inputlarge" type="text" name="terminal_objective" /></p>
+                                <p><label>Beschreibung: </label><input class="inputlarge" type="description" name="description" /></p>
                                 <p><label></label><input type="submit" name="add_terminal_objective" value="Thema hinzufügen" /></p>
                                 </form></div></div>';     
                             }
@@ -162,8 +162,8 @@ if (isset($_GET['function'])){
                                 <form method="post" action="index.php?action=view&function=addObjectives">
                                 <input type="hidden" name="id" id="id" value='.$terminal_objective->id.'/> 
                                 <input type="hidden" name="curriculum_id" id="curriculum_id" value='.$terminal_objective->curriculum_id.'> 
-                                <p><label>Thema: </label><input class="inputformlong" type="text" name="terminal_objective" value="'.$terminal_objective->terminal_objective.'"/></p>
-                                <p><label>Beschreibung: </label><input class="inputformlong" type="description" name="description" value="'.$terminal_objective->description.'"/></p>
+                                <p><label>Thema: </label><input class="inputlarge" type="text" name="terminal_objective" value="'.$terminal_objective->terminal_objective.'"/></p>
+                                <p><label>Beschreibung: </label><input class="inputlarge" type="description" name="description" value="'.$terminal_objective->description.'"/></p>
                                 <p><label></label><input type="submit" name="update_terminal_objective" value="Thema aktualisieren" /></p>
                                 </form></div></div>';
                             }
@@ -174,8 +174,8 @@ if (isset($_GET['function'])){
                                 <div id="popupcontent"><form method="post" action="index.php?action=view&function=addObjectives">
                                 <input type="hidden" name="curriculum_id" id="curriculum_id" value='.$_GET['curriculumID'].'/> 
                                 <input type="hidden" name="terminal_objective_id" id="terminal_objective_id" value='.$_GET['terminalObjectiveID'].'/> 
-                                <p><label>Ziel: </label><input class="inputformlong" type="text" name="enabling_objective" /></p>
-                                <p><label>Beschreibung: </label><input class="inputformlong" type="description" name="description" /></p>
+                                <p><label>Ziel: </label><input class="inputlarge" type="text" name="enabling_objective" /></p>
+                                <p><label>Beschreibung: </label><input class="inputlarge" type="description" name="description" /></p>
                                 <p><label >Wiederholung? </label><input class="centervertical" type="checkbox" name="repeat" onchange="checkbox_addForm(this.checked,';
                                 echo "'block',";// Wiederholungen
                                 echo "'interval'";// Wiederholungen
@@ -205,8 +205,8 @@ if (isset($_GET['function'])){
                                 <input type="hidden" name="id" id="id" value='.$enabling_objective->id.'/> 
                                 <input type="hidden" name="curriculum_id" id="curriculum_id" value='.$enabling_objective->curriculum_id.'/> 
                                 <input type="hidden" name="terminal_objective_id" id="terminal_objective_id" value='.$enabling_objective->terminal_objective_id.'/> 
-                                <p><label>Ziel: </label><input class="inputformlong" type="text" name="enabling_objective" value="'.$enabling_objective->enabling_objective.'"/></p>
-                                <p><label>Beschreibung: </label><input class="inputformlong" type="description" name="description" value="'.$enabling_objective->description.'"/></p>';
+                                <p><label>Ziel: </label><input class="inputlarge" type="text" name="enabling_objective" value="'.$enabling_objective->enabling_objective.'"/></p>
+                                <p><label>Beschreibung: </label><input class="inputlarge" type="description" name="description" value="'.$enabling_objective->description.'"/></p>';
                                 // Wiederholungen
                                 echo '<p><label >Wiederholung? </label><input class="centervertical" type="checkbox" name="repeat" ';
                                 if ($enabling_objective->repeat_interval != -1){echo'checked';}

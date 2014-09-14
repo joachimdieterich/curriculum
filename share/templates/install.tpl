@@ -59,9 +59,9 @@
                 <p>&nbsp;</p>
                 <p><h3>Institution</h3></p>
                 <input type='hidden' name='demo' id='demo' {if isset($demo)}value='{$demo}'{/if} />   
-                <p><label>Institution / Schule*: </label><input class='inputformlong' type='text' name='institution' id='institution' {if isset($institution)}value='{$institution}'{/if} /></p> 
+                <p><label>Institution / Schule*: </label><input class='inputlarge' type='text' name='institution' id='institution' {if isset($institution)}value='{$institution}'{/if} /></p> 
                 {validate_msg field='institution'}
-                <p><label>Beschreibung*: </label><input class='inputformlong' type='institution_description' name='institution_description' {if isset($institution_description)}value='{$institution_description}'{/if}/></p>
+                <p><label>Beschreibung*: </label><input class='inputlarge' type='institution_description' name='institution_description' {if isset($institution_description)}value='{$institution_description}'{/if}/></p>
                 {validate_msg field='institution_description'}
                 <p id="schooltype_list"><label>Schultyp: </label><select name="schooltype_id" >
                     {section name=res loop=$schooltype}  
@@ -70,8 +70,8 @@
                     </select></p>  
                 <p><label>Anderer Schultyp... </label><input class="centervertical" type="checkbox" name='btn_newSchooltype' value='Neuen Schultyp anlegen' onclick="checkbox_addForm(this.checked, 'inline', 'newSchooltype', 'schooltype_list')"/></p>
                 <div id="newSchooltype" style="display:none;">
-                    <p><label>Schultyp: </label><input class='inputformlong' type='text' name='new_schooltype' id='schooltype_id' {if isset($new_schooltype)}value='{$new_schooltype}'{/if} /></p> 
-                    <p><label>Beschreibung: </label><input class='inputformlong' type='text' name='schooltype_description' {if isset($schooltype_description)}value='{$schooltype_description}'{/if}/></p>
+                    <p><label>Schultyp: </label><input class='inputlarge' type='text' name='new_schooltype' id='schooltype_id' {if isset($new_schooltype)}value='{$new_schooltype}'{/if} /></p> 
+                    <p><label>Beschreibung: </label><input class='inputlarge' type='text' name='schooltype_description' {if isset($schooltype_description)}value='{$schooltype_description}'{/if}/></p>
                 </div>
                 <p><label>Land: </label><select name="country" onchange="loadStates(this.value);">
                     {section name=res loop=$countries}  

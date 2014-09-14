@@ -23,9 +23,9 @@
         {if isset($showGradeForm)}
         <form id='addGrade' method='post' action='index.php?action=grade&next={$currentUrlId}'>
         <input type='hidden' name='id' id='id' {if isset($id)}value='{$id}'{/if} /></p>   
-        <p><label>{$str_adminGrade_addGradeName}</label><input class='inputformlong' type='text' name='grade' id='grade' {if isset($grade)}value='{$grade}'{/if} /></p>   
+        <p><label>{$str_adminGrade_addGradeName}</label><input class='inputlarge' type='text' name='grade' id='grade' {if isset($grade)}value='{$grade}'{/if} /></p>   
         {validate_msg field='grade'}
-	<p><label>{$str_description}</label><input class='inputformlong' type='description' name='description' {if isset($description)}value='{$description}'{/if}/></p>
+	<p><label>{$str_description}</label><input class='inputlarge' type='description' name='description' {if isset($description)}value='{$description}'{/if}/></p>
         {validate_msg field='description'}
         {if count($my_institutions['id']) > 1}
             <p><label>Institution / Schule*: </label>{html_options id='institution' name='institution' values=$my_institutions['id'] output=$my_institutions['institution']}</p>

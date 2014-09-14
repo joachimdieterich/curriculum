@@ -28,12 +28,12 @@
         {if isset($edit_group_form) OR isset($new_semester_form)}
              <input class="invisible" type="text" id="edit_group_id" name="edit_group_id" value={$group_id}>
         {else}<p><label> </label></p>{/if} 
-        <p><label>Lerngruppen-Name: </label><input class='inputformlong' type='text' id='group' name='group' {if isset($group)}value='{$group}'{/if} /></p>   
+        <p><label>Lerngruppen-Name: </label><input class='inputlarge' type='text' id='group' name='group' {if isset($group)}value='{$group}'{/if} /></p>   
         {validate_msg field='group'}
-	<p><label>Beschreibung: </label><input class='inputformlong' type='description' name='description' {if isset($description)}value='{$description}'{/if}/></p>
+	<p><label>Beschreibung: </label><input class='inputlarge' type='description' name='description' {if isset($description)}value='{$description}'{/if}/></p>
         {validate_msg field='description'}
         <p><label>Klassenstufe:</label>
-          <select name="grade" class='inputformlong'>
+          <select name="grade" class='inputlarge'>
               {section name=res loop=$grade}  
                 <option label="{$grade[res]->grade}" value={$grade[res]->id} {if $grade_id eq $grade[res]->id}selected="selected"{/if}>{$grade[res]->grade}</option>
               {/section}
@@ -41,7 +41,7 @@
         {validate_msg field='grade'}
         {if isset($semester)}
             <p><label>Lernzeitraum: </label>
-            <select name="semester" class='inputformlong'>
+            <select name="semester" class='inputlarge'>
                 {section name=res loop=$semester}  
                     <option label="{$semester[res]->semester}" value={$semester[res]->id} {if $semester_id eq $semester[res]->id}selected="selected"{/if}>{$semester[res]->semester}</option>
                 {/section}

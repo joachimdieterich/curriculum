@@ -20,14 +20,14 @@
         {/if}
         {if isset($showSemesterForm)}
         <form id='addSemester' method='post' action='index.php?action=semester&next={$currentUrlId}'>
-        <input class='inputformlong' type='hidden' name='id' id='id' {if isset($id)}value='{$id}'{/if} />       
-        <p><label>Lernzeitraum*:</label><input class='inputformlong' name='semester' id='semester' {if isset($semester)}value='{$semester}'{/if} /></p>   
+        <input class='inputlarge' type='hidden' name='id' id='id' {if isset($id)}value='{$id}'{/if} />       
+        <p><label>Lernzeitraum*:</label><input class='inputlarge' name='semester' id='semester' {if isset($semester)}value='{$semester}'{/if} /></p>   
         {validate_msg field='semester'}
-	<p><label>Beschreibung*:</label><input class='inputformlong' name='description' {if isset($description)}value='{$description}'{/if}/></p>
+	<p><label>Beschreibung*:</label><input class='inputlarge' name='description' {if isset($description)}value='{$description}'{/if}/></p>
 	{validate_msg field='description'}
         <p><label>Lernzeitraum-Beginn*:</label><input type='date' class='date' id='begin' name='begin' {if isset($begin)}value='{$begin}'{/if}/>
 	{validate_msg field='begin'}
-        <p><label>Lernzeitraum-Ende*:</label><input type='date' class='inputformlong' id='end' name='end' {if isset($end)}value='{$end}'{/if}/>
+        <p><label>Lernzeitraum-Ende*:</label><input type='date' class='inputlarge' id='end' name='end' {if isset($end)}value='{$end}'{/if}/>
         {validate_msg field='end'}
         {if count($my_institutions['id']) > 1}
             <p><label>Institution / Schule*: </label>{html_options id='institution' name='institution' values=$my_institutions['id'] output=$my_institutions['institution']}</p>

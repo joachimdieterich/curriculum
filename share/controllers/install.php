@@ -90,7 +90,7 @@ if ($_POST){
                                     writeConfigFile($cfg_file, '$CFG->db_user', $_POST["db_user"]);
                                     writeConfigFile($cfg_file, '$CFG->db_password ', $_POST["db_password"]);
                                     writeConfigFile($cfg_file, '$CFG->db_name', $_POST["db_name"]);
-                                    writeConfigFile($cfg_file, '$CFG->BASE_URL', str_replace("public", "", implode('/', array_slice(explode('/', $_SERVER['REQUEST_URI']), 0, -1)))); //Generates BASE_URL
+                                    writeConfigFile($cfg_file, '$CFG->BASE_URL', substr($_SERVER['REQUEST_URI'], 0, stripos($_SERVER['REQUEST_URI'], 'public'))); //Generates BASE_URL
                                     //Backup erstellen
                                     
                                     //if (mysql_select_db($_POST['db_name'])){

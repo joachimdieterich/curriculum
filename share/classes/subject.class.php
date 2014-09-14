@@ -117,14 +117,6 @@ class Subject {
      * @return boolean 
      */
     public function delete($creator_id = null){
-        /*if ($creator_id != null) { // if function is called by request-php --> required by checkCapabilities()
-            $user = new USER();
-
-            $user->load('id', $creator_id);
-            $role_id = $user->role_id;
-        } else {
-            $role_id = $USER->role_id;
-        } */
         global $USER;
         if (checkCapabilities('subject:delete', $USER->role_id)){
             $db = DB::prepare('SELECT id FROM curriculum WHERE subject_id = ?');

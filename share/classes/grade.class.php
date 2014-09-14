@@ -71,14 +71,14 @@ class Grade {
     public function add(){
         global $USER;
         if (checkCapabilities('grade:add', $USER->role_id)){
-            $db = DB::prepare('SELECT COUNT(id) FROM grade WHERE grade = ?');
+            /*$db = DB::prepare('SELECT COUNT(id) FROM grade WHERE grade = ?');
             $db->execute(array($this->grade));
             if($db->fetchColumn() >= 1) { 
                 return 'Diesen Klassennamen gibt es bereits.';
-            } else {
+            } else {*/
                 $db = DB::prepare('INSERT INTO grade (grade,description,creator_id,institution_id) VALUES (?,?,?,?)');
                 return $db->execute(array($this->grade, $this->description, $this->creator_id, $this->institution_id));
-            }
+            /*}*/
         }
     }
     
@@ -99,14 +99,6 @@ class Grade {
      * @return mixed 
      */
     public function delete($creator_id = null){
-        /*if ($creator_id != null) { // if function is called by request-php --> required by checkCapabilities()
-            $user = new USER();
-
-            $user->load('id', $creator_id);
-            $role_id = $user->role_id;
-        } else {
-            $role_id = $USER->role-id;
-        } */
         global $USER;
         if (checkCapabilities('grade:delete', $USER->role_id)){
             $db = DB::prepare('SELECT id FROM curriculum WHERE grade_id = ?');
