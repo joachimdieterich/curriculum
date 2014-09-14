@@ -578,7 +578,7 @@ $(document).ready(function() {
                 } 
                ?>
                     <p>URL:</p>
-                    <p><input class="inputformlong" name="fileURL" type="input" /></p>
+                    <p><input class="inputlarge" name="fileURL" type="input" /></p>
                     <p><input  type="submit" name="Submit" value="URL einfügen"  /></p>
 		</form>
 		<p class="text">&nbsp;<?php echo $error; ?></p>

@@ -248,14 +248,14 @@ button {  width: auto; overflow: auto; }
 .editbtn        { background-image: url('../images/png/glyphicons_151_edit.png'); }
 .deletebtn      { background-image: url('../images/png/glyphicons_191_circle_minus.png'); }
 .groupbtn       { background-image: url('../images/png/glyphicons_043_group.png'); }
-.helpbtn         { background-image: url('../images/png/glyphicons_194_circle_question_mark.png'); }
+.helpbtn        { background-image: url('../images/png/glyphicons_194_circle_question_mark.png'); }
 .downloadbtn    { background-image: url('../images/png/glyphicons_200_download.png');
                   margin-left: -4px;}
 .okbtn          { background-image: url('../images/png/glyphicons_206_ok_2.png'); }
 .leftbtn        { background-image: url('../images/png/glyphicons_210_left_arrow.png'); }
-.rightbtn        { background-image: url('../images/png/glyphicons_211_right_arrow.png'); }
+.rightbtn       { background-image: url('../images/png/glyphicons_211_right_arrow.png'); }
 .downbtn        { background-image: url('../images/png/glyphicons_212_down_arrow.png'); }
-.upbtn        { background-image: url('../images/png/glyphicons_213_up_arrow.png'); }
+.upbtn          { background-image: url('../images/png/glyphicons_213_up_arrow.png'); }
 .notbtn         { background-image: url('../images/png/glyphicons_207_remove_2.png'); }
 .btntext {
     margin-bottom: 1px;
@@ -266,15 +266,13 @@ button {  width: auto; overflow: auto; }
     width: 100%;
     height: 20px;
 }
-/*Filetype buttons*/
+/*Filetype buttons - common properties*/
 /*allgemeine Eigenschaften*/
-.url_btn, .pdf_btn, .txt_btn, .rtf_btn, .jpg_btn, 
-.jpeg_btn, .png_btn, .gif_btn, .doc_btn, .docx_btn, 
-.ppt_btn, .pptx_btn, .bmp_btn, .tiff_btn, .tif_btn,
-.mpg_btn, .mpeg_btn, .mpe_btn, .qt_btn, .mov_btn, .mp4_btn,
-.avi_btn, .aif_btn, .aiff_btn, .wav_btn, .mp3_btn, .m4a_btn, 
-.zip_btn, .rar_btn, .mid_btn {
-    /*float: left;*/
+.url_btn, .pdf_btn, .txt_btn, .rtf_btn, .jpg_btn, .jpeg_btn, .png_btn,
+.gif_btn, .doc_btn, .docx_btn, .ppt_btn, .pptx_btn, .bmp_btn, .tiff_btn,
+.tif_btn, .mpg_btn, .mpeg_btn, .mpe_btn, .qt_btn, .mov_btn, .mp4_btn,
+.avi_btn, .aif_btn, .aiff_btn, .wav_btn, .mp3_btn, .m4a_btn, .zip_btn, 
+.rar_btn, .mid_btn {
     background-repeat: no-repeat;
     background-size: 48px 48px;
     background-color: transparent;
@@ -423,10 +421,7 @@ button {  width: auto; overflow: auto; }
     font-size: 90%;
     padding-left: 10px;
 }
-/*.innerBox{
-    width: 150px;
-    height: 110px;
-}*/
+
 .boxfooter {
     border-top: 2px groove hsl(0,0%,100%);
     margin-top: 1px;
@@ -461,23 +456,20 @@ button {  width: auto; overflow: auto; }
 .right { padding-right:  10px;    
          text-align:     right; }
 .block          { display: inline-table; }
-.inputformlong  { width:        500px; }
+.inputlarge     { width:        500px; }
+.inputsmall     { width:        25px; }
 .error          { color:          red; }
 .floatleft  { float: left; }
 .floatright { float: right; }
 
 header {
-   /* margin-left:    10px;
-    margin-right:   10px;
-    */
     height:         55px;
     font-size:      90%;  
     top:            0px;
     background:     #013363;
     background:     -webkit-gradient(linear, 0 0, 0 100%, from(#154D70), to(#013363));
     background:     -moz-linear-gradient(top, #154D70, #013363);
-    -ms-filter:     "progid:DXImageTransform.Microsoft.gradient(startColorstr='#154D70', endColorstr='#013363')";  
-  
+    -ms-filter:     "progid:DXImageTransform.Microsoft.gradient(startColorstr='#154D70', endColorstr='#013363')";   
 }
 
 header > div {    

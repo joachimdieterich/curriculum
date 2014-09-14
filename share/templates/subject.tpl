@@ -22,11 +22,11 @@
         {if isset($showSubjectForm)}
         <form id='addSubject' method='post' action='index.php?action=subject&next={$currentUrlId}'>
         <input type='hidden' name='id' id='id' {if isset($id)}value='{$id}'{/if} />   
-        <p><label>Fach-Name*: </label><input class='inputformlong' type='text' name='subject' id='subject' {if isset($subject)}value='{$subject}'{/if} /></p>   
+        <p><label>Fach-Name*: </label><input class='inputlarge' type='text' name='subject' id='subject' {if isset($subject)}value='{$subject}'{/if} /></p>   
         {validate_msg field='subject'}
-        <p><label>Fach-Kürzel*: </label><input class='inputformlong' type='text' name='subject_short' id='subject_short' {if isset($subject_short)}value='{$subject_short}'{/if} /></p>   
+        <p><label>Fach-Kürzel*: </label><input class='inputlarge' type='text' name='subject_short' id='subject_short' {if isset($subject_short)}value='{$subject_short}'{/if} /></p>   
         {validate_msg field='subject_short'}
-	<p><label>Beschreibung*: </label><input class='inputformlong' type='text' name='description' {if isset($description)}value='{$description}'{/if}/></p>
+	<p><label>Beschreibung*: </label><input class='inputlarge' type='text' name='description' {if isset($description)}value='{$description}'{/if}/></p>
         {validate_msg field='description'}
         {if count($my_institutions['id']) > 1}
             <p><label>Institution / Schule*: </label>{html_options id='institution' name='institution' values=$my_institutions['id'] output=$my_institutions['institution']}</p>

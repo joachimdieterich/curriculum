@@ -23,9 +23,9 @@
         {if isset($showRoleForm)}
         <form id='addRole' method='post' action='index.php?action=role&next={$currentUrlId}'>
         <input type='hidden' name='id' id='id' {if isset($id)}value='{$id}'{/if} />  
-        <p><label>Rollennamen</label><input class='inputformlong' type='text' name='role' id='role' {if isset($role)}value='{$role}'{/if} /></p>   
+        <p><label>Rollennamen</label><input class='inputlarge' type='text' name='role' id='role' {if isset($role)}value='{$role}'{/if} /></p>   
         {validate_msg field='role'}
-	<p><label>Beschreibung</label><input class='inputformlong' type='description' name='description' {if isset($description)}value='{$description}'{/if}/></p>
+	<p><label>Beschreibung</label><input class='inputlarge' type='description' name='description' {if isset($description)}value='{$description}'{/if}/></p>
         {validate_msg field='description'}
         <script type='text/javascript'>
 	document.getElementById('role').focus();
@@ -39,8 +39,8 @@
                 <div class="contentheader">{$capabilities[cap]->capability|substr:0:$colon}</div> 
             {/if}
              <p><label>{$capabilities[cap]->name}</label>
-                <input type="radio" name="{$capabilities[cap]->capability}" value="true"{if $capabilities[cap]->permission eq 1}checked{/if}> erlaubt
-                <input type="radio" name="{$capabilities[cap]->capability}" value="false"{if $capabilities[cap]->permission eq 0}checked{/if}> nicht erlaubt
+                <input type="radio" name="{$capabilities[cap]->capability}" class="inputsmall" value="true"{if $capabilities[cap]->permission eq 1}checked{/if}> erlaubt
+                <input type="radio" name="{$capabilities[cap]->capability}" class="inputsmall" value="false"{if $capabilities[cap]->permission eq 0}checked{/if}> nicht erlaubt
              <p style=font-size:80%;">{$capabilities[cap]->capability}</p></br>
             </p>   
             {assign var="section" value=$capabilities[cap]->capability|substr:0:$colon}

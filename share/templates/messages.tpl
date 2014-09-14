@@ -29,7 +29,7 @@
             <p><label>An:</label>{html_options name='receiver_id' values=$class_members.id output=$class_members.user}</p>  
         {/if}  
       
-        <p><label>Betreff: </label><input class='inputformlong' type='text' name='subject' id='subject' {if isset($subject)}value='{$subject}'{/if}/></p> 
+        <p><label>Betreff: </label><input class='inputlarge' type='text' name='subject' id='subject' {if isset($subject)}value='{$subject}'{/if}/></p> 
         {validate_msg field='subject'}
         <p><label>Nachricht: </label>{validate_msg field='message_text'}
             <textarea name="message_text">{if isset($message_text)}{$message_text}{/if}</textarea></p>    
