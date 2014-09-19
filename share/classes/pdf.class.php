@@ -142,14 +142,14 @@ class Pdf {
                 $user->load('id', $member);
                 $mpdf->WriteHTML('<html><body>', 2);
 
-                
+                //$mpdf->WriteHTML('<div><img class="logo floatleft" src="http://localhost/curriculum/public/assets/images/basic/background.png"/>
                 $logo_path = dirname(__FILE__).'/../../curriculumdata/userdata/102/logo.jpg';
                 $mpdf->WriteHTML('<div class="center"><img class="logo" src="'.$logo_path.'"/></div>', 2);
                 $mpdf->WriteHTML('<div class="center cleaner">Realschule Plus Landau | Schneiderstraße 69 | 76829 Landau</div>');
                 $mpdf->WriteHTML('<h1>Zertifikat</h1>');
 
                 $mpdf->WriteHTML('<h2>MEDIENKOMP@SS</h2></br>Sekundarstufe I            
-                                <h3>'.$user->firstname.' '.$user->lastname.'</h3> </br>hat erfolgreich die folgenden Module des Medienkom@sses abgeschlossen. </p>',2);
+                                <h3>'.$user->firstname.' '.$user->lastname.'</h3> </br>hat erfolgreich die folgenden Module des Medienkom@asses abgeschlossen. </p>',2);
                 $mpdf->WriteHTML('<p></p>',2);
                 $mpdf->WriteHTML('<p></p>',2);
                 foreach ($ter as $ter_value) {
@@ -218,7 +218,7 @@ class Pdf {
             $mpdf->WriteHTML('<h1>Zertifikat</h1>');
 
             $mpdf->WriteHTML('<h2>MEDIENKOMP@SS</h2></br>Sekundarstufe I            
-                            <h3>'.$user->firstname.' '.$user->lastname.'</h3> </br>hat erfolgreich die folgenden Module des Medienkom@sses abgeschlossen. </p>',2);
+                            <h3>'.$user->firstname.' '.$user->lastname.'</h3> </br>hat erfolgreich die folgenden Module des Medienkom@asses abgeschlossen. </p>',2);
             $mpdf->WriteHTML('<p></p>',2);
             $mpdf->WriteHTML('<p></p>',2);
             foreach ($ter as $ter_value) {
@@ -227,12 +227,11 @@ class Pdf {
                     if ($ter_value->id == $ena_value->terminal_objective_id){
                         if ($ena_value->accomplished_status_id == 1){
                             $mpdf->WriteHTML('<div class="objective_green">... '.$ena_value->enabling_objective.'</div>', 2);
-                        } else if ($ena_value->accomplished_status_id == 0){
+                        } else {
                             if ($full_certificate){
                                 $mpdf->WriteHTML('<div class="objective_red">... '.$ena_value->enabling_objective.'<div>', 2);
-                            }    
-                    }
-                    
+                            }
+                        }   
                     }
                 }
                 $mpdf->WriteHTML('<p></p>',2);
