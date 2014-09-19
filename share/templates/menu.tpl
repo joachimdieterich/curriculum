@@ -49,7 +49,6 @@
                 {/if}
                 {if checkCapabilities('menu:readCurricula', $my_role_id)}
                     <li><p><a href="index.php?action=curriculum&reset=true">Lehrpläne</a></p></li>
-                    <li><p><a href="index.php?action=certificate&reset=true">Zertifikate einrichten</a></p></li>
                 {/if}
                 {if checkCapabilities('menu:readGroup', $my_role_id)}
                     <li><p><a href="index.php?action=groups&reset=true">Lerngruppen</a></p></li>

@@ -2,6 +2,18 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
+// Animationen
+/*
+ * Fadeout
+ */
+function fadeout() {
+    alert(test);
+  $('#messagebox').fadeOut('slow', complete)
+}
+
+function showMessagebox(){
+   $("#messagebox").slideToggle();   
+}
 /* Link in (neuem Fenster öffnen)*/
  function openLink(URL, target) {
     if (URL != ''){ //Sortiert "leere" Anfragen aus.
@@ -374,10 +386,8 @@ function checkPaginatorRow(paginatorName, rowNr) {
 function setAccomplishedObjectives(creatorID, userID, paginatorfirst, paginatorLimit, terminalObjectiveID, enablingObjectiveID){    
     
     var statusID = document.getElementById(terminalObjectiveID+'_'+enablingObjectiveID).innerHTML;
-    if (statusID == 2) {
+    if (statusID == 1) {
         statusID = 0;
-    } else if(statusID == 1){
-         statusID = 2;
     } else {
         statusID = 1;
     }
@@ -401,10 +411,6 @@ function setAccomplishedObjectives(creatorID, userID, paginatorfirst, paginatorL
                 if (statusID==1) {
                         document.getElementById(terminalObjectiveID+"style"+enablingObjectiveID).className = 'box gray-gradient border-radius box-shadow gray-border boxgreen';
                         document.getElementById(terminalObjectiveID+"_"+enablingObjectiveID).innerHTML=1;
-                }
-                if (statusID==2) {
-                        document.getElementById(terminalObjectiveID+"style"+enablingObjectiveID).className = 'box gray-gradient border-radius box-shadow gray-border boxorange';
-                        document.getElementById(terminalObjectiveID+"_"+enablingObjectiveID).innerHTML=2;
                 }
             }
         }
@@ -437,11 +443,29 @@ function setAccomplishedObjectivesBySolution(creatorID, userID, enablingObjectiv
     }
 }
 
+
+//Messagebox ausblenden
+function hideMessagebox(){
+       document.getElementById('messagebox').style.display = 'none';
+}
+
 //Fileuploadframe ausblenden
 function hideUploadframe(){
        document.getElementById('uploadframe').style.display = 'none';
 }
 
+//Druckfunktion
+/*function printPage(printpage){
+    var headstr = "<html><head><title></title></head><body>";
+    var footstr = "</body>";
+   //var newstr = document.all.item(printpage).innerHTML; 
+    var newstr = document.getElementById(printpage).innerHTML;  //so funktioniert es auch im firefox
+    var oldstr = document.body.innerHTML;
+    document.body.innerHTML = headstr+newstr+footstr;
+    window.print();
+    document.body.innerHTML = oldstr;
+    return false;
+}*/
 
 function confirmDialog(text) {
     if (confirm(text)){
@@ -472,8 +496,6 @@ function mail(mail_id, mailbox) {
         if (req.status == 200) {
             
            if (req.responseText.length != 1){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen
-                  //tinyMCE.activeEditor.contentDocument.body.innerHTML = req.responseText;
-                  
                   document.getElementById('mailbox').innerHTML = req.responseText;
                   document.getElementById(mailbox+'_'+mail_id).className = 'contenttablerow';
                   document.getElementById('mailbox').style.width = (document.body.offsetWidth - 540) +"px";

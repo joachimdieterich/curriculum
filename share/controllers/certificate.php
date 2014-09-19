@@ -71,7 +71,7 @@ $vorlage = '<p style="text-align: center;"><img src="../curriculumdata/userdata/
                 <h2>MEDIENKOMP@SS</h2>
                 <p>Sekundarstufe I</p>
                 <h3>{Vorname} {Nachname}</h3>
-                <p>hat erfolgreich die folgenden Module des Medienkom@sses abgeschlossen.</p>
+                <p>hat erfolgreich die folgenden Module des Medienkom@asses abgeschlossen.</p>
                 <!--Start-->
                 <table>
                 <tbody>
