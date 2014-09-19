@@ -105,7 +105,7 @@
                         {if $ena->terminal_objective_id eq $ter->id}
                         <td id="{$ter->id}&{$ena->id}">
                             <div style="display:none" id="{$ter->id}_{$ena->id}">{0+$ena->accomplished_status_id}</div><!--Container für Variable-->
-                            <div id="{$ter->id}style{$ena->id}" class="box gray-gradient border-radius box-shadow gray-border {if $ena->accomplished_status_id eq 1} boxgreen {else} boxred{/if}">
+                            <div id="{$ter->id}style{$ena->id}" class="box gray-gradient border-radius box-shadow gray-border {if $ena->accomplished_status_id eq 1} boxgreen {elseif $ena->accomplished_status_id eq 2} boxorange{else} boxred{/if}">
                             <div class="boxheader border-top-radius "></div>
                         <div class="boxwrap">
                                     <div class="boxscroll" onclick="setAccomplishedObjectives({$my_id}, {$selected_user_id}, {$userPaginator.first}, {if isset($paginatorLimit)}{$paginatorLimit}{else}10{/if}, {$ter->id}, {$ena->id})">
