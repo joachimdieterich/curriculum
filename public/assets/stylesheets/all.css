@@ -302,7 +302,7 @@ button {  width: auto; overflow: auto; }
 .mid_btn {background-image: url('../images/png/filetypes/midi-48_32.png');}
 
 /* Borderradius*/
-.border-radius, .menu, .filelist, .modal, nav div > img, #printUser, #printUserImg, #printFooter{
+.border-radius, .menu, .filelist, .modal, nav div > img, #printUser, #printUserImg, #printFooter, .notificationContent img{
     border-radius: 6px;
     -o-border-radius: 6px;
     -moz-border-radius: 6px;
@@ -310,7 +310,7 @@ button {  width: auto; overflow: auto; }
     -webkit-border-radius: 6px;   
 }
 /* Top Borderradius*/
-.border-top-radius, #printHeader {
+.border-top-radius, #printHeader, .notificationContent img {
     border-top-left-radius: 5px;
     -o-border-top-left-radius: 5px;
     -moz-border-top-left-radius: 5px;
@@ -323,7 +323,7 @@ button {  width: auto; overflow: auto; }
     -webkit-border-top-right-radius: 5px;   
 }
 
-.border-bottom-radius, #messagebox, #printHeader, .uploadframe_footer, .tzSelect, .tzSelect li:last-of-type, .tzSelect .selectBox:hover  {
+.border-bottom-radius, #printHeader, .uploadframe_footer, .tzSelect, .tzSelect li:last-of-type, .tzSelect .selectBox:hover, .notificationContent img  {
     border-bottom-left-radius: 5px;
     -o-border-bottom-left-radius: 5px;
     -moz-border-bottom-left-radius: 5px;
@@ -337,17 +337,17 @@ button {  width: auto; overflow: auto; }
 }
 
 /* Farbverlauf */
-.gray-gradient, .menu, .modal, input[type="submit"], #messagebox, .boxheader, #contenttablehead, #printUser, #printFooter  {
+.gray-gradient, .menu, .modal, input[type="submit"], #notificationContainer, .boxheader, #contenttablehead, #printUser, #printFooter  {
     background: -webkit-gradient(linear, 0 0, 0 100%, from(#f2f2f2), to(#bfbfbf));
     background: -moz-linear-gradient(top, #f2f2f2, #bfbfbf);
     -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#f2f2f2', endColorstr='#bfbfbf')";
 }
-.gray-border, .menu, #messagebox, .filelist, .tzSelect, .tzSelect li {
+.gray-border, .menu, .filelist, .tzSelect, .tzSelect li {
     border: 1px solid hsl(0,0%,70%);
 }
 
 /* Boxschatten */
-.box-shadow, .menu, .modal, #messagebox, #printUser, #printFooter, .tzSelect, .tzSelect li {
+.box-shadow, .menu, .modal, #printUser, #printFooter, .tzSelect, .tzSelect li {
     -webkit-box-shadow: 0 1px 2px hsla(0,0%,0%,0.25);
     -moz-box-shadow: 0 1px 2px hsla(0,0%,0%,0.25);
     -o-box-shadow: 0 1px 2px hsla(0,0%,0%,0.25);
@@ -444,6 +444,12 @@ button {  width: auto; overflow: auto; }
     background-image: -moz-linear-gradient(top, #f2f2f2, #00FF00);
     -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#f2f2f2', endColorstr='#00FF00')";
 }
+.boxorange {
+    background: #FF8000;
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f2f2f2), to(#FF8000));
+    background-image: -moz-linear-gradient(top, #f2f2f2, #FF8000);
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#f2f2f2', endColorstr='#FF8000')";
+}
 .seperate   { clear:          both;}
 .space-left { margin-left:    10px; }
 .space-top, .menu  { margin-top:     10px; }
@@ -521,7 +527,7 @@ footer > div {
     padding:                            0;
 }
 
-.contentheader, #messageboxheader{
+.contentheader{
     background:                         #013363;
     background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#154D70), to(#013363));
     background-image: -moz-linear-gradient(top, #154D70, #013363);
@@ -615,18 +621,7 @@ nav div > img {
     width: 50px;
 }
 
-#messagebox {
-    border-top: 2px ridge hsl(0,0%,100%);
-    margin-top: 5px; 
-    height:1px; 
-    position: absolute;
-    right: 0px;
-    top:0px;
-    margin-top: 105px;
-    margin-right: 20px;
-    width: 450px;
-    height: 110px;
-}
+
 .messageboxClose {
     background-image: url('../images/basic/x.png'); /* 16x16 px */
     background-repeat: no-repeat; 
@@ -638,14 +633,6 @@ nav div > img {
     filter:alpha(opacity=70); /* For IE8 and earlier */
 }
 
-#messageboxcontent {
-    padding-left: 10px;
-    padding-right: 10px;
-}
-#messageboxcontent > div {
-    overflow:auto;
-    height: 90px;
-}
 
 #content {
     margin-left: 206px;
@@ -674,7 +661,12 @@ nav div > img {
                       margin-top: 5px;
                       margin-right: 10px;
                     /*width wird über js dynamisch gesetzt*/ }
-
+.message_text {
+    margin-left: 310px;
+                      margin-top: 5px;
+                      margin-right: 10px;
+                      position:absolute;
+}
 #content #contentsmalltable {
     width: 20%;
     font-size: 85%;
@@ -1151,4 +1143,92 @@ iframe { width: 600px;
     .boxlegende{width: 32px;
                 height: 32px;
                 display:inherit; }
+}
+/*Notification Popup - 9Lessons*/
+#notification_li{
+    padding-right: 10px;position:relative}
+#notificationContainer {
+    background-color: #fff;
+    border: 1px solid rgba(100, 100, 100, .4);
+    -webkit-box-shadow: 0 3px 8px rgba(0, 0, 0, .25);
+    overflow: visible;
+    position: absolute;
+    top: 23px;
+    right: 10px;
+    width: 400px;
+    z-index: 1001;
+    display: none;
+    
+}
+#notificationContainer:before {
+    content: '';
+    display: block;
+    position: absolute;
+    width: 0;
+    height: 0;
+    color: transparent;
+    border: 10px solid black;
+    border-color: transparent transparent hsl(0,0%,70%);
+    margin-top: -20px;
+    margin-left: 350px;
+}
+#notificationTitle {
+    text-align: left;
+    color: #444;
+    z-index: 1002;
+    font-weight: bold;
+    padding: 8px;
+    font-size: 13px;
+    background-color: #f2f2f2;
+    width: 384px;
+    border-bottom: 1px solid hsl(0,0%,70%);
+}
+#notificationsBody {
+    overflow: auto;
+    max-height: 200px;
+
+}
+
+.notificationContent{
+    font-weight:normal;
+    padding:10px 10px 10px 10px;
+    text-align: left;
+    color: #444;
+    height:40px;
+    border-bottom: 1px solid hsl(0,0%,70%);
+}
+.notificationContent img{
+    margin-right:  10px;
+    background:                         #013363;
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#154D70), to(#013363));
+    background-image: -moz-linear-gradient(top, #154D70, #013363);
+    height:40px;
+    float: left;
+}
+
+#notificationFooter {
+    background-color: #bfbfbf;
+    text-align: center;
+    font-weight: bold;
+    padding: 8px;
+    font-size: 12px;
+    border-top: 1px solid hsl(0,0%,70%);
+}
+#notification_count {
+    padding: 3px 7px 3px 7px;
+    background: #cc0000;
+    color: #ffffff;
+    font-weight: bold;
+    margin-left: 50px;
+    border-radius: 10px;
+    position: absolute;
+    margin-top: -11px;
+    font-size: 11px;
+}
+.notifications{
+    padding: 5px 5px 5px 5px;
+    color: #444;
+    font-weight: bold;
+    font-size: 12px;
+    text-align: left;
 }

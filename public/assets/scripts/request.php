@@ -297,29 +297,29 @@ if (isset($_GET['function'])){
                                     $id = $_GET['id'];
                                     $creator_id = $_GET['creator_id']; 
                                     switch ($db) {
-                                        case "grade": $grade = new Grade();
-                                                      $grade->id  = $id;
-                                                      $ok = $grade->delete($creator_id);
+                                        case "grade":       $grade = new Grade();
+                                                            $grade->id  = $id;
+                                                            $ok = $grade->delete($creator_id);
                                             break;
-                                        case "group": $group = new Group();
-                                                      $group->id  = $id;
-                                                      $ok = $group->delete($creator_id);
+                                        case "group":       $group = new Group();
+                                                            $group->id  = $id;
+                                                            $ok = $group->delete($creator_id);
                                             break;
-                                        case "role": $role = new Roles();
-                                                     $role->role_id = $id;
-                                                     $ok = $role->delete($creator_id);
+                                        case "role":        $role = new Roles();
+                                                            $role->role_id = $id;
+                                                            $ok = $role->delete($creator_id);
                                             break;
                                         case "semester":    $semester = new Semester();
                                                             $semester->id = $id;
                                                             $ok = $semester->delete($creator_id);
                                             break;
-                                        case "subject": $subject = new Subject();
-                                                        $subject->id = $id;
-                                                     $ok = $subject->delete($creator_id);
+                                        case "subject":     $subject = new Subject();
+                                                            $subject->id = $id;
+                                                            $ok = $subject->delete($creator_id);
                                             break;
-                                        case "user": $user = new User(); 
-                                                     $user->id = $id;
-                                                     $ok = $user->delete($creator_id);
+                                        case "user":        $user = new User(); 
+                                                            $user->id = $id;
+                                                            $ok = $user->delete($creator_id);
                                             break;
 
                                         default:

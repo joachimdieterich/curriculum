@@ -68,7 +68,7 @@
         
      
   </div>
-        <div id="mailbox" ></div>   
+        <div id="mailbox"></div>   
     <p>&nbsp;</p>
     <p>&nbsp;</p>
     </form>  
@@ -103,7 +103,7 @@
         
      
   </div>
-        <div id="mailbox" ></div>   
+        <div id="mailbox">{*<textarea id="message_text" class="message_text"></textarea>*}</div>   
     <p>&nbsp;</p>
     <p>&nbsp;</p>
     </form>  
