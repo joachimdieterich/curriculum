@@ -26,7 +26,7 @@ $TEMPLATE->assign('page_title', 'Berichte');
 $LOG->add($USER->id, 'view', $PAGE->url, 'Log'); 
     
 if (checkCapabilities('menu:readLog', $USER->role_id)){
-    setPaginator('logPaginator', $TEMPLATE, $LOG->getLogs(), 'results', 'index.php?action=Log');
+    setPaginator('logPaginator', $TEMPLATE, $LOG->getLogs(), 'results', 'index.php?action=log');
     $TEMPLATE->assign('ccs_page_log', true); 
 } 
 ?>
