@@ -1376,7 +1376,7 @@ INSERT INTO `role_capabilities` (`id`, `role_id`, `capability`, `permission`, `c
 (1059, 1, 'menu:readPortfolio', 1, '2014-10-14 10:30:12', -1),
 (1060, 2, 'menu:readPortfolio', 0, '2014-10-14 10:30:12', -1),
 (1061, 3, 'menu:readPortfolio', 0, '2014-10-14 10:30:12', -1),
-(1062, 4, 'menu:readPortfolio', 0, '2014-10-14 10:30:12', -1);
+(1062, 4, 'menu:readPortfolio', 0, '2014-10-14 10:30:12', -1),
 (1063, -1, 'backup:addBackup', 1, '2014-10-20 14:46:34', 102),
 (1064, -1, 'backup:deleteBackup', 1, '2014-10-20 14:46:34', 102),
 (1065, -1, 'backup:getAllBackups', 1, '2014-10-20 14:46:34', 102),
