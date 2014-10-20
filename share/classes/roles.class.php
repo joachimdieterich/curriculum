@@ -142,7 +142,7 @@ class Roles {
     } 
     
     /**
-     * Load Grade with id $this->id 
+     * Load user-role with id $this->id 
      */
     public function load(){
         $db = DB::prepare('SELECT * FROM user_roles WHERE role_id = ?');
