@@ -70,10 +70,12 @@ if($_POST){
  */
 $TEMPLATE->assign('page_title', 'Freigaben');   //setContenttitle
 
-$users = new USER();
-$users->id = $USER->id; 
-$users->role_id = $USER->role_id; 
-$user_list = $users->userList('confirm'); // load Userdata
+if (checkCapabilities('user:confirmUserSidewide', $USER->role_id, false) OR checkCapabilities('user:confirmUser', $USER->role_id, false)){
+    $users = new USER();
+    $users->id = $USER->id; 
+    $users->role_id = $USER->role_id; 
+    $user_list = $users->userList('confirm'); // load Userdata
+}
 if (isset($user_list)){
     setPaginator('usersPaginator', $TEMPLATE, $user_list, 'results', 'index.php?action=adminConfirm'); //set Paginator    
 } else {

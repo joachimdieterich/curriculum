@@ -44,6 +44,7 @@ include_once('classes/group.class.php');
 include_once('classes/institution.class.php'); 
 include_once('classes/log.class.php'); 
 include_once('classes/pdf.class.php'); 
+include_once('classes/portfolio.class.php'); 
 include_once('classes/user.class.php');     
 include_once('classes/upload.class.php');     
 include_once('classes/mailbox.class.php');     

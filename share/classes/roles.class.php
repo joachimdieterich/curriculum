@@ -27,32 +27,32 @@ class Roles {
      * ID of Role
      * @var int
      */
-    public $id = null;
+    public $id;
     /**
      * role id
      * @var int 
      */
-    public $role_id = null; 
+    public $role_id; 
     /**
      * Name of role
      * @var string
      */
-    public $role = null; 
+    public $role; 
     /**
      * Description of role
      * @var string
      */
-    public $description = null; 
+    public $description; 
     /**
      * Timestamp when role was created
      * @var timestamp
      */
-    public $creation_time = null; 
+    public $creation_time; 
     /**
      * ID of User who created this role
      * @var int
      */
-    public $creator_id =null; 
+    public $creator_id; 
     /**
      * array of role capabilities
      * @var array 

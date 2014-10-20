@@ -8,40 +8,24 @@
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
 {block name=content}
-<div class="border-radius gray-border">	
-    
+
+<div class="border-box">    
     {foreach key=curid name=curriculum item=con from=$course}
-    <div class="border-top-radius contentheader">Lehrplan: {$con->curriculum} (Klasse {$con->grade}: {$con->subject})
-        {*<div class="printbtn floatright" onclick="printPage('printContent');"> </div>*}</div>
+    <div class="contentheader">Lehrplan: {$con->curriculum} (Klasse {$con->grade}: {$con->subject})</div>
     
-    <div class="space-top-padding gray-gradient border-bottom-radius box-shadow"><p>Beschreibung: {$con->description} ({$con->schooltype})</p>
-            <p>Bundesland: {$con->state} ({$con->country})</p>
+    <div><p>Beschreibung: {$con->description} ({$con->schooltype})</p>
+         <p>Bundesland: {$con->state} ({$con->country})</p>
         {*<form name="file" enctype="multipart/form-data" action="index.php?action=view&function=addObjectives" method="post">  
             <input type='hidden' name='curriculum_id' value='{$con->curriculum} '/>
             <p><label>Themen/Ziele importieren: </label><input type="file" name="datei" value=""><input type="submit" name="import" value="Importieren"> </p>    
         </form>*} 
-        <div id="printContent" class="scroll"> 
-            {*<!--For printing only - replaced by PDF print -> ojectives.tpl-->
-            
-            <div class="printOnly" >
-                <div id="printHeader"><p>{$app_title} :: {$con->curriculum}</p></div>
-                <div id="printUser">
-                    <!--<div class="printUserHeader">Benutzer</div>-->
-                    <div><img id="printUserImg" src="{if isset($avatar)}{$avatar_url}{$avatar}{/if}"></div>
-                    <div><p><strong>{if isset($firstname)}{$firstname}{/if} {if isset($lastname)}{$lastname}{/if}</strong></p>
-                    <p>{if isset($group) AND isset($group->groups)}{$group->groups}</p>
-                    <p>{$group->semester}{/if}</p>    
-                    <p class="printUserLogin">Letzter Login: {if isset($last_login)}{$last_login}{/if}</p></div> 
-              </div>
-              </div>*}
-             <!-- end For printing only-->       
-            
+        <div id="printContent" class="scroll">     
              <table> <!-- sollte per css noch unten einen abstand zum nächsthöheren div bekommen-->
                 {if $terminal_objectives != false}
                  {assign var="sol_btn" value="false"}   
                  {foreach key=terid item=ter from=$terminal_objectives}
-                    <tr><td class="boxleftpadding"><div class="box gray-gradient border-radius box-shadow gray-border ">
-                                <div class="boxheader border-top-radius">
+                    <tr><td class="boxleftpadding"><div class="box gray-border gray-gradient">
+                                <div class="boxheader">
                                 {if isset($showaddObjectives)}
                                         <input class="deletebtn floatright" type="button" name="delete" onclick="deleteObjective({$con->curriculum_id},{$ter->id})">
                                         <input class="editbtn floatright" type="button" name="edit" onclick="editObjective({$con->curriculum_id},{$ter->id})">
@@ -59,7 +43,7 @@
                                     </div>
                                 </div>
                                 
-                                <div class="boxfooter border-bottom-radius">
+                                <div class="boxfooter">
                                     {if isset($showaddObjectives)}
                                         <input class="downbtn" type="button" name="orderup" onclick="order('up', {$ter->order_id},{$con->curriculum_id},{$ter->id})" />
                                     {/if}
@@ -70,15 +54,18 @@
                             {foreach key=enaid item=ena from=$enabledObjectives}
                             {if $ena->terminal_objective_id eq $ter->id}
                             <td id="{$con->curriculum_id}&{$ter->id}&{$ena->id}">
-                            <div class="box gray-gradient border-radius box-shadow gray-border {if $ena->accomplished_status_id eq 1} boxgreen {else} boxred{/if}">
-                                <div class="boxheader border-top-radius ">
-                                    {if isset($ena->accomplished_users) and isset($ena->enroled_users) and isset($ena->accomplished_percent)}
-                                       {$ena->accomplished_users} von {$ena->enroled_users} ({$ena->accomplished_percent}%)<!--Ziel--> 
-
+                            <div class="box gray-border {if $ena->accomplished_status_id eq 1} boxgreen {elseif $ena->accomplished_status_id eq 2} boxorange {elseif $ena->accomplished_status_id eq '0'} boxred {else} box {/if}">
+                                <div class="boxheader ">
+                                    {if checkCapabilities('groups:showAccomplished', $my_role_id, false)}
+                                        {if isset($ena->accomplished_users) and isset($ena->enroled_users) and isset($ena->accomplished_percent)}
+                                            {$ena->accomplished_users} von {$ena->enroled_users} ({$ena->accomplished_percent}%)<!--Ziel-->  
+                                        {/if}
                                     {/if}
-                                    {if !isset($showaddObjectives) AND $file_solutionUpload eq true}
-                                        <a href="assets/scripts/libs/modal-upload/uploadframe.php?userID={$my_id}&token={$my_token}&last_login={$my_last_login}&context=userView&curID={$con->curriculum_id}&terID={$ter->id}&enaID={$ena->id}&placeValuesBeforeTB_=savedValues&TB_iframe=true&width=700&modal=true" class="thickbox">
-                                        <input class="addsolutionbtn floatright" type="button" name="addMaterial"></a>
+                                    {if !isset($showaddObjectives) AND checkCapabilities('file:solutionUpload', $my_role_id, false)}
+                                        {if checkCapabilities('file:upload', $my_role_id, false)}
+                                            <a href="assets/scripts/libs/modal-upload/uploadframe.php?userID={$my_id}&token={$my_token}&last_login={$my_last_login}&context=userView&curID={$con->curriculum_id}&terID={$ter->id}&enaID={$ena->id}&placeValuesBeforeTB_=savedValues&TB_iframe=true&width=700&modal=true" class="thickbox">
+                                            <input class="addsolutionbtn floatright" type="button" name="addMaterial"></a>
+                                        {/if}    
                                         {if $solutions != false}
                                             {foreach key=solID item=sol from=$solutions}
                                                 {if $sol->enabling_objective_id eq $ena->id AND $sol_btn neq $ena->id}
@@ -104,16 +91,22 @@
                                     </div>
                                     </div>
                                 </div>
-                                <div class="boxfooter border-bottom-radius">
+                                <div class="boxfooter">
                                     {if isset($showaddObjectives)}
+                                        {if checkCapabilities('file:upload', $my_role_id, false)}
+                                            <a href="assets/scripts/libs/modal-upload/uploadframe.php?userID={$my_id}&token={$my_token}&last_login={$my_last_login}&context=curriculum&curID={$con->curriculum_id}&terID={$ter->id}&enaID={$ena->id}&placeValuesBeforeTB_=savedValues&TB_iframe=true&width=700&modal=true" class="thickbox">
+                                            <input class="addmaterialbtn floatright" type="button" name="addMaterial"></a>
                                         
-                                        <a href="assets/scripts/libs/modal-upload/uploadframe.php?userID={$my_id}&token={$my_token}&last_login={$my_last_login}&context=curriculum&curID={$con->curriculum_id}&terID={$ter->id}&enaID={$ena->id}&placeValuesBeforeTB_=savedValues&TB_iframe=true&width=700&modal=true" class="thickbox">
-                                        <input class="addmaterialbtn floatright" type="button" name="addMaterial"></a>
-                                        <input class="editbtn floatright" type="button" name="editMaterial" onclick="editMaterial({$con->curriculum_id},{$ter->id},{$ena->id})">
+                                        {/if} 
+                                        {if checkCapabilities('file:editMaterial', $my_role_id, false)}
+                                            <input class="editbtn floatright" type="button" name="editMaterial" onclick="editMaterial({$con->curriculum_id},{$ter->id},{$ena->id})">
+                                        {/if}    
                                     {else}
-                                        <input class="helpbtn floatright" type="button" name="help" onclick="getHelp({$page_group}, {$con->curriculum_id},{$ter->id},{$ena->id})">
+                                        {if checkCapabilities('user:getHelp', $my_role_id, false)}
+                                            <input class="helpbtn floatright" type="button" name="help" onclick="getHelp({$page_group}, {$con->curriculum_id},{$ter->id},{$ena->id})">
+                                        {/if}    
                                     {/if}  
-                                    {if  $file_loadMaterial eq true}
+                                    {if checkCapabilities('file:loadMaterial', $my_role_id, false)}
                                         <a class="text" onclick="showMaterial({$con->curriculum_id}, {$ter->id}, {$ena->id})">Material</a>
                                     {/if}
                                     
@@ -124,8 +117,8 @@
                             {/foreach}
                         {/if}
                 {if isset($showaddObjectives)}       
-                 <td><div class="box gray-gradient border-radius box-shadow gray-border ">
-                         <div class="boxheader border-top-radius ">
+                 <td><div class="box gray-border ">
+                         <div class="boxheader">
                             <p><input class="addbtn floatright" type="button" name="addenablingObjectiveButton" onclick="addenablingObjective({$con->curriculum_id},{$ter->id})"></p>
                             <label class="boxleftpadding">Ziel hinzufügen</label>
                          </div>
@@ -136,8 +129,8 @@
             {/foreach}
            {/if}
                 {if isset($showaddObjectives)}       
-                 <td class="boxleftpadding"><div class="box gray-gradient border-radius box-shadow gray-border ">
-                      <div class="boxheader border-top-radius ">   
+                 <td class="boxleftpadding"><div class="box gray-border ">
+                      <div class="boxheader ">   
                          <p><input class="addbtn floatright" type="button" name="addterminalObjectiveButton" onclick="addterminalObjective({$con->curriculum_id})"> </p>
                          <label class="boxleftpadding">Thema hinzufügen</label>
                       </div>
@@ -147,20 +140,6 @@
           {/foreach}		
         </table>
         <p>&nbsp;</p>
-        {*<!--For printing only-->
-        <div id="printFooter" >
-            <table>
-                <tr>
-                    <td><p>Erklärungen:</p></td>
-                    <td><div class="boxgreen boxlegende"></div></td>
-                    <td><p>Ziel wurde erreicht</p>
-                    <td><div class="boxred boxlegende"></div></td>
-                    <td><p>Ziel wurde noch nicht erreicht</p></td>
-                </tr>
-            </table>
-            
-        </div>
-        <!--end For printing only-->*}
         </div>                
     </div> 
 </div>

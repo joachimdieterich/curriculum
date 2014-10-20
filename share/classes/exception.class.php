@@ -24,11 +24,19 @@
  * http://www.gnu.org/copyleft/gpl.html      
  */
 class CurriculumException extends Exception  {
-   
+    /**
+     * class constructor
+     * @param string $message
+     * @param int $code 
+     */
     public function __construct($message, $code = 0) {
         parent::__construct($message, $code);
     }
     
+    /**
+     * Generate String
+     * @return string 
+     */
     public function __toString() {
         return __CLASS__ . ":[{$this->code}]: {$this->message}\n";
     }

@@ -1,36 +1,38 @@
-/* 
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/** This file is part of curriculum - http://www.joachimdieterich.de
+ * 
+ * @package core
+ * @filename script.js
+ * @copyright 2013 Joachim Dieterich
+ * @author Joachim Dieterich
+ * @date 2019.09.19 13:26
+ * @license 
+ *
+ * This program is free software; you can redistribute it and/or modify 
+ * it under the terms of the GNU General Public License as published by  
+ * the Free Software Foundation; either version 3 of the License, or     
+ * (at your option) any later version.                                   
+ *                                                                       
+ * This program is distributed in the hope that it will be useful,       
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of        
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         
+ * GNU General Public License for more details:                          
+ *                                                                       
+ * http://www.gnu.org/copyleft/gpl.html      
  */
-// Animationen
-/*
- * Fadeout
- */
-function fadeout() {
-    alert(test);
-  $('#messagebox').fadeOut('slow', complete)
-}
 
-function showMessagebox(){
-   $("#messagebox").slideToggle();   
-}
-/* Link in (neuem Fenster öffnen)*/
- function openLink(URL, target) {
+
+
+/**
+ * Open Link in new window
+ **/
+function openLink(URL, target) {
     if (URL != ''){ //Sortiert "leere" Anfragen aus.
         window.open(URL, target);
-    }
-  
+    } 
 }
-/*
- * div submit button 
- */
-function submitOnClick(formName){
-        document.forms[formName].submit();
-    }
-
-/*
- * unmask password fields
- */
+/**
+ * Unmask password fields
+ **/
 function unmask(ID,checked){
     
     if (checked){
@@ -40,9 +42,11 @@ function unmask(ID,checked){
     }
     }
 
-/* XMLObject für SQL Abfragen*/
+/**
+ * Show material of a objective
+ **/
 function showMaterial( curriculumID, terminalObjectiveID, enablingObjectiveID) {
-    var url = "assets/scripts/request.php?ajax=on&function=showMaterial&curriculumID="+ curriculumID +"&terminalObjectiveID="+ terminalObjectiveID +"&enablingObjectiveID="+ enablingObjectiveID;
+    var url = "assets/scripts/request.php?function=showMaterial&curriculumID="+ curriculumID +"&terminalObjectiveID="+ terminalObjectiveID +"&enablingObjectiveID="+ enablingObjectiveID;
 
 req = XMLobject();
     if(req) {        
@@ -52,8 +56,11 @@ req = XMLobject();
     }
 }
 
+/**
+ * show Learner who have complete this objective
+ **/
 function getHelp(group,curriculumID, terminalObjectiveID, enablingObjectiveID) {
-    var url = "assets/scripts/request.php?ajax=on&function=getHelp&group="+ group +"&curriculumID="+ curriculumID +"&terminalObjectiveID="+ terminalObjectiveID +"&enablingObjectiveID="+ enablingObjectiveID;
+    var url = "assets/scripts/request.php?function=getHelp&group="+ group +"&curriculumID="+ curriculumID +"&terminalObjectiveID="+ terminalObjectiveID +"&enablingObjectiveID="+ enablingObjectiveID;
 
 req = XMLobject();
     if(req) {        
@@ -63,8 +70,11 @@ req = XMLobject();
     }
 }
 
+/**
+ * add a topic
+ **/
 function addterminalObjective(curriculumID) {
-    var url = "assets/scripts/request.php?ajax=on&function=addterminalObjective&curriculumID="+ curriculumID;
+    var url = "assets/scripts/request.php?function=addterminalObjective&curriculumID="+ curriculumID;
     
     req = XMLobject();
     if(req) {        
@@ -74,8 +84,11 @@ function addterminalObjective(curriculumID) {
     }
 }
 
+/**
+ * add objective
+ **/ 
 function addenablingObjective(curriculumID, terminalObjectiveID) {
-    var url = "assets/scripts/request.php?ajax=on&function=addenablingObjective&curriculumID="+ curriculumID+"&terminalObjectiveID="+ terminalObjectiveID;
+    var url = "assets/scripts/request.php?function=addenablingObjective&curriculumID="+ curriculumID+"&terminalObjectiveID="+ terminalObjectiveID;
     
     req = XMLobject();
     if(req) {        
@@ -85,14 +98,17 @@ function addenablingObjective(curriculumID, terminalObjectiveID) {
     }
 }
 
+/**
+ * delete a Objective
+ **/
 function deleteObjective() {
 
     if (confirm("Thema bzw. Ziel wirklich löschen?")) {   //Meldung "Wirklich löschen?"
         if (arguments.length == 2) {
-        var url = "assets/scripts/request.php?ajax=on&function=deleteObjective&curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1] +"&enablingObjectiveID=notset"; 
+        var url = "assets/scripts/request.php?function=deleteObjective&curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1] +"&enablingObjectiveID=notset"; 
         }
         else if (arguments.length == 3) { 
-        var url = "assets/scripts/request.php?ajax=on&function=deleteObjective&curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1] +"&enablingObjectiveID="+ arguments[2]; 
+        var url = "assets/scripts/request.php?function=deleteObjective&curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1] +"&enablingObjectiveID="+ arguments[2]; 
         }
         
         req = XMLobject();
@@ -105,9 +121,12 @@ function deleteObjective() {
     }
 }
 
+/**
+ * delete a curriculum
+ **/
 function deleteCurriculum() {
     if (confirm("Lehrplan wirklich löschen?")) {   //Meldung "Wirklich löschen?"
-        var url = "assets/scripts/request.php?ajax=on&function=deleteCurriculum&curriculumID="+ arguments[0]; 
+        var url = "assets/scripts/request.php?function=deleteCurriculum&curriculumID="+ arguments[0]; 
         
         req = XMLobject();
         if(req) {        
@@ -118,48 +137,13 @@ function deleteCurriculum() {
     }
 }
 
-function deleteGroup() {
-    if (confirm("Lerngruppe wirklich löschen?")) {   //Meldung "Wirklich löschen?"
-        var url = "assets/scripts/request.php?ajax=on&function=deleteGroup&group_id="+ arguments[0]; 
-        
-        req = XMLobject();
-        if(req) {        
-            req.onreadystatechange = answer; //Dialog mit Meldungen zeigen
-            req.open("GET", url, true);
-            req.send(null);
-        }
-    }
-}
 
-function deleteSemester() {
-    if (confirm("Lernzeitraum wirklich löschen?")) {   //Meldung "Wirklich löschen?"
-        var url = "assets/scripts/request.php?ajax=on&function=delete_semester&semester_id="+ arguments[0]; 
-        
-        req = XMLobject();
-        if(req) {        
-            req.onreadystatechange = answer; //Dialog mit Meldungen zeigen
-            req.open("GET", url, true);
-            req.send(null);
-        }
-    }
-}
-
-function deleteSubject() {
-    if (confirm("Fach wirklich löschen?")) {   //Meldung "Wirklich löschen?"
-        var url = "assets/scripts/request.php?ajax=on&function=delete_subject&subject_id="+ arguments[0]; 
-        
-        req = XMLobject();
-        if(req) {        
-            req.onreadystatechange = answer; //Dialog mit Meldungen zeigen
-            req.open("GET", url, true);
-            req.send(null);
-        }
-    }
-}
-
+/**
+ * delete a dataset in a db-table
+ **/
 function del() {
     if (confirm("Datensatz wirklich löschen?")) {   //Meldung "Wirklich löschen?"
-        var url = "assets/scripts/request.php?ajax=on&function=delete&db="+arguments[0]+"&id="+ arguments[1]+"&creator_id="+ arguments[2]; 
+        var url = "assets/scripts/request.php?function=delete&db="+arguments[0]+"&id="+ arguments[1]+"&creator_id="+ arguments[2]; 
         
         req = XMLobject();
         if(req) {        
@@ -173,7 +157,7 @@ function del() {
 function deleteFile() {
     if (confirm("Datei wirklich löschen?")) {   //Meldung "Wirklich löschen?"
         //Link unterscheidet sich von den anderen funktionen, da diese funktion vom upload_frame aufgerufen wird
-        var url = "../../../../assets/scripts/request.php?ajax=on&function=deleteFile&fileID="+ arguments[1]; 
+        var url = "../../../../assets/scripts/request.php?function=deleteFile&fileID="+ arguments[1]; 
         //var prefix = arguments[0];
         var fileID = arguments[1]
         req = XMLobject();
@@ -189,7 +173,19 @@ function deleteFile() {
 
 function expelUser() {
     if (confirm("Benutzer wirklich aus der Lerngruppe ausschreiben?")) {   //Meldung "Wirklich löschen?"
-        var url = "assets/scripts/request.php?ajax=on&function=expelUser&groupsID="+ arguments[0] +"&userID="+ arguments[1]; 
+        var url = "assets/scripts/request.php?function=expelUser&groupsID="+ arguments[0] +"&userID="+ arguments[1]; 
+       
+        req = XMLobject();
+        if(req) {        
+            req.onreadystatechange = answer; //Dialog mit Meldungen zeigen
+            req.open("GET", url, true);
+            req.send(null);
+        }
+    }
+}
+function expelFromInstituion() {
+    if (confirm("Benutzer wirklich aus der Institution ausschreiben?")) {   //Meldung "Wirklich löschen?"
+        var url = "assets/scripts/request.php?function=expelFromInstituion&institutionID="+ arguments[0] +"&userID="+ arguments[1]; 
        
         req = XMLobject();
         if(req) {        
@@ -202,9 +198,9 @@ function expelUser() {
 
 function order() {
     if (arguments.length == 4) {
-        var url = "assets/scripts/request.php?ajax=on&function=order&order="+ arguments[0] +"&order_id="+ arguments[1]+"&curriculum_id="+ arguments[2] +"&terminal_objective_id="+ arguments[3];
+        var url = "assets/scripts/request.php?function=order&order="+ arguments[0] +"&order_id="+ arguments[1]+"&curriculum_id="+ arguments[2] +"&terminal_objective_id="+ arguments[3];
     } else if (arguments.length == 5) {
-        var url = "assets/scripts/request.php?ajax=on&function=order&order="+ arguments[0] +"&order_id="+ arguments[1]+"&curriculum_id="+ arguments[2] +"&terminal_objective_id="+ arguments[3]+"&enabling_objective_id="+ arguments[4]; 
+        var url = "assets/scripts/request.php?function=order&order="+ arguments[0] +"&order_id="+ arguments[1]+"&curriculum_id="+ arguments[2] +"&terminal_objective_id="+ arguments[3]+"&enabling_objective_id="+ arguments[4]; 
     }
     req = XMLobject();
     if(req) {        
@@ -217,10 +213,10 @@ function order() {
 
 function editObjective() {
     if (arguments.length == 2) {
-       var url = "assets/scripts/request.php?ajax=on&function=editterminalObjective&curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1] +"&enablingObjectiveID=notset"; 
+       var url = "assets/scripts/request.php?function=editterminalObjective&curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1] +"&enablingObjectiveID=notset"; 
     }
     else if (arguments.length == 3) {
-       var url = "assets/scripts/request.php?ajax=on&function=editenablingObjective&curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1] +"&enablingObjectiveID="+ arguments[2]; 
+       var url = "assets/scripts/request.php?function=editenablingObjective&curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1] +"&enablingObjectiveID="+ arguments[2]; 
     }
     req = XMLobject();
     if(req) {        
@@ -232,7 +228,7 @@ function editObjective() {
 
 function editMaterial() {
     if (arguments.length == 3) {
-       var url = "assets/scripts/request.php?ajax=on&function=editMaterial&curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1] +"&enablingObjectiveID="+ arguments[2]; 
+       var url = "assets/scripts/request.php?function=editMaterial&curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1] +"&enablingObjectiveID="+ arguments[2]; 
     }
     
     req = XMLobject();
@@ -383,41 +379,48 @@ function checkPaginatorRow(paginatorName, rowNr) {
 }
 
 
-function setAccomplishedObjectives(creatorID, userID, paginatorfirst, paginatorLimit, terminalObjectiveID, enablingObjectiveID){    
+function setAccomplishedObjectives(creatorID, userID, paginatorfirst, paginatorLimit, terminalObjectiveID, enablingObjectiveID, groupID){    
     
     var statusID = document.getElementById(terminalObjectiveID+'_'+enablingObjectiveID).innerHTML;
-    if (statusID == 1) {
+    if (statusID == 2) {
         statusID = 0;
+    } else if(statusID == 1){
+         statusID = 2;
     } else {
         statusID = 1;
     }
         
     //prüfen wie viele ausgewählt sind
-    if (userID.length > 1){
-        alert('Es darf nur ein Benutzer ausgewählt sein');
-    } else if(userID == '') {
-        alert('Es muss ein Benutzer ausgewählt sein');
+    if (userID == 'all'){ 
+        var url = "assets/scripts/request.php?function=setAccomplishedObjectives&userID="+ userID +"&creatorID="+ creatorID +"&paginatorfirst="+ paginatorfirst +"&terminalObjectiveID="+ terminalObjectiveID +"&enablingObjectiveID="+ enablingObjectiveID+"&statusID="+statusID+"&groupID="+groupID;
+    //} else if(userID == '') {
+    //  alert('Es muss ein Benutzer ausgewählt sein');
     } else {
-    var url = "assets/scripts/request.php?ajax=on&function=setAccomplishedObjectives&userID="+ userID +"&creatorID="+ creatorID +"&paginatorfirst="+ paginatorfirst +"&terminalObjectiveID="+ terminalObjectiveID +"&enablingObjectiveID="+ enablingObjectiveID+"&statusID="+statusID;
-
+        var url = "assets/scripts/request.php?function=setAccomplishedObjectives&userID="+ userID +"&creatorID="+ creatorID +"&paginatorfirst="+ paginatorfirst +"&terminalObjectiveID="+ terminalObjectiveID +"&enablingObjectiveID="+ enablingObjectiveID+"&statusID="+statusID;
+    }
     req = XMLobject();
     if(req) {        
         req.onreadystatechange = function (){
             if (req.readyState==4 && req.status==200){
+                if (req.responseText.length != 1){
+                }
                 if (statusID==0) {
-                        document.getElementById(terminalObjectiveID+"style"+enablingObjectiveID).className = 'box gray-gradient border-radius box-shadow gray-border boxred';
+                        document.getElementById(terminalObjectiveID+"style"+enablingObjectiveID).className = 'box gray-border boxred';
                         document.getElementById(terminalObjectiveID+"_"+enablingObjectiveID).innerHTML=0;
                 }
                 if (statusID==1) {
-                        document.getElementById(terminalObjectiveID+"style"+enablingObjectiveID).className = 'box gray-gradient border-radius box-shadow gray-border boxgreen';
+                        document.getElementById(terminalObjectiveID+"style"+enablingObjectiveID).className = 'box gray-border boxgreen';
                         document.getElementById(terminalObjectiveID+"_"+enablingObjectiveID).innerHTML=1;
+                }
+                if (statusID==2) {
+                        document.getElementById(terminalObjectiveID+"style"+enablingObjectiveID).className = 'box gray-border boxorange';
+                        document.getElementById(terminalObjectiveID+"_"+enablingObjectiveID).innerHTML=2;
                 }
             }
         }
             req.open("GET", url, true);
             req.send(null);
-        }
-    }
+        }  
 }
 
 //SetAccomplishedObjectivesBySolution
@@ -429,7 +432,7 @@ function setAccomplishedObjectivesBySolution(creatorID, userID, enablingObjectiv
         text = 'Soll Ziel freigeschaltet werden?'
     }
    if (confirm(text)){
-    var url = "assets/scripts/request.php?ajax=on&function=setAccomplishedObjectives&userID="+ userID +"&creatorID="+ creatorID +"&enablingObjectiveID="+ enablingObjectiveID+"&statusID="+statusID;
+    var url = "assets/scripts/request.php?function=setAccomplishedObjectives&userID="+ userID +"&creatorID="+ creatorID +"&enablingObjectiveID="+ enablingObjectiveID+"&statusID="+statusID;
 
     req = XMLobject();
     if(req) {        
@@ -443,29 +446,11 @@ function setAccomplishedObjectivesBySolution(creatorID, userID, enablingObjectiv
     }
 }
 
-
-//Messagebox ausblenden
-function hideMessagebox(){
-       document.getElementById('messagebox').style.display = 'none';
-}
-
 //Fileuploadframe ausblenden
 function hideUploadframe(){
        document.getElementById('uploadframe').style.display = 'none';
 }
 
-//Druckfunktion
-/*function printPage(printpage){
-    var headstr = "<html><head><title></title></head><body>";
-    var footstr = "</body>";
-   //var newstr = document.all.item(printpage).innerHTML; 
-    var newstr = document.getElementById(printpage).innerHTML;  //so funktioniert es auch im firefox
-    var oldstr = document.body.innerHTML;
-    document.body.innerHTML = headstr+newstr+footstr;
-    window.print();
-    document.body.innerHTML = oldstr;
-    return false;
-}*/
 
 function confirmDialog(text) {
     if (confirm(text)){
@@ -479,7 +464,7 @@ function confirmDialog(text) {
 // Message functions
 
 function loadmail(mail_id, mailbox) {
-    var url = "assets/scripts/request.php?ajax=on&function=loadMail&mailID="+ mail_id; 
+    var url = "assets/scripts/request.php?function=loadMail&mailID="+ mail_id; 
 
     req = XMLobject();
         if(req) {        
@@ -496,6 +481,8 @@ function mail(mail_id, mailbox) {
         if (req.status == 200) {
             
            if (req.responseText.length != 1){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen
+                  //tinyMCE.activeEditor.contentDocument.body.innerHTML = req.responseText;
+                  
                   document.getElementById('mailbox').innerHTML = req.responseText;
                   document.getElementById(mailbox+'_'+mail_id).className = 'contenttablerow';
                   document.getElementById('mailbox').style.width = (document.body.offsetWidth - 540) +"px";
@@ -508,9 +495,9 @@ function mail(mail_id, mailbox) {
 
 function loadStates(){    
     if (arguments[1]){
-        var url = "assets/scripts/request.php?ajax=on&function=loadStates&country_id="+ arguments[0] +"&name="+ arguments[1] +"&state_id="+ arguments[2] ;
+        var url = "assets/scripts/request.php?function=loadStates&country_id="+ arguments[0] +"&name="+ arguments[1] +"&state_id="+ arguments[2] ;
     } else {
-        var url = "assets/scripts/request.php?ajax=on&function=loadStates&country_id="+ arguments[0];
+        var url = "assets/scripts/request.php?function=loadStates&country_id="+ arguments[0];
     }
 
 req = XMLobject();

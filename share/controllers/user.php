@@ -24,6 +24,7 @@
 global $USER, $PAGE, $TEMPLATE;
 
 $groups = new Group();
+$institution = new Institution();
 
 $TEMPLATE->assign('showFunctions', true);
 
@@ -37,6 +38,15 @@ if (isset($_GET['function'])) {
                 $result = $current_user->getCurricula();
                 if ($result){
                     setPaginator('curriculumList', $TEMPLATE, $result, 'resultscurriculumList', 'index.php?action=user&function=showCurriculum&userID='.$_GET['userID']); //set Paginator    
+                }
+                break;
+        case "showInstitution": 
+                $TEMPLATE->assign('showenroledInstitution', true); 
+                $TEMPLATE->assign('selectedUserID', $_GET['userID']);
+                $institution = new Institution();
+                $result = $institution->getInstitutions('user', $_GET['userID']);
+                if ($result){
+                    setPaginator('institutionList', $TEMPLATE, $result, 'resultsinstitutionList', 'index.php?action=user&function=showinstitution&userID='.$_GET['userID']); //set Paginator    
                 }
                 break;
        case "showGroups": 
@@ -61,7 +71,7 @@ if (isset($_POST)){
             if (count($_POST['id']) == 1){
                 $PAGE->message[] = 'Es muss mindestens ein Nutzer ausgewählt werden!';
                 }	
-        } else { 
+        } else { 	
             $edit_user->load('id',$edit_user->id);      // load current user 
             switch ($_POST) {
                 case isset($_POST['resetPassword']):
@@ -114,6 +124,20 @@ if (isset($_POST)){
                                         $PAGE->message[] = 'Nutzer <strong>'.$edit_user->username.'</strong> erfolgreich aus <strong>'.$groups->group.'</strong> ausgeschrieben.';  
                                     }
                     break;     
+                case isset($_POST['enroleInstitution']):
+                                    if ($edit_user->enroleToInstitution($_POST['institution'])){
+                                        $institution->id = $_POST['institution']; 
+                                        $institution->load();
+                                        $PAGE->message[] = 'Nutzer <strong>'.$edit_user->username.'</strong> erfolgreich in die Institution <strong>'.$institution->institution.'</strong> eingeschrieben.';  
+                                    }
+                    break; 
+                case isset($_POST['expelInstitution']):
+                                    if ($edit_user->expelFromInstitution($_POST['institution'])){
+                                        $institution->id = $_POST['institution']; 
+                                        $institution->load();
+                                        $PAGE->message[] = 'Nutzer <strong>'.$edit_user->username.'</strong> erfolgreich aus der Institution<strong>'.$institution->institution.'</strong> ausgeschrieben.';  
+                                    }
+                    break;     
                 default:
                     break;
             }      
@@ -140,4 +164,7 @@ $users->id = $USER->id;
 $users->role_id = $USER->role_id; 
 $user_list = $users->userList(); // load Userdata
 setPaginator('userPaginator', $TEMPLATE, $user_list, 'results', 'index.php?action=user'); //set Paginator    
+
+$institution = new Institution();
+$TEMPLATE->assign('myInstitutions', $institution->getInstitutions('user', $USER->id));
 ?>

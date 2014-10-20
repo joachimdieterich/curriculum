@@ -9,42 +9,42 @@
 
 {block name=content}
     
-<div class=" border-radius gray-border">	
-    <div class="border-top-radius contentheader ">{$str_adminGrade}</div>
-    <div class="space-top-padding gray-gradient border-bottom-radius box-shadow ">
-        
-        {if !isset($showGradeForm)}
-        <p class="floatleft gray-gradient cssimgbtn border-radius gray-border">
-            <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=grade&function=newGrade">Klassenstufe hinzufügen</a>
-        </p>
-        
+<div class="border-box">
+    <div class="contentheader ">{$str_adminGrade}</div>
+    <div>
+        {if checkCapabilities('grade:add', $my_role_id, false)}
+            {if !isset($showGradeForm)}
+            <p class="floatleft  cssimgbtn gray-border">
+                <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=grade&function=newGrade">Klassenstufe hinzufügen</a>
+            </p>
+            {/if}
         {/if}
-        <p>&nbsp;</p><p>&nbsp;</p>
+        <p>&nbsp;</p>
         {if isset($showGradeForm)}
-        <form id='addGrade' method='post' action='index.php?action=grade&next={$currentUrlId}'>
-        <input type='hidden' name='id' id='id' {if isset($id)}value='{$id}'{/if} /></p>   
-        <p><label>{$str_adminGrade_addGradeName}</label><input class='inputlarge' type='text' name='grade' id='grade' {if isset($grade)}value='{$grade}'{/if} /></p>   
-        {validate_msg field='grade'}
-	<p><label>{$str_description}</label><input class='inputlarge' type='description' name='description' {if isset($description)}value='{$description}'{/if}/></p>
-        {validate_msg field='description'}
-        {if count($my_institutions['id']) > 1}
-            <p><label>Institution / Schule*: </label>{html_options id='institution' name='institution' values=$my_institutions['id'] output=$my_institutions['institution']}</p>
-        {elseif count($my_institutions['id']) eq 0}
-            <p><strong>Sie müssen zuerst eine Institution anlegen</strong></p>
-        {else}
-            <input type='hidden' name='institution' id='institution' value='{$my_institutions['id'][0]}' /></p>       
-        {/if}
-        
-        <script type='text/javascript'>
-	document.getElementById('grade').focus();
-	</script>
-        
-        {if !isset($showeditGradeForm)}
-        <p><label></label><input type='submit' name="addGrade" value='{$str_adminGrade_addbtn}' /></p>
-        {else}
-        <p><label></label><input type='submit' name="back" value='zurück'/><input type='submit' name="updateGrade" value='Klassenstufe aktualisieren' /></p>
-        {/if}
-	</form>	
+            <form id='addGrade' method='post' action='index.php?action=grade&next={$currentUrlId}'>
+            <input type='hidden' name='id' id='id' {if isset($id)}value='{$id}'{/if} /></p>   
+            <p><label>{$str_adminGrade_addGradeName}</label><input class='inputlarge' type='text' name='grade' id='grade' {if isset($grade)}value='{$grade}'{/if} /></p>   
+            {validate_msg field='grade'}
+            <p><label>{$str_description}</label><input class='inputlarge' type='description' name='description' {if isset($description)}value='{$description}'{/if}/></p>
+            {validate_msg field='description'}
+            {if count($my_institutions['id']) > 1}
+                <p><label>Institution / Schule*: </label>{html_options id='institution' name='institution' values=$my_institutions['id'] output=$my_institutions['institution']}</p>
+            {elseif count($my_institutions['id']) eq 0}
+                <p><strong>Sie müssen zuerst eine Institution anlegen</strong></p>
+            {else}
+                <input type='hidden' name='institution' id='institution' value='{$my_institutions['id'][0]}' /></p>       
+            {/if}
+
+            <script type='text/javascript'>
+            document.getElementById('grade').focus();
+            </script>
+
+            {if !isset($showeditGradeForm)}
+                <p><label></label><input type='submit' name="addGrade" value='{$str_adminGrade_addbtn}' /></p>
+            {else}
+                <p><label></label><input type='submit' name="back" value='zurück'/><input type='submit' name="updateGrade" value='Klassenstufe aktualisieren' /></p>
+            {/if}
+            </form>	
         {/if}
          
         <form id='classlist' method='post' action='index.php?action=grade&next={$currentUrlId}'>
@@ -65,8 +65,16 @@
                     <td>{$grade_list[grade]->grade}</td>
                     <td>{$grade_list[grade]->description}</td>
                     <td class="td_options">
-                        <a class="deletebtn floatright" type="button" name="delete" onclick="del('grade',{$grade_list[grade]->id}, {$my_id})"></a>
-                        <a class="editbtn floatright" href="index.php?action=grade&edit=true&id={$grade_list[grade]->id}"></a>
+                        {if checkCapabilities('grade:delete', $my_role_id, false)}
+                            <a class="deletebtn floatright" type="button" name="delete" onclick="del('grade',{$grade_list[grade]->id}, {$my_id})"></a>
+                        {else}
+                            <a class="deletebtn deactivatebtn floatright" type="button" ></a>
+                        {/if}
+                        {if checkCapabilities('grade:update', $my_role_id, false)} 
+                            <a class="editbtn floatright" href="index.php?action=grade&edit=true&id={$grade_list[grade]->id}"></a>
+                        {else}
+                            <a class="editbtn deactivatebtn floatright"></a>
+                        {/if}
                         </td>
                 </tr>
             {/section}

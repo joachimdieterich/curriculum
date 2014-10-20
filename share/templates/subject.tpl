@@ -9,14 +9,15 @@
 
 {block name=content}
     
-<div class=" border-radius gray-border">	
-    <div class="border-top-radius contentheader ">{$page_title}</div>
-    <div class="space-top-padding gray-gradient border-bottom-radius box-shadow ">
-        {if !isset($showSubjectForm)}
-        <p class="floatleft gray-gradient cssimgbtn border-radius gray-border">
-            <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=subject&function=newSubject">Fach hinzufügen</a>
-        </p>
-        
+<div class="border-box">
+    <div class="contentheader ">{$page_title}</div>
+    <div>
+        {if checkCapabilities('subject:add', $my_role_id, false)}
+            {if !isset($showSubjectForm)}
+            <p class="floatleft  cssimgbtn gray-border">
+                <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=subject&function=newSubject">Fach hinzufügen</a>
+            </p>
+            {/if}
         {/if}
         <p>&nbsp;</p><p>&nbsp;</p>
         {if isset($showSubjectForm)}
@@ -68,8 +69,16 @@
                     <td>{$subject_list[subject]->subject_short}</td>
                     <td>{$subject_list[subject]->description}</td>
                     <td class="td_options">
-                        <a class="deletebtn floatright" type="button" name="delete" onclick="del('subject',{$subject_list[subject]->id}, {$my_id})"></a>
-                        <a class="editbtn floatright" href="index.php?action=subject&edit=true&id={$subject_list[subject]->id}"></a>
+                        {if checkCapabilities('subject:delete', $my_role_id, false)}
+                            <a class="deletebtn floatright" type="button" name="delete" onclick="del('subject',{$subject_list[subject]->id}, {$my_id})"></a>
+                        {else}
+                            <a class="deletebtn deactivatebtn floatright" type="button"></a>
+                        {/if}
+                        {if checkCapabilities('subject:update', $my_role_id, false)}
+                            <a class="editbtn floatright" href="index.php?action=subject&edit=true&id={$subject_list[subject]->id}"></a>
+                        {else}
+                            <a class="editbtn deactivatebtn floatright"></a>
+                        {/if}
                         </td>
                 </tr>
             {/section}

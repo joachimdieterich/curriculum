@@ -311,7 +311,7 @@ function renderList($formname, $files, $data_dir, $ID_Postfix, $targetID, $retur
  * @param string $message 
  */
 function renderDeleteMessage($message) {
-echo '<div class="border-top-radius contentheader">Information</div>
+echo '<div class="contentheader">Information</div>
     <div id="popupcontent">
     <p>'.$message.'</p>
     <p><label></label><input type="submit" value="OK" onclick="reloadPage()"></p>
@@ -322,7 +322,7 @@ echo '<div class="border-top-radius contentheader">Information</div>
 /**
  * add message
  * @global object $CFG
- * @param type $message 
+ * @param type string 
  */
 function addMessage($message){
     global $PAGE;
@@ -379,7 +379,6 @@ function array2str($array, $pre = ' ', $pad = '', $sep = ', ')
     } else {
         $str .= $pre.$array.$pad;
     }
-
     return $str;
 }
 
@@ -433,5 +432,24 @@ function getIp() {
     return ip2long($ip);//The $ip would now look something like: 1073732954
 }
 
+function PHPArrayObjectSorter($array,$sortBy,$direction='asc'){
+        $sortedArray=array();
+        $tmpArray=array();
+        foreach($array as $obj){
+            $tmpArray[]=$obj->$sortBy;
+        }
+        
+        if($direction=='asc'){
+            asort($tmpArray);
+        }else{
+            arsort($tmpArray);
+        }
+
+        foreach($tmpArray as $k=>$tmp){
+            $sortedArray[]=$array[$k];
+        }
+        
+        return $sortedArray;
+    }
 
 ?>

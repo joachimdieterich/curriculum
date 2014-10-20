@@ -9,9 +9,9 @@
 
 {block name=content}
     
-<div class="border-radius gray-border">	
-    <div class="border-top-radius contentheader ">{$page_title}</div>
-    <div class="space-top-padding gray-gradient box-shadow ">
+<div class="border-box">
+    <div class="contentheader ">{$page_title}</div>
+    <div>
 	
 	<form method='post' action='index.php?action=password'>
             {if isset($webservice)}

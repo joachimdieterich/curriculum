@@ -29,47 +29,47 @@ class Institution {
      * id of institution, default null
      * @var int 
      */
-    public $id      = null;
+    public $id;
     /**
      * confirmed (1 = registered, 2 = n.a, 3 = registered, user has to change password, 4 = registered but not active), default null
      * @var int 
      */
-    public $confirmed           = null;
+    public $confirmed;
     /**
      * institution name, default null
      * @var string 
      */
-    public $institution         = null;
+    public $institution;
     /**
      * description of institution, default null 
      * @var string 
      */
-    public $description         = null;
+    public $description;
     /**
      * id of schooltype, default null
      * @var int 
      */
-    public $schooltype_id       = null;
+    public $schooltype_id;
     /**
      * country code
      * @var string
      */
-    public $country_code        = null;
+    public $country_code;
     /**
      * id of state
      * @var int
      */
-    public $state_id            = null; 
+    public $state_id; 
     /**
      * timestamp, default null 
      * @var timestamp
      */
-    public $creation_time   = null;
+    public $creation_time;
     /**
      * id of creator, default null
      * @var int 
      */
-    public $creator_id          = null;
+    public $creator_id;
     
     /**
      * load  institution from db depending on id
@@ -116,11 +116,18 @@ class Institution {
      * delete Institution from db
      * @return boolean 
      */
-    public function deleteInstitution(){
+    public function delete(){
         global $USER;
         if (checkCapabilities('institution:delete', $USER->role_id)){
-            $db = DB::prepare('DELETE FROM institution WHERE id = ?');
-            return $db->execute(array($this->id));
+            $db = DB::prepare('SELECT id FROM institution_enrolments WHERE institution_id = ? AND status = 1');
+            $db->execute(array($this->id));
+            $result = $db->fetchObject();
+            if ($result){
+                return false;
+            } else {
+                $db = DB::prepare('DELETE FROM institution WHERE id = ?');
+                return $db->execute(array($this->id));
+            }
         }
     }
     
@@ -174,7 +181,7 @@ class Institution {
                              ins.country_id, ins.creation_time, usr.username AS creator_id 
                         FROM institution AS ins, schooltype AS sch, state AS sta, users AS usr
                         WHERE sch.id = ins.schooltype_id AND sta.id = ins.state_id AND usr.id = ins.creator_id
-                        AND ins.id = ANY (SELECT institution_id FROM institution_enrolments WHERE user_id = ?)');
+                        AND ins.id = ANY (SELECT institution_id FROM institution_enrolments WHERE user_id = ? and status = 1)');
                         $db->execute(array($id));
                         break;
 
@@ -233,7 +240,7 @@ class Institution {
     public function getInstitutionByUserName($username){
         $db = DB::prepare('SELECT ins.id FROM institution AS ins
                             WHERE ins.id = ANY (SELECT institution_id FROM institution_enrolments WHERE user_id = 
-                                            (SELECT id FROM users WHERE username = ?))');
+                                            (SELECT id FROM users WHERE username = ?) AND status = 1)');
         $db->execute(array($username));
         while($result = $db->fetchObject()) { 
                 $this->id = $result->id;
@@ -241,16 +248,28 @@ class Institution {
     }
     
     /**
-    * get institution by user id
+    * get institution 
     * @param int $userID
     * @return array , default = null 
     */
-    public function getInstitutionsByUserID($user_id){
-        $db = DB::prepare('SELECT ins.id, ins.institution, ins.description, sch.schooltype AS schooltype_id, sta.state AS state_id, ins.country_id, co.de AS country, ins.creation_time, usr.username AS creator_id 
+    public function getInstitutions($dependency = 'user', $id = null){
+        switch ($dependency) {
+            case 'user':$db = DB::prepare('SELECT ins.id, ins.institution, ins.description, sch.schooltype AS schooltype_id, sta.state AS state_id, ins.country_id, co.de AS country, ins.creation_time, usr.username AS creator_id 
                             FROM institution AS ins, schooltype AS sch, state AS sta, countries AS co, users AS usr
                             WHERE sch.id = ins.schooltype_id AND sta.id = ins.state_id AND co.id = ins.country_id AND usr.id = ins.creator_id
-                            AND ins.id = ANY (SELECT institution_id FROM institution_enrolments WHERE user_id = ?)');
-        $db->execute(array($user_id));
+                            AND ins.id = ANY (SELECT institution_id FROM institution_enrolments WHERE user_id = ? AND status = 1)');
+                        $db->execute(array($id));
+                break;
+            
+            case 'all': $db = DB::prepare('SELECT ins.id, ins.institution, ins.description, sch.schooltype AS schooltype_id, sta.state AS state_id, ins.country_id, co.de AS country, ins.creation_time, usr.username AS creator_id 
+                            FROM institution AS ins, schooltype AS sch, state AS sta, countries AS co, users AS usr
+                            WHERE sch.id = ins.schooltype_id AND sta.id = ins.state_id AND co.id = ins.country_id AND usr.id = ins.creator_id');
+                        $db->execute();
+                break;
+
+            default:
+                break;
+        }
 
         while($result = $db->fetchObject()) { 
                 $dataInstitution[] = $result; 

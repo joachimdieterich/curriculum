@@ -9,25 +9,25 @@
 
 {block name=content}
     
-<div class=" border-radius gray-border">	
-    <div class="border-top-radius contentheader">{$str_dashboard}</div>
-    <div class="space-top-padding gray-gradient border-bottom-radius box-shadow">
+<div class="border-box">
+    <div class="contentheader">{$str_dashboard}</div>
+    <div>
     <p><h3>{$str_achievments_headline}</h3></p>
     {if isset($enabledObjectives)} 
     <p>{$str_achievments_txt1}</p>
     <p>&nbsp;</p>
-    <table style="width:100%">
+    <table style="width:99%">
         <tr><td><div class="space-left"></div></td><td class="boxleftpadding">
         {foreach key=enaid item=ena from=$enabledObjectives}
             <div>
-                <div class="box gray-gradient border-radius box-shadow gray-border boxgreen">
-                    <div class="boxheader border-top-radius">
+                <div class="box gray-gradient gray-border boxgreen">
+                    <div class="boxheader">
                         {$ena->curriculum}<!--Kursvergleich--> 
                     </div>
                     <div class="boxscroll">
                         <div class="boxcontent">
                          {$ena->enabling_objective}<!--{$ena->description}-->
-                        <div class="boxfooter border-bottom-radius"> 
+                        <div class="boxfooter"> 
                         </div>
                     </div> 
                 </div>
@@ -101,35 +101,22 @@
             </table>
     {else}<p>{$str_classes_notassigned}</p>{/if}
     <p>&nbsp;</p>
-    
-    {* <p><h3>{$str_curriculum_headline}</h3></p>
-    {if $curriculumNavMenu != ''}
-            {foreach item=cur from=$curriculumNavMenu}
-            <li class="contentlist"><p><a href="index.php?action=view&curriculum={$cur.id}">{$cur.curriculum}</a></p></li>
-            {/foreach}
-        {else}<p>{$str_curriculum_notassigned}</p>
-        {/if} 
-    <p>&nbsp;</p>*}
-    
-    <p><h3>{$str_oldcurriculum_headline}</h3></p>
-    <p>{$str_oldcurriculum_notavailable} </p>
-    <p>&nbsp;</p>
-    {if $my_role_id == 1 or $my_role_id == 4}
+    {if checkCapabilities('page:showCronjob', $my_role_id, false)}
         <p><h3>Abgelaufene Ziele</h3></p>
     <p>{$cronjob}</p>
     <p>&nbsp;</p>
     {/if}
     <p><h3>{$str_manuals}</h3></p>
     <p>&nbsp;</p>
-    {if $my_role_id == 1 or $my_role_id == 4}
+    {if checkCapabilities('page:showAdminDocu', $my_role_id, false)}
     <p><a class="pdf_btn floatleft" href="{$support_url}doc_curriculum.joachimdieterich.de_admin.pdf"></a> {$str_manuals_institution}</p>
     <p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p>
     {/if}
-    {if $my_role_id == 1 or $my_role_id == 3}
+    {if checkCapabilities('page:showTeacherDocu', $my_role_id, false)}
     <p><a class="pdf_btn floatleft" href="{$support_url}doc_curriculum.joachimdieterich.de_teacher.pdf"></a> {$str_manuals_teacher}</p>
     <p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p>
     {/if}
-    {if $my_role_id == 1 or $my_role_id == 0}
+    {if checkCapabilities('page:showStudentDocu', $my_role_id, false)}
     <p><a class="pdf_btn floatleft" href="{$support_url}doc_curriculum.joachimdieterich.de_student.pdf"></a> {$str_manuals_student}</p>
     <p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p>
     {/if}

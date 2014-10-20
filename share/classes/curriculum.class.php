@@ -31,22 +31,22 @@ class Curriculum {
      * ID of curriculum
      * @var int
      */
-    public $id = null;
+    public $id;
     /**
      * combined id | curriculumID_groupID
      * @var string 
      */
-    public $id_grid = null;
+    public $id_grid;
     /**
      * Name of curriculum
      * @var string
      */
-    public $curriculum = null; 
+    public $curriculum; 
     /**
      * Description of curriculum
      * @var string
      */
-    public $description = null; 
+    public $description; 
     /**
      * id of grade
      * @var int 
@@ -56,7 +56,7 @@ class Curriculum {
      * name of grade
      * @var string
      */
-    public $grade = null;
+    public $grade;
     /**
      * id of subject
      * @var int
@@ -66,7 +66,7 @@ class Curriculum {
      * name of subject
      * @var type 
      */
-    public $subject = null; 
+    public $subject; 
     /**
      * id of schooltype
      * @var int
@@ -86,25 +86,28 @@ class Curriculum {
      * id of icon
      * @var int
      */
-    public $icon_id = null; 
+    public $icon_id; 
  
     /**
      * Timestamp when Grade was created
      * @var timestamp
      */
-    public $creation_time = null; 
+    public $creation_time; 
     /**
      * ID of User who created this Grade
      * @var int
      */
     public $creator_id =null; 
-    
-    public $language_code = null; 
+    /**
+     * language code
+     * @var string
+     */
+    public $language_code; 
     /**
      * array which holds terminal objectives of this curriculum
      * @var type 
      */
-    public $terminal_objectives = null; 
+    public $terminal_objectives; 
     /**
      * add curriculum to db
      * @return mixed 
@@ -244,7 +247,6 @@ class Curriculum {
     *
     * @global type $CFG
     * @global type $USER
-    * @param int $institution_id
     * @param string $import_file
     * @param string $delimiter
     * @return boolean 

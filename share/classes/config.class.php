@@ -28,104 +28,107 @@ class Config {
      * id
      * @var int
      */
-    public $id                              = null;
+    public $id;
     /**
      * id of user
      * @var int
      */
-    public $user_id                         = null; 
+    public $user_id; 
     /**
      * filepath of user (not used yet)
      * @var string
      */
-    public $user_filepath                   = null; 
+    public $user_filepath; 
     /**
      * paginator limit of user
      * @var int
      */
-    public $user_paginator_limit            = null; 
+    public $user_paginator_limit; 
     /**
      * user accomplished days 
      * @var int
      */
-    public $user_acc_days                   = null; 
+    public $user_acc_days; 
     /**
      * user language
      * @var string
      */
-    public $user_language                   = null; 
+    public $user_language; 
     /** 
      * id of institution
      * @var int
      */
-    public $institution_id                  = null; 
+    public $institution_id; 
     /**
      * filepath of institution (not used yet)
      * @var string
      */
-    public $institution_filepath            = null; 
+    public $institution_filepath; 
     /**
      * paginator limit of institution
      * @var int 
      */
-    public $institution_paginator_limit     = null; 
+    public $institution_paginator_limit; 
     /**
      * standard role id of institution
      * @var int
      */
-    public $institution_standard_role       = null; 
+    public $institution_standard_role; 
     /**
      * standard country id of institution
      * @var int
      */
-    public $institution_standard_country    = null; 
+    public $institution_standard_country; 
     /**
      * standard state id of institution
      * @var int
      */
-    public $institution_standard_state      = null; 
+    public $institution_standard_state; 
     /**
      * max csv size of institution
      * @var int
      */
-    public $institution_csv_size            = null; 
+    public $institution_csv_size; 
     /**
      * max avatar size of institution
      * @var int 
      */
-    public $institution_avatar_size         = null; 
+    public $institution_avatar_size; 
     /**
      * max. material size of institution
      * @var int
      */
-    public $institution_material_size       = null; 
+    public $institution_material_size; 
     /**
      * accomplished days for institution
      * @var int 
      */
-    public $institution_acc_days            = null; 
+    public $institution_acc_days; 
     /**
      * language setting of institution
      * @var string 
      */
-    public $institution_language            = null; 
+    public $institution_language; 
     /** 
      * timeout 
      * @var int 
      */
-    public $institution_timeout             = null; 
+    public $institution_timeout; 
     /**
      * timestamp of creation
      * @var timestamp
      */
-    public $creation_time                   = null; //todo: evtl. überflüssig 
+    public $creation_time; //todo: evtl. überflüssig 
     /**
      * update timestamp
      * @var timestamp
      */
-    public $update_time                     = null; 
-    
-    public $user_semester                   = null;
+    public $update_time; 
+    /**
+     * current semester
+     * @var int 
+     */
+    public $user_semester;
  
     /**
      * constructor for config class

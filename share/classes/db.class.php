@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of curriculum - http://www.joachimdieterich.de
  * 
@@ -85,5 +84,4 @@ class DB {
     
     
 }
-
 ?>

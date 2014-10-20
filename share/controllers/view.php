@@ -137,10 +137,6 @@ if ((isset($_GET['function']) AND $_GET['function'] == 'addObjectives') || (isse
 
 $courses = new Course(); // Load course
 
-//capabilies
-$TEMPLATE->assign('file_solutionUpload', checkCapabilities('file:solutionUpload', $USER->role_id), false);  
-$TEMPLATE->assign('file_loadMaterial', checkCapabilities('file:loadMaterial', $USER->role_id), false);  
-
 //load terminal objectives
 $terminal_objectives = new TerminalObjective();
 $TEMPLATE->assign('terminal_objectives', $terminal_objectives->getObjectives('curriculum', $PAGE->curriculum));
@@ -160,5 +156,5 @@ switch ($function) {
 
 // load solutions
 $files = new File(); 
-$TEMPLATE->assign('solutions', $files->getSolutions('course', $PAGE->curriculum, $USER->id));  
+$TEMPLATE->assign('solutions', $files->getSolutions('course', $USER->id, $PAGE->curriculum));  
 ?>

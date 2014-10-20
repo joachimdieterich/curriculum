@@ -9,13 +9,13 @@
 
 {block name=content} 
 
-<div class=" border-radius gray-border">	
-    <div class="border-top-radius contentheader ">{$page_title}{*<div class="printbtn floatright" onclick="printPage('printContent');"> </div>*}</div>
-    <div class="space-top-padding gray-gradient border-bottom-radius box-shadow ">
+<div class="border-box">
+    <div class="contentheader ">{$page_title}{*<div class="printbtn floatright" onclick="printPage('printContent');"> </div>*}</div>
+    <div>
       
         {if isset($user->avatar) and $user->avatar != 'noprofile.jpg'}
             <div id="right">
-                <img class="border-radius gray-border" src="{$avatar_url}{$user->avatar}" alt="Profilfoto">
+                <img class="gray-border" src="{$avatar_url}{$user->avatar}" alt="Profilfoto">
             </div>
         {/if}    
         {if isset($courses)}
@@ -47,7 +47,7 @@
 		</tr>
                 {* display results *}    
                 {section name=res loop=$results}
-                    <tr class="{if isset($selected_user_id) AND $selected_user_id eq $results[res]->id} activecontenttablerow {else}contenttablerow{/if}{if $results[res]->completed eq 100} completed{/if}" id="row{$smarty.section.res.index}" onclick="window.location.assign('index.php?action=objectives&course='+document.getElementById('course').value+'&userID='+document.getElementById('userID{$smarty.section.res.index}').value);">
+                    <tr class="{if isset($selected_user_id) AND $selected_user_id eq $results[res]->id OR $selected_user_id eq 'all'} activecontenttablerow {else}contenttablerow{/if}{if $results[res]->completed eq 100} completed{/if}" id="row{$smarty.section.res.index}" onclick="window.location.assign('index.php?action=objectives&course='+document.getElementById('course').value+'&userID='+document.getElementById('userID{$smarty.section.res.index}').value);">
                        <td><input class="invisible" type="checkbox" id="userID{$smarty.section.res.index}" name="userID" value={$results[res]->id} {if isset($selected_user_id) AND $selected_user_id eq $results[res]->id} checked{/if}/></td>
                        <!--<td>{$results[res]->username}</td>-->
                        <td>{$results[res]->firstname}</td>
@@ -57,9 +57,10 @@
                 {/section}
 		</table>
         {* display pagination info *}
-        <p>{paginate_prev id="userPaginator"} {paginate_middle id="userPaginator"} {paginate_next id="userPaginator"}</p>       
+        
+        <p><input class="inputsmall" type="checkbox" id="allUser" {if isset($selected_user_id) AND $selected_user_id eq 'all'} value="none"{else} value="all"{/if} name="allUser" {if isset($selected_user_id) AND $selected_user_id eq 'all'} checked{/if} onclick="window.location.assign('index.php?action=objectives&course='+document.getElementById('course').value+'&userID='+document.getElementById('allUser').value);"/>Alle auswählen{paginate_prev id="userPaginator"} {paginate_middle id="userPaginator"} {paginate_next id="userPaginator"}</p>       
        
-         <!--Hack für problem, dass kein Array gepostet wird, wenn nichts angewählt wird-->
+         <!--Hack für Problem, dass kein Array gepostet wird, wenn nichts angewählt wird-->
         <input class="invisible" type="checkbox" name="userID" value="none" checked />
         <!-- Ende Hack -->
       {elseif $showuser eq true} <p>Keine eingeschriebenen Benutzer</p><p>&nbsp;</p>{/if}
@@ -69,28 +70,16 @@
             <input type='hidden' name='sel_curriculum' value='{$sel_curriculum}'/>
             <input type='hidden' name='sel_user_id' value='{$selected_user_id}'/>
             <input type='hidden' name='sel_group_id' value='{$sel_group_id}'/>
-            <p><input type='submit' name="printCertificate" value='Zertifikat erstellen' /> 
+            <p>{if $selected_user_id ne 'all'}
+                <input type='submit' name="printCertificate" value='Zertifikat erstellen' /> 
+               {/if}
             <input type='submit' name="printAllCertificate" value='Alle Zertifikate erstellen' /></p>
          </form>
         <div id="printContent" class="scroll">
-            <!--For printing only-->
-            
-            {*<div class="printOnly" >
-                <div id="printHeader"><p>{$app_title}</p></div>
-                <div id="printUser">
-                    <!--<div class="printUserHeader">Benutzer</div>-->
-                    <div><img id="printUserImg" src="{$avatar_url}{$user_avatar}"></div>
-                    <div><p><strong>{$user->firstname} {$user->lastname}</strong></p>
-                    <p>{$group[0]->group}</p>
-                    <p>{$group[0]->semester}</p>
-                    <p class="printUserLogin">Letzter Login: {$last_login}</p></div> 
-                
-              </div>*}
-             <!-- end For printing only--> 
              <table> <!-- sollte per css noch unten einen abstand zum nächsthöheren div bekommen-->
                 {foreach key=terid item=ter from=$terminalObjectives}
-                    <tr><td class="boxleftpadding"><div class="box gray-gradient border-radius box-shadow gray-border ">
-                                <div class="boxheader border-top-radius"></div>
+                    <tr><td class="boxleftpadding"><div class="box gray-border gray-gradient">
+                                <div class="boxheader"></div>
                                 <div class="boxwrap">
                                     <div class="boxscroll">
                                         <div class="boxcontent">
@@ -98,17 +87,29 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="boxfooter border-bottom-radius"><!--Options...--></div> 
+                                <div class="boxfooter"><!--Options...--></div> 
                             </div>
                         </td>
                         {foreach key=enaid item=ena from=$enabledObjectives}
                         {if $ena->terminal_objective_id eq $ter->id}
                         <td id="{$ter->id}&{$ena->id}">
                             <div style="display:none" id="{$ter->id}_{$ena->id}">{0+$ena->accomplished_status_id}</div><!--Container für Variable-->
-                            <div id="{$ter->id}style{$ena->id}" class="box gray-gradient border-radius box-shadow gray-border {if $ena->accomplished_status_id eq 1} boxgreen {else} boxred{/if}">
-                            <div class="boxheader border-top-radius "></div>
+                            {if $selected_user_id eq 'all'} 
+                                <div id="{$ter->id}style{$ena->id}" class="box gray-border {if $ena->accomplished_percent eq 100} boxgreen {elseif $ena->accomplished_percent < 100 AND $ena->accomplished_percent > 0} boxorange{else} boxred{/if}">
+                            {else}        
+                                <div id="{$ter->id}style{$ena->id}" class="box gray-border {if $ena->accomplished_status_id eq 1} boxgreen {elseif $ena->accomplished_status_id eq 2} boxorange {elseif $ena->accomplished_status_id eq '0'} boxred {else} box {/if}">
+                            {/if}
+                            <div class="boxheader">{if isset($ena->accomplished_users) and isset($ena->enroled_users) and isset($ena->accomplished_percent)}
+                                       {$ena->accomplished_users} von {$ena->enroled_users} ({$ena->accomplished_percent}%)<!--Ziel--> 
+
+                                    {/if}</div>
                         <div class="boxwrap">
-                                    <div class="boxscroll" onclick="setAccomplishedObjectives({$my_id}, {$selected_user_id}, {$userPaginator.first}, {if isset($paginatorLimit)}{$paginatorLimit}{else}10{/if}, {$ter->id}, {$ena->id})">
+                            
+                                    {if isset($selected_user_id) AND $selected_user_id eq 'all'}
+                                        <div class="boxscroll" onclick="setAccomplishedObjectives({$my_id}, '{$selected_user_id}', {$userPaginator.first}, {if isset($paginatorLimit)}{$paginatorLimit}{else}10{/if}, {$ter->id}, {$ena->id}, {$sel_group_id})">
+                                    {else}
+                                        <div class="boxscroll" onclick="setAccomplishedObjectives({$my_id}, {$selected_user_id}, {$userPaginator.first}, {if isset($paginatorLimit)}{$paginatorLimit}{else}10{/if}, {$ter->id}, {$ena->id})">
+                                    {/if}
                                     <div class="boxcontent" >
                                          {$ena->enabling_objective}
                             <!--<br>{$ena->description}-->
@@ -116,7 +117,7 @@
                                     </div>
                                 </div>
                            
-                            <div class="boxfooter border-bottom-radius" onclick="">
+                            <div class="boxfooter" onclick="">
                                 
                                {*Abgaben zum jeweiligen Ziel in pulldownmenü - muss in einer nächsten Version gemacht werden*}
                                {if $addedSolutions != false} 
@@ -148,19 +149,7 @@
         </table>
         <p>&nbsp;</p>
         </div>   
-        <!--For printing only-->
-        {*<div id="printFooter" >
-            <table>
-                <tr>
-                    <td><p>Erklärungen:</p></td>
-                    <td><div class="boxgreen boxlegende"></div></td>
-                    <td><p>Ziel wurde erreicht</p>
-                    <td><div class="boxred boxlegende"></div></td>
-                    <td><p>Ziel wurde noch nicht erreicht</p></td>
-                </tr>
-            </table>  
-        </div>
-        <!--end For printing only--> *}
+       
         {else}
             {if isset($selected_user_id) and $show_course != ''}
                 <p>Es wurden noch keine Lernziele eingegeben.</p>

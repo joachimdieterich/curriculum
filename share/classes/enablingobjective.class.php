@@ -31,93 +31,97 @@ class EnablingObjective {
      * ID of enabling objective
      * @var int
      */
-    public $id = null;
+    public $id;
     /**
      * enabling Objective
      * @var string 
      */
-    public $enabling_objective = null;
+    public $enabling_objective;
     /**
      * Description of enabling objective
      * @var string
      */
-    public $description = null; 
+    public $description; 
     /**
      * id of curriculum
      * @var int 
      */
-    public $curriculum_id = null;
+    public $curriculum_id;
     /**
      * curriculum name - used for accomplished objectives on dashboard
      * @var string 
      */
-    public $curriculum = null; 
+    public $curriculum; 
     /**
      * id of terminal objective
      * @var int
      */
-    public $terminal_objective_id = null; 
+    public $terminal_objective_id; 
     /**
      * name of terminal objective
      * @var string 
      */
-    public $terminal_objective = null; 
+    public $terminal_objective; 
     /**
      * Timestamp when Grade was created
      * @var timestamp
      */
-    public $creation_time = null; 
+    public $creation_time; 
     /**
      * ID of User who created this Grade
      * @var int
      */
-    public $creator_id = null; 
+    public $creator_id; 
     /**
      * repeat interval
      * @var int 
      */
-    public $repeat_interval = null;
+    public $repeat_interval;
     /**
      * Position of enabling_objective  within terminal_objective
      * @var type 
      */
-    public $order_id = null; 
+    public $order_id; 
     /**
      * id of current accomplish status
      * @var int
      */
-    public $accomplished_status_id = null; 
+    public $accomplished_status_id; 
     /**
      * timestamp of last accomplish status change
      * @var timestamp
      */
-    public $accomplished_time = null; 
+    public $accomplished_time; 
     /**
      * id of teacher who set last accomplished status 
      * @var type 
      */
-    public $accomplished_teacher_id = null; 
+    public $accomplished_teacher_id; 
+    /**
+     * name of teacher who set accomplished status
+     * @var string
+     */
+    public $accomplished_teacher; 
     /**
      * number of enroled users
      * @var int
      */
-    public $enroled_users = null;
+    public $enroled_users;
     /**
      * number of users who accomplished objective
      * @var int
      */
-    public $accomplished_users = null; 
+    public $accomplished_users; 
     /**
      * percent value - number of  users who accomplished objective
      * @var int 
      */
-    
-    public $accomplished_percent = null; 
+    public $accomplished_percent; 
     /**
      * array of files of current enabling objective
      * @var array of file object
      */
-    public $files = null; 
+    public $files; 
             
             
     /**
@@ -232,7 +236,8 @@ class EnablingObjective {
                                     $this->creator_id              = $result->creator_id;      
                                     $objectives[]               = clone $this; 
                                 }  
-                break;    
+                break;   
+             
             
              case 'terminal_objective': $files = new File(); 
                                 $db = DB::prepare('SELECT en.* FROM enablingObjectives AS en 
@@ -254,7 +259,8 @@ class EnablingObjective {
                                 }   
                 break;    
             
-            case 'course':      $db = DB::prepare('SELECT en.*, te.terminal_objective, cu.curriculum, ua.status_id, ua.accomplished_time, ua.creator_id AS teacher_id
+            case 'course':
+            case 'group':       $db = DB::prepare('SELECT en.*, te.terminal_objective, cu.curriculum, ua.status_id, ua.accomplished_time, ua.creator_id AS teacher_id
                                                         FROM enablingObjectives AS en 
                                                         INNER JOIN terminalObjectives AS te ON en.terminal_objective_id = te.id
                                                         INNER JOIN curriculum AS cu ON en.curriculum_id = cu.id 
@@ -275,10 +281,12 @@ class EnablingObjective {
                                     $db_02 = DB::prepare('SELECT COUNT(ua.enabling_objectives_id) AS anzAccomplished
                                                         FROM user_accomplished AS ua
                                                         INNER JOIN groups_enrolments AS gr ON gr.user_id = ua.user_id 
+                                                        INNER JOIN users AS us ON gr.user_id = us.id
                                                         WHERE ua.enabling_objectives_id = ?
                                                         AND gr.group_id = ?
                                                         AND gr.status = 1
-                                                        AND ua.status_id = 1');
+                                                        AND ua.status_id = 1
+                                                        AND us.role_id = 0');
                                     $db_02->execute(array($result->id, $group));
                                     $anz = $db_02->fetchObject();
                                     $this->id                      = $result->id;
@@ -314,6 +322,11 @@ class EnablingObjective {
         
     }  
     
+    /**
+     * change order of objectives
+     * @global int $USER
+     * @param string $direction 
+     */
     public function order($direction = null){
         global $USER;
         if (checkCapabilities('objectives:orderEnablingObjectives', $USER->role_id)){
@@ -366,9 +379,10 @@ class EnablingObjective {
     public function getLastEnablingObjectives(){
         global $USER;
         $db = DB::prepare('SELECT ena.*, SUBSTRING(cur.curriculum, 1, 20) AS curriculum, usa.status_id as status_id, 
-                            usa.accomplished_time as accomplished_time, usa.creator_id as teacher_id
-                        FROM enablingObjectives AS ena, user_accomplished AS usa, curriculum AS cur
+                            usa.accomplished_time as accomplished_time, usa.creator_id as teacher_id, us.firstname, us.lastname
+                        FROM enablingObjectives AS ena, user_accomplished AS usa, curriculum AS cur, users AS us
                         WHERE ena.id = usa.enabling_objectives_id
+                        AND us.id = usa.user_id
                         AND ena.curriculum_id = cur.id AND usa.user_id = ? AND usa.status_id = 1
                         AND usa.accomplished_time > DATE_SUB(now(), INTERVAL ? DAY)');
         $db->execute(array($USER->id, $USER->acc_days));
@@ -386,6 +400,7 @@ class EnablingObjective {
             $this->accomplished_status_id  = $result->status_id;   
             $this->accomplished_time       = $result->accomplished_time;   
             $this->accomplished_teacher_id = $result->teacher_id;   
+            $this->accomplished_teacher = $result->firstname.' '.$result->lastname;   
             /*$this->enroled_users           = $cntEnroled["cntEnroled"];   
             $this->accomplished_users      = $anz["anzAccomplished"];   
             $this->accomplished_percent    = round($anz["anzAccomplished"]/$cntEnroled["cntEnroled"]*100, 2);   */
@@ -487,6 +502,11 @@ class EnablingObjective {
         } else {return false;}  
     }
     
+    /**
+     * get accomplished users
+     * @param int $group
+     * @return array 
+     */
     public function getAccomplishedUsers($group){
         $db = DB::prepare('SELECT ua.user_id
                               FROM user_accomplished AS ua
@@ -504,8 +524,12 @@ class EnablingObjective {
     }
     /**
      * set accomplished status of enabling objective in db
+     * @global int $USER
+     * @param string $dependency
+     * @param int $user_id
+     * @param int $creator_id
      * @param int $status
-     * @return boolean 
+     * @return type 
      */
     public function setAccomplishedStatus($dependency = null, $user_id = null, $creator_id = null, $status = 2) {
         global $USER;

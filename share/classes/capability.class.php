@@ -28,47 +28,42 @@ class Capability {
      * id
      * @var int
      */
-    public $id                          = null;
+    public $id;
     /**
      * name of capability
      * @var string
      */
-    public $capability                  = null; 
+    public $capability; 
     /**
      * description of capability
      * @var string
      */
-    public $description                 = null;                
+    public $description;                
     /**
      * type of capability
      * @var string
      */
-    public $type                        = null; 
+    public $type; 
     /**
      * name of component which uses this capability (e.g. config, menu, ...)
      * @var string
      */
-    public $component                   = null; 
-    
+    public $component; 
    /**
     * role_id
     * @var int 
     */
-    public $role_id                     = null;    
- 
+    public $role_id;    
     /**
      * constructor capability class
-     * @param string $dependency
-     * @param int $id 
      */
+    
     public function __construct(){
         
     }
     
     /**
      * add capability to db
-     * @param string $dependency
-     * @param int $id
      * @return boolean
      */
     public function add(){

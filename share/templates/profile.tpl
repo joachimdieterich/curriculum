@@ -9,9 +9,9 @@
 
 {block name=content}
 
-<div class="border-radius gray-border">	
-    <div class="border-top-radius contentheader ">{$page_title}</div>
-    <div class="space-top-padding gray-gradient box-shadow ">
+<div class="border-box">
+    <div class="contentheader ">{$page_title}</div>
+    <div>
         
         <div id="right">
         <img class="border-radius gray-border" src="{$avatar_url}{$avatar}" alt="Profilfoto">
@@ -43,7 +43,9 @@
                         <OPTION label="{$states[s_id]->state}" value="{$states[s_id]->id}" {if $states[s_id]->id eq $state_id}selected{/if}>{$states[s_id]->state}</OPTION>
                     {/section}   
                 </select></p>
-            <p><label>Avatar: </label><input  id="myfile" name='avatar' value={$avatar} readonly onclick="tb_show('','assets/scripts/libs/modal-upload/uploadframe.php?userID={$my_id}&token={$my_token}&last_login={$my_last_login}&context=avatar&target=myfile&format=1&multiple=false&placeValuesBeforeTB_=savedValues&TB_iframe=true&width=710&modal=true')" href="#" class="thickbox"/>
+            {if checkCapabilities('file:upload', $my_role_id, false)}    
+                <p><label>Avatar: </label><input  id="myfile" name='avatar' value={$avatar} readonly onclick="tb_show('','assets/scripts/libs/modal-upload/uploadframe.php?userID={$my_id}&token={$my_token}&last_login={$my_last_login}&context=avatar&target=myfile&format=1&multiple=false&placeValuesBeforeTB_=savedValues&TB_iframe=true&width=710&modal=true')" href="#" class="thickbox"/>
+            {/if}        
             <p><label>Rolle/Gruppe: </label><input class="hidden" name='role_id' value={$role_id} readonly="readonly"/><input  name='role_name' value={$role_name} readonly="readonly"/></p>
             <p><label>&nbsp;</label><input type='submit' value='Änderungen speichern' /></p>
         </form>

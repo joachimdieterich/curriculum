@@ -44,13 +44,13 @@ if (isset($_GET['course'])) {// create new backup
 $TEMPLATE->assign('page_title', 'Sicherungen erstellen');
 
 $courses = new Course(); //load Courses
-
+$backup_list = false;
 // load ackups and courses
 if (checkCapabilities('backup:getMyBackups', $USER->role_id, false)) { // Teacher and Tutor
     $backup_list = $backup->load('teacher');
     $TEMPLATE->assign('courses', $courses->getCourse('teacher', $USER->id));     
 } else
-if (checkCapabilities('backup:getAllBackups', $USER->role_id)) { //Administrators
+if (checkCapabilities('backup:getAllBackups', $USER->role_id, false)) { //Administrators
     $backup_list = $backup->load('admin');
     $TEMPLATE->assign('courses', $courses->getCourse('admin', $USER->id));
 }

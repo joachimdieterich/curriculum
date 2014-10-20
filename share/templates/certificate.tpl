@@ -9,11 +9,10 @@
 
 {block name=content}
     
-<div class=" border-radius gray-border">	
-    <div class="border-top-radius contentheader">{$page_title}</div>
-    <div class="space-top-padding gray-gradient border-bottom-radius box-shadow">
-    
-    <div><p>In diesem Editor können sie das Zertifikat einrichten. Die folgenden Felder dürfen / müssen dabei verwendet werden. 
+<div class="border-box">
+    <div class="contentheader">{$page_title}</div>
+   
+    <p>In diesem Editor können sie das Zertifikat einrichten. Die folgenden Felder dürfen / müssen dabei verwendet werden. 
         Felder mit * sind obligatorisch. </br>Die {literal}{{/literal}Start{literal}}{/literal} und {literal}{{/literal}Ende{literal}}{/literal} Feld legen fest welcher Bereich abhängig von den vorhandenen Zielen immer wieder wiederholt wird. </p>    
     <p><ol>
         <li>*{literal}{{/literal}Vorname{literal}}{/literal}</li>
@@ -59,7 +58,6 @@
         </table>
     <p>{paginate_prev id="userPaginator"} {paginate_middle id="userPaginator"} {paginate_next id="userPaginator"}</p>
 
-
     <input class="invisible" type="checkbox" name="userID" value="none" checked /><!--Hack if no Array -->
     {elseif $showuser eq true} <p>Keine eingeschriebenen Benutzer</p><p>&nbsp;</p>{/if}
     
@@ -70,8 +68,7 @@
     <p><textarea name="certificate_html">{if isset($certificate_html)}{$certificate_html}{/if}</textarea></p>  
     <p>&nbsp;</p>
     <p><label></label><input type='submit' name='generateCertificate' value='Zertifikat erstellen' /></p>
-
-    </form><div>
+    </form>
 
 {/block}
 

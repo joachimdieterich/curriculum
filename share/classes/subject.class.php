@@ -27,37 +27,37 @@ class Subject {
      * ID of Subject
      * @var int 
      */
-    public $id = null; 
+    public $id; 
     /**
      * Subject title
      * @var string 
      */
-    public $subject = null;
+    public $subject;
     /**
      * Subject shortcut
      * @var string
      */
-    public $subject_short = null; 
+    public $subject_short; 
     /**
      * Subject description
      * @var string
      */
-    public $description = null; 
+    public $description; 
     /**
      * ID of institution to which subject belongs to
      * @var type 
      */
-    public $institution_id = null; 
+    public $institution_id; 
     /**
      * Timestamp when Subject was created
      * @var timestamp 
      */
-    public $creation_timestamp = null; 
+    public $creation_timestamp; 
     /**
      * ID of User who created this subject
      * @var int
      */
-    public $creator_id = null; 
+    public $creator_id; 
     
     /**
      * Get all available subjects of current Institution

@@ -145,7 +145,6 @@ $TEMPLATE->cache_dir = $CFG->smarty_template_cache_dir;
  */
 $TEMPLATE->assign('tiny_mce', true);    //activate TinyMCE
 
-
 /*
  *  assign server variables to base template
  */
@@ -164,7 +163,6 @@ $TEMPLATE->assign('data_url', $CFG->data_url);
 $TEMPLATE->assign('debug', $CFG->debug);
 $TEMPLATE->assign('app_footer', $CFG->app_footer);
 $TEMPLATE->assign('app_title', $CFG->app_title);
-
 
 /*
  * 

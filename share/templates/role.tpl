@@ -9,12 +9,12 @@
 
 {block name=content}
     
-<div class=" border-radius gray-border">	
-    <div class="border-top-radius contentheader ">{$page_title}</div>
-    <div class="space-top-padding gray-gradient border-bottom-radius box-shadow ">
+<div class="border-box">
+    <div class="contentheader ">{$page_title}</div>
+    <div>
         
         {if !isset($showRoleForm)}
-        <p class="floatleft gray-gradient cssimgbtn border-radius gray-border">
+        <p class="floatleft  cssimgbtn gray-border">
             <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=role&function=newRole">Rolle hinzufügen</a>
         </p>
         

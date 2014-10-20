@@ -27,47 +27,47 @@ class Semester {
      * ID of semester
      * @var int
      */
-    public $id = null; 
+    public $id; 
     /**
      * Name of semester
      * @var string
      */
-    public $semester = null; 
+    public $semester; 
     /**
      * Description of description
      * @var string
      */
-    public $description = null; 
+    public $description; 
     /**
      * ID of current institution
      * @var int
      */
-    public $institution_id = null; 
+    public $institution_id; 
     /**
      * Timestamp of semester begin
      * @var timestamp
      */
-    public $begin = null; 
+    public $begin; 
     /**
      * Timestamp of semester end
      * @var timestamp
      */
-    public $end = null; 
+    public $end; 
     /** 
      * Timestamp of creation
      * @var timestamp
      */
-    public $creation_time = null; 
+    public $creation_time; 
     /**
      * ID of creator
      * @var int
      */
-    public $creator_id = null; 
+    public $creator_id; 
     /**
      * Username of creator
      * @var string 
      */
-    public $creator_username = null; 
+    public $creator_username; 
     
     /**
      * Get Semesterlist of current institution

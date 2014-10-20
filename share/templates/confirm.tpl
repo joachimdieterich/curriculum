@@ -9,9 +9,9 @@
 
 {block name=content}
     
-<div class=" border-radius gray-border">	
-    <div class="border-top-radius contentheader ">{$page_title}</div>
-    <div class="space-top-padding gray-gradient border-bottom-radius box-shadow ">
+<div class="border-box">
+    <div class="contentheader ">{$page_title}</div>
+    <div>
         {if isset($results)}
         <p><h3>Benutzer</h3></p>
         <p >Hier können neu registrierte Benutzer freigegeben werden</p>

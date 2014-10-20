@@ -113,7 +113,7 @@ if($_POST) {
 /************************************************************************************
  * END POST / GET 
  */   
-    
+
     $config = new Config('institution', $USER->institutions["id"]);     //Load default values
     while (list($key, $value) = each($config)) { 
         $TEMPLATE->assign($key, $value);

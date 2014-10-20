@@ -29,22 +29,22 @@ class Country {
      * id of country, default null
      * @var int 
      */
-    public $id  = null;
+    public $id;
     /**
      * internation country code
      * @var string 
      */
-    public $code    = null;
+    public $code = null;
     /**
      * english country name
      * @var string 
      */
-    public $en = null; 
+    public $en; 
     /**
      * german country name
      * @var string
      */
-    public $de = null; 
+    public $de; 
 
     
     /**

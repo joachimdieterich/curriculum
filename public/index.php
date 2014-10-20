@@ -47,21 +47,21 @@ try { // Error handling
 
 
     if ($PAGE->action  != 'login' OR $PAGE->action  != 'register' OR $PAGE->action  != 'install') {
-        //check ob eingeloggt oder timeout --> muss ganz oben stehen bleiben
         if($PAGE->action  != 'register' AND $PAGE->action  != 'install') {
             if (isset($_SESSION['username'])) {
                 include ('../share/session.php');       // first build session, then do the login-check!
-                include ('../share/login-check.php');   //checkt ob man eingeloggt ist
-                    if ($_SESSION['authenticated']){   
-                    $TEMPLATE->assign('loginname', $_SESSION['username']);
-                    $TEMPLATE->assign('stat_users_Online', $USER->usersOnline($USER->institutions));
-                    $TEMPLATE->assign('mySemester', $_SESSION['SEMESTER']);
-                    //object_to_array($_SESSION['SEMESTER']);
+                include ('../share/login-check.php');   // checkt ob man eingeloggt ist
+                    if ($_SESSION['authenticated']){ 
+                        $TEMPLATE->assign('mySemester', $_SESSION['SEMESTER']);
                         if(isset($_POST['mySemester'])){
-                            $USER->semester = $_POST['mySemester'];
-                            $TEMPLATE->assign('my_semester', $USER->semester);
-                            $PAGE->action = 'dashboard';   
-                        }
+                                $USER->semester = $_POST['mySemester'];
+                                $TEMPLATE->assign('my_semester', $USER->semester);
+                                $PAGE->action = 'dashboard';   
+                        } 
+                        if (checkCapabilities('menu:read'.$PAGE->action, $USER->role_id, false) || $PAGE->action == 'logout' || $PAGE->action == 'dashboard' || $PAGE->action == 'view'){  
+                            $TEMPLATE->assign('loginname', $_SESSION['username']);
+                            $TEMPLATE->assign('stat_users_Online', $USER->usersOnline($USER->institutions));     
+                        } else { echo 'menu:read'.$PAGE->action;$PAGE->action = 'none';}     
                     }
                 } else {
                     $PAGE->message[] = 'Sie sind nicht angemeldet.';
@@ -80,12 +80,15 @@ try { // Error handling
     /**
     * load controller 
     */ 
+    
     $PAGE->controller = $CFG->controllers_root.'/'.$PAGE->action .'.php';
-    if (file_exists($PAGE->controller)) { //Curriculum Exception Check
-    require_once($PAGE->controller);  
-    } else {
-        throw new CurriculumException($PAGE->action .'.php nicht vorhanden.');
-    }
+        if (file_exists($PAGE->controller)) { //Curriculum Exception Check
+        require_once($PAGE->controller);  
+        } else {
+            throw new CurriculumException($PAGE->action .'.php nicht vorhanden.');
+        }
+    
+    
 } catch (CurriculumException $e){
         $TEMPLATE->assign('prev_page_name', $PAGE->action);  
         $TEMPLATE->assign('curriculum_exception', $e);  

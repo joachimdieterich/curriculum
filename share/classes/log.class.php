@@ -31,42 +31,42 @@ class Log {
      * ID 
      * @var int
      */
-    public $id = null;
+    public $id;
     /**
      * Timestamp 
      * @var timestamp
      */
-    public $creation_time = null; 
+    public $creation_time; 
     /**
      * ID of User 
      * @var int
      */
-    public $user_id = null; 
+    public $user_id; 
     /**
      * name of User 
      * @var string
      */
-    public $username = null; 
+    public $username; 
     /**
      * ip of user
      * @var string 
      */
-    public $ip = null;
+    public $ip;
     /**
      * action
      * @var type 
      */
-    public $action = null; 
+    public $action; 
     /**
      * current url
      * @var string
      */
-    public $url = null;
+    public $url;
     /**
      * Info
      * @var string
      */
-    public $info = null; 
+    public $info; 
 
     /**
      * Add Log
