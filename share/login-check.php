@@ -23,7 +23,6 @@
 global $INSTITUTION, $USER; 
 
 if(isset($_SESSION['timein']) ) {        // check to see if $_SESSION['timein'] is set 
-    
     $session_life = time() - $_SESSION['timein'];
     
     if($session_life > ($INSTITUTION->institution_timeout)*60){ //*60 to get minutes
@@ -34,6 +33,6 @@ if(isset($_SESSION['timein']) ) {        // check to see if $_SESSION['timein'] 
         header('Location:index.php?action=login');   
     }
 }
-$_SESSION['timein'] = time();
 
+$_SESSION['timein'] = time();
 ?>

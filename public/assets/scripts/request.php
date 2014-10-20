@@ -28,7 +28,7 @@ $configfile = dirname(__FILE__).'/../../../share/config.php'; //damit zugriff au
 $setupfile = dirname(__FILE__).'/../../../share/setup.php'; //damit zugriff auf db funktioniert
 $functionfile = dirname(__FILE__).'/../../../share/function.php'; //damit zugriff auf die funktionen funktioniert
 include($configfile); 
-include($setupfile); //damit die *.classen.php funktionieren
+include($setupfile); //damit die *.class.php funktionieren
 include($functionfile); 
 
 // Configure Timezone $$$ You may want to change this otherwise php will complain
@@ -58,11 +58,9 @@ if (isset($_GET['function'])){
   }
   
     switch ($_GET['function']) {
-        case "showMaterial": 
-                            if (isset($_GET['ajax'])) {
-                                $file = new File(); 
+        case "showMaterial":    $file = new File(); 
                                 $files = $file->getFiles('enabling_objective', $_GET['enablingObjectiveID']);
-                                echo '<div class="border-top-radius contentheader">Material</div>
+                                echo '<div class="contentheader">Material</div>
                                       <div id="popupcontent">';
                                 if (!$files){
                                     echo 'Es gibt leider kein Material zum gewählten Lernziel.<p><label></label><input type="submit" value="OK" onclick="reloadPage()"></p>';
@@ -82,19 +80,16 @@ if (isset($_GET['function'])){
                                         echo '<div class="materialseperator"></div><div class="materialseperator2"></div>';
                                     }
                                     echo '<input type="submit" name="Submit" value="Fenster schließen" onclick="reloadPage()"/>';
-                                }
-                                
+                                }  
                                 echo '</div></div>';
-                            }
-                            break;  
-        case "getHelp": 
-                            if (isset($_GET['ajax'])) {
-                                $enabling_objective = new EnablingObjective();
+                                break; 
+                                
+        case "getHelp":         $enabling_objective = new EnablingObjective();
                                 $enabling_objective->id = $_GET['enablingObjectiveID'];
                                 $enabling_objective->load();
                                 $result = $enabling_objective->getAccomplishedUsers($_GET['group']);
                                 
-                                echo '<div class="border-top-radius contentheader">Hilfe</div>
+                                echo '<div class="contentheader">Hilfe</div>
                                       <div id="popupcontent">';
                                 if ($result){
                                 echo 'Folgende Benutzer haben das Lernziel: <br><br>"',$enabling_objective->enabling_objective,'"<br><br> bereits erreicht und können dir helfen:<br><br>';
@@ -109,55 +104,49 @@ if (isset($_GET['function'])){
                                 } else {echo 'Leider gibt es keinen Benutzer, der dieses Lernziel erreicht hat';}
                                 echo '<br><input type="submit" name="Submit" value="Fenster schließen" onclick="reloadPage()"/>';
                                 echo '</div></div>';
-                            }
-                            break;                      
-
-        case "editMaterial": if (isset($_GET['ajax'])) {
-                                $file = new File(); 
-                                $files = $file->getFiles('enabling_objective', $_GET['enablingObjectiveID']);
-                                echo '<div class="border-top-radius contentheader">Material bearbeiten</div>
-                                      <div id="popupcontent">';
-                            if (!$files){
-                                echo 'Es gibt leider kein Material zum gewählten Lernziel.';
-                            } else {
-                                for($i = 0; $i < count($files); $i++) { 
-                                        echo '<form method="post" action="index.php?action=view&function=addObjectives">
-                                                <input type="hidden" name="id" id="id" value='.$files[$i]->id.'/>
-                                                <input type="hidden" name="curriculum_id" id="curriculum_id" value='.$_GET['curriculumID'].'/>
-                                                <input type="hidden" name="terminal_objective_id" id="terminal_objective_id" value='.$_GET['terminalObjectiveID'].'/> 
-                                                <input type="hidden" name="enabling_objective_id" id="enabling_objective_id" value='.$_GET['enablingObjectiveID'].'/>
-                                                <label class="'.$files[$i]->type.'_btn floatleft"> </label>
-                                                <p class="materialtxt">Titel der Datei:<br>
-                                                <input class="inputlarge" type="text" id="linkMaterial" name="linkMaterial" value="'.$files[$i]->title.'"/></p>';
-                                        echo '<p class="materialtxt"><input type="submit" name="update_material" value="Material aktualisieren" />
-                                            <input type="submit" name="deleteMaterial" value="Material löschen" /></p>';
-                                        echo '</form>';
-                                        //end edit
-                                        echo '<div class="materialseperatoredit"></div><div class="materialseperator2"></div>';
-                                }
-                            }
+                                break; 
                                 
+        case "editMaterial":    $file = new File(); 
+                                $files = $file->getFiles('enabling_objective', $_GET['enablingObjectiveID']);
+                                echo '<div class="contentheader">Material bearbeiten</div>
+                                      <div id="popupcontent">';
+                                if (!$files){
+                                    echo 'Es gibt leider kein Material zum gewählten Lernziel.';
+                                } else {
+                                    for($i = 0; $i < count($files); $i++) { 
+                                            echo '<form method="post" action="index.php?action=view&function=addObjectives">
+                                                    <input type="hidden" name="id" id="id" value='.$files[$i]->id.'/>
+                                                    <input type="hidden" name="curriculum_id" id="curriculum_id" value='.$_GET['curriculumID'].'/>
+                                                    <input type="hidden" name="terminal_objective_id" id="terminal_objective_id" value='.$_GET['terminalObjectiveID'].'/> 
+                                                    <input type="hidden" name="enabling_objective_id" id="enabling_objective_id" value='.$_GET['enablingObjectiveID'].'/>
+                                                    <label class="'.$files[$i]->type.'_btn floatleft"> </label>
+                                                    <p class="materialtxt">Titel der Datei:<br>
+                                                    <input class="inputlarge" type="text" id="linkMaterial" name="linkMaterial" value="'.$files[$i]->title.'"/></p>';
+                                            echo '<p class="materialtxt"><input type="submit" name="update_material" value="Material aktualisieren" />
+                                                <input type="submit" name="deleteMaterial" value="Material löschen" /></p>';
+                                            echo '</form>';
+                                            //end edit
+                                            echo '<div class="materialseperatoredit"></div><div class="materialseperator2"></div>';
+                                    }
+                                }
                                 echo '</div></div>';
-                            }
-                            break;                     
+                                break;                     
 
         case "addterminalObjective": 
-                            if (isset($_GET['ajax'])) {
-                                echo '<div class="border-top-radius contentheader">Thema hinzufügen</div>
+                                echo '<div class="contentheader">Thema hinzufügen</div>
                                 <div id="popupcontent"><form method="post" action="index.php?action=view&function=addObjectives">
                                 <input type="hidden" name="curriculum_id" id="curriculum_id" value='.$_GET['curriculumID'].'> 
                                 <p><label>Thema: </label><input class="inputlarge" type="text" name="terminal_objective" /></p>
                                 <p><label>Beschreibung: </label><input class="inputlarge" type="description" name="description" /></p>
                                 <p><label></label><input type="submit" name="add_terminal_objective" value="Thema hinzufügen" /></p>
                                 </form></div></div>';     
-                            }
-                            break;
+                                break;
+                            
         case "editterminalObjective": 
-                            if (isset($_GET['ajax'])) {
                                 $terminal_objective = new TerminalObjective(); 
                                 $terminal_objective->id = $_GET['terminalObjectiveID'];
                                 $terminal_objective->load();                                 //Läd die bestehenden Daten aus der db
-                                echo '<div class="border-top-radius contentheader">Thema bearbeiten</div>
+                                echo '<div class="contentheader">Thema bearbeiten</div>
                                 <div id="popupcontent">
                                 <form method="post" action="index.php?action=view&function=addObjectives">
                                 <input type="hidden" name="id" id="id" value='.$terminal_objective->id.'/> 
@@ -166,11 +155,10 @@ if (isset($_GET['function'])){
                                 <p><label>Beschreibung: </label><input class="inputlarge" type="description" name="description" value="'.$terminal_objective->description.'"/></p>
                                 <p><label></label><input type="submit" name="update_terminal_objective" value="Thema aktualisieren" /></p>
                                 </form></div></div>';
-                            }
-                            break;                    
+                                break;
+                            
         case "addenablingObjective": 
-                            if (isset($_GET['ajax'])) {
-                                echo '<div class="border-top-radius contentheader">Ziel hinzufügen</div>
+                                echo '<div class="contentheader">Ziel hinzufügen</div>
                                 <div id="popupcontent"><form method="post" action="index.php?action=view&function=addObjectives">
                                 <input type="hidden" name="curriculum_id" id="curriculum_id" value='.$_GET['curriculumID'].'/> 
                                 <input type="hidden" name="terminal_objective_id" id="terminal_objective_id" value='.$_GET['terminalObjectiveID'].'/> 
@@ -192,15 +180,13 @@ if (isset($_GET['function'])){
                                     <p id="info" style="display:none;"><label>Information</label>Diese Funktion ist noch nicht verfügbar.</p>
                                     <p><label></label><input type="submit" name="add_enabling_objective" value="Ziel hinzufügen" /></p>
                                 </form></div></div>';
-                            }
-                            break;  
+                                break;  
                              
        case "editenablingObjective": 
-                            if (isset($_GET['ajax'])) {
                                 $enabling_objective = new EnablingObjective();
                                 $enabling_objective->id = $_GET['enablingObjectiveID'];
                                 $enabling_objective->load();    //Läd die bestehenden Daten aus der db
-                                echo '<div class="border-top-radius contentheader">Ziel bearbeiten</div>
+                                echo '<div class="contentheader">Ziel bearbeiten</div>
                                 <div id="popupcontent"><form method="post" action="index.php?action=view&function=addObjectives">
                                 <input type="hidden" name="id" id="id" value='.$enabling_objective->id.'/> 
                                 <input type="hidden" name="curriculum_id" id="curriculum_id" value='.$enabling_objective->curriculum_id.'/> 
@@ -225,46 +211,43 @@ if (isset($_GET['function'])){
                                 </select></p>    
                                 <p><label></label><input type="submit" name="update_enabling_objective" value="Ziel aktualisieren" /></p>
                                 </form></div></div>';
-                            }
-                            break;                     
-        case "deleteCurriculum": if (isset($_GET['ajax'])) {
-                                    $curriculum = new Curriculum(); 
-                                    $curriculum->id = $_GET['curriculumID'];
-                                    //Überprüfen, ob terminalObjective existieren, falls ja kann Lehrplan nicht gelöscht werden
-                                    $terminal_objective = new TerminalObjective();
-                                    if ($terminal_objective->getObjectives('curriculum', $_GET['curriculumID'])){
-                                        $terObjExists = true; 
-                                    } else {$terObjExists = false;} 
-                                    //Überprüfen, ob einschreibungen existieren, falls ja kann Lehrplan nicht gelöscht werden 
-                                    if ($curriculum->getCurriculumEnrolments()){
-                                        $curEnrExists = true; 
-                                    } else {$curEnrExists = false;} 
-                                    
-                                    if ($terObjExists == false && $curEnrExists == false){ //nur löschen, wenn keine Ziele existieren
-                                        $curriculum->delete();
-                                        echo '<div class="border-top-radius contentheader">Information</div>
-                                              <div id="popupcontent">
-                                              <p>Lehrplan wurde erfolgreich gelöscht.</p>
-                                              <p><label></label><input type="submit" value="OK" onclick="reloadPage()"></p>
-                                              </div>';
-                                    } else {
-                                        echo '<div class="border-top-radius contentheader">Warnung</div>
-                                              <div id="popupcontent">
-                                              <p>Lehrplan kann nicht gelöscht werden. Es müssen zuerst alle Themen bzw. Einschreibungen im Lehrplan gelöscht werden.</p>
-                                              </div>';
-                                        }
-                            }
-                            break; 
+                                break;                     
+                                
+        case "deleteCurriculum":$curriculum = new Curriculum(); 
+                                $curriculum->id = $_GET['curriculumID'];
+                                //Überprüfen, ob terminalObjective existieren, falls ja kann Lehrplan nicht gelöscht werden
+                                $terminal_objective = new TerminalObjective();
+                                if ($terminal_objective->getObjectives('curriculum', $_GET['curriculumID'])){
+                                    $terObjExists = true; 
+                                } else {$terObjExists = false;} 
+                                //Überprüfen, ob einschreibungen existieren, falls ja kann Lehrplan nicht gelöscht werden 
+                                if ($curriculum->getCurriculumEnrolments()){
+                                    $curEnrExists = true; 
+                                } else {$curEnrExists = false;} 
+
+                                if ($terObjExists == false && $curEnrExists == false){ //nur löschen, wenn keine Ziele existieren
+                                    $curriculum->delete();
+                                    echo '<div class="contentheader">Information</div>
+                                            <div id="popupcontent">
+                                            <p>Lehrplan wurde erfolgreich gelöscht.</p>
+                                            <p><label></label><input type="submit" value="OK" onclick="reloadPage()"></p>
+                                            </div>';
+                                } else {
+                                    echo '<div class="contentheader">Warnung</div>
+                                            <div id="popupcontent">
+                                            <p>Lehrplan kann nicht gelöscht werden. Es müssen zuerst alle Themen bzw. Einschreibungen im Lehrplan gelöscht werden.</p>
+                                            </div>';
+                                    }
+                                break; 
                             
-        case "deleteObjective": if (isset($_GET['ajax'])) {
-                                $enabling_objective = new EnablingObjective();
+        case "deleteObjective": $enabling_objective = new EnablingObjective();
                                 if ($_GET['enablingObjectiveID'] == 'notset') {//Löschen eines terminalObjectives   
                                     if (!$enabling_objective->getObjectives('terminal_objective', $_GET['terminalObjectiveID'])){ // check if there are enabling objectives under this terminal objective
                                         $terminal_objective = new TerminalObjective();
                                         $terminal_objective->id = $_GET['terminalObjectiveID'];
                                         $result = $terminal_objective->delete();    
                                     } else {
-                                        echo '<div class="border-top-radius contentheader">Warnung</div>
+                                        echo '<div class="contentheader">Warnung</div>
                                               <div id="popupcontent">
                                               <p>Thema kann nicht gelöscht werden. Es müssen zuerst alle Ziele des Themas gelöscht werden.</p>
                                               </div>';
@@ -275,87 +258,109 @@ if (isset($_GET['function'])){
                                     $enabling_objective->id = $_GET['enablingObjectiveID'];
                                     $result = $enabling_objective->delete();
                                     } else {
-                                        echo '<div class="border-top-radius contentheader">Warnung</div>
+                                        echo '<div class="contentheader">Warnung</div>
                                               <div id="popupcontent">
                                               <p>Ziel kann nicht gelöscht werden. Es müssen zuerst die verknüpften Materialien und Abgaben gelöscht werden</p>      
                                               </div>';
                                          }
                                 }
-                            }
-                            break;                       
+                                break;                       
 
-        case "setAccomplishedObjectives": if (isset($_GET['ajax'])) {
+        case "setAccomplishedObjectives": 
                                 $enabling_objectives = new EnablingObjective();
                                 $enabling_objectives->id = $_GET['enablingObjectiveID'];
-                                $enabling_objectives->setAccomplishedStatus('teacher', $_GET["userID"], $_GET["creatorID"], $_GET["statusID"]);     
-                            }
-                            break;   
+                                if ($_GET["userID"] == 'all'){
+                                   
+                                    $users = new User();
+                                    $groupmembers = $users->getGroupMembers('group', $_GET["groupID"]);
+                                    foreach ($groupmembers as $value) {
+                                        $enabling_objectives->setAccomplishedStatus('teacher', $value, $_GET["creatorID"], $_GET["statusID"]);     
+                                    }
+                                } else {
+                                    $enabling_objectives->setAccomplishedStatus('teacher', $_GET["userID"], $_GET["creatorID"], $_GET["statusID"]);     
+                                }
+                                break;   
                             
                                                                            
-        case "delete":      if (isset($_GET['ajax'])) {
-                                    $db = $_GET['db'];
-                                    $id = $_GET['id'];
-                                    $creator_id = $_GET['creator_id']; 
-                                    switch ($db) {
-                                        case "grade": $grade = new Grade();
-                                                      $grade->id  = $id;
-                                                      $ok = $grade->delete($creator_id);
-                                            break;
-                                        case "group": $group = new Group();
-                                                      $group->id  = $id;
-                                                      $ok = $group->delete($creator_id);
-                                            break;
-                                        case "role": $role = new Roles();
-                                                     $role->role_id = $id;
-                                                     $ok = $role->delete($creator_id);
-                                            break;
-                                        case "semester":    $semester = new Semester();
-                                                            $semester->id = $id;
-                                                            $ok = $semester->delete($creator_id);
-                                            break;
-                                        case "subject": $subject = new Subject();
+        case "delete":          $db = $_GET['db'];
+                                $id = $_GET['id'];
+                                $creator_id = $_GET['creator_id']; 
+                                switch ($db) {
+                                    case "grade":       $grade = new Grade();
+                                                        $grade->id  = $id;
+                                                        $ok = $grade->delete($creator_id);
+                                        break;
+                                    case "group":       $group = new Group();
+                                                        $group->id  = $id;
+                                                        $ok = $group->delete($creator_id);
+                                        break;
+                                    case "role":        $role = new Roles();
+                                                        $role->role_id = $id;
+                                                        $ok = $role->delete($creator_id);
+                                        break;
+                                    case "semester":    $semester = new Semester();
+                                                        $semester->id = $id;
+                                                        $ok = $semester->delete($creator_id);
+                                        break;
+                                    case "subject":     $subject = new Subject();
                                                         $subject->id = $id;
-                                                     $ok = $subject->delete($creator_id);
-                                            break;
-                                        case "user": $user = new User(); 
-                                                     $user->id = $id;
-                                                     $ok = $user->delete($creator_id);
-                                            break;
+                                                        $ok = $subject->delete($creator_id);
+                                        break;
+                                    case "user":        $user = new User(); 
+                                                        $user->id = $id;
+                                                        $ok = $user->delete($creator_id);
+                                        break;
+                                    case "institution": $institution = new Institution(); 
+                                                        $institution->id = $id;
+                                                        $ok = $institution->delete($creator_id);
+                                        break;
 
-                                        default:
-                                            break;
-                                    }
-                                    
-                                    if ($ok){
-                                       renderDeleteMessage('Datensatz wurde erfolgreich gelöscht.'); //Rendert das Popupfenster
-                                    } else { 
-                                       renderDeleteMessage('Datensatz konnte nicht gelöscht werden.'); //Rendert das Popupfenster
-                                    }           
-                            }
-                            break; 
-        case "deleteFile": if (isset($_GET['ajax'])) {
-                                    //Überprüfen, ob Datei verwendet wird sind.
-                                    $file = new File();
-                                    $file->id = $_GET['fileID'];
-                                    if ($file->delete()){
-                                        echo 'Datei wurde erfolgreich gelöscht.'; 
-                                    } else { 
-                                        echo 'Datei konnte nicht gelöscht werden.';
-                                    }
-                            }
-                            break;
-        case "expelUser": if (isset($_GET['ajax'])) {
-                                    $current_user = new User();
-                                    $current_user->id = $_GET['userID'];
-                                    if ($current_user->expelFromGroup($_GET['groupsID'])){
-                                        renderDeleteMessage('Benutzer wurde erfolgreich ausgeschrieben.'); //Rendert das Popupfenster
-                                    } else { 
-                                       renderDeleteMessage('Datensatz konnte nicht gefunden werden.'); //Rendert das Popupfenster
-                                    }
-                            }
-                            break;
-        case "loadMail": if (isset($_GET['ajax'])) {
-                                $mail = new Mail();
+                                    default:
+                                        break;
+                                }
+
+                                if ($ok){
+                                    renderDeleteMessage('Datensatz wurde erfolgreich gelöscht.'); //Rendert das Popupfenster
+                                } else { 
+                                    renderDeleteMessage('Datensatz konnte nicht gelöscht werden.'); //Rendert das Popupfenster
+                                }           
+                                break; 
+                                 
+        case "deleteFile":      $file = new File();
+                                $file->id = $_GET['fileID'];
+                                if ($file->delete()){
+                                    echo 'Datei wurde erfolgreich gelöscht.'; 
+                                } else { 
+                                    echo 'Datei konnte nicht gelöscht werden.';
+                                }
+                                break;
+                                
+        case "expelUser":       $current_user = new User();
+                                $current_user->id = $_GET['userID'];
+                                if ($current_user->expelFromGroup($_GET['groupsID'])){
+                                    renderDeleteMessage('Benutzer wurde erfolgreich ausgeschrieben.'); //Rendert das Popupfenster
+                                } else { 
+                                    renderDeleteMessage('Datensatz konnte nicht gefunden werden.'); //Rendert das Popupfenster
+                                }
+                                break;
+        case "expelFromInstituion":       $current_user = new User();
+                                $current_user->id = $_GET['userID'];
+                                if ($current_user->expelFromInstitution($_GET['institutionID'])){
+                                    renderDeleteMessage('Benutzer wurde erfolgreich ausgeschrieben.'); //Rendert das Popupfenster
+                                } else { 
+                                    renderDeleteMessage('Datensatz konnte nicht gefunden werden.'); //Rendert das Popupfenster
+                                }
+                                break;
+        case "expelUser":       $current_user = new User();
+                                $current_user->id = $_GET['userID'];
+                                if ($current_user->expelFromGroup($_GET['groupsID'])){
+                                    renderDeleteMessage('Benutzer wurde erfolgreich ausgeschrieben.'); //Rendert das Popupfenster
+                                } else { 
+                                    renderDeleteMessage('Datensatz konnte nicht gefunden werden.'); //Rendert das Popupfenster
+                                }
+                                break;
+                                
+        case "loadMail":        $mail = new Mail();
                                 $mail->id = $_GET['mailID'];
                                 $mail->setStatus(true);
                                 $mail->loadMail($mail->id);
@@ -395,12 +400,9 @@ if (isset($_GET['function'])){
                                 echo $mail->subject.'</p>';
                                 echo '<h3>&nbsp;</h3><br>';
                                 echo $mail->message;
+                                break;                 
                                 
-                            }
-                            break;                 
-        case "loadStates": if (isset($_GET['ajax'])) {
-            
-                                $state  = new State($_GET['country_id']);
+        case "loadStates":      $state  = new State($_GET['country_id']);
                                 $states = $state->getStates();
                                 
                                 if (isset($_GET['name'])){
@@ -418,27 +420,25 @@ if (isset($_GET['function'])){
                                   echo '>'.$states[$i]->state.'</option>';
                                 }
                                 echo '</select>';
-                            }
-                            break;    
-         case "order": if (isset($_GET['ajax'])) {
-                            if (isset($_GET['enabling_objective_id'])){
+                                break;    
+                                
+         case "order":          if (isset($_GET['enabling_objective_id'])){
                                 // enabling objective
-                                $enabling_objective = new EnablingObjective();
-                                $enabling_objective->id = $_GET['enabling_objective_id'];
-                                $enabling_objective->curriculum_id = $_GET['curriculum_id'];
-                                $enabling_objective->terminal_objective_id = $_GET['terminal_objective_id'];
-                                $enabling_objective->order_id = $_GET['order_id'];
-                                $enabling_objective->order($_GET['order']);
-                            } else {
-                                // terminal objective 
-                                $terminal_objective = new TerminalObjective();
-                                $terminal_objective->id = $_GET['terminal_objective_id'];
-                                $terminal_objective->curriculum_id = $_GET['curriculum_id'];
-                                $terminal_objective->order_id = $_GET['order_id'];
-                                $terminal_objective->order($_GET['order']);
-                            }
-                        }
-                        break;                     
+                                    $enabling_objective = new EnablingObjective();
+                                    $enabling_objective->id = $_GET['enabling_objective_id'];
+                                    $enabling_objective->curriculum_id = $_GET['curriculum_id'];
+                                    $enabling_objective->terminal_objective_id = $_GET['terminal_objective_id'];
+                                    $enabling_objective->order_id = $_GET['order_id'];
+                                    $enabling_objective->order($_GET['order']);
+                                } else {
+                                    // terminal objective 
+                                    $terminal_objective = new TerminalObjective();
+                                    $terminal_objective->id = $_GET['terminal_objective_id'];
+                                    $terminal_objective->curriculum_id = $_GET['curriculum_id'];
+                                    $terminal_objective->order_id = $_GET['order_id'];
+                                    $terminal_objective->order($_GET['order']);
+                                }
+                                break;                     
         default:
             break;
     }   

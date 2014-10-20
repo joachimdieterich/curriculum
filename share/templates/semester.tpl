@@ -9,14 +9,15 @@
 
 {block name=content}
     
-<div class=" border-radius gray-border">	
-    <div class="border-top-radius contentheader">{$page_title}</div>
-    <div class="space-top-padding gray-gradient border-bottom-radius box-shadow ">
-        {if !isset($showSemesterForm)}
-        <p class="floatleft gray-gradient cssimgbtn border-radius gray-border">
-            <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=semester&newSemester">Lernzeitraum hinzufügen</a>
-        </p>
-        <p>&nbsp;</p>
+<div class="border-box">
+    <div class="contentheader">{$page_title}</div>
+    <div>
+        {if checkCapabilities('semester:add', $my_role_id, false)}
+            {if !isset($showSemesterForm)}
+                <p class="floatleft cssimgbtn gray-border">
+                    <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=semester&newSemester">Lernzeitraum hinzufügen</a>
+                </p><p>&nbsp;</p>
+            {/if}
         {/if}
         {if isset($showSemesterForm)}
         <form id='addSemester' method='post' action='index.php?action=semester&next={$currentUrlId}'>
@@ -25,9 +26,9 @@
         {validate_msg field='semester'}
 	<p><label>Beschreibung*:</label><input class='inputlarge' name='description' {if isset($description)}value='{$description}'{/if}/></p>
 	{validate_msg field='description'}
-        <p><label>Lernzeitraum-Beginn*:</label><input type='date' class='inputsmall' id='begin' name='begin' {if isset($begin)}value='{$begin}'{/if}/>
+        <p><label>Lernzeitraum-Beginn*:</label><input type='date' id='begin' name='begin' {if isset($begin)}value='{$begin}'{/if}/>
 	{validate_msg field='begin'}
-        <p><label>Lernzeitraum-Ende*:</label><input type='date' class='inputsmall' id='end' name='end' {if isset($end)}value='{$end}'{/if}/>
+        <p><label>Lernzeitraum-Ende*:</label><input type='date' id='end' name='end' {if isset($end)}value='{$end}'{/if}/>
         {validate_msg field='end'}
         {if count($my_institutions['id']) > 1}
             <p><label>Institution / Schule*: </label>{html_options id='institution' name='institution' values=$my_institutions['id'] output=$my_institutions['institution']}</p>
@@ -73,8 +74,16 @@
                     <td>{$semester_list[semester]->creator_username}</td>
                    
                     <td>
-                        <a class="deletebtn floatright" type="button" name="delete" onclick="del('semester',{$semester_list[semester]->id}, {$my_id})"></a>
-                        <a class="editbtn floatright" href="index.php?action=semester&edit=true&id={$semester_list[semester]->id}"></a>
+                        {if checkCapabilities('subject:delete', $my_role_id, false)}
+                            <a class="deletebtn floatright" type="button" name="delete" onclick="del('semester',{$semester_list[semester]->id}, {$my_id})"></a>
+                        {else}
+                            <a class="deletebtn deactivatebtn floatright" type="button" ></a>
+                        {/if}
+                        {if checkCapabilities('subject:update', $my_role_id, false)}
+                            <a class="editbtn floatright" href="index.php?action=semester&edit=true&id={$semester_list[semester]->id}"></a>
+                        {else}    
+                            <a class="editbtn deactivatebtn floatright" ></a>
+                        {/if}
                         </td>
                 </tr>
             {/section}

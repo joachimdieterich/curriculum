@@ -9,81 +9,83 @@
 
 {block name=content}
     
-<div class=" border-radius gray-border">	
-    <div class="border-top-radius contentheader ">{$page_title}</div>
-    <div class="space-top-padding gray-gradient border-bottom-radius box-shadow ">
-        {if !isset($edit_form)}
-        <p class="floatleft gray-gradient cssimgbtn border-radius gray-border">
-            <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=curriculum&function=new_curriculum">Lehrplan hinzufügen</a>
-        </p>
-        <p>&nbsp;</p>
-        {/if}
-        
-        {if isset($edit_form)}
-            <div id="right">
-                <img id="icon"  src="">
-            </div>
-            <form id='add' method='post' action='index.php?action=curriculum&next={if isset($currentUrlId)}{$currentUrlId}{/if}'>
-            <input class="invisible" type="text" id="edit_curriculum_id" name="edit_curriculum_id" {if isset($edit_curriculum_id)}value='{$edit_curriculum_id}'{/if}>
-            <p><label>Lehrplan-Name*: </label><input class='inputlarge' type='text' name='curriculum' id='curriculum' {if isset($curriculum)}value='{$curriculum}'{/if} /></p>   
-            {validate_msg field='curriculum'}
-            <p><label>Beschreibung*: </label><input class='inputlarge' type='description' name='description' {if isset($description)}value='{$description}'{/if}/></p>
-            {validate_msg field='description'}
-            <p><label>Fach: </label>
-                <select class='inputlarge' name="subject">
-                {section name=res loop=$subjects}  
-                <option label={$subjects[res]->subject} value={$subjects[res]->id} {if $subject_id eq $subjects[res]->id}selected="selected"{/if}>{$subjects[res]->subject}</option>
-                {/section}
-                </select> 
+<div class="border-box">
+    <div class="contentheader ">{$page_title}</div>
+    <div>
+        {if checkCapabilities('curriculum:add', $my_role_id, false)}
+            {if !isset($edit_form)}
+            <p class="floatleft  cssimgbtn gray-border">
+                <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=curriculum&function=new_curriculum">Lehrplan hinzufügen</a>
             </p>
-            {validate_msg field='subject'}
-            <p><label>Fach-Icon: </label>
-                <select class='inputlarge' name="icon" onchange="showSubjectIcon('{$subjects_url}', this.options[this.selectedIndex].innerHTML);">
-                {section name=res loop=$icons}  
-                <option label={$icons[res]->title} value={$icons[res]->id} {if $icon_id eq $icons[res]->id}selected="selected"{/if}>{$icons[res]->filename}</option>
-                {/section}
-                </select> 
-            </p>
-            {validate_msg field='icon'}
-            <p><label>Klassenstufe: </label>
-                <select class='inputlarge' name="grade">
-                {section name=res loop=$grades}  
-                <option label="{$grades[res]->grade}" value={$grades[res]->id} {if $grade_id eq $grades[res]->id}selected="selected"{/if}>{$grades[res]->grade}</option>
-                {/section}
-                </select> 
-            </p>
-            {validate_msg field='grade'}
-            <p><label>Schultyp: </label>
-                <select class='inputlarge' name="schooltype">
-                {section name=res loop=$schooltypes}  
-                <option label={$schooltypes[res]->schooltype} value={$schooltypes[res]->id} {if $schooltype_id eq $schooltypes[res]->id}selected="selected"{/if}>{$schooltypes[res]->schooltype}</option>
-                {/section}
-                </select> 
-            </p>
-            {validate_msg field='schooltype'}
-            <p><label>Bundesland/Region: </label>
-                <select name="state" class='inputlarge'>
-                    {section name=res loop=$states}  
-                        <option label={$states[res]->state} value={$states[res]->id} {if $state_id eq $states[res]->id}selected="selected"{/if}>{$states[res]->state}</option>
-                    {/section}
-                </select>
-            {validate_msg field='state'}
-            <p><label>Land: </label>
-                <select name="country" class='inputlarge'>
-                    {section name=res loop=$countries}  
-                        <option label={$countries[res]->de} value={$countries[res]->id} {if $state_id eq $countries[res]->id}selected="selected"{/if}>{$countries[res]->de}</option>
-                    {/section}
-                </select>
-                
-            {validate_msg field='countries'}
-            
-            {if !isset($showeditCurriculumForm)}
-                <p><label></label><input type='submit' name="back" value='zurück'/><input type='submit' name="add" value='Lehrplan hinzufügen' /></p>
+            <p>&nbsp;</p>
             {/if}
-            {if isset($showeditCurriculumForm)}
-                <p><label></label><input type='submit' name="back" value='zurück'/><input type='submit' name="update" value='Lehrplan aktualisieren' /></p>
+
+            {if isset($edit_form)}
+                <div id="right">
+                    <img id="icon"  src="">
+                </div>
+                <form id='add' method='post' action='index.php?action=curriculum&next={if isset($currentUrlId)}{$currentUrlId}{/if}'>
+                <input class="invisible" type="text" id="edit_curriculum_id" name="edit_curriculum_id" {if isset($edit_curriculum_id)}value='{$edit_curriculum_id}'{/if}>
+                <p><label>Lehrplan-Name*: </label><input class='inputlarge' type='text' name='curriculum' id='curriculum' {if isset($curriculum)}value='{$curriculum}'{/if} /></p>   
+                {validate_msg field='curriculum'}
+                <p><label>Beschreibung*: </label><input class='inputlarge' type='description' name='description' {if isset($description)}value='{$description}'{/if}/></p>
+                {validate_msg field='description'}
+                <p><label>Fach: </label>
+                    <select class='inputlarge' name="subject">
+                    {section name=res loop=$subjects}  
+                    <option label={$subjects[res]->subject} value={$subjects[res]->id} {if $subject_id eq $subjects[res]->id}selected="selected"{/if}>{$subjects[res]->subject}</option>
+                    {/section}
+                    </select> 
+                </p>
+                {validate_msg field='subject'}
+                <p><label>Fach-Icon: </label>
+                    <select class='inputlarge' name="icon" onchange="showSubjectIcon('{$subjects_url}', this.options[this.selectedIndex].innerHTML);">
+                    {section name=res loop=$icons}  
+                    <option label={$icons[res]->title} value={$icons[res]->id} {if $icon_id eq $icons[res]->id}selected="selected"{/if}>{$icons[res]->filename}</option>
+                    {/section}
+                    </select> 
+                </p>
+                {validate_msg field='icon'}
+                <p><label>Klassenstufe: </label>
+                    <select class='inputlarge' name="grade">
+                    {section name=res loop=$grades}  
+                    <option label="{$grades[res]->grade}" value={$grades[res]->id} {if $grade_id eq $grades[res]->id}selected="selected"{/if}>{$grades[res]->grade}</option>
+                    {/section}
+                    </select> 
+                </p>
+                {validate_msg field='grade'}
+                <p><label>Schultyp: </label>
+                    <select class='inputlarge' name="schooltype">
+                    {section name=res loop=$schooltypes}  
+                    <option label={$schooltypes[res]->schooltype} value={$schooltypes[res]->id} {if $schooltype_id eq $schooltypes[res]->id}selected="selected"{/if}>{$schooltypes[res]->schooltype}</option>
+                    {/section}
+                    </select> 
+                </p>
+                {validate_msg field='schooltype'}
+                <p><label>Bundesland/Region: </label>
+                    <select name="state" class='inputlarge'>
+                        {section name=res loop=$states}  
+                            <option label={$states[res]->state} value={$states[res]->id} {if $state_id eq $states[res]->id}selected="selected"{/if}>{$states[res]->state}</option>
+                        {/section}
+                    </select>
+                {validate_msg field='state'}
+                <p><label>Land: </label>
+                    <select name="country" class='inputlarge'>
+                        {section name=res loop=$countries}  
+                            <option label={$countries[res]->de} value={$countries[res]->id} {if $state_id eq $countries[res]->id}selected="selected"{/if}>{$countries[res]->de}</option>
+                        {/section}
+                    </select>
+
+                {validate_msg field='countries'}
+
+                {if !isset($showeditCurriculumForm)}
+                    <p><label></label><input type='submit' name="back" value='zurück'/><input type='submit' name="add" value='Lehrplan hinzufügen' /></p>
+                {/if}
+                {if isset($showeditCurriculumForm)}
+                    <p><label></label><input type='submit' name="back" value='zurück'/><input type='submit' name="update" value='Lehrplan aktualisieren' /></p>
+                {/if}
+                </form>	
             {/if}
-            </form>	
         {/if}
         
         <form id='curriculumlist' method='post' action='index.php?action=curriculum&next={if isset($currentUrlId)}{$currentUrlId}{/if}'>
@@ -123,9 +125,21 @@
                     <td>{$results[res]->de}</td>
                     {if !isset($edit_form)}
                     <td class="td_options">{*<div class="editbtn"  onmouseup="document.getElementById('editCurriculum').click();""></div>*}
-                        <a class="deletebtn floatright" type="button" name="delete" onclick="deleteCurriculum({$results[res]->id})"></a>
-                        <a class="addbtn floatright" href="index.php?action=view&function=addObjectives&curriculum={$results[res]->id}"></a>
-                        <a class="editbtn floatright" href="index.php?action=curriculum&function=edit&edit_curriculum_id={$results[res]->id}"></a>
+                        {if checkCapabilities('curriculum:delete', $my_role_id, false)}
+                            <a class="deletebtn floatright" type="button" name="delete" onclick="deleteCurriculum({$results[res]->id})"></a>
+                        {else}
+                            <a class="deletebtn deactivatebtn floatright" type="button"></a>
+                        {/if}
+                        {if checkCapabilities('curriculum:addObjectives', $my_role_id, false)}
+                            <a class="addbtn floatright" href="index.php?action=view&function=addObjectives&curriculum={$results[res]->id}"></a>
+                        {else}
+                            <a class="addbtn deactivatebtn floatright" type="button"></a>
+                        {/if}   
+                        {if checkCapabilities('curriculum:update', $my_role_id, false)}
+                            <a class="editbtn floatright" href="index.php?action=curriculum&function=edit&edit_curriculum_id={$results[res]->id}"></a>
+                        {else}
+                            <a class="editbtn deactivatebtn floatright" type="button"></a>
+                        {/if} 
                     </td>
                     {/if}
                 </tr>

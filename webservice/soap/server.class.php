@@ -138,7 +138,7 @@ class Server {
                 WHERE cu.id = ce.curriculum_id 
                 AND ce.status = 1 AND gp.id = ce.group_id 
                 AND gp.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE user_id = 
-                                            (SELECT id FROM users WHERE username = ?))
+                                            (SELECT id FROM users WHERE username = ?) AND status = 1)
                 AND cu.icon_id = fl.id
                 ORDER BY gp.groups, cu.curriculum ASC');
         $db->execute(array($username));

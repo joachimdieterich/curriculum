@@ -22,7 +22,7 @@
 */
 global $USER, $TEMPLATE, $PAGE, $LOG;
 
-$TEMPLATE->assign('page_title', 'Log-Daten'); 
+$TEMPLATE->assign('page_title', 'Berichte'); 
 $LOG->add($USER->id, 'view', $PAGE->url, 'Log'); 
     
 if (checkCapabilities('menu:readLog', $USER->role_id)){

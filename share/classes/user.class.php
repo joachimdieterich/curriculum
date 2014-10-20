@@ -31,17 +31,17 @@ class User {
      * user id
      * @var int 
      */
-    public $id = null; 
+    public $id; 
     /**
      * username
      * @var string 
      */
-    public $username = null; 
+    public $username; 
     /**
      * password md5
      * @var string
      */
-    public $password = null;
+    public $password;
     /**
      * role id
      * @var int 
@@ -51,67 +51,67 @@ class User {
      * role name
      * @var string 
      */
-    public $role_name = null; 
+    public $role_name; 
     /**
      * timestamp of last login
      * @var timestamp
      */
-    public $last_login = null; 
+    public $last_login; 
     /**
      * last action 
      * @var timestamp
      */
-    public $last_action = null; 
+    public $last_action; 
     /**
      * email adress
      * @var string
      */
-    public $email = null; 
+    public $email; 
     /**
      * status
      * @var int 
      */
-    public $confirmed = null; 
+    public $confirmed; 
     /**
      * firstname
      * @var string 
      */
-    public $firstname = null; 
+    public $firstname; 
     /**
      * lastname
      * @var string 
      */
-    public $lastname = null; 
+    public $lastname; 
     /**
      * postalcode
      * @var string 
      */
-    public $postalcode = null; 
+    public $postalcode; 
     /**
      * city
      * @var string 
      */
-    public $city = null; 
+    public $city; 
     /**
      * state
      * @var string
      */
-    public $state = null; 
+    public $state; 
     /**
      * id of state
      * @var int
      */
-    public $state_id = null; 
+    public $state_id; 
     /**
      * country
      * @var string 
      */
-    public $country = null; 
+    public $country; 
     /**
      * id of country
      * @var type 
      */
-    public $country_id = null; 
+    public $country_id; 
     /**
      * filename of avatar
      * @var string
@@ -121,19 +121,22 @@ class User {
      * user language
      * @var string
      */
-    public $language = null; 
-    
-    public $semester = null; 
+    public $language; 
+    /**
+     * current user semester
+     * @var int 
+     */
+    public $semester; 
     /**
      * timestamp of creation
      * @var timestamp
      */
-    public $creation_time = null; 
+    public $creation_time; 
     /**
      * id of creator user
      * @var int
      */
-    public $creator_id = null; 
+    public $creator_id; 
     /**
      * Array of institutions
      * @var array 
@@ -153,12 +156,12 @@ class User {
      * token for authentication
      * @var string 
      */
-    public $token = null;
+    public $token;
     /**
      * percentage of curriculum completion
      * @var int 
      */
-    public $completed = null; 
+    public $completed; 
     
     /**
      * User class constructor
@@ -244,10 +247,12 @@ class User {
         /**
          * ! users can be enroled in more than one institution 
          */
-        $db = DB::prepare('SELECT id, institution FROM institution WHERE id = ANY (SELECT institution_id FROM institution_enrolments WHERE user_id = ?)');
+        $db = DB::prepare('SELECT id, institution FROM institution WHERE id = ANY (SELECT institution_id FROM institution_enrolments WHERE user_id = ? AND status = 1)');
         $db->execute(array($this->id));
         $result = $db->fetchObject();
+        
         if ($result){
+            unset($this->institutions); //da sonst bei session_reload_user() die Institutionen mehrfach erscheinen
             $this->institutions['id'][] = $result->id;
             $this->institutions['institution'][] = $result->institution;
         } else {
@@ -475,15 +480,36 @@ class User {
     
     /**
      * enrole user to institution
+     * @global object $USER
      * @param int $institution_id
      * @return boolean 
      */
     public function enroleToInstitution($institution_id){
         global $USER; 
         if(checkCapabilities('user:enroleToInstitution', $USER->role_id)){
-            $db = DB::prepare('INSERT INTO institution_enrolments (institution_id,user_id,creator_id) 
-                                        VALUES(?,?,?)');
-            return $db->execute(array($institution_id, $this->id, $this->creator_id));
+            $db = DB::prepare('SELECT count(id) FROM institution_enrolments WHERE institution_id = ? AND user_id = ?');
+            $db->execute(array($institution_id, $this->id));
+            if($db->fetchColumn() > 0) {
+                $db = DB::prepare('UPDATE institution_enrolments SET status = 1, creator_id = ? WHERE user_id = ? AND institution_id = ?');
+                 return $db->execute(array($USER->id, $this->id, $institution_id));
+            } else {
+                $db = DB::prepare('INSERT INTO institution_enrolments (institution_id,user_id,creator_id,status) VALUES(?,?,?,1)');
+                return $db->execute(array($institution_id, $this->id, $USER->creator_id));
+            }
+            
+        } 
+    }
+    /**
+     * expel user from institution
+     * @global object $USER
+     * @param int $institution_id
+     * @return boolean 
+     */
+    public function expelFromInstitution($institution_id){
+        global $USER; 
+        if(checkCapabilities('user:expelFromInstitution', $USER->role_id)){
+        $db = DB::prepare('UPDATE institution_enrolments SET status = 0, creator_id = ? WHERE user_id = ? AND institution_id = ?');
+        return $db->execute(array($USER->id, $this->id, $institution_id));
         } 
     }
     
@@ -536,7 +562,7 @@ class User {
      */
     public function import($institution_id, $import_file, $delimiter = ';'){
         global $CFG, $USER;
-        if(checkCapabilities('user:import', $USER->role_id)){
+        if(checkCapabilities('menu:readuserImport', $USER->role_id)){
             $row = 1;   //row counter
             ini_set("auto_detect_line_endings", true);
             if (($handle = fopen($import_file, "r")) !== FALSE) {
@@ -604,28 +630,28 @@ class User {
         global $CFG, $USER;
         if(checkCapabilities('user:userList', $USER->role_id)){
             switch ($dependency) {
-                case 'institution': /*if ($this->role_id == 3 OR $this->role_id == 2){ // 3 = Rolle Lehrer, 2 = Tutor //Bedingung Lehrer müssen in die Klasse eingeschrieben sein, oder sie erstellt haben    
+                case 'institution': if(checkCapabilities('user:userListComplete', $USER->role_id,false)){
                                         $db = DB::prepare('SELECT us.id FROM users AS us WHERE us.id = ANY (SELECT user_id FROM institution_enrolments 
                                                         WHERE institution_id = ANY (SELECT institution_id FROM institution_enrolments 
-                                                        WHERE user_id = ?)) AND us.creator_id = ? ORDER by us.lastname');
-                                        $db->execute(array($this->id, $this->id));
-                                    } else if ($this->role_id == 4 OR $this->role_id == 1){*/ //4 = Institutions-Admin, 1= sidewide Admin
+                                                        WHERE user_id = ? )) ORDER by us.lastname');
+                                    } else {
                                         $db = DB::prepare('SELECT us.id FROM users AS us WHERE us.id = ANY (SELECT user_id FROM institution_enrolments 
                                                         WHERE institution_id = ANY (SELECT institution_id FROM institution_enrolments 
-                                                        WHERE user_id = ?)) ORDER by us.lastname');
+                                                        WHERE user_id = ? ) AND status = 1) ORDER by us.lastname');
+                                        
+                                                        }
                                         $db->execute(array($this->id)); //Bisher werden nur Benutzer der Institution angezeigt, an der man angemeldet ist. todo: Side-Admin muss alle Benutzer sehen können 
-                                    //}
-                                    break;
+                                        break;
                 case 'group':       $db = DB::prepare('SELECT us.id FROM users AS us, groups_enrolments AS gre 
                                                         WHERE gre.user_id = us.id AND gre.status = 1 AND gre.group_id = ?');
                                     $db->execute(array($id)); 
                                     break;
-                case 'confirm':     if ($this->role_id == 1){
+                case 'confirm':     if (checkCapabilities('user:confirmUserSidewide', $USER->role_id, false)){
                                         $db = DB::prepare('SELECT us.id FROM users AS us WHERE us.confirmed = 4');
                                         $db->execute();
-                                    } else {
+                                    } else if (checkCapabilities('user:confirmUser', $USER->role_id, false)){
                                         $db = DB::prepare('SELECT us.id FROM users AS us, institution_enrolments AS ine
-                                        WHERE us.confirmed = 4 AND ine.user_id = us.id AND ine.institution_id IN (?)');
+                                        WHERE us.confirmed = 4 AND ine.user_id = us.id AND ine.status = 1 AND ine.institution_id IN (?)');
                                         $db->execute(array(implode(',',$this->institutions["id"])));
                                     }
                                     break; 
@@ -768,7 +794,7 @@ class User {
                                                     INNER JOIN groups_enrolments AS gr ON us.id = gr.user_id 
                                                     AND gr.group_id = ANY (SELECT group_id FROM curriculum_enrolments WHERE curriculum_id = ? AND status = 1 )
                                                     AND gr.group_id = ANY (SELECT id FROM groups WHERE institution_id = ANY 
-                                                    (SELECT institution_id FROM institution_enrolments WHERE user_id = ?))                                                       
+                                                    (SELECT institution_id FROM institution_enrolments WHERE user_id = ? AND status = 1))                                                       
                                                     ORDER by us.lastname');
                                 $db->execute(array($id, $this->id)); 
   
@@ -783,7 +809,7 @@ class User {
                 case 'institution':  $db = DB::prepare('SELECT DISTINCT us.* FROM users AS us
                                                     INNER JOIN groups_enrolments AS gr ON us.id = gr.user_id 
                                                     AND gr.group_id = ANY (SELECT id FROM groups WHERE institution_id = ANY 
-                                                    (SELECT institution_id FROM institution_enrolments WHERE user_id = ?))                                                       
+                                                    (SELECT institution_id FROM institution_enrolments WHERE user_id = ? AND status = 1))                                                       
                                                     ORDER by us.lastname');
                                 $db->execute(array($this->id)); 
   
@@ -824,7 +850,7 @@ class User {
                     break;
             case 'institution': 
                         $db = DB::prepare('SELECT COUNT(usr.id) FROM users AS usr, institution_enrolments AS ine
-                                        WHERE usr.confirmed = 4 AND usr.id = ine.user_id AND ine.institution_id IN (?)');
+                                        WHERE usr.confirmed = 4 AND usr.id = ine.user_id AND ine.institution_id IN (?) AND status = 1');
                         $db->execute(array(implode(',',$this->institutions["id"])));
                         $count = $db->fetchColumn();
                         if ($count > 0){

@@ -8,9 +8,9 @@
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
 {block name=content}
-    <div class=" border-radius gray-border">	
-    <div class="border-top-radius contentheader ">Fehler - "{$prev_page_name}" kann nicht aufgerufen werden</div>
-    <div class="space-top-padding gray-gradient border-bottom-radius box-shadow ">
+    <div>	
+    <div class="contentheader ">Fehler - "{$prev_page_name}" kann nicht aufgerufen werden</div>
+    <div>
         <p>{$curriculum_exception}</p>
     </div>
 {/block}

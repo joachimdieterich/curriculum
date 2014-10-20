@@ -28,17 +28,17 @@ class State extends Country {
      * states id
      * @var id 
      */
-    public $id = null; 
+    public $id; 
     /**
      * state name
      * @var string
      */
-    public $state = null; 
+    public $state; 
     /**
      * country code
      * @var string
      */
-    public $country_code = null; 
+    public $country_code; 
        
     /**
      * get states depending on country code
@@ -49,7 +49,9 @@ class State extends Country {
     public function getStates($dependency = null, $id = null) {
         switch ($dependency) {
             case null:      $db = DB::prepare('SELECT * FROM state WHERE country_code = ? ORDER BY state ASC');
-                            $db->execute(array(parent::$this->code));        
+                            
+                                $db->execute(array($this->code)); 
+                            
                             break;
             
             case 'profile': $db = DB::prepare('SELECT sta.* FROM state AS sta, countries AS cou 
@@ -68,9 +70,9 @@ class State extends Country {
         if (isset($states)){
             return $states;
         } else {
-            $this->id            = '-1';
+            $this->id            = '1';
             $this->state         = '---';
-            $this->country_code  = parent::$this->code;
+            $this->country_code  = $this->code;
             $states[] = clone $this;
             return  $states; 
         }

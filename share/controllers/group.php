@@ -75,6 +75,8 @@ if (isset($_GET['function'])) {
                 $TEMPLATE->assign('grade_id', '');
                 $TEMPLATE->assign('semester_id', '');
                 $TEMPLATE->assign('institution_id', '');
+                $institution = new Institution();
+                $TEMPLATE->assign('myInstitutions', $institution->getInstitutions('user', $USER->id));
                 //addLog($USER->id, 'view', curPageURL(), 'new_group_form'); //Addlog
             break;
         
@@ -121,22 +123,6 @@ if($_POST){
                                                 }        
                                             } 
             break;
-        /* Delete multiple groups - not supportet yet
-         * case isset($_POST['delete_group']): foreach ( $_POST['id'] as $check ) { 
-                                                if($check == "none") {
-                                                    if (count($_POST['id']) == 1){
-                                                    $PAGE->message[] = 'Es muss mindestens eine Lerngruppe ausgewählt werden!';
-                                                    }
-                                                } else {
-                                                    $group->id = $check;
-                                                    $group->load();
-                                                    if ($group->delete()){
-                                                        $PAGE->message[] = 'Lerngruppe <strong>('.$group->group.')</strong> wurde erfolgreich gelöscht!';
-                                                    }
-                                                } 
-                                            }
-         break; 
-         */
 
         case isset($_POST['add_group']):
         case isset($_POST['update_group']):
@@ -205,8 +191,11 @@ if($_POST){
  * @param int $check 
  */
 function loadeditFormData ($TEMPLATE, $check) {
+    global $USER;
     $TEMPLATE->assign('new_group_form', true);
     $TEMPLATE->assign('edit_group_form', true);
+    $institution = new Institution();
+    $TEMPLATE->assign('myInstitutions', $institution->getInstitutions('user', $USER->id));
     
     $group = new Group();
     $group->id = $check;
@@ -224,11 +213,9 @@ function loadeditFormData ($TEMPLATE, $check) {
 $TEMPLATE->assign('page_title', 'Lerngruppen verwalten');  
 
 //Load curricula
-if (checkCapabilities('groups:enrol', $USER->role_id)) {
-    $curricula = new Curriculum();
-    $result = $curricula->getCurricula('user', $USER->id); 
-    $TEMPLATE->assign('curriculum_list', $result);
-}
+$curricula = new Curriculum();
+$result = $curricula->getCurricula('user', $USER->id); 
+$TEMPLATE->assign('curriculum_list', $result);
 
 //Load Grades
 $grades = new Grade();

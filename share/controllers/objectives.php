@@ -36,7 +36,7 @@ $TEMPLATE->assign('selected_curriculum', $selected_curriculum);
 $TEMPLATE->assign('selected_user_id', $selected_user_id);
 list ($selected_curriculum, $selected_group) = explode('_', $selected_curriculum); //$selected_curriculum enthält curriculumid_groupid (zb. 32_24) wenn nur '_' gesetzt ist werden beide variabeln ''
 $TEMPLATE->assign('sel_curriculum', $selected_curriculum); //only selected curriculum without group
-$TEMPLATE->assign('sel_group_id', $selected_group); //only selected curriculum without group
+$TEMPLATE->assign('sel_group_id', $selected_group); //only selected group without curriculum
 if (isset($_POST['printCertificate'])){
     $pdf = new Pdf();
     $pdf->user_id = $_POST['sel_user_id'];
@@ -59,34 +59,55 @@ if (isset($_POST['printAllCertificate'])){
     $pdf->generate_pdf();
 }
  
-if ($selected_curriculum != '' AND $selected_user_id != '') {
-    $user = new User(); 
-    $user->load('id', $selected_user_id);
-    $TEMPLATE->assign('user', $user);
-    
-    $group = new Group();   
-    $TEMPLATE->assign('group', $group->getGroups('course', $selected_group));
-      
-    $terminal_objectives = new TerminalObjective();         //load terminal objectives
-    $TEMPLATE->assign('terminalObjectives', $terminal_objectives->getObjectives('curriculum', $selected_curriculum));
-    
-    $enabling_objectives = new EnablingObjective();         //load enabling objectives
-    $enabling_objectives->curriculum_id = $selected_curriculum;
-    $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('user', $selected_user_id));
-    
-    $show_course = true; // setzen
+if ($selected_curriculum != '' AND $selected_user_id != '' AND $selected_user_id != 'none') {
+    if ($selected_user_id == 'all'){
+        $TEMPLATE->assign('user', 'all');
+
+        $group = new Group();   
+        $TEMPLATE->assign('group', $group->getGroups('course', $selected_group));
+
+        $terminal_objectives = new TerminalObjective();         //load terminal objectives
+        $TEMPLATE->assign('terminalObjectives', $terminal_objectives->getObjectives('curriculum', $selected_curriculum));
+
+        $enabling_objectives = new EnablingObjective();         //load enabling objectives
+        $enabling_objectives->curriculum_id = $selected_curriculum;
+        $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('group', $selected_curriculum, $selected_group));
+
+        $show_course = true; // setzen
+    } else {
+        $user = new User(); 
+        $user->load('id', $selected_user_id);
+        $TEMPLATE->assign('user', $user);
+
+        $group = new Group();   
+        $TEMPLATE->assign('group', $group->getGroups('course', $selected_group));
+
+        $terminal_objectives = new TerminalObjective();         //load terminal objectives
+        $TEMPLATE->assign('terminalObjectives', $terminal_objectives->getObjectives('curriculum', $selected_curriculum));
+
+        $enabling_objectives = new EnablingObjective();         //load enabling objectives
+        $enabling_objectives->curriculum_id = $selected_curriculum;
+        $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('user', $selected_user_id));
+
+        $show_course = true; // setzen    
+    }
+        
 }    
 // load curriculum of actual user 
 if ($selected_curriculum != '') {    
     $course_user = new User();
     $course_user->id = $USER->id;
     $users = $course_user->getUsers('course', $selected_curriculum);
+    
     if (is_array($users)){
         $user_id_list = array_map(function($user) { return $user->id; }, $users); 
+        if ($selected_user_id == 'all'){
+            $TEMPLATE->assign('allUsers', $user_id_list);
+        }
         setPaginator('userPaginator', $TEMPLATE, $users, 'results', 'index.php?action=objectives&course='.$selected_curriculumforURL); //set Paginator    
         //User-Solutions laden
         $files = new File(); 
-        $TEMPLATE->assign('addedSolutions', $files->getSolutions('course', $selected_curriculum, $user_id_list)); 
+        $TEMPLATE->assign('addedSolutions', $files->getSolutions('course', $user_id_list, $selected_curriculum)); 
     } else {
         $showuser = true;
     }  
@@ -96,7 +117,6 @@ if ($selected_curriculum != '') {
  */    
 $TEMPLATE->assign('showuser', $showuser);
 $TEMPLATE->assign('show_course', $show_course);
-$TEMPLATE->assign('page_message', $PAGE->message);
 $TEMPLATE->assign('page_title', 'Lernstand eintragen');
 
 // Load courses

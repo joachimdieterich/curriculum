@@ -26,42 +26,42 @@ class Backup {
      * id of backup
      * @var int
      */
-    public $id              = null; 
+    public $id; 
     /**
      * path to backup file
      * @var string
      */
-    public $file_path       = null; 
+    public $file_path; 
     /**
      * filename of backup
      * @var string
      */
-    public $file_name       = null; 
+    public $file_name; 
     /**
      * id of curriculum
      * @var int
      */
-    public $curriculum_id   = null; 
+    public $curriculum_id; 
     /**
      * name of curriculum
      * @var string
      */
-    public $curriculum      = null;
+    public $curriculum;
     /**
      * user id of creator
      * @var int
      */
-    public $creator_id      = null; 
+    public $creator_id; 
     /**
      * username of creator
      * @var string
      */
-    public $creator         = null; 
+    public $creator; 
     /**
      * timestamp of file creation
      * @var timestamp
      */
-    public $creation_time   = null; 
+    public $creation_time; 
     
     
    /**
@@ -107,6 +107,7 @@ class Backup {
                                                                         FROM groups_enrolments AS gr, institution_enrolments AS ine
                                                                         WHERE ine.user_id = gr.user_id
                                                                         AND ine.institution_id IN (?)
+                                                                        AND ine.status = 1
                                                                         AND gr.user_id =  ?
                                                                         OR gr.creator_id =  ?) ORDER BY fb.id DESC');
                                 $db->execute(array(implode(',', $USER->institutions["id"]), $USER->id, $USER->id));                                            
@@ -136,6 +137,12 @@ class Backup {
         }
     }
     
+    /**
+     * delete backup 
+     * @global object $USER
+     * @param int $id
+     * @return boolean 
+     */
     public function delete($id = null){ //not used yet
         global $USER; 
         if (checkCapabilities('backup:deleteBackup', $USER->role_id)){ //check capability

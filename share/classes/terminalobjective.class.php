@@ -31,47 +31,47 @@ class TerminalObjective {
      * ID of terminal objective
      * @var int
      */
-    public $id = null;
+    public $id;
     /**
      * terminal objective
      * @var string 
      */
-    public $terminal_objective = null;
+    public $terminal_objective;
     /**
      * Description of terinal objective
      * @var string
      */
-    public $description = null; 
+    public $description; 
     /**
      * id of curriculum
      * @var int 
      */
-    public $curriculum_id = null; 
+    public $curriculum_id; 
     /**
      * Timestamp when Grade was created
      * @var timestamp
      */
-    public $creation_time = null; 
+    public $creation_time; 
     /**
      * ID of User who created this Grade
      * @var int
      */
-    public $creator_id = null; 
+    public $creator_id; 
     /**
      * repeat interval
      * @var int 
      */
-    public $repeat_interval = null;
+    public $repeat_interval;
     /**
      * Position of enabling_objective within curriculum
      * @var type 
      */
-    public $order_id = null; 
+    public $order_id; 
     /**
      * load enabling objectives of current terminal objective
      * @var array of objects
      */
-    public $enabling_objectives = null; 
+    public $enabling_objectives; 
 
     /**
      * add objective

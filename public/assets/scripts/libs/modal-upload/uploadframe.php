@@ -153,8 +153,8 @@ if (isset($_POST['Submit'])) {
                                                                 $mail->subject = $upload_user->firstname.' '.$upload_user->lastname.' ('.$upload_user->username.') hat eine Lösung eingereicht.';
                                                                 $mail->message = $upload_user->firstname.' '.$upload_user->lastname.' ('.$upload_user->username.') hat zum Lernziel: <br> "'.$enabling_objective->enabling_objective.'" folgende Lösung eingereicht:<br> 
                                                                     Link zur Lösung: <a href="'.$data_dir.'solutions/'.$extendUploadPath.''.str_replace(' ', '_', $my_upload->the_file).'"> Lösung öffnen...</a> <br> <br>
-                                                                    <p class=" pointer" onclick="setAccomplishedObjectivesBySolution('.$teachers[$i].', '.$upload_user->id.', '.$enabling_objective->id.', 1)">Ziel freischalten</p><br>
-                                                                    <p class=" pointer" onclick="setAccomplishedObjectivesBySolution('.$teachers[$i].', '.$upload_user->id.', '.$enabling_objective->id.', 0)">Ziel deaktivieren</p>'; 
+                                                                    <p class="pointer" onclick="setAccomplishedObjectivesBySolution('.$teachers[$i].', '.$upload_user->id.', '.$enabling_objective->id.', 1)">Ziel freischalten</p><br>
+                                                                    <p class="pointer" onclick="setAccomplishedObjectivesBySolution('.$teachers[$i].', '.$upload_user->id.', '.$enabling_objective->id.', 0)">Ziel deaktivieren</p>'; 
                                                                 $mail->postMail();
                                                             }
                                                         }
@@ -429,11 +429,11 @@ $(document).ready(function() {
 </head>
 <body id="uploadframe_body" name="Anker" >
 <div class="messageboxClose" onclick="self.parent.tb_remove();"></div>    
-<div id="uploadframe" class="border-top-radius contentheader">Datei hochladen</div>
-        <div id="fileupload" class="border-bottom-radius gray-gradient">
-            <div class="floatleft ">    
+<div id="uploadframe" class="contentheader">Dateiauswahl</div>
+        <div id="fileupload">
+            <div class="floatleft uploadframe_menu">    
             <nav>
-                <ul class="group"> <!-- Menu -->
+                <ul > <!-- Menu -->
                     <!--<li><p><?php echo 'test'.$multipleFiles; ?></p></li>-->
                     <?php if (checkCapabilities('file:upload', $upload_user->role_id, false)){ //don't throw exeption!?>
                     <li><p><a id="fileuplbtn" href="#Anker">Datei hochladen</a></p></li>
@@ -465,11 +465,10 @@ $(document).ready(function() {
                         <?php }?>
                 </ul>
                 <div id="div_FilePreview" style="display:none;">
-        <img id="img_FilePreview" class="border-radius gray-border" src="" alt="Vorschau">
-        </div>
+                    <img id="img_FilePreview" src="" alt="Vorschau">
+                </div>
             </nav>
-                
-            <div style="clear:both;"></div>    
+                <div style="clear:both;"></div>    
             </div>          
             
             <!--FileUpload div-->

@@ -82,7 +82,8 @@ if($_POST) {
         
 $TEMPLATE->assign('standardrole', $INSTITUTION->institution_standard_role);
 $TEMPLATE->assign('page_message', $PAGE->message);	
-
+$institution = new Institution();
+$TEMPLATE->assign('myInstitutions', $institution->getInstitutions('user', $USER->id));
 $country = new State(); 
 $countries = $country->getCountries();
 $TEMPLATE->assign('countries', $countries);

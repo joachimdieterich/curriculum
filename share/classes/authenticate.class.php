@@ -1,93 +1,92 @@
 <?php
-/**
- * This file is part of curriculum - http://www.joachimdieterich.de
- * 
- * @package core
- * @filename authenticate.class.php
- * @copyright 2013 Joachim Dieterich
- * @author Joachim Dieterich
- * @date 2013.07.18 17:45
- * @license 
- *
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License as published by  
- * the Free Software Foundation; either version 3 of the License, or     
- * (at your option) any later version.                                   
- *                                                                       
- * This program is distributed in the hope that it will be useful,       
- * but WITHOUT ANY WARRANTY; without even the implied warranty of        
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         
- * GNU General Public License for more details:                          
- *                                                                       
- * http://www.gnu.org/copyleft/gpl.html      
- */
+/** This file is part of curriculum - http://www.joachimdieterich.de
+* 
+* @package core
+* @filename authenticate.class.php
+* @copyright 2013 Joachim Dieterich
+* @author Joachim Dieterich
+* @date 2013.07.18 17:45
+* @license 
+*
+* This program is free software; you can redistribute it and/or modify 
+* it under the terms of the GNU General Public License as published by  
+* the Free Software Foundation; either version 3 of the License, or     
+* (at your option) any later version.                                   
+*                                                                       
+* This program is distributed in the hope that it will be useful,       
+* but WITHOUT ANY WARRANTY; without even the implied warranty of        
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         
+* GNU General Public License for more details:                          
+*                                                                       
+* http://www.gnu.org/copyleft/gpl.html      
+*/
 
 class Authenticate {
     /**
      * id
      * @var int
      */
-    public $id              = null;
+    public $id;
     /**
      * username
      * @var string 
      */
-    public $username        = null; 
+    public $username; 
     /**
      * password
      * @var string 
      */
-    public $password        = null; 
+    public $password; 
     /**
      * token
      * @var string
      */
-    public $token           = null; 
+    public $token; 
     /**
      * real ip of user (as int value)
      * @var int 
      */
-    public $ip              = null;
+    public $ip;
     /**
      * time of creation 
      * @var timestring
      */
-    public $creation_time   = null; 
+    public $creation_time; 
     /**
      * user id of creator
      * @var int
      */
-    public $creator_id      = null; 
+    public $creator_id; 
     /**
      * status id
      * @var int 
      */
-    public $status          = null; 
+    public $status; 
     /**
      * firstname 
      * @var string
      */
-    public $firstname       = null; 
+    public $firstname; 
     /**
      * lastname
      * @var string 
      */
-    public $lastname        = null; 
+    public $lastname; 
     /**
      * emailadress
      * @var string
      */
-    public $email           = null; 
+    public $email; 
     /**
      * user id on external plattform
      * @var int
      */
-    public $user_external_id = null; 
+    public $user_external_id; 
     /**
      * username of webservice user
      * @var string
      */
-    public $ws_username     = null;
+    public $ws_username;
  
     
     /**
@@ -129,6 +128,11 @@ class Authenticate {
            
     }
     
+    /**
+     * checks ip in db
+     * @param int $ip
+     * @return boolean 
+     */
     public function check($ip){
         $db = DB::prepare('SELECT ip FROM authenticate WHERE token = ? AND username = ?');
         $db->execute(array($this->token, $this->username));

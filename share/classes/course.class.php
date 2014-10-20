@@ -31,67 +31,67 @@ class Course {
      * combined id | curriculumID_groupID
      * @var string
      */
-    public $id = null;
+    public $id;
     /**
      * name of course
      * @var string
      */
-    public $course = null; 
+    public $course; 
     /**
      * semester id
      * @var int
      */
-    public $semester_id = null; 
+    public $semester_id; 
     /**
      * id of curriculum
      * @var int
      */
-    public $curriculum_id = null; 
+    public $curriculum_id; 
     /**
      * Name of curriculum
      * @var string
      */
-    public $curriculum = null; 
+    public $curriculum; 
     /**
      * Description of curriculum
      * @var string
      */
-    public $description = null; 
+    public $description; 
     /**
      * name of schooltype
      * @var string
      */
-    public $schooltype = null; 
+    public $schooltype; 
     /**
      * name of state
      * @var string
      */
-    public $state = null; 
+    public $state; 
     /**
      * name of country
      * @var type 
      */
-    public $country = null; 
+    public $country; 
     /**
      * name of group
      * @var string 
      */
-    public $group = null; 
+    public $group; 
     /**
      * name of grade
      * @var string
      */
-    public $grade = null; 
+    public $grade; 
     /**
      * name of subject
      * @var string
      */
-    public $subject = null; 
+    public $subject; 
     /**
      * filename of icon
      * @var string
      */
-    public $icon = null; 
+    public $icon; 
  
     /**
      * get courses depending on dependency
@@ -108,7 +108,7 @@ class Course {
                                             AND gp.id = ce.group_id
                                             AND ce.group_id = ANY (SELECT id FROM groups 
                                                                 WHERE institution_id = ANY (SELECT institution_id FROM institution_enrolments 
-                                                                                                WHERE user_id = ?))
+                                                                                                WHERE user_id = ? and status = 1))
                                             ORDER BY gp.groups, cu.curriculum ASC');
                             $db->execute(array($id));
                             while($result = $db->fetchObject()) { 
@@ -123,10 +123,10 @@ class Course {
                                 $course[] = clone $this;        //it has to be clone, to get the object and not the reference
                             }              
                             break; 
-            case 'teacher': $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, gp.groups, gp.semester_id
-                                            FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp
+            case 'teacher': $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, gp.groups, gp.semester_id, gp.id AS gpid, fl.filename
+                                            FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp, files AS fl
                                             WHERE cu.id = ce.curriculum_id
-                                            AND gp.id = ce.group_id
+                                            AND gp.id = ce.group_id AND cu.icon_id = fl.id
                                             AND ce.group_id = ANY(SELECT group_id
                                                     FROM groups_enrolments
                                                     WHERE user_id =  ?

@@ -31,7 +31,7 @@ global $USER, $PAGE, $TEMPLATE, $LOG;
   $cronjob = new Cron(); 
   
   /** Assign Institution / Schulen laden */
-  $TEMPLATE->assign('myInstitutions', $institution->getInstitutionsByUserID($USER->id));
+  $TEMPLATE->assign('myInstitutions', $institution->getInstitutions('user', $USER->id));
   $groups = new Group(); 
   $TEMPLATE->assign('myClasses', $groups->getGroups('user', $USER->id));
     
@@ -61,8 +61,16 @@ global $USER, $PAGE, $TEMPLATE, $LOG;
             $TEMPLATE->assign('cronjob', 'Es wurde zuletzt am '.$cronjob->creation_time.' geprüft, ob Ziele abgelaufen sind.<br>');//Check last Cronjob execution
         }  
   }
+if (checkCapabilities('menu:readMessages', $USER->role_id, false)){
+    $mail = new Mailbox();
+    $mail->loadNewMessages($USER->id);
+    if (isset($mail->inbox)){
+        foreach ($mail->inbox as $message) {
+            $PAGE->message[] = '<strong>Neue Mitteilung</strong><br>'.$message->subject;
+        }
+    }
+}
  
-  
 /** assign messages */
 if (isset($PAGE->message)){
     $TEMPLATE->assign('page_message', $PAGE->message);

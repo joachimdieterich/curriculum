@@ -9,9 +9,9 @@
 
 {block name=content}
     
-<div class=" border-radius gray-border">	
-    <div class="border-top-radius contentheader">{$page_title}</div>
-    <div class="space-top-padding gray-gradient border-bottom-radius box-shadow">
+<div class="border-box">
+    <div class="contentheader">{$page_title}</div>
+    <div>
     
     <form id='messages' method='post' action='index.php?action=messages'>  
     <input type='hidden' name='timestamp' value='{$timestamp}'/>  
@@ -68,7 +68,7 @@
         
      
   </div>
-        <div id="mailbox" ></div>   
+        <div id="mailbox"></div>   
     <p>&nbsp;</p>
     <p>&nbsp;</p>
     </form>  
@@ -103,7 +103,7 @@
         
      
   </div>
-        <div id="mailbox" ></div>   
+        <div id="mailbox">{*<textarea id="message_text" class="message_text"></textarea>*}</div>   
     <p>&nbsp;</p>
     <p>&nbsp;</p>
     </form>  

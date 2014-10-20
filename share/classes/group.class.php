@@ -31,62 +31,62 @@ class Group {
      * ID of Group
      * @var int
      */
-    public $id = null;
+    public $id;
     /**
      * Name of Group
      * @var string
      */
-    public $group = null; 
+    public $group; 
     /**
      * Description of Grade
      * @var string
      */
-    public $description = null; 
+    public $description; 
     /**
      * id of grade
      * @var int 
      */
-    public $grade_id = null; 
+    public $grade_id; 
     /**
      * name of grade
      * @var string
      */
-    public $grade = null; 
+    public $grade; 
     /**
      * id of semester
      * @var int
      */
-    public $semester_id = null; 
+    public $semester_id; 
     /**
      * name of semester
      * @var string
      */
-    public $semester = null; 
+    public $semester; 
     /**
      * ID of institution to which Grade belongs to
      * @var int
      */
-    public $institution_id = null; 
+    public $institution_id; 
     /**
      * name of institution
      * @var string
      */
-    public $institution = null; 
+    public $institution; 
     /**
      * Timestamp when Grade was created
      * @var timestamp
      */
-    public $creation_time = null; 
+    public $creation_time; 
     /**
      * ID of User who created this Grade
      * @var int
      */
-    public $creator_id = null; 
+    public $creator_id; 
     /**
      * name of creator
      * @var string
      */
-    public $creator = null;
+    public $creator;
    
     
     /**
@@ -128,18 +128,12 @@ class Group {
     }
     
     /**
-     * Delete group
-     * @return mixed 
+     *
+     * @global object $USER
+     * @param int $creator_id
+     * @return boolean 
      */
     public function delete($creator_id = null){
-        /*if ($creator_id != null) { // if function is called by request-php --> required by checkCapabilities()
-            $user = new USER();
-
-            $user->load('id', $creator_id);
-            $role_id = $user->role_id;
-        } else {
-            $role_id = $USER->role-id;
-        } */
         global $USER;
         if (checkCapabilities('groups:delete', $USER->role_id)){
             $db = DB::prepare('SELECT id FROM curriculum_enrolments WHERE group_id = ? AND status = 1');
@@ -250,8 +244,12 @@ class Group {
             }
         }
     }
+ 
     /**
      * Get all availible groups of current institution
+     * @global object $USER
+     * @param type $dependency
+     * @param type $id
      * @return array of groups objects 
      */
     public function getGroups($dependency = null, $id = null){
@@ -262,27 +260,14 @@ class Group {
                             $db->execute(array($id));
                 break;
 
-            case 'group':   /*if ($USER->role_id == 3 OR $USER->role_id == 2){ // 3 = Rolle Lehrer, 2 = Tutor //Bedingung Lehrer müssen in die Klasse eingeschrieben sein, oder sie erstellt haben    
-                            $db = DB::prepare('SELECT DISTINCT gp.*, gr.grade, yr.semester, ins.institution, us.username 
-                                FROM groups AS gp, groups_enrolments AS gpe, grade AS gr, semester AS yr, institution AS ins, users AS us
-                                WHERE gp.id = ANY (SELECT id FROM groups_enrolments 
-                                                                WHERE user_id = ? 
-                                                                OR creator_id = ?)
-                                AND gr.id = gp.grade_id 
-                                AND yr.id = gp.semester_id 
-                                AND ins.id = gp.institution_id 
-                                AND us.id = gp.creator_id');
-                            $db->execute(array($id,$id));
-                        } else if ($USER->role_id == 4 OR $USER->role_id == 1){*/
-                            $db = DB::prepare('SELECT gp.*, gr.grade, yr.semester, ins.institution, us.username 
+            case 'group':   $db = DB::prepare('SELECT gp.*, gr.grade, yr.semester, ins.institution, us.username 
                                 FROM groups AS gp, grade AS gr, semester AS yr, institution AS ins, users AS us
-                                WHERE gp.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE user_id = ?)
+                                WHERE gp.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE user_id = ? and status = 1)
                                 AND gr.id = gp.grade_id 
                                 AND yr.id = gp.semester_id 
                                 AND ins.id = gp.institution_id 
                                 AND us.id = gp.creator_id');
                             $db->execute(array($id));
-                        /*}*/
                  break;
             case 'user': $db = DB::prepare('SELECT gp.*, gr.grade, sem.semester, ins.institution AS institution_id, usr.username AS creator_id
                                                 FROM groups AS gp, semester AS sem, institution AS ins, users AS usr, grade AS gr

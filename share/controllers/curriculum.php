@@ -131,6 +131,7 @@ $TEMPLATE->assign('page_title', 'Lehrpläne verwalten');  //$Page Title
 
 //Load country 
 $countries = new State('DE'); 
+
 $TEMPLATE->assign('countries',      $countries->load($INSTITUTION->institution_standard_country));
 $TEMPLATE->assign('states',         $countries->getStates());
 

@@ -36,32 +36,32 @@ class Grade {
      * ID of Grade
      * @var int
      */
-    public $id = null;
+    public $id;
     /**
      * Name of Grade
      * @var string
      */
-    public $grade = null; 
+    public $grade; 
     /**
      * Description of Grade
      * @var string
      */
-    public $description = null; 
+    public $description; 
     /**
      * Timestamp when Grade was created
      * @var timestamp
      */
-    public $creation_time = null; 
+    public $creation_time; 
     /**
      * ID of User who created this Grade
      * @var int
      */
-    public $creator_id =null; 
+    public $creator_id; 
     /**
      * ID of institution to which Grade belongs to
      * @var int
      */
-    public $institution_id = null; 
+    public $institution_id; 
    
     
     /**
@@ -95,8 +95,10 @@ class Grade {
     }
     
     /**
-     * Delete grade
-     * @return mixed 
+     * delete grade
+     * @global object $USER
+     * @param int $creator_id
+     * @return boolean 
      */
     public function delete($creator_id = null){
         global $USER;

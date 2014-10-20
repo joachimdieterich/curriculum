@@ -28,37 +28,37 @@ class Schooltype {
      * id of Schooltype
      * @var int
      */
-    public $id = null;
+    public $id;
     /**
      * Name of schooltype
      * @var string
      */
-    public $schooltype = null; 
+    public $schooltype; 
     /**
      * Description of schooltype
      * @var string
      */
-    public $description = null; 
+    public $description; 
     /**
      * id of country
      * @var int 
      */
-    public $country_id = null; 
+    public $country_id; 
     /**
      * id of state
      * @var int 
      */
-    public $state_id = null; 
+    public $state_id; 
     /**
      * timestamp when schooltype was created
      * @var timestamp
      */
-    public $creation_time = null; 
+    public $creation_time; 
     /**
      * ID of User who created this schooltype
      * @var int
      */
-    public $creator_id =null; 
+    public $creator_id; 
 
    
     

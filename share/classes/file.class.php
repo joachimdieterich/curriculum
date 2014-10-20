@@ -28,89 +28,89 @@ class File {
      * id of file
      * @var int
      */
-    public $id = null;
+    public $id;
     /**
      * title of file
      * @var string 
      */
-    public $title = null;
+    public $title;
     /**
      * filename
      * @var string
      */
-    public $filename = null; 
+    public $filename; 
     /**
      * Description of file
      * @var string
      */
-    public $description = null; 
+    public $description; 
     /**
      * filetype
      * @var string 
      */
-    public $type = null; 
+    public $type; 
     /**
      * filepath
      * @var string 
      */
-    public $path = null; 
+    public $path; 
     /**
      * id of context
      * @var int 
      */
-    public $context_id = null; 
+    public $context_id; 
     /**
      * context depending path
      * @var string 
      */
-    public $context_path = null; 
+    public $context_path; 
     /**
      * timestamp when file was created
      * @var timestamp
      */
-    public $creation_time = null; 
+    public $creation_time; 
     /**
      * ID of User who created this file
      * @var int
      */
-    public $creator_id = null; 
+    public $creator_id; 
     /**
      * firstname of creator
      * @var string 
      */
-    public $firstname = null; 
+    public $firstname; 
     /**
      * lastname of creator
      * @var string 
      */
-    public $lastname = null;
+    public $lastname;
     /**
      * author of file 
      * @since 0.9
      * @var string
      */
-    public $author = null; 
+    public $author; 
         /**
      * licence
      * @since 0.9
      * @var string
      */
-    public $licence = null; 
+    public $licence; 
     /**
      * id of curriculum
      * @var int
      */
-    public $curriculum_id = null; 
+    public $curriculum_id; 
     /**
      * id of terminal objective
      * @var int
      */
-    public $terminal_objective_id = null; 
+    public $terminal_objective_id; 
     /**
      * id of enabling objective
      * @var int
      */
-    public $enabling_objective_id = null; 
+    public $enabling_objective_id; 
     
     /**
      * add file
@@ -220,7 +220,7 @@ class File {
      * @param inst $course_id
      * @param string $user_ids 
      */
-    public function getSolutions($dependency = null, $course_id = null, $user_ids = null){
+    public function getSolutions($dependency = null, $user_ids = null, $curriculum_id = null){
         global $USER;
         if (checkCapabilities('file:getSolutions', $USER->role_id, false)){
             switch ($dependency) {
@@ -230,8 +230,18 @@ class File {
                                 $db = DB::prepare('SELECT fl.*, us.firstname, us.lastname FROM files AS fl, users AS us
                                     WHERE fl.cur_id = ? AND fl.creator_id IN ('.$user_ids.')
                                     AND fl.creator_id = us.id AND fl.context_id = 4');
-                                $db->execute(array($course_id));  
+                                $db->execute(array($curriculum_id));  
                                 break;
+                                
+                case 'artefacts':  if (is_array($user_ids)){
+                                    $user_ids = implode(", ", $user_ids);
+                                }
+                                $db = DB::prepare('SELECT fl.*, us.firstname, us.lastname FROM files AS fl, users AS us
+                                    WHERE fl.creator_id IN ('.$user_ids.')
+                                    AND fl.creator_id = us.id');
+                                $db->execute();  
+                                break;
+                                
                 default:        break;
             }
             $files = array(); //Array of files
@@ -298,7 +308,7 @@ class File {
                                                         WHERE fl.creator_id = ? AND fl.context_id = ct.context_id');
                                 $db->execute(array($id));
                 break;
-            case 'enabling_objective': $db = DB::prepare('SELECT id FROM filesWHERE ena_id = ?');
+            case 'enabling_objective': $db = DB::prepare('SELECT id FROM files WHERE ena_id = ?');
                                 $db->execute(array($id));
                 break;
             default : break; 
