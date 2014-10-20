@@ -494,7 +494,7 @@ class User {
                  return $db->execute(array($USER->id, $this->id, $institution_id));
             } else {
                 $db = DB::prepare('INSERT INTO institution_enrolments (institution_id,user_id,creator_id,status) VALUES(?,?,?,1)');
-                return $db->execute(array($institution_id, $this->id, $USER->creator_id));
+                return $db->execute(array($institution_id, $this->id, $USER->id));
             }
             
         } 
