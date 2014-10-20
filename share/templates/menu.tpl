@@ -110,7 +110,7 @@
         <nav role="log" class="menu border-box">
             <ul class="group">
                 <li class="menuheader">Administration</li>
-                <li><p><a href="index.php?action=Log">Berichte</a></p></li>
+                <li><p><a href="index.php?action=log">Berichte</a></p></li>
             </ul>
         </nav> 
     {/if}
