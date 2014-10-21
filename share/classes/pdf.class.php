@@ -145,11 +145,11 @@ class Pdf {
                 
                 $logo_path = dirname(__FILE__).'/../../curriculumdata/userdata/102/logo.jpg';
                 $mpdf->WriteHTML('<div class="center"><img class="logo" src="'.$logo_path.'"/></div>', 2);
-                $mpdf->WriteHTML('<div class="center cleaner">Realschule Plus Landau | Schneiderstraße 69 | 76829 Landau</div>');
+                $mpdf->WriteHTML('<div class="center cleaner">Meine Institution | Hauptstraße 1 | 12345 Meine Stadt</div>');
                 $mpdf->WriteHTML('<h1>Zertifikat</h1>');
 
-                $mpdf->WriteHTML('<h2>MEDIENKOMP@SS</h2></br>Sekundarstufe I            
-                                <h3>'.$user->firstname.' '.$user->lastname.'</h3> </br>hat erfolgreich die folgenden Module des Medienkom@sses abgeschlossen. </p>',2);
+                $mpdf->WriteHTML('<h2>Mein Lehrplan</h2></br>            
+                                <h3>'.$user->firstname.' '.$user->lastname.'</h3> </br>hat erfolgreich die folgenden Ziele des Lehrplanes abgeschlossen. </p>',2);
                 $mpdf->WriteHTML('<p></p>',2);
                 $mpdf->WriteHTML('<p></p>',2);
                 foreach ($ter as $ter_value) {
@@ -169,7 +169,7 @@ class Pdf {
                 }
 
                 /* footer */
-                $mpdf->WriteHTML('<p>Landau, '.date("d.m.Y").'</p><p></p><div>__________________________________</div> <div>Joachim Dieterich</div>',2);
+                $mpdf->WriteHTML('<p>Meine Stadt, '.date("d.m.Y").'</p><p></p><div>__________________________________</div> <div>Mein Name</div>',2);
 
                 $mpdf->WriteHTML('</body></html>', 2);
                 $mpdf->Output('../curriculumdata/output/Zertifikat_'.$user->lastname.'_'.$user->firstname.'.pdf', 'F');
@@ -214,11 +214,11 @@ class Pdf {
             $logo_path = dirname(__FILE__).'/../../curriculumdata/userdata/102/logo.jpg';
             $mpdf->WriteHTML('<div class="center"><img class="logo" src="'.$logo_path.'"/></div>', 2);
             //$mpdf->WriteHTML('<div class="center"><img class="logo" src="http://localhost/curriculum/curriculumdata/userdata/102/logo.jpg"/></div>', 2);
-            $mpdf->WriteHTML('<div class="center cleaner">Realschule Plus Landau | Schneiderstraße 69 | 76829 Landau</div>');
+            $mpdf->WriteHTML('<div class="center cleaner">Meine Institution | Hauptstraße 1 | 12345 Meine Stadt</div>');
             $mpdf->WriteHTML('<h1>Zertifikat</h1>');
 
-            $mpdf->WriteHTML('<h2>MEDIENKOMP@SS</h2></br>Sekundarstufe I            
-                            <h3>'.$user->firstname.' '.$user->lastname.'</h3> </br>hat erfolgreich die folgenden Module des Medienkom@sses abgeschlossen. </p>',2);
+            $mpdf->WriteHTML('<h2>Mein Lehrplan</h2></br>        
+                            <h3>'.$user->firstname.' '.$user->lastname.'</h3> </br>hat erfolgreich die folgenden Ziele des Lehrplanes abgeschlossen. </p>',2);
             $mpdf->WriteHTML('<p></p>',2);
             $mpdf->WriteHTML('<p></p>',2);
             foreach ($ter as $ter_value) {
@@ -239,7 +239,7 @@ class Pdf {
             }
 
             /* footer */
-            $mpdf->WriteHTML('<p>Landau, '.date("d.m.Y").'</p><p></p><div>__________________________________</div> <div>Joachim Dieterich</div>',2);
+            $mpdf->WriteHTML('<p>Meine Stadt, '.date("d.m.Y").'</p><p></p><div>__________________________________</div> <div>Mein Name</div>',2);
 
 
             $mpdf->WriteHTML('</body></html>', 2);
