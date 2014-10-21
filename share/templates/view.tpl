@@ -11,7 +11,7 @@
 
 <div class="border-box">    
     {foreach key=curid name=curriculum item=con from=$course}
-    <div class="contentheader">Lehrplan: {$con->curriculum} (Klasse {$con->grade}: {$con->subject})</div>
+    <div class="contentheader">Lehrplan: {$con->curriculum} ({$con->grade}: {$con->subject})</div>
     
     <div><p>Beschreibung: {$con->description} ({$con->schooltype})</p>
          <p>Bundesland: {$con->state} ({$con->country})</p>

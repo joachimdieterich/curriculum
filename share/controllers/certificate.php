@@ -61,17 +61,17 @@ if ($selected_curriculum != '') {
 /*******************************************************************************
  * End POST / GET
  */
-$vorlage = '<p style="text-align: center;"><img src="../curriculumdata/userdata/102/logo.jpg" alt="" height="120" /></p>
+$vorlage = '<p style="text-align: center;"></p>
                 <div class="section">
                 <div class="section">
                 <div class="layoutArea">
                 <div class="column">
-                <p style="text-align: center;">Realschule Plus Landau | Schneiderstra&szlig;e 69 | 76829 Landau</p>
+                <p style="text-align: center;">Meine Institution | Hauptstraße 1 | 12345 Meine Stadt</p>
                 <h1 style="text-align: center;"><strong>Zertifikat</strong></h1>
-                <h2>MEDIENKOMP@SS</h2>
-                <p>Sekundarstufe I</p>
+                <h2>Mein Lehrplan</h2>
+                <p></p>
                 <h3>{Vorname} {Nachname}</h3>
-                <p>hat erfolgreich die folgenden Module des Medienkom@sses abgeschlossen.</p>
+                <p>hat erfolgreich die folgenden Ziele des Lehrplanes abgeschlossen.</p>
                 <!--Start-->
                 <table>
                 <tbody>
@@ -101,10 +101,10 @@ $vorlage = '<p style="text-align: center;"><img src="../curriculumdata/userdata/
                 </div>
                 <p></p>
                 <div class="column">
-                <p>Landau, {Datum}</p>
+                <p>Meine Stadt, {Datum}</p>
                 <p>&nbsp;</p>
                 <p>__________________________________</p>
-                <p>Joachim Dieterich</p>
+                <p>Mein Name</p>
                 </div>';
 $TEMPLATE->assign('certificate_html', $vorlage);
 

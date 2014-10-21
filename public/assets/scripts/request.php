@@ -112,6 +112,7 @@ if (isset($_GET['function'])){
                                       <div id="popupcontent">';
                                 if (!$files){
                                     echo 'Es gibt leider kein Material zum gewählten Lernziel.';
+                                    echo '<br><input type="submit" name="Submit" value="Fenster schließen" onclick="reloadPage()"/>';
                                 } else {
                                     for($i = 0; $i < count($files); $i++) { 
                                             echo '<form method="post" action="index.php?action=view&function=addObjectives">
