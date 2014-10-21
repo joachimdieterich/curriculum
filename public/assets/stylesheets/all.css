@@ -487,29 +487,36 @@ header {
     font-style:     normal;
     font-variant:   normal;
     font-weight:    normal;
-    height:         100px;
+    height:         60px;
     width:          100%;
     line-height:    16px;
     margin:         0px 0px 0px 0px;
-    padding:        0px 9px 0px 9px;
+    padding:        0px 0px 0px 0px;
     text-align:     left;
-    background: #013363 url(../images/basic/logo-big.png) left no-repeat;
+    background: #013363 url(../images/basic/logo.png)  15px 10px no-repeat;
 }
+header a, header .logininfo a, #app_title a{
+    color: #FFF;
+    text-decoration: none;
+}
+
+#app_title{
+    color: #FFF;
+    text-decoration: none;
+    font-family:    Arial, Helvetica, sans-serif;
+    font-size:      20px;
+    font-style:     normal;
+    font-weight:    bold;
+    float: left;
+    padding: 20px 0px 0px 65px;
+}
+
 .logininfo {
     color: #fff;
     margin: 0;
     float:right;
     font-size: 11px;
-    padding: 10px 10px 0px 0px;
-}
-
-#medienkompass_rlp {
-    float:none;
-    height: 81px;
-    width: 251px;
-    margin-right: 310px;
-    position: absolute;   
-    right: 0;
+    padding: 0px 10px 0px 0px;
 }
 
 .headermain {
@@ -527,11 +534,10 @@ header {
 
 .navbar {
     padding: 0;
-    
+    float: right; 
     border: none;
-    
     margin: 0;
-    padding-top: 8px;
+    
     clear: both;
 }
 
@@ -714,7 +720,7 @@ nav div > img {
 #content p {
     padding-left: 10px;
 }
-#content #contenttable {
+#content #contenttable {  
     width: 99%;
     font-size: 85%;
 }

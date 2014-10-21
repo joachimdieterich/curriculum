@@ -77,6 +77,7 @@ if ($_POST){
                                                     $TEMPLATE->assign('edit_form', true);
                                                 }
                                             } else {/* validation successful */
+                                                
                                                 if (isset($_POST['add'])){
                                                     $new_curriculum->add();
                                                 }

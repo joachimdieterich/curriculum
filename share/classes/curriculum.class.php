@@ -114,9 +114,11 @@ class Curriculum {
      */
     public function add(){
         global $USER;
+        
         if (checkCapabilities('curriculum:add', $USER->role_id)){
             $db = DB::prepare('INSERT INTO curriculum (curriculum, description, grade_id, subject_id, schooltype_id, state_id, icon_id, country_id, creator_id) 
                                                 VALUES (?,?,?,?,?,?,?,?,?)');
+            object_to_array($this);
             return $db->execute(array($this->curriculum, $this->description, $this->grade_id, $this->subject_id, $this->schooltype_id, $this->state_id, $this->icon_id, $this->country_id, $this->creator_id));
         }
     }
@@ -128,6 +130,7 @@ class Curriculum {
     public function update(){
         global $USER;
         if (checkCapabilities('curriculum:update', $USER->role_id)){
+            
             $db = DB::prepare('UPDATE curriculum 
                     SET curriculum = ?, description = ?, grade_id = ?, subject_id = ?, 
                     schooltype_id = ?, state_id = ?, icon_id = ?, country_id = ?, creator_id = ?
@@ -211,14 +214,18 @@ class Curriculum {
                             }
                 break; 
             case 'user':    $db = DB::prepare('SELECT DISTINCT cu.*, co.de, st.state, sc.schooltype, gr.grade, su.subject, fl.filename  
-                                            FROM curriculum AS cu, groups_enrolments AS ce, curriculum_enrolments AS cure, countries AS co, state AS st, schooltype AS sc, grade AS gr, subjects AS su, files AS fl
-                                            WHERE  cu.country_id = co.id AND cu.state_id = st.id 
+              FROM curriculum AS cu, groups_enrolments AS ce, curriculum_enrolments AS cure, countries AS co, state AS st, schooltype AS sc, grade AS gr, subjects AS su, files AS fl
+                                            WHERE  (cu.country_id = co.id AND cu.state_id = st.id 
+                                            AND cu.schooltype_id = sc.id AND cu.grade_id = gr.id 
+                                            AND cu.subject_id = su.id AND cu.icon_id = fl.id 
+                                            AND cu.creator_id = ? ) OR (
+                                            cu.country_id = co.id AND cu.state_id = st.id 
                                             AND cu.schooltype_id = sc.id AND cu.grade_id = gr.id 
                                             AND cu.subject_id = su.id AND cu.icon_id = fl.id 
                                             AND cu.id = cure.curriculum_id
                                             AND cure.group_id = ce.group_id
                                             AND ce.status = 1
-                                            AND (cu.creator_id = ? OR ce.user_id = ?)');
+                                            AND ce.user_id = ?)');
                             $db->execute(array($id, $id));
                             while($result = $db->fetchObject()) {
                                 $curriculum[] = $result; //result Data wird an setPaginator vergeben
