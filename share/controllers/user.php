@@ -115,6 +115,7 @@ if (isset($_POST)){
                                         $groups->id = $_POST['groups']; 
                                         $groups->load();
                                         $PAGE->message[] = 'Nutzer <strong>'.$edit_user->username.'</strong> erfolgreich in <strong>'.$groups->group.'</strong> eingeschrieben.';  
+
                                     }
                     break; 
                 case isset($_POST['expelGroups']):
@@ -144,6 +145,7 @@ if (isset($_POST)){
         }
     }
 }
+session_reload_user(); // --> get the changes immediately 
 }
 /*******************************************************************************
  * END POST / GET

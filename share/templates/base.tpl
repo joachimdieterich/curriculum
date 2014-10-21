@@ -31,12 +31,15 @@
         <div id="page">
             <div class="{$page_name}">
                 <header id="header" class="clearfix">
+                   <div id="app_title"><a href="index.php?action=dashboard">{$app_title}</a></div>
                    <div class="logininfo">
                         {if $my_username eq ''} Sie sind nicht angemeldet. 
                     {else} 
                         {if $my_role_id != -1}({$stat_users_Online} User online) | Sie sind als <strong>{$my_username}</strong> ({$my_role_name}) angemeldet. <a href="index.php?action=logout">Logout</a>{/if}
                     {/if}
+                    
                     </div>
+                    
                     <div class="navbar clearfix">
                         <div class="breadcrumb_left"></div>
                         <div class="breadcrumb_right">

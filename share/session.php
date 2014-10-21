@@ -59,6 +59,9 @@ function session_reload_user(){
     $_SESSION['USER'] =& $USER;
     //$USER->load('username', $_SESSION['username'], true);                               //Get $USER Object //Über DB funktion realisieren
     
+    $semester = new Semester();
+    $_SESSION['SEMESTER'] = $semester->getMySemesters($USER->id);
+    
     foreach($USER as $key => $value){
     $TEMPLATE->assign('my_'.$key, $value);
     }
