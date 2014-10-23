@@ -159,8 +159,20 @@ class Portfolio {
         $files      = $this->getFiles($USER->id);
         
         
-        $result_merged = array_merge($enabling,$files);                         //merge Data into one array
-        $result = PHPArrayObjectSorter($result_merged, 'creation_time', 'desc');//sort array
+        if (is_array($enabling) AND is_array($files)){
+            $result_merged = array_merge($enabling,$files); 
+            $result = PHPArrayObjectSorter($result_merged, 'creation_time', 'desc');//sort array//merge Data into one array
+        } else {
+            if (is_array($enabling)){
+                $result = PHPArrayObjectSorter($enabling, 'creation_time', 'desc');//sort array//merge Data into one array
+            }
+            if (is_array($files)){
+                $result = PHPArrayObjectSorter($files, 'creation_time', 'desc');//sort array//merge Data into one array
+            }
+            // if only one array is set
+            
+        } 
+        
         
         if (isset($result)){
         } else {
