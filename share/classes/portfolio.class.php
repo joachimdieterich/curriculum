@@ -150,20 +150,17 @@ class Portfolio {
      */
     public $files; 
     
-    public $artefacts = array();
     public $artefact_type; 
     
    
     public function getArtefacts (){
         global $USER;
-        $this->getLastEnablingObjectives($USER);
-        $enabling = $this->artefacts;
-        $this->getFiles($USER->id);
-        $files = $this->artefacts;
+        $enabling   = $this->getLastEnablingObjectives($USER);
+        $files      = $this->getFiles($USER->id);
         
-        $result_merged = array_merge($enabling,$files);
         
-        $result = PHPArrayObjectSorter($result_merged, 'creation_time', 'desc');
+        $result_merged = array_merge($enabling,$files);                         //merge Data into one array
+        $result = PHPArrayObjectSorter($result_merged, 'creation_time', 'desc');//sort array
         
         if (isset($result)){
         } else {
@@ -183,7 +180,7 @@ class Portfolio {
                         FROM enablingObjectives AS ena, user_accomplished AS usa, curriculum AS cur, users AS us
                         WHERE ena.id = usa.enabling_objectives_id
                         AND us.id = usa.user_id
-                        AND ena.curriculum_id = cur.id AND usa.user_id = ? AND usa.status_id = 1
+                        AND ena.curriculum_id = cur.id AND usa.user_id = ? AND usa.status_id = 1 
                         ');
         $db->execute(array($user->id));
         while($result = $db->fetchObject()) { 
@@ -197,9 +194,15 @@ class Portfolio {
             $this->accomplished_status_id  = $result->status_id;   
             $this->accomplished_time       = $result->accomplished_time;   
             $this->accomplished_teacher_id = $result->teacher_id;   
-            $this->accomplished_teacher = $result->firstname.' '.$result->lastname;   
-            $this->artefacts[]                  = clone $this; 
+            $db = DB::prepare('SELECT firstname, lastname FROM users WHERE id = ?');
+            $db->execute(array($this->accomplished_teacher_id));
+            $teacher = $db->fetchObject();
+            $this->accomplished_teacher = $teacher->firstname.' '.$teacher->lastname;   
+            $artefacts[]                  =  clone $this; 
         }
+        if (isset($artefacts)) {    
+            return $artefacts;
+        } else {return NULL;}  
     }
     
     
@@ -241,9 +244,11 @@ class Portfolio {
             $this->creator_id            = $result->creator_id;
             $this->creator               = $result->firstname.' '.$result->lastname;
             
-            $this->artefacts[] = clone $this;        //it has to be clone, to get the object and not the reference
+            $artefacts[] = clone $this;        //it has to be clone, to get the object and not the reference
         } 
-        
+        if (isset($artefacts)) {    
+            return $artefacts;
+        } else {return NULL;}  
     }
  
     

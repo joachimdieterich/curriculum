@@ -109,15 +109,15 @@
     <p><h3>{$str_manuals}</h3></p>
     <p>&nbsp;</p>
     {if checkCapabilities('page:showAdminDocu', $my_role_id, false)}
-    <p><a class="pdf_btn floatleft" href="{$support_url}http://www.joachimdieterich.de/curriculum_supportfiles/documentation/doc_curriculum_joachimdieterich.de-Admin.pdf"></a> {$str_manuals_institution}</p>
+    <p><a class="pdf_btn floatleft" href="http://www.joachimdieterich.de/curriculum_supportfiles/documentation/doc_curriculum_joachimdieterich.de-Admin.pdf"></a> {$str_manuals_institution}</p>
     <p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p>
     {/if}
     {if checkCapabilities('page:showTeacherDocu', $my_role_id, false)}
-    <p><a class="pdf_btn floatleft" href="{$support_url}http://www.joachimdieterich.de/curriculum_supportfiles/documentation/doc_curriculum_joachimdieterich.de-Teacher.pdf"></a> {$str_manuals_teacher}</p>
+    <p><a class="pdf_btn floatleft" href="http://www.joachimdieterich.de/curriculum_supportfiles/documentation/doc_curriculum_joachimdieterich.de-Teacher.pdf"></a> {$str_manuals_teacher}</p>
     <p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p>
     {/if}
     {if checkCapabilities('page:showStudentDocu', $my_role_id, false)}
-    <p><a class="pdf_btn floatleft" href="{$support_url}http://www.joachimdieterich.de/curriculum_supportfiles/documentation/doc_curriculum_joachimdieterich.de-Student.pdf"></a> {$str_manuals_student}</p>
+    <p><a class="pdf_btn floatleft" href="http://www.joachimdieterich.de/curriculum_supportfiles/documentation/doc_curriculum_joachimdieterich.de-Student.pdf"></a> {$str_manuals_student}</p>
     <p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p>
     {/if}
     </div>

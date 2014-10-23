@@ -92,7 +92,7 @@
         {section name=mail loop=$inbox}
             <tr class="{if $inbox[mail]->status eq 0}mailnew{/if} contenttablerow " id="inbox_{$inbox[mail]->id}" onclick="loadmail({$inbox[mail]->id},'inbox')">
                 <td><input class="invisible" type="checkbox" id="{$inbox[mail]->id}" name="id[]" value={$inbox[mail]->id} /></td>
-                <td class="mailcontenttable mailborder"><p class="mailheader floatleft">{$inbox[mail]->sender_username} ({$inbox[mail]->sender_firstname} {$inbox[mail]->sender_lastname})</p>
+                <td class="mailcontenttable mailborder"><p class="mailheader ">{$inbox[mail]->sender_username} ({$inbox[mail]->sender_firstname} {$inbox[mail]->sender_lastname})</p>
                     <p class="floatright">{$inbox[mail]->creation_time}</p><br>
                          {$inbox[mail]->subject|truncate:70:"...":true}</td>
             </tr>

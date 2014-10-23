@@ -569,7 +569,7 @@ text-align: center;
 .menu {
     margin: 10px 10px 10px 10px;
     padding: 0px 0px 10px 0px;
-    width: 210px;
+    width: 209px;
 }
 
 #page-footer {
@@ -720,8 +720,9 @@ nav div > img {
 #content p {
     padding-left: 10px;
 }
-#content #contenttable {  
-    width: 99%;
+#content #contenttable {
+    
+    width: 100%;
     font-size: 85%;
 }
 /* messager.tpl */
