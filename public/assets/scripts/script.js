@@ -114,7 +114,6 @@ function deleteObjective() {
         req = XMLobject();
         if(req) {        
             req.onreadystatechange = answer; //Dialog mit Meldungen zeigen
-            req.onreadystatechange = reloadPage; //window.location.reload() wichtig!
             req.open("GET", url, true);
             req.send(null);
         }

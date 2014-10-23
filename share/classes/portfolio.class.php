@@ -184,8 +184,8 @@ class Portfolio {
                         WHERE ena.id = usa.enabling_objectives_id
                         AND us.id = usa.user_id
                         AND ena.curriculum_id = cur.id AND usa.user_id = ? AND usa.status_id = 1
-                        AND usa.accomplished_time > DATE_SUB(now(), INTERVAL ? DAY)');
-        $db->execute(array($user->id, $user->acc_days));
+                        ');
+        $db->execute(array($user->id));
         while($result = $db->fetchObject()) { 
             $this->artefact_type           = 1; // 1 = enabling objective
             $this->id                      = $result->id;
