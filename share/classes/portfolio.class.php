@@ -169,10 +169,8 @@ class Portfolio {
             if (is_array($files)){
                 $result = PHPArrayObjectSorter($files, 'creation_time', 'desc');//sort array//merge Data into one array
             }
-            // if only one array is set
             
         } 
-        
         
         if (isset($result)){
         } else {
