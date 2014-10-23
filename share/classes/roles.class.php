@@ -126,7 +126,7 @@ class Roles {
      * Delete role
      * @return mixed 
      */
-    public function delete($creator_id = null){
+    public function delete(){
         global $USER;
         if (checkCapabilities('role:delete', $USER->role_id)){
             $db = DB::prepare('DELETE FROM user_roles WHERE role_id = ?');

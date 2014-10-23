@@ -228,16 +228,9 @@ if (isset($_GET['function'])){
 
                                 if ($terObjExists == false && $curEnrExists == false){ //nur löschen, wenn keine Ziele existieren
                                     $curriculum->delete();
-                                    echo '<div class="contentheader">Information</div>
-                                            <div id="popupcontent">
-                                            <p>Lehrplan wurde erfolgreich gelöscht.</p>
-                                            <p><label></label><input type="submit" value="OK" onclick="reloadPage()"></p>
-                                            </div>';
+                                    renderDeleteMessage('Lehrplan wurde erfolgreich gelöscht.'); //Rendert das Popupfenster
                                 } else {
-                                    echo '<div class="contentheader">Warnung</div>
-                                            <div id="popupcontent">
-                                            <p>Lehrplan kann nicht gelöscht werden. Es müssen zuerst alle Themen bzw. Einschreibungen im Lehrplan gelöscht werden.</p>
-                                            </div>';
+                                    renderDeleteMessage('Lehrplan kann nicht gelöscht werden. Es müssen zuerst alle Themen bzw. Einschreibungen im Lehrplan gelöscht werden..'); //Rendert das Popupfenster
                                     }
                                 break; 
                             
@@ -248,10 +241,7 @@ if (isset($_GET['function'])){
                                         $terminal_objective->id = $_GET['terminalObjectiveID'];
                                         $result = $terminal_objective->delete();    
                                     } else {
-                                        echo '<div class="contentheader">Warnung</div>
-                                              <div id="popupcontent">
-                                              <p>Thema kann nicht gelöscht werden. Es müssen zuerst alle Ziele des Themas gelöscht werden.</p>
-                                              </div>';
+                                        renderDeleteMessage('Thema kann nicht gelöscht werden. Es müssen zuerst alle Ziele des Themas gelöscht werden.'); //Rendert das Popupfenster
                                         }                                   
                                 } else { // delete enabling objective
                                     $file = new File(); 
@@ -259,10 +249,7 @@ if (isset($_GET['function'])){
                                     $enabling_objective->id = $_GET['enablingObjectiveID'];
                                     $result = $enabling_objective->delete();
                                     } else {
-                                        echo '<div class="contentheader">Warnung</div>
-                                              <div id="popupcontent">
-                                              <p>Ziel kann nicht gelöscht werden. Es müssen zuerst die verknüpften Materialien und Abgaben gelöscht werden</p>      
-                                              </div>';
+                                        renderDeleteMessage('Ziel kann nicht gelöscht werden. Es müssen zuerst die verknüpften Materialien und Abgaben gelöscht werden.'); //Rendert das Popupfenster
                                          }
                                 }
                                 break;                       
