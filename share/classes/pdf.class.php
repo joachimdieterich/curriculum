@@ -69,9 +69,9 @@ class Pdf {
         $user->load('id', $this->user_id);
         
         //Textblöcke ersetzen
-        $this->content = str_replace("{Vorname}", $user->firstname, $this->content);
-        $this->content = str_replace("{Nachname}", $user->lastname, $this->content);
-        $this->content = str_replace("{Datum}", date("d.m.Y"), $this->content);
+        $this->content = str_replace("<!--Vorname-->", $user->firstname, $this->content);
+        $this->content = str_replace("<!--Nachname-->", $user->lastname, $this->content);
+        $this->content = str_replace("<!--Datum}", date("d.m.Y"), $this->content);
         
         $start = stripos($this->content, "<!--Start-->");
         $end = stripos($this->content, "<!--Ende-->");
@@ -89,25 +89,25 @@ class Pdf {
         $o_1 = substr($s_2, 0, $start);
         $o_2 = substr($s_2, $start, $end-$start);
         $o_3 = substr($s_2, $end);
-        $o_2 = str_replace("{Ziel_Start}", '', $o_2);
-        $o_2 = str_replace("{Ziel_Ende}", '', $o_2);
-        $o_3 = str_replace("{Ziel_Ende}", '', $o_3);
+        $o_2 = str_replace("<!--Ziel_Start-->", '', $o_2);
+        $o_2 = str_replace("<!--Ziel_Ende-->", '', $o_2);
+        $o_3 = str_replace("<!--Ziel_Ende-->", '', $o_3);
         $mpdf->WriteHTML($s_1, 2);
         
         foreach ($ter as $ter_value) {
             $t = $o_1;
-            $t = str_replace("{Thema}", $ter_value->terminal_objective, $t);
+            $t = str_replace("<!--Thema-->", $ter_value->terminal_objective, $t);
             $mpdf->WriteHTML($t, 2);
             foreach ($ena as $ena_value) {
                 if ($ter_value->id == $ena_value->terminal_objective_id){
                     $e = $o_2;
-                    $e = str_replace("{Ziel}", $ena_value->enabling_objective, $e);
+                    $e = str_replace("<!--Ziel-->", $ena_value->enabling_objective, $e);
                     if ($ena_value->accomplished_status_id == 1){
-                        $e = str_replace("{Ziel_erreicht}", 'x', $e);
-                        $e = str_replace("{Ziel_offen}", '', $e);
+                        $e = str_replace("<!--Ziel_erreicht-->", 'x', $e);
+                        $e = str_replace("<!--Ziel_offen-->", '', $e);
                    } else {
-                        $e = str_replace("{Ziel_erreicht}", '', $e);
-                        $e = str_replace("{Ziel_offen}", 'x', $e);
+                        $e = str_replace("<!--Ziel_erreicht-->", '', $e);
+                        $e = str_replace("<!--Ziel_offen-->", 'x', $e);
                    }  
                    $mpdf->WriteHTML($e, 2);
                 }
@@ -210,10 +210,8 @@ class Pdf {
             $user->load('id', $this->user_id);
             $mpdf->WriteHTML('<html><body>', 2);
 
-            //$mpdf->WriteHTML('<div><img class="logo floatleft" src="http://localhost/curriculum/public/assets/images/basic/background.png"/>
             $logo_path = dirname(__FILE__).'/../../curriculumdata/userdata/102/logo.jpg';
             $mpdf->WriteHTML('<div class="center"><img class="logo" src="'.$logo_path.'"/></div>', 2);
-            //$mpdf->WriteHTML('<div class="center"><img class="logo" src="http://localhost/curriculum/curriculumdata/userdata/102/logo.jpg"/></div>', 2);
             $mpdf->WriteHTML('<div class="center cleaner">Meine Institution | Hauptstraße 1 | 12345 Meine Stadt</div>');
             $mpdf->WriteHTML('<h1>Zertifikat</h1>');
 

@@ -70,7 +70,7 @@ $vorlage = '<p style="text-align: center;"></p>
                 <h1 style="text-align: center;"><strong>Zertifikat</strong></h1>
                 <h2>Mein Lehrplan</h2>
                 <p></p>
-                <h3>{Vorname} {Nachname}</h3>
+                <h3><!--Vorname--> <!--Nachname--></h3>
                 <p>hat erfolgreich die folgenden Ziele des Lehrplanes abgeschlossen.</p>
                 <!--Start-->
                 <table>
@@ -81,15 +81,15 @@ $vorlage = '<p style="text-align: center;"></p>
                 <td>selbstst&auml;ndig</td>
                 </tr>
                 <tr>
-                <td>{Thema}</td>
+                <td><!--Thema--></td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 </tr>
                 <!--Ziel_Start-->
                 <tr>
-                <td>{Ziel}</td>
-                <td>{Ziel_erreicht}</td>
-                <td>{Ziel_offen}</td>
+                <td><!--Ziel--></td>
+                <td><!--Ziel_erreicht--></td>
+                <td><!--Ziel_offen--></td>
                 </tr>
                 <!--Ziel_Ende-->
                 </tbody>
@@ -101,7 +101,7 @@ $vorlage = '<p style="text-align: center;"></p>
                 </div>
                 <p></p>
                 <div class="column">
-                <p>Meine Stadt, {Datum}</p>
+                <p>Meine Stadt, <!--Datum--></p>
                 <p>&nbsp;</p>
                 <p>__________________________________</p>
                 <p>Mein Name</p>

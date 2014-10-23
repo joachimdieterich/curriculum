@@ -31,7 +31,7 @@ if (isset($_POST)){
 
 $artefacts = new Portfolio();
 $TEMPLATE->assign('artefact', $artefacts->getArtefacts()); 
-
+//object_to_array($artefacts->getArtefacts());
 $TEMPLATE->assign('page_message', $PAGE->message);
 $TEMPLATE->assign('page_title', 'Mein Portfolio');   
 
