@@ -36,13 +36,13 @@ if($_POST) {
             $new_user->email            = $_POST['email'];
             $new_user->postalcode       = $_POST['postalcode'];
             $new_user->city             = $_POST['city'];
-            $new_user->state_id            = $_POST['state'];
-            $new_user->country_id          = $_POST['country'];
+            $new_user->state_id         = $_POST['state'];
+            $new_user->country_id       = $_POST['country'];
             $new_user->password         = $_POST['password'];
-            $new_user->avatar           = "noprofile.jpg";
+            $new_user->avatar_id        = '';
             if ($_POST['avatar']) {
-                if (file_exists($CFG->avatar_url.''.$_POST['avatar'])){
-                    $new_user->avatar       = $_POST['avatar'];
+                if (file_exists($CFG->avatar_url.''.$_POST['avatar_id'])){
+                    $new_user->avatar_id= $_POST['avatar_id'];
                 } 
             }
             if (isset($_POST['confirmed'])) {

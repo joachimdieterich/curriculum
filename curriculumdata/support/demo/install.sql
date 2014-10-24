@@ -1678,7 +1678,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `city` text,
   `state_id` text,
   `country_id` text,
-  `avatar` text,
+  `avatar_id` int(11) DEFAULT '',
   `creation_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `creator_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
@@ -1705,11 +1705,11 @@ CREATE TABLE IF NOT EXISTS `user_accomplished` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur fÃ¼r Tabelle `user_roles`
+-- Tabellenstruktur fÃ¼r Tabelle `roles`
 --
 
-DROP TABLE IF EXISTS `user_roles`;
-CREATE TABLE IF NOT EXISTS `user_roles` (
+DROP TABLE IF EXISTS `roles`;
+CREATE TABLE IF NOT EXISTS `roles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `role_id` int(11) NOT NULL DEFAULT '0',
   `role` varchar(250) DEFAULT NULL,
@@ -1720,11 +1720,11 @@ CREATE TABLE IF NOT EXISTS `user_roles` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
 
 --
--- Daten fÃ¼r Tabelle `user_roles`
+-- Daten fÃ¼r Tabelle `roles`
 --
 
 
-INSERT INTO `user_roles` (`id`, `role_id`, `role`, `description`, `creation_time`, `creator_id`) VALUES
+INSERT INTO `roles` (`id`, `role_id`, `role`, `description`, `creation_time`, `creator_id`) VALUES
 (1, 0, 'Student', 'Benutzer hat nur Leserechte', '2013-08-09 07:06:00', 102),
 (2, 1, 'Administrator', 'Benutzer hat alle Rechte', '2013-08-09 07:06:00', 102),
 (3, 2, 'Tutor', 'Benutzer darf Kompetenzraster bearbeiten', '2013-08-09 07:06:00', 102),

@@ -16,7 +16,7 @@
     <p>Nutzerkonten per CSV-Datei hochladen.</p>
     <p>&nbsp;</p>
     <p>Die CSV-Datei muss folgendes Format haben:</p>
-    <p>- Die ersten Zeile muss die Schlüsselwerte enthalten (z.B.:username, password, firstname, lastname, email, role_id, confirmed, postalcode, city, state, country, (avatar))</p>
+    <p>- Die ersten Zeile muss die Schlüsselwerte enthalten (z.B.:username, password, firstname, lastname, email, role_id, confirmed, postalcode, city, state, country)</p>
     <p>- Die Schüsselwerte <strong>username, password, firstname, lastname </strong>und <strong>email</strong> müssen gesetzt werden. </p>
     <p>- Wird keine Benutzer-Rolle festgelegt (role_id) wird die Standard-Rolle der Institution verwendet.</p>
     <p>- Die maximale Dateigröße liegt bei {$filesize}MB und kann im Adminstrationsbereich festgelegt werden.</p>

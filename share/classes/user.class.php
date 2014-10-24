@@ -113,10 +113,15 @@ class User {
      */
     public $country_id; 
     /**
+     * id of avatar
+     * @var int
+     */
+    public $avatar_id; 
+    /**
      * filename of avatar
      * @var string
      */
-    public $avatar = 'noprofile.jpg'; 
+    public $avatar; 
     /**
      * user language
      * @var string
@@ -216,7 +221,15 @@ class User {
         $this->confirmed         = $result->confirmed; 
         $this->last_login        = $result->last_login; 
         $this->role_id           = $result->role_id; 
-        $this->avatar            = $result->avatar;
+        $this->avatar_id         = $result->avatar_id;
+        $db = DB::prepare('SELECT path, filename FROM files WHERE id = ?');
+        $db->execute(array($result->avatar_id));
+        $result_avatar = $db->fetchObject();
+        if (is_object($result_avatar)){
+            $this->avatar         = $result->id.'/'.$result_avatar->filename;
+        } else {
+            $this->avatar = 'noprofile.jpg';
+        }
         $this->creation_time     = $result->creation_time;
         $this->creator_id        = $result->creator_id;
         $role = new Roles(); 
@@ -291,9 +304,9 @@ class User {
             if($db->fetchColumn() >= 1) { 
                     return false;
             } else {
-                $db = DB::prepare('INSERT INTO users (username,firstname,lastname,email,postalcode,city,state_id,country_id,avatar,password,role_id,confirmed,creator_id) 
+                $db = DB::prepare('INSERT INTO users (username,firstname,lastname,email,postalcode,city,state_id,country_id,avatar_id,password,role_id,confirmed,creator_id) 
                                                 VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)');
-                if($db->execute(array($this->username,$this->firstname,$this->lastname,$this->email,$this->postalcode,$this->city,$this->state_id,$this->country_id,$this->avatar,md5($this->password),$this->role_id,$this->confirmed,$this->creator_id))){
+                if($db->execute(array($this->username,$this->firstname,$this->lastname,$this->email,$this->postalcode,$this->city,$this->state_id,$this->country_id,$this->avatar_id,md5($this->password),$this->role_id,$this->confirmed,$this->creator_id))){
                     $db = DB::prepare('SELECT id from users WHERE UPPER(username) = UPPER(?)');
                     $db->execute(array($this->username));
                     $result = $db->fetchObject();
@@ -326,9 +339,9 @@ class User {
                         city = ?, 
                         state_id = ?, 
                         country_id = ?,
-                        avatar = ? 
+                        avatar_id = ? 
                     WHERE id = ?');
-            return $db->execute(array($this->username,$this->firstname,$this->lastname,$this->email,$this->postalcode,$this->city,$this->state_id,$this->country_id,$this->avatar,$this->id));    
+            return $db->execute(array($this->username,$this->firstname,$this->lastname,$this->email,$this->postalcode,$this->city,$this->state_id,$this->country_id,$this->avatar_id,$this->id));    
         }
     }
     
@@ -444,7 +457,7 @@ class User {
         global $USER; 
         if(checkCapabilities('user:listNewUsers', $USER->role_id)){
             $db = DB::prepare('SELECT usr.*, rol.role 
-                        FROM users AS usr, user_roles AS rol
+                        FROM users AS usr, roles AS rol
                         WHERE usr.role_id = rol.role_id AND usr.creation_time > (SELECT last_login FROM users WHERE id = ?)');
             $db->execute(array($id));
                 while($result = $db->fetchObject()) { 
@@ -461,7 +474,7 @@ class User {
                 $this->confirmed         = $result->confirmed; 
                 $this->last_login        = $result->last_login; 
                 $this->role_id           = $result->role_id; 
-                $this->avatar            = $result->avatar;
+                $this->avatar_id            = $result->avatar_id;
                 $this->creation_time     = $result->creation_time;
                 $this->creator_id        = $result->creator_id;
                 $role = new Roles(); 
@@ -581,7 +594,7 @@ class User {
                             if ($data[$c] == "city")        {$city_position           = $c;}
                             if ($data[$c] == "state_id")       {$state_position          = $c;}
                             if ($data[$c] == "country_id")     {$country_position        = $c;}
-                            if ($data[$c] == "avatar")      {$avatar_position         = $c;}
+                            if ($data[$c] == "avatar_id")      {$avatar_position         = $c;}
                         }    
                     }
                     $row++; //Tielzeile überspringen
@@ -595,7 +608,7 @@ class User {
                         if (!isset($city_position))           {$this->city       = '';}                  else {$this->city       = $data[$city_position];}
                         if (!isset($state_position))          {$this->state_id      = $CFG->standard_state;}                  else {$this->state_id      = $data[$state_position];}
                         if (!isset($country_position))        {$this->country_id    = $CFG->standard_country;}                  else {$this->country_id    = $data[$country_position];}
-                        if (!isset($avatar_position))         {$this->avatar     = 'noprofile.jpg';}     else {$this->avatar     = $data[$avatar_position];}
+                        if (!isset($avatar_position))         {$this->avatar_id     = '';}               else {$this->avatar_id  = $data[$avatar_position];}
                         if (!isset($password_position))       {$this->password   = 'password';}          else {$this->password   = $data[$password_position];} //todo: besser Fehlermeldung, wenn Passwort nicht gesetzt
                         if (!isset($role_id_position))        {$this->role_id    = $this->role_id;}      else {$this->role_id    = $data[$role_id_position];}
                         if (!isset($confirmed_position))      {$this->confirmed  = '3';}                 else {$this->confirmed  = $data[$confirmed_position];}

@@ -54,7 +54,7 @@ if($_POST) {
         $currentUser->city       = $_POST['city'];
         $currentUser->state_id   = $_POST['state'];
         $currentUser->country_id = $_POST['country'];
-        $currentUser->avatar     = $_POST['avatar'];
+        $currentUser->avatar_id  = $_POST['avatar_id'];
         $currentUser->role_id    = $_POST['role_id'];
         //var_dump($currentUser);
         $validated_data = $currentUser->validate();

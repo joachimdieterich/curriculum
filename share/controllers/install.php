@@ -298,7 +298,7 @@ if ($_POST){
                                                 $curriculum->creator_id = $user_id;
                                                 $curriculum->dedicate();
                                                 
-                                                $roles = new Roles();       //Set creator_id in user_roles db
+                                                $roles = new Roles();       //Set creator_id in roles db
                                                 $roles->creator_id          = $user_id;
                                                 $roles->dedicate();         //it also deletes the -1 role
                                                 

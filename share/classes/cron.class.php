@@ -1,6 +1,6 @@
 <?php
 /**
- * cron object can add, update, delete and get data from user_roles db
+ * cron object can add, update, delete and get data from roles db
  * 
  * @abstract This file is part of curriculum - http://www.joachimdieterich.de
  * @package core

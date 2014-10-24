@@ -852,7 +852,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Daten für Tabelle `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `password`, `role_id`, `email`, `confirmed`, `firstname`, `lastname`, `postalcode`, `city`, `state_id`, `country_id`, `avatar`, `creation_time`, `creator_id`) VALUES
+INSERT INTO `users` (`id`, `username`, `password`, `role_id`, `email`, `confirmed`, `firstname`, `lastname`, `postalcode`, `city`, `state_id`, `country_id`, `avatar_id`, `creation_time`, `creator_id`) VALUES
 (78, 'michaellang', '663f59787220364dff25287148c63cb5', 0, 'michaellang@joachimdieterich.de', 3, 'Michael', 'Lang', '', '', '11', '56', 'noprofile.jpg', '2013-09-07 07:49:36', 77),
 (79, 'nataschajessen', '663f59787220364dff25287148c63cb5', 0, 'nataschajessen@joachimdieterich.de', 3, 'Natascha', 'Jessen', '', '', '11', '56', 'noprofile.jpg', '2013-09-07 07:49:36', 77),
 (80, 'elkesieburg', '663f59787220364dff25287148c63cb5', 0, 'elkesieburg@joachimdieterich.de', 3, 'Elke', 'Sieburg', '', '', '11', '56', 'noprofile.jpg', '2013-09-07 07:49:36', 77),
@@ -881,11 +881,11 @@ INSERT INTO `users` (`id`, `username`, `password`, `role_id`, `email`, `confirme
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur fÃ¼r Tabelle `user_roles`
+-- Tabellenstruktur fÃ¼r Tabelle `roles`
 --
 
-DROP TABLE IF EXISTS `user_roles`;
-CREATE TABLE IF NOT EXISTS `user_roles` (
+DROP TABLE IF EXISTS `roles`;
+CREATE TABLE IF NOT EXISTS `roles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `role_id` int(11) NOT NULL DEFAULT '0',
   `role` varchar(250) DEFAULT NULL,
@@ -896,10 +896,10 @@ CREATE TABLE IF NOT EXISTS `user_roles` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
 
 --
--- Daten für Tabelle `user_roles`
+-- Daten für Tabelle `roles`
 --
 
-INSERT INTO `user_roles` (`id`, `role_id`, `role`, `description`, `creation_time`, `creator_id`) VALUES
+INSERT INTO `roles` (`id`, `role_id`, `role`, `description`, `creation_time`, `creator_id`) VALUES
 (1, 0, 'Student', 'Benutzer hat nur Leserechte', '2013-08-09 07:06:00', 77),
 (2, 1, 'Administrator', 'Benutzer hat alle Rechte', '2013-08-09 07:06:00', 77),
 (3, 2, 'Tutor', 'Benutzer darf Kompetenzraster bearbeiten', '2013-08-09 07:06:00', 77),
