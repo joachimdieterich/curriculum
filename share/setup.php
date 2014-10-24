@@ -44,7 +44,7 @@ global $CFG;
  *  $USER->last_login   
  *  $USER->role_id      
  *  $USER->role_name    
- *  $USER->avatar    
+ *  $USER->avatar_id    
  *  $USER->language   
  * 
  * @global object $USER

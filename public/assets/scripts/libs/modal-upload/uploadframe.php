@@ -89,7 +89,7 @@ if (isset($context)) {
                             break;  
         case "curriculum":  $extendUploadPath = $curriculum_id.'/'.$terminal_objective_id.'/'.$enabling_objective->id.'/';
                             break;
-        case "avatar":      $extendUploadPath = ''; //siehe unten                
+        case "avatar":      $extendUploadPath = $upload_user->id.'/'; //siehe unten                        
                             break;                
         default:            break;
         }
@@ -107,7 +107,7 @@ if (isset($_POST['Submit'])) {
                                 $my_upload->extensions = array(".png", ".jpg", ".jpeg", ".gif", ".pdf", ".doc", ".docx", ".ppt", ".pptx", ".txt", ".rtf", ".bmp", ".tiff", ".tif", ".mpg", ".mpeg" , ".mpe", ".mp3", ".m4a", ".qt", ".mov", ".mp4", ".avi", ".aif", ".aiff", ".wav", ".zip", ".rar", ".mid"); // allowed extensions
                                 $my_upload->rename_file = false;
                                 $my_upload->the_temp_file = $_FILES['upload']['tmp_name'];
-                                $my_upload->the_file = /*$upload_user->id.'_'.*/str_replace(' ', '_', $_FILES['upload']['name']);
+                                $my_upload->the_file = str_replace(' ', '_', $_FILES['upload']['name']);
                                 $my_upload->http_error = $_FILES['upload']['error'];
                                 
                                 $gump = new Gump(); /* Validation */
@@ -121,7 +121,7 @@ if (isset($_POST['Submit'])) {
                                             $v_error = $gump->get_readable_errors(); 
                                         } else {
                                             if ($my_upload->upload()) {
-                                                    $image = $my_upload->file_copy;
+                                                    //$image = $my_upload->file_copy;
 
                                                     $copy_link = ' <input type="submit" id="closelink" name="Submit" value="Datei verwenden" onclick="self.parent.tb_remove();"/>';
                                                     $material_link = ' <input type="submit" id="materiallink" name="Submit" value="Datei hinzufügen" onclick="self.parent.tb_remove();"/>';
@@ -140,8 +140,8 @@ if (isset($_POST['Submit'])) {
                                                         $file->curriculum_id = $curriculum_id;
                                                         $file->terminal_objective_id = $terminal_objective_id;
                                                         $file->enabling_objective_id = $enabling_objective->id;
-                                                        $file->add();
-
+                                                        $my_upload->id = $file->add();
+                                                        
                                                         if ($context == "userView") { // --> upload of solution file
                                                             $course = new Course(); 
                                                             $teachers = $course->getTeacher($upload_user->id, $enabling_objective->curriculum_id); // get Teachers
@@ -259,11 +259,9 @@ function exitpreviewFile(POSTFIX) {
 function iterateListControl(containerId,checkboxnameroot,targetID,returnFormat,multipleFiles){
  var containerRef = document.getElementById(containerId);
  var inputRefArray = containerRef.getElementsByTagName('input');
- 
  var returnList = '';
  
- for (var i=0; i<inputRefArray.length; i++)
- {
+ for (var i=0; i<inputRefArray.length; i++){
   var inputRef = inputRefArray[i];
 
   if ( inputRef.type.substr(0, 8) == 'checkbox' ){
@@ -279,7 +277,18 @@ function iterateListControl(containerId,checkboxnameroot,targetID,returnFormat,m
 
    // Aufbereiten der Rückgabedaten 
    switch (returnFormat) {
-        case "0": 
+        case "0": var returnListArray = returnList.split(",");
+                  var processedreturnListArray = '';
+                  for (var i=0; i<returnListArray.length; i++) {
+                      if (processedreturnListArray == '') {
+                          processedreturnListArray = returnListArray[i]; //Gibt nur den Dateinamen aus
+                      } else {
+                        processedreturnListArray = processedreturnListArray + ',' + returnListArray[i];  //Gibt nur den Dateinamen aus
+                        
+                      }
+                  }
+                  returnList = processedreturnListArray;
+                  break; //Es wird der Dateinamen zurückgegeben
             break; //Es sollen die IDs aus der DB zurückgegeben werden
         case "1": var returnListArray = returnList.split(",");
                   var processedreturnListArray = '';
@@ -331,13 +340,14 @@ function iterateListControl(containerId,checkboxnameroot,targetID,returnFormat,m
 
 $(document).ready(function() { 
         
-	$("#closelink").click(function() { //übergibt $image an #myfile
-		$('#'+'<?php echo $targetID; ?>', top.document).val('<?php echo $image; ?>');}
+	$("#closelink").click(function() { //übergibt file_id an #myfile
+                $('#'+'<?php echo $targetID; ?>', top.document).val('<?php if (isset($my_upload)){echo $my_upload->id;} ?>');}
         );
         $("#materiallink").click(function() { //übergibt den kompletten pfad mit datei an #myfile
 		$('#'+'<?php echo $targetID; ?>', top.document).val('<?php 
                     if(isset($my_upload)) {
-                        echo $my_upload->upload_dir.$my_upload->the_file;
+                        //echo $my_upload->upload_dir.$my_upload->the_file;
+                        echo $my_upload->id;
                     } 
                     ?>');}
         );

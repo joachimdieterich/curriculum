@@ -26,7 +26,11 @@ Comments & suggestions: http://www.finalwebsites.com/blog/submit-a-question/
   * @since 0.5
   */ 
 class file_upload {
-  
+    /**
+     * id of file
+     * @var int 
+     */
+    var $id; 
     /**
      * upload file
      * @var  

@@ -121,7 +121,15 @@ class File {
         if (checkCapabilities('file:upload', $USER->role_id)){
             $db = DB::prepare('INSERT INTO files (title, filename, description, author, licence, type, path, context_id, creator_id, cur_id, ter_id, ena_id) 
                                 VALUES (?,?,?,?,?,?,?,?,?,?,?,?)');
-            return $db->execute(array($this->title, $this->filename, $this->description, $this->author, $this->licence, $this->type, $this->path, $this->context_id, $this->creator_id, $this->curriculum_id, $this->terminal_objective_id, $this->enabling_objective_id));
+             if($db->execute(array($this->title, $this->filename, $this->description, $this->author, $this->licence, $this->type, $this->path, $this->context_id, $this->creator_id, $this->curriculum_id, $this->terminal_objective_id, $this->enabling_objective_id))){
+                    $db = DB::prepare('SELECT id from files WHERE title = ? AND filename = ? AND description = ? AND author = ?');
+                    $db->execute(array($this->title, $this->filename, $this->description, $this->author));
+                    $result = $db->fetchObject();
+                    $this->id = $result->id;
+                    return $this->id; 
+                } else {
+                    return false; 
+                } 
         }
     }
     

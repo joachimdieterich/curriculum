@@ -44,7 +44,7 @@
                     {/section}   
                 </select></p>
             {if checkCapabilities('file:upload', $my_role_id, false)}    
-                <p><label>Avatar: </label><input  id="myfile" name='avatar' value={$avatar} readonly onclick="tb_show('','assets/scripts/libs/modal-upload/uploadframe.php?userID={$my_id}&token={$my_token}&last_login={$my_last_login}&context=avatar&target=myfile&format=1&multiple=false&placeValuesBeforeTB_=savedValues&TB_iframe=true&width=710&modal=true')" href="#" class="thickbox"/>
+                <p><label>Avatar: </label><input  id="myfile" name='avatar_id' value={$avatar_id} readonly onclick="tb_show('','assets/scripts/libs/modal-upload/uploadframe.php?userID={$my_id}&token={$my_token}&last_login={$my_last_login}&context=avatar&target=myfile&format=0&multiple=false&placeValuesBeforeTB_=savedValues&TB_iframe=true&width=710&modal=true')" href="#" class="thickbox"/>
             {/if}        
             <p><label>Rolle/Gruppe: </label><input class="hidden" name='role_id' value={$role_id} readonly="readonly"/><input  name='role_name' value={$role_name} readonly="readonly"/></p>
             <p><label>&nbsp;</label><input type='submit' value='Änderungen speichern' /></p>

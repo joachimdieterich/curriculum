@@ -1,6 +1,6 @@
 <?php
 /**
- * Roles object can add, update, delete and get data from user_roles db
+ * Roles object can add, update, delete and get data from roles db
  * 
  * @abstract This file is part of curriculum - http://www.joachimdieterich.de
  * @package core
@@ -66,11 +66,11 @@ class Roles {
     public function add(){
         global $USER;
         if (checkCapabilities('role:add', $USER->role_id)){
-            $db = DB::prepare('SELECT MAX(role_id) as max FROM user_roles');
+            $db = DB::prepare('SELECT MAX(role_id) as max FROM roles');
             $db->execute();
             $result = $db->fetchObject();
             $this->role_id = $result->max + 1; 
-            $db = DB::prepare('INSERT INTO user_roles (role_id, role, description,creator_id) VALUES (?,?,?,?)');
+            $db = DB::prepare('INSERT INTO roles (role_id, role, description,creator_id) VALUES (?,?,?,?)');
             $write_role = $db->execute(array($this->role_id, $this->role, $this->description, $this->creator_id));
             
             foreach($this->capabilities as $key=>$value) {
@@ -94,7 +94,7 @@ class Roles {
     public function update(){
         global $USER;
         if (checkCapabilities('role:update', $USER->role_id)){
-            $db = DB::prepare('UPDATE user_roles SET role = ?, description = ?,creator_id = ? WHERE role_id = ?');
+            $db = DB::prepare('UPDATE roles SET role = ?, description = ?,creator_id = ? WHERE role_id = ?');
             $update_role = $db->execute(array($this->role, $this->description, $this->creator_id, $this->role_id));
             //object_to_array($this->capabilities);
             foreach($this->capabilities as $key=>$value) {
@@ -129,7 +129,7 @@ class Roles {
     public function delete(){
         global $USER;
         if (checkCapabilities('role:delete', $USER->role_id)){
-            $db = DB::prepare('DELETE FROM user_roles WHERE role_id = ?');
+            $db = DB::prepare('DELETE FROM roles WHERE role_id = ?');
             $delete_role =  $db->execute(array($this->role_id));
             $db = DB::prepare('DELETE FROM role_capabilities WHERE role_id= ?');
             $delete_role_capabilities = $db->execute(array($this->role_id));
@@ -145,7 +145,7 @@ class Roles {
      * Load user-role with id $this->id 
      */
     public function load(){
-        $db = DB::prepare('SELECT * FROM user_roles WHERE role_id = ?');
+        $db = DB::prepare('SELECT * FROM roles WHERE role_id = ?');
         $db->execute(array($this->role_id)); 
         $result = $db->fetchObject();
         $this->role_id      = $result->role_id;
@@ -160,7 +160,7 @@ class Roles {
      * @return array of roles |boolean 
      */
     public function get(){
-        $db = DB::prepare('SELECT * FROM user_roles');
+        $db = DB::prepare('SELECT * FROM roles');
         $db->execute();
         while ($result = $db->fetchObject()) {
             $this->role_id      = $result->role_id;
@@ -179,13 +179,13 @@ class Roles {
     * @return boolean
     */
     public function dedicate(){ // only use during install
-        $db = DB::prepare('UPDATE user_roles SET creator_id = ?');
+        $db = DB::prepare('UPDATE roles SET creator_id = ?');
         $dedicate_roles =  $db->execute(array($this->creator_id));
         $db = DB::prepare('UPDATE role_capabilities SET creator_id = ?');
         $dedicate_capabilities =  $db->execute(array($this->creator_id));
         
         if ($dedicate_roles  == true AND $dedicate_capabilities == true){
-            $db = DB::prepare('DELETE FROM user_roles WHERE role_id = -1');
+            $db = DB::prepare('DELETE FROM roles WHERE role_id = -1');
             $dedicate_roles =  $db->execute();
             $db = DB::prepare('DELETE FROM role_capabilities WHERE role_id = -1');
             $dedicate_roles =  $db->execute();
