@@ -302,8 +302,12 @@ class EnablingObjective {
                                     $this->accomplished_time       = $result->accomplished_time;   
                                     $this->accomplished_teacher_id = $result->teacher_id;   
                                     $this->enroled_users           = $cntEnroled->cntEnroled;   
-                                    $this->accomplished_users      = $anz->anzAccomplished;   
-                                    $this->accomplished_percent    = round($anz->anzAccomplished/$cntEnroled->cntEnroled*100, 2);     
+                                    $this->accomplished_users      = $anz->anzAccomplished;  
+                                    if ($cntEnroled->cntEnroled == 0){
+                                        $this->accomplished_percent= 0;
+                                    } else {
+                                        $this->accomplished_percent= round($anz->anzAccomplished/$cntEnroled->cntEnroled*100, 2);     
+                                    }
                                     $objectives[]                  = clone $this;     
                                 }
                 break;

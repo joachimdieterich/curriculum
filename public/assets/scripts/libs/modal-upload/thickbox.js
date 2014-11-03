@@ -284,6 +284,7 @@ function tb_remove() {
 	}
 	document.onkeydown = "";
 	document.onkeyup = "";
+        window.location.reload();
 	return false;
 }
 
