@@ -179,9 +179,9 @@ class Course {
         $db = DB::prepare('SELECT DISTINCT usr.id
                             FROM users AS usr, groups_enrolments AS gre
                             WHERE (usr.role_id = 1 OR usr.role_id = 2 OR usr.role_id = 3 OR usr.role_id = 4 )
-                            AND gre.group_id = ANY (SELECT gre.group_id
+                            AND gre.status = 1AND gre.user_id = usr.id AND gre.group_id = ANY (SELECT gre.group_id
                                     FROM groups_enrolments as gre, curriculum_enrolments as cue
-                                    WHERE gre.user_id =  ? AND cue.curriculum_id = ?)'); //WHERE Condition has to be changed for new roles
+                                    WHERE gre.user_id = ? AND cue.curriculum_id = ?)'); //WHERE Condition has to be changed for new roles
         $db->execute(array($user_id, $curriculum_id));    
         while($result = $db->fetchObject()) {
             $teachers[] = $result->id;

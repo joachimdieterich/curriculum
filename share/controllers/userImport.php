@@ -21,7 +21,8 @@
 * http://www.gnu.org/copyleft/gpl.html      
 */
 global $CFG, $USER, $TEMPLATE, $PAGE, $INSTITUTION;
-  
+ 
+
 if(isset($_FILES['datei']['name'])){    //Wenn Datei ausgewählt wurde ...                   
     if($_FILES['datei']['size'] <  $INSTITUTION->institution_csv_size) {
         move_uploaded_file($_FILES['datei']['tmp_name'], $CFG->document_root.'assets/tmp/'.$_FILES['datei']['name']); 

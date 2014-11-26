@@ -49,20 +49,17 @@
             <p><label>Passwort anzeigen: </label><input type="checkbox" class="centervertical" name='showpassword'  {if isset($showpassword)}checked{/if} onclick="unmask('password', this.checked);"/></p>
             <p><label>Passwortänderung: </label><input type="checkbox" class="centervertical" name='confirmed'  {if isset($confirmed)}checked{/if}/></p>
             {if checkCapabilities('file:upload', $my_role_id, false)}
-                <p><label>Avatar: </label><input  id="myfile" name='avatar_id' value={$newUserAvatar_id} readonly  onclick="tb_show('','assets/scripts/libs/modal-upload/uploadframe.php?userID={$my_id}&token={$my_token}&last_login={$my_last_login}&context=avatar&target=myfile&format=1&multiple=false&placeValuesBeforeTB_=savedValues&TB_iframe=true&width=710&modal=true')" href="#" class="thickbox"/>
+                <p><label>Avatar: </label><input  id="myfile" name='avatar_id' {if isset($password)}value={$newUserAvatar_id}{/if} readonly  onclick="tb_show('','assets/scripts/libs/modal-upload/uploadframe.php?userID={$my_id}&token={$my_token}&last_login={$my_last_login}&context=avatar&target=myfile&format=1&multiple=false&placeValuesBeforeTB_=savedValues&TB_iframe=true&width=710&modal=true')" href="#" class="thickbox"/>
                 {validate_msg field='avatar_id'}
             {/if}
-            {if isset($myInstitutions)}
-                <p><label>Institution / Schule*: </label>
-                    <select name="institution" >
-                    {section name=res loop=$myInstitutions}  
-                        <option label="{$myInstitutions[res]->institution}" value={$myInstitutions[res]->id}>{$myInstitutions[res]->institution}</option>
-                    {/section}
-                </select> 
+            {if count($my_institutions['id']) > 1}
+                <p><label>Institution / Schule*: </label>{html_options id='institution' name='institution' values=$my_institutions['id'] output=$my_institutions['institution']}</p>
+            {elseif count($my_institutions['id']) eq 0}
+                <p><strong>Sie müssen zuerst eine Institution anlegen</strong></p>
             {else}
-                <p><strong>Sie müssen zuerst eine Institution anlegen</strong></p>           
+                <input type='hidden' name='institution' id='institution' value='{$my_institutions['id'][0]}' /></p>       
             {/if}
-            <input class="invisible" name='role_id' value='{$standardrole}' readonly="readonly"/>
+            <p><label>Rolle</label><input name='role_id' value='{$standardrole}' readonly="readonly"/></p>
             <p><label>&nbsp;</label><input type='submit' name='addUser' value='Benutzer anlegen' /></p>
         </form>
             {if isset($results)}

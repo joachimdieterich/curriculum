@@ -222,14 +222,7 @@ class User {
         $this->last_login        = $result->last_login; 
         $this->role_id           = $result->role_id; 
         $this->avatar_id         = $result->avatar_id;
-        $db = DB::prepare('SELECT path, filename FROM files WHERE id = ?');
-        $db->execute(array($result->avatar_id));
-        $result_avatar = $db->fetchObject();
-        if (is_object($result_avatar)){
-            $this->avatar         = $result->id.'/'.$result_avatar->filename;
-        } else {
-            $this->avatar = 'noprofile.jpg';
-        }
+        $this->avatar            = $this->resolve_avatar($this->avatar_id, $result->id);
         $this->creation_time     = $result->creation_time;
         $this->creator_id        = $result->creator_id;
         $role = new Roles(); 
@@ -261,13 +254,13 @@ class User {
          * ! users can be enroled in more than one institution 
          */
         $db = DB::prepare('SELECT id, institution FROM institution WHERE id = ANY (SELECT institution_id FROM institution_enrolments WHERE user_id = ? AND status = 1)');
-        $db->execute(array($this->id));
-        $result = $db->fetchObject();
         
-        if ($result){
+        if ($db->execute(array($this->id))){
             unset($this->institutions); //da sonst bei session_reload_user() die Institutionen mehrfach erscheinen
-            $this->institutions['id'][] = $result->id;
-            $this->institutions['institution'][] = $result->institution;
+            while($result = $db->fetchObject()) { 
+                                    $this->institutions['id'][] = $result->id;
+                                    $this->institutions['institution'][] = $result->institution;
+                                }
         } else {
             $this->institutions[] = NULL;
         }    
@@ -363,13 +356,14 @@ class User {
      * @return boolean 
      */
     public function delete($creator_id = null){
+        global $USER;
         if ($creator_id != null) { // if function is called by request-php
             $user = new USER();
 
             $user->load('id', $creator_id);
             $role_id = $user->role_id;
         } else {
-            $role_id = $USER->role-id;
+            $role_id = $USER->role_id;
         }
         
         if(checkCapabilities('user:delete', $role_id)){
@@ -474,7 +468,8 @@ class User {
                 $this->confirmed         = $result->confirmed; 
                 $this->last_login        = $result->last_login; 
                 $this->role_id           = $result->role_id; 
-                $this->avatar_id            = $result->avatar_id;
+                $this->avatar_id         = $result->avatar_id;
+                $this->avatar            = $this->resolve_avatar($this->avatar_id, $result->id);
                 $this->creation_time     = $result->creation_time;
                 $this->creator_id        = $result->creator_id;
                 $role = new Roles(); 
@@ -758,9 +753,9 @@ class User {
         
         if ($check_password){ // if true -> validate password 
             $gump->validation_rules(array(
-            'username'          => 'required|alpha_numeric|max_len,100|min_len,3',
-            'firstname'         => 'required|alpha_numeric|max_len,100',
-            'lastname'          => 'required|alpha_numeric|max_len,100',
+            'username'          => 'required|max_len,100|min_len,3',
+            'firstname'         => 'required|max_len,100',
+            'lastname'          => 'required|max_len,100',
             'email'             => 'required|valid_email',
             'password'          => 'required|max_len,100|min_len,6'
             ));
@@ -808,6 +803,7 @@ class User {
                                                     AND gr.group_id = ANY (SELECT group_id FROM curriculum_enrolments WHERE curriculum_id = ? AND status = 1 )
                                                     AND gr.group_id = ANY (SELECT id FROM groups WHERE institution_id = ANY 
                                                     (SELECT institution_id FROM institution_enrolments WHERE user_id = ? AND status = 1))                                                       
+                                                    AND gr.status = 1 
                                                     ORDER by us.lastname');
                                 $db->execute(array($id, $this->id)); 
   
@@ -999,6 +995,16 @@ class User {
         } else {return false;}
     }
     
+    private function resolve_avatar($id, $user_id){
+        $db = DB::prepare('SELECT path, filename FROM files WHERE id = ?');
+        $db->execute(array($id));
+        $result_avatar = $db->fetchObject();
+        if (is_object($result_avatar)){
+            return $user_id.'/'.$result_avatar->filename;
+        } else {
+            return 'noprofile.jpg';
+        }
+    }
     /**
     * function used during the install process to set up creator id to new admin
     * @return boolean
