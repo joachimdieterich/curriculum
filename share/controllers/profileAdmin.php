@@ -40,7 +40,7 @@ if($_POST) {
             $new_user->country_id       = $_POST['country'];
             $new_user->password         = $_POST['password'];
             $new_user->avatar_id        = '';
-            if ($_POST['avatar']) {
+            if ($_POST['avatar_id']) {
                 if (file_exists($CFG->avatar_url.''.$_POST['avatar_id'])){
                     $new_user->avatar_id= $_POST['avatar_id'];
                 } 
@@ -82,8 +82,7 @@ if($_POST) {
         
 $TEMPLATE->assign('standardrole', $INSTITUTION->institution_standard_role);
 $TEMPLATE->assign('page_message', $PAGE->message);	
-$institution = new Institution();
-$TEMPLATE->assign('myInstitutions', $institution->getInstitutions('user', $USER->id));
+
 $country = new State(); 
 $countries = $country->getCountries();
 $TEMPLATE->assign('countries', $countries);
