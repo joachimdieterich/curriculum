@@ -108,6 +108,12 @@ if (isset($_POST['Submit'])) {
                                 $my_upload->rename_file = false;
                                 $my_upload->the_temp_file = $_FILES['upload']['tmp_name'];
                                 $my_upload->the_file = str_replace(' ', '_', $_FILES['upload']['name']);
+                                $filename = $my_upload->the_file;
+                                while (file_exists($my_upload->upload_dir.$my_upload->the_file)){ // if file exists --> rename, add -1
+                                    $pos = strrpos($my_upload->the_file, "."); 
+                                    $my_upload->the_file = substr($my_upload->the_file, 0, $pos) . '-1' . substr($my_upload->the_file, $pos);  
+                                }
+                                
                                 $my_upload->http_error = $_FILES['upload']['error'];
                                 
                                 $gump = new Gump(); /* Validation */
@@ -128,36 +134,35 @@ if (isset($_POST['Submit'])) {
 
                                                     //in datenbank eintragen
                                                     $file->filename = str_replace(' ', '_', $my_upload->the_file);
+                                                    $file->title = $_POST['title'];
+                                                    $file->description = $_POST['description'];
+                                                    $file->author = $_POST['author'];
+                                                    $file->licence = $_POST['licence'];
+                                                    $file->type = $my_upload->get_extension($my_upload->the_file);
+                                                    $file->path = $extendUploadPath;
+                                                    $file->context_id = $file->getContextId($context);
+                                                    $file->creator_id = $upload_user->id;
+                                                    $file->curriculum_id = $curriculum_id;
+                                                    $file->terminal_objective_id = $terminal_objective_id;
+                                                    $file->enabling_objective_id = $enabling_objective->id;
+                                                    $my_upload->id = $file->add();
 
-                                                        $file->title = $_POST['title'];
-                                                        $file->description = $_POST['description'];
-                                                        $file->author = $_POST['author'];
-                                                        $file->licence = $_POST['licence'];
-                                                        $file->type = $my_upload->get_extension($my_upload->the_file);
-                                                        $file->path = $extendUploadPath;
-                                                        $file->context_id = $file->getContextId($context);
-                                                        $file->creator_id = $upload_user->id;
-                                                        $file->curriculum_id = $curriculum_id;
-                                                        $file->terminal_objective_id = $terminal_objective_id;
-                                                        $file->enabling_objective_id = $enabling_objective->id;
-                                                        $my_upload->id = $file->add();
-                                                        
-                                                        if ($context == "userView") { // --> upload of solution file
-                                                            $course = new Course(); 
-                                                            $teachers = $course->getTeacher($upload_user->id, $enabling_objective->curriculum_id); // get Teachers
+                                                    if ($context == "userView") { // --> upload of solution file
+                                                        $course = new Course(); 
+                                                        $teachers = $course->getTeacher($upload_user->id, $enabling_objective->curriculum_id); // get Teachers
 
-                                                            $mail = new Mail();
-                                                            for($i = 0; $i < count($teachers); ++$i) {
-                                                                $mail->sender_id = $upload_user->id;
-                                                                $mail->receiver_id = $teachers[$i]; //current Teacher
-                                                                $mail->subject = $upload_user->firstname.' '.$upload_user->lastname.' ('.$upload_user->username.') hat eine Lösung eingereicht.';
-                                                                $mail->message = $upload_user->firstname.' '.$upload_user->lastname.' ('.$upload_user->username.') hat zum Lernziel: <br> "'.$enabling_objective->enabling_objective.'" folgende Lösung eingereicht:<br> 
-                                                                    Link zur Lösung: <a target="_blank" href="'.$data_dir.'solutions/'.$extendUploadPath.''.str_replace(' ', '_', $my_upload->the_file).'"> Lösung öffnen...</a> <br> <br>
-                                                                    <p class="pointer" onclick="setAccomplishedObjectivesBySolution('.$teachers[$i].', '.$upload_user->id.', '.$enabling_objective->id.', 1)">Ziel freischalten</p><br>
-                                                                    <p class="pointer" onclick="setAccomplishedObjectivesBySolution('.$teachers[$i].', '.$upload_user->id.', '.$enabling_objective->id.', 0)">Ziel deaktivieren</p>'; 
-                                                                $mail->postMail();
-                                                            }
+                                                        $mail = new Mail();
+                                                        for($i = 0; $i < count($teachers); ++$i) {
+                                                            $mail->sender_id = $upload_user->id;
+                                                            $mail->receiver_id = $teachers[$i]; //current Teacher
+                                                            $mail->subject = $upload_user->firstname.' '.$upload_user->lastname.' ('.$upload_user->username.') hat eine Lösung eingereicht.';
+                                                            $mail->message = $upload_user->firstname.' '.$upload_user->lastname.' ('.$upload_user->username.') hat zum Lernziel: <br> "'.$enabling_objective->enabling_objective.'" folgende Lösung eingereicht:<br> 
+                                                                Link zur Lösung: <a target="_blank" href="'.$data_dir.'solutions/'.$extendUploadPath.''.str_replace(' ', '_', $my_upload->the_file).'"> Lösung öffnen...</a> <br> <br>
+                                                                <p class="pointer" onclick="setAccomplishedObjectivesBySolution('.$teachers[$i].', '.$upload_user->id.', '.$enabling_objective->id.', 1)">Ziel freischalten</p><br>
+                                                                <p class="pointer" onclick="setAccomplishedObjectivesBySolution('.$teachers[$i].', '.$upload_user->id.', '.$enabling_objective->id.', 0)">Ziel deaktivieren</p>'; 
+                                                            $mail->postMail();
                                                         }
+                                                    }
                                             } 
                                         }
                                 $error = $my_upload->show_error_string();
