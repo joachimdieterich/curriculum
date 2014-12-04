@@ -693,7 +693,7 @@ class User {
      * @return array of object | boolean 
      */
     public function getCurricula() {
-        $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, fl.filename, su.subject, gr.grade, sc.schooltype, st.state, co.de
+        $db = DB::prepare('SELECT DISTINCT cu.id, cu.curriculum, cu.description, fl.filename, su.subject, gr.grade, sc.schooltype, st.state, co.de
                             FROM curriculum AS cu, groups_enrolments AS ce, curriculum_enrolments AS cure, files AS fl, subjects AS su, grade AS gr, schooltype AS sc, state AS st, countries AS co
                             WHERE cu.icon_id = fl.id
                             AND cu.id = cure.curriculum_id
