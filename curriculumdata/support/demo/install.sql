@@ -277,7 +277,7 @@ CREATE TABLE IF NOT EXISTS `countries` (
   KEY `de` (`de`),
   KEY `en` (`en`),
   KEY `code` (`code`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=244 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=244 ;
 
 --
 -- Daten fÃ¼r Tabelle `countries`
@@ -564,7 +564,7 @@ CREATE TABLE IF NOT EXISTS `curriculum` (
   `creator_id` int(11) NOT NULL,
   `icon_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=94 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=94 ;
 
 -- --------------------------------------------------------
 
@@ -582,7 +582,7 @@ CREATE TABLE IF NOT EXISTS `curriculum_enrolments` (
   `expel_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `creator_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 -- --------------------------------------------------------
 
@@ -602,7 +602,7 @@ CREATE TABLE IF NOT EXISTS `enablingObjectives` (
   `repeat_interval` int(11) NOT NULL DEFAULT '-1',
   `order_id` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 -- --------------------------------------------------------
 
@@ -627,7 +627,7 @@ CREATE TABLE IF NOT EXISTS `files` (
   `description` varchar(2048) DEFAULT NULL,
   `title` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=149 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=149 ;
 
 --
 -- Daten fÃ¼r Tabelle `files`
@@ -661,7 +661,7 @@ CREATE TABLE IF NOT EXISTS `files_backup` (
   `creator_id` int(10) DEFAULT NULL,
   `creation_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
 
 -- --------------------------------------------------------
 
@@ -678,7 +678,7 @@ CREATE TABLE IF NOT EXISTS `grade` (
   `creator_id` int(11) NOT NULL,
   `institution_id` int(10) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=43 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=43 ;
 
 --
 -- Daten fÃ¼r Tabelle `grade`
@@ -716,7 +716,7 @@ CREATE TABLE IF NOT EXISTS `groups` (
   `creation_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `creator_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=94 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=94 ;
 
 -- --------------------------------------------------------
 
@@ -734,7 +734,7 @@ CREATE TABLE IF NOT EXISTS `groups_enrolments` (
   `expel_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `creator_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=19 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=19 ;
 
 -- --------------------------------------------------------
 
@@ -754,7 +754,7 @@ CREATE TABLE IF NOT EXISTS `institution` (
   `creation_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `creator_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=56 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=56 ;
 
 -- --------------------------------------------------------
 
@@ -774,7 +774,7 @@ CREATE TABLE IF NOT EXISTS `institution_enrolments` (
   PRIMARY KEY (`id`),
   KEY `IDX_INSTITUTION_ID` (`institution_id`),
   KEY `IDX_USER_ID` (`user_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=101 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=101 ;
 
 -- --------------------------------------------------------
 
@@ -792,7 +792,7 @@ CREATE TABLE IF NOT EXISTS `log` (
   `url` varchar(250) NOT NULL,
   `info` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=207 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=207 ;
 
 -- --------------------------------------------------------
 
@@ -811,7 +811,7 @@ CREATE TABLE IF NOT EXISTS `message` (
   `receiver_status` smallint(1) DEFAULT '0' COMMENT '0 = ungelesen, 1 = gelesen, -1 = gelÃ¶scht',
   `creation_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 -- --------------------------------------------------------
 
@@ -1521,7 +1521,7 @@ CREATE TABLE IF NOT EXISTS `schooltype` (
   `creation_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `creator_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=31 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=31 ;
 
 --
 -- Daten fÃ¼r Tabelle `schooltype`
@@ -1552,7 +1552,7 @@ CREATE TABLE IF NOT EXISTS `semester` (
   `creator_id` int(11) NOT NULL,
   `institution_id` int(10) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
 -- --------------------------------------------------------
 
@@ -1568,7 +1568,7 @@ CREATE TABLE IF NOT EXISTS `state` (
   `creation_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `creator_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=28 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=28 ;
 
 --
 -- Daten fÃ¼r Tabelle `state`
@@ -1618,7 +1618,7 @@ CREATE TABLE IF NOT EXISTS `subjects` (
   `institution_id` int(10) DEFAULT NULL,
   `subject_short` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=37 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=37 ;
 
 --
 -- Daten fÃ¼r Tabelle `subjects`
@@ -1659,7 +1659,7 @@ CREATE TABLE IF NOT EXISTS `terminalObjectives` (
   `order_id` tinyint(4) NOT NULL DEFAULT '0',
   `repeat_interval` int(11) NOT NULL DEFAULT '-1',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 
 
@@ -1690,7 +1690,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `creator_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_USER_ID` (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=77 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=77 ;
 
 -- --------------------------------------------------------
 
@@ -1707,7 +1707,7 @@ CREATE TABLE IF NOT EXISTS `user_accomplished` (
   `accomplished_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `creator_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 -- --------------------------------------------------------
 
@@ -1724,7 +1724,7 @@ CREATE TABLE IF NOT EXISTS `roles` (
   `creation_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `creator_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
 
 --
 -- Daten fÃ¼r Tabelle `roles`
