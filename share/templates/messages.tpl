@@ -15,10 +15,18 @@
     
     <form id='messages' method='post' action='index.php?action=messages'>  
     <input type='hidden' name='timestamp' value='{$timestamp}'/>  
-    <p><input type='submit' name="showInbox" value='Posteingang' />
-       <input type='submit' name="showOutbox" value='Postausgang' />
-       <input type='submit' name="shownewMessage" value='Nachricht schreiben' /></p>
+    <p class="floatleft cssimgbtn gray-border">
+        <input class="mailinbtn cssbtnmargin " type='submit' name="showInbox" value='Posteingang' />
+        <input class="mailoutbtn cssbtnmargin " type='submit' name="showOutbox" value='Postausgang' />
+        <input class="mailnewbtn cssbtnmargin " type='submit' name="shownewMessage" value='Nachricht schreiben' />
+        {if isset($showInbox)} 
+            <a id="answer_btn" class="answerbtn cssbtnmargin cssbtntext" style="display: none;" href="">antworten</a>
+        {/if}
+    </p>
+   <p>&nbsp;</p>
+   <p>&nbsp;</p><p>&nbsp;</p>
     </form>
+    
     {if isset($shownewMessage)} 
       <form id='messages' method='post' action='index.php?action=messages'> 
         <p><h3>Neue Nachricht</h3></p>

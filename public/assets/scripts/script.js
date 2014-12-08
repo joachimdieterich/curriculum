@@ -473,6 +473,25 @@ function loadmail(mail_id, mailbox) {
             req.open("GET", url, true);
             req.send(null);
         }
+    // generate Link for answering Button    
+    url = "assets/scripts/request.php?function=loadMailanswerbtn&mailID="+ mail_id; 
+    req_1 = XMLobject();
+    if(req_1) {        
+        req_1.onreadystatechange = function (){
+            if (req_1.readyState == 4 ) {  
+                if (req_1.status == 200) {
+                   if (req_1.responseText.length != 1){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen
+                          document.getElementById('answer_btn').href = "index.php?action=messages&shownewMessage&answer=true&receiver_id="+req_1.responseText;
+                          document.getElementById('answer_btn').style.display = "inline";
+                   } else {
+                       window.location.reload();
+                   }
+                }
+            }
+        }
+        req_1.open("GET", url, true);
+        req_1.send(null);
+    }
 }
 
 function mail(mail_id, mailbox) {

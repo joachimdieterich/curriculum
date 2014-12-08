@@ -176,6 +176,7 @@ button {  width: auto; overflow: auto; }
     text-indent: 0px;
 }
 
+
 /* bicubic resizing for non-native sized IMG:
    code.flickr.com/blog/2008/11/12/on-ui-quality-the-little-things-client-side-image-resizing/ */
 .ie7 img { -ms-interpolation-mode: bicubic; }
@@ -206,12 +207,13 @@ button {  width: auto; overflow: auto; }
 .pointer { cursor: pointer; }
 
 .printbtn, .editbtn,.filebtn, .deletebtn, .addbtn, .addmaterialbtn, .leftbtn, .rightbtn, .upbtn, .downbtn, 
-.addsolutionbtn, .okbtn, .notbtn, .groupbtn, .institutionbtn, .calbtn, .listbtn, .downloadbtn, .helpbtn{ 
+.addsolutionbtn, .okbtn, .notbtn, .groupbtn, .institutionbtn, .calbtn, .listbtn, .downloadbtn, .helpbtn, .answerbtn,
+.mailinbtn, .mailoutbtn, .mailnewbtn, .maildelbtn{ 
     background-repeat: no-repeat;
     background-size: contain;
     background-color: transparent;
     margin-right: 5px;    
-    height: 16px ;
+    height: 16px;
     width: 16px ;
     border: none;
     cursor: pointer;
@@ -249,6 +251,7 @@ button {  width: auto; overflow: auto; }
 .addbtn         { background-image: url('../images/png/glyphicons_190_circle_plus.png'); }
 .addmaterialbtn { background-image: url('../images/png/glyphicons_190_circle_plus.png'); }
 .addsolutionbtn { background-image: url('../images/png/glyphicons_201_upload.png'); }
+.answerbtn         { background-image: url('../images/png/glyphicons_221_unshare.png'); }
 .editbtn        { background-image: url('../images/png/glyphicons_151_edit.png'); }
 .deletebtn      { background-image: url('../images/png/glyphicons_191_circle_minus.png'); }
 .groupbtn       { background-image: url('../images/png/glyphicons_043_group.png'); }
@@ -256,6 +259,10 @@ button {  width: auto; overflow: auto; }
 .helpbtn        { background-image: url('../images/png/glyphicons_194_circle_question_mark.png'); }
 .downloadbtn    { background-image: url('../images/png/glyphicons_200_download.png');
                   margin-left: -4px;}
+.mailinbtn      { background-image: url('../images/png/glyphicons_122_message_in.png'); }
+.mailoutbtn     { background-image: url('../images/png/glyphicons_123_message_out.png'); }
+.mailnewbtn     { background-image: url('../images/png/glyphicons_124_message_plus.png'); }
+.maildelbtn     { background-image: url('../images/png/glyphicons_125_message_minus.png'); }
 .okbtn          { background-image: url('../images/png/glyphicons_206_ok_2.png') ;}
 .leftbtn        { background-image: url('../images/png/glyphicons_210_left_arrow.png'); }
 .rightbtn       { background-image: url('../images/png/glyphicons_211_right_arrow.png'); }
@@ -271,6 +278,11 @@ button {  width: auto; overflow: auto; }
     width: 100%;
     height: 20px;
 }
+
+input.mailoutbtn, input.mailinbtn, input.mailnewbtn {
+    
+}
+
 /*Filetype buttons - common properties*/
 /*allgemeine Eigenschaften*/
 .url_btn, .pdf_btn, .txt_btn, .rtf_btn, .jpg_btn, .jpeg_btn, .png_btn,
@@ -816,9 +828,8 @@ p > label {
     padding:0;
 }
 
-/*css-Button */
-/*Eigene png's*/
-input.btnaddCurriculum, input.btneditCurriculum, input.btndelCurriculum, input.btnaddObjectives, 
+/*css-Button --Eigene png's*/
+/*input.btnaddCurriculum, input.btneditCurriculum, input.btndelCurriculum, input.btnaddObjectives, 
 input.btnshowUser, input.btnunmarkList {
     background-repeat:          no-repeat;
     background-size:            32px 32px;
@@ -829,7 +840,7 @@ input.btnshowUser, input.btnunmarkList {
     cursor:                     pointer;
     vertical-align:             middle;   
     opacity:0.7;
-    filter:alpha(opacity=70); /* For IE8 and earlier */
+    filter:alpha(opacity=70); // For IE8 and earlier 
     -ms-background-size: 32px 32px; 
 }
 
@@ -839,7 +850,8 @@ input.btndelCurriculum  { background: url('../images/png/delCurriculum64x64.png'
 input.btnaddObjectives  { background: url('../images/png/addObjectives64x64.png'); }
 input.btnshowUser       { background: url('../images/png/showUser64x64.png'); }
 input.btnunmarkList     { background: url('../images/png/unmarkList64x64.png'); }
-/*Ende css-Button*/
+
+*//*Ende css-Button*/
 
 #left {
     float:left;

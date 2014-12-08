@@ -36,6 +36,10 @@ if ($_GET){
             $enabling_objective->load();
             $TEMPLATE->assign('subject', 'Benutzer '.$USER->username.' braucht Hilfe beim Lernziel: '.$enabling_objective->enabling_objective);
        }
+       if(isset($_GET['answer'])) {
+            $TEMPLATE->assign('receiver_id', $_GET['receiver_id']);
+            $TEMPLATE->assign('subject', $_GET['subject']);
+       }
    } 
 }
 

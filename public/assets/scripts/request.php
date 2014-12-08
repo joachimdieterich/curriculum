@@ -377,7 +377,7 @@ if (isset($_GET['function'])){
                                     $receiver->lastname  = 'Benutzer';
                                     $receiver->username  = '';
                                 }
-                                 
+                                
                                 echo '<p class="mailheader"><label class="mailheader">Von:</label>';
                                 echo $sender->firstname.' '.$sender->lastname.' ('.$sender->username.')</p>';
                                 echo '<p class="mailheader"><label class="mailheader">An:</label>';
@@ -388,7 +388,13 @@ if (isset($_GET['function'])){
                                 echo $mail->subject.'</p>';
                                 echo '<h3>&nbsp;</h3><br>';
                                 echo $mail->message;
-                                break;                 
+                                break;   
+                                
+        case "loadMailanswerbtn":$mail = new Mail();
+                                $mail->id = $_GET['mailID'];
+                                $mail->loadMail($mail->id);
+                                echo '&receiver_id='.$mail->sender_id.'&subject=RE:'.$mail->subject;
+                                break;                           
                                 
         case "loadStates":      $state  = new State($_GET['country_id']);
                                 $states = $state->getStates();
