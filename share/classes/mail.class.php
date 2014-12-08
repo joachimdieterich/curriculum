@@ -88,10 +88,15 @@ class Mail {
      */
     public $creation_time;
     /**
-     * status
+     * sender status
      * @var int 
      */
-    public $status;
+    public $sender_status;
+    /**
+     * receiver status
+     * @var int 
+     */
+    public $reveicer_status;
     
     /**
      * class constructor 
@@ -116,20 +121,29 @@ class Mail {
                     $this->subject       = $result->subject;
                     $this->message       = $result->message;
                     $this->creation_time = $result->creation_time;
-                    $this->status        = $result->status;    
+                    $this->sender_status   = $result->sender_status;  
+                    $this->receiver_status = $result->receiver_status;  
                 } else {
                     //$this->institutions[] = NULL;
                 } 
         }
     }
     
+    
+    public function delete(){
+        global $USER;
+        if (checkCapabilities('mail:delete', $USER->role_id)){
+            $db = DB::prepare('DELETE FROM message WHERE id = ?');
+            return $db->execute(array($this->id));
+        }
+    }
     /**
      * post Mail
      * @return boolean 
      */
     public function postMail(){
         if (checkCapabilities('mail:postMail', $_SESSION['USER']->role_id)){
-            $db = DB::prepare('INSERT INTO message (sender_id,receiver_id,subject,message,status) VALUES (?,?,?,?,0)');
+            $db = DB::prepare('INSERT INTO message (sender_id,receiver_id,subject,message,sender_status,receiver_status) VALUES (?,?,?,?,1,0)');
             return $db->execute(array($this->sender_id, $this->receiver_id, $this->subject, $this->message));
         } else {
             return false; 
@@ -141,8 +155,8 @@ class Mail {
      * @param int $status
      * @return boolean 
      */
-    public function setStatus($status){
-       $db = DB::prepare('UPDATE message SET status = ? WHERE id = ?');
+    public function setStatus($field = 'receiver', $status){
+       $db = DB::prepare('UPDATE message SET '.$field.'_status = ? WHERE id = ?');
        return $db->execute(array($status, $this->id));
     }
 }

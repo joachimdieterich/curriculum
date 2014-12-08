@@ -185,7 +185,8 @@ INSERT INTO `capabilities` (`id`, `capability`, `name`, `description`, `type`, `
 (124, 'user:userListComplete', 'Alle Benutzer (Instanz!) sehen', 'See all user', 'read', 'curriculum'),
 (125, 'user:getInstitution', 'InstitutionszugehÃ¶rigkeit eines Benuzters anzeigen', 'See institution enrolments of a user', 'read', 'curriculum'),
 (126, 'menu:readMyPortfolio', 'MenÃ¼block "Mein Portfolio" anzeigen', 'Show menublock "My Portfolio"', 'read', 'curriculum'),
-(127, 'menu:readPortfolio', 'Portfolio MenÃ¼ anzeigen', 'Show Portfoliomenu', 'read', 'curriculum');
+(127, 'menu:readPortfolio', 'Portfolio MenÃ¼ anzeigen', 'Show Portfoliomenu', 'read', 'curriculum'),
+(128, 'mail:delete', 'Nachrichten lÃ¶schen', 'Delete messages', 'write', 'curriculum');
 
 
 -- --------------------------------------------------------
@@ -806,7 +807,8 @@ CREATE TABLE IF NOT EXISTS `message` (
   `receiver_id` int(11) NOT NULL DEFAULT '0',
   `subject` text,
   `message` mediumtext,
-  `status` smallint(1) DEFAULT '0' COMMENT '0 = ungelesen, 1 = gelesen, -1 = gelÃ¶scht',
+  `sender_status` smallint(1) DEFAULT '0' COMMENT '0 = ungelesen, 1 = gelesen, -1 = gelÃ¶scht',
+  `receiver_status` smallint(1) DEFAULT '0' COMMENT '0 = ungelesen, 1 = gelesen, -1 = gelÃ¶scht',
   `creation_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
@@ -1495,7 +1497,12 @@ INSERT INTO `role_capabilities` (`id`, `role_id`, `capability`, `permission`, `c
 (1178, -1, 'user:updateRole', 1, '2014-10-20 14:46:34', 102),
 (1179, -1, 'user:updateUser', 1, '2014-10-20 14:46:34', 102),
 (1180, -1, 'user:userList', 1, '2014-10-20 14:46:34', 102),
-(1181, -1, 'user:userListComplete', 1, '2014-10-20 14:46:34', 102);
+(1181, -1, 'user:userListComplete', 1, '2014-10-20 14:46:34', 102),
+(1182, 0, 'mail:delete', 1, '2014-10-20 14:46:34', 102),
+(1183, 1, 'mail:delete', 1, '2014-10-20 14:46:34', 102),
+(1184, 2, 'mail:delete', 1, '2014-10-20 14:46:34', 102),
+(1185, 3, 'mail:delete', 1, '2014-10-20 14:46:34', 102),
+(1186, 4, 'mail:delete', 1, '2014-10-20 14:46:34', 102);
 
 
 -- --------------------------------------------------------
