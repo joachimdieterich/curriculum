@@ -302,6 +302,10 @@ if (isset($_GET['function'])){
                                                         $institution->id = $id;
                                                         $ok = $institution->delete($creator_id);
                                         break;
+                                    case "message":     $message = new Mail(); 
+                                                        $message->id = $id;
+                                                        $ok = $message->delete();
+                                        break;
 
                                     default:
                                         break;
@@ -350,8 +354,13 @@ if (isset($_GET['function'])){
                                 
         case "loadMail":        $mail = new Mail();
                                 $mail->id = $_GET['mailID'];
-                                $mail->setStatus(true);
                                 $mail->loadMail($mail->id);
+                                if ($mail->receiver_id == $USER->id){
+                                     $mail->setStatus('receiver', true);
+                                } else if ($mail->sender_id == $USER->id) {
+                                     $mail->setStatus('sender', true);
+                                }
+                               
 
                                 // If sender = -1 --> System
                                 if ($mail->sender_id == -1){
@@ -387,6 +396,7 @@ if (isset($_GET['function'])){
                                 echo '<p class="mailheader"><label class="mailheader">Betreff:</label>';
                                 echo $mail->subject.'</p>';
                                 echo '<h3>&nbsp;</h3><br>';
+                                echo '<a class="deletebtn floatright" type="button" name="delete" onclick="del('; echo "'message', "; echo $mail->id.', 1)"></a>';
                                 echo $mail->message;
                                 break;   
                                 

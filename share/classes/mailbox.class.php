@@ -105,11 +105,11 @@ class Mailbox {
             $db->execute(array($user_id));
         } elseif ($selector == 'new') {
             $db = DB::prepare('SELECT msg.* FROM message AS msg WHERE msg.receiver_id = ?
-                        AND msg.status = 0 ORDER BY msg.id DESC');
+                        AND msg.receiver_status = 0 ORDER BY msg.id DESC');
             $db->execute(array($user_id));        
         } else {
             $db = DB::prepare('SELECT msg.* FROM message AS msg WHERE msg.sender_id = ? OR msg.receiver_id = ?
-                        AND msg.status = -1 ORDER BY msg.id DESC');
+                        AND msg.receiver_status = -1 ORDER BY msg.id DESC');
             $db->execute(array($user_id, $user_id));        
         }
        
@@ -125,6 +125,7 @@ class Mailbox {
                 $getMail->sender_username    = $sender->username;
                 $getMail->sender_firstname   = $sender->firstname;
                 $getMail->sender_lastname    = $sender->lastname;
+                $getMail->sender_status       = $result->sender_status;
             }
             $getMail->receiver_id        = $result->receiver_id;
             $db_02 = DB::prepare('SELECT username, firstname, lastname FROM users WHERE id = ?');
@@ -134,11 +135,12 @@ class Mailbox {
                 $getMail->receiver_username  = $receiver->username;
                 $getMail->receiver_firstname = $receiver->firstname;
                 $getMail->receiver_lastname  = $receiver->lastname;
+                $getMail->receiver_status    = $result->receiver_status;
             }
             $getMail->subject            = $result->subject;
             $getMail->message            = $result->message;
             $getMail->creation_time      = $result->creation_time;
-            $getMail->status             = $result->status;
+            
             switch ($mailbox) {
                 case 'receiver_id': //inbox
                                     $this->inbox[]            = $getMail;

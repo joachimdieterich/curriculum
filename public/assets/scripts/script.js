@@ -145,8 +145,13 @@ function del() {
         var url = "assets/scripts/request.php?function=delete&db="+arguments[0]+"&id="+ arguments[1]+"&creator_id="+ arguments[2]; 
         
         req = XMLobject();
-        if(req) {        
-            req.onreadystatechange = answer; //Dialog mit Meldungen zeigen
+        if(req) {      
+            if (arguments[0] == 'message'){             
+              document.getElementById('inbox_'+arguments[1]).style.display='none';
+            } else {
+               req.onreadystatechange = answer; //Dialog mit Meldungen zeigen 
+            }
+            
             req.open("GET", url, true);
             req.send(null);
         }
@@ -265,18 +270,14 @@ function reloadPage() {
 
 function answer() {
     if (req.readyState == 4) {  
-        if (req.status == 200) {
-            
+        if (req.status == 200) {   
            if (req.responseText.length != 1){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen
-                      if (document.getElementById('popup')){
-                           document.getElementById('popup').innerHTML = req.responseText;
-                           
-                           $('#popup').show();
-                          
-                      } else {
-                          alert(req.responseText); //unschön, aber #popup ist vom modalframe aus nicht verfügbar
-                      }
-                     
+                if (document.getElementById('popup')){
+                     document.getElementById('popup').innerHTML = req.responseText;   
+                     $('#popup').show();           
+                } else {
+                    alert(req.responseText); //unschön, aber #popup ist vom modalframe aus nicht verfügbar
+                }    
            } else {
                window.location.reload();
            }
@@ -499,11 +500,10 @@ function mail(mail_id, mailbox) {
         if (req.status == 200) {
             
            if (req.responseText.length != 1){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen
-                  //tinyMCE.activeEditor.contentDocument.body.innerHTML = req.responseText;
-                  
+                  //tinyMCE.activeEditor.contentDocument.body.innerHTML = req.responseText;         
                   document.getElementById('mailbox').innerHTML = req.responseText;
                   document.getElementById(mailbox+'_'+mail_id).className = 'contenttablerow';
-                  document.getElementById('mailbox').style.width = (document.body.offsetWidth - 540) +"px";
+                  document.getElementById('mailbox').style.width = (document.body.offsetWidth - 555) +"px";
            } else {
                window.location.reload();
            }

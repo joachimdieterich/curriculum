@@ -62,7 +62,7 @@
         {* display outbox *}  
         <p>Nachricht {$outboxPaginator.first}-{$outboxPaginator.last} von {$outboxPaginator.total} werden angezeigt.</p>  
         {section name=mail loop=$outbox}  
-            <tr class="{if $outbox[mail]->status eq 0}mailnew{/if} contenttablerow " id="outbox_{$outbox[mail]->id}" onclick="loadmail({$outbox[mail]->id},'outbox')">
+            <tr class="{if $outbox[mail]->sender_status eq 0}mailnew{/if} contenttablerow " id="outbox_{$outbox[mail]->id}" onclick="loadmail({$outbox[mail]->id},'outbox')">
                 <td><input class="invisible" type="checkbox" id="{$outbox[mail]->id}" name="id[]" value={$outbox[mail]->id} /></td>
                 <td class="mailcontenttable mailborder"><p class="mailheader floatleft">{$outbox[mail]->sender_username} ({$outbox[mail]->sender_firstname} {$outbox[mail]->sender_lastname})</p>
                     <p class="floatright">{$outbox[mail]->creation_time}</p><br>
@@ -98,7 +98,7 @@
         {* display inbox *}
         <p>Datensätze {$inboxPaginator.first}-{$inboxPaginator.last} von {$inboxPaginator.total} werden angezeigt.</p>
         {section name=mail loop=$inbox}
-            <tr class="{if $inbox[mail]->status eq 0}mailnew{/if} contenttablerow " id="inbox_{$inbox[mail]->id}" onclick="loadmail({$inbox[mail]->id},'inbox')">
+            <tr class="{if $inbox[mail]->receiver_status eq 0}mailnew{/if} contenttablerow " id="inbox_{$inbox[mail]->id}" onclick="loadmail({$inbox[mail]->id},'inbox')">
                 <td><input class="invisible" type="checkbox" id="{$inbox[mail]->id}" name="id[]" value={$inbox[mail]->id} /></td>
                 <td class="mailcontenttable mailborder"><p class="mailheader ">{$inbox[mail]->sender_username} ({$inbox[mail]->sender_firstname} {$inbox[mail]->sender_lastname})</p>
                     <p class="floatright">{$inbox[mail]->creation_time}</p><br>
