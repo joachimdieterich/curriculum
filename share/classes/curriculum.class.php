@@ -2,10 +2,6 @@
 /**
  * Group object can add, update, delete and get data from curriculum db
  * 
- * @example
- * // Add new curriculum <br>
- * $new_curriculum = new Curriculum(); <br>
- * 
  * @abstract This file is part of curriculum - http://www.joachimdieterich.de
  * @package core
  * @filename curriculum.class.php
@@ -14,15 +10,11 @@
  * @date 2013.06.08 15:53
  * @license 
  *
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License as published by  
- * the Free Software Foundation; either version 3 of the License, or     
- * (at your option) any later version.                                   
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by  
+ * the Free Software Foundation; either version 3 of the License, or (at your option) any later version.                                   
  *                                                                       
- * This program is distributed in the hope that it will be useful,       
- * but WITHOUT ANY WARRANTY; without even the implied warranty of        
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         
- * GNU General Public License for more details:                          
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of        
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details:                          
  *                                                                       
  * http://www.gnu.org/copyleft/gpl.html      
  */
@@ -114,13 +106,10 @@ class Curriculum {
      */
     public function add(){
         global $USER;
-        
-        if (checkCapabilities('curriculum:add', $USER->role_id)){
-            $db = DB::prepare('INSERT INTO curriculum (curriculum, description, grade_id, subject_id, schooltype_id, state_id, icon_id, country_id, creator_id) 
-                                                VALUES (?,?,?,?,?,?,?,?,?)');
-            object_to_array($this);
-            return $db->execute(array($this->curriculum, $this->description, $this->grade_id, $this->subject_id, $this->schooltype_id, $this->state_id, $this->icon_id, $this->country_id, $this->creator_id));
-        }
+        checkCapabilities('curriculum:add', $USER->role_id);
+        $db = DB::prepare('INSERT INTO curriculum (curriculum, description, grade_id, subject_id, schooltype_id, state_id, icon_id, country_id, creator_id) 
+                                            VALUES (?,?,?,?,?,?,?,?,?)');
+        return $db->execute(array($this->curriculum, $this->description, $this->grade_id, $this->subject_id, $this->schooltype_id, $this->state_id, $this->icon_id, $this->country_id, $this->creator_id));
     }
     
     /**
@@ -129,14 +118,12 @@ class Curriculum {
      */
     public function update(){
         global $USER;
-        if (checkCapabilities('curriculum:update', $USER->role_id)){
-            
-            $db = DB::prepare('UPDATE curriculum 
-                    SET curriculum = ?, description = ?, grade_id = ?, subject_id = ?, 
-                    schooltype_id = ?, state_id = ?, icon_id = ?, country_id = ?, creator_id = ?
-                    WHERE id = ?');
-            return $db->execute(array($this->curriculum, $this->description, $this->grade_id, $this->subject_id, $this->schooltype_id, $this->state_id, $this->icon_id, $this->country_id, $this->creator_id ,$this->id));
-        }
+        checkCapabilities('curriculum:update', $USER->role_id); 
+        $db = DB::prepare('UPDATE curriculum 
+                SET curriculum = ?, description = ?, grade_id = ?, subject_id = ?, 
+                schooltype_id = ?, state_id = ?, icon_id = ?, country_id = ?, creator_id = ?
+                WHERE id = ?');
+        return $db->execute(array($this->curriculum, $this->description, $this->grade_id, $this->subject_id, $this->schooltype_id, $this->state_id, $this->icon_id, $this->country_id, $this->creator_id ,$this->id));
     }
     
     /**
@@ -145,10 +132,9 @@ class Curriculum {
      */
     public function delete(){
         global $USER;
-        if (checkCapabilities('curriculum:delete', $USER->role_id)){
-            $db = DB::prepare('DELETE FROM curriculum WHERE id=?');
-            return $db->execute(array($this->id));
-        }
+        checkCapabilities('curriculum:delete', $USER->role_id);
+        $db = DB::prepare('DELETE FROM curriculum WHERE id=?');
+        return $db->execute(array($this->id));
     } 
     
     /**
@@ -188,7 +174,9 @@ class Curriculum {
      * @param int $id
      * @return array of curriculum objects  
      */
-    public function getCurricula($dependency = null, $id = null){
+    public function getCurricula($dependency = null, $id = null, $paginator = ''){
+        $order_param = orderPaginator($paginator);  
+        $curriculum = array();
         switch ($dependency) {
             case 'group':   $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, fl.filename, su.subject, 
                                             gr.grade, sc.schooltype, st.state, co.de
@@ -199,7 +187,7 @@ class Curriculum {
                                             AND cu.icon_id = fl.id AND cu.grade_id = gr.id AND cu.subject_id = su.id
                                             AND cu.schooltype_id = sc.id AND cu.state_id = st.id AND cu.country_id = co.id
                                             AND ce.group_id = ? AND ce.status = 1
-                                            ORDER BY cu.curriculum ASC');
+                                            '.$order_param);
                             $db->execute(array($id));
                             while($result = $db->fetchObject()) { 
                                     $curriculum[] = $result; 
@@ -207,7 +195,7 @@ class Curriculum {
                 break;
             case 'creator': $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, gr.grade  
                                                 FROM curriculum AS cu, grade AS gr
-                                                WHERE cu.creator_id = ? AND gr.id = cu.grade_id');
+                                                WHERE cu.creator_id = ? AND gr.id = cu.grade_id '.$order_param);
                             $db->execute(array($id));
                             while($result = $db->fetchObject()) {
                                         $curriculum[] = $result; 
@@ -225,95 +213,17 @@ class Curriculum {
                                             AND cu.id = cure.curriculum_id
                                             AND cure.group_id = ce.group_id
                                             AND ce.status = 1
-                                            AND ce.user_id = ?)');
+                                            AND ce.user_id = ?) '.$order_param);
                             $db->execute(array($id, $id));
                             while($result = $db->fetchObject()) {
                                 $curriculum[] = $result; //result Data wird an setPaginator vergeben
                             } 
                 break; 
-            default:    
-                break;
+            default:  break;
         }
         
-        if (isset($curriculum)){
-            return $curriculum;    
-        } 
+        return $curriculum;
    }
-   
-   /**
-    * Check if there are active enrolments - used by deleteCurriculum in request.php
-    * @return boolean 
-    */
-   public function getCurriculumEnrolments(){
-       $db = DB::prepare('SELECT id FROM curriculum_enrolments WHERE curriculum_id = ? AND status = 1');
-       $db->execute(array($this->id));
-       if($db->fetchColumn() >= 1) { return true;} else {return false;}
-   }
-   
-   /**
-    *
-    * @global type $CFG
-    * @global type $USER
-    * @param string $import_file
-    * @param string $delimiter
-    * @return boolean 
-    */
-   public function import($import_file, $delimiter = ';'){
-        global $CFG, $USER;
-        if(checkCapabilities('curriculum:import', $USER->role_id)){
-            $row = 1;   //row counter
-            ini_set("auto_detect_line_endings", true);
-            if (($handle = fopen($import_file, "r")) !== FALSE) {
-                while (($data = fgetcsv($handle, 1000, $delimiter)) !== FALSE) {
-                        $num = count($data);        
-                    if ($row == 1) {	// Hier werden die Felder verknüpft.
-                        for ($c=0; $c < $num; $c++) {
-                            if ($data[$c] == "type")            {$type_pos       = $c;}
-                            if ($data[$c] == "name")            {$name_pos       = $c;}
-                            if ($data[$c] == "description")     {$description_pos= $c;}
-                            if ($data[$c] == "repeat_interval") {$interval_pos= $c;}
-                        }    
-                    }
-                    $row++; //Tielzeile überspringen
-                    if ($row > 2) {	
-                        $this->role_id = 0; //reset role id to avoid wrong permissions
-                        if (!isset($type_pos))       {$type       = '';} else {$type        = $data[$type_pos];}
-                        if (!isset($name_pos))       {$name       = '';} else {$name        = $data[$name_pos];}
-                        if (!isset($description_pos)){$description= '';} else {$description = $data[$description_pos];}
-                        if (!isset($interval_pos)){$interval= -1;}       else {$interval = $data[$interval_pos];}
-                        switch ($type) {
-                            case 1: echo "ropic";
-                                    $topic = new TerminalObjective();
-                                    $topic->terminal_objective  = $name;
-                                    $topic->description         = $description;
-                                    $topic->curriculum_id       = $this->id;
-                                    $topic->creator_id          = $USER->id;
-                                    $topic_id = $topic->add();
-                                break;
-                            case 2: $objective = new EnablingObjective();
-                                    $objective->enabling_objective  = $name;
-                                    $objective->description         = $description;
-                                    $objective->terminal_objective_id = $topic_id; 
-                                    $objective->curriculum_id           = $this->id;
-                                    $objective->repeat_interval         = $interval;
-                                    $objective->creator_id              = $USER->id;
-                                    $objective->add();
-                                break;
-                            default:
-                                break;
-                        }   
-                    }
-                }
-            }
-            fclose($handle);
-            if (isset($error)){ //if there are any error messages
-                return $error;
-            } else {
-                return true;    
-            }
-        }
-    }
-   
    
    /**
     * function used during the install process to set up creator id to new admin
@@ -327,4 +237,3 @@ class Curriculum {
         }
     }
 }
-?>

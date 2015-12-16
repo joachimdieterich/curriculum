@@ -1,28 +1,19 @@
 <?php
 /**
- * enabling objective class can add, update, delete and get data from curriculum db
- * 
- * @example
- * // Add new objective <br>
- * $new_objective = new Objective(); <br>
  * 
  * @abstract This file is part of curriculum - http://www.joachimdieterich.de
  * @package core
- * @filename objective.class.php
+ * @filename EnablingObjective.class.php
  * @copyright 2013 Joachim Dieterich
  * @author Joachim Dieterich
  * @date 2013.06.11 21:00
  * @license 
  *
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License as published by  
- * the Free Software Foundation; either version 3 of the License, or     
- * (at your option) any later version.                                   
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by  
+ * the Free Software Foundation; either version 3 of the License, or (at your option) any later version.                                   
  *                                                                       
- * This program is distributed in the hope that it will be useful,       
- * but WITHOUT ANY WARRANTY; without even the implied warranty of        
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         
- * GNU General Public License for more details:                          
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of        
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details:                          
  *                                                                       
  * http://www.gnu.org/copyleft/gpl.html      
  */
@@ -39,7 +30,7 @@ class EnablingObjective {
     public $enabling_objective;
     /**
      * Description of enabling objective
-     * @var string
+     * @var html    
      */
     public $description; 
     /**
@@ -130,17 +121,16 @@ class EnablingObjective {
      */
     public function add(){
         global $USER;
-        if (checkCapabilities('objectives:addEnablingObjective', $USER->role_id)){
-            $db = DB::prepare('SELECT MAX(order_id)AS max FROM enablingObjectives WHERE terminal_objective_id = ?');
-            $db->execute(array($this->terminal_objective_id));
-            $result = $db->fetchObject();
-            $this->order_id = $result->max+1;
-            $db = DB::prepare('INSERT INTO enablingObjectives 
-                        (enabling_objective,description,terminal_objective_id,curriculum_id,repeat_interval,order_id,creator_id) 
-                        VALUES (?,?,?,?,?,?,?)');        
-            $db->execute(array($this->enabling_objective, $this->description, $this->terminal_objective_id, $this->curriculum_id, $this->repeat_interval, $this->order_id, $this->creator_id));
-            return DB::lastInsertId(); //returns id 
-        }
+        checkCapabilities('objectives:addEnablingObjective', $USER->role_id);
+        $db = DB::prepare('SELECT MAX(order_id)AS max FROM enablingObjectives WHERE terminal_objective_id = ?');
+        $db->execute(array($this->terminal_objective_id));
+        $result = $db->fetchObject();
+        $this->order_id = $result->max+1;
+        $db = DB::prepare('INSERT INTO enablingObjectives 
+                    (enabling_objective,description,terminal_objective_id,curriculum_id,repeat_interval,order_id,creator_id) 
+                    VALUES (?,?,?,?,?,?,?)');        
+        $db->execute(array($this->enabling_objective, $this->description, $this->terminal_objective_id, $this->curriculum_id, $this->repeat_interval, $this->order_id, $this->creator_id));
+        return DB::lastInsertId(); //returns id 
     }
     
     /**
@@ -149,11 +139,9 @@ class EnablingObjective {
      */
     public function update(){
         global $USER;
-        if (checkCapabilities('objectives:updateEnablingObjectives', $USER->role_id)){
-            $db = DB::prepare('UPDATE enablingObjectives SET enabling_objective = ?, description = ?, repeat_interval = ? 
-                        WHERE id = ?');
-            return $db->execute(array($this->enabling_objective, $this->description, $this->repeat_interval, $this->id));
-        }
+        checkCapabilities('objectives:updateEnablingObjectives', $USER->role_id);
+        $db = DB::prepare('UPDATE enablingObjectives SET enabling_objective = ?, description = ?, repeat_interval = ? WHERE id = ?');
+        return $db->execute(array($this->enabling_objective, $this->description, $this->repeat_interval, $this->id));
     }
     
     /**
@@ -162,10 +150,9 @@ class EnablingObjective {
      */
     public function delete(){
         global $USER;
-        if (checkCapabilities('objectives:deleteEnablingObjectives', $USER->role_id)){
-            $db = DB::prepare('DELETE FROM enablingObjectives WHERE id = ?');
-            return $db->execute(array($this->id));
-        }
+        checkCapabilities('objectives:deleteEnablingObjectives', $USER->role_id);
+        $db = DB::prepare('DELETE FROM enablingObjectives WHERE id = ?');
+        return $db->execute(array($this->id));
     } 
     
     /**
@@ -220,6 +207,7 @@ class EnablingObjective {
                                     $objectives[]                  = clone $this; 
                                 } 
                 break;
+                
             case 'curriculum':  $db = DB::prepare('SELECT en.* FROM enablingObjectives AS en 
                                         WHERE en.curriculum_id = ? ORDER by en.terminal_objective_id, en.order_id');
                                 $db->execute(array($this->curriculum_id));
@@ -237,7 +225,6 @@ class EnablingObjective {
                                     $objectives[]               = clone $this; 
                                 }  
                 break;   
-             
             
              case 'terminal_objective': $files = new File(); 
                                 $db = DB::prepare('SELECT en.* FROM enablingObjectives AS en 
@@ -258,9 +245,23 @@ class EnablingObjective {
                                     $objectives[]                  = clone $this; 
                                 }   
                 break;    
+             case 'enabling_objective_status': $db = DB::prepare('SELECT ua.status_id, ua.accomplished_time, ua.creator_id AS teacher_id
+                                                                    FROM user_accomplished AS ua WHERE ua.user_id = ?
+                                                                    AND  ua.enabling_objectives_id = ?');
+                                        $db->execute(array($id, $this->id));
+                                        $result = $db->fetchObject()
+                                                ;
+                                        if (isset($result->status_id)){ // wenn Ziel bereits in user_accomplished für den User angelegt wurde
+                                            $this->accomplished_status_id  = $result->status_id;   
+                                            $this->accomplished_time       = $result->accomplished_time;   
+                                            $this->accomplished_teacher_id = $result->teacher_id;   
+                                            //used by renderAccCheckboxes
+                                        } else { //Zielstatus wurde noch nie gesetzt
+                                            $this->accomplished_status_id  = 3;
+                                        }
+                break;    
             
-            case 'course':
-            case 'group':       $db = DB::prepare('SELECT en.*, te.terminal_objective, cu.curriculum, ua.status_id, ua.accomplished_time, ua.creator_id AS teacher_id
+            case 'course':      $db = DB::prepare('SELECT en.*, te.terminal_objective, cu.curriculum, ua.status_id, ua.accomplished_time, ua.creator_id AS teacher_id
                                                         FROM enablingObjectives AS en 
                                                         INNER JOIN terminalObjectives AS te ON en.terminal_objective_id = te.id
                                                         INNER JOIN curriculum AS cu ON en.curriculum_id = cu.id 
@@ -269,25 +270,31 @@ class EnablingObjective {
                                                         ORDER by en.terminal_objective_id, en.order_id');
                                 $db->execute(array($USER->id, $id));
                                 while($result = $db->fetchObject()) { //Prozentberechnung - Wie viele Teilnehmer (in %) waren erfolgreich
-                                    $db_01 = DB::prepare('SELECT COUNT(gr.user_id) AS cntEnroled
-                                                        FROM groups_enrolments AS gr, users AS us
-                                                        WHERE gr.status = 1
-                                                        AND gr.group_id = ?
-                                                        AND gr.user_id = us.id
-                                                        AND us.role_id = 0');
-                                    $db_01->execute(array($group));
+                                    $db_01 = DB::prepare('SELECT COUNT(ge.user_id) AS cntEnroled
+                                                        FROM groups_enrolments AS ge, groups AS gp, role_capabilities AS rc, institution_enrolments AS ie
+                                                        WHERE ge.status = 1
+                                                        AND ge.group_id = ?
+                                                        AND ge.group_id = gp.id
+                                                        AND gp.institution_id = ie.institution_id
+                                                        AND ie.user_id = ge.user_id
+                                                        AND ie.role_id = rc.role_id AND rc.capability = ? AND rc.permission = 0');
+                                    $db_01->execute(array($group, 'course:setAccomplishedStatus'));
                                     $cntEnroled = $db_01->fetchObject();
                                     //Anzahl der Teilnehmer, die das Ziel erfolgreich abgeschlossen haben. 
-                                    $db_02 = DB::prepare('SELECT COUNT(ua.enabling_objectives_id) AS anzAccomplished
-                                                        FROM user_accomplished AS ua
-                                                        INNER JOIN groups_enrolments AS gr ON gr.user_id = ua.user_id 
-                                                        INNER JOIN users AS us ON gr.user_id = us.id
-                                                        WHERE ua.enabling_objectives_id = ?
+                                    $db_02 = DB::prepare('SELECT COUNT(ua.user_id) AS anzAccomplished
+                                                        FROM role_capabilities AS rc,institution_enrolments AS ie, groups AS gp, groups_enrolments AS gr, user_accomplished AS ua
+                                                        WHERE gr.user_id = ua.user_id 
+                                                        AND ua.enabling_objectives_id = ?
                                                         AND gr.group_id = ?
+                                                        AND gr.group_id = gp.id
                                                         AND gr.status = 1
                                                         AND ua.status_id = 1
-                                                        AND us.role_id = 0');
-                                    $db_02->execute(array($result->id, $group));
+                                                        AND gp.institution_id = ie.institution_id
+                                                        AND ie.role_id = rc.role_id
+                                                        AND ie.status = 1
+                                                        AND ie.user_id = ua.user_id
+                                                        AND rc.capability = ? AND rc.permission = 0');
+                                    $db_02->execute(array($result->id, $group, 'course:setAccomplishedStatus'));
                                     $anz = $db_02->fetchObject();
                                     $this->id                      = $result->id;
                                     $this->enabling_objective      = $result->enabling_objective;
@@ -303,19 +310,97 @@ class EnablingObjective {
                                     $this->accomplished_teacher_id = $result->teacher_id;   
                                     $this->enroled_users           = $cntEnroled->cntEnroled;   
                                     $this->accomplished_users      = $anz->anzAccomplished;  
+                                    
                                     if ($cntEnroled->cntEnroled == 0){
                                         $this->accomplished_percent= 0;
                                     } else {
-                                        $this->accomplished_percent= round($anz->anzAccomplished/$cntEnroled->cntEnroled*100, 2);     
+                                        $this->accomplished_percent= round($anz->anzAccomplished/$cntEnroled->cntEnroled*100, 0);     
                                     }
                                     $objectives[]                  = clone $this;     
                                 }
-                break;
-            case 'terminal_objective': //checks if there are enabling objectives under a terminal objective
-                                    $db = DB::prepare('SELECT id  FROM enablingObjectives WHERE terminal_objective_id = ?');
-                                    if ($db->execute($id)){
-                                        return true; 
-                                    } else {return false;} 
+                                break;
+            case 'group':       $db = DB::prepare('SELECT en.*, te.terminal_objective, cu.curriculum, ua.status_id, ua.accomplished_time, ua.creator_id AS teacher_id
+                                                        FROM enablingObjectives AS en 
+                                                        INNER JOIN terminalObjectives AS te ON en.terminal_objective_id = te.id
+                                                        INNER JOIN curriculum AS cu ON en.curriculum_id = cu.id 
+                                                        LEFT JOIN user_accomplished AS ua ON en.id = ua.enabling_objectives_id AND ua.user_id = ?
+                                                        WHERE en.curriculum_id = ?
+                                                        ORDER by en.terminal_objective_id, en.order_id');
+                                $db->execute(array($USER->id, $id));
+                                while($result = $db->fetchObject()) { //Prozentberechnung - Wie viele der ausgewählten Teilnehmer (in %) waren erfolgreich
+                                    $cntEnroled = count($group);
+                                    //Anzahl der Teilnehmer, die das Ziel erfolgreich abgeschlossen haben. Status 01
+                                    $db_02 = DB::prepare('SELECT COUNT(ua.user_id) AS anzAccomplished
+                                                        FROM role_capabilities AS rc, groups AS gp, groups_enrolments AS ge, institution_enrolments AS ie, user_accomplished AS ua
+                                                        INNER JOIN users AS us ON ua.user_id = us.id
+                                                        WHERE ua.enabling_objectives_id = ?
+                                                        AND ua.user_id IN ('.implode(",", $group).')
+                                                        AND ua.status_id = 1  
+                                                        AND ie.user_id = ua.user_id
+                                                        AND ie.institution_id = gp.institution_id
+                                                        AND ge.user_id = ua.user_id
+                                                        AND gp.id = ge.group_id
+                                                        AND ie.role_id = rc.role_id AND rc.capability = ? AND rc.permission = 0'); // keine Lehrer zählen
+                                    $db_02->execute(array($result->id, 'course:setAccomplishedStatus'));
+                                    $res_01 = $db_02->fetchObject();
+                                    $anz_status_01 = $res_01->anzAccomplished;
+                                    
+                                    //Anzahl der Teilnehmer, die das Ziel erfolgreich abgeschlossen haben. Status 02
+                                    $db_03 = DB::prepare('SELECT COUNT(ua.user_id) AS anzAccomplished
+                                                        FROM role_capabilities AS rc, groups AS gp, groups_enrolments AS ge, institution_enrolments AS ie, user_accomplished AS ua
+                                                        INNER JOIN users AS us ON ua.user_id = us.id
+                                                        WHERE ua.enabling_objectives_id = ?
+                                                        AND ua.user_id IN ('.implode(",", $group).')
+                                                        AND ua.status_id = 2        
+                                                        AND ie.user_id = ua.user_id
+                                                        AND ie.institution_id = gp.institution_id
+                                                        AND ge.user_id = ua.user_id
+                                                        AND gp.id = ge.group_id
+                                                        AND ie.role_id = rc.role_id AND rc.capability = ? AND rc.permission = 0'); // keine Lehrer zählen
+                                    $db_03->execute(array($result->id, 'course:setAccomplishedStatus'));
+                                    $res_02 = $db_03->fetchObject();
+                                    $anz_status_02 = $res_02->anzAccomplished;
+                                    
+                                    $db_03 = DB::prepare('SELECT COUNT(ua.user_id) AS anzAccomplished
+                                                        FROM role_capabilities AS rc,  groups AS gp, groups_enrolments AS ge, institution_enrolments AS ie, user_accomplished AS ua
+                                                        INNER JOIN users AS us ON ua.user_id = us.id
+                                                        WHERE ua.enabling_objectives_id = ?
+                                                        AND ua.user_id IN ('.implode(",", $group).')
+                                                        AND ua.status_id = 0        
+                                                        AND ie.user_id = ua.user_id
+                                                        AND ie.institution_id = gp.institution_id
+                                                        AND ge.user_id = ua.user_id
+                                                        AND gp.id = ge.group_id
+                                                        AND ie.role_id = rc.role_id  AND rc.capability = ? AND rc.permission = 0'); // keine Lehrer zählen
+                                    $db_03->execute(array($result->id, 'course:setAccomplishedStatus'));
+                                    $res_03 = $db_03->fetchObject();
+                                    $anz_status_00 = $res_03->anzAccomplished;
+                                    
+                                    $this->id                      = $result->id;
+                                    $this->enabling_objective      = $result->enabling_objective;
+                                    $this->description             = $result->description;
+                                    $this->curriculum_id           = $result->curriculum_id;
+                                    $this->terminal_objective_id   = $result->terminal_objective_id;
+                                    $this->order_id                = $result->order_id;
+                                    $this->repeat_interval_id      = $result->repeat_interval;
+                                    $this->creation_time           = $result->creation_time;
+                                    $this->creator_id              = $result->creator_id;   
+                                    $this->accomplished_time       = $result->accomplished_time;   
+                                    $this->accomplished_teacher_id = $result->teacher_id;   
+                                    $this->enroled_users           = $cntEnroled;   
+                                    $this->accomplished_users      = $anz_status_01;  
+                                    
+                                    $this->accomplished_percent= round($anz_status_01/$cntEnroled*100, 0);
+                                    
+                                    // Status ID über Häufigkeit berechnen --> Optimierungsbedarf
+                                    if (        $anz_status_01 > $anz_status_00 AND $anz_status_01 > $anz_status_02 AND $anz_status_01 > $cntEnroled/2){ $this->accomplished_status_id = 1;
+                                    } else if ( $anz_status_02 > $anz_status_00 AND $anz_status_02 > $anz_status_01 AND $anz_status_02 > $cntEnroled/2){ $this->accomplished_status_id = 2;
+                                    } else if ( $anz_status_00 > $anz_status_01 AND $anz_status_00 > $anz_status_02 AND $anz_status_00 > $cntEnroled/2){ $this->accomplished_status_id = 0;
+                                    } else { $this->accomplished_status_id = null;
+                                    }
+                                
+                                    $objectives[]                  = clone $this;     
+                                }
                 break;
             default:
                 break;
@@ -327,51 +412,47 @@ class EnablingObjective {
     }  
     
     /**
-     * change order of objectives
-     * @global int $USER
+     * change order of objectives 
      * @param string $direction 
      */
     public function order($direction = null){
-        global $USER;
-        if (checkCapabilities('objectives:orderEnablingObjectives', $USER->role_id)){
-            switch ($direction) {
-                case 'down': if ($this->order_id == 1){
-                                // order_id kann nicht kleiner sein
-                                } else {
-                                    $db = DB::prepare('SELECT id FROM enablingObjectives 
-                                                        WHERE terminal_objective_id = ? AND order_id = ?');
-                                    $db->execute(array($this->terminal_objective_id, ($this->order_id-1)));
-                                    $result = $db->fetchObject();
-                                    $db = DB::prepare('UPDATE enablingObjectives SET order_id = ? WHERE id = ?');
-                                    $db->execute(array($this->order_id, $result->id));
-
-                                    $db = DB::prepare('UPDATE enablingObjectives SET order_id = ? WHERE id = ?');
-                                    $db->execute(array(($this->order_id-1), $this->id));
-                                }
-                    break;
-                case 'up':      $db = DB::prepare('SELECT MAX(order_id) as max FROM enablingObjectives WHERE terminal_objective_id = ?');
-                                $db->execute(array($this->terminal_objective_id));
+        switch ($direction) {
+            case 'down': if ($this->order_id == 1){
+                            // order_id kann nicht kleiner sein
+                            } else {
+                                $db = DB::prepare('SELECT id FROM enablingObjectives 
+                                                    WHERE terminal_objective_id = ? AND order_id = ?');
+                                $db->execute(array($this->terminal_objective_id, ($this->order_id-1)));
                                 $result = $db->fetchObject();
-                                if ($this->order_id == $result->max){
-                                // order_id darf nicht größer als maximale order_id sein
-                                } else {
-                                    $db = DB::prepare('SELECT id FROM enablingObjectives WHERE terminal_objective_id = ? AND order_id = ?');
-                                    $db->execute(array($this->terminal_objective_id, ($this->order_id+1)));
-                                    $result = $db->fetchObject();
-                                    $replace_id = $result->id;
+                                $db = DB::prepare('UPDATE enablingObjectives SET order_id = ? WHERE id = ?');
+                                $db->execute(array($this->order_id, $result->id));
 
-                                    $db = DB::prepare('UPDATE enablingObjectives SET order_id = ? WHERE id = ?');
-                                    $db->execute(array($this->order_id, $replace_id));
+                                $db = DB::prepare('UPDATE enablingObjectives SET order_id = ? WHERE id = ?');
+                                $db->execute(array(($this->order_id-1), $this->id));
+                            }
+                break;
+            case 'up':      $db = DB::prepare('SELECT MAX(order_id) as max FROM enablingObjectives WHERE terminal_objective_id = ?');
+                            $db->execute(array($this->terminal_objective_id));
+                            $result = $db->fetchObject();
+                            if ($this->order_id == $result->max){
+                            // order_id darf nicht größer als maximale order_id sein
+                            } else {
+                                $db = DB::prepare('SELECT id FROM enablingObjectives WHERE terminal_objective_id = ? AND order_id = ?');
+                                $db->execute(array($this->terminal_objective_id, ($this->order_id+1)));
+                                $result = $db->fetchObject();
+                                $replace_id = $result->id;
 
-                                    $db = DB::prepare('UPDATE enablingObjectives SET order_id = ? WHERE id = ?');
-                                    $db->execute(array(($this->order_id+1), $this->id));
-                                }
-                    break;
+                                $db = DB::prepare('UPDATE enablingObjectives SET order_id = ? WHERE id = ?');
+                                $db->execute(array($this->order_id, $replace_id));
 
-                default:
-                    break;
-            }     
-        }
+                                $db = DB::prepare('UPDATE enablingObjectives SET order_id = ? WHERE id = ?');
+                                $db->execute(array(($this->order_id+1), $this->id));
+                            }
+                break;
+
+            default:
+                break;
+        }     
     }
     
     
@@ -404,10 +485,7 @@ class EnablingObjective {
             $this->accomplished_status_id  = $result->status_id;   
             $this->accomplished_time       = $result->accomplished_time;   
             $this->accomplished_teacher_id = $result->teacher_id;   
-            $this->accomplished_teacher = $result->firstname.' '.$result->lastname;   
-            /*$this->enroled_users           = $cntEnroled["cntEnroled"];   
-            $this->accomplished_users      = $anz["anzAccomplished"];   
-            $this->accomplished_percent    = round($anz["anzAccomplished"]/$cntEnroled["cntEnroled"]*100, 2);   */
+            $this->accomplished_teacher    = $result->firstname.' '.$result->lastname;   
             $objectives[]                  = clone $this; 
         }
     if (isset($objectives)){
@@ -435,7 +513,6 @@ class EnablingObjective {
             $this->id                      = $result->enabling_objectives_id;
             $this->accomplished_status_id  = $result->status_id;   
             $this->accomplished_time       = $result->accomplished_time;    
-            
             $objectives[]                  = clone $this; 
         }
     if (isset($objectives)){
@@ -518,14 +595,17 @@ class EnablingObjective {
                                     WHERE ua.enabling_objectives_id = ? AND gr.group_id = ?
                                     AND gr.status = 1 AND ua.status_id = 1');
                                     $db->execute(array($this->id, $group));
-                                    while($result = $db->fetchObject()) {
-                                        $users[] = $result->user_id; 
-                                    }
-                                    
-                                    if (isset($users)){
-                                        return $users;
-                                    } else {return false;}
+        while($result = $db->fetchObject()) {
+            $users[] = $result->user_id; 
+        }
+
+        if (isset($users)){
+            return $users;
+        } else {return false;}
     }
+    
+    
+    
     /**
      * set accomplished status of enabling objective in db
      * @global int $USER
@@ -541,20 +621,63 @@ class EnablingObjective {
             case 'cron':    $db = DB::prepare('UPDATE user_accomplished SET status_id = ? WHERE enabling_objectives_id = ?');
                             return $db->execute(array($status, $this->id));
                             break;
-            case 'teacher': if(checkCapabilities('objectives:setStatus', $USER->role_id)){
-                                $db = DB::prepare('SELECT COUNT(id) FROM user_accomplished WHERE enabling_objectives_id = ? AND user_id = ?');
-                                $db->execute(array($this->id, $user_id));
-                                if($db->fetchColumn() >= 1) { 
-                                    $db = DB::prepare('UPDATE user_accomplished SET status_id = ?, creator_id = ? WHERE enabling_objectives_id = ? AND user_id = ?');
-                                    return $db->execute(array($status, $creator_id, $this->id, $user_id));
-                                } else {
-                                        $db = DB::prepare('INSERT INTO user_accomplished(enabling_objectives_id,user_id,status_id,creator_id) VALUES (?,?,?,?)');
-                                        return $db->execute(array($this->id, $user_id, $status, $creator_id));
-                                }
+            case 'quiz':    $db = DB::prepare('SELECT COUNT(id) FROM user_accomplished WHERE enabling_objectives_id = ? AND user_id = ?');
+                            $db->execute(array($this->id, $user_id));
+                            if($db->fetchColumn() >= 1) {
+                                $db = DB::prepare('UPDATE user_accomplished SET status_id = ?, creator_id = ? WHERE enabling_objectives_id = ? AND user_id = ?');
+                                return $db->execute(array($status, $creator_id, $this->id, $user_id));
+                            } else {
+                                $db = DB::prepare('INSERT INTO user_accomplished(enabling_objectives_id,user_id,status_id,creator_id) VALUES (?,?,?,?)');
+                                return $db->execute(array($this->id, $user_id, $status, $creator_id));
                             }
+                            break;
+            case 'teacher': checkCapabilities('objectives:setStatus', $USER->role_id);
+                            $slug = new Badges();        
+                            $badge_slug = $slug->getBadgeSlug($this->terminal_objective_id, $this->id);
+
+                            $db = DB::prepare('SELECT COUNT(id) FROM user_accomplished WHERE enabling_objectives_id = ? AND user_id = ?');
+                            $db->execute(array($this->id, $user_id));
+                            if($db->fetchColumn() >= 1) { 
+                                if ($status == 0){
+                                    $issuing = new Issuing();  
+                                    $email = new User();
+                                    $issuing->email = $email->getValue('email', $user_id);
+                                    if ($badge_slug != false){
+                                        $res = $issuing->deleteInstance($CFG->badge_system, $badge_slug); 
+                                    }
+                                }
+                                $db = DB::prepare('UPDATE user_accomplished SET status_id = ?, creator_id = ? WHERE enabling_objectives_id = ? AND user_id = ?');
+                                return $db->execute(array($status, $creator_id, $this->id, $user_id));
+                            } else {
+                                if ($badge_slug != false){
+                                    $issuing = new Issuing();
+                                    $email = new User();
+                                    $issuing->email = $email->getValue('email', $user_id);
+                                    /* create Badge Instance --> only once --> ???*/
+                                    $res = $issuing->createBadgeInstance($CFG->badge_system, $badge_slug);
+                                }
+
+                                $db = DB::prepare('INSERT INTO user_accomplished(enabling_objectives_id,user_id,status_id,creator_id) VALUES (?,?,?,?)');
+                                return $db->execute(array($this->id, $user_id, $status, $creator_id));
+                            }
+                            
                             break;
             default:        break;
         } 
+    }
+    
+    function calcTerminalPercentage($ter_id, $user_id){
+        $db1    = DB::prepare('SELECT COUNT(id) FROM enablingObjectives WHERE terminal_objective_id IN (?)');
+        $db1->execute(array($ter_id));
+        $max    = $db1->fetchColumn(); 
+        $db2    = DB::prepare('SELECT count(ua.id) 
+                                FROM user_accomplished AS ua, enablingObjectives AS ena 
+                                WHERE ua.enabling_objectives_id = ena.id
+                                AND ena.terminal_objective_id IN (?)
+                                AND ua.user_id = ? AND (ua.status_id = 1 OR ua.status_id = 2)');
+        $db2->execute(array($ter_id, $user_id));
+        $accomplished    = $db2->fetchColumn(); 
+        return floatval($accomplished/$max);                               
     }
     
     /**
@@ -566,4 +689,3 @@ class EnablingObjective {
         return $db->execute(array($this->creator_id));
     }
 }
-?>

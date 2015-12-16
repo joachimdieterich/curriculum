@@ -8,32 +8,41 @@
 * @date 2013.03.08 13:26
 * @license: 
 *
-* This program is free software; you can redistribute it and/or modify 
-* it under the terms of the GNU General Public License as published by  
-* the Free Software Foundation; either version 3 of the License, or     
-* (at your option) any later version.                                   
+* This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by  
+* the Free Software Foundation; either version 3 of the License, or (at your option) any later version.                                   
 *                                                                       
-* This program is distributed in the hope that it will be useful,       
-* but WITHOUT ANY WARRANTY; without even the implied warranty of        
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         
-* GNU General Public License for more details:                          
+* This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of        
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details:                          
 *                                                                       
 * http://www.gnu.org/copyleft/gpl.html      
 */
 global $USER, $TEMPLATE, $PAGE, $INSTITUTION;
 
 if(isset($_GET['reset']) OR (isset($_POST['reset'])) OR (isset($_POST['new_curriculum']))){
-    resetPaginator('groupsPaginator'); 
-    resetPaginator('userPaginator'); 
     resetPaginator('curriculumPaginator'); 
 }
 
 if (isset($_GET['function'])){
     switch ($_GET['function']) {
-        case "new_curriculum":  loadeditFormData($TEMPLATE);
-            break; 
-        case "edit":            loadeditFormData($TEMPLATE, $_GET['edit_curriculum_id']);
-                                $TEMPLATE->assign('showeditCurriculumForm', true);
+        case "new":     checkCapabilities('curriculum:add',     $USER->role_id);     //USER berechtigt?
+                        $TEMPLATE->assign('showForm',           true);
+                        $TEMPLATE->assign('c_subject_id',       null);         // müssen gesetzt sein um unnötige if-Bedingungen zu vermeiden
+                        $TEMPLATE->assign('c_icon_id',          null);         // müssen gesetzt sein um unnötige if-Bedingungen zu vermeiden
+                        $TEMPLATE->assign('c_semester_id',      null);         // müssen gesetzt sein um unnötige if-Bedingungen zu vermeiden
+                        $TEMPLATE->assign('c_institution_id',   null);         // müssen gesetzt sein um unnötige if-Bedingungen zu vermeiden
+                        $TEMPLATE->assign('c_grade_id',   null);         // müssen gesetzt sein um unnötige if-Bedingungen zu vermeiden
+                        $TEMPLATE->assign('c_schooltype_id',   null);         // müssen gesetzt sein um unnötige if-Bedingungen zu vermeiden
+                        $TEMPLATE->assign('c_state_id',   null);         // müssen gesetzt sein um unnötige if-Bedingungen zu vermeiden
+            break;
+        case "edit":    $TEMPLATE->assign('showForm', true);
+
+                        $new_curriculum          = new Curriculum(); 
+                        $new_curriculum->id      = filter_input(INPUT_GET, 'c_id', FILTER_VALIDATE_INT);
+                        if ($new_curriculum->id != null) {
+                            $new_curriculum->load();
+                        }
+                        assign_to_template($new_curriculum, 'c_');
+                        $TEMPLATE->assign('editBtn', true);
             break;
         default: break;
     }
@@ -43,118 +52,87 @@ if ($_POST){
     $new_curriculum = new Curriculum();
     switch ($_POST) {
         case isset($_POST['add']):
-        case isset($_POST['update']):   if (isset($_POST['edit_curriculum_id'])){
-                                            $new_curriculum->id             = $_POST['edit_curriculum_id'];    
+        case isset($_POST['update']):   if (isset($_POST['c_id'])){
+                                            $new_curriculum->id         = filter_input(INPUT_POST, 'c_id',          FILTER_VALIDATE_INT);
                                         }
-                                        $new_curriculum->curriculum     = $_POST['curriculum'];    
-                                        $new_curriculum->description    = $_POST['description'];  
-                                        $new_curriculum->subject_id     = $_POST['subject'];
-                                        $new_curriculum->grade_id       = $_POST['grade'];  
-                                        $new_curriculum->schooltype_id  = $_POST['schooltype'];  
-                                        $new_curriculum->state_id       = $_POST['state'];  
-                                        $new_curriculum->country_id     = $_POST['country'];  
-                                        $new_curriculum->icon_id        = $_POST['icon'];  
+                                        $new_curriculum->curriculum     = filter_input(INPUT_POST, 'c_curriculum',  FILTER_SANITIZE_STRING);
+                                        $new_curriculum->description    = filter_input(INPUT_POST, 'c_description', FILTER_SANITIZE_STRING);  
+                                        $new_curriculum->subject_id     = filter_input(INPUT_POST, 'c_subject',     FILTER_VALIDATE_INT);
+                                        $new_curriculum->grade_id       = filter_input(INPUT_POST, 'c_grade',       FILTER_VALIDATE_INT);
+                                        $new_curriculum->schooltype_id  = filter_input(INPUT_POST, 'c_schooltype',  FILTER_VALIDATE_INT);
+                                        $new_curriculum->state_id       = filter_input(INPUT_POST, 'c_state',       FILTER_VALIDATE_INT);
+                                        $new_curriculum->country_id     = filter_input(INPUT_POST, 'c_country',     FILTER_VALIDATE_INT);
+                                        $new_curriculum->icon_id        = filter_input(INPUT_POST, 'c_icon',        FILTER_VALIDATE_INT);
                                         $new_curriculum->creator_id     = $USER->id;  
-                                        $gump = new Gump(); /* Validation */
+                                        $gump = new Gump();             /* Validation */
+                                        $_POST = $gump->sanitize($_POST);//sanitize $_POST
                                         $gump->validation_rules(array(
-                                        'curriculum'     => 'required',
-                                        'description'    => 'required',
-                                        'subject'        => 'required',
-                                        'grade'          => 'required',
-                                        'schooltype'     => 'required',
-                                        'state'          => 'required',
-                                        'country'        => 'required',
-                                        'icon'           => 'required'
+                                        'c_curriculum'     => 'required',
+                                        'c_description'    => 'required',
+                                        'c_subject'        => 'required',
+                                        'c_grade'          => 'required',
+                                        'c_schooltype'     => 'required',
+                                        'c_state'          => 'required',
+                                        'c_country'        => 'required',
+                                        'c_icon'           => 'required'
                                         ));
                                         $validated_data = $gump->run($_POST);
                                         if($validated_data === false) {/* validation failed */
-                                                foreach($new_curriculum as $key => $value){
-                                                $TEMPLATE->assign($key, $value);
-                                                } 
-                                                $TEMPLATE->assign('v_error', $gump->get_readable_errors());     
-                                                $TEMPLATE->assign('edit_form', true); 
-                                                if (isset($_POST['update'])){
-                                                    $TEMPLATE->assign('edit_form', true);
-                                                }
-                                            } else {/* validation successful */
-                                                
-                                                if (isset($_POST['add'])){
-                                                    $new_curriculum->add();
-                                                }
-                                                if (isset($_POST['update'])){
-                                                    $new_curriculum->update();
-                                                }            
+                                            assign_to_template($new_curriculum);    
+                                            $TEMPLATE->assign('v_error', $gump->get_readable_errors());     
+                                            $TEMPLATE->assign('showForm', true); 
+                                            if (isset($_POST['update'])){ $TEMPLATE->assign('showForm', true); }
+                                        } else {/* validation successful */    
+                                            if (isset($_POST['add']))   { $new_curriculum->add(); }
+                                            if (isset($_POST['update'])){ $new_curriculum->update();}            
                                         }  
             break;
 
-        default:
-            break;
+        default: break;
     }    
 }
 /*******************************************************************************
  * END POST / GET
  */
-
+$TEMPLATE->assign('page_title', 'Lehrpläne verwalten'); 
 $curricula = new Curriculum(); 
-
-/**
- * load edit form data
- * @param array $TEMPLATE
- * @param int $check 
- */
-function loadeditFormData ($TEMPLATE, $check = null) {
-    $TEMPLATE->assign('edit_form', true);
-    
-    
-    $new_curriculum = new Curriculum(); 
-    $new_curriculum->id = $check; 
-    if ($check != null) {
-        $new_curriculum->load();
-    }
-    
-    $TEMPLATE->assign('edit_curriculum_id', $new_curriculum->id);
-    $TEMPLATE->assign('curriculum',         $new_curriculum->curriculum);                
-    $TEMPLATE->assign('description',        $new_curriculum->description);
-    $TEMPLATE->assign('subject_id',         $new_curriculum->subject_id);
-    $TEMPLATE->assign('icon_id',            $new_curriculum->icon_id);
-    $TEMPLATE->assign('grade_id',           $new_curriculum->grade_id);
-    $TEMPLATE->assign('schooltype_id',      $new_curriculum->schooltype_id);
-    $TEMPLATE->assign('state_id',           $new_curriculum->state_id);
-    $TEMPLATE->assign('country_id',         $new_curriculum->country_id);
-}
 
 // Markierte Zeilen assignen - sonst funktioniert der Paginator nicht
 if (isset($_SESSION["PaginatorID"])) {           
     $TEMPLATE->assign('selectedID', str_replace('/','',$_SESSION["PaginatorID"])); //Setzt den ausgewählten Wert in der Curriculumtabelle
 }
-$TEMPLATE->assign('page_message',   $PAGE->message);
-$TEMPLATE->assign('page_title', 'Lehrpläne verwalten');  //$Page Title
 
-//Load country 
-$countries = new State('DE'); 
-
-$TEMPLATE->assign('countries',      $countries->load($INSTITUTION->institution_standard_country));
+$countries = new State('DE');                                                   //Load country 
+$TEMPLATE->assign('countries',      $countries->load($INSTITUTION->country_id));
 $TEMPLATE->assign('states',         $countries->getStates());
 
-// Load schooltype 
-$schooltypes = new Schooltype(); 
+$schooltypes = new Schooltype();                                                // Load schooltype 
 $TEMPLATE->assign('schooltypes',    $schooltypes->getSchooltypes());
             
-// Load grades
-$grades = new Grade(); 
-$grades->institution_id             = $USER->institutions["id"];
+$grades = new Grade();                                                          // Load grades
+$grades->institution_id             = $USER->institutions;
 $TEMPLATE->assign('grades',         $grades->getGrades());
 
-// Load subjects
-$subjects = new Subject(); 
-$subjects->institution_id           = $USER->institutions["id"];
+$subjects = new Subject();                                                      // Load subjects
+$subjects->institution_id           = $USER->institutions;
 $TEMPLATE->assign('subjects',       $subjects->getSubjects());
  
-// Load icons
-$icons = new File();
+$icons = new File();                                                            // Load icons
 $TEMPLATE->assign('icons',          $icons->getFiles('context', 5));
 
-// Load curriculum
-$curriculum_list = $curricula->getCurricula('user', $USER->id);
-setPaginator('curriculumPaginator', $TEMPLATE, $curriculum_list, 'results', 'index.php?action=curriculum'); //set Paginator    
-?>
+
+$p_options = array('delete' => array('onclick'      => "del('curriculum',__id__, $USER->id);", 
+                                     'capability'   => checkCapabilities('curriculum:delete', $USER->role_id, false)),
+                   'add'    => array('href'         => 'index.php?action=view&function=addObjectives&curriculum=__id__', 
+                                     'capability'   => checkCapabilities('curriculum:addObjectives', $USER->role_id, false)),
+                   'edit'   => array('href'         => 'index.php?action=curriculum&function=edit&c_id=__id__'),
+                                     'capability'   => checkCapabilities('curriculum:update', $USER->role_id, false),);
+$p_config  = array('curriculum'  => 'Lehrplan', 
+                   'description' => 'Beschreibung', 
+                   'subject'     => 'Fach',
+                   'grade'       => 'Klassenstufe',
+                   'schooltype'  => 'Schultyp',
+                   'state'       => 'Bundesland/Region',
+                   'de'          => 'Land',
+                   'p_options'   => $p_options);
+setPaginator('curriculumP', $TEMPLATE, $curricula->getCurricula('user', $USER->id, 'curriculumP'), 'cu_val', 'index.php?action=curriculum', $p_config);

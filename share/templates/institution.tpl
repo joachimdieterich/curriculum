@@ -6,126 +6,100 @@
 {block name=additional_scripts}{$smarty.block.parent}{/block}
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
-{block name=content}
-    
+{block name=content}    
 <div class="border-box">
-    <div class="contentheader ">{$page_title}</div>
-    <div>
-        
-        {if checkCapabilities('institution:add', $my_role_id, false)}
-            {if !isset($showInstitutionForm)}
+    <div class="contentheader ">{$page_title}<input class="curriculumdocsbtn floatright" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Institutionen');"/></div>     
+        {if !isset($showForm) && checkCapabilities('institution:add', $my_role_id, false)}
             <p class="floatleft  cssimgbtn gray-border">
-                <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=institution&function=newInstitution">Institution hinzufügen</a>
-            </p>
-            {/if}
-        {/if}
-        <p>&nbsp;</p><p>&nbsp;</p>
-        {if isset($showInstitutionForm)}
-        <form method='post' action='index.php?action=institution'>
-        <p>&nbsp;</p>
-        <p><h3>Institution</h3></p>
-        <input type='hidden' name='id' id='id' {if isset($id)}value='{$id}'{/if} />   
-        <p><label>Institution / Schule*: </label><input class='inputlarge' type='text' name='institution' id='institution' {if isset($institution)}value='{$institution}'{/if} /></p> 
-        {validate_msg field='institution'}
-        <p><label>Beschreibung*: </label><input class='inputlarge' type='description' name='description' {if isset($description)}value='{$description}'{/if}/></p>
-        {validate_msg field='institution_description'}
-        <p id="schooltype_list"><label>Schultyp: </label><select name="schooltype_id" >
-            {section name=res loop=$schooltype}  
-                <option value={$schooltype[res]->id} {if isset($schooltype_id) AND $schooltype[res]->id eq $schooltype_id}selected="selected"{/if}>{$schooltype[res]->schooltype}</option>
-            {/section}
-            </select></p>  
-        <p><label>Anderer Schultyp... </label><input class="centervertical" type="checkbox" name='btn_newSchooltype' value='Neuen Schultyp anlegen' onclick="checkbox_addForm(this.checked, 'inline', 'newSchooltype', 'schooltype_list')"/></p>
-        <div id="newSchooltype" style="display:none;">
-            <p><label>Schultyp: </label><input class='inputlarge' type='text' name='new_schooltype' id='schooltype_id' {if isset($new_schooltype)}value='{$new_schooltype}'{/if} /></p> 
-            <p><label>Beschreibung: </label><input class='inputlarge' type='text' name='schooltype_description' {if isset($schooltype_description)}value='{$schooltype_description}'{/if}/></p>
-        </div>
-        <p><label>Land: </label><select name="country" id="country" onchange="loadStates(this.value);">
-            {section name=res loop=$countries}  
-                <option label={$countries[res]->de} value={$countries[res]->id} {if isset($country_id) AND $countries[res]->id eq $country_id}selected="selected"{/if}>{$countries[res]->de} </option>
-            {/section}
-        </select></p>
-
-        <p id="states">
-            {if isset($state_id)}
-            <label>Bundesland / Region: </label><SELECT name="state" />
-            {section name=s_id  loop=$state}
-                <OPTION label={$state[s_id]->state} value={$state[s_id]->id} {if $state[s_id]->id eq ($state_id)}selected="selected"{/if}>{$state[s_id]->state}</OPTION>
-            {/section} 
-            </SELECT>
-            {else}<script src="{$media_url}scripts/script.js"></script>
-                  <script type='text/javascript'>loadStates(document.getElementById('country').value);</script>{/if}
-        </p>
-        
-        {if !isset($showeditInstitutionForm)}
-        <p><label></label><input type='submit' name='addInstitution' value='Institution hinzufügen' /></p>
+                <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=institution&function=new">Institution hinzufügen</a>
+            </p>            
         {else}
-        <p><label></label><input type='submit' name="back" value='zurück'/><input type='submit' name="updateInstitution" value='Institution aktualisieren' /></p>
-	{/if}
-        </form>	
-        {/if}
-    </div>
-         <form id='institutionlist' method='post' action='index.php?action=institution&next={$currentUrlId}'>
-            <p>&nbsp;</p>
-    {if $data != null}
-        {* display pagination header *}
-        <p class="floatright">Datensätze {$institutionPaginator.first}-{$institutionPaginator.last} von {$institutionPaginator.total} werden angezeigt.</p>   
-            <table id="contenttable">
-                    <tr id="contenttablehead">
-                        <td></td>    
-                    {*<td>Fach-ID</td>*}
-                    <td>Institution</td>
-                    <td>Beschreibung</td>
-                    <td>Schultyp</td>
-                    <td>Bundesland/Region</td>
-                    <td>Land</td>
-                    <td>Erstellungsdatum</td>
-                    <td>Administrator</td>
-                    
-                    <td class="td_options">Optionen</td>
-            </tr>
+            <form id='institutionForm' method='post' action='index.php?action=institution'>
+            <p><h3>Institution</h3></p>
+            <input id='id' name='id' type='hidden' {if isset($id)}value='{$id}'{/if} />   
+            <p><label>Institution / Schule*: </label>   <input id='institution' name='institution' class='inputlarge' {if isset($institution)}value='{$institution}'{/if} /></p> 
+            {validate_msg field='institution'}
+            <p><label>Beschreibung*: </label>           <input name='description'class='inputlarge' {if isset($description)}value='{$description}'{/if}/></p>
+            {validate_msg field='description'}
+            <p id="schooltype_list"><label>Schultyp: </label>
+                <select name="schooltype_id" >
+                {section name=res loop=$schooltype}  
+                    <option value={$schooltype[res]->id} {if isset($schooltype_id) AND $schooltype[res]->id eq $schooltype_id}selected="selected"{/if}>{$schooltype[res]->schooltype}</option>
+                {/section}
+                </select>
+            </p>  
+            <p><label>Anderer Schultyp... </label>      <input name='btn_newSchooltype' type="checkbox" class="centervertical" value='Neuen Schultyp anlegen' onclick="checkbox_addForm(this.checked, 'inline', 'newSchooltype', 'schooltype_list');"/></p>
+            <div id="newSchooltype" style="display:none;">
+                <p><label>Schultyp: </label>            <input id='schooltype_id' name='new_schooltype' class='inputlarge' {if isset($new_schooltype)}value='{$new_schooltype}'{/if} /></p> 
+                <p><label>Beschreibung: </label>        <input name='schooltype_description' class='inputlarge' {if isset($schooltype_description)}value='{$schooltype_description}'{/if}/></p>
+            </div>
+            <p><label>Land: </label>
+                <select name="country_id" id="country_id" onchange="getStates(this.value);">
+                {section name=res loop=$countries}  
+                    <option label={$countries[res]->de} value={$countries[res]->id} {if isset($country_id) AND $countries[res]->id eq $country_id}selected="selected"{/if}>{$countries[res]->de} </option>
+                {/section}
+                </select>
+            </p>
+            <p id="states">
+                {if isset($state_id)}
+                    <label>Bundesland / Region: </label><SELECT name="state_id" />
+                    {section name=s_id  loop=$state}
+                        <OPTION label={$state[s_id]->state} value={$state[s_id]->id} {if $state[s_id]->id eq ($state_id)}selected="selected"{/if}>{$state[s_id]->state}</OPTION>
+                    {/section} 
+                    </SELECT>
+                {else}
+                    <script type='text/javascript'>getStates(document.getElementById('country').value);</script>
+                {/if}
+            </p>
+            {if checkCapabilities('file:upload', $my_role_id, false)}
+                <p><label>Logo: </label><input  id="file_id" name='file_id' {if isset($file_id)}value='{$file_id}'{/if} onclick="tb_show('','../share/request/uploadframe.php?userID={$my_id}&last_login={$my_last_login}&context=institution&curID={$id}&target=file_id&format=0&multiple=false&modal=true&TB_iframe=true&width=710')" href="#" class="thickbox"/>
+                {validate_msg field='file_id'}
+            {/if}
             
-            {* display results *}    
-            {section name=ins loop=$institution_list}
-                <tr class="contenttablerow" id="row{$institution_list[ins]->id}" onclick="checkrow({$institution_list[ins]->id})">
-                    <td><input class="invisible" type="checkbox" id="{$institution_list[ins]->id}" name="id[]" value={$institution_list[ins]->id} /></td>
-                    {*<td>{$institution_list[institution]->id}</td>*}
-                    <td>{$institution_list[ins]->institution}</td>
-                    <td>{$institution_list[ins]->description}</td>
-                    <td>{$institution_list[ins]->schooltype_id}</td>
-                    <td>{$institution_list[ins]->state_id}</td>
-                    <td>{$institution_list[ins]->country}</td>
-                    <td>{$institution_list[ins]->creation_time}</td>
-                    <td>{$institution_list[ins]->creator_id}</td>
-                    <td class="td_options">
-                        {if checkCapabilities('institution:delete', $my_role_id, false)}
-                            <a class="deletebtn floatright" type="button" name="delete" onclick="del('institution',{$institution_list[ins]->id}, {$my_id})"></a>
-                        {else}
-                            <a class="deletebtn deactivatebtn floatright" type="button"></a>
-                        {/if}
-                        {if checkCapabilities('institution:update', $my_role_id, false)}
-                            <a class="editbtn floatright" href="index.php?action=institution&edit=true&id={$institution_list[ins]->id}"></a>
-                        {else}
-                            <a class="editbtn deactivatebtn floatright"></a>
-                        {/if}
-                        </td>
-                </tr>
-            {/section}
-            
-            </table>
+            <p><h3>Einstellungen</h3></p>
+            <p><label>Rolle</label>
+                <SELECT  name='std_role' id='std_role' />
+                    {foreach key=rolid item=rol from=$roles}
+                        <OPTION  value="{$rol->id}" {if $rol->id eq $std_role}selected="selected"{/if}>{$rol->role}</OPTION>
+                    {/foreach} 
+            </SELECT></p>
+            <p><label>Anzahl der Listeneinträge: </label><input name='paginator_limit' type='number' min="5" max="150" {if isset($paginator_limit)}value='{$paginator_limit}'{/if}/></p>
+            {validate_msg field='paginator_limit'}
+            <p><label>Lernerfolge x Tage anzeigen : </label><input name='acc_days' type='number' min="1" max="365" {if isset($acc_days)}value='{$acc_days}'{/if}/></p>
+            {validate_msg field='acc_days'}
 
-                    <!--Hack für problem, dass kein Array gepostet wird, wenn nichts angewählt wird-->
-            <input class="invisible" type="checkbox" name="id[]" value="none" checked />
-            {* display pagination info *}
-            <p class="floatright">{paginate_prev id="institutionPaginator"} {paginate_middle id="institutionPaginator"} {paginate_next id="institutionPaginator"}</p>
-             <p>&nbsp;</p>
+            <p><label>Timeout (Minuten): </label><input id='timeout' name='timeout' type='number' min="1" max="240"  value={$timeout} /></p>
+            {validate_msg field='timeout'}
+            <p><label>Semester: </label>
+                {if $my_semester_id != NULL}
+                    <select name="semester_id"> 
+                    {section name=res loop=$mySemester}  
+                            <OPTION label="{$mySemester[res]->semester}" value={$mySemester[res]->id} {if $mySemester[res]->id eq $semester_id}selected{/if}>{$mySemester[res]->semester}</OPTION>{/section}
+                    </select>
+                    {else}Sie müssen zuerst einen Lernzeitraum anlegen{/if}{validate_msg field='semester_id'}
+                            
+            <p><h3>Dateien und Pfade</h3></p>
+                <p>Legt fest wie groß Dateien beim Upload sein dürfen.</p>
+                <p> Maximale Uploadgröße dieses Servers = {$post_max_size} ({$byte} Byte)</p>
+                <p><label>csv-Dateien: </label><input id='csv_size' name='csv_size' type='number' min="5000" max="1048576" value={if isset($csv_size)}{$csv_size}{else}{$institution_csv_size}{/if} /> csv-Dateien für den Benutzerimport</p>
+                {validate_msg field='csv_size'}
+                <p><label>Profilfotos: </label><input id='avatar_size' name='avatar_size' type='number' min="5000" max="1048576" value={if isset($avatar_size)}{$avatar_size}{else}{$institution_avatar_size}{/if} /> Bild-Dateien für das Profilfoto</p>
+                {validate_msg field='avatar_size'}
+                <p><label>sonst. Dateien: </label><input id='material_size' name='material_size' type='number' min="5000" max="1048576" value={if isset($material_size)}{$material_size}{else}{$institution_material_size}{/if} /> Dateien für Materialupload</p>
+                {validate_msg field='material_size'}                
+            {if !isset($editBtn)}
+                <p><label></label><input name='add' type='submit' value='Institution hinzufügen' /></p>
+            {else}
+                <p><label></label><input name='back' type='submit' value='zurück'/><input type='submit' name="update" value='Institution aktualisieren' /></p>
+            {/if}
+            <script type='text/javascript'>
+                document.getElementById('institution').focus();
+            </script>      
+            </form>	
         {/if}
-        </form>          
-            
-            
-</div>  <script src="{$media_url}scripts/script.js"></script>
-        <script type='text/javascript'>
-	document.getElementById('institution').focus();
-	</script>            
+        
+        {html_paginator id='institutionP' values=$in_val config=$institutionP_cfg}
+</div>  
 {/block}
 
 {block name=sidebar}{$smarty.block.parent}{/block}

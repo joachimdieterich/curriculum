@@ -9,26 +9,20 @@
 
 {block name=content}
 <div>
-    <!--<h3 class="{$page_name}">{$page_title}</h3>-->
     <div class="centerbox">
-        <div class="centerboxcorrection ">	
-            <div class="centerbox_header">Login</div> 
-                <p class="linie">&nbsp;</p>        
-                <form class="space-top" action='index.php?action=login' method='post'>
-                    <p><label >Anmeldename </label><input type='text' name='username' id='username' {if isset($username)}value='{$username}'{/if}></p>
-                    <p><label >Kennwort  </label><input type='password' name='password' ></p>
-                    <p class="linie">&nbsp;</p>
-                    <p><label ></label><input type='submit' name='login' value='Anmelden' >
-                        <p>Cookies müssen aktiviert sein!</p>
-                    </p>
-                </form>	
-
-        </div>
+        <div class="centerbox_header">Login</div> 
+        <br>       
+        <form class="space-top" action='index.php?action=login' method='post'>
+            <p><label >Anmeldename </label><span {*class="tooltip" data-tooltip="Anmeldenamen eingeben"*} ><input id='username' name='username'{if isset($username)}value='{$username}'{/if}/></span></p>
+            <p><label >Kennwort  </label><span {*class="tooltip" data-tooltip="Passwort eingeben"*}><input name='password' class="tooltip" data-tooltip="Anmeldenamen eingeben" type='password'/></span></p>
+            <br>
+            <p><label ></label><input name='login' type='submit' value='Anmelden' >
+                <p>Cookies müssen aktiviert sein!</p>
+            </p>
+            <script type='text/javascript'>document.getElementById('username').focus();</script>
+        </form>	
     </div>    
 </div>    
-        <script type='text/javascript'>
-	document.getElementById('username').focus();
-	</script>
 {/block}
 
 {block name=sidebar}{$smarty.block.parent}{/block}

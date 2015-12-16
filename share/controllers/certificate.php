@@ -8,114 +8,82 @@
  * @date 2014.07.30 22:43
  * @license: 
 *
-* This program is free software; you can redistribute it and/or modify 
-* it under the terms of the GNU General Public License as published by  
-* the Free Software Foundation; either version 3 of the License, or     
-* (at your option) any later version.                                   
+* This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by  
+* the Free Software Foundation; either version 3 of the License, or (at your option) any later version.                                   
 *                                                                       
-* This program is distributed in the hope that it will be useful,       
-* but WITHOUT ANY WARRANTY; without even the implied warranty of        
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         
-* GNU General Public License for more details:                          
+* This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of        
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details:                          
 *                                                                       
 * http://www.gnu.org/copyleft/gpl.html      
 */
 global $PAGE, $USER, $TEMPLATE;
 
-if(isset($_GET['reset']) OR (isset($_POST['reset']))){
-    resetPaginator('userPaginator');            
+if (isset($_GET['function'])) {
+     switch ($_GET['function']) {
+        case "new":     checkCapabilities('certificate:add',    $USER->role_id);
+                        $TEMPLATE->assign('showForm',           true); 
+                break;   
+        case "edit":    checkCapabilities('certificate:add',    $USER->role_id);
+                        $TEMPLATE->assign('showForm',           true);
+                        $TEMPLATE->assign('editBtn',            true);
+
+                        $edit_certificate       = new Certificate();
+                        $edit_certificate->id   = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+                        $edit_certificate->load();
+                        $TEMPLATE->assign('institution_id',            $edit_certificate->institution_id);
+                        assign_to_template($edit_certificate);  
+                break;   
+             
+        default: break;
+     }
 }
 
-$showuser = false;  //zurücksetzen
-$show_course = false; // zurücksetzen
 
-$selected_curriculum = (isset($_GET['course']) && trim($_GET['course'] != '') ? $_GET['course'] : '_'); //'_' ist das Trennungszeichen 
-$selected_curriculumforURL = $selected_curriculum;
-$selected_user_id = (isset($_GET['userID']) && trim($_GET['userID'] != '') ? $_GET['userID'] : '');
-$TEMPLATE->assign('selected_curriculum', $selected_curriculum);
-$TEMPLATE->assign('selected_user_id', $selected_user_id);
-list ($selected_curriculum, $selected_group) = explode('_', $selected_curriculum); //$selected_curriculum enthält curriculumid_groupid (zb. 32_24) wenn nur '_' gesetzt ist werden beide variabeln ''
-$TEMPLATE->assign('sel_curriculum', $selected_curriculum); //only selected curriculum without group
-$TEMPLATE->assign('sel_group_id', $selected_group); //only selected curriculum without group
-if(isset($_POST['generateCertificate'])) {
-    $vorlage = $_POST['certificate_html'];
-    $certificate = new Pdf();
-    //$certificate->content = $_POST['certificate_html'];
-    $certificate->content = $vorlage;
-    $certificate->curriculum_id = $_POST['sel_curriculum'];
-    $certificate->user_id = $_POST['sel_user_id'];
+if($_POST){
+    $new_certificate = new Certificate();
+    if (isset($_POST['id'])){
+        $new_certificate->id         = filter_input(INPUT_POST, 'id',          FILTER_VALIDATE_INT);  
+    }
+    $new_certificate->certificate    = filter_input(INPUT_POST, 'certificate', FILTER_SANITIZE_STRING);
+    $new_certificate->description    = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);
+    $new_certificate->template       = filter_input(INPUT_POST, 'template',    FILTER_UNSAFE_RAW);
+    $new_certificate->creator_id     = $USER->id;
+    $new_certificate->institution_id = filter_input(INPUT_POST, 'institution_id', FILTER_VALIDATE_INT);
 
-    $certificate->generate_pdf('from_template');
-}           
+    $gump = new Gump();                 /* Validation */
+    $_POST = $gump->sanitize($_POST);   //sanitize $_POST
+    $gump->validation_rules(array(
+    'certificate'   => 'required',
+    'description'   => 'required',
+    'template'      => 'required'
+    ));
+    $validated_data = $gump->run($_POST);
 
-if ($selected_curriculum != '') { 
-    $course_user = new User();
-    $course_user->id = $USER->id;
-    $users = $course_user->getUsers('course', $selected_curriculum);
-    if (is_array($users)){
-        $user_id_list = array_map(function($user) { return $user->id; }, $users); 
-        setPaginator('userPaginator', $TEMPLATE, $users, 'results', 'index.php?action=certificate&course='.$selected_curriculumforURL); //set Paginator    
-    } else { $showuser = true; }  
-}    
-
-/*******************************************************************************
+    if($validated_data === false) {/* validation failed */
+        assign_to_template($new_certificate);  
+        $TEMPLATE->assign('v_error', $gump->get_readable_errors());     
+        $TEMPLATE->assign('showForm', true); 
+    } else {/* validation successful */
+        if (isset($_POST['addCertificate']))    { $new_certificate->add(); }
+        if (isset($_POST['updateCertificate'])) { $new_certificate->update(); }       
+    }      
+} 
+/******************************************************************************
  * End POST / GET
  */
-$vorlage = '<p style="text-align: center;"></p>
-                <div class="section">
-                <div class="section">
-                <div class="layoutArea">
-                <div class="column">
-                <p style="text-align: center;">Meine Institution | Hauptstraße 1 | 12345 Meine Stadt</p>
-                <h1 style="text-align: center;"><strong>Zertifikat</strong></h1>
-                <h2>Mein Lehrplan</h2>
-                <p></p>
-                <h3><!--Vorname--> <!--Nachname--></h3>
-                <p>hat erfolgreich die folgenden Ziele des Lehrplanes abgeschlossen.</p>
-                <!--Start-->
-                <table>
-                <tbody>
-                <tr>
-                <td>Ich kann&nbsp;</td>
-                <td>mit Hilfestellung</td>
-                <td>selbstst&auml;ndig</td>
-                </tr>
-                <tr>
-                <td><!--Thema--></td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                </tr>
-                <!--Ziel_Start-->
-                <tr>
-                <td><!--Ziel--></td>
-                <td><!--Ziel_erreicht--></td>
-                <td><!--Ziel_offen--></td>
-                </tr>
-                <!--Ziel_Ende-->
-                </tbody>
-                </table>
-                <!--Ende-->
-                </div>
-                </div>
-                </div>
-                </div>
-                <p></p>
-                <div class="column">
-                <p>Meine Stadt, <!--Datum--></p>
-                <p>&nbsp;</p>
-                <p>__________________________________</p>
-                <p>Mein Name</p>
-                </div>';
-$TEMPLATE->assign('certificate_html', $vorlage);
-
-$TEMPLATE->assign('showuser', $showuser);
-$TEMPLATE->assign('show_course', $show_course);
-
-
-// Load courses
-$courses = new Course(); 
-$TEMPLATE->assign('courses', $courses->getCourse('admin', $USER->id)); 
-
 $TEMPLATE->assign('page_title', 'Zertifikat einrichten');    
-$TEMPLATE->assign('page_message', $PAGE->message);
-?>
+
+$certificate = new Certificate();
+$certificate->institution_id = $USER->institutions;
+
+$p_options = array('delete' => array('onclick' => "del('certificate',__id__, $USER->id);", 
+                                     'capability' => checkCapabilities('certificate:delete', $USER->role_id, false)),
+                    'edit'  => array('href'    => 'index.php?action=certificate&function=edit&id=__id__'),
+                                     'capability' => checkCapabilities('certificate:update', $USER->role_id, false));
+$p_config =   array('certificate' => 'Titel des Zertifikat-Vorlage', 
+                  'description'   => 'Beschreibung', 
+                  'institution'   => 'Institution', 
+                  'creation_time' => 'Erstellungs-Datum',
+                  'username'      => 'Erstellt von',
+                  'p_options'     => $p_options);
+setPaginator('certificateP', $TEMPLATE, $certificate->getCertificates('certificateP'), 'ct_val', 'index.php?action=certificate', $p_config); //set Paginator

@@ -7,98 +7,40 @@
 {block name=additional_scripts}{$smarty.block.parent}{/block}
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
-{block name=content}
-    
+{block name=content}   
 <div class="border-box">
-    <div class="contentheader">{$page_title}</div>
-    <div>
-        {if checkCapabilities('semester:add', $my_role_id, false)}
-            {if !isset($showSemesterForm)}
-                <p class="floatleft cssimgbtn gray-border">
-                    <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=semester&newSemester">Lernzeitraum hinzufügen</a>
-                </p><p>&nbsp;</p>
-            {/if}
-        {/if}
-        {if isset($showSemesterForm)}
-        <form id='addSemester' method='post' action='index.php?action=semester&next={$currentUrlId}'>
-        <input class='inputlarge' type='hidden' name='id' id='id' {if isset($id)}value='{$id}'{/if} />       
-        <p><label>Lernzeitraum*:</label><input class='inputlarge' name='semester' id='semester' {if isset($semester)}value='{$semester}'{/if} /></p>   
+    <div class="contentheader">{$page_title}<input class="curriculumdocsbtn floatright" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Lernzeitr%C3%A4ume_verwalten');"/></div>
+    {if !isset($showForm) && checkCapabilities('semester:add', $my_role_id, false)}
+        <p class="floatleft cssimgbtn gray-border">
+            <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=semester&function=new">Lernzeitraum hinzufügen</a>
+        </p>
+    {else}
+        <form id='semesterForm' method='post' action='index.php?action=semester&next={$currentUrlId}'>
+        <input id='id' name='id' type='hidden' {if isset($id)}value='{$id}'{/if}/>       
+        <p><label>Lernzeitraum*:</label>        <input id='semester' name='semester' class='inputlarge' {if isset($semester)}value='{$semester}'{/if} /></p>   
         {validate_msg field='semester'}
-	<p><label>Beschreibung*:</label><input class='inputlarge' name='description' {if isset($description)}value='{$description}'{/if}/></p>
-	{validate_msg field='description'}
-        <p><label>Lernzeitraum-Beginn*:</label><input type='date' id='begin' name='begin' {if isset($begin)}value='{$begin}'{/if}/>
-	{validate_msg field='begin'}
-        <p><label>Lernzeitraum-Ende*:</label><input type='date' id='end' name='end' {if isset($end)}value='{$end}'{/if}/>
+        <p><label>Beschreibung*:</label>        <input id='description' name='description' class='inputlarge' {if isset($description)}value='{$description}'{/if}/></p>
+        {validate_msg field='description'}
+        <p><label>Lernzeitraum-Beginn*:</label> <input id='begin' name='begin' type='date' {if isset($begin)}value='{$begin}'{/if}/>
+        {validate_msg field='begin'}
+        <p><label>Lernzeitraum-Ende*:</label>   <input id='end' name='end' type='date' {if isset($end)}value='{$end}'{/if}/>
         {validate_msg field='end'}
-        {if count($my_institutions['id']) > 1}
-            <p><label>Institution / Schule*: </label>{html_options id='institution' name='institution' values=$my_institutions['id'] output=$my_institutions['institution']}</p>
-        {elseif count($my_institutions['id']) eq 0}
-            <p><strong>Sie müssen zuerst eine Institution anlegen</strong></p>
+        <p><label>Institution / Schule*:</label><SELECT  name='institution_id' id='institution_id' />
+            {foreach key=insid item=ins from=$my_institutions}
+                <OPTION  value="{$ins->institution_id}"  {if $ins->institution_id eq $institution_id}selected="selected"{/if}>{$ins->institution}</OPTION>
+            {/foreach} 
+        </SELECT></p>
+        {if !isset($editBtn)}
+            <p><label></label><input name="add" type='submit' value='Lernzeitraum erstellen' /></p>
         {else}
-            <input type='hidden' name='institution' id='institution' value='{$my_institutions['id'][0]}' /></p>       
+            <p><label></label><input name="back" type='submit' value='zurück'/><input name="update" type='submit' value='Lernzeitraum aktualisieren' /></p>
         {/if}
-            {if !isset($showeditSemesterForm)}
-            <p><label></label><input type='submit' name="addSemester" value='Lernzeitraum erstellen' /></p>
-            {else}
-            <p><label></label><input type='submit' name="back" value='zurück'/><input type='submit' name="updateSemester" value='Lernzeitraum aktualisieren' /></p>
-            {/if}
-        
-	</form>	
-        {/if}
-         
-        <form id='semesterlist' method='post' action='index.php?action=semester&next={$currentUrlId}'>
-            <p>&nbsp;</p>
-    {if $data != null}
-        {* display pagination header *}
-        <p class="floatright">Datensätze {$semesterPaginator.first}-{$semesterPaginator.last} von {$semesterPaginator.total} werden angezeigt.</p>   
-            <table id="contenttable">
-                    <tr id="contenttablehead">
-                    <td></td>    
-                    <td>Lernzeitraum</td>
-                    <td>Beschreibung</td>
-                    <td>Lernzeitraum-Beginn</td>
-                    <td>Lernzeitraum-Ende</td>
-                    <td>Erstellungsdatum</td>
-                    <td>Erstellt von</td>
-                    
-                    <td class="td_options">Optionen</td>
-            </tr>
-            {section name=semester loop=$semester_list}{* display results *}
-                <tr class="contenttablerow" id="row{$semester_list[semester]->id}" onclick="checkrow({$semester_list[semester]->id})">
-                    <td><input class="invisible" type="checkbox" id="{$semester_list[semester]->id}" name="id[]" value={$semester_list[semester]->id} /></td>
-                    <td>{$semester_list[semester]->semester}</td>
-                    <td>{$semester_list[semester]->description}</td>
-                    <td>{$semester_list[semester]->begin}</td>
-                    <td>{$semester_list[semester]->end}</td>
-                    <td>{$semester_list[semester]->creation_time}</td>
-                    <td>{$semester_list[semester]->creator_username}</td>
-                   
-                    <td>
-                        {if checkCapabilities('subject:delete', $my_role_id, false)}
-                            <a class="deletebtn floatright" type="button" name="delete" onclick="del('semester',{$semester_list[semester]->id}, {$my_id})"></a>
-                        {else}
-                            <a class="deletebtn deactivatebtn floatright" type="button" ></a>
-                        {/if}
-                        {if checkCapabilities('subject:update', $my_role_id, false)}
-                            <a class="editbtn floatright" href="index.php?action=semester&edit=true&id={$semester_list[semester]->id}"></a>
-                        {else}    
-                            <a class="editbtn deactivatebtn floatright" ></a>
-                        {/if}
-                        </td>
-                </tr>
-            {/section}
-            </table>  
-            <input class="invisible" type="checkbox" name="id[]" value="none" checked /><!--Hack für problem, dass kein Array gepostet wird, wenn nichts angewählt wird-->
-            {* display pagination info *}
-            <p class="floatright">{paginate_prev id="semesterPaginator"} {paginate_middle id="semesterPaginator"} {paginate_next id="semesterPaginator"}</p>
-        {/if}
-
-        </form>              
-        <p>&nbsp;</p>
+        </form>	
+        <script type='text/javascript'> document.getElementById('semester').focus(); </script>
+    {/if} 
+    
+    {html_paginator id='semesterP' values=$se_val config=$semesterP_cfg}         
 </div>
-       {* <script type='text/javascript'>
-	document.getElementById('semester').focus();
-	</script>*}
 {/block}
 
 {block name=sidebar}{$smarty.block.parent}{/block}

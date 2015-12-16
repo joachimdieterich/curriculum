@@ -1,5 +1,4 @@
 <?php
-
 /** 
  * This file is part of curriculum - http://www.joachimdieterich.de
  * 
@@ -9,52 +8,57 @@
  * @author Joachim Dieterich
  * @date 2013.07.25 22:37
  * @license
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License as published by  
- * the Free Software Foundation; either version 3 of the License, or     
- * (at your option) any later version.                                   
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by  
+ * the Free Software Foundation; either version 3 of the License, or (at your option) any later version.                                   
  *                                                                       
- * This program is distributed in the hope that it will be useful,       
- * but WITHOUT ANY WARRANTY; without even the implied warranty of        
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         
- * GNU General Public License for more details:                          
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of        
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details:                          
  *                                                                       
- * http://www.gnu.org/copyleft/gpl.html      
- * 
+ * http://www.gnu.org/copyleft/gpl.html
  */
 
-/*
- *  Load classes 
- */
+/* Klassen laden */
+include('classes/backup.class.php');
+include('classes/capability.class.php');
+include('classes/certificate.class.php');
+include('classes/country.class.php');
+include('classes/course.class.php'); 
+include('classes/cron.class.php');
+include('classes/curriculum.class.php'); 
+include('classes/db.class.php'); 
+include('classes/enablingobjective.class.php'); 
+include('classes/exception.class.php'); 
+include('classes/file.class.php'); 
+include('classes/grade.class.php');     
+include('classes/group.class.php');  
+include('classes/gump.class.php');                  //validator class
+include('classes/institution.class.php'); 
+include('classes/jwt.class.php');                   //jwt class
+include('classes/log.class.php'); 
+global $LOG;
+$LOG = new Log();                                   // Funktion ist so  innerhalb des uploadframes sowie der einzelnen requests nutzbar
+include('classes/mail.class.php');
+include('classes/mailbox.class.php');               
+include('classes/pdf.class.php'); 
+include('classes/quiz_question.class.php'); 
+include('classes/quiz_answer.class.php'); 
+include('classes/render.class.php');     
+include('classes/roles.class.php');     
+include('classes/schooltype.class.php'); 
+include('classes/semester.class.php'); 
+include('classes/state.class.php'); 
+include('classes/statistic.class.php'); 
+include('classes/subject.class.php');     
+include('classes/terminalobjective.class.php');
+include('classes/upload.class.php');  
+include('classes/user.class.php');     
 
-include_once('classes/authenticate.class.php');
-include_once('classes/backup.class.php');
-include_once('classes/capability.class.php');
-include_once('classes/cron.class.php');
-include_once('classes/config.class.php');
-include_once('classes/course.class.php'); 
-include_once('classes/country.class.php');
-include_once('classes/curriculum.class.php'); 
-include_once('classes/db.class.php'); 
-include_once('classes/enablingobjective.class.php'); 
-include_once('classes/exception.class.php'); 
-include_once('classes/file.class.php'); 
-include_once('classes/grade.class.php');     
-include_once('classes/group.class.php');  
-include_once('classes/institution.class.php'); 
-include_once('classes/log.class.php'); 
-include_once('classes/pdf.class.php'); 
-include_once('classes/portfolio.class.php'); 
-include_once('classes/user.class.php');     
-include_once('classes/upload.class.php');     
-include_once('classes/mailbox.class.php');     
-   
-include_once('classes/roles.class.php');     
-include_once('classes/schooltype.class.php');     
-include_once('classes/subject.class.php');     
-include_once('classes/state.class.php');     
-include_once('classes/semester.class.php'); 
-include_once('classes/terminalobjective.class.php'); 
+/*badgkit-api*/
+include('classes/badges/badgekitconnection.class.php');     //BadgekitConnection Class
+include('classes/badges/badges.class.php');
+include('classes/badges/issuing.class.php');
 
-include_once('classes/gump.class.php');     //validator class
-?>
+/*omega plugin*/
+include('plugins/omega.class.php');
+
+//include('libs/form-2.8/Form.php');
