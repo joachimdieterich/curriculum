@@ -1,4 +1,4 @@
-curriculum BETA Version 0.9
+curriculum BETA Version 0.9.1
 
 curriculum is a learning platform where teachers can create topic-based learning objectives.
 The resulting curricula can be linked with learning groups and be viewed by learning group members. 
