@@ -8,29 +8,19 @@
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
 {block name=content}
-    
 <div class="border-box">
-    <div class="contentheader ">{$page_title}</div>
-    <div>
-        
-        {if !isset($showRoleForm)}
+    <div class="contentheader ">{$page_title}<input class="curriculumdocsbtn floatright" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Rollen_und_Rechte');"/></div>
+    {if !isset($showForm) && checkCapabilities('role:add', $my_role_id, false)}
         <p class="floatleft  cssimgbtn gray-border">
-            <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=role&function=newRole">Rolle hinzufügen</a>
+            <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=role&function=new">Rolle hinzufügen</a>
         </p>
-        
-        {/if}
-        <p>&nbsp;</p><p>&nbsp;</p>
-        {if isset($showRoleForm)}
-        <form id='addRole' method='post' action='index.php?action=role&next={$currentUrlId}'>
-        <input type='hidden' name='id' id='id' {if isset($id)}value='{$id}'{/if} />  
-        <p><label>Rollennamen</label><input class='inputlarge' type='text' name='role' id='role' {if isset($role)}value='{$role}'{/if} /></p>   
-        {validate_msg field='role'}
-	<p><label>Beschreibung</label><input class='inputlarge' type='description' name='description' {if isset($description)}value='{$description}'{/if}/></p>
-        {validate_msg field='description'}
-        <script type='text/javascript'>
-	document.getElementById('role').focus();
-	</script>
-        <p>&nbsp;</p>
+    {else}
+        <form id='roleForm' method='post' action='index.php?action=role&next={$currentUrlId}'>
+        <input id='r_id'  name='r_id' type='hidden' {if isset($r_id)}value='{$r_id}'{/if} />  
+        <p><label>Rollennamen</label>   <input id='r_role' name='r_role' class='inputlarge' {if isset($r_role)}value='{$r_role}'{/if} /></p>   
+        {validate_msg field='r_role'}
+	<p><label>Beschreibung</label>  <input id='r_description' name='r_description' class='inputlarge' {if isset($r_description)}value='{$r_description}'{/if} /></p>
+        {validate_msg field='r_description'}
         {*capabilities*}
         {assign var="section" value=""}
         {section name=cap loop=$capabilities}
@@ -38,55 +28,27 @@
             {if $section neq $capabilities[cap]->capability|substr:0:$colon}
                 <div class="contentheader">{$capabilities[cap]->capability|substr:0:$colon}</div> 
             {/if}
-             <p><label>{$capabilities[cap]->name}</label>
-                <input type="radio" name="{$capabilities[cap]->capability}" class="inputsmall" value="true"{if $capabilities[cap]->permission eq 1}checked{/if}> erlaubt
-                <input type="radio" name="{$capabilities[cap]->capability}" class="inputsmall" value="false"{if $capabilities[cap]->permission eq 0}checked{/if}> nicht erlaubt
-             <p style=font-size:80%;">{$capabilities[cap]->capability}</p></br>
+             <p><label class="inputlarge" style="margin-right:100px" >{$capabilities[cap]->name}</label>
+                 <input type="checkbox" name="{$capabilities[cap]->capability}" id="{$capabilities[cap]->capability}" class="ios-toggle checkbox1" {if $capabilities[cap]->permission eq 1} value="true" checked {else} value="false"{/if} onclick="switchValue('{$capabilities[cap]->capability}');"/>
+                 <label for="{$capabilities[cap]->capability}" class="checkbox-label" data-off="nicht erlaubt" data-on="erlaubt"></label> 
+                
+                {*<input name="{$capabilities[cap]->capability}" type="radio" class="inputsmall" value="true"{if $capabilities[cap]->permission eq 1}checked{/if}> erlaubt
+                <input name="{$capabilities[cap]->capability}" type="radio" class="inputsmall" value="false"{if $capabilities[cap]->permission eq 0}checked{/if}> nicht erlaubt*}
+                <p class="tiny_txt">{$capabilities[cap]->capability}</p>
+                 
             </p>   
             {assign var="section" value=$capabilities[cap]->capability|substr:0:$colon}
         {/section}    
-        
-        {*End capabilities*}
-        
-        {if !isset($showeditRoleForm)}
-        <p><label></label><input type='submit' name="addRole" value='Rolle hinzufügen' /></p>
+        {if !isset($editBtn)}
+            <p><label></label><input name="add" type='submit' value='Rolle hinzufügen' /></p>
         {else}
-        <p><label></label><input type='submit' name="back" value='zurück'/><input type='submit' name="updateRole" value='Rolle aktualisieren' /></p>
+            <p><label></label><input name="back" type='submit' value='zurück'/><input name="update" type='submit' value='Rolle aktualisieren' /></p>
         {/if}
 	</form>	
-        {/if}
-         
-        <form id='classlist' method='post' action='index.php?action=role&next={$currentUrlId}'>
-            <p>&nbsp;</p>
-    {if $data != null}
-        {* display pagination header *}
-        <p class="floatright">Datensätze {$rolePaginator.first}-{$rolePaginator.last} bis {$rolePaginator.total}</p>   
-            <table id="contenttable">
-                    <tr id="contenttablehead">
-                    <td></td>    
-                    <td>Rolle</td>
-                    <td>Beschreibung</td>
-                    <td class="td_options">Optionen</td>
-            </tr>
-            {section name=role loop=$role_list}{* display results *}
-                <tr class="contenttablerow" id="row{$role_list[role]->role_id}" onclick="checkrow({$role_list[role]->role_id})">
-                    <td><input class="invisible" type="checkbox" id="{$role_list[role]->id}" name="id[]" value={$role_list[role]->role_id} /></td>
-                    <td>{$role_list[role]->role}</td>
-                    <td>{$role_list[role]->description}</td>
-                    <td class="td_options">
-                        <a class="deletebtn floatright" type="button" name="delete" onclick="del('role', {$role_list[role]->role_id}, {$my_id})"></a>
-                        <a class="editbtn floatright" href="index.php?action=role&edit=true&id={$role_list[role]->role_id}"></a>
-                        </td>
-                </tr>
-            {/section}
-            </table>  
-            <input class="invisible" type="checkbox" name="id[]" value="none" checked /><!--Hack für problem, dass kein Array gepostet wird, wenn nichts angewählt wird-->
-            {* display pagination info *}
-            <p class="floatright">{paginate_prev id="rolePaginator"} {paginate_middle id="rolePaginator"} {paginate_next id="rolePaginator"}</p>
-            <p>&nbsp;</p>
-        {/if}
-        </form>              
-        
+        <script type='text/javascript'> document.getElementById('r_role').focus();</script>
+    {/if}
+    
+    {html_paginator id='roleP' values=$ro_val config=$roleP_cfg}
 </div>
 {/block}
 

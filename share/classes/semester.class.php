@@ -9,15 +9,11 @@
  * @date 2013.05.14 11:05
  * @license: 
  *
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License as published by  
- * the Free Software Foundation; either version 3 of the License, or     
- * (at your option) any later version.                                   
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by  
+ * the Free Software Foundation; either version 3 of the License, or (at your option) any later version.                                   
  *                                                                       
- * This program is distributed in the hope that it will be useful,       
- * but WITHOUT ANY WARRANTY; without even the implied warranty of        
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         
- * GNU General Public License for more details:                          
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of        
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details:                          
  *                                                                       
  * http://www.gnu.org/copyleft/gpl.html      
  */
@@ -43,6 +39,7 @@ class Semester {
      * @var int
      */
     public $institution_id; 
+    public $institution; 
     /**
      * Timestamp of semester begin
      * @var timestamp
@@ -69,21 +66,32 @@ class Semester {
      */
     public $creator_username; 
     
+    
+    public function __construct($id = '') {
+        if ($id != ''){
+            $this->id = $id;
+            $this->load();
+        }
+    }
+    
     /**
      * Get Semesterlist of current institution
      * @return \Semester 
      */
-    public function getSemesters(){
+    public function getSemesters($paginator = ''){
+        global $USER;
+        $order_param = orderPaginator($paginator); 
         $semesters = array();
-        $db = DB::prepare('SELECT se.id, se.semester, se.description, se.begin, se.end, 
-                                se.creation_time, se.creator_id, us.username, ins.institution
-                        FROM semester AS se, users AS us, institution AS ins
-                        WHERE se.institution_id IN (?) AND se.creator_id = us.id AND se.institution_id = ins.id');
-        $db->execute(array(implode(",", $this->institution_id)));
+        $db = DB::prepare('SELECT se.*, us.username, ins.institution
+                           FROM semester AS se, users AS us, institution AS ins
+                           WHERE se.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE institution_id = ins.id AND user_id = ?) 
+                           AND se.creator_id = us.id AND se.institution_id = ins.id '.$order_param);
+        $db->execute(array($USER->id));
         while($result = $db->fetchObject()) { 
                 $this->id                  = $result->id;
                 $this->semester            = $result->semester;
                 $this->description         = $result->description;
+                $this->institution         = $result->institution;
                 $this->begin               = $result->begin;
                 $this->end                 = $result->end;
                 $this->creation_time       = $result->creation_time;
@@ -91,23 +99,23 @@ class Semester {
                 $this->creator_username    = $result->username;
                 $semesters[] = clone $this;
         } 
-        if (isset($semesters)) {    
-            return $semesters;
-        } else {
-            return NULL;
-        }        
+
+        return $semesters;     
     }
     
+   
     public function getMySemesters($user_id){
         $semesters = array();
-        $db = DB::prepare('SELECT DISTINCT se.id, se.semester, se.description, se.begin, se.end, 
-                                se.creation_time, se.creator_id, us.username
-                        FROM semester AS se, users AS us, groups AS gr, groups_enrolments AS ge
-                        WHERE gr.semester_id = se.id AND gr.id = ge.group_id AND us.id = ge.user_id AND ge.user_id = ?');
+        $db = DB::prepare('SELECT DISTINCT se.*, us.username, ins.institution
+                           FROM semester AS se, users AS us, groups AS gr, groups_enrolments AS ge, institution_enrolments AS ie, institution AS ins
+                           WHERE gr.semester_id = se.id AND gr.id = ge.group_id AND us.id = ge.user_id AND ie.user_id = ge.user_id 
+                           AND gr.institution_id = ie.institution_id 
+                           AND ins.id = ie.institution_id AND ge.user_id = ?');
         $db->execute(array($user_id));
         while($result = $db->fetchObject()) { 
                 $this->id                  = $result->id;
                 $this->semester            = $result->semester;
+                $this->institution         = $result->institution;
                 $this->description         = $result->description;
                 $this->begin               = $result->begin;
                 $this->end                 = $result->end;
@@ -116,11 +124,7 @@ class Semester {
                 $this->creator_username    = $result->username;
                 $semesters[] = clone $this;
         } 
-        if (isset($semesters)) {    
-            return $semesters;
-        } else {
-            return NULL;
-        } 
+        return $semesters;
     }
     
     /**
@@ -129,17 +133,16 @@ class Semester {
      */
     public function add(){
         global $USER;
-        if (checkCapabilities('semester:add', $USER->role_id)){
-            $db = DB::prepare('SELECT COUNT(id) FROM semester WHERE UPPER(semester) = UPPER(?) AND institution_id = ?');
-            $db->execute(array($this->semester, $this->institution_id));
-            if($db->fetchColumn() >= 1) { 
-                return 'Diesen Lernzeitraum gibt es bereits.';
-            } else {
-                $db = DB::prepare('INSERT INTO semester (semester,description,begin,end,creation_time,creator_id,institution_id)
-                                                VALUES (?,?,?,?,NOW(),?,?)');
-                return $db->execute(array($this->semester, $this->description, $this->begin, $this->end, $this->creator_id, $this->institution_id));	
-            }   
-        }
+        checkCapabilities('semester:add', $USER->role_id);
+        $db = DB::prepare('SELECT COUNT(id) FROM semester WHERE UPPER(semester) = UPPER(?) AND institution_id = ?');
+        $db->execute(array($this->semester, $this->institution_id));
+        if($db->fetchColumn() >= 1) { 
+            return 'Diesen Lernzeitraum gibt es bereits.';
+        } else {
+            $db = DB::prepare('INSERT INTO semester (semester,description,begin,end,creation_time,creator_id,institution_id)
+                                            VALUES (?,?,?,?,NOW(),?,?)');
+            return $db->execute(array($this->semester, $this->description, $this->begin, $this->end, $this->creator_id, $this->institution_id));	
+        }   
     }
     
     /**
@@ -148,36 +151,25 @@ class Semester {
      */
     public function update(){
         global $USER;
-        if (checkCapabilities('semester:update', $USER->role_id)){
-            $db = DB::prepare('UPDATE semester SET semester = ?, description = ?, begin = ?, end = ? WHERE id = ?');
-            return $db->execute(array($this->semester, $this->description, $this->begin, $this->end, $this->id));
-        }
+        checkCapabilities('semester:update', $USER->role_id);
+        $db = DB::prepare('UPDATE semester SET semester = ?, description = ?, begin = ?, end = ? WHERE id = ?');
+        return $db->execute(array($this->semester, $this->description, $this->begin, $this->end, $this->id));
     }
     
     /**
      * Delete current semester
      * @return boolean 
      */
-    public function delete($creator_id = null){
-        /*if ($creator_id != null) { // if function is called by request-php --> required by checkCapabilities()
-            $user = new USER();
-
-            $user->load('id', $creator_id);
-            $role_id = $user->role_id;
-        } else {
-            $role_id = $USER->role-id;
-        } */
+    public function delete(){
         global $USER;
-        if (checkCapabilities('semester:delete', $USER->role_id)){
-            $db = DB::prepare('SELECT id FROM groups WHERE semester_id = ?');
-            $db->execute(array($this->id));           
-            $result = $db->fetchObject();
-            if ($result){
-                return false; 
-            } else {
-                $db = DB::prepare('DELETE FROM semester WHERE id = ?');
-                return $db->execute(array($this->id));
-            }
+        checkCapabilities('semester:delete', $USER->role_id);
+        $db     = DB::prepare('SELECT id FROM groups WHERE semester_id = ?');
+        $db->execute(array($this->id));
+        if ($db->fetchObject()){
+            return false; 
+        } else {
+            $db = DB::prepare('DELETE FROM semester WHERE id = ?');
+            return $db->execute(array($this->id));
         }
     }
     
@@ -203,7 +195,5 @@ class Semester {
     public function dedicate(){ // only use during install
         $db = DB::prepare('UPDATE semester SET institution_id = ?, creator_id = ?');
         return $db->execute(array($this->institution_id, $this->creator_id));
-    }
-    
+    }   
 }
-?>

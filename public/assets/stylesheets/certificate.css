@@ -1,4 +1,3 @@
-
 /**
  * certificate css file
  * 
@@ -10,73 +9,68 @@
  * @date 30.07.2014, 14:18:39
  * @license 
  * 
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License as published by  
- * the Free Software Foundation; either version 3 of the License, or     
- * (at your option) any later version.                                   
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by  
+ * the Free Software Foundation; either version 3 of the License, or (at your option) any later version.                                   
  *                                                                       
- * This program is distributed in the hope that it will be useful,       
- * but WITHOUT ANY WARRANTY; without even the implied warranty of        
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         
- * GNU General Public License for more details:                          
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of        
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details:                          
  *                                                                       
  * http://www.gnu.org/copyleft/gpl.html      
  */
 
 root { 
-    display: block;
+    display:        block;
 }
 
 h1 {
-    font-size: 80px;
-    font-weight: bold;
-    text-align: center;
+    font-size:      80px;
+    font-weight:    bold;
+    text-align:     center;
 }
 
 .topic {
-    clear: both;
-    background: #C2C2C2;
+    clear:          both;
+    background:     #C2C2C2;
 }
 
 .objective_red {
-    background: #FF8888
+    background:     #FF8888
 }
 
 .objective_green {
-    background: #88FF88;
+    background:     #88FF88;
 }
 
 .objective_orange {
-    background: #FF8000;
+    background:     #FF8000;
 }
 
 .floatleft{
-    float: left; 
+    float:          left; 
     
 }
 .floatright{
-    float: right;   
+    float:          right;   
     
 }
 .logo{
-    height: 120px;
+    height:         120px;
 }
 .center{
-    text-align: center;
+    text-align:     center;
 }
 
 .cleaner {
-    clear: both;
+    clear:          both;
 }
 
 .txt_spalte{
-    width: 70%;
-    text-align: left;
+    width:          70%;
+    text-align:     left;
 }
 .x_spalte{
-    width: 15%;
+    width:          15%;
 }
 .row{
-    	border-bottom:1px solid silver;
-
+    border-bottom:  1px solid silver;
 }

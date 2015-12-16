@@ -9,62 +9,33 @@
 * @date 2013.03.08 13:26
 * @license: 
 *
-* This program is free software; you can redistribute it and/or modify 
-* it under the terms of the GNU General Public License as published by  
-* the Free Software Foundation; either version 3 of the License, or     
-* (at your option) any later version.                                   
+* This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by  
+* the Free Software Foundation; either version 3 of the License, or (at your option) any later version.                                   
 *                                                                       
-* This program is distributed in the hope that it will be useful,       
-* but WITHOUT ANY WARRANTY; without even the implied warranty of        
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         
-* GNU General Public License for more details:                          
+* This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of        
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details:                          
 *                                                                       
 * http://www.gnu.org/copyleft/gpl.html      
 */
 
-global $CFG;
-include ($CFG->document_root.'assets/scripts/libs/backup/imscc/cc_export.php'); //IMS CC Export-Funktion  anders einbinden
- 
 /**
- * Force Download of a given file
- * @param type $file 
+ * Assign array to $TEMPLATE
+ * @global object $TEMPLATE
+ * @param mixed $var
+ * @param string $prefix
  */
-function forceDownload($file){
-    $filename = basename($file);
-    $size = filesize($file);
-    header("Content-Type: application/force-download");
-    header("Content-Disposition: attachment; filename=".$filename);
-    header("Content-Length:".$size);
-    readfile($file);
-    
+function assign_to_template($var, $prefix = ''){
+    global $TEMPLATE;
+    foreach($var as $key => $value){
+        $TEMPLATE->assign($prefix.$key, $value);                      /**$TEMPLATE->assign('my_username',  $_SESSION['USER']->username);*/
+    }       
 }
 
 /**
- * get browser
- * @return string 
- */
-function getagent(){
-  if (strstr($_SERVER['HTTP_USER_AGENT'],'Opera')) {    
-     $brows='Opera';
-  } elseif (strstr($_SERVER['HTTP_USER_AGENT'],'MSIE'))
-     $brows='InternetExplorer';
-  elseif (strstr($_SERVER['HTTP_USER_AGENT'],'Firefox'))
-     $brows='Firefox';
-  elseif (strstr($_SERVER['HTTP_USER_AGENT'],'Chrome'))
-     $brows='Chrome';
-  elseif (strstr($_SERVER['HTTP_USER_AGENT'],'Safari'))
-     $brows='Safari';
-  elseif (strstr($_SERVER['HTTP_USER_AGENT'],'Mozilla'))
-     $brows='Mozilla';     
-  else
-     $brows=$_SERVER['HTTP_USER_AGENT'];
-  return $brows;
-} 
-
-/**
- * php file functions
- * @param string $request
+ * php file functions 
+ * http://php.net/manual/de/function.readdir.php#87733
  * @param string $dir
+ * @param string $request
  * @return array 
  */
 function read_folder_directory($dir, $request = "allDirFiles") { 
@@ -83,7 +54,6 @@ function read_folder_directory($dir, $request = "allDirFiles") {
                                 } 
                                 closedir($handler); 
                             } 
-                            return $listDir;
                             break;
         case "thisDir":     $i = 0;
                             $listDir = array(); 
@@ -100,10 +70,9 @@ function read_folder_directory($dir, $request = "allDirFiles") {
                                 } 
                                 closedir($handler); 
                             } 
-                            return $listDir;
                             break;
    }
-                        
+   return $listDir;
 } 
 
 /**
@@ -111,9 +80,7 @@ function read_folder_directory($dir, $request = "allDirFiles") {
  * @return string 
  */
 function curPageURL() {
- $pageURL = 'http';
- //if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";} //funktioniert in MAMP nicht
- $pageURL .= "://";
+ $pageURL = 'http://';
  if ($_SERVER["SERVER_PORT"] != "80") {
   $pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
  } else {
@@ -131,7 +98,7 @@ function curPageName() {
 }
 
 /**
- * set paginator
+ * Set paginator
  * @global object $CFG, $INSTITUTION, PAGE
  * @param string $instance
  * @param array $template
@@ -139,28 +106,34 @@ function curPageName() {
  * @param string $returnVar
  * @param string $currentURL 
  */
-function setPaginator($instance, $template, $data, $returnVar, $currentURL) {
-    global $CFG, $INSTITUTION, $PAGE;
-    $SmartyPaginate = new SmartyPaginate(); 
+function setPaginator($instance, $template, $data, $returnVar, $currentURL, $config = false) {
+    global $CFG, $USER;
+    $SmartyPaginate         = new SmartyPaginate(); 
     $SmartyPaginate->connect($instance);
-    $CFG->paginator_name = &$instance;
-    
-    $SmartyPaginate->setLimit($INSTITUTION->institution_paginator_limit, $instance);
+    $CFG->paginator_name    = &$instance;  
+    if ($instance == 'inboxPaginator' || $instance == 'outboxPaginator'){       // Mail Paginatoren haben anderes Limit, evtl. für jeden Paginator indiv. machen
+        $SmartyPaginate->setLimit($CFG->mail_paginator_limit, $instance);
+    } else {   
+        $SmartyPaginate->setLimit($USER->paginator_limit, $instance);
+    }
     $SmartyPaginate->setUrl($currentURL, $instance);
     $SmartyPaginate->setUrlVar($instance, $instance);
-
-    if ($data == false){                        // if no data available
-        $template->assign('data', null); 
-        /*$PAGE->message[] = 'Keine Datensätze vorhanden.';
-        $template->assign('message', $PAGE->message);*/
-    } else {
-        $template->assign('data', true); 
+    $SmartyPaginate->setPrevText('zurück',$instance);
+    $SmartyPaginate->setNextText('vor',$instance);
+    $SmartyPaginate->setFirstText('Anfang',$instance);
+    $SmartyPaginate->setLastText('Ende',$instance);       
+    if ($data){
         $SmartyPaginate->setTotal(count($data), $instance);
         if ($SmartyPaginate->getCurrentIndex($instance) >= count($data)){ //resets paginators current index (if data was deleted)
             $SmartyPaginate->setCurrentItem(1, $instance); 
         }
         $template->assign($returnVar, array_slice($data, $SmartyPaginate->getCurrentIndex($instance), $SmartyPaginate->getLimit($instance)), $instance);
-    }    
+        $template->assign($instance.'_cfg', $config);
+    } else {
+        $template->assign($returnVar. NULL);
+        $template->assign($instance.'_cfg', NULL);
+    }
+    
     $template->assign('currentUrlId', $SmartyPaginate->getCurrentIndex($instance)+1); 
     $SmartyPaginate->assign($template, $instance, $instance);
 }
@@ -173,6 +146,21 @@ function resetPaginator($instance){  //resets Paginator to index 1
     $SmartyPaginate = new SmartyPaginate(); 
     $SmartyPaginate->connect($instance);
     $SmartyPaginate->setCurrentItem(1, $instance);
+}
+
+/**
+ * returns ORDER BY string
+ * @param string $instance
+ * @return string
+ */
+function orderPaginator($instance){
+    $order  = SmartyPaginate::getSort('order', $instance);
+    $sort   = SmartyPaginate::getSort('sort', $instance) ;
+    if ($order){ 
+        return $order.' '.$sort;             
+    } else {
+       return '';
+    }
 }
 
 /**
@@ -203,7 +191,7 @@ function convertKbyteToByte($kbyte){
 }
 
 /**
- * vonvert byte to kbyte
+ * convert byte to kbyte
  * @param int $byte
  * @return int 
  */
@@ -216,7 +204,7 @@ function convertByteToKbyte($byte){
  */
 function detect_reload(){    
  if (isset($_SESSION['LASTPOST'])){
-        if ($_POST === $_SESSION['LASTPOST'] ){ 
+        if ($_POST === $_SESSION['LASTPOST']){ 
             $_POST = NULL;
         } else { //für Firefox
             $_SESSION['LASTPOST'] = $_POST; 
@@ -236,60 +224,54 @@ function detect_reload(){
  * @param string $returnFormat
  * @param string $multipleFiles 
  */
-function renderList($formname, $files, $data_dir, $ID_Postfix, $targetID, $returnFormat, $multipleFiles){
-?><form name="<?php echo $formname ?>" action="<?php echo $formname ?>" method="post" enctype="multipart/form-data">
+function renderList($formname, $dependency, $data_dir, $ID_Postfix, $targetID, $returnFormat, $multipleFiles, $id){
+    global $CFG;
+    $file = new File();
+    $files = $file->getFiles($dependency, $id);?>
+    <div id="div<?php echo $ID_Postfix ?>" class="floatleft" style="display:none;">
+    <form name="<?php echo $formname ?>" action="<?php echo $formname ?>" method="post" enctype="multipart/form-data">
         <div> 
         <table>
             <tr><?php 
             if (!empty($files)){
-            for ($i=0; $i < count($files); $i++){
-            ?><td>
-            <?php //wenn filetype unbekannt dann var setzen!!!
-            echo '<div  class="filelist filenail" id="row'.$ID_Postfix.''.$files[$i]->id.'"' ?>  
-                onclick="checkfile('<?php echo $ID_Postfix.''.$files[$i]->id;?>')"  
-                onmouseover="previewFile('<?php echo $data_dir.''.$files[$i]->context_path.''.$files[$i]->path.''.$files[$i]->filename;?>', 
-                '<?php echo $ID_Postfix;?>', 
-                '<?php if ($files[$i]->title != '')         echo $files[$i]->title;?>', 
-                '<?php if ($files[$i]->description != '')   echo $files[$i]->description;?>', 
-                '<?php if ($files[$i]->author != '')        echo $files[$i]->author;?>', 
-                '<?php 
-                switch ($files[$i]->licence) {
-                    case 1: echo 'Sonstige'; break;
-                    case 2: echo 'Alle Rechte vorbehalten'; break;
-                    case 3: echo 'Public Domain'; break;
-                    case 4: echo 'CC'; break;
-                    case 5: echo 'CC - keine Bearbeitung'; break;
-                    case 6: echo 'CC - keine kommerzielle Nutzung - keine Bearbeitung'; break;
-                    case 7: echo 'CC - keine kommerzielle Nutzung'; break;
-                    case 8: echo 'CC - keine kommerzielle Nutzung - Weitergabe unter gleichen Bedingungen'; break;
-                    case 9: echo 'CC - Weitergabe unter gleichen Bedingungen'; break;
-                    default:
-                        break;
+                for ($i=0; $i < count($files); $i++){?>
+                    <td><?php //wenn filetype unbekannt dann var setzen!!!
+                echo '<div  class="filelist filenail" id="row'.$ID_Postfix.''.$files[$i]->id.'"' ?>  
+                    onclick="checkfile('<?php echo $ID_Postfix.''.$files[$i]->id;?>')"  
+                        onmouseover="previewFile('<?php echo $CFG->access_file_url.$files[$i]->context_path.''.$files[$i]->path ?>', '<?php echo rawurlencode($files[$i]->filename);?>', 
+                    '<?php echo $ID_Postfix;?>', 
+                    '<?php if ($files[$i]->title != '')        { echo $files[$i]->title;        }?>', 
+                    '<?php if ($files[$i]->description != '')  { echo $files[$i]->description;  }?>', 
+                    '<?php if ($files[$i]->author != '')       { echo $files[$i]->author;       }?>', 
+                    '<?php echo $files[$i]->getLicence($files[$i]->licence);?>')" 
+                    onmouseout="exitpreviewFile('<?php echo $ID_Postfix; ?>')"> <?php
+                echo    '<a id="href_a_'.$files[$i]->id.'" href="'.$CFG->access_file_url.''.$files[$i]->context_path.''.$files[$i]->path.''.rawurlencode($files[$i]->filename).'"  target="_blank">
+                         <div class="downloadbtn floatleft"></div>
+                         </a><div class="deletebtn floatright" style="margin-right: -4px !important; "'?>  
+                            onclick="deleteFile('<?php echo $files[$i]->id;?>')"> <?php
+                echo    '</div><p class="'.ltrim ($files[$i]->type, '.').'_btn filelisticon" ></p>
+                         <p id="href_'.$files[$i]->id.'" class="filelink">'.$files[$i]->filename.'</p>
+                         <input class="invisible" type="checkbox" id="'.$ID_Postfix.''.$files[$i]->id.'" name="id'.$ID_Postfix.'[]" value='.$files[$i]->id.' />
+                         </div>';                             
+                ?></td> <?php 
+                    if (($i+1) % 5 == 0) { ?> 
+                    </tr><tr> <?php 
+                    }    
                 }
-                ?>')" 
-                onmouseout="exitpreviewFile('<?php echo $ID_Postfix; ?>')"> <?php
-            echo    '<a href="'.$data_dir.''.$files[$i]->context_path.''.$files[$i]->path.''.$files[$i]->filename.'"  target="_blank">
-                     <div class="downloadbtn floatleft"></div>
-                     </a><div class="deletebtn floatright" style="margin-right: -4px !important; "'?>  
-                        onclick="deleteFile('<?php echo $ID_Postfix; ?>', '<?php echo $files[$i]->id;?>')"> <?php
-            echo    '</div><p class="'.ltrim ($files[$i]->filetype, '.').'_btn filelisticon" ></p>
-                     <p id="href_'.$files[$i]->id.'" class="filelink">'.$files[$i]->filename.'</p>
-                     <input class="invisible" type="checkbox" id="'.$ID_Postfix.''.$files[$i]->id.'" name="id'.$ID_Postfix.'[]" value='.$files[$i]->id.' />
-                     </div>';                             
-            ?></td> 
-            <?php if (($i+1) % 5 == 0) { 
-            ?> </tr><tr > <?php }    
-            }
-        } else { ?>
-            <p>Es wurden noch keine Dateien hochgeladen.</p><?php
-        }            
-        ?>    
+            } else { ?>
+                   <td><div  class="filelist filenail">Keine Dateien vorhanden. </div></td><?php
+            } ?>    
         </tr>
     </table>
     </div>
 </form>
-<div class="uploadframe_footer">
-    <div id="<?php echo $ID_Postfix; ?>p_information" class="floatleft" style="width:593px; visibility:hidden;">
+ <?php if ($targetID != 'NULL'){ // verhindert, dass der Button angezeigt wird wenn das Target NULL ist ?>
+    <div id="uploadframe_footer" class="uploadframe_footer" >
+        <input type="submit"  value="Datei(en) verwenden" onclick="iterateListControl('<?php echo 'div'.$ID_Postfix ?>','<?php echo $ID_Postfix ?>','<?php echo $targetID;?>','<?php echo $returnFormat;?>','<?php echo $multipleFiles;?>');"/>
+    </div>
+    <?php } ?>        
+<div id="<?php echo $ID_Postfix; ?>uploadframe_info" class="uploadframe_footer" style="visibility:hidden;">
+    <div id="<?php echo $ID_Postfix; ?>p_information" class="floatleft" style="width:593px; ">
         <table>
             <tr><td class="p_info"><strong>Titel:</strong></td>        <td id="<?php echo $ID_Postfix; ?>p_title" class="p_info "></td></tr>
             <tr><td class="p_info"><strong>Beschreibung:</strong></td> <td id="<?php echo $ID_Postfix; ?>p_description" class="p_info "></td></tr>
@@ -297,43 +279,27 @@ function renderList($formname, $files, $data_dir, $ID_Postfix, $targetID, $retur
             <tr><td class="p_info"><strong>Lizenz</strong></td>        <td id="<?php echo $ID_Postfix; ?>p_licence" class="p_info "></td></tr>
         </table>
     </div>
-    <?php if ($targetID != 'NULL'){ // verhindert, dass der Button angezeigt wird wenn das Target NULL ist
-    ?>
-    <input type="submit"  value="Datei(en) verwenden" onclick="iterateListControl('<?php echo 'div'.$ID_Postfix ?>','<?php echo $ID_Postfix ?>','<?php echo $targetID;?>','<?php echo $returnFormat;?>','<?php echo $multipleFiles;?>');"/>
-    <?php } ?>
+</div>
+   
 </div>
 <?php   
 }
 
 
-/**
- * Die Funktion renderDeleteMessage() erzeugt die Dateilisten im Uploadframe
- * @param string $message 
- */
-function renderDeleteMessage($message) {
-echo '<div class="contentheader">Information</div>
-    <div id="popupcontent">
-    <p>'.$message.'</p>
-    <p><label></label><input type="submit" value="OK" onclick="reloadPage()"></p>
-    </div>';
-}
-
-
-/**
- * add message
- * @global object $CFG
- * @param type string 
- */
-function addMessage($message){
-    global $PAGE;
-    $PAGE->message[] = $message;
+function renderSelect($name, $label, $values, $select){?>
+    <p><label><?php echo $name;?></label><select id="<?php echo $label;?>" name="<?php echo $label;?>" class="centervertical"> <?php 
+            foreach ($values as $value) {
+                ?><option value="<?php echo $value['value'];?>" data-skip="1" <?php if ($select == $value['value']){echo 'selected';}?> > <?php echo $value['label'];?></option><?php
+            }?>
+        </select>
+    </p><?php
 }
 
 /**
  * checks capability for a given role
  * @param string $capability
  * @param int $role_id
- * @param boolean $thow_exeption 
+ * @param boolean $thow_exception 
  * @return boolean 
  */
 function checkCapabilities($capability = null, $role_id = null, $thow_exception = true){
@@ -345,10 +311,10 @@ function checkCapabilities($capability = null, $role_id = null, $thow_exception 
         return true;
     } else {
         if ($thow_exception){
-            $role = new Roles();
-            $role->role_id = $capabilities->role_id;
+            $role       = new Roles();
+            $role->id   = $capabilities->role_id;
             $role->load();
-            throw new CurriculumException('Als <strong>'.$role->role.'</strong> verfügen Sie nicht über die erforderliche Berechtigung ('.$capabilities->capability.').');
+            throw new CurriculumException('Als <strong>'.$role->role.'</strong> verfügen Sie nicht über die erforderliche Berechtigung ('.$capabilities->capability.').', 1);
         }
         return false; 
     }
@@ -363,16 +329,16 @@ function checkCapabilities($capability = null, $role_id = null, $thow_exception 
  * @param string $sep
  * @return string 
  */
-function array2str($array, $pre = ' ', $pad = '', $sep = ', ')
-{
+function array2str($array, $pre = ' ', $pad = '', $sep = ', '){
     $str = '';
     if(is_array($array)) {
         if(count($array)) {
             foreach($array as $v) {
-                if(is_array($v))
-                $str .= array2str($v, $pre, $pad, $sep);
-                else
-                $str .= $pre.$v.$pad.$sep; 
+                if(is_array($v)) {
+                    $str .= array2str($v, $pre, $pad, $sep);
+                } else {
+                    $str .= $pre.$v.$pad.$sep; 
+                }
             }
             $str = substr($str, 0, -strlen($sep));
         }
@@ -383,12 +349,14 @@ function array2str($array, $pre = ' ', $pad = '', $sep = ', ')
 }
 
 /**
- * debug objects
+ * for debugging objects
  * @param object $obj
  * @param int $level 
  */
  function object_to_array($obj, $level = 0) {       
+        echo'<div style="margin-top: 70px;"></div>';
         $arrObj = is_object($obj) ? get_object_vars($obj) : $obj;
+        if (is_object($obj)){ echo '<details style=""><summary>'.get_class($obj).'</summary>';}
         foreach ($arrObj as $key => $val) {  
             echo '<p style="text-indent:'.$level.'00px; margin-bottom: -10px;">';
             echo '<label>',$key,': </label>';
@@ -397,6 +365,7 @@ function array2str($array, $pre = ' ', $pad = '', $sep = ', ')
                 echo $val,'</p>';
             }
         }
+        echo '</details>';
 }
 
 /**
@@ -414,42 +383,126 @@ function getToken() {
     return $uniquetoken;
 }
 
-
 /**
- * gets real ip and converts it for db
- * to get the ip from db use SELECT INET_NTOA(ip) FROM 'table'
- * @return type 
+ * rotate Images based on exif info 
+ * @param type $imagePath
+ * @return type
  */
-function getIp() {
-    if (!empty($_SERVER['HTTP_CLIENT_IP'])){                //Test if it is a shared client
-        $ip=$_SERVER['HTTP_CLIENT_IP'];
-    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])){    //Is it a proxy address
-        $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
-    } else {
-        $ip=$_SERVER['REMOTE_ADDR'];
+function getOrientedImage($imagePath){
+        $image = imagecreatefromstring(file_get_contents($imagePath));
+        $exif = exif_read_data($imagePath);
+        if(!empty($exif['Orientation'])) {
+            switch($exif['Orientation']) {
+                case 8:
+                    $image = imagerotate($image,90,0);
+                    break;
+                case 3:
+                    $image = imagerotate($image,180,0);
+                    break;
+                case 6:
+                    $image = imagerotate($image,-90,0);
+                    break;
+            }
+        }
+        return $image;
+    }  
+
+ /**
+  * 
+  * @param string $saveToDir
+  * @param string $imagePath
+  * @param string $imageName
+  * @param int $max_x
+  * @param int $max_y
+  * @param string $context
+  */   
+function saveThumbnail($saveToDir, $imageName, $max_x, $max_y, $size = '') {  
+    preg_match("'^(.*)\.(gif|jpe?g|png)$'i", $imageName, $ext);
+    if (isset($ext[2])){
+        switch (strtolower($ext[2])) {
+            case 'jpg' : 
+            case 'jpeg': $im    = getOrientedImage($saveToDir.$imageName);        //use this function to check if Image has an other orientation
+                         break;
+            case 'gif' : $im    = imagecreatefromgif  ($saveToDir.$imageName);
+                         break;
+            case 'png' : $im    = imagecreatefrompng  ($saveToDir.$imageName);
+                         break;
+            default    : $stop  = true;
+                         break;
+        }
+    } else {$stop  = true;}
+    
+    if (!isset($stop)) {
+        $x = imagesx($im);
+        $y = imagesy($im);
+    
+        if (($max_x/$max_y) < ($x/$y)) {
+            $save = imagecreatetruecolor($x/($x/$max_x), $y/($x/$max_x));
+        } else {
+            $save = imagecreatetruecolor($x/($y/$max_y), $y/($y/$max_y));
+        }
+        imagecopyresized($save, $im, 0, 0, 0, 0, imagesx($save), imagesy($save), $x, $y);
+        imagepng($save, "{$saveToDir}{$ext[1]}_".$size.".png");
+        imagedestroy($im);
+        imagedestroy($save);
     }
-    //The value of $ip at this point would look something like: "192.0.34.166"
-    return ip2long($ip);//The $ip would now look something like: 1073732954
+} 
+/**
+ *  Generate Thumbnails
+ *  Sizes of Thumbnails
+ *  saveThumbnail($upload_dir, $filename,  18,  27,'xt');
+ *  saveThumbnail($upload_dir, $filename,  50,  75,'t');
+ *  saveThumbnail($upload_dir, $filename, 150, 125,'qs');
+ *  saveThumbnail($upload_dir, $filename, 150, 225,'xs');
+ *  saveThumbnail($upload_dir, $filename, 226, 340,'s');
+ *  saveThumbnail($upload_dir, $filename, 400, 600,'m');
+ *  saveThumbnail($upload_dir, $filename, 534, 800,'l');
+ * @param string $upload_dir
+ * @param string $filename
+ * @param string $context
+ */
+function generateThumbnail($upload_dir, $filename, $context){   
+    saveThumbnail($upload_dir, $filename,  50,  75,'t'); // !!! For FilePreview    
+    switch ($context){ 
+            case "userFiles":   break;
+            case "curriculum":
+            case "institution":
+            case "userView":    saveThumbnail($upload_dir, $filename, 150, 225,'xs');
+                                saveThumbnail($upload_dir, $filename, 534, 800,'l');
+                                break;  
+            case "subjectIcon": break;
+            case "avatar":      saveThumbnail($upload_dir, $filename,  18,  27,'xt');
+                                saveThumbnail($upload_dir, $filename, 150, 225,'xs');
+                                break;
+            case "badge":       saveThumbnail($upload_dir, $filename, 150, 125,'qs');
+                                break;
+            case "editor":      saveThumbnail($upload_dir, $filename,  50,  75,'t');
+                                break;  
+        }
 }
 
-function PHPArrayObjectSorter($array,$sortBy,$direction='asc'){
-        $sortedArray=array();
-        $tmpArray=array();
-        foreach($array as $obj){
-            $tmpArray[]=$obj->$sortBy;
-        }
-        
-        if($direction=='asc'){
-            asort($tmpArray);
-        }else{
-            arsort($tmpArray);
-        }
 
-        foreach($tmpArray as $k=>$tmp){
-            $sortedArray[]=$array[$k];
-        }
-        
-        return $sortedArray;
+function human_filesize($bytes, $decimals = 2) {
+  $sz = 'BKMGTP';
+  $factor = floor((strlen($bytes) - 1) / 3);
+  return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$sz[$factor];
+}
+
+function translate_size($size){
+    switch ($size){
+            case "xt":   return 'Thumbnail klein'; 
+            case "t" :   return 'Thumbnail';
+            case "qs":   return 'kleines Quadrat';
+            case "xs":   return 'extra klein'; 
+            case "s" :   return 'klein';
+            case "m" :   return 'medium';
+            case "l" :   return 'groß';
+            default  :   return ''; 
     }
+}
 
-?>
+function validate_msg($v_error, $field){
+   if (isset($v_error[$field]['message'][0])){ 
+       echo '<div class="error">',$v_error[$field]['message'][0],'</div>';     
+   } 
+}

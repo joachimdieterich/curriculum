@@ -8,34 +8,25 @@
  * @date 2013.03.08 13:26
  * @license: 
  *
-* This program is free software; you can redistribute it and/or modify 
-* it under the terms of the GNU General Public License as published by  
-* the Free Software Foundation; either version 3 of the License, or     
-* (at your option) any later version.                                   
+* This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by  
+* the Free Software Foundation; either version 3 of the License, or (at your option) any later version.                                   
 *                                                                       
-* This program is distributed in the hope that it will be useful,       
-* but WITHOUT ANY WARRANTY; without even the implied warranty of        
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         
-* GNU General Public License for more details:                          
+* This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of        
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details:                          
 *                                                                       
 * http://www.gnu.org/copyleft/gpl.html      
 */
 global $CFG, $USER, $TEMPLATE, $PAGE;
 
-if(isset($_GET['reset']) OR (isset($_POST['reset']))){
-    resetPaginator('fileBackupPaginator');            
-}
-$backup = new Backup();
-$selected_curriculum = (isset($_GET['course']) && trim($_GET['course'] != '') ? $_GET['course'] : '_'); //'_' ist das Trennungszeichen 
-$TEMPLATE->assign('selected_curriculum', $selected_curriculum);
+if (filter_input(INPUT_GET, 'reset', FILTER_UNSAFE_RAW)){ resetPaginator('fileBackupPaginator'); }
 
-if (isset($_GET['course'])) {// create new backup
-    list ($selected_curriculum, $selected_group) = explode('_', $selected_curriculum); //$selected_curriculum enthält curriculumid_groupid (zb. 32_24) wenn nur '_' gesetzt ist werden beide variabeln ''
-    $backup_url = $CFG->backup_url;                             //URL in der das imscc File erscheinen soll
-    $zipfile = newBackup($backup_url, $selected_curriculum, $USER->id);          //Erstellt ein neues Backup
-    $zipURL = $CFG->web_backup_url . '' . $zipfile;
-    $PAGE->message[] = 'Backup <strong>"' . $zipfile . '"</strong> wurde erfolgreich erstellt.';
-    $TEMPLATE->assign('zipURL', $zipURL);                            //ZipURL bereitstellen
+$selected_curriculum        = filter_input(INPUT_GET, 'course', FILTER_UNSAFE_RAW);                 // course -->  curriculumid_groupid 
+if ($selected_curriculum) {    
+    $backup                 = new Backup();
+    list ($selected_curriculum, $selected_group) = explode('_', $selected_curriculum);              // $selected_group bisher hier nicht benutzt. evtl. f. Backups der Einreichungen nutzbar.
+    $zipfile = $backup->add($selected_curriculum);                                                             // create new backup 
+    $TEMPLATE->assign('zipURL', $CFG->web_backup_path . $selected_curriculum.'/' . $zipfile);     //aktuelle zip bereitstellen
+    //$TEMPLATE->assign('selected_curriculum', $selected_curriculum);
 }
 /*********************************************************************************
  * END POST / GET 
@@ -43,21 +34,22 @@ if (isset($_GET['course'])) {// create new backup
 
 $TEMPLATE->assign('page_title', 'Sicherungen erstellen');
 
-$courses = new Course(); //load Courses
-$backup_list = false;
-// load ackups and courses
-if (checkCapabilities('backup:getMyBackups', $USER->role_id, false)) { // Teacher and Tutor
-    $backup_list = $backup->load('teacher');
-    $TEMPLATE->assign('courses', $courses->getCourse('teacher', $USER->id));     
-} else
-if (checkCapabilities('backup:getAllBackups', $USER->role_id, false)) { //Administrators
-    $backup_list = $backup->load('admin');
+$courses            = new Course(); //load Courses
+$backups            = new File();
+/* load backups and courses */
+if (checkCapabilities('backup:getAllBackups', $USER->role_id, false)) {                                 //Administrators
+    $backup_list    = $backups->getFiles('context', 8, 'fileBackupPaginator');
     $TEMPLATE->assign('courses', $courses->getCourse('admin', $USER->id));
-}
+} else if (checkCapabilities('backup:getMyBackups', $USER->role_id, false)) {                          // Teacher and Tutor
+    $backup_list    = $backups->getFiles('backup', $USER->id, 'fileBackupPaginator');
+    $TEMPLATE->assign('courses', $courses->getCourse('teacher', $USER->id));     
+} 
+$TEMPLATE->assign('web_backup_path', $CFG->web_backup_path);  
 
-setPaginator('fileBackupPaginator', $TEMPLATE, $backup_list, 'results', 'index.php?action=backup'); //set Paginator    
-$zipURL = $CFG->web_backup_url;
-$TEMPLATE->assign('web_backup_url', $zipURL); //No Data available
 
-$TEMPLATE->assign('page_message', $PAGE->message);
-?>
+$p_config =   array('title'       => 'Titel', 
+                  'description'   => 'Beschreibung',
+                  'creation_time' => 'Datum',
+                  'author'        => 'Erstellt durch');
+setPaginator('backupP', $TEMPLATE, $backup_list, 'fb_val', 'index.php?action=backup', $p_config);   
+                                       

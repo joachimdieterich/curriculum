@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of curriculum - http://www.joachimdieterich.de
+ * Rolle hinzufügen, bearbeiten, löschen, überprüfen... 
  * 
  * @package core
  * @filename capability.class.php
@@ -19,7 +19,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         
  * GNU General Public License for more details:                          
  *                                                                       
- * http://www.gnu.org/copyleft/gpl.html      
+ * http://www.gnu.org/copyleft/gpl.html     
+ * 
+ * This file is part of curriculum - http://www.joachimdieterich.de 
  */
 
 
@@ -113,7 +115,7 @@ class Capability {
     public function getCapabilities($role_id){
         $db = DB::prepare('SELECT DISTINCT ca.*, rca.permission, rca.creator_id FROM capabilities AS ca
                             LEFT JOIN role_capabilities as rca ON rca.capability = ca.capability
-                            AND rca.role_id = ? ORDER BY ca.capability'); 
+                            AND rca.role_id = ? ORDER BY ca.capability '); 
         $db->execute(array($role_id));
         
         while($result = $db->fetchObject()) {  

@@ -8,131 +8,65 @@
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
 {block name=content}
-    
 <div class="border-box">
-    <div class="contentheader ">{$page_title}</div>
-    <div>
-        {if checkCapabilities('groups:add', $my_role_id, false)}
-            {if !isset($new_group_form)}
+    <div class="contentheader ">{$page_title}<input class="curriculumdocsbtn floatright" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Lerngruppen_anlegen');"/></div>
+        {if !isset($showForm) && checkCapabilities('groups:add', $my_role_id, false)}    
             <p class="floatleft  cssimgbtn gray-border">
-                <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=group&function=new_group">Lerngruppe hinzufügen</a>
-            </p><p>&nbsp;</p>
-            {/if}
-        
-            {if isset($new_group_form)}
-            <form id='addClass' method='post' action='index.php?action=group&next={$currentUrlId}'>
+                <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=group&function=new">Lerngruppe hinzufügen</a>
+            </p>
+        {else}
+            <form id='GroupForm' method='post' action='index.php?action=group&next={$currentUrlId}'>
             {if isset($edit_group_form) OR isset($new_semester_form)}
-                <input class="invisible" type="text" id="edit_group_id" name="edit_group_id" value={$group_id}>
-            {else}<p><label> </label></p>{/if} 
-            <p><label>Lerngruppen-Name: </label><input class='inputlarge' type='text' id='group' name='group' {if isset($group)}value='{$group}'{/if} /></p>   
+                <input id="g_id" name="g_id" type="text" class="hidden" value={$g_id}>
+            {/if} 
+            <p><label>Lerngruppen-Name: </label>    <input id='g_group' name='g_group' class='inputlarge' {if isset($g_group)}value='{$g_group}'{/if} /></p>   
             {validate_msg field='group'}
-            <p><label>Beschreibung: </label><input class='inputlarge' type='description' name='description' {if isset($description)}value='{$description}'{/if}/></p>
+            <p><label>Beschreibung: </label>        <input name='g_description' class='inputlarge'{if isset($g_description)}value='{$g_description}'{/if}/></p>
             {validate_msg field='description'}
             <p><label>Klassenstufe:</label>
             <select name="grade" class='inputlarge'>
                 {section name=res loop=$grade}  
-                    <option label="{$grade[res]->grade}" value={$grade[res]->id} {if $grade_id eq $grade[res]->id}selected="selected"{/if}>{$grade[res]->grade}</option>
+                    <option label="{$grade[res]->grade}" value={$grade[res]->id} {if $g_grade_id eq $grade[res]->id}selected="selected"{/if}>{$grade[res]->grade}</option>
                 {/section}
             </select> 
             {validate_msg field='grade'}
-            {if isset($semester)}
+            {if $semester}
                 <p><label>Lernzeitraum: </label>
                 <select name="semester" class='inputlarge'>
                     {section name=res loop=$semester}  
-                        <option label="{$semester[res]->semester}" value={$semester[res]->id} {if $semester_id eq $semester[res]->id}selected="selected"{/if}>{$semester[res]->semester}</option>
+                        <option label="{$semester[res]->semester}" value={$semester[res]->id} {if $g_semester_id eq $semester[res]->id}selected="selected"{/if}>{$semester[res]->semester}</option>
                     {/section}
                 </select> 
                 {validate_msg field='semester'}  
-                {else}<p><strong>Keine Lernzeiträume vorhanden! Um Lerngruppen anzulegen müssen zuerst Lernzeiträume angelegt werden.</strong></p>{/if}
+            {else}<p><strong>Keine Lernzeiträume vorhanden! Um Lerngruppen anzulegen müssen zuerst Lernzeiträume angelegt werden.</strong></p>{/if}
             {if isset($myInstitutions)}
                 <p><label>Institution / Schule*: </label>
                     <select name="institution" class='inputlarge'>
                     {section name=res loop=$myInstitutions}  
-                        <option label="{$myInstitutions[res]->institution}" value={$myInstitutions[res]->id}>{$myInstitutions[res]->institution}</option>
+                        <option label="{$myInstitutions[res]->institution}" value={$myInstitutions[res]->id} {if $g_institution_id eq $myInstitutions[res]->id}selected="selected"{/if}>{$myInstitutions[res]->institution}</option>
                     {/section}
                 </select> 
-            {else}
-                <p><strong>Sie müssen zuerst eine Institution anlegen</strong></p>           
-            {/if}
+            {else}<p><strong>Sie müssen zuerst eine Institution anlegen</strong></p>{/if}
             {if isset($new_semester_form)}
                 <p><label>Personen übernehmen?: </label>
-                    <input style="vertical-align: text-bottom;" type="checkbox" id="assumeUsers" name="assumeUsers" checked="checked" />
-                    Um eine leere Lerngruppe zu erstellen, Haken entfernen.
+                    <input id="assumeUsers" name="assumeUsers" type="checkbox" checked="checked" /> Um eine leere Lerngruppe zu erstellen, Haken entfernen.
                 </p>  
             {/if}
-                {if isset($edit_group_form) AND !isset($new_semester_form)}
-                    <p><label></label><input type='submit' name="back" value='zurück'/><input type='submit' name="update_group" value='Lerngruppe aktualisieren' /></p>
-                {elseif isset($new_semester_form)}
-                <p><label></label><input type='submit' name="back" value='zurück'/><input type='submit' name="change_semester" value='Lernzeitraum ändern' /></p>
-                {else}
-                <p><label></label><input type='submit' name="back" value='zurück'/><input type='submit' name="add_group" value='Lerngruppe hinzufügen' /></p>
-                {/if}
-                </form>	
+            <p><label></label><input name="back" type='submit' value='zurück'/>
+            {if isset($edit_group_form) AND !isset($new_semester_form)}
+                <input name="update" type='submit' value='Lerngruppe aktualisieren' /></p>
+            {elseif isset($new_semester_form)}
+                <input name="change" type='submit' value='Lernzeitraum ändern' /></p>
+            {else}
+                <input name="add" type='submit' value='Lerngruppe hinzufügen' /></p>
             {/if}
-        
+             <script type='text/javascript'> document.getElementById('g_group').focus(); </script>
+            </form>	
         {/if}
-    
         <form id='classlist' method='post' action='index.php?action=group&next={$currentUrlId}'>
-    {if $data != null}
-        {* display pagination header *}
-        <p>&nbsp;</p>
-        <p class="floatright">Datensätze {$groupsPaginator.first}-{$groupsPaginator.last} von {$groupsPaginator.total} werden angezeigt.</p>   
-            <table id="contenttable">
-                    <tr id="contenttablehead">
-                        <td></td>    
-                    {*<td>Lerngruppen-ID</td>*}
-                    <td>Lerngruppenname</td>
-                    <td>(Klassen)stufe</td>
-                    <td>Beschreibung</td>
-                    <td>Lernzeitraum</td>
-                    <td>Institution / Schule</td>
-                    <td>Erstellungsdatum</td>
-                    <td>Erstellt durch</td>
-                    <td class="td_options">Optionen</td>
-            </tr>
-            
-            {* display results *}    
-            {section name=res loop=$results}
-                <tr class="contenttablerow" id="row{$results[res]->id}" onclick="checkrow({$results[res]->id})">
-                    <td><input class="invisible" type="checkbox" id="{$results[res]->id}" name="id[]" value={$results[res]->id} /></td>
-                    {*<td>{$results[res].id}</td>*}
-                    <td>{$results[res]->group}</td>
-                    <td>{$results[res]->grade}</td>
-                    <td>{$results[res]->description}</td>
-                    <td>{$results[res]->semester}</td>
-                    <td>{$results[res]->institution}</td>
-                    <td>{$results[res]->creation_time}</td>
-                    <td>{$results[res]->creator}</td>
-                    <td class="td_options">
-                        {if checkCapabilities('groups:delete', $my_role_id, false)}
-                            <a class="deletebtn floatright" type="button" name="delete" onclick="del('group',{$results[res]->id}, {$my_id})"></a>
-                        {else}
-                            <a class="deletebtn deactivatebtn floatright" ></a>
-                        {/if}
-                        {if checkCapabilities('groups:changeSemester', $my_role_id, false)}
-                            <a class="calbtn floatright" href="index.php?action=group&function=semester&group_id={$results[res]->id}"></a>
-                        {else}
-                            <a class="calbtn deactivatebtn floatright"></a>
-                        {/if}
-                        {if checkCapabilities('groups:update', $my_role_id, false)}
-                            <a class="editbtn floatright" href="index.php?action=group&function=edit&group_id={$results[res]->id}"></a>
-                        {else}
-                            <a class="editbtn deactivatebtn floatright"></a>
-                        {/if}
-                        {if checkCapabilities('groups:showCurriculumEnrolments', $my_role_id, false)}
-                            <a class="listbtn floatright" href="index.php?action=group&function=showCurriculum&group_id={$results[res]->id}"></a>
-                        {else}
-                             <a class="listbtn deactivatebtn floatright"></a>
-                        {/if}
-                            </td>
-                </tr>
-            {/section}            
-            </table>
-                    <!--Hack für problem, dass kein Array gepostet wird, wenn nichts angewählt wird-->
-            <input class="invisible" type="checkbox" name="id[]" value="none" checked />
-            {* display pagination info *}
-            <p class="floatright">{paginate_prev id="groupsPaginator"} {paginate_middle id="groupsPaginator"} {paginate_next id="groupsPaginator"}</p>
-            {if !isset($new_group_form)}
+        {html_paginator id='groupP' values=$gp_val config=$groupP_cfg}
+        
+            {if !isset($showForm)}
                 {if checkCapabilities('groups:enrol', $my_role_id, false) OR checkCapabilities('groups:expel', $my_role_id, false)}
                     {if isset($curriculum_list)}
                     <p><h3>Markierte Lerngruppe(n)in Lehrplan ein- und ausschreiben:</h3>
@@ -145,134 +79,29 @@
                         
                             <div class=" floatleft cssimgbtn gray-border">
                         {if checkCapabilities('groups:enrol', $my_role_id, false)}
-                            <a class="inbtn block cssbtnmargin cssbtntext " onclick="document.getElementById('enrole_group').click();">einschreiben</a>
+                            <a class="inbtn block cssbtnmargin cssbtntext " onclick="document.getElementById('enrole').click();">einschreiben</a>
                         {else}
                             <a class="inbtn block deactivatebtn cssbtnmargin cssbtntext " >einschreiben</a>
                         {/if}
-                            </div><input class="invisible" type='submit' id='enrole_group' name='enrole_group' value='einschreiben' />
+                            </div><input class="invisible" type='submit' id='enrole' name='enrole' value='einschreiben' />
                         
                         <div class="floatleft  cssimgbtn gray-border">
                         {if checkCapabilities('groups:expel', $my_role_id, false)}
-                            <a class="outbtn block cssbtnmargin cssbtntext" onclick="document.getElementById('expel_group').click();">ausschreiben</a>
+                            <a class="outbtn block cssbtnmargin cssbtntext" onclick="document.getElementById('expel').click();">ausschreiben</a>
                         {else}
                             <a class="outbtn block deactivatebtn cssbtnmargin cssbtntext " >ausschreiben</a>
                         {/if}    
-                        </div><input class="invisible" type='submit' id='expel_group' name='expel_group' value='ausschreiben' />
+                        </div><input class="invisible" type='submit' id='expel' name='expel' value='ausschreiben' />
                     </p>
                     {/if}
                  {/if}   
             {/if}
+        </form> 
+        {if isset($cu_val)}
+            {html_paginator id='curriculumP' values=$cu_val config=$curriculumP_cfg action="index.php?action=groups&next={$currentUrlId}"}
         {/if}
-       
-        </form>  
-        
-        
-        {if isset($resultscurriculumList)}
-        <p><h3>Lehrpläne der Lerngruppe</h3></p>
-         {* display pagination header *}
-        <p class="floatright">Datensätze {$curriculumList.first}-{$curriculumList.last} von {$curriculumList.total} werden angezeigt.</p>   
-            <table id="contenttable">
-                    <tr id="contenttablehead">
-                    {*<td>Curriculum-ID</td>*}
-                    <td></td>
-                    <td></td>
-                    <td>Lehrplan</td>
-                    <td>Beschreibung</td>
-                    <td>Fach</td>
-                    <td>Klasse</td>
-                    <td>Schultyp</td>
-                    <td>Bundesland/Region</td>
-                    <td>Land</td>
-                    {if !isset($showCurriculumForm)}
-                       <td class="td_1options">Optionen</td>
-                    {/if}    
-            </tr>
-            
-            {* display results *}    
-            {section name=res loop=$resultscurriculumList}
-                <tr {if isset($selectedID) AND $selectedID eq $resultscurriculumList[res]->id} class="activecontenttablerow"{/if} class="contenttablerow" id="row{$resultscurriculumList[res]->id}" name="row{$resultscurriculumList[res]->id}" onclick="checkrow({$resultscurriculumList[res]->id})">
-                    <td><input class="invisible" type="checkbox" id="{$resultscurriculumList[res]->id}" name="id[]" value={$resultscurriculumList[res]->id} {if isset($selectedID) AND $selectedID eq $resultscurriculumList[res]->id} checked{/if}/></td>
-                    {*<td>{$results[res].id}</td>*}
-                    <td><img class="icon_tiny icon_listposition" src="{$subjects_url}{$resultscurriculumList[res]->filename}"></td>
-                    <td>{$resultscurriculumList[res]->curriculum}</td>
-                    <td>{$resultscurriculumList[res]->description}</td>
-                    <td>{$resultscurriculumList[res]->subject}</td>
-                    <td>{$resultscurriculumList[res]->grade}</td>
-                    <td>{$resultscurriculumList[res]->schooltype}</td>
-                    <td>{$resultscurriculumList[res]->state}</td>
-                    <td>{$resultscurriculumList[res]->de}</td>
-                    {if !isset($showCurriculumForm)}
-                    <td class="td_1options">
-                        {if checkCapabilities('groups:expel', $my_role_id, false)}
-                            <a class="deletebtn floatright" href="index.php?action=group&function=expel_group&curriculumID={$resultscurriculumList[res]->id}&group_id={$selected_group_id}"></a>
-                        {else}
-                            <a class="deletebtn deactivatebtn floatright"></a>
-                        {/if}
-                    </td>
-                    {/if}
-                </tr>
-            {/section}
-            
-            </table>
-            <input class="invisible" type="checkbox" name="id[]" value="none" checked /><!--Hack für problem, dass kein Array gepostet wird, wenn nichts angewählt wird-->
-            {* display pagination info *}
-            <p class="floatright">{paginate_first id="curriculumList"} {paginate_middle id="curriculumList"} {paginate_next id="curriculumList"}</p>
-        {else if isset($showenroledCurriculum)}
-            <p><strong>Die gewählte Lerngruppe ist in keinen Lehrplan eingeschrieben.</strong></p>
-            <p>&nbsp;</p>
-        {/if}
-        
-        
-        {if isset($showenroledUsers)}
-            <p><h3>Eingeschriebene Benutzer</h3></p>
-    {if !isset($userResults)}
-        <p>&nbsp;</p>
-        <p><strong>In dieser Lerngruppe sind bisher keine Benutzer eingeschrieben.</strong></p>
-        <p>&nbsp;</p>
-    {/if}
-        {if isset($userResults)}
-            
-            <p class="floatright">Datensätze {$userPaginator.first}-{$userPaginator.last} von {$userPaginator.total} werden angezeigt.</p>
-                    <table id="contenttable">
-                    <tr id="contenttablehead">
-                            <td></td><td>Avatar</td>
-                            <td>Benutzername</td>
-                            <td>Vorname</td>
-                            <td>Nachname</td>
-                            <td>Email</td>
-                            <td>PLZ</td>
-                            <td>Ort</td>
-                            <td>Bundesland</td>
-                            <td>Land</td>
-                            <td class="td_1options">Optionen</td>
-                    </tr>
-                    {section name=res loop=$userResults}
-                        <tr class="{if isset($selectedUserID) AND $selectedUserID eq $userResults[res]->id} activecontenttablerow {else}contenttablerow{/if}" id="row{$smarty.section.res.index}">
-                        <td><input class="invisible" type="checkbox" id="userID{$smarty.section.res.index}" name="userID" value={$userResults[res]->id} {if isset($selectedUserID) AND $selectedUserID eq $userResults[res]->id} checked{/if}/></td>
-                        <td><img src="{$avatar_url}{$userResults[res]->avatar}" alt="Profilfoto" width="18"></td>
-                        <td>{$userResults[res]->username}</td>
-                        <td>{$userResults[res]->firstname}</td>
-                        <td>{$userResults[res]->lastname}</td>
-                        <td>{$userResults[res]->email}</td>
-                        <td>{$userResults[res]->postalcode}</td>
-                        <td>{$userResults[res]->city}</td>
-                        <td>{$userResults[res]->state}</td>
-                        <td>{$userResults[res]->country}</td>
-                        <td class="td_1options">
-                            <a class="deletebtn floatright" type="button" name="expelUser" onclick="expelUser({$selected_group_id},{$userResults[res]->id})"></a>
-                        </td>
-                        
-                        </tr>
-                    {/section}
-                    </table>
-            <p class="floatright">{paginate_prev id="userPaginator"} {paginate_middle id="userPaginator"} {paginate_next id="userPaginator"}</p>
-        {/if} 
-        <p>&nbsp;</p><p>&nbsp;</p>
-        {/if}
+  
 </div>
-        <script type='text/javascript'>
-	document.getElementById('group').focus();
-</script>
 {/block}
 
 {block name=sidebar}{$smarty.block.parent}{/block}

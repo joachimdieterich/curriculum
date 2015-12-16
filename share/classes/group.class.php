@@ -2,10 +2,6 @@
 /**
  * Group object can add, update, delete and get data from groups db
  * 
- * @example
- * // Add new Group <br>
- * $new_group = new Group(); <br>
- * 
  * @abstract This file is part of curriculum - http://www.joachimdieterich.de
  * @package core
  * @filename group.class.php
@@ -14,15 +10,11 @@
  * @date 2013.06.06 22:11
  * @license 
  *
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License as published by  
- * the Free Software Foundation; either version 3 of the License, or     
- * (at your option) any later version.                                   
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by  
+ * the Free Software Foundation; either version 3 of the License, or (at your option) any later version.                                   
  *                                                                       
- * This program is distributed in the hope that it will be useful,       
- * but WITHOUT ANY WARRANTY; without even the implied warranty of        
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         
- * GNU General Public License for more details:                          
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of        
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public License for more details:
  *                                                                       
  * http://www.gnu.org/copyleft/gpl.html      
  */
@@ -88,7 +80,6 @@ class Group {
      */
     public $creator;
    
-    
     /**
      * add group to db
      * @param boolean $condition
@@ -96,22 +87,21 @@ class Group {
      */
     public function add($condition = false){
         global $USER;
-        if (checkCapabilities('groups:add', $USER->role_id)){
-            switch ($condition) {
-                case 'semester': $db = DB::prepare('SELECT COUNT(id) FROM groups WHERE groups = ? AND semester_id = ?');
+        checkCapabilities('groups:add', $USER->role_id);
+        switch ($condition) {
+            case 'semester':    $db = DB::prepare('SELECT COUNT(id) FROM groups WHERE groups = ? AND semester_id = ?');
                                 $db->execute(array($this->group, $this->semester_id));
-                    break;
-                default:         $db = DB::prepare('SELECT COUNT(id) FROM groups WHERE groups = ?');
+                break;
+            default:            $db = DB::prepare('SELECT COUNT(id) FROM groups WHERE groups = ?');
                                 $db->execute(array($this->group));    
                 break;
-            }
-            if($db->fetchColumn() >= 1) { 
-                return false;
-            } else {     
-                $db = DB::prepare('INSERT INTO groups (groups,description,grade_id,semester_id,institution_id,creator_id) 
-                                                    VALUES (?,?,?,?,?,?)');
-                return $db->execute(array($this->group, $this->description, $this->grade_id, $this->semester_id, $this->institution_id, $this->creator_id));
-            }
+        }
+        if($db->fetchColumn() >= 1) { 
+            return false;
+        } else {     
+            $db = DB::prepare('INSERT INTO groups (groups,description,grade_id,semester_id,institution_id,creator_id) 
+                                                VALUES (?,?,?,?,?,?)');
+            return $db->execute(array($this->group, $this->description, $this->grade_id, $this->semester_id, $this->institution_id, $this->creator_id));
         }
     }
     
@@ -121,10 +111,9 @@ class Group {
      */
     public function update(){
         global $USER;
-        if (checkCapabilities('groups:update', $USER->role_id)){
-            $db = DB::prepare('UPDATE groups SET groups = ?, description = ?, grade_id = ?, semester_id = ?, institution_id = ?,creator_id = ? WHERE id = ?');
-            return $db->execute(array($this->group, $this->description, $this->grade_id, $this->semester_id, $this->institution_id, $this->creator_id, $this->id));
-        }
+        checkCapabilities('groups:update', $USER->role_id);
+        $db = DB::prepare('UPDATE groups SET groups = ?, description = ?, grade_id = ?, semester_id = ?, institution_id = ?,creator_id = ? WHERE id = ?');
+        return $db->execute(array($this->group, $this->description, $this->grade_id, $this->semester_id, $this->institution_id, $this->creator_id, $this->id));
     }
     
     /**
@@ -133,18 +122,16 @@ class Group {
      * @param int $creator_id
      * @return boolean 
      */
-    public function delete($creator_id = null){
+    public function delete(){
         global $USER;
-        if (checkCapabilities('groups:delete', $USER->role_id)){
-            $db = DB::prepare('SELECT id FROM curriculum_enrolments WHERE group_id = ? AND status = 1');
-            $db->execute(array($this->id));
-            $result = $db->fetchObject();
-            if ($result){
-                return false;
-            } else {
-                $db = DB::prepare('DELETE FROM groups WHERE id = ?');
-                return $db->execute(array($this->id));
-            } 
+        checkCapabilities('groups:delete', $USER->role_id);
+        $db = DB::prepare('SELECT id FROM curriculum_enrolments WHERE group_id = ? AND status = 1');
+        $db->execute(array($this->id));
+        if ($db->fetchObject()){
+            return false;
+        } else {
+            $db = DB::prepare('DELETE FROM groups WHERE id = ?');
+            return $db->execute(array($this->id));
         }
     } 
     
@@ -189,13 +176,12 @@ class Group {
      */
     public function expel($user_id, $curriculum_id){
         global $USER;
-        if (checkCapabilities('groups:expel', $USER->role_id)){
-            if ($this->checkEnrolment($curriculum_id)) {
-                $db = DB::prepare('UPDATE curriculum_enrolments SET status = 0, creator_id = ?, creation_time = NOW()
-                                    WHERE group_id = ? AND curriculum_id = ?'); //Status 0 == not enroled
-                return $db->execute(array($user_id, $this->id, $curriculum_id));
-            } 
-        }
+        checkCapabilities('groups:expel', $USER->role_id);
+        if ($this->checkEnrolment($curriculum_id)) {
+            $db = DB::prepare('UPDATE curriculum_enrolments SET status = 0, creator_id = ?, creation_time = NOW()
+                                WHERE group_id = ? AND curriculum_id = ?'); //Status 0 == not enroled
+            return $db->execute(array($user_id, $this->id, $curriculum_id));
+        } 
     }
     
     /**
@@ -206,16 +192,15 @@ class Group {
      */
     public function enrol($user_id, $curriculum_id){
         global $USER;
-        if (checkCapabilities('groups:enrol', $USER->role_id)){
-            if ($this->checkEnrolment($curriculum_id, 0)) {
-                $db = DB::prepare('UPDATE curriculum_enrolments SET status = 1, creator_id = ?, creation_time = NOW()
-                                    WHERE group_id = ? AND curriculum_id = ?'); //Status 1 == eingeschrieben
-                return $db->execute(array($user_id, $this->id, $curriculum_id)); 
-            } else {
-                $db = DB::prepare('INSERT INTO curriculum_enrolments (status,group_id,curriculum_id,creator_id) 
-                                    VALUES (1,?,?,?)');//Status 1 == eingeschrieben
-                return $db->execute(array($this->id, $curriculum_id, $user_id));
-            }
+        checkCapabilities('groups:enrol', $USER->role_id);
+        if ($this->checkEnrolment($curriculum_id, 0)) {
+            $db = DB::prepare('UPDATE curriculum_enrolments SET status = 1, creator_id = ?, creation_time = NOW()
+                                WHERE group_id = ? AND curriculum_id = ?'); //Status 1 == eingeschrieben
+            return $db->execute(array($user_id, $this->id, $curriculum_id)); 
+        } else {
+            $db = DB::prepare('INSERT INTO curriculum_enrolments (status,group_id,curriculum_id,creator_id) 
+                                VALUES (1,?,?,?)');//Status 1 == eingeschrieben
+            return $db->execute(array($this->id, $curriculum_id, $user_id));
         }
     }
     
@@ -225,23 +210,19 @@ class Group {
      */
     public function changeSemester(){
         global $USER;
-        if (checkCapabilities('groups:changeSemester', $USER->role_id)){
-            global $USER;
-            // Load group members
-            $users = new User(); 
-            $group_members = $users->getGroupMembers('group', $this->id); 
-            // Load new group id
-            $db = DB::prepare('SELECT id FROM groups WHERE UPPER(groups) = UPPER(?) AND semester_id = ?');
-            $db->execute(array($this->group, $this->semester_id));
-            $result = $db->fetchObject(); 
-            $this->id = $result->id;
-            $this->load();
-            if  (count($group_members) > 0){ //if there are Group members
-                foreach($group_members as $key=>$value) { //Die Benutzer in die neue Lerngruppe einschreiben
-                    $users->id = $value;
-                    $users->enroleToGroup($this->id, $USER->id);  
-                } 
-            }
+        checkCapabilities('groups:changeSemester', $USER->role_id);
+        $users          = new User(); 
+        $group_members  = $users->getGroupMembers('group', $this->id);                                              // Load group members
+        $db             = DB::prepare('SELECT id FROM groups WHERE UPPER(groups) = UPPER(?) AND semester_id = ?');  // Load new group id
+        $db->execute(array($this->group, $this->semester_id));
+        $result         = $db->fetchObject(); 
+        $this->id       = $result->id;
+        $this->load();
+        if  (count($group_members) > 0){                                    // Mitglieder in der Gruppe?
+            foreach($group_members as $value) {                             // Mitglieder in die neue Lerngruppe einschreiben
+                $users->id = $value;
+                $users->enroleToGroup($this->id, $USER->id);  
+            } 
         }
     }
  
@@ -252,11 +233,14 @@ class Group {
      * @param type $id
      * @return array of groups objects 
      */
-    public function getGroups($dependency = null, $id = null){
+    public function getGroups($dependency = null, $id = null, $paginator = ''){
         global $USER;
+        $order_param = orderPaginator($paginator);        
+        $groups      = array();
         switch ($dependency) {
             case 'course':  $db = DB::prepare('SELECT gp.*, gr.grade, se.semester FROM groups AS gp, semester AS se, grade AS gr
-                                            WHERE gp.semester_id = se.id AND gp.grade_id = gr.id AND gp.id = ?');
+                                            WHERE gp.semester_id = se.id AND gp.grade_id = gr.id AND gp.id = ? 
+                                            '.$order_param);
                             $db->execute(array($id));
                 break;
 
@@ -266,17 +250,25 @@ class Group {
                                 AND gr.id = gp.grade_id 
                                 AND yr.id = gp.semester_id 
                                 AND ins.id = gp.institution_id 
-                                AND us.id = gp.creator_id');
-                            $db->execute(array($id));
+                                AND us.id = gp.creator_id 
+                                '.$order_param);
+                            $db->execute(array($id));                            
                  break;
-            case 'user': $db = DB::prepare('SELECT gp.*, gr.grade, sem.semester, ins.institution AS institution_id, usr.username AS creator_id
+            case 'user':    $db = DB::prepare('SELECT gp.*, gr.grade, sem.semester, ins.institution AS institution_id, usr.username AS creator_id
                                                 FROM groups AS gp, semester AS sem, institution AS ins, users AS usr, grade AS gr
                                                 WHERE sem.id = gp.semester_id
                                                 AND gp.grade_id = gr.id
                                                 AND ins.id = gp.institution_id
                                                 AND usr.id = gp.creator_id
-                                                AND gp.id = ANY (SELECT group_id FROM groups_enrolments WHERE user_id = ?)');
-                         $db->execute(array($id));
+                                                AND gp.id = ANY (SELECT group_id FROM groups_enrolments WHERE user_id = ?) 
+                                                '.$order_param);
+                            $db->execute(array($id));
+                 break; 
+            case 'institution':   $db = DB::prepare('SELECT gp.*, gr.grade, sem.semester FROM groups AS gp, grade AS gr, semester AS sem
+                                                     WHERE sem.id = gp.semester_id
+                                                     AND gp.grade_id = gr.id AND gp.institution_id = ? 
+                                '.$order_param);
+                            $db->execute(array($id));                            
                  break; 
         default: break; 
         }
@@ -298,9 +290,7 @@ class Group {
                 }
                 $groups[] = clone $this;        //it has to be clone, to get the object and not the reference
         } 
-        if (isset($groups)) {    
-            return $groups;
-        } else {return NULL;}  
+        return $groups;
     }
     
     /**
@@ -308,11 +298,10 @@ class Group {
     * @return boolean
     */
     public function dedicate(){ // only use during install
-        $db = DB::prepare('UPDATE groups SET creator_id = ?');
+        $db     = DB::prepare('UPDATE groups SET creator_id = ?');
         if ($db->execute(array($this->creator_id))){
             $db = DB::prepare('UPDATE groups_enrolments SET creator_id = ?');
             return $db->execute(array($this->creator_id));
         }
     }
 }
-?>

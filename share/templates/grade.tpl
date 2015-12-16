@@ -1,6 +1,6 @@
 {extends file="base.tpl"}
 
-{block name=title}{$str_adminGrade}{/block}
+{block name=title}{$page_title}{/block}
 {block name=description}{$smarty.block.parent}{/block}
 {block name=nav}{$smarty.block.parent}{/block}
 
@@ -8,84 +8,36 @@
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
 {block name=content}
-    
 <div class="border-box">
-    <div class="contentheader ">{$str_adminGrade}</div>
-    <div>
-        {if checkCapabilities('grade:add', $my_role_id, false)}
-            {if !isset($showGradeForm)}
-            <p class="floatleft  cssimgbtn gray-border">
-                <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=grade&function=newGrade">Klassenstufe hinzufügen</a>
-            </p>
-            {/if}
-        {/if}
-        <p>&nbsp;</p>
-        {if isset($showGradeForm)}
-            <form id='addGrade' method='post' action='index.php?action=grade&next={$currentUrlId}'>
-            <input type='hidden' name='id' id='id' {if isset($id)}value='{$id}'{/if} /></p>   
-            <p><label>{$str_adminGrade_addGradeName}</label><input class='inputlarge' type='text' name='grade' id='grade' {if isset($grade)}value='{$grade}'{/if} /></p>   
+    <div class="contentheader ">Klassenstufen verwalten<input class="curriculumdocsbtn floatright" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Klassenstufen_anlegen');"/></div>
+    {if !isset($showForm) AND checkCapabilities('grade:add', $my_role_id, false)}
+    <p class="floatleft cssimgbtn gray-border">
+        <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=grade&function=new">Klassenstufe hinzufügen</a>
+    </p>
+    {else}
+        <form id='gradeForm' method='post' action='index.php?action=grade&next={$currentUrlId}'>
+            <input id='id' name='id' type='hidden' {if isset($id)}value='{$id}'{/if} /></p>   
+            <p><label>Klassenstufen-Name</label><input id='grade' name='grade' class='inputlarge' {if isset($grade)}value='{$grade}'{/if} /></p>
             {validate_msg field='grade'}
-            <p><label>{$str_description}</label><input class='inputlarge' type='description' name='description' {if isset($description)}value='{$description}'{/if}/></p>
+            <p><label>Beschreibung</label><input name='description' class='inputlarge' {if isset($description)}value='{$description}'{/if}/></p>
             {validate_msg field='description'}
-            {if count($my_institutions['id']) > 1}
-                <p><label>Institution / Schule*: </label>{html_options id='institution' name='institution' values=$my_institutions['id'] output=$my_institutions['institution']}</p>
-            {elseif count($my_institutions['id']) eq 0}
-                <p><strong>Sie müssen zuerst eine Institution anlegen</strong></p>
-            {else}
-                <input type='hidden' name='institution' id='institution' value='{$my_institutions['id'][0]}' /></p>       
-            {/if}
-
-            <script type='text/javascript'>
-            document.getElementById('grade').focus();
-            </script>
-
-            {if !isset($showeditGradeForm)}
-                <p><label></label><input type='submit' name="addGrade" value='{$str_adminGrade_addbtn}' /></p>
-            {else}
-                <p><label></label><input type='submit' name="back" value='zurück'/><input type='submit' name="updateGrade" value='Klassenstufe aktualisieren' /></p>
-            {/if}
-            </form>	
-        {/if}
-         
-        <form id='classlist' method='post' action='index.php?action=grade&next={$currentUrlId}'>
-            <p>&nbsp;</p>
-    {if $data != null}
-        {* display pagination header *}
-        <p class="floatright">{$str_adminGrade_pagItem} {$gradePaginator.first}-{$gradePaginator.last} {$str_adminGrade_pagTo} {$gradePaginator.total}</p>   
-            <table id="contenttable">
-                    <tr id="contenttablehead">
-                    <td></td>    
-                    <td>{$str_adminGrade_Grade}</td>
-                    <td>{$str_description}</td>
-                    <td class="td_options">Optionen</td>
-            </tr>
-            {section name=grade loop=$grade_list}{* display results *}
-                <tr class="contenttablerow" id="row{$grade_list[grade]->id}" onclick="checkrow({$grade_list[grade]->id})">
-                    <td><input class="invisible" type="checkbox" id="{$grade_list[grade]->id}" name="id[]" value={$grade_list[grade]->id} /></td>
-                    <td>{$grade_list[grade]->grade}</td>
-                    <td>{$grade_list[grade]->description}</td>
-                    <td class="td_options">
-                        {if checkCapabilities('grade:delete', $my_role_id, false)}
-                            <a class="deletebtn floatright" type="button" name="delete" onclick="del('grade',{$grade_list[grade]->id}, {$my_id})"></a>
-                        {else}
-                            <a class="deletebtn deactivatebtn floatright" type="button" ></a>
-                        {/if}
-                        {if checkCapabilities('grade:update', $my_role_id, false)} 
-                            <a class="editbtn floatright" href="index.php?action=grade&edit=true&id={$grade_list[grade]->id}"></a>
-                        {else}
-                            <a class="editbtn deactivatebtn floatright"></a>
-                        {/if}
-                        </td>
-                </tr>
-            {/section}
-            </table>  
-            <input class="invisible" type="checkbox" name="id[]" value="none" checked /><!--Hack für problem, dass kein Array gepostet wird, wenn nichts angewählt wird-->
-            {* display pagination info *}
-            <p class="floatright">{paginate_prev id="gradePaginator"} {paginate_middle id="gradePaginator"} {paginate_next id="gradePaginator"}</p>
-            <p>&nbsp;</p>
-        {/if}
-        </form>              
-        
+            <p><label>Institution / Schule*:</label><SELECT  name='institution_id' id='institution_id' />
+            {foreach key=insid item=ins from=$my_institutions}
+                <OPTION  value="{$ins->institution_id}"  {if $ins->institution_id eq $institution_id}selected="selected"{/if}>{$ins->institution}</OPTION>
+            {/foreach} 
+            </SELECT></p>
+            <script type='text/javascript'> document.getElementById('grade').focus(); </script>
+            <p><label></label>
+                {if !isset($editBtn)}
+                    <input name="add" type='submit' value='Klassenstufe hinzufügen' 
+                {else}
+                    <input name="back" type='submit' value='zurück'/><input name="update" type='submit' value='Klassenstufe aktualisieren' />
+                {/if}
+            </p>
+        </form>	
+    {/if}
+    
+{html_paginator id='gradeP' values=$gr_val config=$gradeP_cfg}
 </div>
 {/block}
 

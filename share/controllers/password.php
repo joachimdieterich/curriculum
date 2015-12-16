@@ -8,30 +8,24 @@
  * @date 2013.03.08 13:26
  * @license: 
 *
-* This program is free software; you can redistribute it and/or modify 
-* it under the terms of the GNU General Public License as published by  
-* the Free Software Foundation; either version 3 of the License, or     
-* (at your option) any later version.                                   
+* This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by  
+* the Free Software Foundation; either version 3 of the License, or (at your option) any later version.                                   
 *                                                                       
-* This program is distributed in the hope that it will be useful,       
-* but WITHOUT ANY WARRANTY; without even the implied warranty of        
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         
-* GNU General Public License for more details:                          
+* This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of        
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details:                          
 *                                                                       
 * http://www.gnu.org/copyleft/gpl.html      
 */
 global $USER, $PAGE, $TEMPLATE;
 
-switch ($PAGE->login) {
-    case 'first':   //wird über die login.php gesetzt
-                 $PAGE->message[] ="Willkommen auf curriculum! Sie melden sich das erste mal auf curriculum an. Bitte ändern Sie daher das vorgegebene Passwort um unbefugten Zugriff zu vermeiden."; //todo: Texte in globale language datei
-        break;
-    
-    case 'webservice': //wird über die login.php gesetzt
-                //$oldpassword = $USER->getPassword($USER->username, 'authenticate'); // login via webservice: get old password
-                $oldpassword = $USER->getPassword(); // login via webservice: get old password //not tested yet mit PDO
+switch (filter_input(INPUT_GET, 'login', FILTER_UNSAFE_RAW)) {
+    /*case 'first':   //wird über die login.php gesetzt
+                 $PAGE->message[] ="Willkommen auf curriculum! Sie melden sich das erste mal auf curriculum an. Bitte ändern Sie daher das vorgegebene Passwort um unbefugten Zugriff zu vermeiden.";
+        break;*/   
+    case 'changePW': //wird über die login.php gesetzt
+                $oldpassword        = $USER->getPassword(); 
                 $TEMPLATE->assign('oldpassword', $oldpassword);
-                $TEMPLATE->assign('webservice', 'Willkommen auf curriculum! Sie melden sich das erste mal auf curriculum an. Um den automatischen Anmeldevorgang abzuschließen müssen sie  ein Zugangskennwort festlegen. Mit diesem können sie sich in Zukunft auch direkt auf curriculum anmelden ');
+                $PAGE->message[]    = 'Bitte ändern Sie das bestehende Passwort.';
         break;
 
     default:
@@ -39,7 +33,8 @@ switch ($PAGE->login) {
 }
 
 if($_POST) {
-    $gump = new Gump();
+    $gump   = new Gump();
+    $_POST  = $gump->sanitize($_POST);           //sanitize $_POST
     $gump->validation_rules(array(
     'oldpassword'    => 'required',
     'password'       => 'required|max_len,100|min_len,6',
@@ -64,4 +59,3 @@ if($_POST) {
 }
 
 $TEMPLATE->assign('page_title', 'Passwort ändern');
-?>

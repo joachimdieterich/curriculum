@@ -9,22 +9,16 @@
  * @date 2013.03.08 13:26
  * @license: 
  *
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License as published by  
- * the Free Software Foundation; either version 3 of the License, or     
- * (at your option) any later version.                                   
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by  
+ * the Free Software Foundation; either version 3 of the License, or (at your option) any later version.                                   
  *                                                                       
- * This program is distributed in the hope that it will be useful,       
- * but WITHOUT ANY WARRANTY; without even the implied warranty of        
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         
- * GNU General Public License for more details:                          
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of        
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details:                          
  *                                                                       
  * http://www.gnu.org/copyleft/gpl.html 
  * 
  * Database Singleton - USE this class for all database access
- * 
- *	DB::exec("DELETE FROM Blah");
- *	
+ * 	DB::exec("DELETE FROM Blah");	
  *	foreach( DB::query("SELECT * FROM Blah") as $row){
  *	        print_r($row);
  *	}
@@ -32,8 +26,7 @@
  * Or...
  *  $db = DB::prepare("SELECT 1 FROM `bookmark` WHERE `userid` = ? AND (`url` = ? OR `name` = ?)");
  *  $db->execute(array($data['userid'], $data['url'], $data['name']));
- *  //if no rows returned, then return false
- *  if(!$db->fetchAll()) {
+ *  if(!$db->fetchAll()) { //if no rows returned, then return false
  *       return false;
  *  }
  *
@@ -62,7 +55,7 @@ class DB {
     public static function getInstance(  ) {
         global $CFG;   
         if(!self::$objInstance){
-            self::$objInstance = new PDO('mysql:host='.$CFG->db_host.';dbname='.$CFG->db_name.';'/*'.charset=utf8.'*/, $CFG->db_user, $CFG->db_password ); // PDO DSN http://www.php.net/manual/en/ref.pdo-mysql.php
+            self::$objInstance = new PDO('mysql:host='.$CFG->db_host.';dbname='.$CFG->db_name.';charset=utf8;', $CFG->db_user, $CFG->db_password ); // PDO DSN http://www.php.net/manual/en/ref.pdo-mysql.php
             self::$objInstance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING); //ERRMODE_SILENT, ERRMODE_WARNING (for debug), ERRMODE_EXCEPTION 
             self::$objInstance->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         }
@@ -80,8 +73,5 @@ class DB {
         $objInstance = self::getInstance();
         return call_user_func_array(array($objInstance, $chrMethod), $arrArguments);
        
-    } # end method
-    
-    
+    } # end method   
 }
-?>

@@ -1,14 +1,13 @@
 {extends file="base.tpl"}
 
-{block name=title}Fehlende Berechtigung{/block}
+{block name=title}Fehler{/block}
 {block name=description}{$smarty.block.parent}{/block}
 {block name=nav}{$smarty.block.parent}{/block}
 
 {block name=additional_scripts}{$smarty.block.parent}{/block}
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
-{block name=content}
-    <div>	
+{block name=content} 
     <div class="contentheader ">Fehler - "{$prev_page_name}" kann nicht aufgerufen werden</div>
     <div>
         <p>{$curriculum_exception}</p>

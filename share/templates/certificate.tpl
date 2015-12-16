@@ -8,68 +8,53 @@
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
 {block name=content}
-    
 <div class="border-box">
-    <div class="contentheader">{$page_title}</div>
-   
-    <p>In diesem Editor können sie das Zertifikat einrichten. Die folgenden Felder dürfen / müssen dabei verwendet werden. 
-        Felder mit * sind obligatorisch. </br>Die {literal}{{/literal}Start{literal}}{/literal} und {literal}{{/literal}Ende{literal}}{/literal} Feld legen fest welcher Bereich abhängig von den vorhandenen Zielen immer wieder wiederholt wird. </p>    
-    <p><ol>
-        <li>*{literal}{{/literal}Vorname{literal}}{/literal}</li>
-        <li>*{literal}{{/literal}Nachname{literal}}{/literal}</li>
-        <li>*{literal}{{/literal}Start{literal}}{/literal}</li>
-        <li>*{literal}{{/literal}Ende{literal}}{/literal}</li>
-        <li>{literal}{{/literal}Ort{literal}}{/literal}</li>
-        <li>{literal}{{/literal}Datum{literal}}{/literal}</li>
-        <li>{literal}{{/literal}Unterschrift{literal}}{/literal}</li>
-        <li>{literal}{{/literal}Thema{literal}}{/literal}</li>
-        <li>{literal}{{/literal}Ziel{literal}}{/literal}</li>
-        <li>{literal}{{/literal}Ziel_erreicht{literal}}{/literal}</li>
-        <li>{literal}{{/literal}Ziel_offen{literal}}{/literal}</li>
-        <li>{literal}{{/literal}Unterschrift{literal}}{/literal}</li>  
-    </ol></p>
-    {if isset($courses)}
-    <p>
-        <select id='course' name='course' onchange="window.location.assign('index.php?action=certificate&course='+this.value);"> {*_blank global regeln*}
-            <option value="-1" data-skip="1">Lehrplan wählen...</option>
-            {section name=res loop=$courses}
-            <option value="{$courses[res]->id}" 
-            {if $courses[res]->id eq $selected_curriculum} selected {/if} 
-            data-icon="{$data_url}subjects/{$courses[res]->icon}" data-html-text="{$courses[res]->group} - {$courses[res]->curriculum}&lt;i&gt;
-            {$courses[res]->description}&lt;/i&gt;">{$courses[res]->group} - {$courses[res]->curriculum}</option>  
-            {/section} 
-        </select>    
-    </p>
-    {else}<p><strong>Sie haben noch keine Lehrpläne angelegt bzw. noch keine Klassen eingeschrieben.</strong></p>{/if}
-    <p>&nbsp;</p>
-         
-    {if isset($userPaginator)}   
-    <p>Datensätze {$userPaginator.first}-{$userPaginator.last} von {$userPaginator.total} werden angezeigt.</p>
-        <table id="contentsmalltable">
-            <tr id="contenttablehead">
-                    <td></td><td>Vorname</td><td>Nachname</td>
-            </tr>   
-        {section name=res loop=$results}
-            <tr class="{if isset($selected_user_id) AND $selected_user_id eq $results[res]->id} activecontenttablerow {else}contenttablerow{/if}{if $results[res]->completed eq 100} completed{/if}" id="row{$smarty.section.res.index}" onclick="window.location.assign('index.php?action=certificate&course='+document.getElementById('course').value+'&userID='+document.getElementById('userID{$smarty.section.res.index}').value);">
-                <td><input class="invisible" type="checkbox" id="userID{$smarty.section.res.index}" name="userID" value={$results[res]->id} {if isset($selected_user_id) AND $selected_user_id eq $results[res]->id} checked{/if}/></td>
-                <td>{$results[res]->firstname}</td><td>{$results[res]->lastname}</td>
-            </tr>
-        {/section}
-        </table>
-    <p>{paginate_prev id="userPaginator"} {paginate_middle id="userPaginator"} {paginate_next id="userPaginator"}</p>
+    <div class="contentheader">{$page_title}<input class="curriculumdocsbtn floatright" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Zertifikatvorlage_einrichten');"/></div>
+    {if !isset($showForm) && checkCapabilities('certificate:add', $my_role_id, false)}
+        <p class="floatleft  cssimgbtn gray-border">
+            <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=certificate&function=new">Zertifikat hinzufügen</a>
+        </p>
+    {else}
+        <form id='addCertificate' method='post' action='index.php?action=certificate'>
+        <input id='id' name='id' type='hidden' {if isset($id)}value='{$id}'{/if} /></p>   
+        <p><label>Name des Zertifikat-Vorlage</label><input class='inputlarge' name='certificate' id='certificate' {if isset($certificate)}value='{$certificate}'{/if} /></p>   
+        {validate_msg field='certificate'}
+        <p><label>Beschreibung</label><input class='inputlarge' name='description' {if isset($description)}value='{$description}'{/if}/></p>
+        {validate_msg field='description'}
+         <p><label>Institution / Schule*:</label><SELECT  name='institution_id' id='institution_id' />
+            {foreach key=insid item=ins from=$my_institutions}
+                <OPTION  value="{$ins->institution_id}"  {if $ins->institution_id eq $institution_id}selected="selected"{/if}>{$ins->institution}</OPTION>
+            {/foreach} 
+        </SELECT></p>
+        <p>In diesem Editor können sie das Zertifikat einrichten. Die folgenden Felder dürfen / müssen dabei verwendet werden. 
+            Felder mit * sind obligatorisch. </br>Die &lt;!--Start--&gt; und &lt;!--Ende--&gt; Feld legen fest welcher Bereich abhängig von den vorhandenen Zielen immer wieder wiederholt wird. </p>    
+        <p>*&lt;!--Vorname--&gt;</br> 
+           *&lt;!--Nachname--&gt;</br>
+           *&lt;!--Start--&gt;</br>
+           *&lt;!--Ende--&gt</br>
+            &lt;!--Ort--&gt;</br>
+            &lt;!--Datum--&gt;</br>                
+            &lt;!--Unterschrift--&gt;</br>
+            &lt;!--Thema--&gt;</br>
+            &lt;!--Ziel--&gt;</br>
+            &lt;!--Ziel_mit_Hilfe_erreicht--&gt;</br>
+            &lt;!--Ziel_erreicht--&gt;</br>
+            &lt;!--Ziel_offen--&gt;</br>
+            &lt;!--Bereich{literal}{{/literal}terminal_objective_id,...{literal}}{/literal}--&gt;HTML&lt;!--/Bereich--&gt;</br>
+            &lt;!--Unterschrift--&gt;
+        <p><textarea id="tmce_editor" name="template">{if isset($template)}{$template}{/if}</textarea></p>  
+        {validate_msg field='template'}
+        <script type='text/javascript'>document.getElementById('certificate').focus();</script>
 
-    <input class="invisible" type="checkbox" name="userID" value="none" checked /><!--Hack if no Array -->
-    {elseif $showuser eq true} <p>Keine eingeschriebenen Benutzer</p><p>&nbsp;</p>{/if}
+        {if !isset($editBtn)}
+            <p><label></label><input type='submit' name="back" value='zurück'/><input type='submit' name="addCertificate" value='Vorlage hinzufügen' /></p>
+        {else}
+            <p><label></label><input type='submit' name="back" value='zurück'/><input type='submit' name="updateCertificate" value='Vorlage aktualisieren' /></p>
+        {/if}
+        </form>	
+    {/if}    
     
-    <form id='certificate' method='post' action='index.php?action=certificate'> 
-        <input type='hidden' name='sel_curriculum' value='{$sel_curriculum}'/>
-            <input type='hidden' name='sel_user_id' value='{$selected_user_id}'/>
-            <input type='hidden' name='sel_group_id' value='{$sel_group_id}'/>
-    <p><textarea name="certificate_html">{if isset($certificate_html)}{$certificate_html}{/if}</textarea></p>  
-    <p>&nbsp;</p>
-    <p><label></label><input type='submit' name='generateCertificate' value='Zertifikat erstellen' /></p>
-    </form>
-
+    {html_paginator id='certificateP' values=$ct_val config=$certificateP_cfg}
 {/block}
 
 {block name=sidebar}{$smarty.block.parent}{/block}

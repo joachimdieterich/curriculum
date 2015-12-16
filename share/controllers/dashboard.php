@@ -7,75 +7,45 @@
 * @date 2013.03.08 13:26
 * @license:  
 *
-* This program is free software; you can redistribute it and/or modify 
-* it under the terms of the GNU General Public License as published by  
-* the Free Software Foundation; either version 3 of the License, or     
-* (at your option) any later version.                                   
+* This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by  
+* the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
 *                                                                       
-* This program is distributed in the hope that it will be useful,       
-* but WITHOUT ANY WARRANTY; without even the implied warranty of        
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         
-* GNU General Public License for more details:                          
+* This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of        
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details:
 *                                                                       
 * http://www.gnu.org/copyleft/gpl.html      
 */
 global $USER, $PAGE, $TEMPLATE, $LOG;
-  /** Load last accomplished Objectives */
-  include ('./../lang/'.$USER->language.'/dashboard.php');                      //includes language pack
-  
-  
-  
-  $acc_objectives = new EnablingObjective();
-  $TEMPLATE->assign('enabledObjectives', $acc_objectives->getLastEnablingObjectives()); 
-  $institution = new Institution();
-  $cronjob = new Cron(); 
-  
-  /** Assign Institution / Schulen laden */
-  $TEMPLATE->assign('myInstitutions', $institution->getInstitutions('user', $USER->id));
-  $groups = new Group(); 
-  $TEMPLATE->assign('myClasses', $groups->getGroups('user', $USER->id));
-    
-  /** Shows additional information depending on user role */
-  if (checkCapabilities('dashboard:globalAdmin', $USER->role_id, false)){
-        /** Load new registered institutions */
-        $institution = new Institution();
-        $new_instituions =  $institution->getNewInsitutions();
-        if($new_instituions){
-            $PAGE->message[] = 'Es wurden '.$new_instituions.' neue Institution(en) registriert. Sie können diese unter "Freigabe" bestätigen';
-        }  
-        /**Load new registered users */
-        $new_users = $USER->getNewUsers();
-        if ($new_users){
-            $PAGE->message[] = 'Es wurden '.$new_users.' neue Benutzer registriert. Sie können diese unter "Freigabe" bestätigen';
-        }
-        if ($cronjob->check_cronjob()){
-            $TEMPLATE->assign('cronjob', 'Es wurde zuletzt am '.$cronjob->creation_time.' geprüft, ob Ziele abgelaufen sind.<br>');//Check last Cronjob execution
-        }
-  } else if (checkCapabilities('dashboard:institutionalAdmin', $USER->role_id, false)){
-        /** Load new registered users */
-        $new_users = $USER->getNewUsers('institution', $USER->institutions);
-        if ($new_users){
-            $PAGE->message[] = 'Es wurden '.$new_users.' neue Benutzer registriert. Sie können diese unter "Freigabe" bestätigen';                
-        }
-        if ($cronjob->check_cronjob()){
-            $TEMPLATE->assign('cronjob', 'Es wurde zuletzt am '.$cronjob->creation_time.' geprüft, ob Ziele abgelaufen sind.<br>');//Check last Cronjob execution
-        }  
-  }
-if (checkCapabilities('menu:readMessages', $USER->role_id, false)){
-    $mail = new Mailbox();
-    $mail->loadNewMessages($USER->id);
-    if (isset($mail->inbox)){
-        foreach ($mail->inbox as $message) {
-            $PAGE->message[] = '<strong>Neue Mitteilung</strong><br>'.$message->subject;
-        }
-    }
-}
- 
-/** assign messages */
-if (isset($PAGE->message)){
-    $TEMPLATE->assign('page_message', $PAGE->message);
+$TEMPLATE->assign('page_title', 'Startseite'); 
+
+$acc_obj        = new EnablingObjective();
+$TEMPLATE->assign('enabledObjectives', $acc_obj->getLastEnablingObjectives()); /* Load last accomplished Objectives */
+
+$institution    = new Institution();
+$TEMPLATE->assign('myInstitutions', $institution->getInstitutions('user', null, $USER->id)); /* Institution / Schulen laden */
+
+$groups         = new Group(); 
+$TEMPLATE->assign('myClasses', $groups->getGroups('user', $USER->id));
+
+$cron           = new Cron(); 
+$cron->detectExpiredObjective();      // Überprüft einmal pro Tag ob Ziele abgelaufen sind.
+
+if (checkCapabilities('dashboard:globalAdmin', $USER->role_id, false) OR checkCapabilities('dashboard:institutionalAdmin', $USER->role_id, false)){/* Shows additional information depending on user role */
+    $TEMPLATE->assign('cronjob', 'Es wurde zuletzt am '.$cron->check_cronjob().' geprüft, ob Ziele abgelaufen sind.<br>');
 }
 
-/** add log */
-$LOG->add($USER->id, 'view', $PAGE->url,  'dashboard'); 
-?>
+if (checkCapabilities('menu:readMessages', $USER->role_id, false)){
+    $update = new Mail();
+    
+    //$update->updateDB(); --> updates old db to 9.1 -> checkboxes under solutions
+    
+    $mail = new Mailbox();
+    
+    $mail->loadNewMessages($USER->id);
+    if (isset($mail->inbox)){
+        $TEMPLATE->assign('mails', $mail->inbox);
+    }
+}
+
+
+$LOG->add($USER->id, 'view', $PAGE->url,  'Browser: '.$PAGE->browser. ' View: '.$PAGE->url); /* add log */

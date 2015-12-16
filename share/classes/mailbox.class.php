@@ -1,9 +1,4 @@
 <?php
-require_once 'mail.class.php';
-
-if (0 > version_compare(PHP_VERSION, '5')) {
-    die('This file was generated for PHP 5');
-}
 /** 
  * This file is part of curriculum - http://www.joachimdieterich.de
  * 
@@ -13,15 +8,11 @@ if (0 > version_compare(PHP_VERSION, '5')) {
  * @author Joachim Dieterich
  * @date 2013.05.09 21:21
  * @license
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License as published by  
- * the Free Software Foundation; either version 3 of the License, or     
- * (at your option) any later version.                                   
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by  
+ * the Free Software Foundation; either version 3 of the License, or (at your option) any later version. 
  *                                                                       
- * This program is distributed in the hope that it will be useful,       
- * but WITHOUT ANY WARRANTY; without even the implied warranty of        
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         
- * GNU General Public License for more details:                          
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of        
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details: 
  *                                                                       
  * http://www.gnu.org/copyleft/gpl.html      
  */
@@ -56,9 +47,8 @@ class Mailbox {
      */
     public function loadInbox($user_id){
         global $USER; 
-        if (checkCapabilities('mail:loadInbox', $USER->role_id)){ //check capability
-            $this->loadMailbox($user_id, 'receiver_id');
-        }
+        checkCapabilities('mail:loadInbox', $USER->role_id);
+        $this->loadMailbox($user_id, 'receiver_id');
     }
     /**
      * load new messages of a user
@@ -66,9 +56,8 @@ class Mailbox {
      */
     public function loadNewMessages($user_id){
         global $USER; 
-        if (checkCapabilities('mail:loadInbox', $USER->role_id)){ //check capability
-            $this->loadMailbox($user_id, 'receiver_id', 'new');
-        }
+        checkCapabilities('mail:loadInbox', $USER->role_id); //check capability
+        $this->loadMailbox($user_id, 'receiver_id', 'new');
     }
     /**
      * load outbox of a user
@@ -76,10 +65,8 @@ class Mailbox {
      */
     public function loadOutbox($user_id){
         global $USER; 
-        if (checkCapabilities('mail:loadOutbox', $USER->role_id)){ //check capability
-            $this->loadMailbox($user_id, 'sender_id');
-            
-        }
+        checkCapabilities('mail:loadOutbox', $USER->role_id);//check capability
+        $this->loadMailbox($user_id, 'sender_id');
     }
     /**
      * load deleted messages of a user
@@ -118,23 +105,26 @@ class Mailbox {
             $getMail->id                 = $result->id;
             $getMail->sender_id          = $result->sender_id;
 
-            $db_01 = DB::prepare('SELECT username, firstname, lastname FROM users WHERE id = ?');
+            $db_01 = DB::prepare('SELECT username, firstname, lastname, avatar_id FROM users WHERE id = ?');
             $db_01->execute(array($getMail->sender_id));
             $sender = $db_01->fetchObject();
             if ($sender){
                 $getMail->sender_username    = $sender->username;
                 $getMail->sender_firstname   = $sender->firstname;
                 $getMail->sender_lastname    = $sender->lastname;
-                $getMail->sender_status       = $result->sender_status;
+                $getMail->sender_file_id     = $sender->avatar_id;
+                $getMail->sender_status      = $result->sender_status;
+                
             }
             $getMail->receiver_id        = $result->receiver_id;
-            $db_02 = DB::prepare('SELECT username, firstname, lastname FROM users WHERE id = ?');
-            $db_02->execute(array($getMail->sender_id)); 
+            $db_02 = DB::prepare('SELECT username, firstname, lastname, avatar_id FROM users WHERE id = ?');
+            $db_02->execute(array($getMail->receiver_id)); 
             $receiver = $db_02->fetchObject();
             if ($receiver){
                 $getMail->receiver_username  = $receiver->username;
                 $getMail->receiver_firstname = $receiver->firstname;
                 $getMail->receiver_lastname  = $receiver->lastname;
+                $getMail->receiver_file_id   = $receiver->avatar_id;
                 $getMail->receiver_status    = $result->receiver_status;
             }
             $getMail->subject            = $result->subject;
@@ -156,4 +146,3 @@ class Mailbox {
         }
     }    
 }
-?>

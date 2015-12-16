@@ -8,95 +8,37 @@
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
 {block name=content}
-    
 <div class="border-box">
-    <div class="contentheader ">{$page_title}</div>
-    <div>
-        {if checkCapabilities('subject:add', $my_role_id, false)}
-            {if !isset($showSubjectForm)}
-            <p class="floatleft  cssimgbtn gray-border">
-                <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=subject&function=newSubject">Fach hinzufügen</a>
-            </p>
-            {/if}
-        {/if}
-        <p>&nbsp;</p><p>&nbsp;</p>
-        {if isset($showSubjectForm)}
-        <form id='addSubject' method='post' action='index.php?action=subject&next={$currentUrlId}'>
-        <input type='hidden' name='id' id='id' {if isset($id)}value='{$id}'{/if} />   
-        <p><label>Fach-Name*: </label><input class='inputlarge' type='text' name='subject' id='subject' {if isset($subject)}value='{$subject}'{/if} /></p>   
+    <div class="contentheader ">{$page_title}<input class="curriculumdocsbtn floatright" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=F%C3%A4cher_anlegen');"/></div>
+    {if !isset($showForm) && checkCapabilities('subject:add', $my_role_id, false)}
+        <p class="floatleft  cssimgbtn gray-border">
+            <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=subject&function=new">Fach hinzufügen</a>
+        </p>
+    {else}
+        <form id='subjectForm' method='post' action='index.php?action=subject&next={$currentUrlId}'>
+        <input type='hidden' name='id' id='id' {if isset($id)}value='{$id}'{/if} />    
+        <p><label>Fach-Name*: </label>      <input id='subject' name='subject' class='inputlarge' {if isset($subject)}value='{$subject}'{/if} /></p>   
         {validate_msg field='subject'}
-        <p><label>Fach-Kürzel*: </label><input class='inputlarge' type='text' name='subject_short' id='subject_short' {if isset($subject_short)}value='{$subject_short}'{/if} /></p>   
+        <p><label>Fach-Kürzel*: </label>    <input id='subject_short' name='subject_short' class='inputlarge' {if isset($subject_short)}value='{$subject_short}'{/if} /></p>   
         {validate_msg field='subject_short'}
-	<p><label>Beschreibung*: </label><input class='inputlarge' type='text' name='description' {if isset($description)}value='{$description}'{/if}/></p>
+        <p><label>Beschreibung*: </label>   <input name='description' class='inputlarge' {if isset($description)}value='{$description}'{/if}/></p>
         {validate_msg field='description'}
-        {if count($my_institutions['id']) > 1}
-            <p><label>Institution / Schule*: </label>{html_options id='institution' name='institution' values=$my_institutions['id'] output=$my_institutions['institution']}</p>
-        {elseif count($my_institutions['id']) eq 0}
-            <p><strong>Sie müssen zuerst eine Institution anlegen</strong></p>
+        <p><label>Institution / Schule*:</label><SELECT  name='institution_id' id='institution_id' />
+            {foreach key=insid item=ins from=$my_institutions}
+                <OPTION  value="{$ins->institution_id}"  {if $ins->institution_id eq $institution_id}selected="selected"{/if}>{$ins->institution}</OPTION>
+            {/foreach} 
+        </SELECT></p>
+        {if !isset($editBtn)}
+            <p><label></label><input name='add' type='submit'  value='Fach hinzufügen' /></p>
         {else}
-            <input type='hidden' name='institution' id='institution' value='{$my_institutions['id'][0]}' /></p>       
+            <p><label></label><input name="back" type='submit' value='zurück'/><input name="update" type='submit' value='Fach aktualisieren' /></p>
         {/if}
-        
-        {if !isset($showeditSubjectForm)}
-        <p><label></label><input type='submit' name='addSubject' value='Fach hinzufügen' /></p>
-        {else}
-        <p><label></label><input type='submit' name="back" value='zurück'/><input type='submit' name="updateSubject" value='Fach aktualisieren' /></p>
-	{/if}
-        </form>	
-        {/if}
-         
-        <form id='subjectlist' method='post' action='index.php?action=subject&next={$currentUrlId}'>
-            <p>&nbsp;</p>
-    {if $data != null}
-        {* display pagination header *}
-        <p class="floatright">Datensätze {$subjectsPaginator.first}-{$subjectsPaginator.last} von {$subjectsPaginator.total} werden angezeigt.</p>   
-            <table id="contenttable">
-                    <tr id="contenttablehead">
-                        <td></td>    
-                    {*<td>Fach-ID</td>*}
-                    <td>Fächername</td>
-                    <td>Kürzel</td>
-                    <td>Beschreibung</td>
-                    <td class="td_options">Optionen</td>
-            </tr>
-            
-            {* display results *}    
-            {section name=subject loop=$subject_list}
-                <tr class="contenttablerow" id="row{$subject_list[subject]->id}" onclick="checkrow({$subject_list[subject]->id})">
-                    <td><input class="invisible" type="checkbox" id="{$subject_list[subject]->id}" name="id[]" value={$subject_list[subject]->id} /></td>
-                    {*<td>{$subject_list[subject]->id}</td>*}
-                    <td>{$subject_list[subject]->subject}</td>
-                    <td>{$subject_list[subject]->subject_short}</td>
-                    <td>{$subject_list[subject]->description}</td>
-                    <td class="td_options">
-                        {if checkCapabilities('subject:delete', $my_role_id, false)}
-                            <a class="deletebtn floatright" type="button" name="delete" onclick="del('subject',{$subject_list[subject]->id}, {$my_id})"></a>
-                        {else}
-                            <a class="deletebtn deactivatebtn floatright" type="button"></a>
-                        {/if}
-                        {if checkCapabilities('subject:update', $my_role_id, false)}
-                            <a class="editbtn floatright" href="index.php?action=subject&edit=true&id={$subject_list[subject]->id}"></a>
-                        {else}
-                            <a class="editbtn deactivatebtn floatright"></a>
-                        {/if}
-                        </td>
-                </tr>
-            {/section}
-            
-            </table>
-
-                    <!--Hack für problem, dass kein Array gepostet wird, wenn nichts angewählt wird-->
-            <input class="invisible" type="checkbox" name="id[]" value="none" checked />
-            {* display pagination info *}
-            <p class="floatright">{paginate_prev id="subjectsPaginator"} {paginate_middle id="subjectsPaginator"} {paginate_next id="subjectsPaginator"}</p>
-             <p>&nbsp;</p>
-        {/if}
-        </form>              
-        
+        </form>
+        <script type='text/javascript'> document.getElementById('subject').focus(); </script>
+    {/if}
+    
+    {html_paginator id='subjectP' values=$su_val config=$subjectP_cfg}
 </div>
-        <script type='text/javascript'>
-	document.getElementById('subject').focus();
-	</script>
 {/block}
 
 {block name=sidebar}{$smarty.block.parent}{/block}

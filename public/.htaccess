@@ -36,7 +36,6 @@
 
 
 
-
 # allow access from all domains for webfonts
 # alternatively you could only whitelist
 #   your subdomains like "sub.domain.com"
@@ -84,7 +83,6 @@ AddType text/x-component              htc
 #         Options +Includes
 #         SetOutputFilter INCLUDES
 # </FilesMatch>
-
 
 
 
@@ -163,12 +161,10 @@ AddType text/x-component              htc
 
 
 
-
 # Since we're sending far-future expires, we don't need ETags for
 # static content.
 #   developer.yahoo.com/performance/rules.html#etags
 FileETag None
-
 
 
 
@@ -198,10 +194,8 @@ Options -MultiViews
 # Options -Indexes
 
 
-
 # custom 404 page
 #ErrorDocument 404 /404.html
-
 
 
 # use utf-8 encoding for anything served text/plain or text/html
@@ -210,9 +204,5 @@ AddDefaultCharset utf-8
 AddCharset utf-8 .html .css .js .xml .json .rss
 
 
-
 # We don't need to tell everyone we're apache.
 ServerSignature Off
-
-
-

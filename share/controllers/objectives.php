@@ -8,15 +8,11 @@
 * @date 2013.03.08 13:26
 * @license: 
 *
-* This program is free software; you can redistribute it and/or modify 
-* it under the terms of the GNU General Public License as published by  
-* the Free Software Foundation; either version 3 of the License, or     
-* (at your option) any later version.                                   
+* This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by  
+* the Free Software Foundation; either version 3 of the License, or (at your option) any later version.                                   
 *                                                                       
-* This program is distributed in the hope that it will be useful,       
-* but WITHOUT ANY WARRANTY; without even the implied warranty of        
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         
-* GNU General Public License for more details:                          
+* This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of        
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details:                          
 *                                                                       
 * http://www.gnu.org/copyleft/gpl.html      
 */
@@ -26,60 +22,56 @@ if(isset($_GET['reset']) OR (isset($_POST['reset']))){
     resetPaginator('userPaginator');            
 }
 
-$showuser = false;  //zurücksetzen
-$show_course = false; // zurücksetzen
+$showuser       = false;  //zurücksetzen
+$show_course    = false; // zurücksetzen
 
-$selected_curriculum = (isset($_GET['course']) && trim($_GET['course'] != '') ? $_GET['course'] : '_'); //'_' ist das Trennungszeichen 
-$selected_curriculumforURL = $selected_curriculum;
-$selected_user_id = (isset($_GET['userID']) && trim($_GET['userID'] != '') ? $_GET['userID'] : '');
-$TEMPLATE->assign('selected_curriculum', $selected_curriculum);
-$TEMPLATE->assign('selected_user_id', $selected_user_id);
+$selected_curriculum        = (isset($_GET['course']) && trim($_GET['course'] != '') ? $_GET['course'] : '_'); //'_' ist das Trennungszeichen 
+$selected_curriculumforURL  = $selected_curriculum;
+$selected_user_id           = explode(',',(isset($_GET['userID']) && trim($_GET['userID'] != '') ? $_GET['userID'] : '')); //generates array
+$TEMPLATE->assign('selected_curriculum',            $selected_curriculum);
+$TEMPLATE->assign('selected_user_id',               $selected_user_id);
+$TEMPLATE->assign('selected_certificate_template',  filter_input(INPUT_GET, 'certificate_template', FILTER_VALIDATE_INT));
+
 list ($selected_curriculum, $selected_group) = explode('_', $selected_curriculum); //$selected_curriculum enthält curriculumid_groupid (zb. 32_24) wenn nur '_' gesetzt ist werden beide variabeln ''
 $TEMPLATE->assign('sel_curriculum', $selected_curriculum); //only selected curriculum without group
-$TEMPLATE->assign('sel_group_id', $selected_group); //only selected group without curriculum
+$TEMPLATE->assign('sel_group_id',   $selected_group); //only selected group without curriculum
 if (isset($_POST['printCertificate'])){
-    $pdf = new Pdf();
-    $pdf->user_id = $_POST['sel_user_id'];
-    $pdf->curriculum_id = $_POST['sel_curriculum'];
-    $TEMPLATE->assign('sel_curriculum', $_POST['sel_curriculum']);
-    $TEMPLATE->assign('selected_user_id', $_POST['sel_user_id']);
-    $TEMPLATE->assign('sel_group_id', $_POST['sel_group_id']); 
-
-    $pdf->generate_pdf();
-}
-if (isset($_POST['printAllCertificate'])){
-    $pdf = new Pdf();
-    $pdf->user_id = $_POST['sel_user_id'];
-    $pdf->curriculum_id = $_POST['sel_curriculum'];
-    
-    $pdf->group_id = $_POST['sel_group_id'];
-    $TEMPLATE->assign('sel_curriculum', $_POST['sel_curriculum']);
-    $TEMPLATE->assign('selected_user_id', $_POST['sel_user_id']);
-    $TEMPLATE->assign('sel_group', $_POST['sel_group_id']); 
-    $pdf->generate_pdf();
-}
- 
-if ($selected_curriculum != '' AND $selected_user_id != '' AND $selected_user_id != 'none') {
-    if ($selected_user_id == 'all'){
-        $TEMPLATE->assign('user', 'all');
-
-        $group = new Group();   
-        $TEMPLATE->assign('group', $group->getGroups('course', $selected_group));
-
+        $TEMPLATE->assign('sel_curriculum',                 $_POST['sel_curriculum']);
+        $TEMPLATE->assign('selected_user_id',               explode(',',$_POST['sel_user_id']));
+        $TEMPLATE->assign('sel_group_id',                   $_POST['sel_group_id']); 
+        $TEMPLATE->assign('selected_certificate_template',  $_POST['certificate_template']); 
+    if ($_POST['certificate_template'] != '-1'){
+        $pdf = new Pdf();
+        $pdf->user_id =         explode(',', $_POST['sel_user_id']);
+        $pdf->curriculum_id =   $_POST['sel_curriculum'];
+        $certificate =          new Certificate();
+        $certificate->id        = $_POST['certificate_template'];
+        
+        $certificate->load();
+        $pdf->template = $certificate->template;
+        $pdf->generate_certificate_from_template('from_template');
+        
+    } else {
+        $PAGE->message[] = 'Zertifikatvorlage muss gewählt werden';
+    }
+} 
+if ($selected_curriculum != '' AND $selected_user_id != '' AND $selected_user_id[0] !== '') {
+    if (count($selected_user_id) > 1){
         $terminal_objectives = new TerminalObjective();         //load terminal objectives
         $TEMPLATE->assign('terminalObjectives', $terminal_objectives->getObjectives('curriculum', $selected_curriculum));
 
-        $enabling_objectives = new EnablingObjective();         //load enabling objectives
+        $enabling_objectives                = new EnablingObjective();         //load enabling objectives
         $enabling_objectives->curriculum_id = $selected_curriculum;
-        $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('group', $selected_curriculum, $selected_group));
+        
+        $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('group', $selected_curriculum, $selected_user_id));
 
         $show_course = true; // setzen
     } else {
-        $user = new User(); 
-        $user->load('id', $selected_user_id);
+        $user   = new User(); 
+        $user->load('id', $selected_user_id[0]);
         $TEMPLATE->assign('user', $user);
 
-        $group = new Group();   
+        $group  = new Group();   
         $TEMPLATE->assign('group', $group->getGroups('course', $selected_group));
 
         $terminal_objectives = new TerminalObjective();         //load terminal objectives
@@ -87,19 +79,23 @@ if ($selected_curriculum != '' AND $selected_user_id != '' AND $selected_user_id
 
         $enabling_objectives = new EnablingObjective();         //load enabling objectives
         $enabling_objectives->curriculum_id = $selected_curriculum;
-        $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('user', $selected_user_id));
+        $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('user', $selected_user_id[0]));
 
         $show_course = true; // setzen    
-    }
-        
+    }       
 }    
 // load curriculum of actual user 
 if ($selected_curriculum != '') {    
-    $course_user = new User();
-    $course_user->id = $USER->id;
-    $users = $course_user->getUsers('course', $selected_curriculum);
+    $course_user        = new User();
+    $course_user->id    = $USER->id;
+    $users              = $course_user->getUsers('course', 'userPaginator',$selected_curriculum);
     
     if (is_array($users)){
+        foreach ($users as $value) {                         //erzeuge id Liste der user
+            $list[] = $value->id;
+        }
+        $TEMPLATE->assign('userlist', implode(',', $list));  
+        
         $user_id_list = array_map(function($user) { return $user->id; }, $users); 
         if ($selected_user_id == 'all'){
             $TEMPLATE->assign('allUsers', $user_id_list);
@@ -115,12 +111,21 @@ if ($selected_curriculum != '') {
 /*******************************************************************************
  * END POST / GET  
  */    
-$TEMPLATE->assign('showuser', $showuser);
-$TEMPLATE->assign('show_course', $show_course);
-$TEMPLATE->assign('page_title', 'Lernstand eintragen');
+$TEMPLATE->assign('showuser',       $showuser);
+$TEMPLATE->assign('show_course',    $show_course);
+$TEMPLATE->assign('page_title',     'Lernstand eintragen');
 
 // Load courses
 $courses = new Course(); 
-$TEMPLATE->assign('courses', $courses->getCourse('admin', $USER->id));     
-$TEMPLATE->assign('page_message', $PAGE->message);
-?>
+if(checkCapabilities('user:userListComplete', $USER->role_id, false)){
+    $TEMPLATE->assign('courses',        $courses->getCourse('admin', $USER->id));  
+}
+if(checkCapabilities('user:userList', $USER->role_id, false)){
+    $TEMPLATE->assign('courses',        $courses->getCourse('teacher', $USER->id));  // abhängig von USER->my_semester id --> s. Select in objectives.tpl, 
+}
+
+// Load certificate_templates
+$certificate =                      new Certificate(); 
+$certificate->institution_id =      $USER->institutions;
+
+$TEMPLATE->assign('certificate_templates', $certificate->getCertificates());

@@ -9,15 +9,11 @@
 * @date 2013.03.08 13:26
 * @license: 
 *
-* This program is free software; you can redistribute it and/or modify 
-* it under the terms of the GNU General Public License as published by  
-* the Free Software Foundation; either version 3 of the License, or     
-* (at your option) any later version.                                   
+* This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by  
+* the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
 *                                                                       
-* This program is distributed in the hope that it will be useful,       
-* but WITHOUT ANY WARRANTY; without even the implied warranty of        
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         
-* GNU General Public License for more details:                          
+* This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of        
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details:
 *                                                                       
 * http://www.gnu.org/copyleft/gpl.html      
 */
@@ -31,33 +27,50 @@ $TEMPLATE->assign('showFunctions', true);
 if (isset($_GET['function'])) {
     $TEMPLATE->assign('showFunctions', false);  
     $current_user = new User();
+    $current_user->id = filter_input(INPUT_GET, 'userID', FILTER_VALIDATE_INT);
      switch ($_GET['function']) {
         case "showCurriculum": 
                 $TEMPLATE->assign('showenroledCurriculum', true); 
-                $current_user->id = $_GET['userID'];
-                $result = $current_user->getCurricula();
-                if ($result){
-                    setPaginator('curriculumList', $TEMPLATE, $result, 'resultscurriculumList', 'index.php?action=user&function=showCurriculum&userID='.$_GET['userID']); //set Paginator    
-                }
+                $p_config  = array('curriculum'   => 'Lehrplan', 
+                                    'description' => 'Beschreibung', 
+                                    'subject'     => 'Fach', 
+                                    'grade'       => 'Klasse', 
+                                    'schooltype'  => 'Schultyp', 
+                                    'state'       => 'Bundesland/Region', 
+                                    'de'          => 'Land', 
+                                    'p_options'   => array());
+                setPaginator('curriculumList', $TEMPLATE, $current_user->getCurricula('curriculumList'), 'cu_val', 'index.php?action=user&function=showCurriculum&userID='.$current_user->id, $p_config);
                 break;
         case "showInstitution": 
                 $TEMPLATE->assign('showenroledInstitution', true); 
-                $TEMPLATE->assign('selectedUserID', $_GET['userID']);
+                $TEMPLATE->assign('selectedUserID', $current_user->id);
                 $institution = new Institution();
-                $result = $institution->getInstitutions('user', $_GET['userID']);
-                if ($result){
-                    setPaginator('institutionList', $TEMPLATE, $result, 'resultsinstitutionList', 'index.php?action=user&function=showinstitution&userID='.$_GET['userID']); //set Paginator    
-                }
+                $p_options = array('delete'         => array('onclick' => "expelFromInstituion(__id__, $current_user->id);", 
+                                 'capability'       => checkCapabilities('user:expelFromInstitution', $USER->role_id, false)));
+                $p_config =   array('role'   => 'Rolle', 
+                                    'institution'   => 'Institution', 
+                                    'description'   => 'Beschreibung', 
+                                    'schooltype_id' => 'Schultyp', 
+                                    /*'state_id'      => 'Bundesland/Region', */
+                                    'creation_time' => 'Erstelltungsdatum', 
+                                    'creator_id'    => 'Ersteller', 
+                                    'p_options'     => $p_options);
+                setPaginator('institutionList', $TEMPLATE, $institution->getInstitutions('user', 'institutionList', $current_user->id), 'ins_val', 'index.php?action=user&function=showinstitution&userID='.$current_user->id, $p_config);
                 break;
        case "showGroups": 
-                $TEMPLATE->assign('showenroledGroups', true); 
-                $TEMPLATE->assign('selectedUserID', $_GET['userID']);
-                $current_user->id = $_GET['userID'];
-                $result = $current_user->getGroups();
-                if ($result){
-                    resetPaginator('groupsPaginator');
-                    setPaginator('groupsPaginator', $TEMPLATE, $result, 'groups_list', 'index.php?action=user&function=showGroups&userID='.$_GET['userID']); //set Paginator    
-                }
+                $TEMPLATE->assign('showenroledGroups',  true); 
+                $TEMPLATE->assign('selectedUserID',     $current_user->id);
+                $p_options = array('delete'         => array('onclick' => "expelUser(__id__, $current_user->id);", 
+                                   'capability'     => checkCapabilities('user:expelFromGroup', $USER->role_id, false)));
+                $p_config =   array('groups'        => 'Gruppen', 
+                                    'grade'         => '(Klassen)stufe', 
+                                    'description'   => 'Beschreibung', 
+                                    'semester'      => 'Lernzeitraum', 
+                                    'institution'   => 'Institution', 
+                                    'creation_time' => 'Erstellungsdatum', 
+                                    'creator'       => 'Ersteller', 
+                                    'p_options'     => $p_options);
+                setPaginator('groupsPaginator', $TEMPLATE, $current_user->getGroups('groupsPaginator'), 'gp_val', 'index.php?action=user&function=showGroups&userID='.$current_user->id, $p_config);
                 break;
             default: break;
      }     
@@ -89,9 +102,7 @@ if (isset($_POST)){
                                                 $PAGE->message[] = 'Password konnte nicht zurückgesetzt werden.';
                                             }  
                                     } else {
-                                        foreach($edit_user as $key => $value){
-                                            $TEMPLATE->assign($key, $value);
-                                        } 
+                                        $new_subject($edit_user); 
                                         $TEMPLATE->assign('v_error', $validated_data);     
                                     }        
                     break;
@@ -104,12 +115,6 @@ if (isset($_POST)){
                                         $PAGE->message[] = 'Man kann sich nicht selbst löschen!';	
                                     }
                     break; 
-                case isset($_POST['setRole']):
-                                    $edit_user->role_id = $_POST['roles'];
-                                    if ($edit_user->updateRole()){
-                                        $PAGE->message[] = 'Nutzer <strong>'.$edit_user->username.'</strong> wurde in die Rolle <strong>'.$edit_user->role_name.'</strong> eingeschrieben.';
-                                    }
-                break; 
                 case isset($_POST['enroleGroups']):
                                     if ($edit_user->enroleToGroup($_POST['groups'], $USER->id)){
                                         $groups->id = $_POST['groups']; 
@@ -125,9 +130,14 @@ if (isset($_POST)){
                                         $PAGE->message[] = 'Nutzer <strong>'.$edit_user->username.'</strong> erfolgreich aus <strong>'.$groups->group.'</strong> ausgeschrieben.';  
                                     }
                     break;     
-                case isset($_POST['enroleInstitution']):
-                                    if ($edit_user->enroleToInstitution($_POST['institution'])){
-                                        $institution->id = $_POST['institution']; 
+                case isset($_POST['enroleInstitution']): 
+                                    if (isset($_POST['institution'])){
+                                        $institution->id = $_POST['institution'];
+                                    } else {
+                                        $institution->id = $USER->institution_id;
+                                    }
+                                    $edit_user->role_id = $_POST['roles'];
+                                    if ($edit_user->enroleToInstitution($institution->id)){
                                         $institution->load();
                                         $PAGE->message[] = 'Nutzer <strong>'.$edit_user->username.'</strong> erfolgreich in die Institution <strong>'.$institution->institution.'</strong> eingeschrieben.';  
                                     }
@@ -142,16 +152,16 @@ if (isset($_POST)){
                 default:
                     break;
             }      
+        session_reload_user(); // --> get the changes immediately 
         }
     }
 }
-session_reload_user(); // --> get the changes immediately 
+
 }
 /*******************************************************************************
  * END POST / GET
  */
 
-$TEMPLATE->assign('page_message', $PAGE->message);
 $TEMPLATE->assign('page_title', 'Benutzerverwaltung');
 
 $roles = new Roles(); 
@@ -160,13 +170,27 @@ $TEMPLATE->assign('roles', $roles->get());                                 //get
 // Load groups
 $group_list = $groups->getGroups('group', $USER->id);
 $TEMPLATE->assign('groups_array', $group_list);          // Lerngruppen  Laden
+$TEMPLATE->assign('myInstitutions', $institution->getInstitutions('user', null, $USER->id));
 
-$users = new USER();
-$users->id = $USER->id; 
-$users->role_id = $USER->role_id; 
-$user_list = $users->userList(); // load Userdata
-setPaginator('userPaginator', $TEMPLATE, $user_list, 'results', 'index.php?action=user'); //set Paginator    
-
-$institution = new Institution();
-$TEMPLATE->assign('myInstitutions', $institution->getInstitutions('user', $USER->id));
-?>
+$users = new USER($USER->id);
+$p_options = array('delete' => array('onclick'      => "del('user',__id__, $USER->id);", 
+                                     'capability'   => checkCapabilities('user:delete', $USER->role_id, false)),
+                    'edit'  => array('href'         => 'index.php?action=profile&function=editUser&userID=__id__'),
+                                     'capability'   => checkCapabilities('user:updateUser', $USER->role_id, false),
+                    'group'  => array('href'        => 'index.php?action=user&function=showGroups&userID=__id__'),
+                                     'capability'   => checkCapabilities('user:getGroups', $USER->role_id, false),
+                    'list'  => array('href'         => 'index.php?action=user&function=showCurriculum&userID=__id__'),
+                                     'capability'   => checkCapabilities('user:getCurricula', $USER->role_id, false),
+                    'institution'  => array('href'  => 'index.php?action=user&function=showInstitution&userID=__id__'),
+                                     'capability'   => checkCapabilities('user:getInstitution', $USER->role_id, false));
+$p_config =   array('username'   => 'Benutzername', 
+                    'firstname'  => 'Vorname', 
+                    'lastname'   => 'Nachname', 
+                    'email'      => 'Email', 
+                    'postalcode' => 'PLZ', 
+                    'city'       => 'Ort', 
+                    /*'state'   => 'Bundesland', 
+                    'country' => 'Land', */
+                    ''    => 'Rolle', 
+                    'p_options'    => $p_options);
+setPaginator('userP', $TEMPLATE, $users->userList('institution', 'userP'), 'us_val', 'index.php?action=user', $p_config); //set Paginator    

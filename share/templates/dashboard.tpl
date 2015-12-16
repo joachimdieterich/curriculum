@@ -1,6 +1,6 @@
 {extends file="base.tpl"}
 
-{block name=title}{$str_dashboard}{/block}
+{block name=title}{$page_title}{/block}
 {block name=description}{$smarty.block.parent}{/block}
 {block name=nav}{$smarty.block.parent}{/block}
 
@@ -10,118 +10,111 @@
 {block name=content}
     
 <div class="border-box">
-    <div class="contentheader">{$str_dashboard}</div>
-    <div>
-    <p><h3>{$str_achievments_headline}</h3></p>
-    {if isset($enabledObjectives)} 
-    <p>{$str_achievments_txt1}</p>
-    <p>&nbsp;</p>
-    <table style="width:99%">
-        <tr><td><div class="space-left"></div></td><td class="boxleftpadding">
-        {foreach key=enaid item=ena from=$enabledObjectives}
-            <div>
-                <div class="box gray-gradient gray-border boxgreen">
-                    <div class="boxheader">
-                        {$ena->curriculum}<!--Kursvergleich--> 
-                    </div>
-                    <div class="boxscroll">
-                        <div class="boxcontent">
-                         {$ena->enabling_objective}<!--{$ena->description}-->
-                        <div class="boxfooter"> 
+    <div class="contentheader">Startseite<input class="curriculumdocsbtn floatright" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Startseite');"/></div>
+        <div class="colIII space-top">
+            <p><h3>Erfolge</h3></p>
+            {if isset($enabledObjectives)} 
+            <p>Hier siehst du, welche Ziele du in den letzten <strong>{$my_acc_days}</strong> Tagen erreicht hast.</p>
+                {foreach key=enaid item=ena from=$enabledObjectives}
+                    <div class="card3 boxgreen">
+                        <div>
+                            {$ena->curriculum}<span>{$ena->accomplished_teacher}</span>
                         </div>
-                    </div> 
-                </div>
-           </div>
-        {/foreach}
-         </td>
-        </tr>
-    </table>
-        {else}<p>{$str_achievments_txt2}</p>{/if}
-        <p>&nbsp;</p>
-    
-    <p><h3>{$str_institution_headline}</h3></p>
-    {if isset($myInstitutions)} 
-    
-        <table id="contenttable">
-		<tr id="contenttablehead">
-                <td></td>
-                <td>{$str_institution}</td>
-                <td>{$str_description}</td>
-                <td>{$str_institution_schooltype}</td>
-                <td>{$str_institution_state}</td>
-                <td>{$str_institution_countries}</td>
-                <td>{$str_creationtime}</td>
-                <td>{$str_creator}</td>
-        </tr>
-        {* display myInstitutions *}    
-        {section name=ins loop=$myInstitutions}
-            <tr class="contenttablerow" id="row{$myInstitutions[ins]->id}" onclick="checkrow({$myInstitutions[ins]->id})">
-                <td><input class="invisible" type="checkbox" id="{$myInstitutions[ins]->id}" name="id[]" value={$myInstitutions[ins]->id} /></td>
-                <td>{$myInstitutions[ins]->institution}</td>
-                <td>{$myInstitutions[ins]->description}</td>
-                <td>{$myInstitutions[ins]->schooltype_id}</td>
-                <td>{$myInstitutions[ins]->state_id}</td>
-                <td>{$myInstitutions[ins]->country}</td>
-                <td>{$myInstitutions[ins]->creation_time}</td>
-                <td>{$myInstitutions[ins]->creator_id}</td>
-            </tr>
-        {/section}
-        </table>
-     {else}<p>{$str_institution_notassigned}</p>{/if}   
-    <p>&nbsp;</p>
-    
-    <p><h3>{$str_classes_headline}</h3></p>
-    {if isset($myClasses)}
-     <table id="contenttable">
-                    <tr id="contenttablehead">
-                        <td></td>    
-                    <td>{$str_classes_classes}</td>
-                    <td>{$str_classes_class}</td>
-                    <td>{$str_description}</td>
-                    <td>{$str_classes_semester}</td>
-                    <td>{$str_institution}</td>
-                    <td>{$str_creationtime}m</td>
-                    <td>{$str_creator}</td>
-            </tr>
-            
-            {* display myClasses *}    
-            {section name=cla loop=$myClasses}
-                <tr class="contenttablerow" id="row{$myClasses[cla]->id}" onclick="checkrow({$myClasses[cla]->id})">
-                    <td><input class="invisible" type="checkbox" id="{$myClasses[cla]->id}" name="id[]" value={$myClasses[cla]->id} /></td>
-                    <td>{$myClasses[cla]->group}</td>
-                    <td>{$myClasses[cla]->grade}</td>
-                    <td>{$myClasses[cla]->description}</td>
-                    <td>{$myClasses[cla]->semester_id}</td>
-                    <td>{$myClasses[cla]->institution_id}</td>
-                    <td>{$myClasses[cla]->creation_time}</td>
-                    <td>{$myClasses[cla]->creator_id}</td>
-                </tr>
-            {/section}
-            
-            </table>
-    {else}<p>{$str_classes_notassigned}</p>{/if}
-    <p>&nbsp;</p>
-    {if checkCapabilities('page:showCronjob', $my_role_id, false)}
-        <p><h3>Abgelaufene Ziele</h3></p>
-    <p>{$cronjob}</p>
-    <p>&nbsp;</p>
-    {/if}
-    <p><h3>{$str_manuals}</h3></p>
-    <p>&nbsp;</p>
-    {if checkCapabilities('page:showAdminDocu', $my_role_id, false)}
-    <p><a class="pdf_btn floatleft" href="http://www.joachimdieterich.de/curriculum_supportfiles/documentation/doc_curriculum_joachimdieterich.de-Admin.pdf"></a> {$str_manuals_institution}</p>
-    <p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p>
-    {/if}
-    {if checkCapabilities('page:showTeacherDocu', $my_role_id, false)}
-    <p><a class="pdf_btn floatleft" href="http://www.joachimdieterich.de/curriculum_supportfiles/documentation/doc_curriculum_joachimdieterich.de-Teacher.pdf"></a> {$str_manuals_teacher}</p>
-    <p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p>
-    {/if}
-    {if checkCapabilities('page:showStudentDocu', $my_role_id, false)}
-    <p><a class="pdf_btn floatleft" href="http://www.joachimdieterich.de/curriculum_supportfiles/documentation/doc_curriculum_joachimdieterich.de-Student.pdf"></a> {$str_manuals_student}</p>
-    <p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p>
-    {/if}
-    </div>
-    
+                        <div>
+                            {$ena->enabling_objective|truncate:100}<!--{$ena->description}-->
+                        </div> 
+                   </div>
+                {/foreach}
+            {else}<p>In den letzten <strong>{$my_acc_days}</strong> Tagen hast du keine Ziele abgeschlossen.</p>{/if}
+        </div>
+
+        <div class="colIII space-top">
+            <p><h3>Nachrichten</h3></p>
+            {if isset($mails)} 
+                {section name=mes loop=$mails}
+                    <p class="notificationContent">
+                        <img src="{$access_file}{$mails[mes]->sender_file_id|resolve_file_id:"xs"}"/>
+                        <a href="index.php?action=messages&function=showInbox&id={$mails[mes]->id}">{$mails[mes]->subject}</a> ({$mails[mes]->sender_username})<br>
+                        {strip_tags($mails[mes]->message|truncate:100:"...":true)}</p>
+                {/section}
+            {else}<p>Keine ungelesenen Nachrichen vorhanden.</p>{/if}
+        </div>            
+        <div class="colIII space-top">
+            <p><h3>Pinnwand</h3></p>
+            {*if $my_institution_id eq 61} 
+                <img src="{$access_file}{1897|resolve_file_id}" style="width:100%;"/>
+                
+           {/if*}
+        </div>            
+
+        <div class="colIII space-top">
+            <p><h3>Meine Lerngruppen / Klassen</h3></p>
+            {if isset($myClasses)} 
+                {foreach key=claid item=cla from=$myClasses}
+                    <div class="card2">
+                         <div> {*Header*}
+                            <strong>{$cla->group} ({$cla->grade})</strong><br>
+                            {$cla->description} <br>
+                            {$cla->institution_id|truncate:50}
+                        </div>
+                        <div> {*Content*}
+                            <strong>Lehrpläne</strong><br>
+                            {foreach item=cur_menu from=$my_enrolments}
+                                {if $cur_menu->group_id eq $cla->id}
+                                    <a href="index.php?action=view&curriculum={$cur_menu->id}&group={$cur_menu->group_id}">{$cur_menu->curriculum}</a><br>
+                                {/if}
+                            {/foreach}
+                        </div>
+                    </div>
+                {/foreach}        
+            {else}<p>Sie sind in keiner Institution / Schule eingeschrieben.</p>{/if} 
+        </div>
+
+        <div class="colIII space-top">
+            <p><h3>Meine Institutionen / Schulen</h3></p>
+            {if isset($myInstitutions)} 
+                {foreach key=insid item=ins from=$myInstitutions}
+                    <div class="card1">
+                        <div>
+                            <img src="{$access_file}{$ins->file_id|resolve_file_id}">
+                        </div>
+                        <div>
+                            <strong>{$ins->institution}</strong><br>
+                            {$ins->schooltype_id}<br><br>
+                            {$ins->description}<br>
+
+                            {$ins->state_id}, {$ins->country}<br>
+                            {*{$ins->creation_time}<br>*}
+                            {$ins->creator_id}
+                        </div>
+                    </div>
+                {/foreach}
+            {else}<p>Sie sind in keiner Institution / Schule eingeschrieben.</p>{/if} 
+        </div>
+
+         <div class="colIII space-top">
+            {if checkCapabilities('page:showCronjob', $my_role_id, false)}
+                <p><h3>Abgelaufene Ziele</h3></p>
+                <p>{$cronjob}</p>
+            {/if}
+        </div>
+
+        <div class="colIII space-top">
+            <p><h3>Hilfe</h3></p>
+            <p class="center"><a href="http://docs.joachimdieterich.de"><img src="{$media_url}/images/wiki.png"></a></p>
+        </div>    
+        <div style="clear: both;"></div>
+        
+        <div class="colIII space-top">
+            <p><h3>Allgemeine Informationen</h3></p>
+        <p><strong>Datenschutzerklärung und Nutzungsbedingungen</strong><br>
+            Die Datenschutzerklärung und Nutzungsbedingungen für diese Lernplattform können Sie <a href="{$media_url}/docs/curriculum_Terms_Of_Use_2015.pdf">hier</a> einsehen. <br><br>
+            <strong>Ansprechpartner</strong><br>
+            Die Ansprechpartner für diese Zertifizierungsplattform können Sie unter folgender Emailadresse mail@joachimdieterich.de erreichen.<br> <br>
+            <strong>Impressum</strong><br>
+            Das Impressum dieses System können Sie <a href="http://joachimdieterich.de/index.php/impressum">hier</a> einsehen.</p>
+        </div>    
+        <div style="clear: both;"></div>
 </div>
 {/block}
 

@@ -123,7 +123,9 @@ class SmartyPaginate {
      * @param string $id the pagination id
      */
     static function getLimit($id = 'default') {
-        return $_SESSION['SmartyPaginate'][$id]['item_limit'];
+        if (isset($_SESSION['SmartyPaginate'][$id]['item_limit'])){
+            return $_SESSION['SmartyPaginate'][$id]['item_limit'];
+        } else {return false;}
     }    
             
 	/**
@@ -132,18 +134,24 @@ class SmartyPaginate {
      * 
      * 
      */
-	static function setSort($porder, $so = "DESC", $id = 'default') {
-		if(!$porder) {
-			trigger_error('SmartyPaginate setSort: You must set a entity-type from your database.');
-			return false;
-		}
-		if ($porder && !isset($_SESSION['SmartyPaginate'][$id]['pagi_orderby'])) {
-			$_SESSION['SmartyPaginate'][$id]['pagi_orderby'] = $porder;
-		}
-		if (isset($_SESSION['SmartyPaginate'][$id]['pagi_orderby']) && !isset($_SESSION['SmartyPaginate'][$id]['pagi_updown'])) {
-			$_SESSION['SmartyPaginate'][$id]['pagi_updown'] = $so;
-		}
-	}
+    static function setSort($porder, $so = "DESC", $id = 'default') {
+            if(!$porder) {
+                    trigger_error('SmartyPaginate setSort: You must set a entity-type from your database.');
+                    return false;
+            }
+            if ($porder /*&& !isset($_SESSION['SmartyPaginate'][$id]['pagi_orderby'])*/) {
+                if (isset($_SESSION['SmartyPaginate'][$id]['pagi_orderby'])){
+                        if ($_SESSION['SmartyPaginate'][$id]['pagi_orderby'] != $porder) { //if new orderby, sort ASC
+                            $so = "ASC";
+                        }
+                }
+                $_SESSION['SmartyPaginate'][$id]['pagi_orderby'] = $porder;
+            }
+            if (isset($_SESSION['SmartyPaginate'][$id]['pagi_orderby'])  /*&& !isset($_SESSION['SmartyPaginate'][$id]['pagi_updown'])*/) {
+                    $_SESSION['SmartyPaginate'][$id]['pagi_updown'] = $so;
+                    
+            }
+    }
 	
 	
     /**
@@ -238,7 +246,9 @@ class SmartyPaginate {
      * @param string $id the pagination id
      */
     static function getCurrentIndex($id = 'default') {
+        
         return $_SESSION['SmartyPaginate'][$id]['current_item'] - 1;
+         
     }    
     
     /**
@@ -420,18 +430,22 @@ class SmartyPaginate {
         return ($_next_item <= $_SESSION['SmartyPaginate'][$id]['item_total']) ? $_next_item : false; 
     }    
     
-	/**
+    /**
      * getSort
-     *
-     *
      */
    static function getSort($what, $id) {
 		if ($what == "order" || $what == "sort" || isset($id)) {
 			if ($what == "sort") {
+                               if (isset($_SESSION['SmartyPaginate'][$id]['pagi_updown'])){
 				return $_SESSION['SmartyPaginate'][$id]['pagi_updown'];
+                               } else {return false;}
 			}
 			if ($what == "order") {
-				return "ORDER BY ". $_SESSION['SmartyPaginate'][$id]['pagi_orderby']. " ";
+                            if (isset($_SESSION['SmartyPaginate'][$id]['pagi_orderby'])){
+                                return "ORDER BY ". $_SESSION['SmartyPaginate'][$id]['pagi_orderby']. " ";
+                            } else {
+				return false;
+                            }
 			}
 		} else {
 			return " ";
@@ -439,5 +453,4 @@ class SmartyPaginate {
 	}            
             
 }
-
 ?>
