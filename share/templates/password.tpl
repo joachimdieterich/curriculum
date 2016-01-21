@@ -10,7 +10,8 @@
 {block name=content}
 <div class="border-box">
     <div class="contentheader ">{$page_title}</div>
-    <form method='post' action='index.php?action=password'>
+    {$pw_form}
+    {*<form method='post' action='index.php?action=password'>
         <p><label>Benutzername: </label><input name='username' value={$my_username} readonly /></p>	
         {if !isset($webservice)}
         <p><label>Altes Kennwort: </label><input name='oldpassword' id='oldpassword' type='password'/></p>
@@ -22,7 +23,7 @@
         {validate_msg field='confirm'}
         <p><label></label><input type='submit' value='Kennwort ändern' /></p>
         <script type='text/javascript'> document.getElementById('oldpassword').focus(); </script>
-    </form>	
+    </form>*}	
 </div>
 {/block}
 

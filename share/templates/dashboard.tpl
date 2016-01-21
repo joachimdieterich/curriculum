@@ -40,11 +40,12 @@
             {else}<p>Keine ungelesenen Nachrichen vorhanden.</p>{/if}
         </div>            
         <div class="colIII space-top">
-            <p><h3>Pinnwand</h3></p>
-            {*if $my_institution_id eq 61} 
-                <img src="{$access_file}{1897|resolve_file_id}" style="width:100%;"/>
-                
-           {/if*}
+            <p><h3>Pinnwand{if checkCapabilities('dasboard:editBulletinBoard', $my_role_id, false)}
+                <a class="editbtn floatright" onclick="editBulletinBoard();"></a>
+            {/if}</h3></p>
+            {if $bulletinBoard}
+                <p><strong>{$bulletinBoard->title}</strong><br>{$bulletinBoard->text}</p>
+            {/if}
         </div>            
 
         <div class="colIII space-top">

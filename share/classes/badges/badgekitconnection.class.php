@@ -145,7 +145,7 @@ class BadgekitConnection {
     $this->setPath('/systems/' . $system . '/badges');
     $this->data = $body;
     //echo 'Request'.$this->data;
-    $this->data_hash =  hash('sha256',  $body, false);
+    $this->data_hash =  hash('sha256', $body, false);
     $this->connect();
     return $this->response;
   } 

@@ -495,6 +495,8 @@ class EnablingObjective {
     return $objectives;
     }
     
+    
+    
     /**
      * get data for user report
      * @global int $USER
@@ -605,7 +607,6 @@ class EnablingObjective {
     }
     
     
-    
     /**
      * set accomplished status of enabling objective in db
      * @global int $USER
@@ -677,7 +678,12 @@ class EnablingObjective {
                                 AND ua.user_id = ? AND (ua.status_id = 1 OR ua.status_id = 2)');
         $db2->execute(array($ter_id, $user_id));
         $accomplished    = $db2->fetchColumn(); 
-        return floatval($accomplished/$max);                               
+        error_log($ter_id.' '.$max);
+        if ($max > 0){
+            return floatval($accomplished/$max);                               
+        } else {
+            return floatval(0);
+        }
     }
     
     /**

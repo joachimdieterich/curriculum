@@ -915,7 +915,7 @@ class User {
      * get user enrolments
      * @return string | array
      */
-   public function get_instiution_enrolments() { 
+   public function get_instiution_enrolments($array = false) { 
         $db = DB::prepare('SELECT ins.institution, ins.id AS institution_id, ro.id AS role_id, ro.role
                             FROM institution AS ins, institution_enrolments AS ie, roles AS ro
                             WHERE ins.id = ie.institution_id AND ie.status = 1 AND ie.role_id = ro.id
@@ -923,8 +923,13 @@ class User {
         $db->execute(array($this->id));
         
         while($result = $db->fetchObject()) { 
+            if ($array == true){ //Array output for quickform
+                $data[$result->institution_id] = $result->institution;
+            } else {
                 $data[] = $result;         
+            }
         } 
+        
         if (isset($data)){ return $data; } 
         else             { return false; }
     }
@@ -951,9 +956,13 @@ class User {
     
     private function resolve_file($id){
         global $CFG;
+        
         $file       = new File();
         $file->id   = $id;
-        $file->load();
+        
+        if (is_numeric($file->id)){                           // load-Funktion nur aufrufen wenn $id == numeric // is_int funktioniert nicht!i
+            $file->load();
+        }
         if (isset($file->filename)){
            return $file->full_path;
         } else {
@@ -985,6 +994,62 @@ class User {
         }
     }
     
+    public function backup(){
+        global $CFG;
+        // create backup folder
+        silent_mkdir($CFG->backup_root.'tmp/'.$this->username.'/');
+        $this->userBackup() ;
+
+        /* backup messages */
+        $messages = new Mailbox();
+        $xml_inbox   = $messages->backup($this->id, 'receiver_id');
+        if ($xml_inbox != false) {
+            file_put_contents($CFG->backup_root.'tmp/'.$this->username.'/messages_inbox.xml', $xml_inbox->saveXML());
+        }
+        $xml_outbox  = $messages->backup($this->id, 'sender_id');
+        if ($xml_outbox != false) {
+            file_put_contents($CFG->backup_root.'tmp/'.$this->username.'/messages_outbox.xml', $xml_outbox->saveXML());
+        }
+        /* backup accomplished objectives (curriculum)*/
+        $this->curriculumBackup();
+    }
+    private function userBackup(){
+        global $CFG;
+        $xml = new DOMDocument("1.0", "UTF-8");
+        $usr = $xml->createElement("user");
+        foreach($this as $key => $value) {
+            if ($key == 'institutions' OR $key == 'enrolments'){
+                
+            } else {
+                $child = $xml->createElement($key, $value);
+                $usr->appendChild($child);
+            }
+        }
+        $xml->appendChild($usr);
+        $xml->preserveWhiteSpace = false; 
+        $xml->formatOutput = true;
+
+        $file = $CFG->backup_root.'tmp/'.$this->username.'/user.xml'; // Backup / [username] / 
+        file_put_contents($file, $xml->saveXML());
+    }
+
+    private function curriculumBackup(){
+        global $CFG;
+        $db = DB::prepare('SELECT DISTINCT curriculum_id FROM enablingObjectives WHERE id = ANY (SELECT DISTINCT enabling_objectives_id FROM user_accomplished WHERE user_id = ?)');
+        $db->execute(array($this->id));
+        while($result = $db->fetchObject()) {
+            $cur[]  = $result->curriculum_id; 
+        }
+        foreach($cur as $value){
+            $c      = new Curriculum();
+            $c->id  = $value;
+            $c->load(true);
+            $c_backup = new Backup();
+            $c_backup->temp_path = $CFG->backup_root.'tmp/'.$this->username.'/';
+            $c_backup->generateXML($c, $value, 'xml');
+        }
+        
+    }
     /**
     * function used during the install process to set up creator id to new admin
     * @return boolean

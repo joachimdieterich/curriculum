@@ -675,17 +675,12 @@ function updateFileHits(){
             req.send(null);
         }  
 }
-/*function soundplayer($url){
-    $.each($('audio'), function () { this.pause(); }); // stop all playback
-    var snd1,snd2,snd3;
-    if($.sound.support) {
-      snd1 = $.sound.load($url);
-      //snd2 = $.sound.load('/sounds/snd2');
-      //snd3 = $.sound.load('/sounds/snd3');
-    }
 
-    snd1.play();
-}*/
+function editBulletinBoard() {
+    var url = "../share/request/bulletinBoard.php";
+    getRequest(url);
+}
+
 
 function popupFunction(){
     tinymce.init({  
@@ -698,3 +693,62 @@ function popupFunction(){
         toolbar1:   "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | print preview media | forecolor backcolor emoticons | fileframe",      
     });
 };
+
+function setFormData() {
+    var url     = "../share/request/setFormData.php?file="+ arguments[0];   
+    
+    req         = XMLobject();
+    if(req) {        
+        req.onloadend = function(){
+            if (req.responseText.length > 1){
+                //alert(req.responseText);
+                c = JSON.parse(req.responseText);
+                
+                $('#c_curriculum', top.document).val(c.curriculum);
+                $('#c_description', top.document).val(c.description);
+                set_select('c_grade',       c.grade_id,         'value', 'top');
+                set_select('c_subject',     c.subject_id,       'value', 'top');
+                set_select('c_schooltype',  c.schooltype_id,    'value', 'top');
+                set_select('c_state',       c.state_id,         'value', 'top');
+                set_select('c_country',     c.country_id,       'value', 'top');
+                set_select('c_icon',        c.icon_id,          'value', 'top');
+            }   
+        }
+    };
+    req.open("GET", url, true);
+    req.send(null);  
+}
+
+function val_exist_in_select(element, val){
+    for (i = 0; i < document.getElementById(element).length; ++i){
+        if (document.getElementById(element).options[i].value == val){
+          return true;
+        } else {return false;}
+    }
+}
+
+function set_select(element, val, field, level) {
+    if (typeof(field)==='undefined')            field           = 'innerHTML';
+    if (typeof(level)==='undefined')            level           = 'document';
+    if (level === 'top'){
+        var sel = top.document.getElementById(element);
+        
+    } else {
+        var sel = document.getElementById(element);
+    }
+    
+    for(var i = 0, j = sel.options.length; i < j; ++i) {
+        if (field === 'innerHTML'){
+            if(sel.options[i].innerHTML === val) {
+               sel.selectedIndex = i;
+               break;
+            }
+        } 
+        if (field === 'value'){
+            if(sel.options[i].value === val) {
+               sel.selectedIndex = i;
+               break;
+            }
+        }
+    }
+}

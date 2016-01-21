@@ -17,21 +17,39 @@
 *                                                                       
 * http://www.gnu.org/copyleft/gpl.html      
 */
-include_once 'config.php';          //Läd config.php
-global $CFG;
-/*$param = filter_input(INPUT_GET, 'file'); // token muss gemeinsam mit path übergeben werden, damit externe plugins funktionieren (Einbetten von Dateien in den Nachrichten)
+include_once('setup.php');  //Läd Klassen, DB Zugriff und Funktionen
+global $CFG, $USER;
 
-list($token, $path) = explode('|', $param);
-$path  = realpath($CFG->curriculumdata_root.$path);
-error_log($token);error_log($path);
-if ($token != $CFG->salt || !is_file($path)){ 
-    die();
-}  */
-
-$path  = realpath($CFG->curriculumdata_root.filter_input(INPUT_GET, 'file'));
-if (!is_file($path)){ 
-    die();
+//error_log($_SERVER['REMOTE_ADDR'].' acclib: '.session_id().' file:'.filter_input(INPUT_GET, 'file').' sesusr:');
+if (null != filter_input(INPUT_GET, 'token')){                  // Zugriff über token. Externe Services. 
+    $f      = new File();
+    $id     = $f->getFileID(filter_input(INPUT_GET, 'token'));
+    if ($id == false){ die(); }
+    $f->deleteFileToken(filter_input(INPUT_GET, 'token'));      // Token wird gelöscht und kann nicht mehr genutzt werden.
+} else {
+    //if ((!isset($_SESSION['USER'])) && (!isset($USER->id))){ echo 'Kein Zugriff!'; die(); }
 }
+
+if (null != filter_input(INPUT_GET, 'id')){
+    $id   = filter_input(INPUT_GET, 'id');
+} 
+
+if (isset($id)){ 
+    $f      = new File();
+    $f->id  = $id;
+    $f->load();
+    if (filter_input(INPUT_GET, 'type')){
+        $path   = realpath($CFG->curriculumdata_root.str_lreplace($f->type, '.'.filter_input(INPUT_GET, 'type'), $f->full_path)); // hack für xml Download über file_id
+    } else {
+        $path   = realpath($CFG->curriculumdata_root.$f->full_path);
+    }
+    
+} else {
+    $path   = realpath($CFG->curriculumdata_root.filter_input(INPUT_GET, 'file'));
+}
+
+if (!is_file($path)){ die(); }
+
 if (filter_input(INPUT_GET, 'download') == true){
     header('Content-Description: File Transfer');
     header('Content-Type: application/octet-stream');

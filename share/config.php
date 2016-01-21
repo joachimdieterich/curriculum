@@ -21,7 +21,7 @@ global $CFG, $DB;
 $CFG = new stdClass();
 
 /* Application !IMPORTANT! Do not change manually*/
-$CFG->app_title='curriculum';//'curriculum 0.9';
+$CFG->app_title='curriculum <br/>0.9.2';
 $CFG->app_footer='© Copyright 2014 - Joachim Dieterich.<br>Aktuelle Informationen unter <a href="http://www.joachimdieterich.de">http://www.joachimdieterich.de</a>'; 
 
 /* DB Settings */
@@ -35,10 +35,10 @@ if ($CFG->db_name != ''){
     $DB->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 }
 
-/*  Paths - do not edit */
-$CFG->base_url= 'http://127.0.0.1/curriculum/';         //--> ! darf nicht localhost sein, da sonst probleme bei der Bilddarstellung bei Zugriff von extern
+$CFG->protocol                      = 'http://'; //'https://';
+$CFG->base_url                      = $CFG->protocol.'127.0.0.1/curriculum/';         //--> ! darf nicht localhost sein, da sonst probleme bei der Bilddarstellung bei Zugriff von extern
 $CFG->curriculumdata_root           = '/Applications/MAMP/cur_data_pl/';
-
+/*  Paths - do not edit */
 $CFG->document_root                 = dirname(__FILE__).'/../public/';
 $CFG->controllers_root              = dirname(__FILE__).'/controllers/'; 
 $CFG->user_root                     = $CFG->curriculumdata_root.'user/';
@@ -54,6 +54,7 @@ $CFG->demo_root                     = $CFG->curriculumdata_root.'support/demo/';
 //$CFG->access_file                   = '../share/accessfile.php?file='.$CFG->salt.'|';
 $CFG->access_file                   = '../share/accessfile.php?file=';
 $CFG->access_file_url               = $CFG->base_url.'share/accessfile.php?file=';
+$CFG->access_token_url              = $CFG->base_url.'share/accessfile.php?token=';
 $CFG->support_path                  = $CFG->access_file.'support/';
 $CFG->subjects_path                 = $CFG->access_file.'subjects/';
 $CFG->solutions_path                = $CFG->access_file.'solutions/';
@@ -61,12 +62,12 @@ $CFG->curriculum_path               = $CFG->access_file.'curriculum/';
 $CFG->avatar_path                   = $CFG->access_file.'user/'; // accessfile ready
 $CFG->web_backup_path               = $CFG->access_file.'backups/';
 
-$CFG->request_url                   = implode('/', array_slice(explode('/', 'http://'.filter_input(INPUT_SERVER, 'SERVER_NAME', FILTER_UNSAFE_RAW).filter_input(INPUT_SERVER, 'REQUEST_URI', FILTER_UNSAFE_RAW)), 0, -1)).'/';
+$CFG->request_url                   = implode('/', array_slice(explode('/', $CFG->protocol.filter_input(INPUT_SERVER, 'SERVER_NAME', FILTER_UNSAFE_RAW).filter_input(INPUT_SERVER, 'REQUEST_URI', FILTER_UNSAFE_RAW)), 0, -1)).'/';
 $CFG->media_url                     = $CFG->request_url.'assets/';
 $CFG->lib_url                       = $CFG->request_url.'../share/libs/';
 
 /* BADGEKIT */
-$CFG->badge_url                     = 'http://localhost:5000';  
+$CFG->badge_url                     = $CFG->protocol.'localhost:5000';  
 $CFG->badge_secret                  = 'yoursecret';
 $CFG->badge_system                  = 'badgekit';
 

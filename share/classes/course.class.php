@@ -90,7 +90,7 @@ class Course {
      * @param int $id
      * @return array of course objects
      */
-    public function getCourse($dependency = null, $id = null){
+    public function getCourse($dependency = null, $id = null, $array = false){
         $course = array();
         switch ($dependency) {
             case 'admin':   $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, gp.groups, gp.semester_id, gp.id AS gpid, fl.filename
@@ -123,26 +123,34 @@ class Course {
             default:        break;
         }
         
-        while($result = $db->fetchObject()) {
-            $this->curriculum_id     = $result->id;
-            $this->curriculum        = $result->curriculum;
-            $this->description       = $result->description;
-            if ($dependency == 'course'){  
-                $this->state         = $result->state; 
-                $this->country       = $result->de;
-                $this->grade         = $result->grade;
-                $this->subject       = $result->subject;
-                $this->schooltype    = $result->schooltype;
-            } else {
-                $this->id            = $result->id.'_'.$result->gpid;
-                $this->semester_id   = $result->semester_id;
-                $this->course        = $result->groups.' | '.$result->curriculum.' | '.$result->description; 
-                $this->group         = $result->groups;
-                $this->icon          = $result->filename;
+        if ($array == true){ //Array output for quickform
+            $c = array(); 
+            while($result = $db->fetchObject()) {
+                $c[$result->id] = $result->curriculum.' | '.$result->description;
             }
-            $course[]                = clone $this;        //it has to be clone, to get the object and not the reference
+            return $c;
+        } else {
+            while($result = $db->fetchObject()) {
+                $this->curriculum_id     = $result->id;
+                $this->curriculum        = $result->curriculum;
+                $this->description       = $result->description;
+                if ($dependency == 'course'){  
+                    $this->state         = $result->state; 
+                    $this->country       = $result->de;
+                    $this->grade         = $result->grade;
+                    $this->subject       = $result->subject;
+                    $this->schooltype    = $result->schooltype;
+                } else {
+                    $this->id            = $result->id.'_'.$result->gpid;
+                    $this->semester_id   = $result->semester_id;
+                    $this->course        = $result->groups.' | '.$result->curriculum.' | '.$result->description; 
+                    $this->group         = $result->groups;
+                    $this->icon          = $result->filename;
+                }
+                $course[]                = clone $this;        //it has to be clone, to get the object and not the reference
+            }
+            return $course;
         }
-        return $course;
    }
    
    /**

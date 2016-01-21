@@ -12,7 +12,7 @@
 <div class="border-box">
     <div class="contentheader ">{$page_title}
         {if isset($p_id)}
-            <input class="curriculumdocsbtn floatright" type="button" name="help" onclick="curriculumdocs('http://localhost/curriculum/public/index.php?action=profile&function=edit');"/>
+            <input class="curriculumdocsbtn floatright" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Mein_Profil');"/>
         {/if}
         </div>
         {if isset($p_avatar)}

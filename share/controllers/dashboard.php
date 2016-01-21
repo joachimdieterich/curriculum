@@ -23,8 +23,12 @@ $TEMPLATE->assign('enabledObjectives', $acc_obj->getLastEnablingObjectives()); /
 
 $institution    = new Institution();
 $TEMPLATE->assign('myInstitutions', $institution->getInstitutions('user', null, $USER->id)); /* Institution / Schulen laden */
+$institution->id = $USER->institution_id;
+$TEMPLATE->assign('bulletinBoard', $institution->getBulletinBoard());
 
 $groups         = new Group(); 
+$TEMPLATE->assign('myClasses', $groups->getGroups('user', $USER->id));
+
 $TEMPLATE->assign('myClasses', $groups->getGroups('user', $USER->id));
 
 $cron           = new Cron(); 
@@ -46,6 +50,5 @@ if (checkCapabilities('menu:readMessages', $USER->role_id, false)){
         $TEMPLATE->assign('mails', $mail->inbox);
     }
 }
-
 
 $LOG->add($USER->id, 'view', $PAGE->url,  'Browser: '.$PAGE->browser. ' View: '.$PAGE->url); /* add log */

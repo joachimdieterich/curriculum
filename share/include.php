@@ -61,4 +61,5 @@ include('classes/badges/issuing.class.php');
 /*omega plugin*/
 include('plugins/omega.class.php');
 
-//include('libs/form-2.8/Form.php');
+/*libs*/
+include('libs/HTML_QuickForm2-2.0.2/HTML/QuickForm2.php');

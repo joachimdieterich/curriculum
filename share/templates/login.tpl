@@ -10,17 +10,9 @@
 {block name=content}
 <div>
     <div class="centerbox">
-        <div class="centerbox_header">Login</div> 
-        <br>       
-        <form class="space-top" action='index.php?action=login' method='post'>
-            <p><label >Anmeldename </label><span {*class="tooltip" data-tooltip="Anmeldenamen eingeben"*} ><input id='username' name='username'{if isset($username)}value='{$username}'{/if}/></span></p>
-            <p><label >Kennwort  </label><span {*class="tooltip" data-tooltip="Passwort eingeben"*}><input name='password' class="tooltip" data-tooltip="Anmeldenamen eingeben" type='password'/></span></p>
-            <br>
-            <p><label ></label><input name='login' type='submit' value='Anmelden' >
-                <p>Cookies müssen aktiviert sein!</p>
-            </p>
-            <script type='text/javascript'>document.getElementById('username').focus();</script>
-        </form>	
+        <div class="centerbox_header">Login</div><br>       
+        {$login_form}
+        <script type='text/javascript'>document.getElementById('username').focus();</script>
     </div>    
 </div>    
 {/block}

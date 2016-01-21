@@ -12797,6 +12797,7 @@ function hyphenateWord($word, $maxWidth) {
 /// HTML parser ///
 ///////////////////
 function WriteHTML($html,$sub=0,$init=true,$close=true) {
+    
 				// $sub ADDED - 0 = default; 1=headerCSS only; 2=HTML body (parts) only; 3 - HTML parses only
 				// 4 - writes HTML headers
 				// $close Leaves buffers etc. in current state, so that it can continue a block etc.

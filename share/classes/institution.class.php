@@ -289,6 +289,29 @@ class Institution {
         return $result->timeout;
     }
     
+    public function setBulletinBoard($title, $text){ //z. Zt. kann in jeder Institution nur ein Pinnwandeintrag erstellt werden. 
+        global $USER;
+        checkCapabilities('dasboard:editBulletinBoard', $USER->role_id);
+        $db = DB::prepare('SELECT COUNT(id) FROM bulletinBoard WHERE institution_id = ?');
+        $db->execute(array($this->id));
+        if($db->fetchColumn() >= 1) { 
+            $db = DB::prepare('UPDATE bulletinBoard SET title = ?, text = ?, creator_id = ?, creation_time = NOW() WHERE institution_id = ?');
+            return $db->execute(array($title, $text, $USER->id, $this->id));
+        } else {
+            $db = DB::prepare('INSERT INTO bulletinBoard (title, text, creator_id, institution_id, creation_time)
+                                            VALUES (?,?,?,?,NOW())');
+            return $db->execute(array($title, $text, $USER->id, $this->id));	
+        } 
+    }
+    
+    public function getBulletinBoard(){
+        $db = DB::prepare('SELECT * FROM bulletinBoard WHERE institution_id = ?');
+        if ($db->execute(array($this->id))) {
+          $result = $db->fetchObject();
+          
+          return $result;
+        }
+    }
     
     /**
     * function used during the install process to set up creator id to new admin
