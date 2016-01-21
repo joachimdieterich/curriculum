@@ -18,72 +18,87 @@
 */
 global $PAGE, $USER, $TEMPLATE;
 
+$TEMPLATE->assign('page_title', 'Zertifikat einrichten');   
+
+$form           = new HTML_QuickForm2('certificate', 'post', 'action=index.php?action=certificate');   // Instantiate the HTML_QuickForm2 object
+$fieldset       = $form->addElement('fieldset');
+$id             = $fieldset->addElement('hidden',   'id', array('id' => 'id'));
+$mode           = $fieldset->addElement('hidden',   'mode');
+$certificate    = $fieldset->addElement('text',     'certificate', array('size' => 40, 'maxlength' => 255, 'id' => 'certificate'))->setLabel('Name der Zertifikat-Vorlage');
+$description    = $fieldset->addElement('text',     'description', array('size' => 40, 'maxlength' => 255))->setLabel('Beschreibung');
+$institution_id = $fieldset->addElement('select',   'institution_id', null, array('options' => $USER->get_instiution_enrolments(true), 'label' => 'Institution / Schule'));
+$c_template     = $fieldset->addElement('textarea', 'template', array('style' => 'width: 300px;', 'cols' => 50, 'rows' => 7)) ->setLabel('Zertifikat-Vorlage<br><br>Felder:<br>*&lt;!--Vorname--&gt;, *&lt;!--Nachname--&gt;</br> 
+                                            *&lt;!--Start--&gt;, *&lt;!--Ende--&gt</br>
+                                             &lt;!--Ort--&gt;, &lt;!--Datum--&gt;, &lt;!--Unterschrift--&gt;</br>
+                                             &lt;!--Thema--&gt;, &lt;!--Ziel--&gt;</br>
+                                             &lt;!--Ziel_mit_Hilfe_erreicht--&gt;,  &lt;!--Ziel_erreicht--&gt;, &lt;!--Ziel_offen--&gt;</br>
+                                             &lt;ziel status="[1]" class="[objective_green row]" &gt;&lt;/ziel&gt;</br>
+                                             &lt;!--Bereich{terminal_objective_id,...}--&gt;HTML&lt;!--/Bereich--&gt;');
+
 if (isset($_GET['function'])) {
      switch ($_GET['function']) {
-        case "new":     checkCapabilities('certificate:add',    $USER->role_id);
-                        $TEMPLATE->assign('showForm',           true); 
-                break;   
-        case "edit":    checkCapabilities('certificate:add',    $USER->role_id);
-                        $TEMPLATE->assign('showForm',           true);
-                        $TEMPLATE->assign('editBtn',            true);
-
+        case "new":     $TEMPLATE->assign('showForm', true); 
+                        $form->addDataSource(new HTML_QuickForm2_DataSource_Array(array('mode' => 'add')));
+                        $btnval = 'Vorlage hinzufügen';
+            break;
+        case "edit":    $TEMPLATE->assign('showForm', true); 
                         $edit_certificate       = new Certificate();
                         $edit_certificate->id   = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
                         $edit_certificate->load();
-                        $TEMPLATE->assign('institution_id',            $edit_certificate->institution_id);
-                        assign_to_template($edit_certificate);  
-                break;   
-             
-        default: break;
+                        $form->addDataSource(new HTML_QuickForm2_DataSource_Array(array(
+                        'id'             => $edit_certificate->id,
+                        'certificate'    => $edit_certificate->certificate,
+                        'description'    => $edit_certificate->description,
+                        'institution_id' => $edit_certificate->institution_id,
+                        'template'       => $edit_certificate->template,
+                        'mode'           => 'update'
+                        )));
+                        $btnval = 'Vorlage aktualisieren';
+            break;
+         default: break;
      }
 }
 
-
-if($_POST){
+$certificate->addFilter('trim');
+$certificate->addRule('required', 'Bitte Name der Zertifikat-Vorlage eingeben');
+$description->addRule('required', 'Bitte Beschreibung eingeben');
+$c_template->addRule( 'required', 'Zertifikat-Vorlage darf nicht leer sein');
+if ($form->validate()) {
     $new_certificate = new Certificate();
-    if (isset($_POST['id'])){
-        $new_certificate->id         = filter_input(INPUT_POST, 'id',          FILTER_VALIDATE_INT);  
+    if (null != $id->getValue()){
+        $new_certificate->id         = $id->getValue();  
     }
-    $new_certificate->certificate    = filter_input(INPUT_POST, 'certificate', FILTER_SANITIZE_STRING);
-    $new_certificate->description    = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);
-    $new_certificate->template       = filter_input(INPUT_POST, 'template',    FILTER_UNSAFE_RAW);
+    $new_certificate->certificate    = $certificate->getValue();
+    $new_certificate->description    = $description->getValue();
+    $new_certificate->template       = $c_template->getValue();
     $new_certificate->creator_id     = $USER->id;
-    $new_certificate->institution_id = filter_input(INPUT_POST, 'institution_id', FILTER_VALIDATE_INT);
+    $new_certificate->institution_id = $institution_id->getValue();
+    if ($mode->getValue() == 'add')    { $new_certificate->add(); }
+    if ($mode->getValue() == 'update') { $new_certificate->update(); }    
+} else if (null != $mode->getValue()){ // Form weiter anzeigen, wenn Validierung fehlschlägt
+    $TEMPLATE->assign('showForm', true);
+    switch ($mode->getValue()) {
+        case 'add':     $btnval = 'Vorlage hinzufügen';     break;
+        case 'update':  $btnval = 'Vorlage aktualisieren';  break;
+        default: break;
+    } 
+}
 
-    $gump = new Gump();                 /* Validation */
-    $_POST = $gump->sanitize($_POST);   //sanitize $_POST
-    $gump->validation_rules(array(
-    'certificate'   => 'required',
-    'description'   => 'required',
-    'template'      => 'required'
-    ));
-    $validated_data = $gump->run($_POST);
+$submit_btn = $fieldset->addElement('submit', isset($btnval) ? $btnval : "", array('value' => isset($btnval) ? $btnval : "")); // butten value funktioniert nicht über addDataSource
 
-    if($validated_data === false) {/* validation failed */
-        assign_to_template($new_certificate);  
-        $TEMPLATE->assign('v_error', $gump->get_readable_errors());     
-        $TEMPLATE->assign('showForm', true); 
-    } else {/* validation successful */
-        if (isset($_POST['addCertificate']))    { $new_certificate->add(); }
-        if (isset($_POST['updateCertificate'])) { $new_certificate->update(); }       
-    }      
-} 
-/******************************************************************************
- * End POST / GET
- */
-$TEMPLATE->assign('page_title', 'Zertifikat einrichten');    
+$TEMPLATE->assign('certificate_form', $form);     // assign the form
 
-$certificate = new Certificate();
-$certificate->institution_id = $USER->institutions;
+$certificates = new Certificate();
+$certificates->institution_id = $USER->institutions;
 
 $p_options = array('delete' => array('onclick' => "del('certificate',__id__, $USER->id);", 
                                      'capability' => checkCapabilities('certificate:delete', $USER->role_id, false)),
                     'edit'  => array('href'    => 'index.php?action=certificate&function=edit&id=__id__'),
                                      'capability' => checkCapabilities('certificate:update', $USER->role_id, false));
-$p_config =   array('certificate' => 'Titel des Zertifikat-Vorlage', 
+$p_config =  array('certificate' => 'Titel des Zertifikat-Vorlage', 
                   'description'   => 'Beschreibung', 
                   'institution'   => 'Institution', 
                   'creation_time' => 'Erstellungs-Datum',
                   'username'      => 'Erstellt von',
                   'p_options'     => $p_options);
-setPaginator('certificateP', $TEMPLATE, $certificate->getCertificates('certificateP'), 'ct_val', 'index.php?action=certificate', $p_config); //set Paginator
+setPaginator('certificateP', $TEMPLATE, $certificates->getCertificates('certificateP'), 'ct_val', 'index.php?action=certificate', $p_config); //set Paginator

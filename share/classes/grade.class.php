@@ -96,14 +96,20 @@ class Grade {
     /**
      * Load Grade with id $this->id 
      */
-    public function load(){
-        $db = DB::prepare('SELECT * FROM grade WHERE id = ?');
-        $db->execute(array($this->id));
-        
+    public function load($dependency = 'id', $value = null){
+        if (isset($value)){ $v = $value; } else { $v = $this->id; }
+        $db = DB::prepare('SELECT * FROM grade WHERE '.$dependency.' = ?');
+        $db->execute(array($v));
         $result = $db->fetchObject();
-        $this->grade       = $result->grade;
-        $this->description = $result->description;
-        $this->institution_id = $result->institution_id;
+        if ($result){
+            $this->id          = $result->id;
+            $this->grade       = $result->grade;
+            $this->description = $result->description;
+            $this->institution_id = $result->institution_id;
+            return true;                                                        // wichtig! f. loadImportFormData
+        } else { 
+            return false; 
+        }
     }
     
     /**

@@ -131,15 +131,11 @@
                                         {foreach key=solID item=sol from=$addedSolutions}
                                             {if $sol->enabling_objective_id eq $ena->id}
                                                 {if $firstrun eq "true"}
-                                                    {if $page_browser != 'Safari'} {*For cross browser compatibility*}
-                                                        <select class="selSolution" name="select_{$ena->id}" onchange="openLink(this.options[this.selectedIndex].value, '_blank');"> 
-                                                    {else}
-                                                        <select class="selSolution" name="select_{$ena->id}" onclick="openLink(this.options[this.selectedIndex].value, '_blank');"> 
-                                                    {/if}
-                                                        <option value="">Abgaben...</option>
+                                                    <select class="selSolution" name="select_{$ena->id}" onclick="openLink(this.options[this.selectedIndex].value, '_blank');"> 
+                                                    <option value="">Abgaben...</option>
                                                     {assign var="firstrun" value="false"}
                                                 {/if}
-                                                <option value="{$solutions_path}{$sol->path}{$sol->filename}">({$sol->lastname}, {$sol->firstname}) {$sol->filename}{$sol->type}</a></option>
+                                                <option value="{$base_url}public/{$solutions_path}{$sol->path}{$sol->filename}">({$sol->lastname}, {$sol->firstname}) {$sol->filename}{$sol->type}</a></option>
                                             {/if}
                                         {/foreach}
                                         </select>

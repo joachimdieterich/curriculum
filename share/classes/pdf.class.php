@@ -71,11 +71,11 @@ class Pdf {
             $s_2    = str_replace("<!--Ende-->", '', $s_2);
             $s_3    = str_replace("<!--Ende-->", '', $s_3);
 
-            //Bereiche
+            //Bereiche //evtl. besser über regex realisieren z.B. /<bereich value="[(\d+),]+">.+<\/bereich>/g
             $anz_bereiche           = substr_count($s_2, '<!--Bereich');
             $offset = 0;
             for ($i = 1; $i <= $anz_bereiche; $i++){
-                $bereich_begin      = stripos($s_2, "<!--Bereich"     );
+                $bereich_begin      = stripos($s_2, "<!--Bereich"     ); // besser über regex lösen
                 $bereich_end        = stripos($s_2, "<!--/Bereich-->");
                 $offset             = $bereich_end+15;   
                 $bereich_content    = substr($s_2, $bereich_begin, $offset-$bereich_begin);
@@ -122,7 +122,24 @@ class Pdf {
                                 $e = str_replace("<!--Ziel_erreicht-->", '', $e);
                                 $e = str_replace("<!--Ziel_mit_Hilfe_erreicht-->", '', $e);
                                 $e = str_replace("<!--Ziel_offen-->", '<span style="font-family: Arial Unicode MS, Lucida Grande">&#10004;</span>', $e);
-                           }  
+                           } 
+                           
+                            /* <ziel></ziel> auflösen */        
+                            global $egl;
+                            $egl = $ena_value;   
+                            $e   =  preg_replace_callback('/<ziel status="(\d+)+" (class="[\w ]+")? *(style="[\!;\-:\w ]+")?><\/ziel>/',      
+                                function($r){ 
+                                global $egl;
+                                if ($egl->accomplished_status_id == '') {$egl->accomplished_status_id = 3;} // wenn Status noch nicht gesetzt wurde
+                                if ($egl->accomplished_status_id == $r[1] ){
+                                    return '<div '.$r[2].'>- '.$egl->enabling_objective.'</div>';
+                                } else if ($egl->accomplished_status_id == '') {
+                                    return '<div>- '.$egl->enabling_objective.'</div>';
+                                } else {
+                                    return '';
+                                }
+                            }, $e); 
+                            /* <ziel></ziel> auflösen */ 
                            $mpdf->WriteHTML($e, 2);
                         }
                     }

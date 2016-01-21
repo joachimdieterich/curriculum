@@ -35,7 +35,7 @@ class Backup {
      * path to temp directory
      * @var string 
      */
-    private $temp_path;
+    public $temp_path;
     /**
      * filename of backup
      * @var string
@@ -78,38 +78,28 @@ class Backup {
     * @param int id  curriculum id
     * @return string filename of backup file
     */
-    function add($id){
+    function add($id, $xmlbackup = true){
         global $CFG, $USER;
-        $this->curriculum_id = $id;
-        //*TEST SQL EXPORT*//
-        $file = $CFG->backup_root.'tmp/curriculum.sql';
-        $db = DB::prepare('SELECT curriculum, grade_id, subject_id, schooltype_id, state_id, description, country_id, creation_time, creator_id, icon_id INTO OUTFILE "'.$file.'" FROM curriculum WHERE id = ?');                      
-        $result = $db->execute(array($id));
-        
-        $db = DB::prepare('LOAD DATA INFILE "'.$file.'" INTO TABLE curriculum (curriculum, grade_id, subject_id, schooltype_id, state_id, description, country_id, creation_time, creator_id, icon_id)');                      
-        $result = $db->execute();
-        
-        
-        $file = $CFG->backup_root.'tmp/thema.sql';
-        $db = DB::prepare('SELECT * INTO OUTFILE "'.$file.'" FROM terminalObjectives WHERE curriculum_id = ?');                      
-        $result = $db->execute(array($id));
-        $file = $CFG->backup_root.'tmp/ziel.sql';
-        $db = DB::prepare('SELECT * INTO OUTFILE "'.$file.'" FROM enablingObjectives WHERE  curriculum_id = ?');   
-        $result = $db->execute(array($id));
-        $file = $CFG->backup_root.'tmp/file.sql';
-        $db = DB::prepare('SELECT * INTO OUTFILE "'.$file.'" FROM files WHERE  cur_id = ?');   
-        $result = $db->execute(array($id));
-        //*TEST SQL EXPORT*//
+        $this->curriculum_id = $id;        
+
         checkCapabilities('backup:addBackup', $USER->role_id);                                    // Benutzerrechte überprüfen
-        include (dirname(__FILE__).'../../libs/Backup/cc_constants.php');                           // Konstanten laden
-        
+        $c                      = new Curriculum();
+        $c->id                  = $this->curriculum_id;
+        $c->load(true);                                                                             // Lade curriculum with objectives (für xml)
         $timestamp_folder       = date("Y-m-d_H-i-s").'_curriculum_nr_'.$this->curriculum_id;       // Generiere Verzeichnisname
         $this->temp_path        = $CFG->backup_root.'tmp/'.$timestamp_folder;                       // Speichere in /tmp/[timestamp]_curriculum_nr_[cur_id] Verzeichnis
         mkdir($this->temp_path, 0700);                                                              // Lese- und Schreibrechte nur für den Besitzer
+        /*Test xml export*/
+        if ($xmlbackup){
+            $this->generateXML($c, $timestamp_folder);                            // generate xml Backup
+        }
+        /*End Test*/
+        
+        include (dirname(__FILE__).'../../libs/Backup/cc_constants.php');                           // Konstanten laden
+        
+        
+        mkdir($this->temp_path, 0700);                                                              // Lese- und Schreibrechte nur für den Besitzer
         $this->manifest();                                                                          // Manifest (Backup) erzeugen
-        $c                      = new Curriculum();
-        $c->id                  = $this->curriculum_id;
-        $c->load();                                                                                 // Lade curriculum
 
         $file = new File();
         $file->filename         = $timestamp_folder.'.imscc';
@@ -128,6 +118,105 @@ class Backup {
         $this->zipBackup($file->path, $file->filename);                                            //$path = curriculum_id/
 
         return $file->filename;
+    }
+    
+    public function generateXML($c, $filename, $format = 'zip'){
+        global $CFG; 
+
+        $xml = new DOMDocument("1.0", "UTF-8");
+        /* curriculum */
+        $cur = $xml->createElement("curriculum");
+        $cur->setAttribute("id",            $c->id);
+        $cur->setAttribute("curriculum",    $c->curriculum);
+        $gra = new Grade();
+        $gra->load('id', $c->grade_id);
+        $cur->setAttribute("grade",         $gra->grade);
+        $cur->setAttribute("subject",       $c->subject);
+        $sch = new Schooltype();
+        $sch->id = $c->schooltype_id;
+        $sch->load();
+        $cur->setAttribute("schooltype",    $sch->schooltype);
+        $cur->setAttribute("state_id",      $c->state_id);
+        $cur->setAttribute("description",   $c->description);
+        $cur->setAttribute("country_id",    $c->country_id);
+        $cur->setAttribute("creation_time", $c->creation_time);
+        $usr = new User($c->creator_id);
+        $cur->setAttribute("creator",       $usr->firstname . ' ' . $usr->lastname );
+        $cur->setAttribute("icon_id",       $c->icon_id);
+        if (count($c->terminal_objectives) >= 1){
+            $ext_ref    = new Omega();
+            $file       = new File();
+            /* terminal objectives */
+            foreach($c->terminal_objectives as $ter_value){ 
+                $ter = $xml->createElement("terminal_objective");
+                $ter->setAttribute("id",                 $ter_value->id);
+                $ter->setAttribute("terminal_objective", $ter_value->terminal_objective);
+                $ter->setAttribute("description",        $ter_value->description);
+                $ter->setAttribute("order_id",           $ter_value->order_id);
+                $ter->setAttribute("repeat_interval",    $ter_value->repeat_interval);
+                $ter->setAttribute("color",              $ter_value->color);
+                $ter->setAttribute("ext_reference",      $ext_ref->getReference('terminal_objective', $ter_value->id));
+                
+                /* terminal objective material */
+                $ter_files  = $file->getFiles('terminal_objective', $ter_value->id);
+                
+                foreach($ter_files as $f_value) {
+                    
+                    $f_ter  = $xml->createElement('file');
+                    $this->array_to_Attribute($f_ter, $f_value);   
+                    $ter->appendChild( $f_ter );        // Datei enabling objective zuordnen
+                    /* Datei in Backup Temp kopieren */
+                    silent_mkdir($this->temp_path.'/'.$f_value->path);
+                    if ($f_value->type != '.url'){
+                        copy($CFG->curriculumdata_root.$f_value->full_path, $this->temp_path.'/'.$f_value->path.$f_value->filename);
+                    }
+                }
+                /* enabling objectives */
+                if (count($ter_value->enabling_objectives) >= 1){
+                    foreach($ter_value->enabling_objectives as $ena_value){ 
+                        $ena = $xml->createElement('enabling_objective');
+                        $ena->setAttribute('id',                 $ena_value->id);
+                        $ena->setAttribute('enabling_objective', $ena_value->enabling_objective);
+                        $ena->setAttribute('description',        $ena_value->description);
+                        $ena->setAttribute('order_id',           $ena_value->order_id);
+                        $ena->setAttribute('repeat_interval',    $ena_value->repeat_interval);
+                        $ena->setAttribute('ext_reference',      $ext_ref->getReference('enabling_objective', $ena_value->id));
+                        /* enabling objective material */
+                        $ena_files  = $file->getFiles('enabling_objective', $ena_value->id);
+                        foreach($ena_files as $f_value) {
+                            $f_ena  = $xml->createElement('file');
+                            $this->array_to_Attribute($f_ena, $f_value);
+                            $ena->appendChild( $f_ena );        // Datei enabling objective zuordnen
+                            /* Datei in Backup Temp kopieren */
+                            //error_log($CFG->curriculumdata_root.$f_value->full_path.' : '.$tmp_folder.$f_value->full_path);
+                            silent_mkdir($this->temp_path.'/'.$f_value->path);
+                            if ($f_value->type != '.url'){
+                                copy($CFG->curriculumdata_root.$f_value->full_path, $this->temp_path.'/'.$f_value->path.$f_value->filename);
+                            }
+                        }
+                        $ter->appendChild( $ena );        // Datei enabling objective zuordnen
+                    }
+                }
+                $cur->appendChild( $ter );        // Datei enabling objective zuordnen
+            }
+        }
+        $xml->appendChild($cur);
+        $xml->preserveWhiteSpace = false; 
+        $xml->formatOutput = true; 
+        
+        $file = $this->temp_path.'/'.$filename.'.xml'; // Backup / [cur_id] / 
+        file_put_contents($file, $xml->saveXML());
+        if ($format == 'zip'){
+            $this->zipBackup($c->id.'/', $filename.'.curriculum');          //$path = curriculum_id/
+        }
+    }
+    
+    private function array_to_Attribute($node, $var){
+        foreach($var as $key => $value){
+            if ($key != 'file_version'){                                        //Dateiversionen sollen nicht ins Backup
+                $node->setAttribute($key, $value);                     
+            }
+        }
     }
     
     /**
@@ -367,7 +456,8 @@ class Backup {
         $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->temp_path));    // initialize an iterator // pass it the directory to be processed
         foreach ($iterator as $key=>$value) {                                                           // iterate over the directory // add each file found to the archive
             if (substr($key, -2) != '/.' AND substr($key, -3) != '/..'){                                // exclude . and ..
-                $zip->addFile(realpath($key), str_replace($CFG->backup_root, '/', $key)) or die ("ERROR: Could not add file: $key"); //str_replace: $url abschneiden, da sonst der komplette Pfad als Ordnerstuktur in der zip erscheint
+                //$zip->addFile(realpath($key), str_replace($CFG->backup_root, '/', $key)) or die ("ERROR: Could not add file: $key"); // --> geändert auf $this->temp_path damit unnötige Ordner im zip vermieden werden
+                $zip->addFile(realpath($key), str_replace($this->temp_path, '/', $key)) or die ("ERROR: Could not add file: $key"); //str_replace: $url abschneiden, da sonst der komplette Pfad als Ordnerstuktur in der zip erscheint
             }
         }
         if ($zip->close()){                                                                             // Schließen und speichern
@@ -375,7 +465,9 @@ class Backup {
         } else {
             $PAGE->message[]        = 'Backup fehlgeschlagen.';
         }
-        $files      = new RecursiveIteratorIterator(                                                    // Lösche temporäre Dateien
+        
+        delete_folder($this->temp_path);                                        // Löscht temporäre Dateien
+        /*$files      = new RecursiveIteratorIterator(                                                    // Lösche temporäre Dateien
         new RecursiveDirectoryIterator($this->temp_path, RecursiveDirectoryIterator::SKIP_DOTS),
         RecursiveIteratorIterator::CHILD_FIRST);                                                        // CHILD_FIRST wichtig, damit erst die unterordner/Dateien gelöscht werden
         foreach ($files as $fileinfo) {
@@ -383,5 +475,7 @@ class Backup {
             $todo($fileinfo->getRealPath());
         }
         rmdir($this->temp_path);                                                                        // Grundfolder löschen
+         * 
+         */
     } 
 }

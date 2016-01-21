@@ -94,7 +94,7 @@ class Mailbox {
             $db = DB::prepare('SELECT msg.* FROM message AS msg WHERE msg.receiver_id = ?
                         AND msg.receiver_status = 0 ORDER BY msg.id DESC');
             $db->execute(array($user_id));        
-        } else {
+        } else { // --> sender_id
             $db = DB::prepare('SELECT msg.* FROM message AS msg WHERE msg.sender_id = ? OR msg.receiver_id = ?
                         AND msg.receiver_status = -1 ORDER BY msg.id DESC');
             $db->execute(array($user_id, $user_id));        
@@ -144,5 +144,40 @@ class Mailbox {
                 default:            break;
             }
         }
-    }    
+    }
+    
+    public function backup($id, $mailbox = 'receiver_id') {
+        $this->loadMailbox($id, $mailbox);
+       
+        $xml = new DOMDocument("1.0", "UTF-8");
+        
+        switch ($mailbox) {
+            case 'receiver_id': $mails = $this->inbox; 
+                break;
+            case 'sender_id':   $mails = $this->outbox; 
+                break;
+            // no backup for deleted messages
+            default:
+                break;
+        }
+        
+        if (is_array($mails)){
+            foreach($mails as $value) {
+                $message = $xml->createElement("mail");
+                foreach($value as $k => $v) {
+                    $child = $xml->createElement($k, $v);
+                    $message->appendChild($child);
+                }
+                $xml->appendChild($message);
+            }
+
+
+            $xml->preserveWhiteSpace    = false; 
+            $xml->formatOutput          = true;
+
+            return $xml;
+        } else {
+            return false;
+        }
+    }
 }

@@ -22,8 +22,8 @@ global $CFG, $PAGE, $TEMPLATE, $USER;
 try { // Error handling
     $PAGE           = new stdClass();
     $PAGE->action   = filter_input(INPUT_GET, 'action', FILTER_UNSAFE_RAW);
-    if (!$PAGE->action) { $PAGE->action = 'login'; }
- 
+    if (!$PAGE->action) {$PAGE->action = 'login'; }
+   
  switch ($PAGE->action) {
      case 'login':  
      case 'install':  
@@ -39,6 +39,7 @@ try { // Error handling
                         $us->setSemester($_SESSION['USER']->semester_id);
                         $_SESSION['USER'] = NULL;                                                                             // Beim Wechsel des Lerzeitraumes muss Session neu geladen werden, damit die entsprechende Rolle geladen wird.
                     }   
+                    
                     require ('../share/session.php');                                                           // Erst Session aufbauen damit $USER verfügbar ist, dann login-check!
                     require ('../share/login-check.php');                                                       // Check ob Session abgelaufen ist
                     
@@ -55,6 +56,7 @@ try { // Error handling
                     
          break;
  }
+ 
     /**
      * Sortierung der Paginatoren
      */

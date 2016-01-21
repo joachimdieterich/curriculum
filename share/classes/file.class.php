@@ -223,31 +223,32 @@ class File {
         $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct WHERE fl.context_id = ct.context_id AND fl.id = ?');
         $db->execute(array($this->id));
         $result = $db->fetchObject();
-        
-        $this->id                    = $result->id;
-        $this->title                 = $result->title;
-        $this->filename              = $result->filename;
-        if (empty($this->title)){
-           $this->title             =  $result->filename;
-        }
-        $this->description           = $result->description;
-        $this->author                = $result->author;
-        $this->licence               = $result->licence;
-        $this->path                  = $result->path;
-        $this->type                  = $result->type;
-        $this->context_id            = $result->context_id;
-        if (isset($result->context_path)){
-            $this->context_path      = $result->context_path;
-        }
-        $this->file_version          = $this->getFileVersions(); // muss unter context_path stehen!
-        $this->full_path             = $this->context_path.$this->path.$this->filename;    
-        $this->curriculum_id         = $result->cur_id;
-        $this->terminal_objective_id = $result->ter_id;
-        $this->enabling_objective_id = $result->ena_id;
-        $this->creation_time         = $result->creation_time;
-        $this->creator_id            = $result->creator_id;   
-        if (isset($result->hits)){
-            $this->hits              = $result->hits;
+        if (isset($result->id)){
+            $this->id                    = $result->id;
+            $this->title                 = $result->title;
+            $this->filename              = $result->filename;
+            if (empty($this->title)){
+               $this->title             =  $result->filename;
+            }
+            $this->description           = $result->description;
+            $this->author                = $result->author;
+            $this->licence               = $result->licence;
+            $this->path                  = $result->path;
+            $this->type                  = $result->type;
+            $this->context_id            = $result->context_id;
+            if (isset($result->context_path)){
+                $this->context_path      = $result->context_path;
+            }
+            $this->file_version          = $this->getFileVersions(); // muss unter context_path stehen!
+            $this->full_path             = $this->context_path.$this->path.$this->filename;    
+            $this->curriculum_id         = $result->cur_id;
+            $this->terminal_objective_id = $result->ter_id;
+            $this->enabling_objective_id = $result->ena_id;
+            $this->creation_time         = $result->creation_time;
+            $this->creator_id            = $result->creator_id;   
+            if (isset($result->hits)){
+                $this->hits              = $result->hits;
+            }
         }
     }
     
@@ -255,12 +256,12 @@ class File {
         global $USER, $CFG;
         if ($id != false){ $this->id = $id; }
         $this->load();
-        if (checkCapabilities('plugin:useEmbeddableGoogleDocumentViewer', $USER->role_id, false) AND !is_array(getimagesize($CFG->access_file_url.$this->full_path))){
-            $r = '<iframe src="http://docs.google.com/gview?url='.$CFG->access_file_url.$this->full_path.'&embedded=true" style="width:100%; height:500px;" frameborder="0"></iframe>';
-        } else if (is_array(getimagesize($CFG->access_file_url.$this->full_path)) OR $this->type == '.pdf') {
-            $r = '<img src="'.$CFG->access_file_url.$this->full_path.'"><br>';
+        if (checkCapabilities('plugin:useEmbeddableGoogleDocumentViewer', $USER->role_id, false) AND !is_array(getimagesize($CFG->curriculumdata_root.$this->full_path))){
+            $r = '<iframe src="http://docs.google.com/gview?url='.$CFG->access_token_url .$this->addFileToken($this->id).'&embedded=true" style="width:100%; height:500px;" frameborder="0"></iframe><div class="space-left">'.Render::filenail($this, 'mail', false, false, false, true).'</div>';
+        } else if (is_array(getimagesize($CFG->curriculumdata_root.$this->full_path)) OR $this->type == '.pdf') {
+            $r = '<img src="'.$CFG->access_file_url.$this->full_path.'"><br><div class="space-left" >'.Render::filenail($this, 'mail', false, false, false, true).'</div>';
         } else {
-            $r = '<a target="_blank" href='.$CFG->access_file_url.$this->full_path.'> Lösung öffnen...</a><br>';
+            $r = '<div class="space-left">'.Render::filenail($this, 'mail', false, false, false, true).'</div>';
         }
         
         if ($context == 'message'){
@@ -268,6 +269,31 @@ class File {
         } else {
             return $r;
         }
+    }
+    
+    public function addFileToken(){
+        $fileToken = getToken();
+        $db = DB::prepare('INSERT INTO file_token (file_id, token) VALUES (?,?)');
+        $db->execute(array($this->id, $fileToken));
+         
+        return $fileToken;
+    }
+   
+    public function getFileID($fileToken){
+        $db = DB::prepare('SELECT file_id FROM file_token WHERE token = ?');
+        $db->execute(array($fileToken));
+        $result = $db->fetchObject();
+        if ($result){
+            return $result->file_id;
+        } else {
+            return $result;
+        }
+    }
+   
+    public function deleteFileToken($token){
+        $fileToken = getToken();
+        $db = DB::prepare('DELETE FROM file_token WHERE token=?');
+        $db->execute(array($token));
     }
 
     /**
@@ -542,6 +568,45 @@ class File {
     public function hit(){ // hit counter
         $db = DB::prepare('UPDATE files SET hits = hits + 1 WHERE id = ?');
         $db->execute(array($this->id));
+    }
+    /**
+     * Überprüft in den folgenden Tabellen, ob die Datei verknüpft ist: 
+     * - certificate    -> logo_id
+     * - curriculum     -> icon_id
+     * - institution    -> file_id
+     * - users          -> avatar_id
+     */
+    public function isUsed(){
+        $occurrence = array();
+        $db0 = DB::prepare('SELECT id FROM certificate WHERE logo_id = ?');
+        $db0->execute(array($this->id));
+        $result0 = $db0->fetchObject();
+        if ($result0){
+            $occurrence['certificate'] = $result0->id;
+        } 
+        
+        $db1 = DB::prepare('SELECT id FROM curriculum WHERE icon_id = ?');
+        $db1->execute(array($this->id));
+        $result1 = $db1->fetchObject();
+        if ($result1){
+            $occurrence['curriculum'] = $result1->id;
+        } 
+        
+        $db2 = DB::prepare('SELECT id FROM institution WHERE file_id = ?');
+        $db2->execute(array($this->id));
+        $result2 = $db2->fetchObject();
+        if ($result2){
+            $occurrence['institution'] = $result2->id;
+        } 
+        
+        $db3 = DB::prepare('SELECT id FROM users WHERE avatar_id = ?');
+        $db3->execute(array($this->id));
+        $result3 = $db2->fetchObject();
+        if ($result3){
+            $occurrence['users'] = $result3->id;
+        } 
+        
+        return $occurrence;
     }
     /**
      * function used during the install process to set up creator id to new admin

@@ -15,7 +15,7 @@
 {/function}
     
     <head>
-        <title>{block name=title}{/block} | {$app_title}</title>
+        <title>{block name=title}{/block} | {strip_tags($app_title)}</title>
         <meta charset="utf-8"> 
         <meta name="description" content="{block name="description"}{/block}">
         <meta name="author" content="">
@@ -27,6 +27,7 @@
         <link rel="stylesheet" href="{$media_url}stylesheets/all.css" media="all">
         <link rel="stylesheet" href="{$media_url}stylesheets/date.css" media="all">
         <link rel="stylesheet" href="{$media_url}stylesheets/buttons.css" media="all">
+        <link rel="stylesheet" href="{$media_url}stylesheets/quickform.css" media="all">
         
         {block name=additional_stylesheets}{/block}
     </head>
@@ -34,6 +35,7 @@
     <body> 
         <header id="header">
            <div id="app_title" class="floatleft"><a href="index.php?action=dashboard">{$app_title}</a></div>
+           <div id="header_center"></div>
            <div class="logininfo">
             {if isset($my_username)} 
                 <li>{if $my_role_id != -1}<div>{$my_firstname} {$my_lastname}<img src="{$access_file}{$my_avatar}"/><br><span>{$my_role_name}</span></div>{/if}
@@ -109,7 +111,8 @@
         </footer>                          
         
 <!-- SCRIPTS-->  
-        <script src="{$media_url}scripts/script.js"></script>        
+        <script src="{$media_url}scripts/script.js"></script>     
+        <script src="{$media_url}scripts/dragndrop.js"></script>     
         {block name=additional_scripts} 
         
         {if $tiny_mce && isset($my_id)}

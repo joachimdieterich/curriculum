@@ -44,6 +44,17 @@ if (isset($_GET['function'])){
                         assign_to_template($new_curriculum, 'c_');
                         $TEMPLATE->assign('editBtn', true);
             break;
+        case "import":  checkCapabilities('curriculum:import',     $USER->role_id);     //USER berechtigt?
+                        $TEMPLATE->assign('showForm',           true);
+                        $TEMPLATE->assign('showimportForm',     true);
+                        $TEMPLATE->assign('c_subject_id',       null);         // müssen gesetzt sein um unnötige if-Bedingungen zu vermeiden
+                        $TEMPLATE->assign('c_icon_id',          null);         // müssen gesetzt sein um unnötige if-Bedingungen zu vermeiden
+                        $TEMPLATE->assign('c_semester_id',      null);         // müssen gesetzt sein um unnötige if-Bedingungen zu vermeiden
+                        $TEMPLATE->assign('c_institution_id',   null);         // müssen gesetzt sein um unnötige if-Bedingungen zu vermeiden
+                        $TEMPLATE->assign('c_grade_id',         null);         // müssen gesetzt sein um unnötige if-Bedingungen zu vermeiden
+                        $TEMPLATE->assign('c_schooltype_id',    null);         // müssen gesetzt sein um unnötige if-Bedingungen zu vermeiden
+                        $TEMPLATE->assign('c_state_id',         null);         // müssen gesetzt sein um unnötige if-Bedingungen zu vermeiden
+            break;
         default: break;
     }
 }
@@ -87,7 +98,11 @@ if ($_POST){
                                             if (isset($_POST['update'])){ $new_curriculum->update();}            
                                         }  
             break;
-
+        case isset($_POST['import']):   if (isset($_POST['fileName'])){
+                                            $file = $CFG->backup_root.'tmp/'. filter_input(INPUT_POST, 'fileName', FILTER_UNSAFE_RAW);
+                                            $new_curriculum->import($file);
+                                        }
+            break;
         default: break;
     }    
 }

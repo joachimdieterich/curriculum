@@ -131,14 +131,21 @@ class Subject {
     /**
      * Load a subject 
      */
-    public function load(){
-        $db = DB::prepare('SELECT * FROM subjects WHERE id = ?');
-        $db->execute(array($this->id));
+    public function load($dependency = 'id', $value = null){
+        if (isset($value)){ $v = $value; } else { $v = $this->id; }
+        $db = DB::prepare('SELECT * FROM subjects WHERE '.$dependency.' = ?');
+        $db->execute(array($v));
         $result = $db->fetchObject();
-        $this->subject        = $result->subject;
-        $this->subject_short  = $result->subject_short;
-        $this->description    = $result->description;
-        $this->institution_id = $result->institution_id;
+        if ($result){
+            $this->id             = $result->id;
+            $this->subject        = $result->subject;
+            $this->subject_short  = $result->subject_short;
+            $this->description    = $result->description;
+            $this->institution_id = $result->institution_id;
+            return true;                                                        // wichtig! f. loadImportFormData
+        } else { 
+            return false; 
+        }
     }
     
     /**

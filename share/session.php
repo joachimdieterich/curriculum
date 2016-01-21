@@ -22,6 +22,7 @@
  */
 global $CFG, $USER, $_SESSION, $PAGE, $INSTITUTION, $TEMPLATE;
 $USER = new User();
+
 if (isset($_SESSION['USER'])){                                                  // Wenn $USER Object uin Session existiert diesen übernehmen --> weniger db Traffic
     assign_to_template($_SESSION['USER'],'my_');                                // $_SESSION['USER'] im $TEMPLATE verfügbar machen
     $USER                   =  $_SESSION['USER'];

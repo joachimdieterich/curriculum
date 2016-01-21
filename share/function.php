@@ -76,11 +76,11 @@ function read_folder_directory($dir, $request = "allDirFiles") {
 } 
 
 /**
- * get current page url
+ * get current page url with with port and protocol
  * @return string 
  */
 function curPageURL() {
- $pageURL = 'http://';
+ $pageURL = (@$_SERVER["HTTPS"] == "on") ? "https://" : "http://";
  if ($_SERVER["SERVER_PORT"] != "80") {
   $pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
  } else {
@@ -235,25 +235,9 @@ function renderList($formname, $dependency, $data_dir, $ID_Postfix, $targetID, $
             <tr><?php 
             if (!empty($files)){
                 for ($i=0; $i < count($files); $i++){?>
-                    <td><?php //wenn filetype unbekannt dann var setzen!!!
-                echo '<div  class="filelist filenail" id="row'.$ID_Postfix.''.$files[$i]->id.'"' ?>  
-                    onclick="checkfile('<?php echo $ID_Postfix.''.$files[$i]->id;?>')"  
-                        onmouseover="previewFile('<?php echo $CFG->access_file_url.$files[$i]->context_path.''.$files[$i]->path ?>', '<?php echo rawurlencode($files[$i]->filename);?>', 
-                    '<?php echo $ID_Postfix;?>', 
-                    '<?php if ($files[$i]->title != '')        { echo $files[$i]->title;        }?>', 
-                    '<?php if ($files[$i]->description != '')  { echo $files[$i]->description;  }?>', 
-                    '<?php if ($files[$i]->author != '')       { echo $files[$i]->author;       }?>', 
-                    '<?php echo $files[$i]->getLicence($files[$i]->licence);?>')" 
-                    onmouseout="exitpreviewFile('<?php echo $ID_Postfix; ?>')"> <?php
-                echo    '<a id="href_a_'.$files[$i]->id.'" href="'.$CFG->access_file_url.''.$files[$i]->context_path.''.$files[$i]->path.''.rawurlencode($files[$i]->filename).'"  target="_blank">
-                         <div class="downloadbtn floatleft"></div>
-                         </a><div class="deletebtn floatright" style="margin-right: -4px !important; "'?>  
-                            onclick="deleteFile('<?php echo $files[$i]->id;?>')"> <?php
-                echo    '</div><p class="'.ltrim ($files[$i]->type, '.').'_btn filelisticon" ></p>
-                         <p id="href_'.$files[$i]->id.'" class="filelink">'.$files[$i]->filename.'</p>
-                         <input class="invisible" type="checkbox" id="'.$ID_Postfix.''.$files[$i]->id.'" name="id'.$ID_Postfix.'[]" value='.$files[$i]->id.' />
-                         </div>';                             
-                ?></td> <?php 
+                    <td>  
+                       <?php echo RENDER::filenail($files, $ID_Postfix, $i, true, true); ?>
+                    </td> <?php 
                     if (($i+1) % 5 == 0) { ?> 
                     </tr><tr> <?php 
                     }    
@@ -287,7 +271,8 @@ function renderList($formname, $dependency, $data_dir, $ID_Postfix, $targetID, $
 
 
 function renderSelect($name, $label, $values, $select){?>
-    <p><label><?php echo $name;?></label><select id="<?php echo $label;?>" name="<?php echo $label;?>" class="centervertical"> <?php 
+    <p><label><?php echo $name;?></label>
+        <select id="<?php echo $label;?>" name="<?php echo $label;?>" class="centervertical"> <?php 
             foreach ($values as $value) {
                 ?><option value="<?php echo $value['value'];?>" data-skip="1" <?php if ($select == $value['value']){echo 'selected';}?> > <?php echo $value['label'];?></option><?php
             }?>
@@ -358,7 +343,7 @@ function array2str($array, $pre = ' ', $pad = '', $sep = ', '){
         $arrObj = is_object($obj) ? get_object_vars($obj) : $obj;
         if (is_object($obj)){ echo '<details style=""><summary>'.get_class($obj).'</summary>';}
         foreach ($arrObj as $key => $val) {  
-            echo '<p style="text-indent:'.$level.'00px; margin-bottom: -10px;">';
+            echo '<p style="text-indent:'.$level.'00px; margin-bottom: -2px;">';
             echo '<label>',$key,': </label>';
             $val = (is_array($val) || is_object($val)) ? object_to_array($val,$level+1) : $val;    
             if  ($val != (is_array($val) || is_object($val))){
@@ -417,15 +402,16 @@ function getOrientedImage($imagePath){
   * @param string $context
   */   
 function saveThumbnail($saveToDir, $imageName, $max_x, $max_y, $size = '') {  
+    $ext = array(); //preg_matches
     preg_match("'^(.*)\.(gif|jpe?g|png)$'i", $imageName, $ext);
     if (isset($ext[2])){
         switch (strtolower($ext[2])) {
             case 'jpg' : 
             case 'jpeg': $im    = getOrientedImage($saveToDir.$imageName);        //use this function to check if Image has an other orientation
                          break;
-            case 'gif' : $im    = imagecreatefromgif  ($saveToDir.$imageName);
+            case 'gif' : $im    = imagecreatefromgif($saveToDir.$imageName);
                          break;
-            case 'png' : $im    = imagecreatefrompng  ($saveToDir.$imageName);
+            case 'png' : $im    = imagecreatefrompng($saveToDir.$imageName);
                          break;
             default    : $stop  = true;
                          break;
@@ -441,8 +427,10 @@ function saveThumbnail($saveToDir, $imageName, $max_x, $max_y, $size = '') {
         } else {
             $save = imagecreatetruecolor($x/($y/$max_y), $y/($y/$max_y));
         }
-        imagecopyresized($save, $im, 0, 0, 0, 0, imagesx($save), imagesy($save), $x, $y);
-        imagepng($save, "{$saveToDir}{$ext[1]}_".$size.".png");
+        
+        //imagecopyresized($save, $im, 0, 0, 0, 0, imagesx($save), imagesy($save), $x, $y);
+        imagecopyresampled($save, $im, 0, 0, 0, 0, imagesx($save), imagesy($save), $x, $y); 
+        imagepng($save, "{$saveToDir}{$ext[1]}_".$size.".png", 5);
         imagedestroy($im);
         imagedestroy($save);
     }
@@ -451,7 +439,7 @@ function saveThumbnail($saveToDir, $imageName, $max_x, $max_y, $size = '') {
  *  Generate Thumbnails
  *  Sizes of Thumbnails
  *  saveThumbnail($upload_dir, $filename,  18,  27,'xt');
- *  saveThumbnail($upload_dir, $filename,  50,  75,'t');
+ *  saveThumbnail($upload_dir, $filename, 100, 100,'t');
  *  saveThumbnail($upload_dir, $filename, 150, 125,'qs');
  *  saveThumbnail($upload_dir, $filename, 150, 225,'xs');
  *  saveThumbnail($upload_dir, $filename, 226, 340,'s');
@@ -462,7 +450,7 @@ function saveThumbnail($saveToDir, $imageName, $max_x, $max_y, $size = '') {
  * @param string $context
  */
 function generateThumbnail($upload_dir, $filename, $context){   
-    saveThumbnail($upload_dir, $filename,  50,  75,'t'); // !!! For FilePreview    
+    saveThumbnail($upload_dir, $filename,  100,  100,'t'); // !!! For FilePreview    
     switch ($context){ 
             case "userFiles":   break;
             case "curriculum":
@@ -476,7 +464,7 @@ function generateThumbnail($upload_dir, $filename, $context){
                                 break;
             case "badge":       saveThumbnail($upload_dir, $filename, 150, 125,'qs');
                                 break;
-            case "editor":      saveThumbnail($upload_dir, $filename,  50,  75,'t');
+            case "editor":      saveThumbnail($upload_dir, $filename, 100,  100,'t');
                                 break;  
         }
 }
@@ -505,4 +493,69 @@ function validate_msg($v_error, $field){
    if (isset($v_error[$field]['message'][0])){ 
        echo '<div class="error">',$v_error[$field]['message'][0],'</div>';     
    } 
+}
+
+function str_lreplace($search, $replace, $subject)
+{
+    $pos = strrpos($subject, $search);
+
+    if($pos !== false)
+    {
+        $subject = substr_replace($subject, $replace, $pos, strlen($search));
+    }
+
+    return $subject;
+}
+
+/**
+ * Löscht alle Datien / Unterordner im angegebenen Ordner 
+ * @param type $folder
+ */
+function delete_folder($folder){
+    $files      = new RecursiveIteratorIterator(                                                    // Lösche temporäre Dateien
+    new RecursiveDirectoryIterator($folder, RecursiveDirectoryIterator::SKIP_DOTS),
+    RecursiveIteratorIterator::CHILD_FIRST);                                                        // CHILD_FIRST wichtig, damit erst die unterordner/Dateien gelöscht werden
+    foreach ($files as $fileinfo) {
+        $todo   = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
+        $todo($fileinfo->getRealPath());
+    }
+    rmdir($folder);
+}
+
+/**
+ * Prüft ob ein Verzeichnis existiert und legt dieses an, falls es nicht existiert.
+ * Im Gegensatz zu mkdir wird keine Warnung ausgegeben, falls Verzeichnis existiert.
+ * @param string $path
+ */
+function silent_mkdir($path){
+    if (!file_exists($path)) {
+        if (mkdir($path, 0777, true)){  // legt Verzeichnis an
+            return true;
+        }
+    } else {
+        return true;
+    }
+}
+
+
+/**
+ * Traverse an elements children and collect those nodes that
+ * have the tagname specified in $tagName. Non-recursive
+ * Source: http://stackoverflow.com/questions/3049648/php-domelementgetelementsbytagname-anyway-to-get-just-the-immediate-matching 
+ *
+ * @param DOMElement $element
+ * @param string $tagName
+ * @return array
+ */
+function getImmediateChildrenByTagName(DOMElement $element, $tagName)
+{
+    $result = array();
+    foreach($element->childNodes as $child)
+    {
+        if($child instanceof DOMElement && $child->tagName == $tagName)
+        {
+            $result[] = $child;
+        }
+    }
+    return $result;
 }

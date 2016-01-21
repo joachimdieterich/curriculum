@@ -158,7 +158,7 @@ class file_upload {
      * @since 2.32
      * @var bool
      */
-    var $dirperm = 0755; 
+    var $dirperm = 0775; 
 
     /**
      * File upload
@@ -199,10 +199,9 @@ class file_upload {
      * @param string $to_name      new file name, default = ''
      */
     function upload($to_name = '') {
-
             $new_name = $this->set_file_name($to_name);
-
-            if ($this->check_file_name($new_name)) {
+            
+            if ($this->check_file_name($new_name)) { 
                     if ($this->validateExtension()) {
                             if (is_uploaded_file($this->the_temp_file)) {
                                     $this->file_copy = $new_name;
@@ -236,7 +235,7 @@ class file_upload {
                     } else {
                             if ($this->do_filename_check == 'y') {
                                     //if (preg_match('/^[a-z0-9_]*\.(.){1,5}$/i', $the_name)) {
-                                    if (preg_match('/^[a-z0-9_ -öüä]*\.(.){1,5}$/i', $the_name)) { //lässt Leerzeichen und Minus zu
+                                    if (preg_match('/^[a-z0-9_ -öüä]*\.(.){1,10}$/i', $the_name)) { //lässt Leerzeichen und Minus zu // bis zu 10 Zeichen Dateierweiterung
                                             return true;
                                     } else {
                                             $this->message[] = $this->error_text(12);
@@ -309,9 +308,11 @@ class file_upload {
      * @return boolean 
      */
     function move_upload($tmp_file, $new_file) {
+        
             if ($this->existing_file($new_file)) {
                     $newfile = $this->upload_dir.$new_file;
                     if ($this->check_dir($this->upload_dir)) {
+                        
                             if (move_uploaded_file($tmp_file, $newfile)) {
                                     umask(0);
                                     chmod($newfile , $this->fileperm);

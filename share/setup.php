@@ -33,9 +33,9 @@ global $TEMPLATE;                                                   // Smarty TE
 session_start();                                                    // Starte Sesseion
 
 $TEMPLATE = new Smarty();
-$TEMPLATE->template_dir             = $CFG->smarty_template_dir; //??? setzten!
-$TEMPLATE->compile_dir              = $CFG->smarty_template_compile_dir;//??? setzten!
-$TEMPLATE->cache_dir                = $CFG->smarty_template_cache_dir;//??? setzten!
+$TEMPLATE->template_dir             = $CFG->smarty_template_dir; 
+$TEMPLATE->compile_dir              = $CFG->smarty_template_compile_dir;
+$TEMPLATE->cache_dir                = $CFG->smarty_template_cache_dir;
 $TEMPLATE->assign('tiny_mce',       true);                          // Aktiviere TinyMCE
 $TEMPLATE->assign('tb_param',       $CFG->tb_param);
 $TEMPLATE->assign('global_timeout', $CFG->timeout);

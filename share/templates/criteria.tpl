@@ -15,7 +15,7 @@
             <p>{$criteria}</p>
             <br>
             <form>
-                <p class="center"><input type="button" value="Fenster schließen" onClick="window.close()"></p>
+                <p class="center"><input type="button" value="Fenster schließen" onClick="window.close();"></p>
             </form>
     </div>    
 </div>    

@@ -84,7 +84,7 @@ if (isset($_POST['Submit'])) {
     if ($_POST['Submit'] == 'Datei hochladen'){
 
         $my_upload->upload_dir = $CFG->curriculumdata_root.$file->getContextPath($context).$extendUploadPath; //Set current uploaddir;
-        $my_upload->extensions = array(".png", ".jpg", ".jpeg", ".gif", ".pdf", ".doc", ".docx", ".ppt", ".pptx", ".txt", ".rtf", ".bmp", ".tiff", ".tif", ".mpg", ".mpeg" , ".mpe", ".mp3", ".m4a", ".qt", ".mov", ".mp4", ".avi", ".aif", ".aiff", ".wav", ".zip", ".rar", ".mid", ".imscc"); // allowed extensions
+        $my_upload->extensions = array(".png", ".jpg", ".jpeg", ".gif", ".pdf", ".doc", ".docx", ".ppt", ".pptx", ".txt", ".rtf", ".bmp", ".tiff", ".tif", ".mpg", ".mpeg" , ".mpe", ".mp3", ".m4a", ".qt", ".mov", ".mp4", ".avi", ".aif", ".aiff", ".wav", ".zip", ".rar", ".mid", ".imscc", ".curriculum"); // allowed extensions
         $my_upload->rename_file = false;
         $my_upload->the_temp_file = $_FILES['upload']['tmp_name'];
         $my_upload->the_file = str_replace(' ', '_', $_FILES['upload']['name']);
@@ -129,7 +129,7 @@ if (isset($_POST['Submit'])) {
                      $my_upload->id     = $file->add();
                      $file->id          = $my_upload->id; // doppelt $my_upload->id im code ersetzen.
                      $href_mail         = $CFG->access_file_url.'solutions/'.$extendUploadPath.''.rawurlencode(str_replace(' ', '_', $my_upload->the_file));
-                     if ($CFG->thumbnails){ // Generate Thumbs
+                     if ($CFG->thumbnails){ // Generate Thumbs --> evtl besser in file.class.php
                         generateThumbnail($my_upload->upload_dir, $my_upload->the_file, $context);
                      }
                  } else {

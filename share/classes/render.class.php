@@ -110,7 +110,7 @@ class Render {
             </div>';
           if ($btn == 'OK') {
               if (!$url) { $url = $_SESSION['PAGE']->url; }
-              echo '<p><label></label><input type="submit" value="OK" onclick="location.href='."'".$url."'".'"></p>';
+              echo '<p style="padding-left:10px;"><label></label><input type="submit" value="OK" onclick="location.href='."'".$url."'".'"></p>';
           }
     } 
     
@@ -120,7 +120,9 @@ class Render {
             if (!$attempt){
                 echo '<p class="space-left">Bitte wähle die richtige Antwort aus.</p><br>'; 
             }
+            
             echo '<form id="ajax_quiz_form" action="" name="addQuestion" method="post">';
+            
             foreach ($question as $value) {
                 echo '<h3>'.$value->question.'</h3><br>';
                 switch ($value->type) {
@@ -199,6 +201,29 @@ class Render {
                                 echo'</div>';
                             }
                         break;
+                    case 3: echo '<div id="div2" class="floatright border-box" style="height:30px;width:90px;" ondrop="drop_answer(event, '.$value->id.')" ondragover="allowDrop(event)"></div>';
+                            echo '<input style="width:40px;" type="hidden" name="'.$value->id.'" value="">';
+                            foreach ($value->answers as $a) {
+                                if ($attempt){
+                                    echo '<div class="space-left ';
+                                    if ($attempt[$value->id] == $a->answer){ echo ' right-block '; }
+                                    if ($attempt[$value->id] != $a->answer ){ echo ' wrong-block '; }
+                                    echo '"><input style="width:40px;" type="text" name="'.$value->id.'" value="'.$attempt[$value->id].'" >';
+                                    if ($attempt[$value->id] == $a->answer ){
+                                        echo '<div class="floatright">Richtig</div>';
+                                    }   else if ($attempt[$value->id] != $a->answer ){
+                                        echo '<div class="floatright">Richtige Antwort ist<strong> '.$a->answer.'</strong></div>';
+                                    } 
+                                } else {
+                                    echo '<div class="space-left">';
+                                    echo '<div id="div_'.$a->id.'" class="border-box" style="height:30px;width:90px;" ondrop="drop(event)" ondragover="allowDrop(event)">
+                                    <img src="'.$a->answer.'" draggable="true" ondragstart="drag(event, '.$value->id.')" id="'.$a->id.'" width="88" height="31">
+                                  </div>';
+                                }
+                                echo '</div>';
+                            }
+                            
+                        break;
 
                     default:
                         break;
@@ -214,6 +239,46 @@ class Render {
         } else {
             echo '<p class="materialtxt"><p class="space-left">Keine Quiz vorhanden</p>';
         }
+    }
+    
+    
+    public static function filenail($files, $ID_Postfix, $i = false, $preview = false, $delete = false, $link = false){
+        global $CFG;
+        if(is_array($files)){
+            $file = $files[$i];
+        } else {
+            $file = $files;
+        }
+        if ($link == true){
+            $r = '<div class="filesingle filenail" id="row'.$ID_Postfix.''.$file->id.'" onclick="javascript:location.href=\''.$CFG->access_file_url.''.$file->context_path.''.$file->path.''.rawurlencode($file->filename).'\'" ';
+        } else {
+            $r = '<div class="filelist filenail" id="row'.$ID_Postfix.''.$file->id.'" onclick="checkfile(\''.$ID_Postfix.''.$file->id.'\')" ';
+        }
+        if ($preview == true){            
+            $r .= 'onmouseover="previewFile(\''.$CFG->access_file_url.$file->context_path.''.$file->path.'\', ';
+            $r .= '\''.rawurlencode($file->filename).'\', ';
+            $r .= '\''.$ID_Postfix.'\', \'';
+            if  ($file->title != '')        { $r .= $file->title;        }  $r .= '\', \'';
+            if  ($file->description != '')  { $r .= $file->description;  }  $r .= '\', \'';  
+            if  ($file->author != '')       { $r .= $file->author;       }  $r .= '\', \''; 
+            $r .= $file->getLicence($file->licence).'\')" onmouseout="exitpreviewFile(\''.$ID_Postfix.'\')">';
+        }
+        
+        $r .= '<a id="href_a_'.$file->id.'" href="'.$CFG->access_file_url.''.$file->context_path.''.$file->path.''.rawurlencode($file->filename).'"  target="_blank">';
+        if ($link == false){               
+            $r .= '<div class="downloadbtn floatleft"></div>';
+            
+        } 
+        $r .= '</a>';
+        if ($delete == true){
+            $r .= '<div class="deletebtn floatright" style="margin-right: -4px !important; " onclick="deleteFile(\''.$file->id.'\')"></div>';
+        }
+        
+        $r .=   '<div class="'.ltrim ($file->type, '.').'_btn filelisticon" ></div>
+                 <div id="href_'.$file->id.'" class="filelink">'.$file->filename.'</div>
+                 <input class="invisible" type="checkbox" id="'.$ID_Postfix.''.$file->id.'" name="id'.$ID_Postfix.'[]" value='.$file->id.' />
+                 </div>';
+        return $r;
     }
 
 }

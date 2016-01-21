@@ -98,7 +98,7 @@ class Cron {
             $objectives              = $accomplished_objectives->getRepeatingObjectives();
             if ($objectives){
                 for ($i = 0; $i < count($objectives); $i++) {                
-                    $days = seDay(date("Y-m-d", strtotime($objectives[$i]->accomplished_time)), date("Y-m-d"),'Ymd','-'); // vergangene Tage ermitteln
+                    $days = $this->seDay(date("Y-m-d", strtotime($objectives[$i]->accomplished_time)), date("Y-m-d"),'Ymd','-'); // vergangene Tage ermitteln
                     if ($objectives[$i]->repeat_interval < $days) {
                         $user->load('id', $objectives[$i]->accomplished_users);
                         $message           .= 'Benutzer: <strong>'.$user->firstname.' '.$user->lastname.' ('.$user->username.')</strong><br>'

@@ -109,7 +109,8 @@ class Curriculum {
         checkCapabilities('curriculum:add', $USER->role_id);
         $db = DB::prepare('INSERT INTO curriculum (curriculum, description, grade_id, subject_id, schooltype_id, state_id, icon_id, country_id, creator_id) 
                                             VALUES (?,?,?,?,?,?,?,?,?)');
-        return $db->execute(array($this->curriculum, $this->description, $this->grade_id, $this->subject_id, $this->schooltype_id, $this->state_id, $this->icon_id, $this->country_id, $this->creator_id));
+        $db->execute(array($this->curriculum, $this->description, $this->grade_id, $this->subject_id, $this->schooltype_id, $this->state_id, $this->icon_id, $this->country_id, $this->creator_id));
+        return DB::lastInsertId();
     }
     
     /**
@@ -131,10 +132,34 @@ class Curriculum {
      * @return mixed 
      */
     public function delete(){
-        global $USER;
+        global $USER, $PAGE;
         checkCapabilities('curriculum:delete', $USER->role_id);
-        $db = DB::prepare('DELETE FROM curriculum WHERE id=?');
-        return $db->execute(array($this->id));
+        //check if groups are enroled in this curriculum 
+        $enrdb = DB::prepare('SELECT id FROM curriculum_enrolments WHERE curriculum_id=?');
+        $enrdb->execute(array($this->id));
+        if ($enrdb->fetchObject()){
+            $PAGE->message[] = 'Lehrplan kann nicht gelöscht werden. Es sind Gruppen eingeschrieben.'; 
+            return false;
+        } else { // delete curriculum
+            $db = DB::prepare('DELETE FROM curriculum WHERE id=?');
+            if ($db->execute(array($this->id))){
+                $terdb = DB::prepare('DELETE FROM terminalObjectives WHERE curriculum_id = ?');
+                if ($terdb->execute(array($this->id))){
+                    $enadb = DB::prepare('DELETE FROM enablingObjectives WHERE curriculum_id = ?');
+                    if ($enadb->execute(array($this->id))){
+                        $f = new File();
+                        $files = $f->getFiles('curriculum', $this->id);
+                        foreach ($files as $file) {
+                            $f->id = $file->id; 
+                            if (empty($f->isUsed())){ //überprüft ob Datei verwendet wird
+                                $f->delete();
+                            }
+                        }
+                        return true;
+                    } 
+                }
+            }
+        } 
     } 
     
     /**
@@ -175,6 +200,7 @@ class Curriculum {
      * @return array of curriculum objects  
      */
     public function getCurricula($dependency = null, $id = null, $paginator = ''){
+        global $USER;
         $order_param = orderPaginator($paginator);  
         $curriculum = array();
         switch ($dependency) {
@@ -201,20 +227,29 @@ class Curriculum {
                                         $curriculum[] = $result; 
                             }
                 break; 
-            case 'user':    $db = DB::prepare('SELECT DISTINCT cu.*, co.de, st.state, sc.schooltype, gr.grade, su.subject, fl.filename  
-              FROM curriculum AS cu, groups_enrolments AS ce, curriculum_enrolments AS cure, countries AS co, state AS st, schooltype AS sc, grade AS gr, subjects AS su, files AS fl
-                                            WHERE  (cu.country_id = co.id AND cu.state_id = st.id 
-                                            AND cu.schooltype_id = sc.id AND cu.grade_id = gr.id 
-                                            AND cu.subject_id = su.id AND cu.icon_id = fl.id 
-                                            AND cu.creator_id = ? ) OR (
-                                            cu.country_id = co.id AND cu.state_id = st.id 
-                                            AND cu.schooltype_id = sc.id AND cu.grade_id = gr.id 
-                                            AND cu.subject_id = su.id AND cu.icon_id = fl.id 
-                                            AND cu.id = cure.curriculum_id
-                                            AND cure.group_id = ce.group_id
-                                            AND ce.status = 1
-                                            AND ce.user_id = ?) '.$order_param);
-                            $db->execute(array($id, $id));
+            case 'user':    if (checkCapabilities('curriculum:showAll', $USER->role_id, false)){
+                                $db = DB::prepare('SELECT DISTINCT cu.*, co.de, st.state, sc.schooltype, gr.grade, su.subject, fl.filename  
+                                    FROM curriculum AS cu, countries AS co, state AS st, schooltype AS sc, grade AS gr, subjects AS su, files AS fl
+                                                WHERE cu.country_id = co.id AND cu.state_id = st.id 
+                                                AND cu.schooltype_id = sc.id AND cu.grade_id = gr.id 
+                                                AND cu.subject_id = su.id AND cu.icon_id = fl.id '.$order_param);
+                                $db->execute(array());
+                            } else {
+                                $db = DB::prepare('SELECT DISTINCT cu.*, co.de, st.state, sc.schooltype, gr.grade, su.subject, fl.filename  
+                                    FROM curriculum AS cu, groups_enrolments AS ce, curriculum_enrolments AS cure, countries AS co, state AS st, schooltype AS sc, grade AS gr, subjects AS su, files AS fl
+                                                WHERE  (cu.country_id = co.id AND cu.state_id = st.id 
+                                                AND cu.schooltype_id = sc.id AND cu.grade_id = gr.id 
+                                                AND cu.subject_id = su.id AND cu.icon_id = fl.id 
+                                                AND cu.creator_id = ? ) OR (
+                                                cu.country_id = co.id AND cu.state_id = st.id 
+                                                AND cu.schooltype_id = sc.id AND cu.grade_id = gr.id 
+                                                AND cu.subject_id = su.id AND cu.icon_id = fl.id 
+                                                AND cu.id = cure.curriculum_id
+                                                AND cure.group_id = ce.group_id
+                                                AND ce.status = 1
+                                                AND ce.user_id = ?) '.$order_param);
+                                $db->execute(array($id, $id));
+                            }
                             while($result = $db->fetchObject()) {
                                 $curriculum[] = $result; //result Data wird an setPaginator vergeben
                             } 
@@ -223,6 +258,173 @@ class Curriculum {
         }
         
         return $curriculum;
+   }
+   
+   public function loadImportFormData($file){
+        global $CFG, $USER;
+        
+        $import_folder = basename($file, ".curriculum");
+        $zip = new ZipArchive;
+        if ($zip->open($CFG->backup_root.'tmp/'.$file) === TRUE) {
+            $zip->extractTo($CFG->backup_root.$import_folder.'/');
+            $zip->close();
+        } 
+        
+        $xml = new DOMDocument( "1.0", "UTF-8" );
+        $xml->load($CFG->backup_root.$import_folder.'/'.$import_folder.'.xml');
+
+        $ext_reference = new Omega();
+        foreach($xml->getElementsByTagName('curriculum') as $curriculum) {
+                 $old_cur_id              = $curriculum->getAttribute('id');
+                 $this->curriculum        = $curriculum->getAttribute('curriculum');
+                 $this->description       = $curriculum->getAttribute('description');
+                 $g = new Grade();
+                 if ($g->load('grade', $curriculum->getAttribute('grade'))){ // else use preset $this->grade_id
+                     $this->grade_id      = $g->id;
+                 } 
+                 $s = new Subject();
+                 if ($s->load('subject', $curriculum->getAttribute('subject'))){
+                      $this->subject_id   = $s->id;
+                 }
+                 $sch = new Schooltype();
+                 if ($sch->load('schooltype', $curriculum->getAttribute('schooltype'))){
+                     $this->schooltype_id = $sch->id; 
+                 }
+
+                 $this->state_id          = $curriculum->getAttribute('state_id');
+                 $this->country_id        = $curriculum->getAttribute('country_id');
+                 $this->icon_id           = $curriculum->getAttribute('icon_id');
+                 $this->creator_id        = $USER->id;
+       }
+       delete_folder($CFG->backup_root.$import_folder);                        // Löscht temporäre Dateien
+   }
+   
+   public function import($file, $preset = true){ 
+        global $CFG, $USER;                                                         //--> s.    public function loadImportFormData($file) // code doppelt
+        //error_log($file);
+        $import_folder = basename($file, ".curriculum");
+        $zip = new ZipArchive;
+        if ($zip->open($file) === TRUE) {
+            $zip->extractTo($CFG->backup_root.$import_folder.'/');
+            $zip->close();
+        } 
+        
+        $xml = new DOMDocument( "1.0", "UTF-8" );
+        $xml->load($CFG->backup_root.$import_folder.'/'.$import_folder.'.xml');
+
+        $ext_reference = new Omega();
+        foreach($xml->getElementsByTagName('curriculum') as $curriculum) {
+            if ($preset) { // Werte aus backup nutzen -> sonst Werte des Formulars nutzen
+                 $old_cur_id              = $curriculum->getAttribute('id');
+                 $this->curriculum        = $curriculum->getAttribute('curriculum');
+                 $this->description       = $curriculum->getAttribute('description');
+                 $g = new Grade();
+                 if ($g->load('grade', $curriculum->getAttribute('grade'))){ // else use preset $this->grade_id
+                     $this->grade_id      = $g->id;
+                 } 
+                 $s = new Subject();
+                 if ($s->load('subject', $curriculum->getAttribute('subject'))){
+                      $this->subject_id   = $s->id;
+                 }
+                 $sch = new Schooltype();
+                 if ($sch->load('schooltype', $curriculum->getAttribute('schooltype'))){
+                     $this->schooltype_id = $sch->id; 
+                 }
+
+                 $this->state_id          = $curriculum->getAttribute('state_id');
+                 $this->country_id        = $curriculum->getAttribute('country_id');
+                 //if file(icon_id) -> subject_image
+                 $this->icon_id           = $curriculum->getAttribute('icon_id');
+                 $this->creator_id        = $USER->id;
+            }
+            $c_id = $this->add();
+       }                                                                                    //<-- s.    public function loadImportFormData($file) 
+       foreach($xml->getElementsByTagName('terminal_objective') as $ter) {
+           $t = new TerminalObjective();
+           $old_ter_id            = $ter->getAttribute('id');
+           $t->curriculum_id      = $c_id;
+           $t->terminal_objective = $ter->getAttribute('terminal_objective');
+           $t->description        = $ter->getAttribute('description');
+           $t->order_id           = $ter->getAttribute('order_id');
+           $t->repeat_interval    = $ter->getAttribute('repeat_interval');
+           $t->color              = $ter->getAttribute('color');
+           $t->creator_id         = $USER->id;
+           $t_id                  = $t->add();                                      // add terminal objective
+           $t_ref                 = $ter->getAttribute('ext_reference');
+           if ($t_ref != ''){
+               $ext_reference->setReference(0, $t_id, $t_ref);                      // add ext. reference for this terminal objective
+           }
+           /* ter files */
+           $ter_file_nodes = getImmediateChildrenByTagName($ter, 'file');
+           //foreach($ter->getElementsByTagName('file') as $ter_fil) {
+           foreach($ter_file_nodes as $ter_fil) {
+                    $f = new File();
+                    $f->title                   = $ter_fil->getAttribute('title');
+                    $f->filename                = $ter_fil->getAttribute('filename');
+                    $f->description             = $ter_fil->getAttribute('description');
+                    $f->author                  = $ter_fil->getAttribute('author');
+                    $f->licence                 = $ter_fil->getAttribute('licence');
+                    $f->type                    = $ter_fil->getAttribute('type');
+                    $f->path                    = $c_id.'/'.$t_id.'/';//$fil->getAttribute('path');
+                    $f->context_id              = $ter_fil->getAttribute('context_id');
+                    $f->file_context            = $ter_fil->getAttribute('file_context');
+                    $f->creator_id              = $USER->id;
+                    $f->curriculum_id           = $c_id;
+                    $f->terminal_objective_id   = $t_id;
+                    $f->enabling_objective_id   = -1;
+                    $f->add();
+                    if ($f->type != '.url'){
+                        silent_mkdir($CFG->curriculum_root.$f->path);
+                        copy($CFG->backup_root.$import_folder.'/'.$old_cur_id.'/'.$old_ter_id.'/'.$f->filename, $CFG->curriculum_root.$f->path.$f->filename);
+                    }
+                }
+            /* enabling objectives*/
+                
+           foreach($ter->getElementsByTagName('enabling_objective') as $ena) {
+                $e = new EnablingObjective();
+                $old_ena_id                  = $ena->getAttribute('id');
+                $e->curriculum_id            = $c_id;
+                $e->terminal_objective_id    = $t_id;
+                $e->enabling_objective       = $ena->getAttribute('enabling_objective');
+                $e->description              = $ena->getAttribute('description');
+                $e->order_id                 = $ena->getAttribute('order_id');
+                $e->repeat_interval          = $ena->getAttribute('repeat_interval');
+                $e->creator_id               = $USER->id;
+                $e_id                        = $e->add();
+                $e_ref                       = $ena->getAttribute('ext_reference');   
+                if ($e_ref != ''){
+                    $ext_reference->setReference(1, $e_id, $e_ref);                      // add ext. reference for this enabling objective
+                }
+                
+                /* ena files*/
+                $ena_file_nodes = getImmediateChildrenByTagName($ena, 'file');
+                //foreach($ena->getElementsByTagName('file') as $ena_fil) {
+                foreach($ena_file_nodes as $ena_fil) {
+                    $f = new File();
+                    $f->title                   = $ena_fil->getAttribute('title');
+                    $f->filename                = $ena_fil->getAttribute('filename');
+                    $f->description             = $ena_fil->getAttribute('description');
+                    $f->author                  = $ena_fil->getAttribute('author');
+                    $f->licence                 = $ena_fil->getAttribute('licence');
+                    $f->type                    = $ena_fil->getAttribute('type');
+                    $f->path                    = $c_id.'/'.$t_id.'/'.$e_id.'/';//$fil->getAttribute('path');
+                    $f->context_id              = $ena_fil->getAttribute('context_id');
+                    $f->file_context            = $ena_fil->getAttribute('file_context');
+                    $f->creator_id              = $USER->id;
+                    $f->curriculum_id           = $c_id;
+                    $f->terminal_objective_id   = $t_id;
+                    $f->enabling_objective_id   = $e_id;
+                    $f->add();
+                    if ($f->type != '.url'){
+                        silent_mkdir($CFG->curriculum_root.$f->path);
+                        copy($CFG->backup_root.$import_folder.'/'.$old_cur_id.'/'.$old_ter_id.'/'.$old_ena_id.'/'.$f->filename, $CFG->curriculum_root.$f->path.$f->filename);
+                    }
+                } 
+          }     
+        }
+       
+        delete_folder($CFG->backup_root.$import_folder);                        // Löscht temporäre Dateien
+        unlink($file);
    }
    
    /**

@@ -95,7 +95,7 @@ body, select, input, textarea {
 
 
 /* always force a scrollbar in non-IE: */
-html, textarea { overflow: auto; }
+html, textarea { overflow: auto;}
 
 /* accessible focus treatment: people.opera.com/patrickl/experiments/keyboard/test */
 a:hover, a:active { outline: none; }
@@ -145,9 +145,9 @@ input:invalid, textarea:invalid {
 
 /* These selection declarations have to be separate.
    No text-shadow: twitter.com/miketaylr/status/12228805301
-   Also: hot pink. */
-::-moz-selection { background: #FF5E99; color:#fff; text-shadow: none; }
-::selection { background:#FF5E99; color:#fff; text-shadow: none; }
+*/
+::-moz-selection { background: #b5d0ad; color:#fff; text-shadow: none; }
+::selection { background:#b5d0ad; color:#fff; text-shadow: none; }
 
 /*  j.mp/webkit-tap-highlight-color */
 a:link { -webkit-tap-highlight-color: #FF5E99; }
@@ -261,6 +261,19 @@ button {  width: auto; overflow: auto; }
     filter:alpha(opacity=50); /* For IE8 and earlier */
 }
 
+.xmlbtn{
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-color: transparent;
+    margin-right: 5px;    
+    height: 14px;
+    width: 58px;
+    border: none;
+    cursor: pointer;
+    vertical-align: middle; 
+    opacity:0.5;
+    filter:alpha(opacity=50); /* For IE8 and earlier */
+}
 .checkactivegreenbtn, .checkactiveredbtn, .checkactiveorangebtn, .checkactivewhitebtn{ 
     background-repeat: no-repeat;
     background-size: contain;
@@ -337,6 +350,7 @@ button {  width: auto; overflow: auto; }
                   cursor:help; height: 20px; }
 .downloadbtn    { background-image: url('../images/icons/glyphicons_200_download.png');
                   margin-left: -4px;}
+.xmlbtn         { background-image: url('../images/icons/glyphicons-118-embed-xml.png');}
 .mailinbtn      { background-image: url('../images/icons/glyphicons_122_message_in.png'); }
 .mailoutbtn     { background-image: url('../images/icons/glyphicons_123_message_out.png'); }
 .mailnewbtn     { background-image: url('../images/icons/glyphicons_124_message_plus.png'); }
@@ -710,7 +724,7 @@ header { /*Anpassung an curriculumonline.de*/
         background: rgb(255, 255, 255) url(../images/logo_white_bg.png)  15px 10px no-repeat;
         background-origin: padding-box;
         background-size: auto;
-        box-shadow: rgba(0, 0, 0, 0.258824) 0px 0px 6px 0px;
+        box-shadow: rgba(0, 0, 0, 0.258824) 0px 0px 2px 0px;
         color: rgb(102, 102, 102);
         display: block;
         font-family: 'Open Sans', Arial, sans-serif;
@@ -724,36 +738,42 @@ header { /*Anpassung an curriculumonline.de*/
         width: 100%;
         word-wrap: break-word;
         z-index: 1001;
-    
-    /*color:          rgb(0,0,0);
-    display:        block;
-    font-family:    Arial, Helvetica, sans-serif;
-    font-size:      12px;
-    font-style:     normal;
-    font-variant:   normal;
-    font-weight:    normal;
-    height:         60px;
-    width:          100%;
-    line-height:    16px;
-    margin:         0px 0px 0px 0px;
-    padding:        0px 0px 0px 0px;
-    text-align:     left;
-    background:     #013363 url(../images/logo.png)  15px 10px no-repeat;*/
+        border-bottom: 4px solid #8e8e8e;  /*RLP Linie*/
 }
+
+header:before{
+        //position: absolute;
+        border-bottom: 4px solid #871d33;   /*RLP Linie*/
+        height: 74px;
+        width: 220px;
+        content: '';
+}
+
+
 header a, header, #app_title a, .logininfo{
     color: rgb(51, 51, 51);
     text-decoration: none;
     z-index: 10000;
 }
-
+#header_center { /*Anpassung an curriculumonline.de*/
+        /*background: rgb(255, 255, 255) url(../images/logo_white_bg.png)10px 10px no-repeat;
+        background-size: 150px 50px;
+        height: 70px;
+        width: 160px; 
+        position: absolute;
+        left: 230px; */
+}
 
 #app_title{
     font-family:    Arial, Helvetica, sans-serif;
-    font-size:      20px;
-    font-size:      1.7vw;
+    font-size:      18px;
+    //font-size:      1.7vw;
     font-style:     normal;
     font-weight:    bold;
-    padding: 20px 0px 0px 65px;
+    height:59px;
+    padding: 11px 0px 0px 75px;
+    border-bottom: 4px solid #871d33;   /*RLP Linie*/
+    
 }
 
 .logininfo {  
@@ -1074,7 +1094,8 @@ nav div > img {
     vertical-align: middle !important;
 }
 
-p > label {
+/* Bezug auf Form ist wichtig, damit sowohl quickForm 2 als auch andere Formulare richtig angezeigt werden*/
+form > p > label { 
     display: inline-block;
     width: 200px;
     line-height: 25px;
@@ -1113,7 +1134,7 @@ p > label {
 
 /*Material-Popup*/
 .materialtxt { 
-    padding-left:       70px;
+    padding-left:       120px;
 }
 .materialseperator { 
     border-top:     1px solid #d1cece;
@@ -1303,6 +1324,9 @@ iframe { width: 600px;
     width: 74px;
     height: 87px;
     overflow: hidden;
+}
+.filesingle{
+    width: 90px;
 }
 
 .filelisticon {

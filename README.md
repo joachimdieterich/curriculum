@@ -1,4 +1,20 @@
-curriculum BETA Version 0.9.1
+curriculum BETA Version 0.9.2
+
+Version 0.9.2
+=================
+- Added HTML_QuickFom2
+- Pinnwand (Dashboard) 
+- Dateizugriff abgesichert (with session)
+- Seitenzähler an Paginatoren optimiert (function.paginate_middle.php)
+- XML Import / Export von Lehrplänen
+- https wird unterstützt
+
+- div. Bugfixes
+    - FIXED: 
+    - Einschreibungen werden vor Löschung von Lehrplänen überprüft, nicht mehr benötigte Dateien die mit dem Lehrplan verknüpft waren werden gelöscht.
+
+Version 0.9.1
+=================
 
 curriculum is a learning platform where teachers can create topic-based learning objectives.
 The resulting curricula can be linked with learning groups and be viewed by learning group members. 
@@ -14,3 +30,7 @@ the Free Software Foundation; either version 3 of the License, or (at your optio
 
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of        
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details: http://www.gnu.org/copyleft/gpl.html 
+
+required librarys
+=================
+- php5-gd       : to generate Thumbnails
