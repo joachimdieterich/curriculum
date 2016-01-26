@@ -96,7 +96,7 @@
          <div class="colIII space-top">
             {if checkCapabilities('page:showCronjob', $my_role_id, false)}
                 <p><h3>Abgelaufene Ziele</h3></p>
-                <p>{$cronjob}</p>
+                <p>{*$cronjob*}</p>
             {/if}
         </div>
 

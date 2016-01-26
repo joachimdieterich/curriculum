@@ -401,7 +401,9 @@ class File {
      */
     public function getFiles($dependency = null, $id = null, $paginator = '', $getExternalFiles = false){
         global $USER;
-        $order_param = orderPaginator($paginator); 
+        $order_param = orderPaginator($paginator, array('title'         => 'fl', 
+                                                        'description'   => 'fl',
+                                                        'author'        => 'fl')); 
         switch ($dependency) {
             case 'context':             $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                         WHERE fl.context_id = ? AND fl.context_id = ct.context_id '.$order_param);

@@ -52,9 +52,12 @@
             {/if}{*To show "Datensätze x von y..." properly*}
         {else}<strong>Sie haben noch keine Lehrpläne angelegt bzw. noch keine Klassen eingeschrieben.</strong></p>
         {/if}
-         
+        
+
+        
         {if isset($userPaginator)}   
-        <p>Datensätze {$userPaginator.first}-{$userPaginator.last} von {$userPaginator.total} werden angezeigt.</p>
+                    {html_paginator id='userPaginator'} 
+       {* <p>Datensätze {$userPaginator.first}-{$userPaginator.last} von {$userPaginator.total} werden angezeigt.</p>
     	<table id="contentsmalltable">
             <tr id="contenttablehead">
                 <td></td>
@@ -87,7 +90,7 @@
 	</table>
         <p><input class="inputsmall" type="checkbox" id="allUser" {if isset($selected_user_id) AND $selected_user_id eq 'all'} value="none"{else} value="all"{/if} name="allUser" {if isset($selected_user_id) AND $selected_user_id eq 'all'} checked{/if} onclick="window.location.assign('index.php?action=objectives&course='+document.getElementById('course').value+'&userID={$userlist}');"/>Alle auswählen{paginate_prev id="userPaginator"} {paginate_middle id="userPaginator"} {paginate_next id="userPaginator"}</p>       
         <input class="invisible" type="checkbox" name="userID" value="none" checked /><!--Hack für Problem, dass kein Array gepostet wird, wenn nichts angewählt wird-->
-        
+       *} 
         {elseif $showuser eq true} <p>Keine eingeschriebenen Benutzer</p>{else}<p class="space-top-bottom"></p>{/if}
         {if $show_course != '' and $terminalObjectives != false or !isset($selected_user_id)} 
             <div id="printContent" class="scroll space-bottom">

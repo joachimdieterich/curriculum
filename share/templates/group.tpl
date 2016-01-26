@@ -64,7 +64,7 @@
             </form>	
         {/if}
         <form id='classlist' method='post' action='index.php?action=group&next={$currentUrlId}'>
-        {html_paginator id='groupP' values=$gp_val config=$groupP_cfg}
+        {html_paginator id='groupP'}
         
             {if !isset($showForm)}
                 {if checkCapabilities('groups:enrol', $my_role_id, false) OR checkCapabilities('groups:expel', $my_role_id, false)}
@@ -98,7 +98,7 @@
             {/if}
         </form> 
         {if isset($cu_val)}
-            {html_paginator id='curriculumP' values=$cu_val config=$curriculumP_cfg action="index.php?action=groups&next={$currentUrlId}"}
+            {html_paginator id='curriculumP' action="index.php?action=groups&next={$currentUrlId}"}
         {/if}
   
 </div>

@@ -32,7 +32,7 @@
             <p><input name="datei" type="file" value=""><input type="submit" value="Importieren"> </p>
         </form>
         {if isset($nusr_val)}
-            {html_paginator id='newUsersPaginator' values=$nusr_val config=$newUsersPaginator_cfg}     
+            {html_paginator id='newUsersPaginator'}     
         {/if}
     </div>
 </div>

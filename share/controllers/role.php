@@ -94,7 +94,8 @@ $p_options = array('delete' => array('onclick' => "del('role',__id__, $USER->id)
                                      'capability' => checkCapabilities('role:delete', $USER->role_id, false)),
                     'edit'  => array('href'    => 'index.php?action=role&function=edit&id=__id__'),
                                      'capability' => checkCapabilities('role:update', $USER->role_id, false));
-$p_config =   array('role'    => 'Rolle', 
+$p_config =   array('id'         => 'checkbox',
+                    'role'    => 'Rolle', 
                   'description'   => 'Beschreibung', 
                   'p_options'     => $p_options);
 setPaginator('roleP', $TEMPLATE, $role->get('roleP'), 'ro_val', 'index.php?action=role', $p_config); //set Paginator

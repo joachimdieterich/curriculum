@@ -399,9 +399,10 @@ class User {
 
             default:        $db = DB::prepare('SELECT DISTINCT usr.id, usr.firstname, usr.lastname, usr.username 
                                     FROM users AS usr, groups_enrolments AS cle, institution_enrolments AS ie, groups as gr 
-                                    WHERE cle.group_id IN (SELECT DISTINCT group_id FROM groups_enrolments WHERE user_id = ? AND ie.user_id = user_id)
+                                    WHERE cle.group_id IN (SELECT DISTINCT group_id FROM groups_enrolments WHERE user_id = ?)
+                                    AND ie.user_id = ?
                                     AND usr.id = cle.user_id AND gr.id = cle.group_id and gr.institution_id = ie.institution_id');//Zeigt nur User in deren Gruppe man eingeschrieben ist. 
-                            $db->execute(array($this->id)); 
+                            $db->execute(array($this->id, $this->id)); 
                             while($result = $db->fetchObject()) { 
                                     $class_members["id"][]     = $result->id;  //todo: besser als object realisieren
                                     $class_members["user"][]   = $result->firstname.' '.$result->lastname.' ('.$result->username.')'; 
@@ -610,39 +611,50 @@ class User {
      * @return array of object 
      */
     public function userList($dependency = 'institution', $paginator = '', $id = null){
-        global $CFG, $USER;
-        $order_param = orderPaginator($paginator);  
+        global $USER;
+        $order_param = orderPaginator($paginator, array('username'  => 'us',
+                                                        'firstname' => 'us',
+                                                        'lastname'  => 'us',
+                                                        'email'     => 'us', 
+                                                        'postalcode'=> 'us',
+                                                        'city'      => 'us'));  
         
-        checkCapabilities('user:userList', $USER->role_id);
+        checkCapabilities('user:userList', $USER->role_id); // kann eigentlich weg.
+        $users = array();                      //Array of grades
         switch ($dependency) {
             case 'institution': if(checkCapabilities('user:userListComplete', $USER->role_id,false)){ //Global Admin
-                                    $db = DB::prepare('SELECT id FROM users '.$order_param);
+                                    $db = DB::prepare('SELECT us.* FROM users AS us WHERE us.id = us.id '.$order_param); //hack id = id to user search
                                     $db->execute(); 
                                 } else if (checkCapabilities('user:userListInstitution', $USER->role_id,false)) { //Manager
-                                    $db = DB::prepare('SELECT us.id FROM users AS us WHERE us.id = ANY (SELECT user_id FROM institution_enrolments 
+                                    $db = DB::prepare('SELECT us.* FROM users AS us WHERE us.id = ANY (SELECT user_id FROM institution_enrolments 
                                                     WHERE institution_id = ? AND status = 1) '.$order_param);
                                     $db->execute(array($this->institution_id)); 
                                 } else if (checkCapabilities('user:userListGroup', $USER->role_id,false)) { //Kursersteller
-                                    $db = DB::prepare('SELECT us.id FROM users AS us, groups_enrolments AS ge, institution_enrolments AS ie 
+                                    $db = DB::prepare('SELECT us.* FROM users AS us, groups_enrolments AS ge, institution_enrolments AS ie 
                                                         WHERE ie.institution_id = ? AND ie.status = 1
                                                         AND ie.user_id = us.id 
                                                         AND ge.user_id = ie.user_id
+                                                        AND ge.status = 1
                                                         AND ge.group_id = ANY (SELECT group_id FROM groups_enrolments 
                                                                                                WHERE user_id = ? AND status =  1) '.$order_param);
                                     $db->execute(array($this->institution_id, $this->id)); 
-                                }
-                                    
+                                }                       
             break;
             default:  break;
         }
 
         while($result = $db->fetchObject()) { 
-                $this->load('id', $result->id, false, 'user');
-                $users[] = clone $this;
+            $this->id           = $result->id; 
+            $this->username     = $result->username;
+            $this->firstname    = $result->firstname;
+            $this->lastname     = $result->lastname;
+            $this->email        = $result->email;
+            $this->postalcode   = $result->postalcode;
+            $this->city         = $result->city;
+            //$this->load('id', $result->id, false, 'user');
+            $users[] = clone $this;
         } 
-        if (isset($users)){
             return $users;
-        }
     }
     
     /**
@@ -766,20 +778,30 @@ class User {
      * @param int $id
      * @return array of object|boolean 
      */
-    public function getUsers($dependency = null, $paginator = '', $id = null){
+    public function getUsers($dependency = null, $paginator = '', $id = null, $group = null){
         global $USER;
         $order_param = orderPaginator($paginator);
         
         checkCapabilities('user:getUsers', $USER->role_id);
         switch ($dependency) {
-            case 'course':  $db = DB::prepare('SELECT DISTINCT us.* FROM users AS us
+            case 'course':  $db = DB::prepare('SELECT us.* FROM users AS us, groups_enrolments AS gr, curriculum_enrolments AS ce
+                                                WHERE us.id = gr.user_id 
+                                                AND ce.curriculum_id = ?
+                                                AND ce.status = 1
+                                                AND ce.group_id = gr.group_id
+                                                AND gr.group_id = ?                                                       
+                                                AND gr.status = 1 
+                                                '.$order_param);
+               
+                            $db->execute(array($id, $group)); 
+                            /*$db = DB::prepare('SELECT DISTINCT us.* FROM users AS us
                                                 INNER JOIN groups_enrolments AS gr ON us.id = gr.user_id 
                                                 AND gr.group_id = ANY (SELECT group_id FROM curriculum_enrolments WHERE curriculum_id = ? AND status = 1 )
                                                 AND gr.group_id = ANY (SELECT id FROM groups WHERE institution_id = ANY 
                                                 (SELECT institution_id FROM institution_enrolments WHERE user_id = ? AND status = 1))                                                       
                                                 AND gr.status = 1 
                                                 '.$order_param);
-                            $db->execute(array($id, $this->id)); 
+                            $db->execute(array($id, $this->id)); */
 
                             while($result = $db->fetchObject()) {  
                                     $this->id           = $result->id;
@@ -901,7 +923,8 @@ class User {
                             FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp, files AS fl
                             WHERE cu.id = ce.curriculum_id AND ce.status = 1 AND gp.id = ce.group_id AND cu.icon_id = fl.id
                             AND ce.group_id = ANY (SELECT group_id FROM groups_enrolments 
-                            WHERE user_id = (SELECT id FROM users WHERE username = ?))
+                                                    WHERE user_id = (SELECT id FROM users WHERE username = ?)
+                                                    AND status = 1)
                             ORDER BY gp.groups, cu.curriculum ASC');
         $db->execute(array($this->username));
         

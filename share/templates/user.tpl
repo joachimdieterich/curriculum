@@ -20,9 +20,10 @@
     </p>
     {/if}
 
-    {if isset($us_val)}
+    {*if isset($us_val)*}
     <form id='userlist' class="space-top-bottom" method='post' action="index.php?action=user&next={$currentUrlId}">
-        {html_paginator id='userP' values=$us_val config=$userP_cfg}    
+        
+        {html_paginator id='userP'}    
         <input class="invisible" type="checkbox" name="id[]" value="none" checked /><!--Hack - nothing selected-->
         <div style="clear: both;"></div>
         {if isset($showFunctions)}
@@ -98,26 +99,26 @@
             </div>
             <div style="clear: both;"></div>
         </form> 
-    {else}<p><input type='submit' name="back" value='Funktionen einblenden'/></p>{/if}{/if}{/if}
+    {else}<p><input type='submit' name="back" value='Funktionen einblenden'/></p>{/if}{/if}{*/if*}
     
     {if !isset($groups_array)}<p>Sie können noch keine Benutzer verwalten, da sie entweder nicht über die nötigen Rechte verfügen, oder keine Benutzer in ihrer Institution vorhanden sind.</p><p>&nbsp;</p>{/if}
 
     {*Groups paginator*}
     {if isset($groupsPaginator)}
         <p><h3>Lerngruppen des Benutzers</h3></p>
-        {html_paginator id='groupsPaginator' values=$gp_val config=$groupsPaginator_cfg}    
+        {html_paginator id='groupsPaginator'}    
     {/if}
 
     {*Curriculum paginator*}
     {if isset($curriculumList)}
         <p><h3>Lehrpläne des Benutzers</h3></p>
-        {html_paginator id='curriculumList' values=$cu_val config=$curriculumList_cfg}    
+        {html_paginator id='curriculumList'}    
     {/if}
 
     {*Institution paginator*}
     {if isset($institutionList)}
         <p><h3>Institutionen des Benutzers</h3></p>
-        {html_paginator id='institutionList' values=$ins_val config=$institutionList_cfg}    
+        {html_paginator id='institutionList'}    
     {/if}
 </div>
 {/block}

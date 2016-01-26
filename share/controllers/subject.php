@@ -83,7 +83,8 @@ $p_options = array('delete' => array('onclick' => "del('subject',__id__, $USER->
                                      'capability' => checkCapabilities('subject:delete', $USER->role_id, false)),
                     'edit'  => array('href'    => 'index.php?action=subject&function=edit&id=__id__'),
                                      'capability' => checkCapabilities('subject:edit', $USER->role_id, false));
-$p_config =   array('subject'       => 'Fach', 
+$p_config =   array('id'         => 'checkbox',
+                    'subject'       => 'Fach', 
                   'subject_short' => 'Kürzel',
                   'description'   => 'Beschreibung', 
                   'institution'   => 'Institution', 

@@ -36,7 +36,8 @@ $TEMPLATE->assign('page_title', 'Benutzerkonten importieren');
 $TEMPLATE->assign('filesize',   round(convertByteToMb($INSTITUTION->csv_size),2));
 
 $new_users = new User();
-$p_options =    $p_config =   array('username'   => 'Benutzername', 
+$p_options =    $p_config =   array('id'         => 'checkbox',
+                                    'username'   => 'Benutzername', 
                                     'firstname'  => 'Vorname', 
                                     'lastname'   => 'Nachname', 
                                     'email'      => 'Email', 

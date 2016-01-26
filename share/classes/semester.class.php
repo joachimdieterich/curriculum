@@ -80,7 +80,9 @@ class Semester {
      */
     public function getSemesters($paginator = ''){
         global $USER;
-        $order_param = orderPaginator($paginator); 
+        $order_param = orderPaginator($paginator, array('semester'      => 'se',
+                                                        'description'   => 'se', 
+                                                        'institution'   => 'ins')); 
         $semesters = array();
         $db = DB::prepare('SELECT se.*, us.username, ins.institution
                            FROM semester AS se, users AS us, institution AS ins

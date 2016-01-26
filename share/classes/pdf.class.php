@@ -149,31 +149,33 @@ class Pdf {
                 $mpdf->WriteHTML($s_2, 2);
             }
             $mpdf->WriteHTML($s_3, 2); // Print footer
-            $mpdf->Output($CFG->curriculumdata_root.'/temp/pdf/Zertifikat_'.$user->lastname.'_'.$user->firstname.'.pdf', 'F');
+            silent_mkdir($CFG->curriculumdata_root.'user/'.$USER->id.'/pdf/');
+            $mpdf->Output($CFG->curriculumdata_root.'user/'.$USER->id.'/pdf/Zertifikat_'.$user->lastname.'_'.$user->firstname.'.pdf', 'F');
             set_time_limit(30);
         }
         
-        if (file_exists($CFG->curriculumdata_root.'/temp/Zertifikate.zip')){
-            unlink($CFG->curriculumdata_root.'/temp/Zertifikate.zip'); 
+        if (file_exists($CFG->curriculumdata_root.'user/'.$USER->id.'/Zertifikate.zip')){
+            unlink($CFG->curriculumdata_root.'user/'.$USER->id.'/Zertifikate.zip'); 
         }
         $zip = new ZipArchive();                                                            // create object
-        if ($zip->open($CFG->curriculumdata_root.'/temp/Zertifikate.zip', ZIPARCHIVE::CREATE) !== TRUE) {   // open archive
+        if ($zip->open($CFG->curriculumdata_root.'user/'.$USER->id.'/Zertifikate.zip', ZIPARCHIVE::CREATE) !== TRUE) {   // open archive
             die ("Could not open archive");
         }
 
-        $filelist = scandir($CFG->curriculumdata_root.'/temp/pdf/');    // initialize an iterator // pass  the directory to be processed
+        $filelist = scandir($CFG->curriculumdata_root.'user/'.$USER->id.'/pdf/');    // initialize an iterator // pass  the directory to be processed
         foreach ($filelist as $key=>$value) {                                               // iterate over the directory // add each file found to the archive
             if (substr($value, -3) == 'pdf'){
-                $zip->addFile($CFG->curriculumdata_root.'/temp/pdf/'.$value, $value) or die ("ERROR: Could not add file: $key"); //str_replace: $url abschneiden, da sonst der komplette Pfad als Ordnerstuktur in der zip erscheinz
+                $zip->addFile($CFG->curriculumdata_root.'user/'.$USER->id.'/pdf/'.$value, $value) or die ("ERROR: Could not add file: $key"); //str_replace: $url abschneiden, da sonst der komplette Pfad als Ordnerstuktur in der zip erscheinz
             }
         }
         $zip->close();
 
         foreach ($filelist as $key=>$value) { 
             if (substr($value, -3) == 'pdf'){
-                unlink($CFG->curriculumdata_root.'/temp/pdf/'.$value);
+                unlink($CFG->curriculumdata_root.'user/'.$USER->id.'/pdf/'.$value);
             }
         }
-        header("Location: ".$CFG->access_file_url."/temp/Zertifikate.zip");
+        header("Location: ".$CFG->access_file_url."user/".$USER->id."/Zertifikate.zip");
+        die(); //important
     } 
 }

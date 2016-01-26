@@ -37,7 +37,7 @@
         <script type='text/javascript'> document.getElementById('subject').focus(); </script>
     {/if}
     
-    {html_paginator id='subjectP' values=$su_val config=$subjectP_cfg}
+    {html_paginator id='subjectP'}
 </div>
 {/block}
 

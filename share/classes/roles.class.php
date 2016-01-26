@@ -152,12 +152,13 @@ class Roles {
     public function get($paginator = ''){
         global $USER;
         $order_param = orderPaginator($paginator); 
-        if ($USER->role_id == 1){ //HACK damit Adminrolle nicht zugewiesen werden kann, wenn man selbst nicht admin ist. --> Idee: man darf nur Rollen vergeben, die man selbst besitzt
-            $db          = DB::prepare('SELECT * FROM roles '.$order_param);
+        $db          = DB::prepare('SELECT * FROM roles WHERE order_id >= (SELECT order_id FROM roles WHERE id = ?) '.$order_param); //id = id damit suche funktioniert
+        /*if ($USER->role_id == 1){ //HACK damit Adminrolle nicht zugewiesen werden kann, wenn man selbst nicht admin ist. --> Idee: man darf nur Rollen vergeben, die man selbst besitzt
+            $db          = DB::prepare('SELECT * FROM roles WHERE id = id '.$order_param); //id = id damit suche funktioniert
         } else {
             $db          = DB::prepare('SELECT * FROM roles WHERE id <> 1 '.$order_param);
-        }
-        $db->execute();
+        }*/
+        $db->execute(array($USER->role_id));
         while ($result = $db->fetchObject()) {
             $this->id           = $result->id;
             $this->role         = $result->role;

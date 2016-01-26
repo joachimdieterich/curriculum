@@ -79,7 +79,8 @@ $p_options = array('delete' => array('onclick' => "del('grade',__id__, $USER->id
                                      'capability' => checkCapabilities('grade:delete', $USER->role_id, false)),
                     'edit'  => array('href'    => 'index.php?action=grade&function=edit&id=__id__'),
                                      'capability' => checkCapabilities('grade:update', $USER->role_id, false));
-$p_config =   array('grade'       => 'Klassenstufe', 
+$p_config =   array('id'         => 'checkbox',
+                    'grade'       => 'Klassenstufe', 
                     'description' => 'Beschreibung', 
                     'institution' => 'Institution', 
                     'p_options'   => $p_options);

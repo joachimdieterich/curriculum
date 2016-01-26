@@ -22,27 +22,26 @@ include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 
 global $USER, $CFG, $PAGE;
 $USER           = $_SESSION['USER'];
-error_log('uid:'.$_SESSION['USER']->id);
+
 $form           = new HTML_QuickForm2('bulletinBoard', 'post', 'bulletinBoard.php');   // Instantiate the HTML_QuickForm2 object
 $fieldset       = $form->addElement('fieldset');
 $institution_id = $fieldset->addElement('select',   'institution_id', null, array('options' => $USER->get_instiution_enrolments(true), 'label' => 'Institution / Schule'));
 $title          = $fieldset->addElement('text',     'title', array('size' => 40, 'maxlength' => 255, 'id' => 'title'))->setLabel('Überschrift');
 $text           = $fieldset->addElement('textarea', 'text', array('style' => 'width: 300px;', 'cols' => 50, 'rows' => 7)) ->setLabel('Text');
-                  $fieldset->addElement('submit', null, array('value' => 'Pinnwand speichern'));
+                  $fieldset->addElement('submit',   null, array('value' => 'Pinnwand speichern'));
 
 $title->addRule('required', 'Bitte Titel eingeben');
-$text->addRule('required', 'Bitte Text eingeben');
-$institution    = new Institution();
-$institution->id = $USER->institution_id;
-$bb             = $institution->getBulletinBoard();
+$text->addRule('required',  'Bitte Text eingeben');
+$institution        = new Institution();
+$institution->id    = $USER->institution_id;
+$bb                 = $institution->getBulletinBoard();
 if ($bb) {
     $form->addDataSource(new HTML_QuickForm2_DataSource_Array(array(
         'institution_id' => $bb->id,
         'title'          => $bb->title,
         'text'           => $bb->text
         )));
-} else {
-    error_log('iid: '.$USER->institution_id);
+} else {    
     $form->addDataSource(new HTML_QuickForm2_DataSource_Array(array(
         'institution_id' => $USER->institution_id
         )));

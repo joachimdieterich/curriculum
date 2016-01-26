@@ -37,7 +37,7 @@
         </form>	
     {/if}
     
-{html_paginator id='gradeP' values=$gr_val config=$gradeP_cfg}
+{html_paginator id='gradeP'}
 </div>
 {/block}
 

@@ -252,7 +252,11 @@ class Institution {
     * @return array , default = null 
     */
     public function getInstitutions($dependency = 'user', $paginator = '', $id = null){
-        $order_param = orderPaginator($paginator);  
+        $order_param = orderPaginator($paginator, array('institution'   => 'ins',
+                                                        'description'   => 'ins',
+                                                        'schooltype'    => 'sch',
+                                                        'state'         => 'sta',
+                                                        'de'            => 'co',));  
         switch ($dependency) {
             case 'user':$db = DB::prepare('SELECT ins.id, ins.institution, ins.description, ins.file_id, sch.schooltype AS schooltype_id, sta.state AS state_id, ins.country_id, co.de AS country, ins.creation_time, usr.username AS creator_id, ro.role
                             FROM institution AS ins, schooltype AS sch, state AS sta, countries AS co, users AS usr, institution_enrolments AS ie, roles AS ro

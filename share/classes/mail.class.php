@@ -191,18 +191,12 @@ class Mail {
             $this->creation_time    = $result->creation_time;
             $this->sender_status    = $result->sender_status;  
             $this->receiver_status  = $result->receiver_status;  
-            
-            $result->message = preg_replace_callback('/<p class="pointer" onclick="setAccomplishedObjectivesBySolution.\d+,.\d+,.(\d+), 1\)">Ziel freischalten<\/p><br>\n.+Ziel deaktivieren<\/p>/', 
+            $result->message        = preg_replace_callback('/<p class="pointer" onclick="setAccomplishedObjectivesBySolution.\d+,.\d+,.(\d+), 1\)">Ziel freischalten<\/p><br>\n.+Ziel deaktivieren<\/p>/', 
             function($r){
-                error_log($r[1]);
                 return '<accomplish id="'.$r[1].'"></accomplish>';
             }, $result->message);
-            
         $db1 = DB::prepare('UPDATE message SET message = ? WHERE id = ?');
         $db1->execute(array($result->message, $this->id));
-        error_log('res: '.$result->message);    
-                    
-            
         } 
     }
 }

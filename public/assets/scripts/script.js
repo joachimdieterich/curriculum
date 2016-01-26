@@ -89,6 +89,7 @@ function mail(mail_id, mailbox) {
 function checkrow(/*rowNr,link*/) {
     if (arguments.length === 1) { // Auswahl eines Benutzers
         var ch = document.getElementById(arguments[0]);
+        
         if(ch) {
             if (ch.checked === false){
                 ch.checked = true; 
@@ -99,12 +100,12 @@ function checkrow(/*rowNr,link*/) {
             }  
         }
     }
-    if (arguments.length === 3) { //multiple Auswahl über die Checkboxen (Lernstand)
+    if (arguments.length === 4) { //multiple Auswahl über die Checkboxen (Lernstand)
         var values = new Array();           //Array of all checked values
         $.each($('[name="'+arguments[1]+'"]:checked'), function() {
             values.push($(this).val());                             
           });
-          window.location.assign(arguments[2]+'&userID='+values);        
+          window.location.assign(arguments[3]+'&'+arguments[2]+'_sel_id='+values);        
     }
 }
 

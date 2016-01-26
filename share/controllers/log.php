@@ -22,7 +22,7 @@ $TEMPLATE->assign('page_title', 'Berichte');
 $LOG->add($USER->id, 'view', $PAGE->url, 'Log'); 
     
 if (checkCapabilities('menu:readLog', $USER->role_id)){
-    $p_config =   array('id'        => 'ID', 
+    $p_config =   array('id'        => 'checkbox', 
                   'creation_time'   => 'Datum/Zeit', 
                   'ip'              => 'IP',
                   'user_id'         => 'Username',

@@ -91,7 +91,7 @@ $TEMPLATE->assign('page_title', 'Nachrichten');
 /**
  * Load userlist 
  */
-if ($USER->getGroupMembers()){ $TEMPLATE->assign('class_members', $USER->getGroupMembers()); } 
+$TEMPLATE->assign('class_members', $USER->getGroupMembers());
 
 /**
  * Gesendete Nachrichten laden

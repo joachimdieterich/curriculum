@@ -235,7 +235,11 @@ class Group {
      */
     public function getGroups($dependency = null, $id = null, $paginator = ''){
         global $USER;
-        $order_param = orderPaginator($paginator);        
+        $order_param = orderPaginator($paginator, array('groups'        => 'gp',
+                                                        'description'   => 'gp', 
+                                                        'grade'         => 'gr',
+                                                        'semester'      => 'se', 
+                                                        'institution'   => 'ins'));        
         $groups      = array();
         switch ($dependency) {
             case 'course':  $db = DB::prepare('SELECT gp.*, gr.grade, se.semester FROM groups AS gp, semester AS se, grade AS gr
@@ -244,28 +248,28 @@ class Group {
                             $db->execute(array($id));
                 break;
 
-            case 'group':   $db = DB::prepare('SELECT gp.*, gr.grade, yr.semester, ins.institution, us.username 
-                                FROM groups AS gp, grade AS gr, semester AS yr, institution AS ins, users AS us
+            case 'group':   $db = DB::prepare('SELECT gp.*, gr.grade, se.semester, ins.institution, us.username 
+                                FROM groups AS gp, grade AS gr, semester AS se, institution AS ins, users AS us
                                 WHERE gp.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE user_id = ? and status = 1)
                                 AND gr.id = gp.grade_id 
-                                AND yr.id = gp.semester_id 
+                                AND se.id = gp.semester_id 
                                 AND ins.id = gp.institution_id 
                                 AND us.id = gp.creator_id 
                                 '.$order_param);
                             $db->execute(array($id));                            
                  break;
-            case 'user':    $db = DB::prepare('SELECT gp.*, gr.grade, sem.semester, ins.institution AS institution_id, usr.username AS creator_id
-                                                FROM groups AS gp, semester AS sem, institution AS ins, users AS usr, grade AS gr
-                                                WHERE sem.id = gp.semester_id
+            case 'user':    $db = DB::prepare('SELECT gp.*, gr.grade, se.semester, ins.institution AS institution_id, usr.username AS creator_id
+                                                FROM groups AS gp, semester AS se, institution AS ins, users AS usr, grade AS gr
+                                                WHERE se.id = gp.semester_id
                                                 AND gp.grade_id = gr.id
                                                 AND ins.id = gp.institution_id
                                                 AND usr.id = gp.creator_id
-                                                AND gp.id = ANY (SELECT group_id FROM groups_enrolments WHERE user_id = ?) 
+                                                AND gp.id = ANY (SELECT group_id FROM groups_enrolments WHERE user_id = ? AND status = 1) 
                                                 '.$order_param);
                             $db->execute(array($id));
                  break; 
-            case 'institution':   $db = DB::prepare('SELECT gp.*, gr.grade, sem.semester FROM groups AS gp, grade AS gr, semester AS sem
-                                                     WHERE sem.id = gp.semester_id
+            case 'institution':   $db = DB::prepare('SELECT gp.*, gr.grade, se.semester FROM groups AS gp, grade AS gr, semester AS se
+                                                     WHERE se.id = gp.semester_id
                                                      AND gp.grade_id = gr.id AND gp.institution_id = ? 
                                 '.$order_param);
                             $db->execute(array($id));                            

@@ -10,7 +10,7 @@
 {block name=content}
 <div class="border-box">
     <div class="contentheader ">{$page_title}</div>
-    {html_paginator id='logP' values=$lo_val config=$logP_cfg}
+    {html_paginator id='logP'}
 </div>
 {/block}
 

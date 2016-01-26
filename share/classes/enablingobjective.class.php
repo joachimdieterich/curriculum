@@ -678,7 +678,6 @@ class EnablingObjective {
                                 AND ua.user_id = ? AND (ua.status_id = 1 OR ua.status_id = 2)');
         $db2->execute(array($ter_id, $user_id));
         $accomplished    = $db2->fetchColumn(); 
-        error_log($ter_id.' '.$max);
         if ($max > 0){
             return floatval($accomplished/$max);                               
         } else {

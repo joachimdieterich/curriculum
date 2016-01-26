@@ -113,8 +113,12 @@ function setPaginator($instance, $template, $data, $returnVar, $currentURL, $con
     $CFG->paginator_name    = &$instance;  
     if ($instance == 'inboxPaginator' || $instance == 'outboxPaginator'){       // Mail Paginatoren haben anderes Limit, evtl. für jeden Paginator indiv. machen
         $SmartyPaginate->setLimit($CFG->mail_paginator_limit, $instance);
-    } else {   
-        $SmartyPaginate->setLimit($USER->paginator_limit, $instance);
+    } else {          
+        if (filter_input(INPUT_GET, 'paginator_limit', FILTER_UNSAFE_RAW) && filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW)){
+            SmartyPaginate::setLimit(filter_input(INPUT_GET, 'paginator_limit', FILTER_UNSAFE_RAW), filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW));
+        } else {
+            $SmartyPaginate->setLimit($USER->paginator_limit, $instance);
+        }
     }
     $SmartyPaginate->setUrl($currentURL, $instance);
     $SmartyPaginate->setUrlVar($instance, $instance);
@@ -127,11 +131,16 @@ function setPaginator($instance, $template, $data, $returnVar, $currentURL, $con
         if ($SmartyPaginate->getCurrentIndex($instance) >= count($data)){ //resets paginators current index (if data was deleted)
             $SmartyPaginate->setCurrentItem(1, $instance); 
         }
-        $template->assign($returnVar, array_slice($data, $SmartyPaginate->getCurrentIndex($instance), $SmartyPaginate->getLimit($instance)), $instance);
-        $template->assign($instance.'_cfg', $config);
+        /* get all ids*/
+        $all = array();
+        foreach($data as $d){ $all[] = $d->id; }
+        SmartyPaginate::setSelectAll(implode(",", $all), $instance);    //set all ids of data to paginator selectall
+        
+        $template->assign($returnVar, array_slice($data, $SmartyPaginate->getCurrentIndex($instance), $SmartyPaginate->getLimit($instance)), $instance); //hack for message paginator
+        SmartyPaginate::setData(array_slice($data, $SmartyPaginate->getCurrentIndex($instance), $SmartyPaginate->getLimit($instance)), $instance);
+        SmartyPaginate::setConfig($config, $instance); // set config
     } else {
         $template->assign($returnVar. NULL);
-        $template->assign($instance.'_cfg', NULL);
     }
     
     $template->assign('currentUrlId', $SmartyPaginate->getCurrentIndex($instance)+1); 
@@ -145,21 +154,45 @@ function setPaginator($instance, $template, $data, $returnVar, $currentURL, $con
 function resetPaginator($instance){  //resets Paginator to index 1
     $SmartyPaginate = new SmartyPaginate(); 
     $SmartyPaginate->connect($instance);
-    $SmartyPaginate->setCurrentItem(1, $instance);
+    $SmartyPaginate->reset($instance);
+    
 }
 
 /**
  * returns ORDER BY string
  * @param string $instance
+ * @param table array table shortcuts
  * @return string
  */
-function orderPaginator($instance){
+function orderPaginator($instance, $table=null){
+    $search = SmartyPaginate::getSort('search', $instance);
+    
+    if ($table){
+       if (strpos(strtoupper($search), 'LIKE')){
+            $t      = $table[SmartyPaginate::_getOrder($instance)]; //get proper table shortcut
+            $search = substr_replace($search, $t.'.', 5, 0);        //add "table." to query
+        } 
+    }
     $order  = SmartyPaginate::getSort('order', $instance);
     $sort   = SmartyPaginate::getSort('sort', $instance) ;
     if ($order){ 
-        return $order.' '.$sort;             
+        return $search.' '. $order.' '.$sort;             
     } else {
        return '';
+    }
+}
+
+
+
+function removeUrlParameter($url, $param) {
+    if (is_array($param)){
+            $u = $url;
+        foreach($param as $p){
+            $u = preg_replace('/[?&]'.$p.'=[^&]+(&|$)/','$1',$u);
+        }
+        return $u;
+    } else {
+        return preg_replace('/[?&]'.$param.'=[^&]+(&|$)/','$1',$url);
     }
 }
 
@@ -527,9 +560,10 @@ function delete_folder($folder){
  * Im Gegensatz zu mkdir wird keine Warnung ausgegeben, falls Verzeichnis existiert.
  * @param string $path
  */
-function silent_mkdir($path){
+function silent_mkdir($path, $permission = 0775){
     if (!file_exists($path)) {
-        if (mkdir($path, 0777, true)){  // legt Verzeichnis an
+        umask(0);
+        if (mkdir($path, $permission, true)){  // legt Verzeichnis an    
             return true;
         }
     } else {
