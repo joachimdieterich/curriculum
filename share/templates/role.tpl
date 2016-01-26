@@ -48,7 +48,7 @@
         <script type='text/javascript'> document.getElementById('r_role').focus();</script>
     {/if}
     
-    {html_paginator id='roleP' values=$ro_val config=$roleP_cfg}
+    {html_paginator id='roleP'}
 </div>
 {/block}
 

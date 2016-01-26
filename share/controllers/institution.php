@@ -134,11 +134,12 @@ $p_options = array('delete' => array('onclick' => "del('institution',__id__, $US
                                      'capability' => checkCapabilities('institution:delete', $USER->role_id, false)),
                     'edit'  => array('href'    => 'index.php?action=institution&function=edit&id=__id__'),
                                      'capability' => checkCapabilities('institution:update', $USER->role_id, false));
-$p_view =   array('institution'   => 'Institution', 
+$p_view =   array('id'            => 'checkbox', 
+                  'institution'   => 'Institution', 
                   'description'   => 'Beschreibung', 
                   'schooltype_id' => 'Schultyp',
                   'state_id'      => 'Bundesland/Region',
-                  'country'       => 'Land',
+                  'de'            => 'Land',
                   'creation_time' => 'Erstellungsdatum',
                   'username'      => 'Administrator',
                   'p_options'     => $p_options);

@@ -31,11 +31,11 @@ $TEMPLATE->assign('myClasses', $groups->getGroups('user', $USER->id));
 
 $TEMPLATE->assign('myClasses', $groups->getGroups('user', $USER->id));
 
-$cron           = new Cron(); 
-$cron->detectExpiredObjective();      // Überprüft einmal pro Tag ob Ziele abgelaufen sind.
+//$cron           = new Cron(); 
+//$cron->detectExpiredObjective();      // Überprüft einmal pro Tag ob Ziele abgelaufen sind.
 
 if (checkCapabilities('dashboard:globalAdmin', $USER->role_id, false) OR checkCapabilities('dashboard:institutionalAdmin', $USER->role_id, false)){/* Shows additional information depending on user role */
-    $TEMPLATE->assign('cronjob', 'Es wurde zuletzt am '.$cron->check_cronjob().' geprüft, ob Ziele abgelaufen sind.<br>');
+    //$TEMPLATE->assign('cronjob', 'Es wurde zuletzt am '.$cron->check_cronjob().' geprüft, ob Ziele abgelaufen sind.<br>');
 }
 
 if (checkCapabilities('menu:readMessages', $USER->role_id, false)){

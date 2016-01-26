@@ -19,7 +19,7 @@
 global $USER, $TEMPLATE, $PAGE, $INSTITUTION;
 
 if(isset($_GET['reset']) OR (isset($_POST['reset'])) OR (isset($_POST['new_curriculum']))){
-    resetPaginator('curriculumPaginator'); 
+    resetPaginator('curriculumP'); 
 }
 
 if (isset($_GET['function'])){
@@ -142,7 +142,8 @@ $p_options = array('delete' => array('onclick'      => "del('curriculum',__id__,
                                      'capability'   => checkCapabilities('curriculum:addObjectives', $USER->role_id, false)),
                    'edit'   => array('href'         => 'index.php?action=curriculum&function=edit&c_id=__id__'),
                                      'capability'   => checkCapabilities('curriculum:update', $USER->role_id, false),);
-$p_config  = array('curriculum'  => 'Lehrplan', 
+$p_config  = array('id'         => 'checkbox',
+                   'curriculum'  => 'Lehrplan', 
                    'description' => 'Beschreibung', 
                    'subject'     => 'Fach',
                    'grade'       => 'Klassenstufe',

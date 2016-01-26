@@ -98,7 +98,7 @@
             </form>	
         {/if}
         
-        {html_paginator id='institutionP' values=$in_val config=$institutionP_cfg}
+        {html_paginator id='institutionP'}
 </div>  
 {/block}
 

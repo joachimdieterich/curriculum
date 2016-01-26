@@ -95,7 +95,8 @@ $p_options = array('delete' => array('onclick' => "del('certificate',__id__, $US
                                      'capability' => checkCapabilities('certificate:delete', $USER->role_id, false)),
                     'edit'  => array('href'    => 'index.php?action=certificate&function=edit&id=__id__'),
                                      'capability' => checkCapabilities('certificate:update', $USER->role_id, false));
-$p_config =  array('certificate' => 'Titel des Zertifikat-Vorlage', 
+$p_config =  array('id'           => 'checkbox',
+                    'certificate' => 'Titel des Zertifikat-Vorlage', 
                   'description'   => 'Beschreibung', 
                   'institution'   => 'Institution', 
                   'creation_time' => 'Erstellungs-Datum',

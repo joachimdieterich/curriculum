@@ -62,7 +62,8 @@ if (isset($_GET['function'])) {
                         $TEMPLATE->assign('showenroledCurriculum', true); 
                         $p_options = array('delete' => array('href'      => "index.php?action=group&function=expel&curriculumID=__id__&group_id=".$g_id, 
                                                             'capability'   => checkCapabilities('groups:expel', $USER->role_id, false)));
-                        $p_config  = array('curriculum'  => 'Lehrplan', 
+                        $p_config  = array('id'         => 'checkbox',
+                                           'curriculum'  => 'Lehrplan', 
                                            'description' => 'Beschreibung', 
                                            'subject'     => 'Fach',
                                            'grade'       => 'Klassenstufe',
@@ -79,7 +80,7 @@ if (isset($_GET['function'])) {
      }
 }
 
-if($_POST){ 
+if($_POST ){ 
     $group = new Group();
     switch ($_POST) {
         case isset($_POST['enrole']): 
@@ -184,7 +185,8 @@ $p_options = array('delete' => array('onclick'      => "del('group',__id__, $USE
                                      'capability'   => checkCapabilities('groups:update', $USER->role_id, false),
                    'list'    => array('href'        => "index.php?action=group&function=showCurriculum&group_id=__id__", 
                                       'capability'  => checkCapabilities('groups:showCurriculumEnrolments', $USER->role_id, false)));
-$p_config =   array('groups'        => 'Lerngruppen', 
+$p_config =   array('id'         => 'checkbox',
+                    'group'        => 'Lerngruppen', 
                     'grade'         => '(Klassen)stufe',
                     'description'   => 'Beschreibung', 
                     'semester'      => 'Lernzeitraum',

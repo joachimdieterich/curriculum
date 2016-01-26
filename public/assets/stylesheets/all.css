@@ -244,7 +244,7 @@ button {  width: auto; overflow: auto; }
     margin-left: -6px;
 }
 
-.printbtn, .editbtn,.filebtn, .deletebtn, .addbtn, .addmaterialbtn, .leftbtn, .rightbtn, .upbtn, .downbtn, 
+.printbtn, .editbtn,.filebtn, .deletebtn, .removebtn, .addbtn, .addmaterialbtn, .leftbtn, .rightbtn, .upbtn, .downbtn, 
 .addsolutionbtn, .okbtn, .ok2btn, .notbtn, .groupbtn, .institutionbtn, .calbtn, .listbtn, .downloadbtn, .helpbtn, .curriculumdocsbtn, .answerbtn,
 .mailinbtn, .mailoutbtn, .mailnewbtn, .maildelbtn, .bdgbtn, .infobtn, .checkbtn, .checkgreenbtn, .checkredbtn, .checkorangebtn, .checkwhitebtn,
 .checkactivegreenbtn, .checkactiveredbtn, .checkactiveorangebtn, .checkactivewhitebtn{ 
@@ -342,6 +342,7 @@ button {  width: auto; overflow: auto; }
 .checkorangebtn { background-image: url('../images/icons/glyphicons-154-unchecked-orange.png');}
 .checkwhitebtn  { background-image: url('../images/icons/glyphicons-154-unchecked-white.png');}
 .deletebtn      { background-image: url('../images/icons/glyphicons_191_circle_minus.png'); }
+.removebtn      { background-image: url('../images/icons/glyphicons_192_circle_remove.png'); }
 .groupbtn       { background-image: url('../images/icons/glyphicons_043_group.png'); }
 .institutionbtn { background-image: url('../images/icons/glyphicons_263_bank.png'); }
 .helpbtn        { background-image: url('../images/icons/glyphicons_194_circle_question_mark.png'); 
@@ -756,12 +757,12 @@ header a, header, #app_title a, .logininfo{
     z-index: 10000;
 }
 #header_center { /*Anpassung an curriculumonline.de*/
-        /*background: rgb(255, 255, 255) url(../images/logo_white_bg.png)10px 10px no-repeat;
+        background: rgb(255, 255, 255) url(../images/logo_white_bg.png)10px 10px no-repeat;
         background-size: 150px 50px;
         height: 70px;
         width: 160px; 
         position: absolute;
-        left: 230px; */
+        left: 230px; 
 }
 
 #app_title{
@@ -1008,6 +1009,19 @@ nav div > img {
     border-bottom:  1px solid hsl(0,0%,70%);
     margin-bottom:  1px;    
 }
+
+.contenttablesearch {
+    margin-top: -5px;
+    width:          70px; 
+    margin-left:   10px;
+    margin-right: 10px;
+    //float:          right; 
+    outline:        none; 
+    border:         none; 
+    border-bottom:      1px solid hsl(0,0%,70%);
+    -webkit-box-shadow: none; 
+    box-shadow:         none;
+}
 .line-top {
     border-top:  1px solid hsl(0,0%,70%);
     margin-top:  1px;
@@ -1032,7 +1046,7 @@ nav div > img {
     width:          -webkit-calc(100% - 20px);
     width:          -moz-calc(100% - 20px);
     width:          calc(100% - 20px);
-    font-size:      85%;
+    font-size:      90%;
 }
 
 /* message.tpl */
@@ -1082,8 +1096,8 @@ nav div > img {
     display: inline-block;
 }
 
-#contenttable td                    { vertical-align: middle ; }
-#contenttable td:first-child                    { padding-left: 5px ; }
+#contenttable td, #contentsmalltable td { vertical-align: middle ; }
+#contenttable td:first-child            { padding-left: 5px ; }
 #contenttable tr:nth-child(odd)     { //background-color:  rgb(238, 238, 238); }
 #contenttable tr:nth-child(even)    { background-color:  rgb(246, 246, 246); }
 #contenttable > tr {
@@ -1109,9 +1123,12 @@ form > p > label {
 }   
 
 #contentsmalltable {
+    padding-top: 10px;
     margin-left:        10px;
     width:              50%;
-    font-size:          85%;
+    font-size:          90%;
+    height:40px;
+    vertical-align: middle;
 }
 
 .scroll{

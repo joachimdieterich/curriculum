@@ -81,7 +81,8 @@ $p_options = array('delete' => array('onclick' => "del('subject',__id__, $USER->
                                      'capability' => checkCapabilities('semester:delete', $USER->role_id, false)),
                     'edit'  => array('href'    => 'index.php?action=semester&function=edit&id=__id__'),
                                      'capability' => checkCapabilities('semester:update', $USER->role_id, false));
-$p_config =   array('semester'    => 'Lerzeitraum', 
+$p_config =   array('id'         => 'checkbox',
+                    'semester'    => 'Lerzeitraum', 
                   'description'   => 'Beschreibung',
                   'institution'   => 'Institution',
                   'begin'         => 'Lernzeitraum-Beginn',

@@ -20,7 +20,7 @@ global $CFG, $USER, $TEMPLATE, $PAGE;
 
 $TEMPLATE->assign('page_title', 'Sicherungen erstellen');
 
-if (filter_input(INPUT_GET, 'reset', FILTER_UNSAFE_RAW)){ resetPaginator('fileBackupPaginator'); }
+//if (filter_input(INPUT_GET, 'reset', FILTER_UNSAFE_RAW)){ resetPaginator('fileBackupPaginator'); }
 $courses            = new Course(); //load Courses
 $backups            = new File();
 $form               = new HTML_QuickForm2('backup', 'post', 'action=index.php?action=backup');   // Instantiate the HTML_QuickForm2 object
@@ -29,9 +29,9 @@ $fieldset           = $form->addElement('fieldset');
 /* load backups and courses */
 if (checkCapabilities('backup:getAllBackups', $USER->role_id, false)) {                          // Administrators
     $backup_list    = $backups->getFiles('context', 8, 'fileBackupPaginator');
-    $options        = $courses->getCourse('admin', $USER->id, true);
+    $options        = $courses->getCourse('admin',  $USER->id, true);
 } else if (checkCapabilities('backup:getMyBackups', $USER->role_id, false)) {                    // Teacher and Tutor
-    $backup_list    = $backups->getFiles('backup', $USER->id, 'fileBackupPaginator');
+    $backup_list    = $backups->getFiles('backup',  $USER->id, 'fileBackupPaginator');
     $options        = $courses->getCourse('teacher', $USER->id, true);
 } 
 
@@ -52,10 +52,11 @@ $TEMPLATE->assign('backup_form', $form);     // assign the form
 $TEMPLATE->assign('web_backup_path', $CFG->web_backup_path);  
 
 $p_options = array('download'     => array('href' => "../share/accessfile.php?id=__id__"),
-                   'xml'     => array('href' => "../share/accessfile.php?id=__id__&type=xml")); 
-$p_config = array('title'         => 'Titel', 
+                   'xml'          => array('href' => "../share/accessfile.php?id=__id__&type=xml")); 
+$p_config = array('id' => 'checkbox',
+                  'title'         => 'Titel', 
                   'description'   => 'Beschreibung',
                   'creation_time' => 'Datum',
                   'author'        => 'Erstellt durch',
                   'p_options'     => $p_options);
-setPaginator('backupP', $TEMPLATE, $backup_list, 'fb_val', 'index.php?action=backup', $p_config);      
+setPaginator('fileBackupPaginator', $TEMPLATE, $backup_list, 'fb_val', 'index.php?action=backup', $p_config);      

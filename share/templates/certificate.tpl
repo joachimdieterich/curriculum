@@ -19,7 +19,7 @@
         <script type='text/javascript'>document.getElementById('certificate').focus();</script>
     {/if}    
     
-    {html_paginator id='certificateP' values=$ct_val config=$certificateP_cfg}
+    {html_paginator id='certificateP'}
 {/block}
 
 {block name=sidebar}{$smarty.block.parent}{/block}

@@ -39,7 +39,7 @@
         <script type='text/javascript'> document.getElementById('semester').focus(); </script>
     {/if} 
     
-    {html_paginator id='semesterP' values=$se_val config=$semesterP_cfg}         
+    {html_paginator id='semesterP'}         
 </div>
 {/block}
 

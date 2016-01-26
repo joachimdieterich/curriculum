@@ -118,7 +118,9 @@ class Grade {
      */
     public function getGrades($paginator = ''){
         global $USER;
-        $order_param = orderPaginator($paginator); 
+        $order_param = orderPaginator($paginator, array('grade'         => 'gr',
+                                                        'description'   => 'gr',
+                                                        'institution'   => 'ins')); 
         $grades = array();                      //Array of grades
         $db = DB::prepare('SELECT gr.*, ins.institution 
                            FROM grade AS gr, institution AS ins 
@@ -136,6 +138,7 @@ class Grade {
                 $this->institution_id   = $result->institution_id;
                 $grades[]               = clone $this;        //it has to be clone, to get the object and not the reference
         } 
+        
         return $grades;
     }
     

@@ -18,7 +18,7 @@
             <p>Aktuelle Sicherungsdatei herunterladen.</p></br></br>
         {/if} 
         
-        {html_paginator id='backupP' values=$fb_val config=$backupP_cfg}
+        {html_paginator id='fileBackupPaginator'}
 </div>
 {/block}
 

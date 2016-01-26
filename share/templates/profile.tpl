@@ -93,7 +93,7 @@
             <script type='text/javascript'>document.getElementById({if $readonly eq false}'username'{else}'firstname'{/if}).focus();</script>            
         </form>
         {if isset($nusr_val)}
-            {html_paginator id='newUsersPaginator' values=$nusr_val config=$newUsersPaginator_cfg}     
+            {html_paginator id='newUsersPaginator'}     
         {/if}
 </div>
 {/block}

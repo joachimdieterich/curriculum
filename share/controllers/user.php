@@ -31,7 +31,8 @@ if (isset($_GET['function'])) {
      switch ($_GET['function']) {
         case "showCurriculum": 
                 $TEMPLATE->assign('showenroledCurriculum', true); 
-                $p_config  = array('curriculum'   => 'Lehrplan', 
+                $p_config  = array('id'         => 'checkbox',
+                                    'curriculum'   => 'Lehrplan', 
                                     'description' => 'Beschreibung', 
                                     'subject'     => 'Fach', 
                                     'grade'       => 'Klasse', 
@@ -47,7 +48,8 @@ if (isset($_GET['function'])) {
                 $institution = new Institution();
                 $p_options = array('delete'         => array('onclick' => "expelFromInstituion(__id__, $current_user->id);", 
                                  'capability'       => checkCapabilities('user:expelFromInstitution', $USER->role_id, false)));
-                $p_config =   array('role'   => 'Rolle', 
+                $p_config =   array('id'         => 'checkbox',
+                                    'role'   => 'Rolle', 
                                     'institution'   => 'Institution', 
                                     'description'   => 'Beschreibung', 
                                     'schooltype_id' => 'Schultyp', 
@@ -62,7 +64,8 @@ if (isset($_GET['function'])) {
                 $TEMPLATE->assign('selectedUserID',     $current_user->id);
                 $p_options = array('delete'         => array('onclick' => "expelUser(__id__, $current_user->id);", 
                                    'capability'     => checkCapabilities('user:expelFromGroup', $USER->role_id, false)));
-                $p_config =   array('groups'        => 'Gruppen', 
+                $p_config =   array('id'         => 'checkbox',
+                                    'groups'        => 'Gruppen', 
                                     'grade'         => '(Klassen)stufe', 
                                     'description'   => 'Beschreibung', 
                                     'semester'      => 'Lernzeitraum', 
@@ -75,8 +78,8 @@ if (isset($_GET['function'])) {
             default: break;
      }     
 }
-
-if (isset($_POST)){
+        
+if (isset($_POST) ){
     $edit_user = new User(); 
     if (isset($_POST['id'])){
     foreach ($_POST['id'] as $edit_user->id ) { //Array per schleife abarbeiten
@@ -183,7 +186,8 @@ $p_options = array('delete' => array('onclick'      => "del('user',__id__, $USER
                                      'capability'   => checkCapabilities('user:getCurricula', $USER->role_id, false),
                     'institution'  => array('href'  => 'index.php?action=user&function=showInstitution&userID=__id__'),
                                      'capability'   => checkCapabilities('user:getInstitution', $USER->role_id, false));
-$p_config =   array('username'   => 'Benutzername', 
+$p_config =   array('id'         => 'checkbox',
+                     'username'   => 'Benutzername', 
                     'firstname'  => 'Vorname', 
                     'lastname'   => 'Nachname', 
                     'email'      => 'Email', 

@@ -106,7 +106,7 @@
         </div>
     {/if}
    
-    {html_paginator id='curriculumP' values=$cu_val config=$curriculumP_cfg}
+    {html_paginator id='curriculumP'}
 </div>
 {/block}
 

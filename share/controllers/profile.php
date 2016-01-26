@@ -124,7 +124,8 @@ if($_POST) {
 if (checkCapabilities('user:listNewUsers', $USER->role_id, false)){
     $new_users  = new User(); 
     if ($new_users->newUsers($USER->id)){
-        $p_options =    $p_config =   array('username'   => 'Benutzername', 
+        $p_options =    $p_config =   array('id'         => 'checkbox',
+                                    'username'   => 'Benutzername', 
                                     'firstname'  => 'Vorname', 
                                     'lastname'   => 'Nachname', 
                                     'email'      => 'Email', 
