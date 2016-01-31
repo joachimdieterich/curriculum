@@ -175,7 +175,7 @@ $group_list = $groups->getGroups('group', $USER->id);
 $TEMPLATE->assign('groups_array', $group_list);          // Lerngruppen  Laden
 $TEMPLATE->assign('myInstitutions', $institution->getInstitutions('user', null, $USER->id));
 
-$users = new USER($USER->id);
+$users = new USER();
 $p_options = array('delete' => array('onclick'      => "del('user',__id__, $USER->id);", 
                                      'capability'   => checkCapabilities('user:delete', $USER->role_id, false)),
                     'edit'  => array('href'         => 'index.php?action=profile&function=editUser&userID=__id__'),
@@ -187,7 +187,7 @@ $p_options = array('delete' => array('onclick'      => "del('user',__id__, $USER
                     'institution'  => array('href'  => 'index.php?action=user&function=showInstitution&userID=__id__'),
                                      'capability'   => checkCapabilities('user:getInstitution', $USER->role_id, false));
 $p_config =   array('id'         => 'checkbox',
-                     'username'   => 'Benutzername', 
+                    'username'   => 'Benutzername', 
                     'firstname'  => 'Vorname', 
                     'lastname'   => 'Nachname', 
                     'email'      => 'Email', 

@@ -30,6 +30,16 @@ class User {
      */
     public $username; 
     /**
+     * firstname
+     * @var string 
+     */
+    public $firstname; 
+    /**
+     * lastname
+     * @var string 
+     */
+    public $lastname; 
+    /**
      * password md5
      * @var string
      */
@@ -64,16 +74,7 @@ class User {
      * @var int 
      */
     public $confirmed; 
-    /**
-     * firstname
-     * @var string 
-     */
-    public $firstname; 
-    /**
-     * lastname
-     * @var string 
-     */
-    public $lastname; 
+    
     /**
      * postalcode
      * @var string 
@@ -628,16 +629,16 @@ class User {
                                 } else if (checkCapabilities('user:userListInstitution', $USER->role_id,false)) { //Manager
                                     $db = DB::prepare('SELECT us.* FROM users AS us WHERE us.id = ANY (SELECT user_id FROM institution_enrolments 
                                                     WHERE institution_id = ? AND status = 1) '.$order_param);
-                                    $db->execute(array($this->institution_id)); 
+                                    $db->execute(array($USER->institution_id)); 
                                 } else if (checkCapabilities('user:userListGroup', $USER->role_id,false)) { //Kursersteller
-                                    $db = DB::prepare('SELECT us.* FROM users AS us, groups_enrolments AS ge, institution_enrolments AS ie 
+                                    $db = DB::prepare('SELECT DISTINCT us.* FROM users AS us, groups_enrolments AS ge, institution_enrolments AS ie 
                                                         WHERE ie.institution_id = ? AND ie.status = 1
                                                         AND ie.user_id = us.id 
                                                         AND ge.user_id = ie.user_id
                                                         AND ge.status = 1
                                                         AND ge.group_id = ANY (SELECT group_id FROM groups_enrolments 
                                                                                                WHERE user_id = ? AND status =  1) '.$order_param);
-                                    $db->execute(array($this->institution_id, $this->id)); 
+                                    $db->execute(array($USER->institution_id, $USER->id)); 
                                 }                       
             break;
             default:  break;

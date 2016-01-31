@@ -196,7 +196,7 @@ class Render {
                                         echo '<div class="floatright">Richtige Antwort ist<strong> '.$a->answer.'</strong></div>';
                                     } 
                                 } else {
-                                    echo '<div class="space-left"><input style="width:40px;" type="text" name="'.$value->id.'">';
+                                    echo '<div class="space-left"><input style="width:40px;" type="text" name="'.$value->id.'" onkeydown="if (event.keyCode == 13) {event.preventDefault();}">';
                                 }
                                 echo'</div>';
                             }

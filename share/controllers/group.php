@@ -186,8 +186,8 @@ $p_options = array('delete' => array('onclick'      => "del('group',__id__, $USE
                    'list'    => array('href'        => "index.php?action=group&function=showCurriculum&group_id=__id__", 
                                       'capability'  => checkCapabilities('groups:showCurriculumEnrolments', $USER->role_id, false)));
 $p_config =   array('id'         => 'checkbox',
-                    'group'        => 'Lerngruppen', 
-                    'grade'         => '(Klassen)stufe',
+                    'group'        => 'Lerngruppen',          //ändern auf groups in Object, da db Eintrag groups ist und die Suche so nicht funktioniert
+                    'grade'         => '(Klassen)stufe',  
                     'description'   => 'Beschreibung', 
                     'semester'      => 'Lernzeitraum',
                     'institution'   => 'Institution / Schule',

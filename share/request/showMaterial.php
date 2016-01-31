@@ -51,7 +51,7 @@ if (!$files){
             echo '</h3></p><p class="space-top"></p>';
         }
         
-        echo '<span id="material_'.$files[$i]->id.'">';
+        echo '<span class="material_container" id="material_'.$files[$i]->id.'">';
         
         if ($files[$i]->file_version == false){
             echo '<div class="'.ltrim ($files[$i]->type, '.').'_btn floatleft" style="width:120px;"></div>';
@@ -95,7 +95,7 @@ if (!$files){
                     if (checkCapabilities('file:editMaterial', $USER->role_id, false) && $edit){
                         echo '<span class="deletebtn floatright" style="margin-left:10px;" onclick="deleteFile('.$files[$i]->id.');"></span>';
                     }
-                    if (checkCapabilities('file:showHits', $USER->role_id, false)){
+                    if (checkCapabilities('file:showHits', $USER->role_id, false)  && $edit){
                         echo '<span class="floatright space-right materialtxt_small">'.$files[$i]->hits.' Aufrufe</span>';
                     }
                     echo '<div class=" floatright" style="width:100px;" onclick="updateFileHits('.$files[$i]->id.')">';

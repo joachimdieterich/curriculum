@@ -67,7 +67,7 @@ class EnablingObjective {
      * repeat interval
      * @var int 
      */
-    public $repeat_interval;
+    public $repeat_interval = -1; //important std -> don't repeat
     /**
      * Position of enabling_objective  within terminal_objective
      * @var type 
