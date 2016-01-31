@@ -154,8 +154,8 @@ class Semester {
     public function update(){
         global $USER;
         checkCapabilities('semester:update', $USER->role_id);
-        $db = DB::prepare('UPDATE semester SET semester = ?, description = ?, begin = ?, end = ? WHERE id = ?');
-        return $db->execute(array($this->semester, $this->description, $this->begin, $this->end, $this->id));
+        $db = DB::prepare('UPDATE semester SET semester = ?, description = ?, begin = ?, end = ?, institution_id = ? WHERE id = ?');
+        return $db->execute(array($this->semester, $this->description, $this->begin, $this->end, $this->institution_id, $this->id));
     }
     
     /**

@@ -417,22 +417,24 @@ class File {
                                                         WHERE fl.cur_id = ? AND fl.context_id = 2 AND fl.context_id = ct.context_id '.$order_param);
                 $db->execute(array($id));
                 break;
-            case 'terminal_objective':  $db = DB::prepare('SELECT DISTINCT fl.*, ct.path AS context_path FROM files AS fl, context AS ct, groups_enrolments AS ge, institution_enrolments AS ie
-                                                        WHERE ( fl.ter_id = ? AND fl.context_id = 2 AND fl.file_context = 1 AND fl.ena_id = "-1" AND fl.context_id = ct.context_id)  /*globales Material */
-							OR ( fl.ter_id = ? AND fl.context_id = 2 AND fl.file_context = 2 AND fl.ena_id = "-1" AND fl.context_id = ct.context_id AND ie.user_id = ? AND ie.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE user_id = fl.creator_id)) /*Institution*/
-							OR ( fl.ter_id = ? AND fl.context_id = 2 AND fl.file_context = 3 AND fl.ena_id = "-1" AND fl.context_id = ct.context_id AND ge.group_id = ANY (SELECT group_id FROM groups_enrolments WHERE user_id = ?)) /*Gruppe*/
-							OR ( fl.ter_id = ? AND fl.context_id = 2 AND fl.file_context = 4 AND fl.ena_id = "-1" AND fl.context_id = ct.context_id AND fl.creator_id = ? ) /*Benutzermaterial*/
-                                                         ORDER BY fl.file_context ASC');
-                $db->execute(array($id, $id, $USER->id, $id, $USER->id, $id, $USER->id));
+            case 'terminal_objective':  $db = DB::prepare('SELECT DISTINCT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+                                                            WHERE fl.ter_id = ? AND fl.ena_id = "-1" AND fl.context_id = 2 AND fl.context_id = ct.context_id
+                                                            AND( fl.file_context = 1 /*Global Material*/
+                                                            OR ( fl.file_context = 2 AND fl.creator_id = ANY (SELECT user_id from institution_enrolments WHERE institution_id = ? )) /*Institutional Material*/
+                                                            OR ( fl.file_context = 3 AND fl.creator_id = ANY (SELECT user_id from groups_enrolments WHERE group_id = ANY (Select group_id from groups_enrolments WHERE user_id = ?))) /*Group Material*/
+                                                            OR ( fl.file_context = 4 AND fl.creator_id = ?)) /*My Material*/
+                                                            ORDER BY fl.file_context ASC');
+                $db->execute(array($id, $USER->institution_id, $USER->id, $USER->id));
                 $getExternalFiles = true; 
                 break;
-            case 'enabling_objective':  $db = DB::prepare('SELECT DISTINCT fl.*, ct.path AS context_path FROM files AS fl, context AS ct, groups_enrolments AS ge, institution_enrolments AS ie
-                                                        WHERE ( fl.ena_id = ? AND fl.context_id = 2 AND fl.context_id = ct.context_id AND fl.file_context = 1 )  /*globales Material */
-							OR ( fl.ena_id = ? AND fl.context_id = 2 AND fl.file_context = 2 AND fl.context_id = ct.context_id AND ie.user_id = ? AND ie.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE user_id = fl.creator_id)) /*Institution*/
-							OR ( fl.ena_id = ? AND fl.context_id = 2 AND fl.file_context = 3 AND  fl.context_id = ct.context_id AND ge.group_id = ANY (SELECT group_id FROM groups_enrolments WHERE user_id = ?)) /*Gruppe*/
-							OR ( fl.ena_id = ? AND fl.context_id = 2 AND fl.file_context = 4 AND  fl.context_id = ct.context_id AND fl.creator_id = ? ) /*Benutzermaterial*/
+            case 'enabling_objective':  $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+                                                            WHERE fl.ena_id = ? AND fl.context_id = 2 AND fl.context_id = ct.context_id 
+                                                              AND( fl.file_context = 1 /*Global Material*/
+                                                              OR ( fl.file_context = 2 AND fl.creator_id = ANY (SELECT user_id from institution_enrolments WHERE institution_id = ? )) /*Institutional Material*/
+                                                              OR ( fl.file_context = 3 AND fl.creator_id = ANY (SELECT user_id from groups_enrolments WHERE group_id = ANY (SELECT group_id FROM groups_enrolments WHERE user_id = ?))) /*Group Material*/
+                                                              OR ( fl.file_context = 4 AND fl.creator_id = ?)) /*My Material*/
                                                          ORDER BY fl.file_context ASC');
-                $db->execute(array($id, $id, $USER->id, $id, $USER->id, $id, $USER->id));
+                $db->execute(array($id, $USER->institution_id, $USER->id, $USER->id));
                 $getExternalFiles = true; 
                 break;                  
             

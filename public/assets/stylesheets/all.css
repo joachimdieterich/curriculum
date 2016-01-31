@@ -757,7 +757,7 @@ header a, header, #app_title a, .logininfo{
     z-index: 10000;
 }
 #header_center { /*Anpassung an curriculumonline.de*/
-        background: rgb(255, 255, 255) url(../images/logo_white_bg.png)10px 10px no-repeat;
+        /*background: rgb(255, 255, 255) url(../images/logo_white_bg.png)10px 10px no-repeat;*/
         background-size: 150px 50px;
         height: 70px;
         width: 160px; 
@@ -1153,10 +1153,14 @@ form > p > label {
 .materialtxt { 
     padding-left:       120px;
 }
+.material_container{
+   height: 110px;
+   display: block;
+}
 .materialseperator { 
     border-top:     1px solid #d1cece;
     margin-top:     25px;
-    margin-bottom:  1px;
+    
     
     
 }

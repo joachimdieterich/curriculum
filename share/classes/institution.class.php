@@ -169,8 +169,8 @@ class Institution {
             $db = DB::prepare('UPDATE institution SET institution = ?, description= ?, schooltype_id= ?, country_id= ?, state_id= ?, creator_id= ?, confirmed = ?, paginator_limit = ?, std_role = ?, csv_size = ?, avatar_size = ?, material_size = ?, acc_days = ?, timeout = ?,  file_id = ?');
             if ($db->execute(array($this->institution, $this->description, $this->schooltype_id, $this->country_id, $this->state_id, $this->creator_id, $this->confirmed, $this->paginator_limit, $this->std_role, $this->csv_size, $this->avatar_size, $this->material_size, $this->acc_days, $this->timeout, $this->semester_id, $this->file_id))){
                 $db = DB::prepare('SELECT id FROM institution WHERE institution = ?');
-                $db->execute(array($this->institution));
-                if ($db->fetchObject()) {
+                if ($db->execute(array($this->institution))) {
+                    $result = $db->fetchObject();
                     $this->id          = $result->id; 
                     return $this->id;
                 } else { return false; }
