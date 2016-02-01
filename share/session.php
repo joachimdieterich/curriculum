@@ -38,6 +38,7 @@ if (isset($_SESSION['USER'])){                                                  
  */
 function session_reload_user(){
     global $USER, $CFG, $TEMPLATE;
+    
     $USER->load('username', $_SESSION['username'], true);                       // Benutzer aus DB laden
     $USER->password         = '';                                               // Passwort aus Session löschen
     $_SESSION['USER']       =& $USER;

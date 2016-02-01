@@ -116,8 +116,8 @@ class Certificate {
         $order_param    = orderPaginator($paginator); 
         $certificates   = array();                      //Array of certificates
         $db             = DB::prepare('SELECT ce.*, us.username, ins.institution FROM certificate AS ce, users AS us, institution AS ins 
-                           WHERE institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE us.id = user_id AND institution_id = ins.id AND user_id = ?) 
-                           AND us.id = ce.creator_id AND ins.id = institution_id '.$order_param);
+                           WHERE ce.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE us.id = user_id AND institution_id = ins.id AND user_id = ?) 
+                           AND AND ins.id = ce.institution_id '.$order_param);
         $db->execute(array($USER->id));
         
         while($result = $db->fetchObject()) { 
