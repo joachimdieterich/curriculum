@@ -83,7 +83,10 @@ class SmartyPaginate {
             'prev_text' => 'prev',
             'next_text' => 'next',
             'first_text' => 'first',
-            'last_text' => 'last'
+            'last_text' => 'last',
+            'pagi_search' => null,
+            'pagi_orderby' => null,
+            'pagi_updown'=> null
             );
     }
     
@@ -151,9 +154,33 @@ class SmartyPaginate {
                     $_SESSION['SmartyPaginate'][$id]['pagi_updown'] = $so;
                     
             }
+            
     }
-	
-	
+    static function setSearch($porder,  $search=null, $id = 'default') {
+        $_SESSION['SmartyPaginate'][$id]['pagi_orderby'] = $porder;
+            
+        if (isset($search)){
+            $_SESSION['SmartyPaginate'][$id]['pagi_search'] = $search;
+        }
+    }
+    
+    static function setSelection($selection, $id = 'default'){
+        $_SESSION['SmartyPaginate'][$id]['pagi_selection'] = $selection;
+    }
+    
+    static function setSelectAll($selection, $id = 'default'){
+        $_SESSION['SmartyPaginate'][$id]['pagi_selectAll'] = $selection;
+    }
+    
+    static function setConfig($cfg, $id = 'default'){
+        $_SESSION['SmartyPaginate'][$id]['pagi_cfg'] = $cfg;
+    }
+
+    static function setData($data, $id = 'default'){
+        $_SESSION['SmartyPaginate'][$id]['pagi_data'] = $data;
+    }
+
+
     /**
      * set the total number of items
      *
@@ -434,11 +461,11 @@ class SmartyPaginate {
      * getSort
      */
    static function getSort($what, $id) {
-		if ($what == "order" || $what == "sort" || isset($id)) {
+		if ($what == "order" || $what == "sort" || $what == "search" || isset($id)) {
 			if ($what == "sort") {
                                if (isset($_SESSION['SmartyPaginate'][$id]['pagi_updown'])){
 				return $_SESSION['SmartyPaginate'][$id]['pagi_updown'];
-                               } else {return false;}
+                               } else {return '';}
 			}
 			if ($what == "order") {
                             if (isset($_SESSION['SmartyPaginate'][$id]['pagi_orderby'])){
@@ -447,10 +474,70 @@ class SmartyPaginate {
 				return false;
                             }
 			}
+			if ($what == "search") {
+                            if (isset($_SESSION['SmartyPaginate'][$id]['pagi_search']) && isset($_SESSION['SmartyPaginate'][$id]['pagi_orderby'])){
+                                return " AND ". $_SESSION['SmartyPaginate'][$id]['pagi_orderby']. " LIKE '%" .$_SESSION['SmartyPaginate'][$id]['pagi_search']. "%' ";
+                            } else {
+				return '';
+                            }
+			}
 		} else {
 			return " ";
 		}
-	}            
+	}    
+        
+      static function _getSort($id = 'default'){
+          if (isset($_SESSION['SmartyPaginate'][$id]['pagi_updown'])){
+                return $_SESSION['SmartyPaginate'][$id]['pagi_updown'];
+            } else {
+                return '';
+            }
+      }
+      static function _getOrder($id = 'default'){
+          if (isset($_SESSION['SmartyPaginate'][$id]['pagi_orderby'])){
+                return $_SESSION['SmartyPaginate'][$id]['pagi_orderby'];
+            } else {
+                return '';
+            }
+      }
+      static function _getSearch($id = 'default'){
+          if (isset($_SESSION['SmartyPaginate'][$id]['pagi_search'])){
+                return $_SESSION['SmartyPaginate'][$id]['pagi_search'];
+            } else {
+                return null;
+            }
+      }
+      static function _getSelection($id = 'default'){
+          if (isset($_SESSION['SmartyPaginate'][$id]['pagi_selection'])){
+                return $_SESSION['SmartyPaginate'][$id]['pagi_selection'];
+            } else {
+                return null;
+            }
+      }
+      
+      static function _getSelectAll($id = 'default'){
+          if (isset($_SESSION['SmartyPaginate'][$id]['pagi_selectAll'])){
+                return $_SESSION['SmartyPaginate'][$id]['pagi_selectAll'];
+            } else {
+                return null;
+            }
+      }
+      
+    
+      static function _getConfig($id = 'default'){
+          if (isset($_SESSION['SmartyPaginate'][$id]['pagi_cfg'])){
+                return $_SESSION['SmartyPaginate'][$id]['pagi_cfg'];
+            } else {
+                return null;
+            }
+      }
+      static function _getData($id = 'default'){
+          if (isset($_SESSION['SmartyPaginate'][$id]['pagi_data'])){
+                return $_SESSION['SmartyPaginate'][$id]['pagi_data'];
+            } else {
+                return null;
+            }
+      }
             
 }
 ?>

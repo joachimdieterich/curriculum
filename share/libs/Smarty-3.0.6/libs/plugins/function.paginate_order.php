@@ -75,7 +75,10 @@ function smarty_function_paginate_order($params, &$smarty) {
     } else {
         $sort = 'ASC';
     }
-    
+    if ($params['key'] == 'group'){$params['key'] = 'groups';} //Hack to get group sorting working
+    if ($params['key'] == 'role_name' OR $params['key'] == 'completed'){         //Hack to get group sorting working
+        $params['key'] = '';
+    } 
     return '<a href="' . str_replace('&','&amp;', $_url) . '&paginator='.$_id.'&order='.$params['key'].'&sort='.$sort.'"' . $_attrs . '>' . $_text . '</a>';
 }
 

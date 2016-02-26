@@ -94,7 +94,8 @@
             {if $page_name eq 'login' OR $page_name eq 'error' OR $page_name eq 'criteria'} <!--Kein Menu -->
                  <div class="floatleft"></div>    
             {else}
-                <div id="sidebar2">{block name=sidebar}{/block} <a class="commentbtn cssbtnmargin cssbtntext tooltip_left" data-tooltip="Fehler melden" href="index.php?action=messages&function=shownewMessage&answer=true&receiver_id=102&subject=Probleme melden"></a></div> <!-- sidebar float right -->           
+                
+                <div id="sidebar2">{block name=sidebar}{/block}{if $my_role_id neq 0} <a class="commentbtn cssbtnmargin cssbtntext tooltip_left" data-tooltip="Fehler melden" href="index.php?action=messages&function=shownewMessage&answer=true&receiver_id=102&subject=Probleme melden"></a>{/if}</div> <!-- sidebar float right -->           
                 {block name=nav} <div id="sidebar1" class="floatleft">{include file='menu.tpl'}</div>{/block}
             {/if}
 

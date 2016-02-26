@@ -242,14 +242,14 @@ class User {
            $this->semester_id = $this->enrolments[0]->semester_id;
         }
         //Aktuelle Rolle laden (abhängig von der Institution --> ermittelt über das aktuelle Semester
-        $db = DB::prepare('SELECT COUNT(id) FROM institution_enrolments AS ie WHERE ie.user_id = ?');
+        $db = DB::prepare('SELECT COUNT(id) FROM institution_enrolments AS ie WHERE ie.user_id = ? AND ie.status = 1');
         $db->execute(array($this->id));
         if($db->fetchColumn() > 1) {
             $db1 = DB::prepare('SELECT ie.role_id, ie.institution_id FROM institution_enrolments AS ie, semester AS se 
-                                WHERE se.id = ? AND se.institution_id = ie.institution_id AND ie.user_id = ?');
+                                WHERE se.id = ? AND se.institution_id = ie.institution_id AND ie.user_id = ? AND ie.status = 1');
             $db1->execute(array($this->semester_id, $this->id)); 
         } else { // Benutzer noch in keiner Lerngruppe eingeschrieben bzw. nur in einer Institution eingeschrieben
-            $db1 = DB::prepare('SELECT ie.role_id, ie.institution_id FROM institution_enrolments AS ie WHERE ie.user_id = ?');
+            $db1 = DB::prepare('SELECT ie.role_id, ie.institution_id FROM institution_enrolments AS ie WHERE ie.user_id = ? AND ie.status = 1');
             $db1->execute(array($this->id)); 
         }
         $ie_result = $db1->fetchObject();
@@ -397,17 +397,27 @@ class User {
                             }
                             return $group_members;
                 break;
-
-            default:        $db = DB::prepare('SELECT DISTINCT usr.id, usr.firstname, usr.lastname, usr.username 
+            default:        if (checkCapabilities('user:userListComplete', $USER->role_id,false)){
+                                $db = DB::prepare('SELECT DISTINCT usr.id, usr.firstname, usr.lastname, usr.username 
+                                    FROM users AS usr');//Zeige alle User --> nur für globale Admin Rolle !. 
+                                $db->execute(array()); 
+                            } else {
+                                $db = DB::prepare('SELECT DISTINCT usr.id, usr.firstname, usr.lastname, usr.username 
                                     FROM users AS usr, groups_enrolments AS cle, institution_enrolments AS ie, groups as gr 
                                     WHERE cle.group_id IN (SELECT DISTINCT group_id FROM groups_enrolments WHERE user_id = ?)
                                     AND ie.user_id = ?
                                     AND usr.id = cle.user_id AND gr.id = cle.group_id and gr.institution_id = ie.institution_id');//Zeigt nur User in deren Gruppe man eingeschrieben ist. 
-                            $db->execute(array($this->id, $this->id)); 
+                                $db->execute(array($this->id, $this->id)); 
+                            }
+                            
                             while($result = $db->fetchObject()) { 
                                     $class_members["id"][]     = $result->id;  //todo: besser als object realisieren
                                     $class_members["user"][]   = $result->firstname.' '.$result->lastname.' ('.$result->username.')'; 
                             } 
+                            if ($USER->role_id != 0){
+                                    $class_members["id"][]     = 102;  //HACK für RLP Pilotierung
+                                    $class_members["user"][]   = 'Joachim Dieterich (Admin)';
+                            }
                             if (isset($class_members)){
                                 return $class_members;
                             } else return false; 
@@ -628,11 +638,12 @@ class User {
                                     $db->execute(); 
                                 } else if (checkCapabilities('user:userListInstitution', $USER->role_id,false)) { //Manager
                                     $db = DB::prepare('SELECT us.* FROM users AS us WHERE us.id = ANY (SELECT user_id FROM institution_enrolments 
-                                                    WHERE institution_id = ? AND status = 1) '.$order_param);
+                                                    WHERE institution_id = ? AND status = 1 AND role_id <> 1) '.$order_param); // HACK to prevent edit of super user
                                     $db->execute(array($USER->institution_id)); 
                                 } else if (checkCapabilities('user:userListGroup', $USER->role_id,false)) { //Kursersteller
                                     $db = DB::prepare('SELECT DISTINCT us.* FROM users AS us, groups_enrolments AS ge, institution_enrolments AS ie 
                                                         WHERE ie.institution_id = ? AND ie.status = 1
+                                                        AND ie.role_id <> 1 /* HACK to prevent edit of super user*/
                                                         AND ie.user_id = us.id 
                                                         AND ge.user_id = ie.user_id
                                                         AND ge.status = 1
@@ -653,6 +664,7 @@ class User {
             $this->postalcode   = $result->postalcode;
             $this->city         = $result->city;
             //$this->load('id', $result->id, false, 'user');
+            
             $users[] = clone $this;
         } 
             return $users;
@@ -795,21 +807,15 @@ class User {
                                                 '.$order_param);
                
                             $db->execute(array($id, $group)); 
-                            /*$db = DB::prepare('SELECT DISTINCT us.* FROM users AS us
-                                                INNER JOIN groups_enrolments AS gr ON us.id = gr.user_id 
-                                                AND gr.group_id = ANY (SELECT group_id FROM curriculum_enrolments WHERE curriculum_id = ? AND status = 1 )
-                                                AND gr.group_id = ANY (SELECT id FROM groups WHERE institution_id = ANY 
-                                                (SELECT institution_id FROM institution_enrolments WHERE user_id = ? AND status = 1))                                                       
-                                                AND gr.status = 1 
-                                                '.$order_param);
-                            $db->execute(array($id, $this->id)); */
 
                             while($result = $db->fetchObject()) {  
                                     $this->id           = $result->id;
                                     $this->load('id', $this->id, false, 'user');
-                                    $ena = new EnablingObjective();
-                                    $this->completed = $ena->getPercentageOfCompletion($id, $this->id);
-                                    $users[] = clone $this; 
+                                    if (!checkCapabilities('objectives:setStatus', $this->role_id, FALSE)){ //only add to list if not able to set status == teacher
+                                        $ena = new EnablingObjective();
+                                        $this->completed = $ena->getPercentageOfCompletion($id, $this->id);
+                                        $users[] = clone $this; 
+                                    }
                             }
                             break;
             case 'institution':  $db = DB::prepare('SELECT DISTINCT us.* FROM users AS us
@@ -820,9 +826,9 @@ class User {
                             $db->execute(array($this->id)); 
 
                             while($result = $db->fetchObject()) { 
-                                    $this->id           = $result->id;
-                                    $this->load('id', $this->id, false, 'user');
-                                    $users[] = clone $this; 
+                                $this->id           = $result->id;
+                                $this->load('id', $this->id, false, 'user');
+                                $users[] = clone $this; 
                             }
 
                             break;

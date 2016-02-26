@@ -33,7 +33,7 @@
     {if checkCapabilities('menu:readMyInstitution', $my_role_id, false)}
     <nav role="edit" class="menu border-box">
         <ul class="group">
-            <li class="menuheader">Institutionen</li>
+            <li class="menuheader">Institution</li>
             {if checkCapabilities('menu:readObjectives', $my_role_id, false)}
                 <li><p><a href="index.php?action=objectives&reset=true">Lernstand</a></p></li> 
             {/if}
