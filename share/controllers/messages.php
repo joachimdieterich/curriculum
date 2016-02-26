@@ -91,7 +91,7 @@ $TEMPLATE->assign('page_title', 'Nachrichten');
 /**
  * Load userlist 
  */
-$TEMPLATE->assign('class_members', $USER->getGroupMembers());
+$TEMPLATE->assign('class_members', $USER->getGroupMembers()); //'class:members' ist eigentlich überflüssig --> es wird default benutzt
 
 /**
  * Gesendete Nachrichten laden

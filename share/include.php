@@ -59,6 +59,9 @@ include('classes/badges/badges.class.php');
 include('classes/badges/issuing.class.php');
 
 /*omega plugin*/
+/*if (file_exists('plugins/omega.class.php')) {
+include('plugins/omega.class.php');
+}*/
 include('plugins/omega.class.php');
 
 /*libs*/

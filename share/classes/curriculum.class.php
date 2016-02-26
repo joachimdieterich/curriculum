@@ -151,7 +151,7 @@ class Curriculum {
                         $files = $f->getFiles('curriculum', $this->id);
                         foreach ($files as $file) {
                             $f->id = $file->id; 
-                            if (empty($f->isUsed())){ //überprüft ob Datei verwendet wird
+                            if (!$f->isUsed()){ //überprüft ob Datei verwendet wird
                                 $f->delete();
                             }
                         }
@@ -279,8 +279,9 @@ class Curriculum {
         
         $xml = new DOMDocument( "1.0", "UTF-8" );
         $xml->load($CFG->backup_root.$import_folder.'/'.$import_folder.'.xml');
-
-        $ext_reference = new Omega();
+        if (file_exists('../plugins/omega.class.php')) {
+            $ext_reference = new Omega();
+        }
         foreach($xml->getElementsByTagName('curriculum') as $curriculum) {
                  $old_cur_id              = $curriculum->getAttribute('id');
                  $this->curriculum        = $curriculum->getAttribute('curriculum');
@@ -318,8 +319,9 @@ class Curriculum {
         
         $xml = new DOMDocument( "1.0", "UTF-8" );
         $xml->load($CFG->backup_root.$import_folder.'/'.$import_folder.'.xml');
-
-        $ext_reference = new Omega();
+        if (file_exists('../plugins/omega.class.php')) {
+            $ext_reference = new Omega();
+        }
         foreach($xml->getElementsByTagName('curriculum') as $curriculum) {
             if ($preset) { // Werte aus backup nutzen -> sonst Werte des Formulars nutzen
                  $old_cur_id              = $curriculum->getAttribute('id');
@@ -358,7 +360,7 @@ class Curriculum {
            $t->creator_id         = $USER->id;
            $t_id                  = $t->add();                                      // add terminal objective
            $t_ref                 = $ter->getAttribute('ext_reference');
-           if ($t_ref != ''){
+           if ($t_ref != '' AND isset($ext_reference)){
                $ext_reference->setReference(0, $t_id, $t_ref);                      // add ext. reference for this terminal objective
            }
            /* ter files */
@@ -399,7 +401,7 @@ class Curriculum {
                 $e->creator_id               = $USER->id;
                 $e_id                        = $e->add();
                 $e_ref                       = $ena->getAttribute('ext_reference');   
-                if ($e_ref != ''){
+                if ($e_ref != '' AND isset($ext_reference)){
                     $ext_reference->setReference(1, $e_id, $e_ref);                      // add ext. reference for this enabling objective
                 }
                 

@@ -111,7 +111,7 @@ class Semester {
         $db = DB::prepare('SELECT DISTINCT se.*, us.username, ins.institution
                            FROM semester AS se, users AS us, groups AS gr, groups_enrolments AS ge, institution_enrolments AS ie, institution AS ins
                            WHERE gr.semester_id = se.id AND gr.id = ge.group_id AND us.id = ge.user_id AND ie.user_id = ge.user_id 
-                           AND gr.institution_id = ie.institution_id 
+                           AND gr.institution_id = ie.institution_id AND ie.status = 1 AND ge.status = 1
                            AND ins.id = ie.institution_id AND ge.user_id = ?');
         $db->execute(array($user_id));
         while($result = $db->fetchObject()) { 

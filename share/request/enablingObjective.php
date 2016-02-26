@@ -25,8 +25,10 @@ $enabling_objective     = new EnablingObjective();
 if (filter_input(INPUT_GET, 'edit', FILTER_VALIDATE_BOOLEAN)){
     $enabling_objective->id                     = filter_input(INPUT_GET, 'enablingObjectiveID', FILTER_VALIDATE_INT);
     $enabling_objective->load();    //Läd die bestehenden Daten aus der db
-    $omega  = new Omega();
-    $reference = $omega->getReference('enabling_objective',$enabling_objective->id);
+    if (file_exists('../plugins/omega.class.php')) {
+        $omega  = new Omega();
+        $reference = $omega->getReference('enabling_objective',$enabling_objective->id);
+    }
     $header = 'Ziel bearbeiten';
 } else {
     $enabling_objective->curriculum_id          = filter_input(INPUT_GET, 'curriculumID', FILTER_VALIDATE_INT);
@@ -60,8 +62,10 @@ echo' ><label>Interval: </label>
     <option value="3" data-skip="1"'; if ($enabling_objective->repeat_interval == 30){echo'selected';}  echo '>jeden Monat</option>
     <option value="4" data-skip="1"'; if ($enabling_objective->repeat_interval == 182){echo'selected';} echo '>jedes Halbjahr</option>
     <option value="5" data-skip="1"'; if ($enabling_objective->repeat_interval == 365){echo'selected';} echo '>jedes Jahr</option>
-    </select></p>  
-<p><label>OMEGA Link: </label><input  name="reference" value="';if (isset($reference)){echo $reference;} echo '"/></p>';
+    </select></p>';
+if (file_exists('../plugins/omega.class.php')) {    
+echo '<p><label>OMEGA Link: </label><input  name="reference" value="';if (isset($reference)){echo $reference;} echo '"/></p>';
+}
 if (filter_input(INPUT_GET, 'edit', FILTER_VALIDATE_BOOLEAN)){    
     echo '<p><label></label><input type="submit" name="update_enabling_objective" value="Ziel aktualisieren" /></p>';
 } else {

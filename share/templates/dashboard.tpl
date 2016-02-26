@@ -99,9 +99,24 @@
                 <p>{*$cronjob*}</p>
             {/if}
         </div>
-
-        <div class="colIII space-top">
+ 
+       <div class="colIII space-top">
             <p><h3>Hilfe</h3></p>
+                {if $my_role_id eq 0}
+                <video style="display: block;margin: 0 auto;" width="480" controls preload="none">
+                    <source src="{$media_url}/docs/Teilnehmer.mp4" type="video/mp4">
+                </video>
+                {/if}
+                {if $my_role_id eq 7}
+                <video style="display: block;margin: 0 auto;" width="480" controls preload="none">
+                    <source src="{$media_url}/docs/Lehrer.mp4" type="video/mp4">
+                </video>
+                {/if}
+                {if $my_role_id eq 6}
+                <video style="display: block;margin: 0 auto;" width="480" controls preload="none">
+                    <source src="{$media_url}/docs/Schuladmin.mp4" type="video/mp4">
+                </video>
+                {/if}
             <p class="center"><a href="http://docs.joachimdieterich.de"><img src="{$media_url}/images/wiki.png"></a></p>
         </div>    
         <div style="clear: both;"></div>
