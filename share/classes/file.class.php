@@ -347,7 +347,7 @@ class File {
                             }
                             $db = DB::prepare('SELECT fl.*, us.firstname, us.lastname FROM files AS fl, users AS us
                                 WHERE fl.cur_id = ? AND fl.creator_id IN ('.$user_ids.')
-                                AND fl.creator_id = us.id AND fl.context_id = 4');
+                                AND fl.creator_id = us.id AND fl.context_id = 4 ORDER BY us.lastname');
                             $db->execute(array($curriculum_id));  
                             break;
 
