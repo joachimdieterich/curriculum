@@ -10,14 +10,18 @@
 {block name=content}
     
 <div class="border-box">
-    <div class="contentheader ">{$page_title}<input class="curriculumdocsbtn floatright" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Benutzerverwaltung');"/></div>
+    <h3 class="page-header">{$page_title}<input class="curriculumdocsbtn pull-right" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Benutzerverwaltung');"/></h3>
     {if checkCapabilities('user:addUser', $my_role_id, false)}
-        <p class="floatleft  cssimgbtn gray-border">
-            <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=profile&function=new">Benutzer hinzufügen</a>
-        {if checkCapabilities('menu:readuserImport', $my_role_id, false)}
-            <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=userImport&reset=true">Benutzerliste importieren</a>
-        {/if}
-    </p>
+        <div class="btn-group" role="group" aria-label="...">
+            <button type="button" class="btn btn-default"><a  href="index.php?action=profile&function=new">
+                    <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Benutzer hinzufügen</a>
+            </button>
+            {if checkCapabilities('menu:readuserImport', $my_role_id, false)}
+                <button type="button" class="btn btn-default"><a href="index.php?action=userImport&reset=true">
+                        <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Benutzerliste importieren</a>
+                </button>
+            {/if}
+        </div>
     {/if}
 
     {*if isset($us_val)*}

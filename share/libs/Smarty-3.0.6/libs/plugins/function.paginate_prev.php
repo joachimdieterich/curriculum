@@ -26,7 +26,7 @@
  * @version 1.6-dev
  */
 
-function smarty_function_paginate_prev($params, &$smarty) {
+function smarty_function_paginate_prev($params, &$smarty, $bootstrap = false) {
 
     $_id = 'default';
     $_attrs = array();
@@ -73,7 +73,11 @@ function smarty_function_paginate_prev($params, &$smarty) {
         $_show = false;   
     }
     
-    return $_show ? '<a href="' . str_replace('&','&amp;', $_url) . '"' . $_attrs . '>' . $_text . '</a>' : '';
+    if ($bootstrap){
+        return $_show ? '<button type="button" class="btn btn-default"><a class="glyphicon glyphicon-chevron-left" href="' . str_replace('&','&amp;', $_url) . '"' . $_attrs . '></a></button>' : '';
+    } else {
+        return $_show ? '<a href="' . str_replace('&','&amp;', $_url) . '"' . $_attrs . '>' . $_text . '</a>' : '';
+    }
 }
 
 ?>

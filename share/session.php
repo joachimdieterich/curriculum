@@ -55,8 +55,9 @@ function session_reload_user(){
  * Setup global $PAGE  
  * $PAGE = new stdClass() in index.php
  */
-if (isset($_SESSION['PAGE'])){   
+if (isset($_SESSION['PAGE'])){ 
     $PAGE                       =  $_SESSION['PAGE'];
+    $PAGE->curriculum           = '';                                           // HACK to deselect Menu-Item
     if ($PAGE->url             != curPageURL()){                                //previous_url represents the last url
         $PAGE->previous_url     = $PAGE->url;
         $PAGE->url              = curPageURL();

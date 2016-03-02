@@ -8,10 +8,8 @@
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
 {block name=content}
-<div class="border-box">
-    <div class="contentheader ">{$page_title}</div>
+<h3 class="page-header">{$page_title}<input class="curriculumdocsbtn pull-right" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Berichte');"/></h3>
     {html_paginator id='logP'}
-</div>
 {/block}
 
 {block name=sidebar}{$smarty.block.parent}{/block}

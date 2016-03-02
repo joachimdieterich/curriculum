@@ -8,8 +8,7 @@
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
 {block name=content}
-<div class="border-box" >
-    <div class="contentheader ">{$page_title}</div>
+    <h3 class="page-header">{$page_title}<input class="curriculumdocsbtn pull-right" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Backup');"/></h3>
         {$backup_form}
 
         {if isset($zipURL)}
@@ -19,7 +18,6 @@
         {/if} 
         
         {html_paginator id='fileBackupPaginator'}
-</div>
 {/block}
 
 {block name=sidebar}{$smarty.block.parent}{/block}

@@ -27,11 +27,11 @@
  * 
  */
 
-function smarty_function_paginate_middle($params, &$smarty) {
+function smarty_function_paginate_middle($params, &$smarty, $bootstrap = false) {
     
     $_id = 'default';
-    $_prefix = '[';
-    $_suffix = ']';
+    $_prefix = '';
+    $_suffix = '';
     $_link_prefix = '';
     $_link_suffix = ''; 
     $_page_limit = null;
@@ -128,7 +128,7 @@ function smarty_function_paginate_middle($params, &$smarty) {
                   OR (($_curr_page > 3) AND ($_curr_page-2 === $_loop_page))
                   OR (($_curr_page > 2) AND ($_curr_page+2 === $_loop_page) AND ($_curr_page <= $_total_page-3))
                         ) {
-                    $_ret .= '...';
+                    $_ret .= '<button type="button" class="btn btn-default">...</button>';
                 } else if ( (($_curr_page+2 < $_loop_page) AND ($_loop_page <= $_total_page-2)) OR
                             (($_curr_page > 2) AND ($_loop_page > 2) AND ($_loop_page+2 < $_curr_page))  
                         ) {
@@ -138,11 +138,19 @@ function smarty_function_paginate_middle($params, &$smarty) {
                     $_this_url = $_url;
                     $_this_url .= (strpos($_url, '?') === false) ? '?' : '&';
                     $_this_url .= SmartyPaginate::getUrlVar($_id) . '=' . $_item;
-                    $_ret .= $_link_prefix . '<a href="' . str_replace('&', '&amp;', $_this_url) . '"' . $_attrs . '>' . $_text . '</a>' . $_link_suffix;
-
+                    //$_ret .= $_link_prefix . '<a href="' . str_replace('&', '&amp;', $_this_url) . '"' . $_attrs . '>' . $_text . '</a>' . $_link_suffix;
+                    if ($bootstrap){
+                        $_ret .= $_link_prefix . '<button type="button" class="btn btn-default"><a href="' . str_replace('&', '&amp;', $_this_url) . '"' . $_attrs . '>' . $_text . '</a>' . $_link_suffix.'</button>';
+                    } else {
+                        $_ret .= $_link_prefix . '<a href="' . str_replace('&', '&amp;', $_this_url) . '"' . $_attrs . '>' . $_text . '</a>' . $_link_suffix;
+                    }
                 }
             } else {
-                $_ret .= $_link_prefix . $_text . $_link_suffix;
+                if ($bootstrap){
+                    $_ret .= '<button type="button" class="btn btn-default">'.$_link_prefix . $_text . $_link_suffix.'</button>';
+                } else {
+                    $_ret .= $_link_prefix . $_text . $_link_suffix;
+                }
             }
             $_item += $_limit;
             $_page++;
@@ -161,9 +169,20 @@ function smarty_function_paginate_middle($params, &$smarty) {
                 $_this_url = $_url;
                 $_this_url .= (strpos($_url, '?') === false) ? '?' : '&';
                 $_this_url .= SmartyPaginate::getUrlVar($_id) . '=' . $_item;
-                $_ret .= $_link_prefix . '<a href="' . str_replace('&', '&amp;', $_this_url) . '"' . $_attrs . '>' . $_text . '</a>' . $_link_suffix;
+                
+                //$_ret .= $_link_prefix . '<a href="' . str_replace('&', '&amp;', $_this_url) . '"' . $_attrs . '>' . $_text . '</a>' . $_link_suffix;
+                if ($bootstrap){
+                    $_ret .= $_link_prefix . '<button type="button" class="btn btn-default"><a href="' . str_replace('&', '&amp;', $_this_url) . '"' . $_attrs . '>' . $_text . '</a>' . $_link_suffix.'</button>';
+                } else {
+                    $_ret .= $_link_prefix . '<a href="' . str_replace('&', '&amp;', $_this_url) . '"' . $_attrs . '>' . $_text . '</a>' . $_link_suffix;
+                }
+                
             } else {
-                $_ret .= $_link_prefix . $_text . $_link_suffix;
+                if ($bootstrap){
+                    $_ret .= $_link_prefix . '<button type="button" class="btn btn-default">' . $_text . $_link_suffix.'</button>';
+                } else {
+                    $_ret .= $_link_prefix . $_text . $_link_suffix;
+                }   
             }
             $_item += $_limit;
             $_page++;
@@ -171,12 +190,9 @@ function smarty_function_paginate_middle($params, &$smarty) {
             if(isset($_page_limit) && $_display_pages == $_page_limit)
                 break;
         }
-        
-        
     }
     
-    return $_ret;
-    
+    return $_ret;  
 }
 
 ?>

@@ -8,13 +8,21 @@
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
 {block name=content}
-<div>
-    <div class="centerbox">
-        <div class="centerbox_header">Login</div><br>       
-        {$login_form}
-        <script type='text/javascript'>document.getElementById('username').focus();</script>
-    </div>    
-</div>    
+    
+<div class="container"> 
+    <div class="col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>Login</h4>
+            </div>
+            <div class="panel-body">
+                {$login_form}
+            </div>
+        </div>
+    </div> 
+     <script type='text/javascript'>document.getElementById('username').focus();</script>
+</div>
+    
 {/block}
 
 {block name=sidebar}{$smarty.block.parent}{/block}

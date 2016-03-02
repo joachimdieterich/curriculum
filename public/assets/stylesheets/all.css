@@ -36,6 +36,37 @@ time, mark, audio, video {
     font: inherit;
     vertical-align:baseline;
 }
+ico {
+    -webkit-font-smoothing: antialiased;
+    box-sizing: border-box;
+    color: rgb(171, 177, 183);
+    cursor: auto;
+    display: inline-block;
+    font-size: 12px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    height: 16px;
+    line-height: 16px;
+    list-style-type: disc;
+    margin-left: 10px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+    padding-right: 10px;
+    padding-top: 0px;
+    text-align: left;
+    vertical-align: middle;
+    text-decoration: none;
+    width:16px;
+}
+
+.nav-title {
+    color: rgb(171, 177, 183);
+    vertical-align: middle;
+    padding-left: 10px;
+}
+
+
 h2, h3, h4, h5, h6, #content p, .boxleftpadding { padding-left: 10px; }
 h1,h2,h3,h4,h5,h6 { font-weight: bold; }
 h3 { 
@@ -244,9 +275,9 @@ button {  width: auto; overflow: auto; }
     margin-left: -6px;
 }
 
-.printbtn, .editbtn,.filebtn, .deletebtn, .removebtn, .addbtn, .addmaterialbtn, .leftbtn, .rightbtn, .upbtn, .downbtn, 
-.addsolutionbtn, .okbtn, .ok2btn, .notbtn, .groupbtn, .institutionbtn, .calbtn, .listbtn, .downloadbtn, .helpbtn, .curriculumdocsbtn, .answerbtn,
-.mailinbtn, .mailoutbtn, .mailnewbtn, .maildelbtn, .bdgbtn, .infobtn, .checkbtn, .checkgreenbtn, .checkredbtn, .checkorangebtn, .checkwhitebtn,
+.printbtn, .editbtn,.filebtn, .certificatebtn, .clockbtn, .tagsbtn, .numberedbtn, .rolebtn, .userbtn, .deletebtn, .removebtn, .addbtn, .addmaterialbtn, .leftbtn, .rightbtn, .upbtn, .downbtn, 
+.addsolutionbtn, .okbtn, .ok2btn, .notbtn, .groupbtn, .institutionbtn, .calbtn, .listbtn, .listaltbtn, .downloadbtn, .helpbtn, .curriculumdocsbtn, .answerbtn,
+.mailinbtn, .mailoutbtn, .mailnewbtn, .maildelbtn, .bdgbtn, .infobtn, .checkbtn, .smallthumbbtn, .checkgreenbtn, .checkredbtn, .checkorangebtn, .checkwhitebtn,
 .checkactivegreenbtn, .checkactiveredbtn, .checkactiveorangebtn, .checkactivewhitebtn{ 
     background-repeat: no-repeat;
     background-size: contain;
@@ -317,12 +348,25 @@ button {  width: auto; overflow: auto; }
     filter:invert;
 }
 
+.invert{
+   filter: invert(100%);
+   -webkit-filter: invert(100%);
+}
+
 .bdgbtn         { background-image: url('../images/icons/badges-icon32x32.png');}
 .inbtn          { background-image: url('../images/icons/glyphicons_131_inbox_plus.png'); }
 .outbtn         { background-image: url('../images/icons/glyphicons_132_inbox_minus.png'); }
 .printbtn       { background-image: url('../images/icons/glyphicons_015_print.png'); }
 .calbtn         { background-image: url('../images/icons/glyphicons_045_calendar.png');  }
 .filebtn        { background-image: url('../images/icons/glyphicons_036_file.png');  }
+.certificatebtn { background-image: url('../images/icons/glyphicons-685-article.png');  }
+.clockbtn       { background-image: url('../images/icons/glyphicons-55-clock.png');  }
+.tagsbtn        { background-image: url('../images/icons/glyphicons-67-tags.png');  }
+.numberedbtn    { background-image: url('../images/icons/glyphicons-710-list-numbered.png');  }
+.rolebtn        { background-image: url('../images/icons/glyphicons-715-user-structure.png');  }
+.userbtn        { background-image: url('../images/icons/glyphicons-4-user.png');  }
+.smallthumbbtn  { background-image: url('../images/icons/glyphicons-157-show-thumbnails.png');  }
+.listaltbtn  { background-image: url('../images/icons/glyphicons-530-list-alt.png');  }
 .listbtn        { background-image: url('../images/icons/glyphicons_156_show_thumbnails_with_lines.png'); 
                   background-size: 16px 12px;
                   margin-top: 3px; }
@@ -896,8 +940,9 @@ header a, header, #app_title a, .logininfo{
 }
 
 .menu {
-    margin:         10px;
-    width:          209px;
+    /*margin:         10px;*/
+    width:          230px;
+    background-color: #2d3c4b;
 }
 
 #page-footer {
@@ -916,14 +961,15 @@ header a, header, #app_title a, .logininfo{
 
 .menuheader{
     //background:     #fff;//rgb(238, 238, 238);//#013363;
-    padding-top:    10px;
+    padding-top:    25px;
     text-indent:    10px;
-    height:         20px;
-    color:          #333;//#FFF;
-    margin:         0 0 10px 0;
-    border-bottom:  1px solid #d1cece;
+    //height:         20px;
+    color: rgb(213, 216, 219);
+    /*color:          #333;//#FFF;*/
+    /*margin:         0 0 10px 0;
+    border-bottom:  1px solid #d1cece;*/
     font-family: 'Open Sans', Arial, sans-serif;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
 }
@@ -961,23 +1007,27 @@ nav select{
     width:          190px;
 }
 
+
 nav a, .contentlist a {
     color:          #000 !important;
     text-decoration:none;
 }
 
-nav li > p:after {
+/*nav li > p:after {
     border-top:     1px solid #444;
     margin-bottom:  1px;
-}
+}*/
 
 nav div > p{
     float:          right;
     margin-right:   10px;
     font-size:      12px;
 }
-nav div > p:first-of-type {
+/*nav div > p:first-of-type {
     margin-top:     5px;
+}*/
+nav li {
+    padding:         12px 10px 12px 10px;
 }
 
 nav li > p {
@@ -985,20 +1035,17 @@ nav li > p {
     border-bottom:  1px solid hsl(0,0%,70%);
     margin-bottom:  1px;
 }
-nav li:last-child > p {
+/*nav li:last-child > p {
     margin:         5px 10px 10px 10px;
     border-bottom:  0px;
     margin-bottom:  1px;
-}
+}*/
 
-nav li:last-of-type {
+/*nav li:last-of-type {
     border:         none;
     margin:         0;
-}
+}*/
 
-nav li span {
-    float:          right;
-}
 nav div > img {
     margin-top:     5px;
     margin-left:    10px;

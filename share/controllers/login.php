@@ -19,6 +19,7 @@ global $TEMPLATE;
 
 $user       = new User();
 $message    = '';
+
 $form       = new HTML_QuickForm2('Login');               // Instantiate the HTML_QuickForm2 object
 $fieldset   = $form->addElement('fieldset');
 $username   = $fieldset->addElement('text', 'username', array('size' => 40, 'maxlength' => 255, 'id' => 'username'))

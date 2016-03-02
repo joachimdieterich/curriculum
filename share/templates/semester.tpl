@@ -9,11 +9,13 @@
 
 {block name=content}   
 <div class="border-box">
-    <div class="contentheader">{$page_title}<input class="curriculumdocsbtn floatright" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Lernzeitr%C3%A4ume_verwalten');"/></div>
+    <h3 class="page-header">{$page_title}<input class="curriculumdocsbtn pull-right" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Lernzeitr%C3%A4ume_verwalten');"/></h3>
     {if !isset($showForm) && checkCapabilities('semester:add', $my_role_id, false)}
-        <p class="floatleft cssimgbtn gray-border">
-            <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=semester&function=new">Lernzeitraum hinzufügen</a>
-        </p>
+        <div class="btn-group" role="group" aria-label="...">
+            <button type="button" class="btn btn-default"><a href="index.php?action=semester&function=new">
+                    <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Lernzeitraum hinzufügen</a>
+            </button>
+        </div>
     {else}
         <form id='semesterForm' method='post' action='index.php?action=semester&next={$currentUrlId}'>
         <input id='id' name='id' type='hidden' {if isset($id)}value='{$id}'{/if}/>       

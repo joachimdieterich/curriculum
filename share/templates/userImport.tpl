@@ -10,7 +10,7 @@
 {block name=content}
     
 <div class="border-box">
-    <div class="contentheader">{$page_title}<input class="curriculumdocsbtn floatright" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Benutzerliste_importieren');"/></div>
+    <h3 class="page-header">{$page_title}<input class="curriculumdocsbtn pull-right" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Benutzerliste_importieren');"/></h3>
     <div class="space-top">
         <form name="file" enctype="multipart/form-data" action="index.php?action=userImport" method="post">
             <p><h3>Nutzerkonten per CSV-Datei hochladen.</h3></p>

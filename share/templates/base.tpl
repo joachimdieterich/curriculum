@@ -15,16 +15,41 @@
 {/function}
     
     <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{block name=title}{/block} | {strip_tags($app_title)}</title>
-        <meta charset="utf-8"> 
         <meta name="description" content="{block name="description"}{/block}">
-        <meta name="author" content="">
-        {*<meta name="viewport" content="width=device-width, initial-scale=1.0" />  *}
+        <meta name="author" content="Joachim Dieterich (www.curriculumonline.de)">
+        
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="{$media_url}images/favicon/apple-touch-icon-57x57.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{$media_url}images/favicon/apple-touch-icon-114x114.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{$media_url}images/favicon/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{$media_url}images/favicon/apple-touch-icon-144x144.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="120x120" href="{$media_url}images/favicon/apple-touch-icon-120x120.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="152x152" href="{$media_url}images/favicon/apple-touch-icon-152x152.png" />
+        <link rel="icon" type="image/png" href="{$media_url}images/favicon/favicon-32x32.png" sizes="32x32" />
+        <link rel="icon" type="image/png" href="{$media_url}images/favicon/favicon-16x16.png" sizes="16x16" />
+        <meta name="msapplication-TileColor" content="#FFFFFF" />
+        <meta name="msapplication-TileImage" content="{$media_url}images/favicon/mstile-144x144.png" />
+
+        <!-- Bootstrap core CSS -->
+        <link href="{$media_url}bootstrap-3.3.6-dist/css/bootstrap.min.css" rel="stylesheet">
+        
+        <!-- Custom styles for this template -->
+        <link href="{$media_url}stylesheets/all-bs.css" rel="stylesheet">
+        
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+        
         <script src="{$media_url}scripts/modernizr-1.6.min.js"></script>
-        <script>!window.jQuery && document.write(unescape('%3Cscript src="{$media_url}scripts/jquery-1.4.4.min.js"%3E%3C/script%3E'));</script>
+        <!--<script>!window.jQuery && document.write(unescape('%3Cscript src="{$media_url}scripts/jquery-1.4.4.min.js"%3E%3C/script%3E'));</script>-->
         <script src="{$media_url}scripts/jquery.tools.min.js"></script>
         
-        <link rel="stylesheet" href="{$media_url}stylesheets/all.css" media="all">
+        <!--<link rel="stylesheet" href="{$media_url}stylesheets/all.css" media="all">-->
         <link rel="stylesheet" href="{$media_url}stylesheets/date.css" media="all">
         <link rel="stylesheet" href="{$media_url}stylesheets/buttons.css" media="all">
         <link rel="stylesheet" href="{$media_url}stylesheets/quickform.css" media="all">
@@ -33,40 +58,109 @@
     </head>
 
     <body> 
-        <header id="header">
-           <div id="app_title" class="floatleft"><a href="index.php?action=dashboard">{$app_title}</a></div>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+          <div class="container-fluid">
+            <div class="navbar-header">
+                
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">              
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+                <a class="navbar-brand"href="index.php?action=dashboard"><span><img src="{$request_url}assets/images/logo.png"/></span>{$app_title}</a>
+            </div>
+            <div  class="navbar-collapse collapse">
+              <ul class="nav navbar-nav navbar-right">
+                <!--<li><a href="#">Dashboard</a></li>-->
+                <!--<li><a href="#">Settings</a></li>-->
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                        {if $my_role_id != -1}
+                            {if isset($my_username)} 
+                                {$my_firstname} {$my_lastname}<span >{*$my_role_name*}</span>
+                                <span>
+                                    <img class="img-rounded" style="max-height: 32px;" src="{$access_file}{$my_avatar}" alt="Profile Picture">
+                                </span>
+                            {/if}
+                        {/if}
+                        <span class="caret"></span></a>
+                        {if isset($my_username)}
+                            <ul class="dropdown-menu">
+                                {if checkCapabilities('menu:readProfile', $my_role_id, false)}
+                                <li><a href="index.php?action=profile&function=edit">
+                                        Profil bearbeiten
+                                    </a>
+                                </li>
+                                {/if}
+                                {if checkCapabilities('menu:readPassword', $my_role_id, false)}
+                                <li><a href="index.php?action=password">
+                                        Passwort ändern
+                                    </a>
+                                </li>
+                                {/if}
+                                {if checkCapabilities('menu:readMessages', $my_role_id, false)}
+                                <li><a href="index.php?action=messages&function=showInbox">
+                                        Nachrichten
+                                    </a>
+                                </li>
+                                {/if}
+                                {if checkCapabilities('menu:readMessages', $my_role_id, false)}
+                                <li><a href="../share/request/uploadframe.php?userID={$my_id}&context=userFiles&target=NULL{$tb_param}" class="thickbox">
+                                        Meine Dateien
+                                    </a>
+                                </li>
+                                {/if}
+                            <li role="separator" class="divider"></li>
+                                <li><a href="index.php?action=logout">
+                                        Abmelden
+                                    </a>
+                                </li>
+                            </ul>
+                            {/if}
+                  </li>
+              </ul>
+              <!--<form class="navbar-form navbar-right">
+                <input type="text" class="form-control" placeholder="Search...">
+              </form>-->
+            </div>
+          </div>
+        </nav>
+                
+        <div class="container-fluid">
+            <div class="row">
+                {if $page_name eq 'login' OR $page_name eq 'error' OR $page_name eq 'criteria'} <!--Kein Menu -->
+                    {block name=content} {/block}
+                    <footer class="footer">
+                        <div class="container">
+                          <p class="text-muted"><div class="copyright">{$app_footer}<span class="floatright space-right">{if isset($stat_users_online) && checkCapabilities('menu:readPassword', $my_role_id, false)}Erfolgreich erreichte Ziele auf curriculumonline.de: {$stat_acc_all} davon heute: {$stat_acc_today} ({$stat_users_online} User online | Heute: {$stat_users_today}) {/if}</span></div>
+                        {block name=footer} {/block}</p>
+                        </div>
+                    </footer>
+                {else}
+                    {*'<div id="sidebar2">{block name=sidebar}{/block}{if $my_role_id neq 0} <a class="commentbtn cssbtnmargin cssbtntext tooltip_left" data-tooltip="Fehler melden" href="index.php?action=messages&function=shownewMessage&answer=true&receiver_id=102&subject=Probleme melden"></a>{/if}</div> <!-- sidebar float right -->           *}
+                    <div class="col-sm-1 col-md-2 sidebar">{block name=nav}{include file='menu.tpl'}{/block}</div>
+                    <div class="col-sm-offset-1 col-md-10 col-md-offset-2 main ">
+                    {block name=content} {/block}
+                    </div>
+                    <footer class="col-xs-1 col-sm-11 col-sm-offset-1 col-md-10 col-md-offset-2 footer">
+                        <div class="container">
+                          <p class="text-muted"><div class="copyright">{$app_footer}<span class="floatright space-right">{if isset($stat_users_online) && checkCapabilities('menu:readPassword', $my_role_id, false)}Erfolgreich erreichte Ziele auf curriculumonline.de: {$stat_acc_all} davon heute: {$stat_acc_today} ({$stat_users_online} User online | Heute: {$stat_users_today}) {/if}</span></div>
+                        {block name=footer} {/block}</p>
+                        </div>
+                    </footer>
+                {/if}
+            </div> <!-- end Row-->
+        </div>
+
+                
+            
+            
+        <!--<header id="header">
+           <div id="app_title" class="floatleft"></div>
            <div id="header_center"></div>
            <div class="logininfo">
-            {if isset($my_username)} 
-                <li>{if $my_role_id != -1}<div>{$my_firstname} {$my_lastname}<img src="{$access_file}{$my_avatar}"/><br><span>{$my_role_name}</span></div>{/if}
-                    </li>
-                <ul>{if checkCapabilities('menu:readProfile', $my_role_id, false)}
-                        <a href="index.php?action=profile&function=edit">
-                            <li><p>Profil bearbeiten</p></li>
-                        </a>
-                    {/if}
-                    {if checkCapabilities('menu:readPassword', $my_role_id, false)}
-                        <a href="index.php?action=password">
-                            <li><p>Passwort ändern</p></li> 
-                        </a>
-                    {/if}
-                    {if checkCapabilities('menu:readMessages', $my_role_id, false)}
-                    <a href="index.php?action=messages&function=showInbox">
-                        <li><p>Nachrichten</p></li>
-                    </a>
-                    {/if}   
-                    {if checkCapabilities('file:upload', $my_role_id, false)}
-                    <a  href="../share/request/uploadframe.php?userID={$my_id}&context=userFiles&target=NULL{$tb_param}" class="thickbox">
-                        <li><p>Meine Dateien</p></li>
-                    </a>
-                    {/if}  
-                    <a href="index.php?action=logout">
-                         <li><p>Abmelden</p></li>      
-                    </a>
-                    {*<li>Letzter Login: {$my_last_login}</li>*}
-                </ul>
-                {*if $my_role_id != -1}{$stat_users_online} Benutzer online | Sie sind als <strong>{$my_username}</strong> ({$my_role_name}) angemeldet. <a href="index.php?action=logout">Logout</a>{/if*}
-            {/if}
+            
             </div>
 
             <div class="navbar">
@@ -86,11 +180,11 @@
                 {/if}
                 </div>
             </div>
-        </header>  
+        </header>  -->
         
                 <div id="popup" class="modal" onload="popupFunction();" ><p class="center space-top-bottom"><img src="{$base_url}public/assets/images/loadingAnimation.gif"/></p></div> <!-- Popup -->    
 
-        <div id="wrapper"> <!-- damit content/main block 100% breit ist -->
+        {*(<div id="wrapper"> <!-- damit content/main block 100% breit ist -->
             {if $page_name eq 'login' OR $page_name eq 'error' OR $page_name eq 'criteria'} <!--Kein Menu -->
                  <div class="floatleft"></div>    
             {else}
@@ -104,12 +198,8 @@
                     {block name=content} {/block}
                 </div> <!-- end #content -->     
             </div> <!-- end #main -->  
-        </div>      
-
-        <footer id="page-footer" >
-            <div class="copyright">{$app_footer}<span class="floatright space-right">{if isset($stat_users_online) && checkCapabilities('menu:readPassword', $my_role_id, false)}Erfolgreich erreichte Ziele auf curriculumonline.de: {$stat_acc_all} davon heute: {$stat_acc_today} ({$stat_users_online} User online | Heute: {$stat_users_today}) {/if}</span></div>
-            {block name=footer} {/block}
-        </footer>                          
+        </div> *}     
+                            
         
 <!-- SCRIPTS-->  
         <script src="{$media_url}scripts/script.js"></script>     
@@ -202,5 +292,11 @@
         </script>
          <!-- end Logout - Timer  -->
         {/block}  
+    
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{$media_url}scripts/jquery-1.12.1.min.js"></script>
+    <script src="{$media_url}bootstrap-3.3.6-dist/js/bootstrap.min.js"></script>
     </body>
 </html>

@@ -9,11 +9,14 @@
 
 {block name=content}
 <div class="border-box">
-    <div class="contentheader ">{$page_title}<input class="curriculumdocsbtn floatright" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Rollen_und_Rechte');"/></div>
+    <h3 class="page-header">{$page_title}<input class="curriculumdocsbtn pull-right" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Rollen_und_Rechte');"/></h3>
+    
     {if !isset($showForm) && checkCapabilities('role:add', $my_role_id, false)}
-        <p class="floatleft  cssimgbtn gray-border">
-            <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=role&function=new">Rolle hinzufügen</a>
-        </p>
+        <div class="btn-group" role="group" aria-label="...">
+            <button type="button" class="btn btn-default"><a href="index.php?action=role&function=new">
+                    <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Rolle hinzufügen</a>
+            </button>
+        </div>
     {else}
         <form id='roleForm' method='post' action='index.php?action=role&next={$currentUrlId}'>
         <input id='r_id'  name='r_id' type='hidden' {if isset($r_id)}value='{$r_id}'{/if} />  

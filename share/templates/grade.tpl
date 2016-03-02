@@ -8,12 +8,13 @@
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
 {block name=content}
-<div class="border-box">
-    <div class="contentheader ">Klassenstufen verwalten<input class="curriculumdocsbtn floatright" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Klassenstufen_anlegen');"/></div>
+    <h3 class="page-header">Klassenstufen verwalten<input class="curriculumdocsbtn pull-right" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Klassenstufen_anlegen');"/></h3>
     {if !isset($showForm) AND checkCapabilities('grade:add', $my_role_id, false)}
-    <p class="floatleft cssimgbtn gray-border">
-        <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=grade&function=new">Klassenstufe hinzufügen</a>
-    </p>
+    <div class="btn-group" role="group" aria-label="...">
+        <button type="button" class="btn btn-default"><a href="index.php?action=grade&function=new">
+                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Klassenstufe hinzufügen</a>
+        </button>
+    </div>
     {else}
         <form id='gradeForm' method='post' action='index.php?action=grade&next={$currentUrlId}'>
             <input id='id' name='id' type='hidden' {if isset($id)}value='{$id}'{/if} /></p>   
@@ -38,7 +39,6 @@
     {/if}
     
 {html_paginator id='gradeP'}
-</div>
 {/block}
 
 {block name=sidebar}{$smarty.block.parent}{/block}

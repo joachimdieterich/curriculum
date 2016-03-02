@@ -11,7 +11,8 @@
 
 <div class="border-box">    
     {foreach key=curid name=curriculum item=con from=$course}
-    <div class="contentheader">Lehrplan: {$con->curriculum} ({$con->grade}: {$con->subject})<input class="curriculumdocsbtn floatright" type="button" name="help" onclick="{if isset($showaddObjectives)}curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Lehrplan_anlegen'){else}curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Lehrplan'){/if};"/></div>
+    <h3 class="page-header">Lehrplan: {$con->curriculum} ({$con->grade}: {$con->subject})<input class="curriculumdocsbtn pull-right" type="button" name="help" onclick="{if isset($showaddObjectives)}curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Lehrplan_anlegen'){else}curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Lehrplan'){/if};"/></h3>
+    
     <div><p>Beschreibung: {$con->description} ({$con->schooltype})</p>
         <p>Bundesland: {$con->state} ({$con->country})</p>
         <div id="printContent" class="scroll space-bottom">     

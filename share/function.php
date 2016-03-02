@@ -116,9 +116,9 @@ function setPaginator($instance, $template, $data, $returnVar, $currentURL, $con
     } else {          
         if (filter_input(INPUT_GET, 'paginator_limit', FILTER_UNSAFE_RAW) && filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW)){
             SmartyPaginate::setLimit(filter_input(INPUT_GET, 'paginator_limit', FILTER_UNSAFE_RAW), filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW));
-        } else {
+        } /*else {
             $SmartyPaginate->setLimit($USER->paginator_limit, $instance);
-        }
+        }*/ 
     }
     $SmartyPaginate->setUrl($currentURL, $instance);
     $SmartyPaginate->setUrlVar($instance, $instance);
