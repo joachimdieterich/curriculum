@@ -91,7 +91,7 @@ function smarty_function_html_paginator($params, $template) {
         $_html_result .= '<span style="padding-right:10px"><input style="width:40px; text-align:right;margin-bottom:2px;" name="p_search" type="text" value="'.SmartyPaginate::getLimit($id).'"  onkeydown="if (event.keyCode == 13) {event.preventDefault(); window.location.href = \''.$url.'&paginator='.$id.'&paginator_limit=\'+this.value;}"> / Seite</span>';
     }
     $_html_result .= '</p>';
-    $_html_result .= '<table ';
+    $_html_result .= '<div class="table-responsive"><table class="table table-striped" ';
     if (isset($table_id['id'])){
         //error_log($table_id['id']);
         $_html_result .= 'id="'.$table_id['id'].'"';
@@ -181,10 +181,16 @@ function smarty_function_html_paginator($params, $template) {
         $_html_result .= '</tr>';
     }       
                   
-    $_html_result .= '</table>';
+    $_html_result .= '</table></div>';
+    $_html_result .= '<div class="btn-group pull-right" role="group" aria-label="...">'
+        .smarty_function_paginate_prev(array('id' => $id), $template, true).' '
+        .smarty_function_paginate_middle(array('id' => $id, 'format' => 'page'), $template, true).' '
+        .smarty_function_paginate_next(array('id' => $id), $template, true). '
+      </div>';
     
     
-    $_html_result .= '<p class="floatright space-right space-bottom" >'.smarty_function_paginate_prev(array('id' => $id), $template).' '.smarty_function_paginate_middle(array('id' => $id), $template).' '.smarty_function_paginate_next(array('id' => $id), $template).'</p> ';
+    
+    //$_html_result .= '<p class="floatright space-right space-bottom" >'.smarty_function_paginate_prev(array('id' => $id), $template).' '.smarty_function_paginate_middle(array('id' => $id), $template).' '.smarty_function_paginate_next(array('id' => $id), $template).'</p> ';
     /**/
     $_html_result .= '<div class="space-left">';
     $_html_result .= '<input class="inputsmall" type="checkbox" id="allonPage" ';

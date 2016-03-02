@@ -120,6 +120,7 @@ class User {
      * @var int 
      */
     public $semester_id; 
+    public $semester;
     /**
      * users paginator limit
      * @var int
@@ -239,8 +240,10 @@ class User {
             $this->institutions  = $this->get_instiution_enrolments();
         }
         if ($this->semester_id == NULL AND $this->enrolments != false){
-           $this->semester_id = $this->enrolments[0]->semester_id;
+           $this->semester_id    = $this->enrolments[0]->semester_id;
         }
+        $semester                = new Semester($this->semester_id);
+        $this->semester          = $semester->semester;
         //Aktuelle Rolle laden (abhängig von der Institution --> ermittelt über das aktuelle Semester
         $db = DB::prepare('SELECT COUNT(id) FROM institution_enrolments AS ie WHERE ie.user_id = ? AND ie.status = 1');
         $db->execute(array($this->id));

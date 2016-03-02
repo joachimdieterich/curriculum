@@ -1,0 +1,378 @@
+/*
+ * Base structure
+ */
+
+
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+  padding-top: 50px;
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: #f5f5f5;
+}
+
+/*
+ * Global add-ons
+ */
+
+
+.sub-header {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+/*
+ * Top navigation
+ * Hide default border to remove 1px line.
+ */
+.navbar-fixed-top {
+  border: 0;
+}
+
+/*
+ * Sidebar
+ */
+
+/* Hide for mobile, show later */
+.sidebar {
+  display: none;
+  
+}
+@media (min-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 51px;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    display: block;
+    padding: 20px;
+    overflow-x: hidden;
+    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+    background-color: #337ab7;
+    border-right: 1px solid #eee;
+  }
+}
+
+/* Sidebar navigation */
+.nav-sidebar {
+  margin-right: -21px; /* 20px padding + 1px border */
+  margin-bottom: 20px;
+  margin-left: -20px;
+}
+.nav-sidebar > li > a {
+  padding-right: 20px;
+  padding-left: 20px;
+  color: #eee;
+}
+
+.nav-sidebar > li > a:hover {
+  color: #333;
+}
+.nav-sidebar > li > a:hover > ico{
+    filter: invert(0%);
+   -webkit-filter: invert(0%);
+}
+
+.nav-sidebar > .active > a,
+.nav-sidebar > .active > a:hover,
+.nav-sidebar > .active > a:focus {
+  color: #fff;
+  background-color: #428bca;
+}
+
+.nav-sidebar > .active > a > ico,
+.nav-sidebar > li > a > ico {
+   margin-right: 20px; 
+}
+
+.hidden-sm:hover{
+    dispay:block;
+}
+
+
+/*
+ * Main content
+ */
+
+*.main {
+    background-color: #eee;
+    padding: 20px;
+}
+
+.main .page-header {
+  margin-top: 0;
+}
+
+.page-title{
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+
+/*
+ * Placeholder dashboard ideas
+ */
+
+.placeholders {
+  margin-bottom: 30px;
+  text-align: center;
+}
+.placeholders h4 {
+  margin-bottom: 0;
+}
+.placeholder {
+  margin-bottom: 20px;
+}
+.placeholder img {
+  display: inline-block;
+  border-radius: 50%;
+}
+
+
+/*
+ * Icons
+ * 
+ */
+/* Images */
+ico {
+    -webkit-font-smoothing: antialiased;
+    box-sizing: border-box;
+    cursor: auto;
+    display: inline-block;
+    font-size: 12px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    height: 16px;
+    line-height: 16px;
+    list-style-type: disc;
+    padding-bottom: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 0px;
+    text-align: left;
+    vertical-align: middle;
+    text-decoration: none;
+    width:16px;
+}
+
+
+.icon_tiny {                                       
+    height: 16px;
+    width: 16px;  
+}
+.icon_listposition{
+    padding-right:4px; 
+    margin-left: -6px;
+}
+
+.printbtn, .editbtn,.filebtn, .certificatebtn, .clockbtn, .tagsbtn, .numberedbtn, .rolebtn, .userbtn, .deletebtn, .removebtn, .addbtn, .addmaterialbtn, .leftbtn, .rightbtn, .upbtn, .downbtn, 
+.addsolutionbtn, .okbtn, .ok2btn, .notbtn, .groupbtn, .institutionbtn, .calbtn, .listbtn, .listaltbtn, .downloadbtn, .helpbtn, .curriculumdocsbtn, .answerbtn,
+.mailinbtn, .mailoutbtn, .mailnewbtn, .maildelbtn, .bdgbtn, .infobtn, .checkbtn, .smallthumbbtn, .checkgreenbtn, .checkredbtn, .checkorangebtn, .checkwhitebtn,
+.checkactivegreenbtn, .checkactiveredbtn, .checkactiveorangebtn, .checkactivewhitebtn{ 
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-color: transparent;
+    margin-right: 5px;    
+    height: 16px;
+    width: 16px;
+    border: none;
+    cursor: pointer;
+    vertical-align: middle; 
+    opacity:0.5;
+    filter:alpha(opacity=50); /* For IE8 and earlier */
+}
+
+.xmlbtn{
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-color: transparent;
+    margin-right: 5px;    
+    height: 14px;
+    width: 58px;
+    border: none;
+    cursor: pointer;
+    vertical-align: middle; 
+    opacity:0.5;
+    filter:alpha(opacity=50); /* For IE8 and earlier */
+}
+.checkactivegreenbtn, .checkactiveredbtn, .checkactiveorangebtn, .checkactivewhitebtn{ 
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-color: transparent;
+    margin-right: 5px;    
+    height: 18px;
+    width: 22px;
+    border: none;
+    cursor: pointer;
+    vertical-align: middle; 
+    opacity:0.5;
+    filter:alpha(opacity=50); /* For IE8 and earlier */
+}
+.pointer_hand{
+     cursor: pointer;
+}
+.commentbtn{
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-color: transparent;
+    border: none;
+    cursor: help;
+    vertical-align: middle;  
+}
+.deactivatebtn {
+    opacity:0.2;
+    filter:alpha(opacity=20); /* For IE8 and earlier */
+    cursor: not-allowed !important;
+}
+.inbtn, .outbtn{ 
+    background-repeat: no-repeat;
+    background-size: 27px 27px;
+    background-color: transparent;
+    margin-right: 5px;    
+    height: 27px;
+    width: 27px;
+    border: none;
+    cursor: pointer;
+    vertical-align: middle;
+    opacity:0.5;
+    filter:invert;
+}
+
+.invert{
+   filter: invert(100%);
+   -webkit-filter: invert(100%);
+}
+
+.bdgbtn         { background-image: url('../images/icons/badges-icon32x32.png');}
+.inbtn          { background-image: url('../images/icons/glyphicons_131_inbox_plus.png'); }
+.outbtn         { background-image: url('../images/icons/glyphicons_132_inbox_minus.png'); }
+.printbtn       { background-image: url('../images/icons/glyphicons_015_print.png'); }
+.calbtn         { background-image: url('../images/icons/glyphicons_045_calendar.png');  }
+.filebtn        { background-image: url('../images/icons/glyphicons_036_file.png');  }
+.certificatebtn { background-image: url('../images/icons/glyphicons-685-article.png');  }
+.clockbtn       { background-image: url('../images/icons/glyphicons-55-clock.png');  }
+.tagsbtn        { background-image: url('../images/icons/glyphicons-67-tags.png');  }
+.numberedbtn    { background-image: url('../images/icons/glyphicons-710-list-numbered.png');  }
+.rolebtn        { background-image: url('../images/icons/glyphicons-715-user-structure.png');  }
+.userbtn        { background-image: url('../images/icons/glyphicons-4-user.png');  }
+.smallthumbbtn  { background-image: url('../images/icons/glyphicons-157-show-thumbnails.png');  }
+.listaltbtn  { background-image: url('../images/icons/glyphicons-530-list-alt.png');  }
+.listbtn        { background-image: url('../images/icons/glyphicons_156_show_thumbnails_with_lines.png'); 
+                  background-size: 16px 12px;
+                  margin-top: 3px; }
+.addbtn         { background-image: url('../images/icons/glyphicons_190_circle_plus.png'); }
+.addmaterialbtn { background-image: url('../images/icons/glyphicons_190_circle_plus.png'); }
+.addsolutionbtn { background-image: url('../images/icons/glyphicons_201_upload.png'); }
+.answerbtn      { background-image: url('../images/icons/glyphicons_221_unshare.png'); }
+.editbtn        { background-image: url('../images/icons/glyphicons_151_edit.png'); }
+.checkbtn       { background-image: url('../images/icons/glyphicons_150_check.png'); 
+                  margin-top: 2px;}
+.checkactivegreenbtn  { background-image: url('../images/icons/checkbox_green.png');margin-top: 2px;}
+.checkactiveredbtn    { background-image: url('../images/icons/checkbox_red.png');margin-top: 2px;}
+.checkactiveorangebtn { background-image: url('../images/icons/checkbox_orange.png');margin-top: 2px;}
+.checkactivewhitebtn  { background-image: url('../images/icons/checkbox_white.png'); }
+.checkgreenbtn  { background-image: url('../images/icons/glyphicons-154-unchecked-green.png');}
+.checkredbtn    { background-image: url('../images/icons/glyphicons-154-unchecked-red.png');}
+.checkorangebtn { background-image: url('../images/icons/glyphicons-154-unchecked-orange.png');}
+.checkwhitebtn  { background-image: url('../images/icons/glyphicons-154-unchecked-white.png');}
+.deletebtn      { background-image: url('../images/icons/glyphicons_191_circle_minus.png'); }
+.removebtn      { background-image: url('../images/icons/glyphicons_192_circle_remove.png'); }
+.groupbtn       { background-image: url('../images/icons/glyphicons_043_group.png'); }
+.institutionbtn { background-image: url('../images/icons/glyphicons_263_bank.png'); }
+.helpbtn        { background-image: url('../images/icons/glyphicons_194_circle_question_mark.png'); 
+                  cursor:help; }
+.curriculumdocsbtn { background-image: url('../images/icons/glyphicons_194_circle_question_mark.png'); 
+                  cursor:help; height: 20px; }
+.downloadbtn    { background-image: url('../images/icons/glyphicons_200_download.png');
+                  margin-left: -4px;}
+.xmlbtn         { background-image: url('../images/icons/glyphicons-118-embed-xml.png');}
+.mailinbtn      { background-image: url('../images/icons/glyphicons_122_message_in.png'); }
+.mailoutbtn     { background-image: url('../images/icons/glyphicons_123_message_out.png'); }
+.mailnewbtn     { background-image: url('../images/icons/glyphicons_124_message_plus.png'); }
+.maildelbtn     { background-image: url('../images/icons/glyphicons_125_message_minus.png'); }
+.commentbtn     { background-image: url('../images/icons/glyphicons_309_comments.png'); }
+.okbtn          { background-image: url('../images/icons/glyphicons_206_ok_2.png') ;}
+.ok2btn         { background-image: url('../images/icons/glyphicons_206_ok_3.png') ;}
+.leftbtn        { background-image: url('../images/icons/glyphicons_210_left_arrow.png'); }
+.rightbtn       { background-image: url('../images/icons/glyphicons_211_right_arrow.png'); }
+.downbtn        { background-image: url('../images/icons/glyphicons_212_down_arrow.png'); }
+.upbtn          { background-image: url('../images/icons/glyphicons_213_up_arrow.png'); }
+.notbtn         { background-image: url('../images/icons/glyphicons_207_remove_2.png'); }
+.infobtn        { background-image: url('../images/icons/glyphicons_195_circle_info.png');}
+.btntext {
+    margin-bottom: 1px;
+    position: absolute;
+    padding-top: 5px;
+    margin-left: 30px;
+    top :0px; left:0px; right:0px;
+    width: 100%;
+    height: 20px;
+}
+
+/*Filetype buttons - allgemeine Eigenschaften*/
+.url_btn, .pdf_btn, .txt_btn, .rtf_btn, .jpg_btn, .jpeg_btn, .png_btn, .gif_btn, 
+.doc_btn, .docx_btn, .ppt_btn, .pptx_btn, .bmp_btn, .tiff_btn, .tif_btn, .mpg_btn, 
+.mpeg_btn, .mpe_btn, .qt_btn, .mov_btn, .mp4_btn, .avi_btn, .aif_btn, .aiff_btn, 
+.wav_btn, .mp3_btn, .m4a_btn, .zip_btn, .rar_btn, .mid_btn, .imscc_btn {
+    background-repeat: no-repeat;
+    background-size: 48px 48px;
+    background-color: transparent;
+    margin-top: 0px;
+    height: 48px;
+    width: 48px;
+    border: none;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+
+.url_btn                        {background-image: url('../images/filetypes/url-48_32.png');}
+.pdf_btn                        {background-image: url('../images/filetypes/pdf-48_32.png');}
+.txt_btn, .rtf_btn              {background-image: url('../images/filetypes/text-48_32.png');}
+.jpg_btn, .jpeg_btn             {background-image: url('../images/filetypes/jpeg-48_32.png');}
+.png_btn                        {background-image: url('../images/filetypes/png-48_32.png');}
+.gif_btn                        {background-image: url('../images/filetypes/gif-48_32.png');}
+.doc_btn, .docx_btn             {background-image: url('../images/filetypes/docx_mac-48_32.png');}
+.ppt_btn, .pptx_btn             {background-image: url('../images/filetypes/pptx_mac-48_32.png');}
+.bmp_btn                        {background-image: url('../images/filetypes/bmp-48_32.png');}
+.tiff_btn, .tif_btn             {background-image: url('../images/filetypes/tiff-48_32.png');}
+.mpg_btn, .mpeg_btn, .mpe_btn   {background-image: url('../images/filetypes/mpeg-48_32.png');}
+.qt_btn, .mov_btn, .mp4_btn     {background-image: url('../images/filetypes/mov-48_32.png');}
+.avi_btn                        {background-image: url('../images/filetypes/avi-48_32.png');}
+.aif_btn, .aiff_btn, 
+.wav_btn, .mp3_btn, .m4a_btn    {background-image: url('../images/filetypes/wav-48_32.png');}
+.zip_btn, .rar_btn, .imscc_btn  {background-image: url('../images/filetypes/zip-48_32.png');}
+.mid_btn                        {background-image: url('../images/filetypes/midi-48_32.png');}
+
+/*
+ * Lists
+ */
+/* remove margins for navigation lists */
+ul { margin: 0; list-style:none; list-style-image: none; }
+
+
+/*
+ * Tables
+ */
+.contenttablesearch {
+    margin-top: -5px;
+    width:          70px; 
+    margin-left:   10px;
+    margin-right: 10px;
+    background-color: inherit;
+    outline:        none; 
+    border:         none; 
+    border-bottom:      1px solid hsl(0,0%,70%);
+    -webkit-box-shadow: none; 
+    box-shadow:         none;
+}

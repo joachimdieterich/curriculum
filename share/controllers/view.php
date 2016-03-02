@@ -28,6 +28,7 @@ if ($_GET){
                                     $group->load(); 
                                     $TEMPLATE->assign('group',     $group);
         case isset($_GET['curriculum']): $PAGE->curriculum = $_GET['curriculum'];
+                                    $TEMPLATE->assign('page_curriculum',     $PAGE->curriculum);
             break;
         
         default:

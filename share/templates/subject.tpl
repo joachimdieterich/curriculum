@@ -9,11 +9,13 @@
 
 {block name=content}
 <div class="border-box">
-    <div class="contentheader ">{$page_title}<input class="curriculumdocsbtn floatright" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=F%C3%A4cher_anlegen');"/></div>
+    <h3 class="page-header">{$page_title}<input class="curriculumdocsbtn pull-right" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=F%C3%A4cher_anlegen');"/></h3>
     {if !isset($showForm) && checkCapabilities('subject:add', $my_role_id, false)}
-        <p class="floatleft  cssimgbtn gray-border">
-            <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=subject&function=new">Fach hinzufügen</a>
-        </p>
+        <div class="btn-group" role="group" aria-label="...">
+            <button type="button" class="btn btn-default"><a  href="index.php?action=subject&function=new">
+                    <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Fach hinzufügen</a>
+            </button>
+        </div>
     {else}
         <form id='subjectForm' method='post' action='index.php?action=subject&next={$currentUrlId}'>
         <input type='hidden' name='id' id='id' {if isset($id)}value='{$id}'{/if} />    

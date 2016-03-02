@@ -8,12 +8,13 @@
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
 {block name=content}
-<div class="border-box">
-    <div class="contentheader">{$page_title}<input class="curriculumdocsbtn floatright" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Zertifikatvorlage_einrichten');"/></div>
+    <h3 class="page-header">{$page_title}<input class="curriculumdocsbtn pull-right" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Zertifikatvorlage_einrichten');"/></h3>
     {if !isset($showForm) && checkCapabilities('certificate:add', $my_role_id, false)}
-        <p class="floatleft  cssimgbtn gray-border">
-            <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=certificate&function=new">Zertifikat hinzufügen</a>
-        </p>
+        <div class="btn-group" role="group" aria-label="...">
+            <button type="button" class="btn btn-default"><a href="index.php?action=certificate&function=new">
+                    <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Zertifikat hinzufügen</a>
+            </button>
+        </div>
     {else}
         {$certificate_form}
         <script type='text/javascript'>document.getElementById('certificate').focus();</script>

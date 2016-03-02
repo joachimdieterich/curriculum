@@ -26,7 +26,7 @@
  * @version 1.6-dev
  */
 
-function smarty_function_paginate_last($params, &$smarty) {
+function smarty_function_paginate_last($params, &$smarty, $bootstrap = false) {
 
     $_id = 'default';
     $_attrs = array();
@@ -71,8 +71,11 @@ function smarty_function_paginate_last($params, &$smarty) {
     $_url .= SmartyPaginate::getUrlVar($_id) . '=';
     $_url .= ($_total % $_limit > 0) ? $_total - ( $_total % $_limit ) + 1 : $_total - $_limit + 1;
     
-    return '<a href="' . str_replace('&','&amp;', $_url) . '"' . $_attrs . '>' . $_text . '</a>';
-    
+    if ($bootstrap){
+        return $_show ? '<button type="button" class="btn btn-default"><a href="' . str_replace('&','&amp;', $_url) . '"' . $_attrs . '>' . $_text . '</a></button>' : '';
+    } else {
+        return $_show ? '<a href="' . str_replace('&','&amp;', $_url) . '"' . $_attrs . '>' . $_text . '</a>' : '';
+    }
 }
 
 ?>

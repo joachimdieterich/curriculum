@@ -30,8 +30,8 @@ try { // Error handling
      case 'criteria':  //wichtig für Badges-Info ohne Login
          break;
      
-     default:       if(filter_input(INPUT_POST, 'mySemester', FILTER_VALIDATE_INT)){                                          // Lernzeitraum wurde gewechselt --> vor session.php damit Änderungen übernommen werden
-                        $_SESSION['USER']->semester_id    = filter_input(INPUT_POST, 'mySemester', FILTER_VALIDATE_INT);      // Neuer Lernzeitraum übernehmen
+     default:       if(filter_input(INPUT_GET, 'mySemester', FILTER_VALIDATE_INT)){                                          // Lernzeitraum wurde gewechselt --> vor session.php damit Änderungen übernommen werden
+                        $_SESSION['USER']->semester_id    = filter_input(INPUT_GET, 'mySemester', FILTER_VALIDATE_INT);      // Neuer Lernzeitraum übernehmen
                         $TEMPLATE->assign('my_semester_id', $_SESSION['USER']->semester_id); 
                         $change_semester      = new Semester($_SESSION['USER']->semester_id);
                         $us = new User();                                                                                     // $USER hier noch nicht verfügbar

@@ -21,7 +21,7 @@ global $CFG, $DB;
 $CFG = new stdClass();
 
 /* Application !IMPORTANT! Do not change manually*/
-$CFG->app_title='curriculum <br/>0.9.2';
+$CFG->app_title='curriculum 0.9.2';
 $CFG->app_footer='© Copyright 2014 - Joachim Dieterich.<br>Aktuelle Informationen unter <a href="http://www.joachimdieterich.de">http://www.joachimdieterich.de</a>'; 
 
 /* DB Settings */

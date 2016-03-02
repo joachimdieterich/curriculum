@@ -8,9 +8,7 @@
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
 {block name=content} 
-
-<div class="border-box">
-    <div class="contentheader ">{$page_title}<input class="curriculumdocsbtn floatright" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Lernstand');"/></div>
+    <h3 class="page-header">{$page_title}<input class="curriculumdocsbtn pull-right" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Lernstand');"/></h3>
         {if isset($user->avatar)}
             <div id="right">
                 <img class="gray-border" src="{$access_file}{$user->avatar}" alt="Profilfoto">
@@ -162,7 +160,6 @@
                 {/if}            
             {/if}
         {/if} 
-</div>
 {/block}
 
 {block name=sidebar}{$smarty.block.parent}{/block}

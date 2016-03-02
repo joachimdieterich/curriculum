@@ -14,9 +14,7 @@
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
 {block name=content}
-    
-<div id="border-box" class="border-box">
-    <div class="contentheader">{$page_title}</div>
+    <h3 class="page-header">{$page_title}<input class="curriculumdocsbtn pull-right" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Nachrichten');"/></h3>
     <form id='messages' method='post' action='index.php?action=messages&function='>  
         <input type='hidden' name='timestamp' value='{$timestamp}'/>  
         <p class="floatleft cssimgbtn gray-border ">
@@ -100,7 +98,6 @@
             </form>  
         </div>
     {/if} 
-</div>
 {/block}
 
 
