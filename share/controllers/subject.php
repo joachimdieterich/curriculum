@@ -19,7 +19,7 @@
 */
 
 global $USER, $PAGE, $TEMPLATE; 
-if (isset($_GET['function'])) {
+/*if (isset($_GET['function'])) {
      switch ($_GET['function']) {
         case 'new':   checkCapabilities('subject:add',    $USER->role_id);      // USER berechtigt?
                                     $TEMPLATE->assign('showForm',       true); 
@@ -52,7 +52,7 @@ if($_POST){
                                         $new_subject->creator_id     = $USER->id;
                                         $new_subject->institution_id = filter_input(INPUT_POST, 'institution_id',  FILTER_VALIDATE_INT); //um $USER->institutions muss einauswahlfeld geben, wenn man in mehr als einer institution eingeschrieben ist, damit fach eindeutig zugeordnet wird
 
-                                        $gump = new Gump();                         /* Validation */
+                                        $gump = new Gump();                        
                                         $_POST = $gump->sanitize($_POST);           //sanitize $_POST
                                         $gump->validation_rules(array(
                                         'subject'         => 'required',
@@ -61,28 +61,31 @@ if($_POST){
                                         ));
                                         $validated_data = $gump->run($_POST);
 
-                                        if($validated_data === false) {             /* validation failed */
+                                        if($validated_data === false) {            
                                             assign_to_template($new_subject);     
                                             $TEMPLATE->assign('v_error', $gump->get_readable_errors());     
                                             $TEMPLATE->assign('showForm', true); 
-                                        } else {/* validation successful */
+                                        } else {
                                             if (isset($_POST['add']))   { $new_subject->add(); }
                                             if (isset($_POST['update'])){ $new_subject->update($USER->id); }       
                                         }       
             break;
         default: break;
     }
-}
+}*/
 /*******************************************************************************
  * END POST / GET 
  */
-$TEMPLATE->assign('page_title', 'Fächer verwalten');
+$TEMPLATE->assign('page_title', 'Fächer');
+$TEMPLATE->assign('breadcrumb',  array('Fächer' => 'index.php?action=subject'));
 $subject                    = new Subject();
 $subject->institution_id    = $USER->institutions;
-$p_options = array('delete' => array('onclick' => "del('subject',__id__, $USER->id);", 
-                                     'capability' => checkCapabilities('subject:delete', $USER->role_id, false)),
-                    'edit'  => array('href'    => 'index.php?action=subject&function=edit&id=__id__'),
-                                     'capability' => checkCapabilities('subject:edit', $USER->role_id, false));
+$p_options = array('delete' => array('onclick'    => "del('subject',__id__, $USER->id);", 
+                                     'capability' => checkCapabilities('subject:delete', $USER->role_id, false),
+                                     'icon'       => 'fa fa-minus'),
+                    'edit'  => array('onclick'    => "formloader('subject','edit',__id__);",
+                                     'capability' => checkCapabilities('subject:update', $USER->role_id, false),
+                                     'icon'       => 'fa fa-edit'));
 $p_config =   array('id'         => 'checkbox',
                     'subject'       => 'Fach', 
                   'subject_short' => 'Kürzel',

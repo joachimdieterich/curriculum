@@ -33,6 +33,8 @@ if(isset($_FILES['datei']['name'])){                                            
  * END POST / GET  
  */  
 $TEMPLATE->assign('page_title', 'Benutzerkonten importieren');
+$TEMPLATE->assign('breadcrumb',  array('Benutzerverwaltung' => 'index.php?action=user', 
+                                       'Benutzerkonten importieren' => 'index.php?action=userImport'));
 $TEMPLATE->assign('filesize',   round(convertByteToMb($INSTITUTION->csv_size),2));
 
 $new_users = new User();

@@ -18,6 +18,17 @@
 
 var req;
 
+
+
+function formatBytes(bytes,decimals) {
+   if(bytes === 0) return '0 Byte';
+   var k = 1000; // or 1024 for binary
+   var dm = decimals + 1 || 3;
+   var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+   var i = Math.floor(Math.log(bytes) / Math.log(k));
+   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}
+
 function switchValue(ElementID){
     if (document.getElementById(ElementID).value === 'true'){
         document.getElementById(ElementID).value = 'false';
@@ -26,10 +37,51 @@ function switchValue(ElementID){
     }
 }
 
-function toggle(){ // allgemeine definieren . arg 1 soll angezeigt werden und alle weiteren deaktiviert werden. Anz. der arg. soll variabel sein
-	document.getElementById(arguments[0]).style.display = 'block';
-	document.getElementById(arguments[1]).style.display = 'none';
-	document.getElementById(arguments[2]).style.display = 'none';
+function toggle(){ // 
+    for(var i = 0, j = arguments[0].length; i < j; ++i) {
+        if ($(document.getElementById(arguments[0][i])).hasClass("hidden")){
+            $(document.getElementById(arguments[0][i])).removeClass("hidden");
+        }
+        $(document.getElementById(arguments[0][i])).addClass("visible");
+    }
+    for(var i = 0, j = arguments[1].length; i < j; ++i) {
+        if ($(document.getElementById(arguments[1][i])).hasClass("visible")){
+            $(document.getElementById(arguments[1][i])).removeClass("visible");
+        }
+        $(document.getElementById(arguments[1][i])).addClass("hidden");
+
+    }	
+}
+/**
+ * Get element height of element argument[0] 
+ * Set element height of elements argument[1] (array)
+ * @returns {undefined}
+ */
+function resizeBlocks(){
+    h = $('#'+arguments[0]).height();
+    for(var i = 0, j = arguments[1].length; i < j; ++i) {
+        $('#'+arguments[1][i]).height(h);
+    }
+}
+
+function toggle_input_size(){ // allgemeine definieren . arg 1 soll angezeigt werden und alle weiteren deaktiviert werden. Anz. der arg. soll variabel sein
+    if (arguments[1] === false) {
+        document.getElementById(arguments[0]).style.width = '25px';
+    } else {
+        document.getElementById(arguments[0]).style.width = '100px';
+    }
+}
+
+function toggle_column(){ 
+    
+    if ($('td[name='+arguments[0]+']').hasClass("hidden")){
+       $('td[name='+arguments[0]+']').removeClass("hidden");
+       $("#cb_"+arguments[0]).prop("checked", true);            // Checkbox
+
+    } else {
+        $('td[name='+arguments[0]+']').addClass("hidden");
+        $("#cb_"+arguments[0]).prop("checked", false);          // uncheck Checkbox
+    }	
 }
 
 function loadmail(mail_id, mailbox) {
@@ -70,7 +122,6 @@ function mail(mail_id, mailbox) {
     if (req.readyState === 4) {  
         if (req.status === 200) {
            if (req.responseText.length !== 1){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen
-                  //tinyMCE.activeEditor.contentDocument.body.innerHTML = req.responseText;         
                   document.getElementById('mailbox').innerHTML = req.responseText;
                   document.getElementById(mailbox+'_'+mail_id).className = 'contenttablerow';
                   document.getElementById('mailbox').style.width = (document.body.offsetWidth - 555) +"px";
@@ -103,7 +154,10 @@ function checkrow(/*rowNr,link*/) {
     if (arguments.length === 4) { //multiple Auswahl über die Checkboxen (Lernstand)
         var values = new Array();           //Array of all checked values
         $.each($('[name="'+arguments[1]+'"]:checked'), function() {
-            values.push($(this).val());                             
+            //alert($(this).val());
+            if ($(this).val() !== 'none'){
+                values.push($(this).val());                             
+            }
           });
           window.location.assign(arguments[3]+'&'+arguments[2]+'_sel_id='+values);        
     }
@@ -164,14 +218,45 @@ function XMLobject() {
     return request;
 }
 
-
-function answer() {
+function process(){
     $('#popup').show(); 
     if (req.readyState === 4) {  
         if (req.status === 200) {   
            if (req.responseText.length !== 0){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen --> auf 0 geändert - testen!
+                response = JSON.parse(req.responseText);
                 if (document.getElementById('popup')){
-                     document.getElementById('popup').innerHTML = req.responseText;   
+                    document.getElementById('popup').innerHTML = response.html
+                    if (typeof(response.class)!=='undefined'){
+                        $(document.getElementById('popup')).addClass(response.class);
+                    }
+                    
+                    if (typeof(response.script)!=='undefined'){ // loads js for popup
+                        document.getElementById('popup').innerHTML = document.getElementById('popup').innerHTML+response.script;  
+                    }
+                    raiseEvent('load', 'popup');
+                } else {
+                    alert(req.responseText); //unschön, aber #popup ist vom modalframe aus nicht verfügbar
+                }    
+           } else {
+               window.location.reload();
+           }
+        }
+    }  
+}
+
+function scriptloader(script){
+    alert(script);
+    //script;
+}
+
+/*function answer() {
+    $('#popup').show(); 
+    if (req.readyState === 4) {  
+        if (req.status === 200) {   
+           if (req.responseText.length !== 0){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen --> auf 0 geändert - testen!
+                
+                if (document.getElementById('popup')){
+                     document.getElementById('popup').innerHTML = req.responseText;  
                      $('#popup').show(); 
                      raiseEvent('load', 'popup');
                 } else {
@@ -182,7 +267,7 @@ function answer() {
            }
         }
     }   
-}
+}*/
 
 function reloadPage() {
     if (req.readyState === 4) { 
@@ -274,16 +359,18 @@ function setAccomplishedObjectives(creatorID, userID, paginatorfirst, paginatorL
                 if (req.responseText.length !== 1){
                 }
                 switch(statusID) {
-                case 0:     document.getElementById(terminalObjectiveID+"style"+enablingObjectiveID).className = 'box gray-border boxred';
+                case 0:     $(document.getElementById(terminalObjectiveID+"style"+enablingObjectiveID)).addClass("boxred");
                             document.getElementById(terminalObjectiveID+"_"+enablingObjectiveID).innerHTML=0;
                     break;
-                case 1:     document.getElementById(terminalObjectiveID+"style"+enablingObjectiveID).className = 'box gray-border boxgreen';
+                case 1:     $(document.getElementById(terminalObjectiveID+"style"+enablingObjectiveID)).removeClass("boxred");
+                            $(document.getElementById(terminalObjectiveID+"style"+enablingObjectiveID)).addClass("boxgreen");
                             document.getElementById(terminalObjectiveID+"_"+enablingObjectiveID).innerHTML=1;
                     break;
-                case 2:     document.getElementById(terminalObjectiveID+"style"+enablingObjectiveID).className = 'box gray-border boxorange';
+                case 2:     $(document.getElementById(terminalObjectiveID+"style"+enablingObjectiveID)).removeClass("boxgreen");
+                            $(document.getElementById(terminalObjectiveID+"style"+enablingObjectiveID)).addClass("boxorange");
                             document.getElementById(terminalObjectiveID+"_"+enablingObjectiveID).innerHTML=2;
                     break;
-                case 3:     document.getElementById(terminalObjectiveID+"style"+enablingObjectiveID).className = 'box gray-border';
+                case 3:     $(document.getElementById(terminalObjectiveID+"style"+enablingObjectiveID)).removeClass("boxorange");
                             document.getElementById(terminalObjectiveID+"_"+enablingObjectiveID).innerHTML=3;
                     break;
                 }
@@ -345,11 +432,14 @@ function setAccomplishedObjectivesBySolution(creatorID, userID, enablingObjectiv
  */
 function getRequest(url){
     req = XMLobject();
+    
     if(req) {        
-        req.onreadystatechange = answer;
-        req.open("GET", url, true);
-        req.send(null);
-    }    
+        req.onreadystatechange = process;
+        req.open("GET", url); // ! security ! im Formular muss überprüft werden, ob user die Daten (bez. auf id) sehen darf
+        req.setRequestHeader('Content-Type', 'application/json; charset=utf-8'); //Kann Meldung "Automatically populating $HTTP_RAW_POST_DATA is deprecated " in der Konsole erzeugen: Lösung: always_populate_raw_post_data = -1 //in der php.ini auf -1 setzen. 
+        req.send();
+    } 
+       
 }
 
 /**
@@ -399,9 +489,9 @@ function curriculumdocs(link) {
  * @returns {html}
  */
 function addterminalObjective(curriculumID) {  
-    getRequest("../share/request/terminalObjective.php?curriculumID="+ curriculumID);
+    getRequest("../share/request/terminalObjective.php?curriculum_id="+ curriculumID);
 }
-
+ 
 /**
  * Add objective
  * @param {int} curriculumID
@@ -413,6 +503,8 @@ function addenablingObjective(curriculumID, terminalObjectiveID) {
     getRequest(url);
 }
 
+
+
 function editObjective() {
     if (arguments.length === 2) {
        var url = "../share/request/terminalObjective.php?curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1]+ "&edit=true"; 
@@ -421,6 +513,36 @@ function editObjective() {
        var url = "../share/request/enablingObjective.php?curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1] +"&enablingObjectiveID="+ arguments[2] + "&edit=true"; 
     }
     getRequest(url);
+}
+
+/**
+ * loadForm
+ * @param {string} form
+ * @param {string} func
+ * @param {array}  data
+ * @param {int}    id
+ * @returns {undefined}
+ */
+function loadForm(form, func, data, id) {
+    req = XMLobject();
+    if(req) {        
+        req.onreadystatechange = process;
+        req.open("POST", "../share/request/form_"+form+".php?function="+func+"&id="+id); // ! security ! im Formular muss überprüft werden, ob user die Daten (bez. auf id) sehen darf
+        //alert(JSON.stringify(form+".php?function="+func+"&id="+id));
+        req.setRequestHeader('Content-Type', 'application/json; charset=utf-8'); //Kann Meldung "Automatically populating $HTTP_RAW_POST_DATA is deprecated " in der Konsole erzeugen: Lösung: always_populate_raw_post_data = -1 //in der php.ini auf -1 setzen. 
+        var postData = JSON.stringify(data);
+        req.send(postData);
+    }  
+}
+
+/*
+ * Form Loader
+ * Opens Modal
+ * called by user or $(document).ready in base.tpl (if valitation of form failed)
+ * @returns {undefined}
+ */
+function formloader(form, func, id){
+    getRequest("../share/request/f_"+ form +".php?func="+ func +"&id="+ id);
 }
 
 
@@ -432,7 +554,7 @@ function order() {
     }
     req = XMLobject();
     if(req) {        
-        req.onreadystatechange = answer; 
+        req.onloadend = window.location.reload();
         req.open("GET", url, true);
         req.send(null);
     }
@@ -451,7 +573,7 @@ function del() {
               document.getElementById(arguments[2]+'_'+arguments[1]).style.display='none';
               document.getElementById('mailbox').style.display='none';
             } else {
-               req.onreadystatechange = answer; //Dialog mit Meldungen zeigen 
+               req.onreadystatechange = process; //Dialog mit Meldungen zeigen 
                //Reload erfolgt über Submit des Popups req.onreadystatechange = reloadPage; //window.location.reload() wichtig, damit Änderungen angezeigt werden
             }
             req.open("GET", url, true);
@@ -522,8 +644,8 @@ function setStates() {
     if (req.readyState === 4) {  
         if (req.status === 200) {
            if (req.responseText.length != 1){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen
-                      if (document.getElementById('states')){
-                           document.getElementById('states').innerHTML = req.responseText;
+                      if (document.getElementById('state_id')){
+                           document.getElementById('state_id').innerHTML = req.responseText;
                       } else {
                           alert(req.responseText); //unschön, aber #popup ist vom modalframe aus nicht verfügbar
                       }  
@@ -567,6 +689,18 @@ function setGroups() {
         }
     }   
 }
+
+function setSemester(){  
+    var url = "../share/request/setSemester.php?semester_id="+ arguments[0];
+    
+    req = XMLobject();
+    if(req) {        
+        req.onreadystatechange = reloadPage;
+        req.open("GET", url, true);
+        req.send(null);
+    }
+}
+
 //wenn checkbox angeklickt, dann wird element mit id angezeigt
 function checkbox_addForm(){//arguments checked, style, id, invers_id -> if checked id is 'block' invers_id is 'none''
     if (arguments[0]) {
@@ -616,7 +750,8 @@ function confirmDialog(text) {
 
 //icon function
 function showSubjectIcon(path, icon){
-    document.getElementById('icon_img').src = path + icon;
+    //document.getElementById('icon_img').src = path + icon;
+    document.getElementById('icon_img').style.background =  "url('"+path+icon+"') center center";
 }
 
 /**
@@ -677,23 +812,53 @@ function updateFileHits(){
         }  
 }
 
-function editBulletinBoard() {
+/*function editBulletinBoard() {
     var url = "../share/request/bulletinBoard.php";
     getRequest(url);
+}*/
+
+function resizeModal(){
+    if ($('.modal-content').height() > window.innerHeight){
+        $('.modal-content').height(window.innerHeight - 50);
+        $('.modal-body').height(($('.modal-content').height()) - ($('.modal-header').height()) - ($('.modal-footer').height()) - 50 -31); // calc modal-body height for scrolling, -50 for margins - 31 (header padding
+    }
 }
 
 
-function popupFunction(){
-    tinymce.init({  
-        selector: "textarea",
-        theme:     "modern",
-        plugins: [ "advlist autolink code colorpicker lists link image charmap print preview hr anchor pagebreak",
-                    "searchreplace wordcount visualblocks visualchars fullscreen",
-                    "insertdatetime media nonbreaking save textcolor table contextmenu directionality",
-                    "emoticons paste"],
-        toolbar1:   "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | print preview media | forecolor backcolor emoticons | fileframe",      
-    });
+/**
+ * Activates scripts in modals
+ * @returns {undefined}
+ */
+function popupFunction(e){
+    eval($("#"+e).children("script").text()); // aktiviert scripte im Element e
+    resizeModal();              // resize modal 
+    // Replace the <textarea id="editor1"> with a CKEditor
+    // instance, using default configuration
+    textareas = document.getElementsByTagName("textarea");
+    for (var i = 0, len = textareas.length; i < len; i++) {
+        CKEDITOR.replace(textareas[i].id, {toolbarStartupExpanded : false});
+        CKEDITOR.on('instanceReady',function(){
+            /*resize */
+            resizeModal();      // if ckeditor is used, then modal has to be resized after ckeditor is ready
+        }); 
+    }
 };
+
+/**
+ * Important Hack for webkit browsers to remove audio / video data from cache.
+ * If not called after closing Player, next loading of player will be very! slow
+ * remove audio + video + stop all the downloading
+ * assumes $video and $audio are jQuery selectors for <video> and <audio> tags.
+ * @returns {undefined}
+ */  
+function removeMedia() {
+  $.each($('audio,video'), function () {
+    this.pause();
+    this.src = '';
+    $(this).children('source').prop('src', '');
+    this.remove();
+  });}
+;
 
 function setFormData() {
     var url     = "../share/request/setFormData.php?file="+ arguments[0];   
@@ -705,14 +870,14 @@ function setFormData() {
                 //alert(req.responseText);
                 c = JSON.parse(req.responseText);
                 
-                $('#c_curriculum', top.document).val(c.curriculum);
-                $('#c_description', top.document).val(c.description);
-                set_select('c_grade',       c.grade_id,         'value', 'top');
-                set_select('c_subject',     c.subject_id,       'value', 'top');
-                set_select('c_schooltype',  c.schooltype_id,    'value', 'top');
-                set_select('c_state',       c.state_id,         'value', 'top');
-                set_select('c_country',     c.country_id,       'value', 'top');
-                set_select('c_icon',        c.icon_id,          'value', 'top');
+                $('#curriculum', top.document).val(c.curriculum);
+                $('#description', top.document).val(c.description);
+                set_select('grade_id',       c.grade_id,         'value', 'top');
+                set_select('subject_id',     c.subject_id,       'value', 'top');
+                set_select('schooltype_id',  c.schooltype_id,    'value', 'top');
+                set_select('state_id',       c.state_id,         'value', 'top');
+                set_select('country_id',     c.country_id,       'value', 'top');
+                set_select('icon_id',        c.icon_id,          'value', 'top');
             }   
         }
     };
@@ -753,3 +918,4 @@ function set_select(element, val, field, level) {
         }
     }
 }
+

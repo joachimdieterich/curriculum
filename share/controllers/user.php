@@ -166,6 +166,7 @@ if (isset($_POST) ){
  */
 
 $TEMPLATE->assign('page_title', 'Benutzerverwaltung');
+$TEMPLATE->assign('breadcrumb',  array('Benutzerverwaltung' => 'index.php?action=user'));
 
 $roles = new Roles(); 
 $TEMPLATE->assign('roles', $roles->get());                                 //getRoles
@@ -177,15 +178,20 @@ $TEMPLATE->assign('myInstitutions', $institution->getInstitutions('user', null, 
 
 $users = new USER();
 $p_options = array('delete' => array('onclick'      => "del('user',__id__, $USER->id);", 
-                                     'capability'   => checkCapabilities('user:delete', $USER->role_id, false)),
-                    'edit'  => array('href'         => 'index.php?action=profile&function=editUser&userID=__id__'),
+                                     'capability'   => checkCapabilities('user:delete', $USER->role_id, false),
+                                     'icon'         => 'fa fa-minus'),
+                    'edit'  => array('href'         => 'index.php?action=profile&function=editUser&userID=__id__',
                                      'capability'   => checkCapabilities('user:updateUser', $USER->role_id, false),
-                    'group'  => array('href'        => 'index.php?action=user&function=showGroups&userID=__id__'),
+                                     'icon'         => 'fa fa-edit'),
+                    'group'  => array('href'        => 'index.php?action=user&function=showGroups&userID=__id__',
                                      'capability'   => checkCapabilities('user:getGroups', $USER->role_id, false),
-                    'list'  => array('href'         => 'index.php?action=user&function=showCurriculum&userID=__id__'),
+                                     'icon'         => 'fa fa-group'),
+                    'list'  => array('href'         => 'index.php?action=user&function=showCurriculum&userID=__id__',
                                      'capability'   => checkCapabilities('user:getCurricula', $USER->role_id, false),
-                    'institution'  => array('href'  => 'index.php?action=user&function=showInstitution&userID=__id__'),
-                                     'capability'   => checkCapabilities('user:getInstitution', $USER->role_id, false));
+                                     'icon'         => 'fa fa-list'),
+                    'institution'  => array('href'  => 'index.php?action=user&function=showInstitution&userID=__id__',
+                                     'capability'   => checkCapabilities('user:getInstitution', $USER->role_id, false),
+                                     'icon'         => 'fa fa-university'));
 $p_config =   array('id'         => 'checkbox',
                     'username'   => 'Benutzername', 
                     'firstname'  => 'Vorname', 

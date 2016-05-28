@@ -18,6 +18,7 @@
 */
 
 global $CFG, $USER, $PAGE, $TEMPLATE, $INSTITUTION;
+$TEMPLATE->assign('breadcrumb',  array('Lehrplan' => 'index.php?action=view'));
 $function = '';
 if ($_GET){ 
     switch ($_GET) {
@@ -27,8 +28,9 @@ if ($_GET){
                                     $group->id = $_GET['group'];
                                     $group->load(); 
                                     $TEMPLATE->assign('group',     $group);
-        case isset($_GET['curriculum']): $PAGE->curriculum = $_GET['curriculum'];
+        case isset($_GET['curriculum_id']): $PAGE->curriculum = $_GET['curriculum_id'];
                                     $TEMPLATE->assign('page_curriculum',     $PAGE->curriculum);
+                                    
             break;
         
         default:
@@ -37,9 +39,19 @@ if ($_GET){
 }
 
 if ($_POST){
-    switch ($_POST) {      
-        case isset($_POST['add_terminal_objective']):
-        case isset($_POST['update_terminal_objective']): $gump = new Gump();    /* Validation */
+    foreach ($_POST as $key => $value) {
+                error_log($key.': '.$value);
+            }
+            
+    if (isset($_POST['terminal_objective_id']) AND !isset($_POST['enabling_objective_id'])){ $func = 'update_terminal_objective'; } else {$func = 'add_terminal_objective';}
+    
+    switch ($func) {   
+           
+        /*case 'update_terminal_objective':
+        case 'add_terminal_objective':    $gump = new Gump();    
+            foreach ($_POST as $key => $value) {
+                error_log($key.': '.$value);
+            }
                                         $terminal_objective = new TerminalObjective();
                                         $terminal_objective->description        = filter_input(INPUT_POST, 'description', FILTER_UNSAFE_RAW); //--> to get html  // security???                       
                                         
@@ -52,7 +64,7 @@ if ($_POST){
                                         'terminal_objective'         => 'required'
                                         ));
                                         $validated_data = $gump->run($_POST);
-                                        if($validated_data === false) {/* validation failed */
+                                        if($validated_data === false) {
                                             foreach($terminal_objective as $key => $value){
                                             $TEMPLATE->assign($key, $value);
                                             } 
@@ -60,7 +72,7 @@ if ($_POST){
                                             $TEMPLATE->assign('editObjective', true); 
                                         } else {
                                             if (isset($_POST['update_terminal_objective'])){
-                                                $terminal_objective->id                 = $_POST['id'];
+                                                $terminal_objective->id          = $_POST['terminal_objective_id'];
                                                 $terminal_objective->update();
                                                 $ter_id = $terminal_objective->id;
                                             } else {
@@ -73,19 +85,20 @@ if ($_POST){
                                             $omega = new Omega();
                                             $omega->setReference('terminal_objective', $ter_id, filter_input(INPUT_POST, 'reference', FILTER_UNSAFE_RAW));
                                         }
-            break;
-        
+            break;*/
+        /*
         case isset($_POST['add_enabling_objective']):
-        case isset($_POST['update_enabling_objective']): $gump = new Gump();        /* Validation */
+        case isset($_POST['update_enabling_objective']): $gump = new Gump();     
+            
                                         $enabling_objective = new EnablingObjective();
-                                        $enabling_objective->description            = filter_input(INPUT_POST, 'description', FILTER_UNSAFE_RAW);   //--> to get html  // security???                       
+                                        
                                         $_POST = $gump->sanitize($_POST);           //sanitize $_POST
                                         if (isset($_POST['repeat']) AND $_POST['repeat'] != ''){
                                                     $str_interval = $enabling_objective->getRepeatInterval($_POST['rep_interval']);//aus $_POST['rep_interval'] Tage ermitteln --> über repeat_interval table
                                             } else {
                                                     $str_interval = -1;
                                             }
-                                        $enabling_objective->enabling_objective     = $_POST['enabling_objective'];
+                                        
                                         //$enabling_objective->description            = $_POST['description']; s. o. 
                                         $enabling_objective->terminal_objective_id  = $_POST['terminal_objective_id'];
                                         $enabling_objective->curriculum_id          = $_POST['curriculum_id'];
@@ -97,7 +110,7 @@ if ($_POST){
                                         'enabling_objective'        => 'required'
                                         ));
                                         $validated_data = $gump->run($_POST);
-                                        if($validated_data === false) {/* validation failed */
+                                        if($validated_data === false) {
                                             foreach($enabling_objective as $key => $value){
                                             $TEMPLATE->assign($key, $value);
                                             } 
@@ -105,7 +118,7 @@ if ($_POST){
                                             $TEMPLATE->assign('editObjective', true); 
                                         } else {  
                                             if (isset($_POST['update_enabling_objective'])){
-                                                $enabling_objective->id             = $_POST['id'];
+                                                $enabling_objective->id             = $_POST['enabling_objective_id'];
                                                 $enabling_objective->update();
                                                 $ena_id = $enabling_objective->id; 
                                             } else {
@@ -120,7 +133,7 @@ if ($_POST){
                                         } else {
                                             $omega->setReference('enabling_objective', $ena_id, ''); // damit update übernommen wird
                                         }
-            break;
+            break;*/
         case isset($_POST['add_badge']):
         case isset($_POST['update_badge']): $gump = new Gump();        /* Validation */
                                             $_POST = $gump->sanitize($_POST);           //sanitize $_POST
@@ -172,9 +185,11 @@ $enabling_objectives->curriculum_id = $PAGE->curriculum;
 $TEMPLATE->assign('course', $courses->getCourse('course', $PAGE->curriculum)); 
 switch ($function) {
     case 'addObjectives':   $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('curriculum', $PAGE->curriculum));
+                            $TEMPLATE->assign('page_title', 'Lehrplaninhalt bearbeiten'); 
         break;
 
     default:                $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('course', $PAGE->curriculum, $PAGE->group));
+                            $TEMPLATE->assign('page_title', 'Lehrplan'); 
         break;
 }
 

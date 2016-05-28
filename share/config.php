@@ -21,22 +21,23 @@ global $CFG, $DB;
 $CFG = new stdClass();
 
 /* Application !IMPORTANT! Do not change manually*/
-$CFG->app_title='curriculum 0.9.2';
-$CFG->app_footer='© Copyright 2014 - Joachim Dieterich.<br>Aktuelle Informationen unter <a href="http://www.joachimdieterich.de">http://www.joachimdieterich.de</a>'; 
+$CFG->app_title='curriculum';
+$CFG->version='0.9.3';
+$CFG->app_footer='<a href="http://www.joachimdieterich.de">© Copyright 2014 - Joachim Dieterich.</a>'; 
 
 /* DB Settings */
 $CFG->db_host='127.0.0.1';
 $CFG->db_user='root';
 $CFG->db_password ='root';
-$CFG->db_name='pl';
+$CFG->db_name='dev';
 if ($CFG->db_name != ''){
     $DB = new PDO('mysql:host='.$CFG->db_host.';dbname='.$CFG->db_name.';charset=utf8', $CFG->db_user, $CFG->db_password ); 
     $DB->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $DB->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 }
-
+$CFG->ip= 'localhost';
 $CFG->protocol                      = 'http://'; //'https://';
-$CFG->base_url                      = $CFG->protocol.'127.0.0.1/curriculum/';         //--> ! darf nicht localhost sein, da sonst probleme bei der Bilddarstellung bei Zugriff von extern
+$CFG->base_url                      = $CFG->protocol.$CFG->ip.'/curriculum/';         //--> ! darf nicht localhost sein, da sonst probleme bei der Bilddarstellung bei Zugriff von extern
 $CFG->curriculumdata_root           = '/Applications/MAMP/cur_data_pl/';
 /*  Paths - do not edit */
 $CFG->document_root                 = dirname(__FILE__).'/../public/';
@@ -50,11 +51,12 @@ $CFG->institutions_root             = $CFG->curriculumdata_root.'institution/';
 $CFG->backup_root                   = $CFG->curriculumdata_root.'backups/';//URL for backups 
 $CFG->sql_backup_root               = $CFG->curriculumdata_root.'backups/sql/';
 $CFG->demo_root                     = $CFG->curriculumdata_root.'support/demo/';//URL for backups 
-//$CFG->salt                          = md5('loYfaz5r4w/ChAR1sJUw09sYkMaALLsOlKKpYb28LAcmFclAM3upsgwjDZ2tNsX2aVB6ZDJkIK6aO0DursPrqg=='.date('i'));
+//$CFG->salt                          = md5('loYfaz5r4w/ChAR1sJUw09sYkMaALLsOlKKpYb28LAcmFclAM3upsgwjDZ2tNsX2aVB6ZDJkIK6aO0DursPrqg==');
 //$CFG->access_file                   = '../share/accessfile.php?file='.$CFG->salt.'|';
 $CFG->access_file                   = '../share/accessfile.php?file=';
 $CFG->access_file_url               = $CFG->base_url.'share/accessfile.php?file=';
 $CFG->access_token_url              = $CFG->base_url.'share/accessfile.php?token=';
+$CFG->access_id_url              = $CFG->base_url.'share/accessfile.php?id=';
 $CFG->support_path                  = $CFG->access_file.'support/';
 $CFG->subjects_path                 = $CFG->access_file.'subjects/';
 $CFG->solutions_path                = $CFG->access_file.'solutions/';

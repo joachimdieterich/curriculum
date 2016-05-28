@@ -17,42 +17,24 @@
  * http://www.gnu.org/copyleft/gpl.html      
  */
 global $CFG, $USER, $TEMPLATE, $PAGE;
-
+$TEMPLATE->assign('breadcrumb',  array('Sicherungen' => 'index.php?action=backup'));
 $TEMPLATE->assign('page_title', 'Sicherungen erstellen');
 
-//if (filter_input(INPUT_GET, 'reset', FILTER_UNSAFE_RAW)){ resetPaginator('fileBackupPaginator'); }
-$courses            = new Course(); //load Courses
 $backups            = new File();
-$form               = new HTML_QuickForm2('backup', 'post', 'action=index.php?action=backup');   // Instantiate the HTML_QuickForm2 object
-$fieldset           = $form->addElement('fieldset');
 
 /* load backups and courses */
 if (checkCapabilities('backup:getAllBackups', $USER->role_id, false)) {                          // Administrators
-    $backup_list    = $backups->getFiles('context', 8, 'fileBackupPaginator');
-    $options        = $courses->getCourse('admin',  $USER->id, true);
+    $backup_list    = $backups->getFiles('context', 8, 'fileBackupPaginator');  
 } else if (checkCapabilities('backup:getMyBackups', $USER->role_id, false)) {                    // Teacher and Tutor
     $backup_list    = $backups->getFiles('backup',  $USER->id, 'fileBackupPaginator');
-    $options        = $courses->getCourse('teacher', $USER->id, true);
 } 
 
-$course = $fieldset->addElement('select', 'course', null, array('options' => $options, 'label' => 'Lehrplan wählen:'));
-          $fieldset->addElement('submit', null, array('value' => 'Backup erstellen'));
-
-          
-if ($form->validate()) {
-    $backup  = new Backup();
-    $zipfile = $backup->add($course->getValue());                                                // create new backup 
-    $TEMPLATE->assign('zipURL', $CFG->web_backup_path . $course->getValue().'/' . $zipfile);     // aktuelle zip bereitstellen
-    $form->addDataSource(new HTML_QuickForm2_DataSource_Array(array(
-        'course' => $course->getValue()
-    )));
-}
-
-$TEMPLATE->assign('backup_form', $form);     // assign the form
 $TEMPLATE->assign('web_backup_path', $CFG->web_backup_path);  
 
-$p_options = array('download'     => array('href' => "../share/accessfile.php?id=__id__"),
-                   'xml'          => array('href' => "../share/accessfile.php?id=__id__&type=xml")); 
+$p_options = array('download'     => array('href' => "../share/accessfile.php?id=__id__",
+                                           'icon' => 'fa fa-download'),
+                   'xml'          => array('href' => "../share/accessfile.php?id=__id__&type=xml",
+                                           'icon' => 'fa fa-file-code-o')); 
 $p_config = array('id' => 'checkbox',
                   'title'         => 'Titel', 
                   'description'   => 'Beschreibung',

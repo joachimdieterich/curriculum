@@ -140,14 +140,14 @@ function smarty_function_paginate_middle($params, &$smarty, $bootstrap = false) 
                     $_this_url .= SmartyPaginate::getUrlVar($_id) . '=' . $_item;
                     //$_ret .= $_link_prefix . '<a href="' . str_replace('&', '&amp;', $_this_url) . '"' . $_attrs . '>' . $_text . '</a>' . $_link_suffix;
                     if ($bootstrap){
-                        $_ret .= $_link_prefix . '<button type="button" class="btn btn-default"><a href="' . str_replace('&', '&amp;', $_this_url) . '"' . $_attrs . '>' . $_text . '</a>' . $_link_suffix.'</button>';
+                        $_ret .= $_link_prefix . '<button type="button" class="btn btn-default" onclick="location.href=$(this).children(\'a:first\').attr(\'href\');"><a href="' . str_replace('&', '&amp;', $_this_url) . '"' . $_attrs . '>' . $_text . '</a>' . $_link_suffix.'</button>';
                     } else {
                         $_ret .= $_link_prefix . '<a href="' . str_replace('&', '&amp;', $_this_url) . '"' . $_attrs . '>' . $_text . '</a>' . $_link_suffix;
                     }
                 }
             } else {
                 if ($bootstrap){
-                    $_ret .= '<button type="button" class="btn btn-default">'.$_link_prefix . $_text . $_link_suffix.'</button>';
+                    $_ret .= '<button type="button" class="btn btn-default" >'.$_link_prefix . $_text . $_link_suffix.'</button>';
                 } else {
                     $_ret .= $_link_prefix . $_text . $_link_suffix;
                 }
@@ -172,7 +172,7 @@ function smarty_function_paginate_middle($params, &$smarty, $bootstrap = false) 
                 
                 //$_ret .= $_link_prefix . '<a href="' . str_replace('&', '&amp;', $_this_url) . '"' . $_attrs . '>' . $_text . '</a>' . $_link_suffix;
                 if ($bootstrap){
-                    $_ret .= $_link_prefix . '<button type="button" class="btn btn-default"><a href="' . str_replace('&', '&amp;', $_this_url) . '"' . $_attrs . '>' . $_text . '</a>' . $_link_suffix.'</button>';
+                    $_ret .= $_link_prefix . '<button type="button" class="btn btn-default" onclick="location.href=$(this).children(\'a:first\').attr(\'href\');"><a href="' . str_replace('&', '&amp;', $_this_url) . '"' . $_attrs . '>' . $_text . '</a>' . $_link_suffix.'</button>';
                 } else {
                     $_ret .= $_link_prefix . '<a href="' . str_replace('&', '&amp;', $_this_url) . '"' . $_attrs . '>' . $_text . '</a>' . $_link_suffix;
                 }

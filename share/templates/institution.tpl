@@ -3,16 +3,35 @@
 {block name=title}{$page_title}{/block}
 {block name=description}{$smarty.block.parent}{/block}
 {block name=nav}{$smarty.block.parent}{/block}
-{block name=additional_scripts}{$smarty.block.parent}{/block}
+{block name=additional_scripts}{$smarty.block.parent}
+{if isset($form_data)}
+    <script type="text/javascript" > 
+        $(document).ready(loadForm('institution','{$form_function}',{json_encode($form_data)})); {*2. Parameter darf nicht in Anführungszeichen stehen!*}
+    </script>
+{/if}
+{/block}
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
-{block name=content}    
-<h3 class="page-header">{$page_title}<input class="curriculumdocsbtn pull-right" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Institutionen');"/></h3>
-    {if !isset($showForm) && checkCapabilities('institution:add', $my_role_id, false)}
-        <p class="floatleft  cssimgbtn gray-border">
-            <a class="addbtn cssbtnmargin cssbtntext" href="index.php?action=institution&function=new">Institution hinzufügen</a>
-        </p>            
-    {else}
+{block name=content}   
+<!-- Content Header (Page header) -->
+{content_header p_title=$page_title pages=$breadcrumb help='http://docs.joachimdieterich.de/index.php?title=Institutionen'}   
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-primary">   
+                <div class="box-body">
+                {if checkCapabilities('institution:add', $my_role_id, false)}
+                    <div class="btn-group " role="group" aria-label="..." onclick="loadForm('institution','new');">
+                        <button type="button" class="btn btn-default">
+                                    <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Institution hinzufügen
+                        </button>     
+                    </div>
+                    {/if}
+                {*else}
+                
+                
         <form id='institutionForm' method='post' action='index.php?action=institution'>
         <p><h3>Institution</h3></p>
         <input id='id' name='id' type='hidden' {if isset($id)}value='{$id}'{/if} />   
@@ -51,7 +70,7 @@
             {/if}
         </p>
         {if checkCapabilities('file:upload', $my_role_id, false)}
-            <p><label>Logo: </label><input  id="file_id" name='file_id' {if isset($file_id)}value='{$file_id}'{/if} onclick="tb_show('','../share/request/uploadframe.php?userID={$my_id}&last_login={$my_last_login}&context=institution&curID={$id}&target=file_id&format=0&multiple=false&modal=true&TB_iframe=true&width=710')" href="#" class="thickbox"/>
+            <p><label>Logo: </label><input  id="file_id" name='file_id' {if isset($file_id)}value='{$file_id}'{/if} onclick="tb_show('','../share/request/uploadframe.php?userID={$my_id}&last_login={$my_last_login}&context=institution&insID={$id}&target=file_id&format=0&multiple=false&modal=true&TB_iframe=true&width=710')" href="#" class="thickbox"/>
             {validate_msg field='file_id'}
         {/if}
 
@@ -95,9 +114,15 @@
             document.getElementById('institution').focus();
         </script>      
         </form>	
-    {/if}
+        
+    {/if*}
 
     {html_paginator id='institutionP'}
+              </div>  
+            </div>
+        </div>
+    </div>
+</section>
 {/block}
 
 {block name=sidebar}{$smarty.block.parent}{/block}

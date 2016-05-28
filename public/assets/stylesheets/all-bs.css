@@ -1,211 +1,13 @@
-/*
- * Base structure
- */
 
-
-/* Move down content because we have a fixed navbar that is 50px tall */
-body {
-  padding-top: 50px;
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
+/* adminLTE color */
+.bg-white {
+    background-color: #FFFFFF !important;
 }
 
-.footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  /* Set the fixed height of the footer here */
-  height: 60px;
-  background-color: #f5f5f5;
-}
+.top-buffer { margin-top:10px; }
 
-/*
- * Global add-ons
- */
-
-
-.sub-header {
-  padding-bottom: 10px;
-  border-bottom: 1px solid #eee;
-}
-
-/*
- * Top navigation
- * Hide default border to remove 1px line.
- */
-.navbar-fixed-top {
-  border: 0;
-}
-
-/*
- * Sidebar
- */
-
-/* Hide for mobile, show later */
-.sidebar {
-  display: none;
-  
-}
-@media (min-width: 768px) {
-  .sidebar {
-    position: fixed;
-    top: 51px;
-    bottom: 0;
-    left: 0;
-    z-index: 1000;
-    display: block;
-    padding: 20px;
-    overflow-x: hidden;
-    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-    background-color: #337ab7;
-    border-right: 1px solid #eee;
-  }
-}
-
-/* Sidebar navigation */
-.nav-sidebar {
-  margin-right: -21px; /* 20px padding + 1px border */
-  margin-bottom: 20px;
-  margin-left: -20px;
-}
-.nav-sidebar > li > a {
-  padding-right: 20px;
-  padding-left: 20px;
-  color: #eee;
-}
-
-.nav-sidebar > li > a:hover {
-  color: #333;
-}
-.nav-sidebar > li > a:hover > ico{
-    filter: invert(0%);
-   -webkit-filter: invert(0%);
-}
-
-.nav-sidebar > .active > a,
-.nav-sidebar > .active > a:hover,
-.nav-sidebar > .active > a:focus {
-  color: #fff;
-  background-color: #428bca;
-}
-
-.nav-sidebar > .active > a > ico,
-.nav-sidebar > li > a > ico {
-   margin-right: 20px; 
-}
-
-.hidden-sm:hover{
-    dispay:block;
-}
-
-
-/*
- * Main content
- */
-
-*.main {
-    background-color: #eee;
-    padding: 20px;
-}
-
-.main .page-header {
-  margin-top: 0;
-}
-
-.page-title{
-    padding-left: 15px;
-    padding-right: 15px;
-}
-
-
-/*
- * Placeholder dashboard ideas
- */
-
-.placeholders {
-  margin-bottom: 30px;
-  text-align: center;
-}
-.placeholders h4 {
-  margin-bottom: 0;
-}
-.placeholder {
-  margin-bottom: 20px;
-}
-.placeholder img {
-  display: inline-block;
-  border-radius: 50%;
-}
-
-
-/*
- * Icons
- * 
- */
-/* Images */
-ico {
-    -webkit-font-smoothing: antialiased;
-    box-sizing: border-box;
-    cursor: auto;
-    display: inline-block;
-    font-size: 12px;
-    font-style: normal;
-    font-variant: normal;
-    font-weight: normal;
-    height: 16px;
-    line-height: 16px;
-    list-style-type: disc;
-    padding-bottom: 0px;
-    padding-left: 0px;
-    padding-right: 0px;
-    padding-top: 0px;
-    text-align: left;
-    vertical-align: middle;
-    text-decoration: none;
-    width:16px;
-}
-
-
-.icon_tiny {                                       
-    height: 16px;
-    width: 16px;  
-}
-.icon_listposition{
-    padding-right:4px; 
-    margin-left: -6px;
-}
-
-.printbtn, .editbtn,.filebtn, .certificatebtn, .clockbtn, .tagsbtn, .numberedbtn, .rolebtn, .userbtn, .deletebtn, .removebtn, .addbtn, .addmaterialbtn, .leftbtn, .rightbtn, .upbtn, .downbtn, 
-.addsolutionbtn, .okbtn, .ok2btn, .notbtn, .groupbtn, .institutionbtn, .calbtn, .listbtn, .listaltbtn, .downloadbtn, .helpbtn, .curriculumdocsbtn, .answerbtn,
-.mailinbtn, .mailoutbtn, .mailnewbtn, .maildelbtn, .bdgbtn, .infobtn, .checkbtn, .smallthumbbtn, .checkgreenbtn, .checkredbtn, .checkorangebtn, .checkwhitebtn,
-.checkactivegreenbtn, .checkactiveredbtn, .checkactiveorangebtn, .checkactivewhitebtn{ 
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-color: transparent;
-    margin-right: 5px;    
-    height: 16px;
-    width: 16px;
-    border: none;
-    cursor: pointer;
-    vertical-align: middle; 
-    opacity:0.5;
-    filter:alpha(opacity=50); /* For IE8 and earlier */
-}
-
-.xmlbtn{
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-color: transparent;
-    margin-right: 5px;    
-    height: 14px;
-    width: 58px;
-    border: none;
-    cursor: pointer;
-    vertical-align: middle; 
-    opacity:0.5;
-    filter:alpha(opacity=50); /* For IE8 and earlier */
-}
-.checkactivegreenbtn, .checkactiveredbtn, .checkactiveorangebtn, .checkactivewhitebtn{ 
+.checkactivegreenbtn, .checkactiveredbtn, .checkactiveorangebtn, .checkactivewhitebtn,
+.checkgreenbtn, .checkredbtn, .checkorangebtn, .checkwhitebtn{ 
     background-repeat: no-repeat;
     background-size: contain;
     background-color: transparent;
@@ -218,9 +20,7 @@ ico {
     opacity:0.5;
     filter:alpha(opacity=50); /* For IE8 and earlier */
 }
-.pointer_hand{
-     cursor: pointer;
-}
+
 .commentbtn{
     background-repeat: no-repeat;
     background-size: contain;
@@ -229,7 +29,7 @@ ico {
     cursor: help;
     vertical-align: middle;  
 }
-.deactivatebtn {
+.deactivate {
     opacity:0.2;
     filter:alpha(opacity=20); /* For IE8 and earlier */
     cursor: not-allowed !important;
@@ -354,16 +154,7 @@ ico {
 .zip_btn, .rar_btn, .imscc_btn  {background-image: url('../images/filetypes/zip-48_32.png');}
 .mid_btn                        {background-image: url('../images/filetypes/midi-48_32.png');}
 
-/*
- * Lists
- */
-/* remove margins for navigation lists */
-ul { margin: 0; list-style:none; list-style-image: none; }
 
-
-/*
- * Tables
- */
 .contenttablesearch {
     margin-top: -5px;
     width:          70px; 
@@ -375,4 +166,193 @@ ul { margin: 0; list-style:none; list-style-image: none; }
     border-bottom:      1px solid hsl(0,0%,70%);
     -webkit-box-shadow: none; 
     box-shadow:         none;
+}
+/*
+ * Curriculum boxes in sm view
+ */
+.no-margin{
+    margin: 0px !important;
+    padding:0px !important;
+}
+
+/*styles (xs, sm) */
+@media (max-width: 990px) {
+.box {
+    float: left;
+    width: 100%;
+    position: relative;
+    margin: 0px;
+}
+
+.boxheader {
+    margin: 0px 0 0 15px;
+    position: absolute;
+    left: 0px;
+    padding: 4px 10px 0 0px;
+    height: 75px;
+    width: 40px;
+    font-size: 70%;
+    text-align: center;
+    
+    /* get rid of top right radius*/
+    -webkit-border-top-right-radius: 0 !important;
+     -moz-border-top-right-radius: 0 !important;
+          border-top-right-radius: 0 !important;
+    /* add bottom left radius*/      
+    -webkit-border-bottom-left-radius: 5% !important;
+     -moz-border-bottom-left-radius: 5% !important;
+          border-bottom-left-radius: 5% !important;      
+}
+
+.boxscroll{
+    /*width: 170px; *//*20px more than box to hide scrollbar*/
+    padding-top: 5px;
+    padding-right: 25px; /*for Firefox only*/
+    overflow: auto;
+    height: 75px!important;  
+}
+
+.boxwrap {
+    width: 100%;
+    overflow:hidden;
+    margin: 0px !important;
+    padding: 0px;
+} 
+
+
+.boxcontent {    /*Hack: boxwrap, boxscroll and boxcontent used to hide scroll crossbrowser compatible*/
+    margin: 0px;
+    font-size: 90%;
+    padding-left: 60px;
+    padding-right: 60px;
+    font-size: 90%;
+}    
+    
+.boxfooter {    
+    margin: -75px 16px;
+    padding: 4px 10px 0 10px;
+    position: absolute;
+    /*top: 0px; bottom:0px; */right:0px;
+    width: 40px;
+    height: 75px;
+    overflow: auto;
+    border: 0px !important;
+    /* add top right radius*/
+    -webkit-border-top-right-radius: 5% !important;
+     -moz-border-top-right-radius: 5% !important;
+          border-top-right-radius: 5% !important;
+    /* ged rid of bottom left radius*/      
+    -webkit-border-bottom-left-radius: 0 !important;
+     -moz-border-bottom-left-radius: 0 !important;
+          border-bottom-left-radius: 0 !important;  
+    
+}
+.box-objective {
+    margin: 0px;
+} 
+
+.box-sm-icon {
+    display: block;
+    text-align: center;
+    float: none !important;
+    padding-bottom: 6px;
+}
+
+}
+/* /.sm view */
+
+
+/*styles (md, lg) */
+@media (min-width: 991px) {
+    .box-objective {
+        float: left;
+        height: 150px;
+        width: 150px;
+        position: relative;
+        margin: 0px;
+    }
+    .boxheader {
+        width: 100%;
+        margin: 0px;
+        padding: 4px 10px 0 10px;
+        height: 25px;
+        font-size: 90%;
+        position: relative;
+        
+        /* add top right radius*/
+    -webkit-border-top-right-radius: 3px !important;
+     -moz-border-top-right-radius: 3px !important;
+          border-top-right-radius: 3px !important;
+    }
+
+    .boxscroll{
+        width: 170px; /*20px more than box to hide scrollbar*/
+        padding-top: 5px;
+        padding-right: 25px; /*for Firefox only*/
+        overflow: auto;
+        height: 100px!important;  
+    }   
+    .boxwrap {
+        width: 100%;
+        overflow:hidden;
+        margin: 0px !important;
+        padding: 0px;
+    } 
+
+
+    .boxcontent {    /*Hack: boxwrap, boxscroll and boxcontent used to hide scroll crossbrowser compatible*/
+        margin: 0px;
+        width:150px; 
+        font-size: 90%;
+        padding-left: 10px;
+        padding-right: 10px;
+        font-size: 90%;
+    }
+
+    .boxfooter {    
+        margin: 0px;
+        padding: 4px 10px 0 10px;
+        position: absolute;
+        top: 124px;bottom:0px; left:0px; right:0px;
+        height: 25px;
+        width:100%;
+        font-size: 90%;    
+        border-top: 1px solid #ddd !important;
+        text-align: left !important;
+        /* get rid of top right radius*/
+    -webkit-border-top-right-radius: 0 !important;
+     -moz-border-top-right-radius: 0 !important;
+          border-top-right-radius: 0 !important;
+    }
+}
+
+
+.boxred {/*gradients cross-browser-ready*/
+    background: #FF0000;
+    background: -webkit-gradient(linear, 0 0, 0 100%, from(#f2f2f2), to(#FF0000));
+    background: -webkit-linear-gradient(top, #f2f2f2, #FF0000);
+    background: -o-linear-gradient(top, #f2f2f2, #FF0000);
+    background: -moz-linear-gradient(top, #f2f2f2, #FF0000);
+    background: -ms-linear-gradient(top, #f2f2f2, #FF0000);
+    background: linear-gradient(top, #f2f2f2, #FF0000);
+ 
+}
+.boxgreen {/*gradients cross-browser-ready*/
+    background: #00FF00;
+    background: -webkit-gradient(linear, 0 0, 0 100%, from(#f2f2f2), to(#00FF00));
+    background: -webkit-linear-gradient(top, #f2f2f2, #00FF00);
+    background: -o-linear-gradient(top, #f2f2f2, #00FF00);
+    background: -moz-linear-gradient(top, #f2f2f2, #00FF00);
+    background: -ms-linear-gradient(top, #f2f2f2, #00FF00);
+    background: linear-gradient(top, #f2f2f2, #00FF00);
+    
+}
+.boxorange { /*gradients cross-browser-ready*/
+    background: #FF8000;
+    background: -webkit-gradient(linear, 0 0, 0 100%, from(#f2f2f2), to(#FF8000));
+    background: -webkit-linear-gradient(top, #f2f2f2, #FF8000);
+    background: -o-linear-gradient(top, #f2f2f2, #FF8000);
+    background: -moz-linear-gradient(top, #f2f2f2, #FF8000);
+    background: -ms-linear-gradient(top, #f2f2f2, #FF8000);
+    background: linear-gradient(top, #f2f2f2, #FF8000);
 }

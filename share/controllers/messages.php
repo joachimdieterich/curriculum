@@ -19,6 +19,7 @@
 * http://www.gnu.org/copyleft/gpl.html      
 */
 global $PAGE, $USER, $TEMPLATE;
+$TEMPLATE->assign('breadcrumb',  array('Nachrichten' => 'index.php?action=messages'));
 $mailbox = new Mailbox();
 $TEMPLATE->assign('timestamp', time());  //hack, damit bei wiederholten anklicken eines postfachs die funktion detect_reload() nicth ausgelöst wird
 

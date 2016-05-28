@@ -8,7 +8,15 @@
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
 {block name=content}
-    <h3 class="page-header">{$page_title}<input class="curriculumdocsbtn pull-right" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Lerngruppen_anlegen');"/></h3>
+<!-- Content Header (Page header) -->
+{content_header p_title=$page_title pages=$breadcrumb help='http://docs.joachimdieterich.de/index.php?title=Lerngruppen_anlegen'}  
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-primary">
+                <div class="box-body">
+
         {if !isset($showForm) && checkCapabilities('groups:add', $my_role_id, false)}    
             <div class="btn-group" role="group" aria-label="...">
                 <button type="button" class="btn btn-default"><a  href="index.php?action=group&function=new">
@@ -78,19 +86,19 @@
                             {/section}
                         </select> 
                         
-                            <div class=" floatleft cssimgbtn gray-border">
+                            <div class=" pull-left">
                         {if checkCapabilities('groups:enrol', $my_role_id, false)}
-                            <a class="inbtn block cssbtnmargin cssbtntext " onclick="document.getElementById('enrole').click();">einschreiben</a>
+                            <a class="glyphicon glyphicon-plus-sign  " onclick="document.getElementById('enrole').click();">einschreiben</a>
                         {else}
-                            <a class="inbtn block deactivatebtn cssbtnmargin cssbtntext " >einschreiben</a>
+                            <a class="glyphicon glyphicon-plus-sign deactivatebtn " >einschreiben</a>
                         {/if}
                             </div><input class="invisible" type='submit' id='enrole' name='enrole' value='einschreiben' />
                         
-                        <div class="floatleft  cssimgbtn gray-border">
+                        <div class="pull-left">
                         {if checkCapabilities('groups:expel', $my_role_id, false)}
-                            <a class="outbtn block cssbtnmargin cssbtntext" onclick="document.getElementById('expel').click();">ausschreiben</a>
+                            <a class="glyphicon glyphicon-minus-sign" onclick="document.getElementById('expel').click();">ausschreiben</a>
                         {else}
-                            <a class="outbtn block deactivatebtn cssbtnmargin cssbtntext " >ausschreiben</a>
+                            <a class="glyphicon glyphicon-minus-sign " >ausschreiben</a>
                         {/if}    
                         </div><input class="invisible" type='submit' id='expel' name='expel' value='ausschreiben' />
                     </p>
@@ -101,6 +109,11 @@
         {if isset($cu_val)}
             {html_paginator id='curriculumP' action="index.php?action=groups&next={$currentUrlId}"}
         {/if}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {/block}
 
 {block name=sidebar}{$smarty.block.parent}{/block}

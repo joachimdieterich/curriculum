@@ -93,11 +93,11 @@ class File {
      */
     public $author; 
         /**
-     * licence
+     * license
      * @since 0.9
      * @var string
      */
-    public $licence; 
+    public $license; 
     /**
      * id of curriculum
      * @var int
@@ -121,9 +121,9 @@ class File {
     public function add(){
         global $USER, $LOG;
         if (checkCapabilities('file:upload', $USER->role_id, false) OR checkCapabilities('file:uploadAvatar', $USER->role_id, false));
-        $db             = DB::prepare('INSERT INTO files (title, filename, description, author, licence, type, path, context_id, file_context, creator_id, cur_id, ter_id, ena_id) 
+        $db             = DB::prepare('INSERT INTO files (title, filename, description, author, license, type, path, context_id, file_context, creator_id, cur_id, ter_id, ena_id) 
                             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)');
-        if($db->execute(array($this->title, $this->filename, $this->description, $this->author, $this->licence, $this->type, $this->path, $this->context_id, $this->file_context, $this->creator_id, $this->curriculum_id, $this->terminal_objective_id, $this->enabling_objective_id))){
+        if($db->execute(array($this->title, $this->filename, $this->description, $this->author, $this->license, $this->type, $this->path, $this->context_id, $this->file_context, $this->creator_id, $this->curriculum_id, $this->terminal_objective_id, $this->enabling_objective_id))){
             $db         = DB::prepare('SELECT id from files WHERE title = ? AND filename = ? AND description = ? AND author = ?');
             $db->execute(array($this->title, $this->filename, $this->description, $this->author));
             $result     = $db->fetchObject();
@@ -142,8 +142,8 @@ class File {
     public function update(){
         global $USER;
         checkCapabilities('file:update', $USER->role_id);
-        $db = DB::prepare('UPDATE files SET title = ?, filename = ?, description = ?, author = ?, type = ?, path = ?, context_id = ?, creator_id = ?, cur_id = ?, ter_id = ?, ena_id = ? WHERE id = ?');
-        return $db->execute(array($this->title, $this->filename, $this->description, $this->author, $this->licence, $this->type, $this->path, $this->context_id, $this->creator_id, $this->curriculum_id, $this->terminal_objective_id, $this->enabling_objective_id, $this->id));
+        $db = DB::prepare('UPDATE files SET title = ?, filename = ?, description = ?, license = ?, author = ?, type = ?, path = ?, context_id = ?, creator_id = ?, cur_id = ?, ter_id = ?, ena_id = ? WHERE id = ?');
+        return $db->execute(array($this->title, $this->filename, $this->description, $this->author, $this->license, $this->type, $this->path, $this->context_id, $this->creator_id, $this->curriculum_id, $this->terminal_objective_id, $this->enabling_objective_id, $this->id));
     }
 
     /**
@@ -232,7 +232,7 @@ class File {
             }
             $this->description           = $result->description;
             $this->author                = $result->author;
-            $this->licence               = $result->licence;
+            $this->license               = $result->license;
             $this->path                  = $result->path;
             $this->type                  = $result->type;
             $this->context_id            = $result->context_id;
@@ -278,7 +278,11 @@ class File {
          
         return $fileToken;
     }
-   
+    public function getFileUrl(){
+        global $CFG;
+        return $CFG->access_file_url.''.$this->context_path.''.$this->path.''.rawurlencode($this->filename);
+    }
+    
     public function getFileID($fileToken){
         $db = DB::prepare('SELECT file_id FROM file_token WHERE token = ?');
         $db->execute(array($fileToken));
@@ -313,24 +317,55 @@ class File {
         $thumb_l  = substr($this->filename, 0, $extension_pos) . '_l.png';
         
         if (file_exists($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_xt)){ 
-            $result['xt'] = array("filename" => $thumb_xt, "full_path" => $this->context_path.$this->path.$thumb_xt, "size" => human_filesize(filesize($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_xt))); }
+            $result['xt'] = array("filename" => $thumb_xt, "full_path" => $this->context_path.$this->path.$thumb_xt, "size" => $this->getHumanFileSize($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_xt)); }
         if (file_exists($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_t)) { 
-            $result['t'] = array("filename" => $thumb_t, "full_path" => $this->context_path.$this->path.$thumb_t, "size" => human_filesize(filesize($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_t))); }
+            $result['t'] = array("filename" => $thumb_t, "full_path" => $this->context_path.$this->path.$thumb_t, "size" => $this->getHumanFileSize($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_t)); }
         if (file_exists($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_qs)){ 
-            $result['qs'] = array("filename" => $thumb_qs, "full_path" => $this->context_path.$this->path.$thumb_qs, "size" => human_filesize(filesize($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_qs))); }
+            $result['qs'] = array("filename" => $thumb_qs, "full_path" => $this->context_path.$this->path.$thumb_qs, "size" => $this->getHumanFileSize($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_qs)); }
         if (file_exists($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_xs)){ 
-            $result['xs'] = array("filename" => $thumb_xs, "full_path" => $this->context_path.$this->path.$thumb_xs, "size" => human_filesize(filesize($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_xs))); }
+            $result['xs'] = array("filename" => $thumb_xs, "full_path" => $this->context_path.$this->path.$thumb_xs, "size" => $this->getHumanFileSize($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_xs)); }
         if (file_exists($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_s)) { 
-            $result['s'] = array("filename" => $thumb_s, "full_path" => $this->context_path.$this->path.$thumb_s, "size" => human_filesize(filesize($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_s))); }
+            $result['s'] = array("filename" => $thumb_s, "full_path" => $this->context_path.$this->path.$thumb_s, "size" => $this->getHumanFileSize($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_s)); }
         if (file_exists($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_m)) { 
-            $result['m'] = array("filename" => $thumb_m, "full_path" => $this->context_path.$this->path.$thumb_m, "size" => human_filesize(filesize($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_m))); }
+            $result['m'] = array("filename" => $thumb_m, "full_path" => $this->context_path.$this->path.$thumb_m, "size" => $this->getHumanFileSize($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_m)); }
         if (file_exists($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_l)) { 
-            $result['l'] = array("filename" => $thumb_l, "full_path" => $this->context_path.$this->path.$thumb_l, "size" => human_filesize(filesize($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_l))); }
+            $result['l'] = array("filename" => $thumb_l, "full_path" => $this->context_path.$this->path.$thumb_l, "size" => $this->getHumanFileSize($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_l)); }
         
-            if (isset($result)) {
+        if (isset($result)) {
             return $result; 
         } else {return false;}
-
+    }
+    
+    /**
+     * returns url of thumbnail (if exists) else false
+     * @global object $CFG
+     * @return string or boolean
+     */
+    public function getThumb(){
+        global $CFG;
+        $extension_pos = strrpos($this->filename, '.'); // find position of the last dot, so where the extension starts
+        $thumb_t       = substr($this->filename, 0, $extension_pos) . '_t.png';
+        if (file_exists($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_t)) {     
+            return  $CFG->access_file_url.''.$this->context_path.''.$this->path.''.$thumb_t; 
+        } else {
+            return false;
+        }
+         
+    }
+    /**
+     * 
+     * @global object $CFG
+     * @param string $path
+     * @return string
+     */
+    public function getHumanFileSize($path = null){
+        global $CFG;
+        if (isset($path)){
+            return human_filesize(filesize($path));
+        } else {
+            //error_log($CFG->curriculumdata_root.$this->context_path.$this->path);
+            return human_filesize(filesize($CFG->curriculumdata_root.$this->context_path.$this->path));
+        }
     }
     /**
      * get Solutions depending on dependency
@@ -372,7 +407,7 @@ class File {
                  }
                 $this->description           = $result->description;
                 $this->author                = $result->author;
-                $this->licence               = $result->licence;
+                $this->license               = $result->license;
                 $this->path                  = $result->path;
                 $this->type                  = $result->type;
                 $this->context_id            = $result->context_id;
@@ -399,8 +434,9 @@ class File {
      * @param int $id
      * @return array of file objects|boolean 
      */
-    public function getFiles($dependency = null, $id = null, $paginator = '', $getExternalFiles = false){
+    public function getFiles($dependency = null, $id = null, $paginator = '', $getExternalFiles = null){
         global $USER;
+        
         $order_param = orderPaginator($paginator, array('title'         => 'fl', 
                                                         'description'   => 'fl',
                                                         'author'        => 'fl')); 
@@ -425,7 +461,6 @@ class File {
                                                             OR ( fl.file_context = 4 AND fl.creator_id = ?)) /*My Material*/
                                                             ORDER BY fl.file_context ASC');
                 $db->execute(array($id, $USER->institution_id, $USER->id, $USER->id));
-                $getExternalFiles = true; 
                 break;
             case 'enabling_objective':  $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                             WHERE fl.ena_id = ? AND fl.context_id = 2 AND fl.context_id = ct.context_id 
@@ -435,7 +470,6 @@ class File {
                                                               OR ( fl.file_context = 4 AND fl.creator_id = ?)) /*My Material*/
                                                          ORDER BY fl.file_context ASC');
                 $db->execute(array($id, $USER->institution_id, $USER->id, $USER->id));
-                $getExternalFiles = true; 
                 break;                  
             
             case 'avatar':              $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
@@ -472,7 +506,7 @@ class File {
                  }
                 $this->description           = $result->description;
                 $this->author                = $result->author;
-                $this->licence               = $result->licence;
+                $this->license               = $result->license;
                 $this->path                  = $result->path;
                 $this->type                  = $result->type;
                 $this->context_id            = $result->context_id;
@@ -494,15 +528,15 @@ class File {
                 $files[]                     = clone $this;       
         }
            
-
-        if (file_exists('../plugins/omega.class.php') AND $getExternalFiles == true){ // prüfen, ob OMEGA Plugin vorhanden ist.
+        
+        if (file_exists('../plugins/omega.class.php') AND $getExternalFiles == 1){ // prüfen, ob OMEGA Plugin vorhanden ist.
             $omega_files    = new Omega();
-            $allfiles          = $omega_files->getFiles($dependency, $id, $files);
+            $allfiles       = $omega_files->getFiles($dependency, $id, $files);
             return $allfiles;
         } else {
             return $files;
         }
-       
+        
     }
 
      /**
@@ -533,25 +567,30 @@ class File {
         } else {return false;}
     }
     
-    public function getLicence($id = NULL){
+    /* now in License Class*/
+    /*public function getLicense($id = NULL){
+        $values = new stdClass();
         if ($id == NULL){
-            $db = DB::prepare('SELECT * FROM file_licence');
+            $db = DB::prepare('SELECT * FROM file_license');
             $db->execute();
             while($result = $db->fetchObject()) {
-                $values[] = array('value' => $result->id, 'label' => $result->licence);
+                //$values[] = array('value' => $result->id, 'label' => $result->license);
+                $values->id         = $result->id;
+                $values->license    = $result->license;
+                $license[]          = clone $values;       
             }
-            return $values;
+            return $license;
         } else {
-            $db = DB::prepare('SELECT licence FROM file_licence WHERE id = ?');
+            $db = DB::prepare('SELECT license FROM file_license WHERE id = ?');
             $db->execute(array($id));
             $result = $db->fetchObject();
             if ($result) {
-                return  $result->licence;
+                return  $result->license;
             } else {return false;}
         }
-    }
+    }*/
 
-    public function getFileContext($id = NULL){
+    /*public function getFileContext($id = NULL){
         if ($id == NULL){
             $db = DB::prepare('SELECT * FROM file_context');
             $db->execute();
@@ -567,7 +606,7 @@ class File {
                 return  $result->description;
             } else {return false;}
         }
-    }
+    }*/
     
     public function hit(){ // hit counter
         $db = DB::prepare('UPDATE files SET hits = hits + 1 WHERE id = ?');

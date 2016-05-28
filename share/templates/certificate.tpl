@@ -8,19 +8,28 @@
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
 {block name=content}
-    <h3 class="page-header">{$page_title}<input class="curriculumdocsbtn pull-right" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Zertifikatvorlage_einrichten');"/></h3>
-    {if !isset($showForm) && checkCapabilities('certificate:add', $my_role_id, false)}
-        <div class="btn-group" role="group" aria-label="...">
-            <button type="button" class="btn btn-default"><a href="index.php?action=certificate&function=new">
-                    <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Zertifikat hinzufügen</a>
-            </button>
+<!-- Content Header (Page header) -->
+{content_header p_title=$page_title pages=$breadcrumb help='http://docs.joachimdieterich.de/index.php?title=Zertifikatvorlage_einrichten'}       
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-primary">
+                <div class="box-body">   
+                {if checkCapabilities('certificate:add', $my_role_id, false)}
+                    <div class="btn-group" role="group" aria-label="...">
+                        <button type="button" class="btn btn-default" onclick="formloader('certificate','new')"><a>
+                                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Zertifikat hinzufügen</a>
+                        </button>
+                    </div>
+                {/if}    
+
+                {html_paginator id='certificateP'}
+                </div>
+            </div>
         </div>
-    {else}
-        {$certificate_form}
-        <script type='text/javascript'>document.getElementById('certificate').focus();</script>
-    {/if}    
-    
-    {html_paginator id='certificateP'}
+    </div>
+</section>
 {/block}
 
 {block name=sidebar}{$smarty.block.parent}{/block}

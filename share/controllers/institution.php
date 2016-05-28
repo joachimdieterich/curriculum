@@ -18,11 +18,12 @@
 */
 global $CFG, $USER, $TEMPLATE, $INSTITUTION;
 
-$TEMPLATE->assign('byte',           convertMbToByte($CFG->post_max_size));     //Dateigröße in Byte
-$TEMPLATE->assign('page_title',     'Institutionen verwalten');
-$state                          = new State;
+$TEMPLATE->assign('byte',        convertMbToByte($CFG->post_max_size));     //Dateigröße in Byte
+$TEMPLATE->assign('page_title',  'Institutionen');
+$TEMPLATE->assign('breadcrumb',  array('Institutionen' => 'index.php?action=institution'));
+$state                         = new State;
                 
-if (isset($_GET['function'])) {
+/*if (isset($_GET['function'])) {
                         loadSelectData();   // in allen Fällen laden
      switch ($_GET['function']) {
         case "new":     checkCapabilities('institution:add',    $USER->role_id);
@@ -51,7 +52,7 @@ if (isset($_GET['function'])) {
             break;
         default: break;
      }
-}
+}*/
 
 if ($_POST){
      switch ($_POST) {       
@@ -66,10 +67,13 @@ if ($_POST){
                                         if (!isset($_POST['state'])){ $_POST['state'] = 1; }
                                         if($validated_data === false) {/* validation failed */
                                             $TEMPLATE->assign('showForm',       true);
-                                            assign_to_template($_POST);
-                                            loadSelectData();
-                                            $TEMPLATE->assign('v_error',        $gump->get_readable_errors());   
-                                            $TEMPLATE->assign('state',          $state->getStates('profile', $_POST['country_id']));
+                                            //assign_to_template($_POST);
+                                            //loadSelectData();
+                                            $TEMPLATE->assign('v_error',        $gump->get_readable_errors());  
+                                            //ERROR übergeben
+                                            $TEMPLATE->assign('form_data', $_POST); /* daten für das formular bereitstellen*/
+                                            $TEMPLATE->assign('form_function', $_GET['function']);
+                                            //$TEMPLATE->assign('state',          $state->getStates('profile', $_POST['country_id']));
                                             if (isset($_POST['update'])){       $TEMPLATE->assign('editBtn',        true); } 
                                         } else {
                                             $new_institution = new Institution(); 
@@ -130,10 +134,12 @@ function loadSelectData(){
 }
 
 
-$p_options = array('delete' => array('onclick' => "del('institution',__id__, $USER->id);", 
-                                     'capability' => checkCapabilities('institution:delete', $USER->role_id, false)),
-                    'edit'  => array('href'    => 'index.php?action=institution&function=edit&id=__id__'),
-                                     'capability' => checkCapabilities('institution:update', $USER->role_id, false));
+$p_options = array('delete' => array('onclick'    => "del('institution',__id__, $USER->id);", 
+                                     'capability' => checkCapabilities('institution:delete', $USER->role_id, false),
+                                     'icon'       => 'fa fa-minus'),
+                    'edit'  => array('href'       => 'index.php?action=institution&function=edit&id=__id__',
+                                     'capability' => checkCapabilities('institution:update', $USER->role_id, false),
+                                     'icon'       => 'fa fa-edit'));
 $p_view =   array('id'            => 'checkbox', 
                   'institution'   => 'Institution', 
                   'description'   => 'Beschreibung', 

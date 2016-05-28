@@ -13,11 +13,11 @@
         {/foreach} 
     {/if}
 {/function}
-    
+   
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
         <title>{block name=title}{/block} | {strip_tags($app_title)}</title>
         <meta name="description" content="{block name="description"}{/block}">
         <meta name="author" content="Joachim Dieterich (www.curriculumonline.de)">
@@ -33,8 +33,39 @@
         <meta name="msapplication-TileColor" content="#FFFFFF" />
         <meta name="msapplication-TileImage" content="{$media_url}images/favicon/mstile-144x144.png" />
 
-        <!-- Bootstrap core CSS -->
-        <link href="{$media_url}bootstrap-3.3.6-dist/css/bootstrap.min.css" rel="stylesheet">
+        
+        <!-- AdminLTE -->
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <!-- Bootstrap 3.3.5 -->
+        <link rel="stylesheet" href="{$media_url}templates/AdminLTE-2.3.0/bootstrap/css/bootstrap.min.css">
+        <!-- Font Awesome -->
+        <!--link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"-->
+        <link rel="stylesheet" href="{$lib_url}/font-awesome-4.6.1/css/font-awesome.min.css">
+        <!-- Ionicons --><!-- not used yet -->
+        <!--link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"-->
+        <!-- jvectormap -->
+        <!--link rel="stylesheet" href="{$media_url}templates/AdminLTE-2.3.0/plugins/jvectormap/jquery-jvectormap-1.2.2.css"-->
+        <!-- fullCalendar 2.2.5 -> see calendar.tpl-->
+        <!--link rel="stylesheet" href="{$media_url}templates/AdminLTE-2.3.0/plugins/fullcalendar/fullcalendar.min.css"-->
+        <!--link rel="stylesheet" href="{$media_url}templates/AdminLTE-2.3.0/plugins/fullcalendar/fullcalendar.print.css" media="print"-->
+        <!-- daterangepicker -->
+        <link rel="stylesheet" href="{$media_url}templates/AdminLTE-2.3.0/plugins/daterangepicker/daterangepicker.css">
+        <!-- Theme style -->
+        <link rel="stylesheet" href="{$media_url}templates/AdminLTE-2.3.0/dist/css/AdminLTE.min.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+             folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="{$media_url}templates/AdminLTE-2.3.0/dist/css/skins/_all-skins.min.css">
+        <!-- Bootstrap Color Picker -->
+        <link rel="stylesheet" href="{$media_url}templates/AdminLTE-2.3.0/plugins/colorpicker/bootstrap-colorpicker.min.css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+            <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+        <!-- End AdminLTE -->
         
         <!-- Custom styles for this template -->
         <link href="{$media_url}stylesheets/all-bs.css" rel="stylesheet">
@@ -45,228 +76,243 @@
           <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
         
-        <script src="{$media_url}scripts/modernizr-1.6.min.js"></script>
+        <!--<script src="{$media_url}scripts/modernizr-1.6.min.js"></script>-->
         <!--<script>!window.jQuery && document.write(unescape('%3Cscript src="{$media_url}scripts/jquery-1.4.4.min.js"%3E%3C/script%3E'));</script>-->
-        <script src="{$media_url}scripts/jquery.tools.min.js"></script>
+        <!--<script src="{$media_url}scripts/jquery.tools.min.js"></script>-->
         
         <!--<link rel="stylesheet" href="{$media_url}stylesheets/all.css" media="all">-->
-        <link rel="stylesheet" href="{$media_url}stylesheets/date.css" media="all">
+        <!--<link rel="stylesheet" href="{$media_url}stylesheets/date.css" media="all">
         <link rel="stylesheet" href="{$media_url}stylesheets/buttons.css" media="all">
         <link rel="stylesheet" href="{$media_url}stylesheets/quickform.css" media="all">
+        -->
+        <link rel="stylesheet" href="{$media_url}jquery.nyroModal/styles/nyroModal.css" media="all">
         
         {block name=additional_stylesheets}{/block}
     </head>
-
-    <body> 
-        <nav class="navbar navbar-inverse navbar-fixed-top">
-          <div class="container-fluid">
-            <div class="navbar-header">
+    
+    {if $page_action eq 'login'}
+        <body class="hold-transition login-page" style="background-image: url('{$request_url}assets/images/backgrounds/CC-BY-SA-miniBLOCKHELDEN20131221_bouldern0004.jpg'); background-size: cover;" >
+        {block name=content} {/block}
+    </body>
+    {else}
+    
+    <body class="hold-transition skin-blue sidebar-mini" data-spy="scroll" data-target=".modal-body"> 
+        <div class="wrapper"> 
+            <header class="main-header">
+              <!-- Logo -->
+              <a href="index.php?action=dashboard" class="logo">
+                <!-- mini logo for sidebar mini 50x50 pixels -->
+                <span class="logo-mini"><img class="pull-left" style="margin-top: 5px; margin-left: 2px;" src="{$request_url}assets/images/logo.png"/></span>
+                <!-- logo for regular state and mobile devices -->
+                <span class="logo-lg"><img class="pull-left" style="margin-top: 5px;" src="{$request_url}assets/images/logo.png"/><b>{$app_title}</b></span>
+              </a>
                 
-              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">              
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </button>
-                <a class="navbar-brand"href="index.php?action=dashboard"><span><img src="{$request_url}assets/images/logo.png"/></span>{$app_title}</a>
-            </div>
-            <div  class="navbar-collapse collapse">
-              <ul class="nav navbar-nav navbar-right">
-                <!--<li><a href="#">Dashboard</a></li>-->
-                <!--<li><a href="#">Settings</a></li>-->
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                        {if $my_role_id != -1}
-                            {if isset($my_username)} 
-                                {$my_firstname} {$my_lastname}<span >{*$my_role_name*}</span>
-                                <span>
-                                    <img class="img-rounded" style="max-height: 32px;" src="{$access_file}{$my_avatar}" alt="Profile Picture">
-                                </span>
-                            {/if}
+                <!-- Header Navbar: style can be found in header.less -->
+                <nav class="navbar navbar-static-top" role="navigation">
+                    {if isset($my_id)}
+                    <!-- Sidebar toggle button-->
+                    <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                      <span class="sr-only">Navigation wechseln</span>
+                    </a>
+                    <!-- Navbar Right Menu -->
+                    <div class="navbar-custom-menu">
+                      <ul class="nav navbar-nav">
+                        <li class="calendar-menu">   
+                        <a href="index.php?action=calendar" >
+                            <i class="fa fa-calendar"></i>
+                          </a>
+                        </li>  
+                        <li class="timeline-menu">   
+                        <a href="index.php?action=portfolio" >
+                            <i class="fa fa-cubes"></i>
+                          </a>
+                        </li>  
+                        {if isset($mails)}  
+                        <!-- Messages: style can be found in dropdown.less-->
+                        <li class="dropdown messages-menu">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa fa-envelope-o"></i>
+                            <span class="label label-success">{count($mails)}</span>
+                          </a>
+                          <ul class="dropdown-menu">
+                            <li class="header">Sie haben {count($mails)} neue Nachrichten</li>
+                            <li>
+                              <!-- inner menu: contains the actual data -->
+                              <ul class="menu">
+                                 
+                                  {section name=mes loop=$mails}
+                                      <li><!-- start message -->
+                                          <a href="index.php?action=messages&function=showInbox&id={$mails[mes]->id}">
+                                            <div class="pull-left">
+                                              <img src="{$access_file}{$mails[mes]->sender_file_id|resolve_file_id:"xs"}" class="img-circle" alt="User Image">
+                                            </div>
+                                            <h4>
+                                              {$mails[mes]->sender_username}
+                                              <small><i class="fa fa-clock-o"></i> 5 mins</small>
+                                            </h4>
+                                            <p>{$mails[mes]->subject}</p>
+                                          </a>
+                                      </li>
+                                  {/section}
+                               
+                                <!-- end message -->
+                              </ul>
+                            </li>
+                            <li class="footer"><a href="index.php?action=messages&function=showInbox">Alle Nachrichten</a></li>
+                          </ul>
+                        </li>
+                        {else}
+                        <li class=" messages-menu">   
+                        <a href="index.php?action=messages&function=showInbox" >
+                            <i class="fa fa-envelope-o"></i>
+                          </a>
+                        </li>
+                        {/if} 
+
+                        {if isset($page_message)}
+                        <!-- Notifications: style can be found in dropdown.less -->
+                        <li class="dropdown notifications-menu open">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" >
+                            <i class="fa fa-bell-o"></i>
+                            <span class="label label-warning">{count($page_message)}</span>
+                          </a>
+                          <ul class="dropdown-menu">
+                            <li class="header">Sie haben {count($page_message)} Hinweise</li>
+                            <li>
+                              <ul class="menu"><!-- inner menu: contains the actual data -->
+                                  {section name=mes loop=$page_message}
+                                  <li>
+                                      <a href="#">
+                                        <i class="fa fa-warning text-yellow"></i> {$page_message[mes]}
+                                        <!--<i class="fa fa-info text-yellow"></i> {$page_message[mes]}-->
+                                      </a>
+                                  </li>
+                                  {/section}
+                              </ul>
+                              <li class="footer"><a href="#"> <!--Alle zeigen--></a></li>
+                          </ul>
+                        </li>
                         {/if}
-                        <span class="caret"></span></a>
-                        {if isset($my_username)}
-                            <ul class="dropdown-menu">
-                                {if checkCapabilities('menu:readProfile', $my_role_id, false)}
-                                <li><a href="index.php?action=profile&function=edit">
-                                        Profil bearbeiten
-                                    </a>
-                                </li>
-                                {/if}
-                                {if checkCapabilities('menu:readPassword', $my_role_id, false)}
-                                <li><a href="index.php?action=password">
-                                        Passwort ändern
-                                    </a>
-                                </li>
-                                {/if}
-                                {if checkCapabilities('menu:readMessages', $my_role_id, false)}
-                                <li><a href="index.php?action=messages&function=showInbox">
-                                        Nachrichten
-                                    </a>
-                                </li>
-                                {/if}
-                                {if checkCapabilities('menu:readMessages', $my_role_id, false)}
-                                <li><a href="../share/request/uploadframe.php?userID={$my_id}&context=userFiles&target=NULL{$tb_param}" class="thickbox">
-                                        Meine Dateien
-                                    </a>
-                                </li>
-                                {/if}
-                            <li role="separator" class="divider"></li>
-                                <li><a href="index.php?action=logout">
-                                        Abmelden
-                                    </a>
-                                </li>
-                            </ul>
-                            {/if}
-                  </li>
-              </ul>
-              <!--<form class="navbar-form navbar-right">
-                <input type="text" class="form-control" placeholder="Search...">
-              </form>-->
-            </div>
-          </div>
-        </nav>
-                
-        <div class="container-fluid">
-            <div class="row">
-                {if $page_name eq 'login' OR $page_name eq 'error' OR $page_name eq 'criteria'} <!--Kein Menu -->
-                    {block name=content} {/block}
-                    <footer class="footer">
-                        <div class="container">
-                          <p class="text-muted"><div class="copyright">{$app_footer}<span class="floatright space-right">{if isset($stat_users_online) && checkCapabilities('menu:readPassword', $my_role_id, false)}Erfolgreich erreichte Ziele auf curriculumonline.de: {$stat_acc_all} davon heute: {$stat_acc_today} ({$stat_users_online} User online | Heute: {$stat_users_today}) {/if}</span></div>
-                        {block name=footer} {/block}</p>
-                        </div>
-                    </footer>
-                {else}
-                    {*'<div id="sidebar2">{block name=sidebar}{/block}{if $my_role_id neq 0} <a class="commentbtn cssbtnmargin cssbtntext tooltip_left" data-tooltip="Fehler melden" href="index.php?action=messages&function=shownewMessage&answer=true&receiver_id=102&subject=Probleme melden"></a>{/if}</div> <!-- sidebar float right -->           *}
-                    <div class="col-sm-1 col-md-2 sidebar">{block name=nav}{include file='menu.tpl'}{/block}</div>
-                    <div class="col-sm-offset-1 col-md-10 col-md-offset-2 main ">
-                    {block name=content} {/block}
-                    </div>
-                    <footer class="col-xs-1 col-sm-11 col-sm-offset-1 col-md-10 col-md-offset-2 footer">
-                        <div class="container">
-                          <p class="text-muted"><div class="copyright">{$app_footer}<span class="floatright space-right">{if isset($stat_users_online) && checkCapabilities('menu:readPassword', $my_role_id, false)}Erfolgreich erreichte Ziele auf curriculumonline.de: {$stat_acc_all} davon heute: {$stat_acc_today} ({$stat_users_online} User online | Heute: {$stat_users_today}) {/if}</span></div>
-                        {block name=footer} {/block}</p>
-                        </div>
-                    </footer>
-                {/if}
-            </div> <!-- end Row-->
-        </div>
 
-                
-            
-            
-        <!--<header id="header">
-           <div id="app_title" class="floatleft"></div>
-           <div id="header_center"></div>
-           <div class="logininfo">
-            
-            </div>
-
-            <div class="navbar">
-                <div class="breadcrumb_left">{*<p>{$page_action}</p>*}</div>{*bisher nicht genutzt*}
-                <div class="breadcrumb_right">
-                {if isset($page_message)} 
-                    <div id="notification_li"><span id="notification_count">{$page_message_count}</span>
-                        <a href="#" id="notificationLink">Meldungen</a>
-                        <div id="notificationContainer">
-                            <div id="notificationTitle">Meldungen</div>
-                            <div id="notificationsBody" class="notifications">
-                            {section name=mes loop=$page_message}<p class="notificationContent"><img src="{$request_url}assets/images/logo.png"/>{$page_message[mes]}</p>{/section}
-                            </div>
-                            {*<div id="notificationFooter"><a href="#">Alle Anzeigen</a></div>*}
-                        </div>    
-                    </div>
-                {/if}
-                </div>
-            </div>
-        </header>  -->
-        
-                <div id="popup" class="modal" onload="popupFunction();" ><p class="center space-top-bottom"><img src="{$base_url}public/assets/images/loadingAnimation.gif"/></p></div> <!-- Popup -->    
-
-        {*(<div id="wrapper"> <!-- damit content/main block 100% breit ist -->
-            {if $page_name eq 'login' OR $page_name eq 'error' OR $page_name eq 'criteria'} <!--Kein Menu -->
-                 <div class="floatleft"></div>    
-            {else}
-                
-                <div id="sidebar2">{block name=sidebar}{/block}{if $my_role_id neq 0} <a class="commentbtn cssbtnmargin cssbtntext tooltip_left" data-tooltip="Fehler melden" href="index.php?action=messages&function=shownewMessage&answer=true&receiver_id=102&subject=Probleme melden"></a>{/if}</div> <!-- sidebar float right -->           
-                {block name=nav} <div id="sidebar1" class="floatleft">{include file='menu.tpl'}</div>{/block}
+                        <!-- User Account: style can be found in dropdown.less -->
+                        <li class="dropdown user user-menu">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <img src="{$access_file}{$my_avatar}" class="user-image" alt="User Image">
+                            <span class="hidden-xs">{$my_firstname} {$my_lastname}</span>
+                          </a>
+                          <ul class="dropdown-menu">
+                            <!-- User image -->
+                            <li class="user-header">
+                              <img src="{$access_file}{$my_avatar}" class="img-circle" alt="User Image">
+                              <p>
+                                {$my_firstname} {$my_lastname} - {$my_role_name}
+                                <small>Mitglied seit {$my_creation_time}</small>
+                              </p>
+                            </li>
+                            <!-- Menu Body -->
+                            <li class="user-body">
+                              <div class="col-xs-6 text-center">
+                                  {if checkCapabilities('menu:readPassword', $my_role_id, false)}
+                                      <a href="#" onclick="formloader('password', 'edit');">Passwort ändern</a>
+                                  {/if}
+                              </div>
+                              <div class="col-xs-6 text-center">
+                                  {if checkCapabilities('menu:readMessages', $my_role_id, false)}
+                                      {* <a href="../share/request/uploadframe.php?userID={$my_id}&context=userFiles&target=NULL{$tb_param}" class="thickbox">*}
+                                      <a href="../share/request/uploadframe.php?userID={$my_id}&context=userFiles&target=NULL{$tb_param}" class="nyroModal">
+                                          Meine Dateien
+                                      </a>
+                                  {/if}
+                              </div>
+                            </li>
+                            <!-- Menu Footer-->
+                            <li class="user-footer">
+                              <div class="pull-left">
+                                  {if checkCapabilities('menu:readProfile', $my_role_id, false)}
+                                      <a href="index.php?action=profile&function=edit" class="btn btn-default btn-flat">Profil</a>
+                                  {/if}
+                              </div>
+                              <div class="pull-right">
+                                <a href="index.php?action=logout" class="btn btn-default btn-flat">Abmelden</a>
+                              </div>
+                            </li>
+                          </ul>
+                        </li>
+                        <!-- Control Sidebar Toggle Button -->
+                        <li>
+                          <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
+                        </li>
+                      </ul>
+                    </div>    
+                    {/if}   
+                </nav>         
+            </header>         
+            <!-- Sidebar left - Menu -->
+            {if $page_name eq 'login' OR $page_name eq 'error' OR $page_name eq 'criteria'}
+                <!--Kein Menu -->
+            {else}         
+                {block name=nav}{include file='menu.tpl'}{/block}
+                 
             {/if}
-
-            <div id="main" class="group ">
-                <div id="content" class="space-top ">
-                    {block name=content} {/block}
-                </div> <!-- end #content -->     
-            </div> <!-- end #main -->  
-        </div> *}     
-                            
+            
+            <!-- Content Wrapper. Contains page content -->
+            <div class="content-wrapper">
+                <div id="popup" class="modal" onload="popupFunction(this.id);"></div> <!-- Popup -->    
+                {block name=content} {/block}
+            </div> 
+            
+            <footer class="main-footer">
+                <div class="pull-right hidden-xs">
+                  <b>Version</b> {$app_version}
+                </div>
+                {$app_footer} {block name=footer} {/block}
+            </footer>    
+            
+            {block name=sidebar_right}{include file='sidebar_right.tpl'}{/block}
+            
+        </div><!-- ./wrapper -->
         
 <!-- SCRIPTS-->  
-        <script src="{$media_url}scripts/script.js"></script>     
+    <!-- CK Editor -->
+    <script src="{$lib_url}/ckeditor/ckeditor.js"></script>
+    <!--script src="https://cdn.ckeditor.com/4.4.3/standard/ckeditor.js"></script-->
+    <!-- moment -->
+    <script src="{$media_url}templates/AdminLTE-2.3.0/plugins/moment/moment.min.js"></script>
+    <!-- jQuery 2.1.4 -->
+    <script src="{$media_url}templates/AdminLTE-2.3.0/plugins/jQuery/jQuery-2.1.4.min.js"></script>
+    <!-- Bootstrap 3.3.5 -->
+    <script src="{$media_url}templates/AdminLTE-2.3.0/bootstrap/js/bootstrap.min.js"></script>
+    <!-- FastClick -->
+    <script src="{$media_url}templates/AdminLTE-2.3.0/plugins/fastclick/fastclick.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="{$media_url}templates/AdminLTE-2.3.0/dist/js/app.min.js"></script>
+    <!-- Sparkline -->
+    <script src="{$media_url}templates/AdminLTE-2.3.0/plugins/sparkline/jquery.sparkline.min.js"></script>
+    <!-- jvectormap -->
+    <!--script src="{$media_url}templates/AdminLTE-2.3.0/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script-->
+    <!--script src="{$media_url}templates/AdminLTE-2.3.0/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script-->
+    <!-- SlimScroll 1.3.0 -->
+    <script src="{$media_url}templates/AdminLTE-2.3.0/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+    <!-- ChartJS 1.0.1 -->
+    <!--script src="{$media_url}templates/AdminLTE-2.3.0/plugins/chartjs/Chart.min.js"></script-->
+    <!-- bootstrap color picker -->
+    <!--script src="{$media_url}templates/AdminLTE-2.3.0/plugins/colorpicker/bootstrap-colorpicker.min.js"></script-->
+    <!-- daterangepicker load dynamic via request -->
+    <!--script src="{$media_url}templates/AdminLTE-2.3.0/plugins/daterangepicker/daterangepicker.js"></script-->
+    
+    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+    <!--<script src="{$media_url}templates/AdminLTE-2.3.0/dist/js/pages/dashboard2.js"></script>-->
+    <!-- AdminLTE for demo purposes -->
+    <script src="{$media_url}templates/AdminLTE-2.3.0/dist/js/demo.js"></script>
+    
+    <!-- jquery.nyroModal -->
+    <script src="{$media_url}jquery.nyroModal/js/jquery.nyroModal.custom.js"></script> 
+    
+    
+        <script src="{$media_url}scripts/script.js"></script> 
+        <script src="{$media_url}scripts/file.js"></script>
         <script src="{$media_url}scripts/dragndrop.js"></script>     
         {block name=additional_scripts} 
-        
-        {if $tiny_mce && isset($my_id)}
-            <script type="text/javascript" src="{$lib_url}tinymce/tinymce.min.js"></script>
-            <script type="text/javascript">
-                tinymce.init({  
-                    selector:   "textarea",
-                    theme:      "modern",
-                    height :    300,
-                    plugins:    [ "advlist autolink code colorpicker lists link image charmap print preview hr anchor pagebreak",
-                                "searchreplace wordcount visualblocks visualchars fullscreen",
-                                "insertdatetime media nonbreaking save textcolor table contextmenu directionality",
-                                "emoticons paste"],
-                    toolbar1:   "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | print preview media | forecolor backcolor emoticons | fileframe",
-                    {if checkCapabilities('file:upload', $my_role_id, false)}
-                        setup: function(editor) {
-                            editor.addButton('fileframe', {
-                                text: 'Datei einfügen',
-                                icon: false,
-                                onclick: function() {
-                                    tb_show('','../share/request/uploadframe.php?userID={$my_id}&last_login={$my_last_login}&context=editor&target=tmce_editor&format=2&multiple=false{$tb_param}');
-                                }
-                            });
-                        }
-                    {/if}
-                });
-            </script>
-        {/if}
-        
-        <script type="text/javascript" > 
-            $(document).ready(function(){
-                $("#notificationContainer").slideToggle(200) 
-                    setTimeout(function() { $("#notificationContainer").slideToggle(200); }, {$message_timeout});           
-            }); 
-            
-            $("#notificationLink").click(function(){
-                $("#notificationContainer").slideToggle(200);
-                return false;
-            });
-            
-            $(document).click(function(){
-                $("#notificationContainer").hide();
-            });
-            //Popup Click
-            $("#notificationContainer").click(function(){
-                return false;
-            });
-        </script>
-        
-        <script type="text/javascript" src="{$media_url}scripts/thickbox.js"></script>
-        
-        <!-- jquery tools --><!-- dateinput styling -->
-        <script> 
-             $(":date").dateinput({
-                format: 'yyyy-mm-dd 00:00:00',	// the format displayed for the user
-                selectors: true,             	// whether month/year dropdowns are shown          
-                offset: [10, 20],            	// tweak the position of the calendar
-                speed: 'fast',               	// calendar reveal speed
-                firstDay: 1,                  	// which day starts a week. 0 = sunday, 1 = monday etc..
-                yearRange: [-20, 20] 
-            });
-        </script>    
-        <!-- end jquery tools -->
         
         <!-- Logout - Timer  -->
         {if isset($institution_timeout)}
@@ -275,6 +321,7 @@
             idleTime = 0;
             $(document).ready(function () {
                 var idleInterval = setInterval("timerIncrement()", 60000); 
+                $(document.getElementById('popup')).attr('class', 'modal');
             });
             function timerIncrement() {
                 idleTime = idleTime + 1;
@@ -286,17 +333,34 @@
         {/if}
         <script type="text/javascript">
         function closePopup(){
+            removeMedia();  // Important to empty audio element cache in webkit browsers. see description on function
             $('#popup').hide();  
-            document.getElementById('popup').innerHTML = '<p class="center space-top-bottom"><img src="{$base_url}public/assets/images/loadingAnimation.gif"/></p>';  
+            document.getElementById('popup').innerHTML = '<img src="{$base_url}public/assets/images/loadingAnimation.gif"/>';    
         }
         </script>
          <!-- end Logout - Timer  -->
+         
+         <!-- Nyromodal  -->
+         <script type="text/javascript">
+        $(function() {
+            $('.nyroModal').nyroModal();
+            $('#popup_generate').nyroModal();
+            //$('.colorpicker').colorpicker();
+        });
+        
+        
+        </script>
+        {if isset($smarty.session.FORM->form)}
+            <script type="text/javascript" > 
+                {if isset($smarty.session.FORM->id)}
+                    $(document).ready(formloader('{$smarty.session.FORM->form}', '{$smarty.session.FORM->func}', {$smarty.session.FORM->id}));
+                {else}
+                    $(document).ready(formloader('{$smarty.session.FORM->form}', '{$smarty.session.FORM->func}'));
+                {/if}
+            </script>
+        {/if} 
+        
         {/block}  
-    
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="{$media_url}scripts/jquery-1.12.1.min.js"></script>
-    <script src="{$media_url}bootstrap-3.3.6-dist/js/bootstrap.min.js"></script>
     </body>
+    {/if}
 </html>

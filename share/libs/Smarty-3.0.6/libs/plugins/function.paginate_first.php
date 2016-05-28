@@ -67,9 +67,13 @@ function smarty_function_paginate_first($params, &$smarty, $bootstrap = false) {
     $_text = isset($params['text']) ? $params['text'] : SmartyPaginate::getFirstText($_id);
     $_url .= (strpos($_url, '?') === false) ? '?' : '&';
     $_url .= SmartyPaginate::getUrlVar($_id) . '=1';
-    
+    if(($_item = SmartyPaginate::_getPrevPageItem($_id)) !== false) {
+        $_show = true;
+    } else {
+        $_show = false;
+    }
     if ($bootstrap){
-        return $_show ? '<button type="button" class="btn btn-default"><a href="' . str_replace('&','&amp;', $_url) . '"' . $_attrs . '>' . $_text . '</a></button>' : '';
+        return $_show ? '<button type="button" class="btn btn-default" onclick="location.href=$(this).children(\'a:first\').attr(\'href\');"><a class="glyphicon glyphicon glyphicon-step-backward" href="' . str_replace('&','&amp;', $_url) . '"' . $_attrs . '></a></button>' : '';
     } else {
         return $_show ? '<a href="' . str_replace('&','&amp;', $_url) . '"' . $_attrs . '>' . $_text . '</a>' : '';
     }

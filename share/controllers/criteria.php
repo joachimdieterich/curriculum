@@ -16,7 +16,7 @@
 * http://www.gnu.org/copyleft/gpl.html      
 */
 global $TEMPLATE; 
-          
+$TEMPLATE->assign('breadcrumb',  array('Lehrplan' => 'index.php?action=criteria'));
 $TEMPLATE->assign('page_title', 'Kriterien');
 $TEMPLATE->assign('my_username', ''); //Loginname setzen für header setzen --> Leer
 $ter_id     = filter_input(INPUT_GET, 't', FILTER_UNSAFE_RAW);

@@ -323,8 +323,8 @@ class Curriculum {
             $ext_reference = new Omega();
         }
         foreach($xml->getElementsByTagName('curriculum') as $curriculum) {
-            if ($preset) { // Werte aus backup nutzen -> sonst Werte des Formulars nutzen
-                 $old_cur_id              = $curriculum->getAttribute('id');
+                $old_cur_id              = $curriculum->getAttribute('id');
+            if (!$preset) { // Werte aus backup nutzen -> sonst Werte des Formulars nutzen
                  $this->curriculum        = $curriculum->getAttribute('curriculum');
                  $this->description       = $curriculum->getAttribute('description');
                  $g = new Grade();
@@ -372,7 +372,7 @@ class Curriculum {
                     $f->filename                = $ter_fil->getAttribute('filename');
                     $f->description             = $ter_fil->getAttribute('description');
                     $f->author                  = $ter_fil->getAttribute('author');
-                    $f->licence                 = $ter_fil->getAttribute('licence');
+                    $f->license                 = $ter_fil->getAttribute('license');
                     $f->type                    = $ter_fil->getAttribute('type');
                     $f->path                    = $c_id.'/'.$t_id.'/';//$fil->getAttribute('path');
                     $f->context_id              = $ter_fil->getAttribute('context_id');
@@ -414,7 +414,7 @@ class Curriculum {
                     $f->filename                = $ena_fil->getAttribute('filename');
                     $f->description             = $ena_fil->getAttribute('description');
                     $f->author                  = $ena_fil->getAttribute('author');
-                    $f->licence                 = $ena_fil->getAttribute('licence');
+                    $f->license                 = $ena_fil->getAttribute('license');
                     $f->type                    = $ena_fil->getAttribute('type');
                     $f->path                    = $c_id.'/'.$t_id.'/'.$e_id.'/';//$fil->getAttribute('path');
                     $f->context_id              = $ena_fil->getAttribute('context_id');

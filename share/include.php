@@ -18,28 +18,36 @@
  */
 
 /* Klassen laden */
+include('classes/absent.class.php');
 include('classes/backup.class.php');
 include('classes/capability.class.php');
 include('classes/certificate.class.php');
+include('classes/context.class.php');
 include('classes/country.class.php');
 include('classes/course.class.php'); 
+include('classes/coursebook.class.php'); 
 include('classes/cron.class.php');
 include('classes/curriculum.class.php'); 
 include('classes/db.class.php'); 
 include('classes/enablingobjective.class.php'); 
+include('classes/event.class.php'); 
 include('classes/exception.class.php'); 
 include('classes/file.class.php'); 
+include('classes/form.class.php');                  // Form 
 include('classes/grade.class.php');     
 include('classes/group.class.php');  
 include('classes/gump.class.php');                  //validator class
 include('classes/institution.class.php'); 
+include('classes/interval.class.php'); 
 include('classes/jwt.class.php');                   //jwt class
+include('classes/license.class.php'); 
 include('classes/log.class.php'); 
 global $LOG;
 $LOG = new Log();                                   // Funktion ist so  innerhalb des uploadframes sowie der einzelnen requests nutzbar
 include('classes/mail.class.php');
 include('classes/mailbox.class.php');               
 include('classes/pdf.class.php'); 
+include('classes/portfolio.class.php'); 
 include('classes/quiz_question.class.php'); 
 include('classes/quiz_answer.class.php'); 
 include('classes/render.class.php');     
@@ -49,6 +57,7 @@ include('classes/semester.class.php');
 include('classes/state.class.php'); 
 include('classes/statistic.class.php'); 
 include('classes/subject.class.php');     
+include('classes/task.class.php');     
 include('classes/terminalobjective.class.php');
 include('classes/upload.class.php');  
 include('classes/user.class.php');     
@@ -63,6 +72,5 @@ include('classes/badges/issuing.class.php');
 include('plugins/omega.class.php');
 }*/
 include('plugins/omega.class.php');
-
-/*libs*/
-include('libs/HTML_QuickForm2-2.0.2/HTML/QuickForm2.php');
+/*Videostream*/
+include('classes/video_stream.class.php');     

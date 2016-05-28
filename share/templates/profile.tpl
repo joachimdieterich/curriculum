@@ -8,12 +8,14 @@
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
 {block name=content}
-
-<h3 class="page-header">{$page_title}
-    {if isset($p_id)}
-        <input class="curriculumdocsbtn pull-right" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Mein_Profil');"/>
-    {/if}
-</h3>
+<!-- Content Header (Page header) -->
+{content_header p_title=$page_title pages=$breadcrumb help='http://docs.joachimdieterich.de/index.php?title=Mein_Profil'}      
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-primary">
+                <div class="box-body"></div>
 
         
     {if isset($p_avatar)}
@@ -96,6 +98,12 @@
     {if isset($nusr_val)}
         {html_paginator id='newUsersPaginator'}     
     {/if}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+        
 {/block}
 
 {block name=sidebar}{$smarty.block.parent}{/block}

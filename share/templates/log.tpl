@@ -8,8 +8,21 @@
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
 {block name=content}
-<h3 class="page-header">{$page_title}<input class="curriculumdocsbtn pull-right" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Berichte');"/></h3>
-    {html_paginator id='logP'}
+<!-- Content Header (Page header) -->
+{content_header p_title=$page_title pages=$breadcrumb help='http://docs.joachimdieterich.de/index.php?title=Berichte'}   
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-primary">
+                <div class="box-body">
+                    {html_paginator id='logP'}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {/block}
 
 {block name=sidebar}{$smarty.block.parent}{/block}

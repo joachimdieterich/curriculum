@@ -25,34 +25,34 @@ try { // Error handling
     if (!$PAGE->action) {$PAGE->action = 'login'; }
    
  switch ($PAGE->action) {
-     case 'login':  
+     case 'login':  $TEMPLATE->assign('page_action',      'login');                                      
      case 'install':  
      case 'criteria':  //wichtig für Badges-Info ohne Login
          break;
      
-     default:       if(filter_input(INPUT_GET, 'mySemester', FILTER_VALIDATE_INT)){                                          // Lernzeitraum wurde gewechselt --> vor session.php damit Änderungen übernommen werden
-                        $_SESSION['USER']->semester_id    = filter_input(INPUT_GET, 'mySemester', FILTER_VALIDATE_INT);      // Neuer Lernzeitraum übernehmen
-                        $TEMPLATE->assign('my_semester_id', $_SESSION['USER']->semester_id); 
-                        $change_semester      = new Semester($_SESSION['USER']->semester_id);
-                        $us = new User();                                                                                     // $USER hier noch nicht verfügbar
-                        $us->id = $_SESSION['USER']->id;
-                        $us->setSemester($_SESSION['USER']->semester_id);
-                        $_SESSION['USER'] = NULL;                                                                             // Beim Wechsel des Lerzeitraumes muss Session neu geladen werden, damit die entsprechende Rolle geladen wird.
-                    }   
-                    
-                    require ('../share/session.php');                                                           // Erst Session aufbauen damit $USER verfügbar ist, dann login-check!
-                    require ('../share/login-check.php');                                                       // Check ob Session abgelaufen ist
-                    
-                    $TEMPLATE->assign('mySemester',         $_SESSION['SEMESTER']);                                     // ARRAY mit Lernzeiträumen in die der USER eingeschrieben ist.
-                    if (isset($_SESSION['username'])){
-                        $TEMPLATE->assign('loginname',      $_SESSION['username']);                                      
-                    }
-                    $TEMPLATE->assign('stat_users_online',  $USER->usersOnline($USER->institutions));  
-                    $statistics = new Statistic();
-                    $TEMPLATE->assign('stat_acc_all',       $statistics->getAccomplishedObjectives('all'));  
-                    $TEMPLATE->assign('stat_acc_today',     $statistics->getAccomplishedObjectives('today'));  
-                    $TEMPLATE->assign('stat_users_today',   $statistics->getUsersOnline('today'));  
-                    detect_reload();   
+     default:   if(filter_input(INPUT_GET, 'mySemester', FILTER_VALIDATE_INT)){                                          // Lernzeitraum wurde gewechselt --> vor session.php damit Änderungen übernommen werden
+                    $_SESSION['USER']->semester_id    = filter_input(INPUT_GET, 'mySemester', FILTER_VALIDATE_INT);      // Neuer Lernzeitraum übernehmen
+                    $TEMPLATE->assign('my_semester_id', $_SESSION['USER']->semester_id); 
+                    $change_semester      = new Semester($_SESSION['USER']->semester_id);
+                    $us = new User();                                                                                     // $USER hier noch nicht verfügbar
+                    $us->id = $_SESSION['USER']->id;
+                    $us->setSemester($_SESSION['USER']->semester_id);
+                    $_SESSION['USER'] = NULL;                                                                             // Beim Wechsel des Lerzeitraumes muss Session neu geladen werden, damit die entsprechende Rolle geladen wird.
+                }   
+
+                require ('../share/session.php');                                                           // Erst Session aufbauen damit $USER verfügbar ist, dann login-check!
+                require ('../share/login-check.php');                                                       // Check ob Session abgelaufen ist
+
+                $TEMPLATE->assign('mySemester',         $_SESSION['SEMESTER']);                                     // ARRAY mit Lernzeiträumen in die der USER eingeschrieben ist.
+                if (isset($_SESSION['username'])){
+                    $TEMPLATE->assign('loginname',      $_SESSION['username']);                                      
+                }
+                $TEMPLATE->assign('stat_users_online',  $USER->usersOnline($USER->institutions));  
+                $statistics = new Statistic();
+                $TEMPLATE->assign('stat_acc_all',       $statistics->getAccomplishedObjectives('all'));  
+                $TEMPLATE->assign('stat_acc_today',     $statistics->getAccomplishedObjectives('today'));  
+                $TEMPLATE->assign('stat_users_today',   $statistics->getUsersOnline('today'));  
+                detect_reload();   
                     
          break;
  }
@@ -86,7 +86,20 @@ try { // Error handling
         $TEMPLATE->assign('page_url', removeUrlParameter($PAGE->url, 'p_reset'));
     }
     
-
+    /**
+     * Load new Messages
+     */
+    if (isset($USER)){
+        if (checkCapabilities('menu:readMessages', $USER->role_id, false)){
+            $update = new Mail();
+            $mail = new Mailbox();
+            $mail->loadNewMessages($USER->id);
+            if (isset($mail->inbox)){
+                $TEMPLATE->assign('mails', $mail->inbox);
+            }
+        }   
+    }
+    
     /**
     * load controller 
     */ 
@@ -98,6 +111,7 @@ try { // Error handling
         if (isset($PAGE->message)){/* Systemnachrichten */
             $TEMPLATE->assign('page_message_count', count($PAGE->message));
             $TEMPLATE->assign('page_message',       $PAGE->message);
+            $_SESSION['PAGE']->message = null;  //reset to prevent multiple notifications
         } 
     } else { throw new CurriculumException($PAGE->action .'.php nicht vorhanden.'); }
  } catch (CurriculumException $e){ // CurriculumException im controller
@@ -106,6 +120,8 @@ try { // Error handling
         $PAGE->action = 'error';      
 } 
 //object_to_array($USER);
+//error_log(var_dump($INSTITUTION));
+//object_to_array($INSTITUTION);
 //object_to_array($CFG);
 /**
  *  load and render template

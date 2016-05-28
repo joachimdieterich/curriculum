@@ -71,8 +71,16 @@ function smarty_function_paginate_last($params, &$smarty, $bootstrap = false) {
     $_url .= SmartyPaginate::getUrlVar($_id) . '=';
     $_url .= ($_total % $_limit > 0) ? $_total - ( $_total % $_limit ) + 1 : $_total - $_limit + 1;
     
+   
+    if(($_item = SmartyPaginate::_getNextPageItem($_id)) !== false) {
+        $_show = true;
+    } else {
+        $_show = false;
+    }
+    
+    
     if ($bootstrap){
-        return $_show ? '<button type="button" class="btn btn-default"><a href="' . str_replace('&','&amp;', $_url) . '"' . $_attrs . '>' . $_text . '</a></button>' : '';
+        return $_show ? '<button type="button" class="btn btn-default"onclick="location.href=$(this).children(\'a:first\').attr(\'href\');"><a class="glyphicon glyphicon glyphicon-step-forward"href="' . str_replace('&','&amp;', $_url) . '"' . $_attrs . '></a></button>' : '';
     } else {
         return $_show ? '<a href="' . str_replace('&','&amp;', $_url) . '"' . $_attrs . '>' . $_text . '</a>' : '';
     }
