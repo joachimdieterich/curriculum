@@ -24,6 +24,10 @@ class Course {
      */
     public $id;
     /**
+     * sollte die id ablösen todo
+     */
+    public $course_id;
+    /**
      * name of course
      * @var string
      */
@@ -83,6 +87,7 @@ class Course {
      * @var string
      */
     public $icon; 
+
  
     /**
      * get courses depending on dependency
@@ -90,10 +95,10 @@ class Course {
      * @param int $id
      * @return array of course objects
      */
-    public function getCourse($dependency = null, $id = null, $array = false){
+    public function getCourse($dependency = null, $id = null){
         $course = array();
         switch ($dependency) {
-            case 'admin':   $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, gp.groups, gp.semester_id, gp.id AS gpid, fl.filename
+            case 'admin':   $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, gp.groups, gp.semester_id, gp.id AS gpid, ce.id AS course_id, fl.filename
                                             FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp, files AS fl
                                             WHERE cu.id = ce.curriculum_id
                                             AND cu.icon_id = fl.id
@@ -104,7 +109,7 @@ class Course {
                                             ORDER BY gp.groups, cu.curriculum ASC');
                             $db->execute(array($id));          
                 break; 
-            case 'teacher': $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, gp.groups, gp.semester_id, gp.id AS gpid, fl.filename
+            case 'teacher': $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, gp.groups, gp.semester_id, gp.id AS gpid, ce.id AS course_id, fl.filename
                                             FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp, files AS fl
                                             WHERE cu.id = ce.curriculum_id
                                             AND gp.id = ce.group_id AND cu.icon_id = fl.id 
@@ -123,34 +128,28 @@ class Course {
             default:        break;
         }
         
-        if ($array == true){ //Array output for quickform
-            $c = array(); 
-            while($result = $db->fetchObject()) {
-                $c[$result->id] = $result->curriculum.' | '.$result->description;
+        while($result = $db->fetchObject()) {
+            $this->curriculum_id     = $result->id;
+            $this->curriculum        = $result->curriculum;
+            $this->description       = $result->description;
+            if ($dependency == 'course'){  
+                $this->state         = $result->state; 
+                $this->country       = $result->de;
+                $this->grade         = $result->grade;
+                $this->subject       = $result->subject;
+                $this->schooltype    = $result->schooltype;
+            } else {
+                $this->course_id     = $result->course_id;
+                $this->id            = $result->id.'_'.$result->gpid;
+                $this->semester_id   = $result->semester_id;
+                $this->course        = $result->groups.' | '.$result->curriculum.' | '.$result->description; 
+                $this->group         = $result->groups;
+                $this->icon          = $result->filename;
             }
-            return $c;
-        } else {
-            while($result = $db->fetchObject()) {
-                $this->curriculum_id     = $result->id;
-                $this->curriculum        = $result->curriculum;
-                $this->description       = $result->description;
-                if ($dependency == 'course'){  
-                    $this->state         = $result->state; 
-                    $this->country       = $result->de;
-                    $this->grade         = $result->grade;
-                    $this->subject       = $result->subject;
-                    $this->schooltype    = $result->schooltype;
-                } else {
-                    $this->id            = $result->id.'_'.$result->gpid;
-                    $this->semester_id   = $result->semester_id;
-                    $this->course        = $result->groups.' | '.$result->curriculum.' | '.$result->description; 
-                    $this->group         = $result->groups;
-                    $this->icon          = $result->filename;
-                }
-                $course[]                = clone $this;        //it has to be clone, to get the object and not the reference
-            }
-            return $course;
+            $course[]                = clone $this;        //it has to be clone, to get the object and not the reference
         }
+        return $course;
+        
    }
    
    /**
@@ -179,5 +178,37 @@ class Course {
             $teachers[] = $result->user_id;
         }
         return $teachers;
-   }    
+   }   
+   
+   public function getCourseId($curriculum_id, $group_id){
+       $db = DB::prepare('SELECT * FROM curriculum_enrolments AS ce
+                        WHERE ce.curriculum_id = ? AND ce.group_id = ?');
+       $db->execute(array($curriculum_id, $group_id));
+       $result = $db->fetchObject();
+        $user = new User();
+        if ($result){
+            $this->id            = $result->id;
+            $this->status        = $result->status;
+            $this->curriculum_id = $result->curriculum_id;
+            $this->group_id      = $result->group_id;
+            $this->creation_time = $result->creation_time;
+            $this->expel_time    = $result->expel_time;
+            $this->creator_id    = $result->creator_id;
+            return $this;
+        }
+   }
+   
+   public function members($course_id){
+        $user = new User();
+        $db = DB::prepare('SELECT ge.user_id FROM groups_enrolments AS ge, curriculum_enrolments AS ce
+                        WHERE ce.id = ? AND ce.group_id = ge.group_id'); 
+        $db->execute(array($course_id));    
+        while($result = $db->fetchObject()) {
+            $user->load('id', $result->user_id);
+            $users[] = clone $user;
+        }
+       return $users;
+   }
+   
+   
 }

@@ -50,6 +50,7 @@ class Semester {
      * @var timestamp
      */
     public $end; 
+    public $timerange;
     /** 
      * Timestamp of creation
      * @var timestamp
@@ -96,6 +97,7 @@ class Semester {
                 $this->institution         = $result->institution;
                 $this->begin               = $result->begin;
                 $this->end                 = $result->end;
+                $this->timerange           = date('d.m.Y G:i', strtotime($this->begin)) .' - '. date('d.m.Y G:i', strtotime($result->end));
                 $this->creation_time       = $result->creation_time;
                 $this->creator_id          = $result->creator_id;
                 $this->creator_username    = $result->username;
@@ -121,6 +123,7 @@ class Semester {
                 $this->description         = $result->description;
                 $this->begin               = $result->begin;
                 $this->end                 = $result->end;
+                $this->timerange           = date('d.m.Y G:i', strtotime($this->begin)) .' - '. date('d.m.Y G:i', strtotime($result->end));
                 $this->creation_time       = $result->creation_time;
                 $this->creator_id          = $result->creator_id;
                 $this->creator_username    = $result->username;
@@ -136,6 +139,9 @@ class Semester {
     public function add(){
         global $USER;
         checkCapabilities('semester:add', $USER->role_id);
+        list ($this->begin, $this->end) = explode(' - ',$this->timerange); // copy timestart and timeend from timerage
+        $this->begin = date('Y-m-d G:i:s', strtotime($this->begin));
+        $this->end   = date('Y-m-d G:i:s', strtotime($this->end));
         $db = DB::prepare('SELECT COUNT(id) FROM semester WHERE UPPER(semester) = UPPER(?) AND institution_id = ?');
         $db->execute(array($this->semester, $this->institution_id));
         if($db->fetchColumn() >= 1) { 
@@ -154,6 +160,9 @@ class Semester {
     public function update(){
         global $USER;
         checkCapabilities('semester:update', $USER->role_id);
+        list ($this->begin, $this->end) = explode(' - ',$this->timerange); // copy timestart and timeend from timerage
+        $this->begin = date('Y-m-d G:i:s', strtotime($this->begin));
+        $this->end   = date('Y-m-d G:i:s', strtotime($this->end));
         $db = DB::prepare('UPDATE semester SET semester = ?, description = ?, begin = ?, end = ?, institution_id = ? WHERE id = ?');
         return $db->execute(array($this->semester, $this->description, $this->begin, $this->end, $this->institution_id, $this->id));
     }
@@ -187,8 +196,10 @@ class Semester {
         $this->description       = $result->description;
         $this->begin             = $result->begin;
         $this->end               = $result->end;
+        $this->timerange         = date('d.m.Y G:i', strtotime($this->begin)) .' - '. date('d.m.Y G:i', strtotime($result->end));
         $this->institution_id    = $result->institution_id;
     }
+    
     
     /**
     * function used during the install process to set up creator id to new admin

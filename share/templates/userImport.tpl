@@ -8,34 +8,86 @@
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
 {block name=content}
-    
-<div class="border-box">
-    <h3 class="page-header">{$page_title}<input class="curriculumdocsbtn pull-right" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Benutzerliste_importieren');"/></h3>
-    <div class="space-top">
-        <form name="file" enctype="multipart/form-data" action="index.php?action=userImport" method="post">
-            <p><h3>Nutzerkonten per CSV-Datei hochladen.</h3></p>
-            <p>Die CSV-Datei muss folgendes Format haben:</p>
-            <p>- Die ersten Zeile muss die Schlüsselwerte enthalten (z.B.:username, password, firstname, lastname, email, role_id, confirmed, postalcode, city, state, country)</p>
-            <p>- Die Schüsselwerte <strong>username, password, firstname, lastname </strong>und <strong>email</strong> müssen gesetzt werden. </p>
-            <p>- Wird keine Benutzer-Rolle festgelegt (role_id) wird die Standard-Rolle der Institution verwendet.</p>
-            <p>- Die maximale Dateigröße liegt bei {$filesize}MB und kann im Adminstrationsbereich festgelegt werden.</p>
-            <p>- Die Datei muss im utf-8 Format gespeichert werden, sonst werden Umlaute und Sonderzeichen nicht korrekt importiert</p>
-            <p><label>Institution / Schule*:</label><SELECT  name='institution_id' id='institution_id' />
-            {foreach key=insid item=ins from=$my_institutions}
-                <OPTION  value="{$ins->institution_id}"  {if $ins->institution_id eq $institution_id}selected="selected"{/if}>{$ins->institution}</OPTION>
-            {/foreach} 
-            </SELECT></p>
-            <p><h3>CSV-Vorlagen</h3></p>
-            <p class="space-top" style="height:64px;"><a class="url_btn floatleft" href="{$support_path}Vorlage-min.csv"> </a> Vorlage (Minimal - nur benötigte Felder)</p>
-            <p class="space-top" style="height:64px;"><a class="url_btn floatleft" href="{$support_path}Vorlage-max.csv"> </a> Vorlage (Alle möglichen Felder)</p>
-            <p><h3>CSV-Datei hochladen</h3></p>
-            <p><input name="datei" type="file" value=""><input type="submit" value="Importieren"> </p>
-        </form>
+  
+<!-- Content Header (Page header) -->
+{content_header p_title=$page_title pages=$breadcrumb help='http://docs.joachimdieterich.de/index.php?title=Benutzerliste_importieren'}  
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                  <h3 class="box-title">Nutzerkonten per CSV-Datei hochladen</h3>
+                  {*<div class="box-tools pull-right">
+                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                  </div>*}
+                </div><!-- /.box-header -->
+                <form name="file" enctype="multipart/form-data" action="index.php?action=userImport" method="post">                 
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-md-8 col-lg-7">
+                                <p>Die CSV-Datei muss folgendes Format haben:<br/>
+                                - Die ersten Zeile muss die Schlüsselwerte enthalten (z.B.:username, password, firstname, lastname, email, role_id, confirmed, postalcode, city, state, country)<br/>
+                                - Die Schüsselwerte <strong>username, password, firstname, lastname </strong>und <strong>email</strong> müssen gesetzt werden. <br/>
+                                - Wird keine Benutzer-Rolle festgelegt (role_id) wird die Standard-Rolle der Institution verwendet.<br/>
+                                - Die maximale Dateigröße liegt bei {$filesize}MB und kann im Adminstrationsbereich festgelegt werden.<br/>
+                                - Die Datei muss im utf-8 Format gespeichert werden, sonst werden Umlaute und Sonderzeichen nicht korrekt importiert</p>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-5">
+                                <h4>CSV-Vorlagen</h4>
+                                <a class="btn btn-app" href="{$support_path}Vorlage-min.csv">
+                                    <i class="fa fa-save"></i> Minimal - nur benötigte Felder
+                                </a>
+                                <a class="btn btn-app" href="{$support_path}Vorlage-max.csv">
+                                    <i class="fa fa-save"></i> Maximal - nur benötigte Felder
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-xs-12 col-sm-12 col-md-5 col-lg-4" >
+                                <label>Institution / Schule</label>
+                                <select class="form-control" name="institution_id" id="institution_id">
+                                    {foreach key=insid item=ins from=$my_institutions}
+                                        <option  value="{$ins->institution_id}"  {if $ins->institution_id eq $institution_id}selected="selected"{/if}>{$ins->institution}</option>
+                                    {/foreach} 
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                          <label for="exampleInputFile">CSV-Datei hochladen</label>
+                          <input name="datei" type="file" value="">
+                        </div>        
+                    </div>
+                                
+                    <div class="box-footer">
+                        <button type="submit" class="btn btn-primary">Importieren</button>
+                    </div> 
+                </form>
+            </div>  
+        </div>  
+              
         {if isset($nusr_val)}
-            {html_paginator id='newUsersPaginator'}     
-        {/if}
+        <div class="col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                  <h3 class="box-title">Neue Nutzer</h3>
+                  <div class="box-tools pull-right">
+                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                  </div>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    {html_paginator id='newUsersPaginator'}     
+                </div>
+            </div>  
+        </div> 
+        {/if}        
     </div>
-</div>
+</section>
+
 {/block}
 
 {block name=sidebar}{$smarty.block.parent}{/block}

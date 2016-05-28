@@ -36,14 +36,14 @@ $(document).ready(function() {
         
 });
 
-function previewFile(URL, FILE, POSTFIX, TITLE, DESCRIPTON, AUTHOR, LICENCE) {
+function previewFile(URL, FILE, POSTFIX, TITLE, DESCRIPTON, AUTHOR, LICENSE) {
    var dot = FILE.lastIndexOf( "." ) ;
    var filename  = FILE.substr( 0 , dot );
    
    document.getElementById('img_FilePreview').src                           = URL+filename+'_t.png'; //Zugriff per accessfile.php
    document.getElementById('div_FilePreview').style.display                 = 'block'; 
    document.getElementById(POSTFIX + 'p_author').innerHTML                  =  AUTHOR; 
-   document.getElementById(POSTFIX + 'p_licence').innerHTML                 =  LICENCE;
+   document.getElementById(POSTFIX + 'p_license').innerHTML                 =  LICENSE;
    document.getElementById(POSTFIX + 'p_title').innerHTML                   =  TITLE; 
    document.getElementById(POSTFIX + 'p_description').innerHTML             =  DESCRIPTON;  
    document.getElementById(POSTFIX + 'p_information').style.display         = 'block'; 

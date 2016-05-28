@@ -189,7 +189,7 @@ class TerminalObjective {
                                     $this->repeat_interval      = $result->repeat_interval;
                                     $this->creation_time        = $result->creation_time;
                                     $this->creator_id           = $result->creator_id;
-                                    $this->files                = $files->getFiles('terminal_objective', $this->id);
+                                    $this->files                = $files->getFiles('terminal_objective', $this->id, 'default', true); // nicht benötigt --> viel bessere performance
                                     if ($load_enabling_objectives){
                                         $enabling_objectives = new EnablingObjective();
                                         $this->enabling_objectives = $enabling_objectives->getObjectives('terminal_objective', $this->id);

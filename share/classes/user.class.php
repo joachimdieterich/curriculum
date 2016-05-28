@@ -593,7 +593,7 @@ class User {
                     if (!isset($city_position))           {$this->city       = '';}                  else {$this->city       = $data[$city_position];}
                     if (!isset($state_position))          {$this->state_id   = $CFG->standard_state;}   else {$this->state_id      = $data[$state_position];}
                     if (!isset($country_position))        {$this->country_id = $CFG->standard_country;} else {$this->country_id    = $data[$country_position];}
-                    if (!isset($avatar_position))         {$this->avatar_id  = '681';}               else {$this->avatar_id  = $data[$avatar_position];}
+                    if (!isset($avatar_position))         {$this->avatar_id  = '0';}               else {$this->avatar_id  = $data[$avatar_position];}
                     if (!isset($password_position))       {$this->password   = 'password';}          else {$this->password   = $data[$password_position];} //todo: besser Fehlermeldung, wenn Passwort nicht gesetzt
                     if (!isset($role_id_position))        {$this->role_id    = $this->role_id;}      else {$this->role_id    = $data[$role_id_position];}
                     if (!isset($confirmed_position))      {$this->confirmed  = '3';}                 else {$this->confirmed  = $data[$confirmed_position];}
@@ -1003,6 +1003,22 @@ class User {
         }
     }
     
+    function resolveUserId($id, $dependency = 'full'){
+        $db = DB::prepare('SELECT firstname, lastname, username FROM users WHERE id =?');
+        $db->execute(array($id));
+        $result  = $db->fetchObject();
+        switch ($dependency) {
+            case 'full':     return $result->firstname.' '.$result->lastname.' ('.$result->username.')';
+                break;
+            case 'name':     return $result->firstname.' '.$result->lastname;
+                break;
+            case 'username': return $result->username;
+            default:
+                break;
+        }
+        
+    }
+
     public function checkTermsOfUse(){
         $db = DB::prepare('SELECT status FROM accept_terms WHERE user_id = ?');
         $db->execute(array($this->id));

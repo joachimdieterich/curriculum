@@ -17,7 +17,9 @@
 * http://www.gnu.org/copyleft/gpl.html      
 */
 global $USER, $TEMPLATE, $PAGE;
-
+$TEMPLATE->assign('page_title',     'Lernstand eintragen');
+$TEMPLATE->assign('breadcrumb',  array('Lernstand eintragen' => 'index.php?action=objectives'));
+$courses = new Course();
 if(isset($_GET['reset']) OR (isset($_POST['reset']))){
     resetPaginator('userPaginator');            
 }
@@ -101,7 +103,8 @@ if ($selected_curriculum != '') {
             $TEMPLATE->assign('allUsers', $user_id_list);
         }*/
         $p_options = array('mailnew'   => array('href'     => 'index.php?action=messages&function=shownewMessage&subject=-&receiver_id=__id__&answer=true',
-                                        'capability'    => checkCapabilities('mail:postMail', $USER->role_id, false)));
+                                        'capability'    => checkCapabilities('mail:postMail', $USER->role_id, false),
+                                        'icon'         => 'fa fa-send'));
         $t_config  = array('table_id'  => array('id'    => 'contentsmalltable'),
                            /*'tr'        => array('class' => )*/
                            'checkbox'  => array('onclick'  => 'checkrow(\'__id__\', \'id[]\', \'userPaginator\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&paginator=userPaginator&certificate_template=\'+document.getElementById(\'certificate_template\').value);'),
@@ -122,16 +125,20 @@ if ($selected_curriculum != '') {
     } else {
         $showuser = true;
     }  
+    /*course book*/
+    $sel_course = $courses->getCourseId($selected_curriculum, $selected_group);
+    $coursebook = new CourseBook();
+    $TEMPLATE->assign('coursebook',      $coursebook->get('course', $sel_course->id) );
 }
 /*******************************************************************************
  * END POST / GET  
  */    
 $TEMPLATE->assign('showuser',       $showuser);
 $TEMPLATE->assign('show_course',    $show_course);
-$TEMPLATE->assign('page_title',     'Lernstand eintragen');
+
 
 // Load courses
-$courses = new Course(); 
+ 
 if(checkCapabilities('user:userListComplete', $USER->role_id, false)){
     $TEMPLATE->assign('courses',        $courses->getCourse('admin', $USER->id));  
 }

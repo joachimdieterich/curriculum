@@ -4,184 +4,119 @@
 {block name=description}{$smarty.block.parent}{/block}
 {block name=nav}{$smarty.block.parent}{/block}
 
-{block name=additional_scripts}{$smarty.block.parent}{/block}
+{block name=additional_scripts}{$smarty.block.parent}
+ 
+{/block}
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
 {block name=content}
-    <div class="page-title">
-        <h3 class="page-header">Startseite<input class="curriculumdocsbtn pull-right" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Startseite');"/></h3>
-    </div>
-
-    <div class="col-sm-6 col-md-6 col-lg-4">
-          <div class="panel panel-default">
-              <div class="panel-heading">
-                <h4>Pinnwand
-                      {if checkCapabilities('dasboard:editBulletinBoard', $my_role_id, false)}
-                          <a class="editbtn pull-right" onclick="editBulletinBoard();"></a>
-                      {/if}
-                    </h4>
-              </div>
-              <div class="panel-body">
-              {if $bulletinBoard}
-                  <h4>{$bulletinBoard->title}</h4>
-                  {$bulletinBoard->text}
-              {/if}
-            </div>
-        </div>  
-    </div>  
     
-    <div class="col-sm-6 col-md-6 col-lg-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                  <h4>Nachrichten</h4>
+<!-- Content Header (Page header) -->
+{content_header p_title=$page_title pages=$breadcrumb help='http://docs.joachimdieterich.de/index.php?title=Startseite'}    
+ 
+<!-- Main content -->
+<section class="content">
+    <!-- Info boxes -->
+    <div class="row" >
+        
+         <div class="col-md-4 col-sm-12 col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                  <h3 class="box-title">Pinnwand</h3>
+                  <div class="box-tools pull-right">
+                    {if checkCapabilities('dashboard:editBulletinBoard', $my_role_id, false)}  
+                    <button class="btn btn-box-tool" data-widget="edit" onclick="formloader('bulletinBoard','edit');"><i class="fa fa-edit"></i></button>
+                    {/if}
+                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                  </div>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                {if $bulletinBoard}
+                    <h4>{$bulletinBoard->title}</h4>
+                    {$bulletinBoard->text}
+                {/if}
                 </div>
-                <div class="panel-body">
-                    {if isset($mails)} 
-                        {section name=mes loop=$mails}
-                            <div class="panel panel-success">
-                                <div class="panel-heading">
-                                  <h3 class="panel-title"> {$mails[mes]->subject}<span class="pull-right "><img style="margin-top: 8px; height:40px;" class="img-circle" src="{$access_file}{$mails[mes]->sender_file_id|resolve_file_id:"xs"}"/></span></h3>
-                                </div>
-                                <div class="panel-body">
-                                    <a href="index.php?action=messages&function=showInbox&id={$mails[mes]->id}">{$mails[mes]->subject}</a> ({$mails[mes]->sender_username})<br>
-                                {strip_tags($mails[mes]->message|truncate:100:"...":true)}
-                                </div> 
-                            </div>
-                        {/section}
-                    {else}<p>Keine ungelesenen Nachrichen vorhanden.</p>{/if}                    
-            </div>
-        </div>
-    </div>  
+            </div>  
+        </div>  
+        
+        {if isset($stat_users_online) && checkCapabilities('menu:readPassword', $my_role_id, false)}
+        <div class="col-md-4 col-sm-12 col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                  <h3 class="box-title">Abgeschlossene Ziele</h3>
+                  <div class="box-tools pull-right">
+                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                  </div>
+                </div><!-- /.box-header -->
+                <div class="box-footer no-padding">
+                  <ul class="nav nav-pills nav-stacked">
+                    <li><a href="#">Gesamt <span class="pull-right text-red">{$stat_acc_all}</span></a></li>
+                    <li><a href="#">davon Heute <span class="pull-right text-red">{$stat_acc_today}</span></a></li>
+                    <li><a href="#">User Online <span class="pull-right text-red">{$stat_users_online}</span></a></li>
+                    <li><a href="#">Heute <span class="pull-right text-green"> {$stat_users_today}</span></a></li>
+                  </ul>
+                </div><!-- /.footer -->
+            </div><!-- /.box -->
+        </div>    
+        {/if}
+        
+       
+   
+        {if isset($myInstitutions)}     
+        {foreach key=insid item=ins from=$myInstitutions}
+            <div class="col-md-4 top-buffer">
+                <div class="box box-widget widget-user">
+                  <!-- Add the bg color to the header using any of the bg-* classes -->
+                  <div class="widget-user-header bg-aqua-active" {*style="background: url('../dist/img/photo1.png') center center;"*}>
+                    <h3 class="widget-user-username">{$ins->institution}</h3>
+                    <h5 class="widget-user-desc">{$ins->schooltype_id}</h5>
+                  </div>
 
-    <div class="col-sm-6 col-md-6 col-lg-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-              <h4>Erfolge</h4>
-            </div>
-            <div class="panel-body">
-              {if isset($enabledObjectives)} 
-                Hier siehst du, welche Ziele du in den letzten <strong>{$my_acc_days}</strong> Tagen erreicht hast.
-                    {foreach key=enaid item=ena from=$enabledObjectives}
-                        <div class="panel panel-success">
-                            <div class="panel-heading">
-                              <h3 class="panel-title"> {$ena->curriculum}<span class="pull-right">{$ena->accomplished_teacher}</span></h3>
-                            </div>
-                            <div class="panel-body">
-                                {$ena->enabling_objective|truncate:100}<!--{$ena->description}-->
-                            </div> 
-                        </div>
-                    {/foreach}
-                {else}<p>In den letzten <strong>{$my_acc_days}</strong> Tagen hast du keine Ziele abgeschlossen.</p>{/if}
-            </div>
-          </div>  
-    </div>
-
-         
-
-        <div class="col-sm-6 col-md-6 col-lg-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                  <h4>Meine Lerngruppen / Klassen
-                      </h4>
-                </div>
-                <div class="panel-body">
-                    {if isset($myClasses)} 
-                        {foreach key=claid item=cla from=$myClasses}
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <strong>{$cla->group} ({$cla->grade})</strong><br>
-                                    {$cla->description} <br>
-                                    {$cla->institution_id|truncate:50}
-                                </div>
-                                <div class="panel-body">
-                                    <strong>Lehrpläne</strong><br>
-                                    {foreach item=cur_menu from=$my_enrolments}
-                                        {if $cur_menu->group_id eq $cla->id}
-                                            <a href="index.php?action=view&curriculum={$cur_menu->id}&group={$cur_menu->group_id}">{$cur_menu->curriculum}</a><br>
-                                        {/if}
-                                    {/foreach}
-                                </div>
-                            </div>
-                        {/foreach}  
-                     {else}Sie sind in keiner Institution / Schule eingeschrieben.{/if}     
-                </div>
-            </div>
-        </div>
-                
-        <div class="col-sm-6 col-md-6 col-lg-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4>Meine Institutionen / Schulen</h4>
-                </div>
-                <div class="panel-body"> 
-                    {if isset($myInstitutions)} 
-                        {foreach key=insid item=ins from=$myInstitutions}
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <h4><img style="height: 64px;" src="{$access_file}{$ins->file_id|resolve_file_id}"></h4>
-                                </div>
-                                <div class="panel-body">
-                                    <strong>{$ins->institution}</strong><br>
+                  <div class="box-footer">
+                    <div class="row">
+                      <div class="col-sm-4 border-right">
+                        <div class="description-block">
+                          <h5 class="description-header">3,200</h5>
+                          <span class="description-text">SCHÜLER</span>
+                        </div><!-- /.description-block -->
+                      </div><!-- /.col -->
+                      <div class="col-sm-4 border-right">
+                        <div class="description-block">
+                          <h5 class="description-header">13,000</h5>
+                          <span class="description-text">ERREICHTE ZIELE</span>
+                        </div><!-- /.description-block -->
+                      </div><!-- /.col -->
+                      <div class="col-sm-4">
+                        <div class="description-block">
+                          <h5 class="description-header">35</h5>
+                          <span class="description-text">LEHRER</span>
+                        </div><!-- /.description-block -->
+                        {*<strong>{$ins->institution}</strong><br>
                                     {$ins->schooltype_id}<br><br>
                                     {$ins->description}<br>
 
                                     {$ins->state_id}, {$ins->country}<br>
-                                    {$ins->creator_id}
-                                </div>
-                            </div>
-                        {/foreach}
-                    {else}Sie sind in keiner Institution / Schule eingeschrieben.{/if} 
-                </div>
-            </div>
-        </div>
-        
-        {if checkCapabilities('page:showCronjob', $my_role_id, false)}
-        <div class="col-sm-6 col-md-6 col-lg-4">
-             <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4>Abgelaufene Ziele</h4>
-                </div>
-                <div class="panel-body">
-                {*$cronjob*}
-                </div>
-             </div>
-        </div>
+                                    {$ins->creator_id}*}
+                      </div><!-- /.col -->
+                    </div><!-- /.row -->
+                  </div>
+                </div><!-- /.widget-user -->
+           </div><!-- /.col -->
+        {/foreach}
         {/if}
         
- 
-       <div class="col-sm-6 col-md-6 col-lg-4">
-             <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4>Hilfe</h4>
-                </div>
-                <div class="panel-body">
-                    {if $my_role_id eq 0}
-                    <video style="display: block;margin: 0 auto;" width="480" controls preload="none">
-                        <source src="{$media_url}/docs/Teilnehmer.mp4" type="video/mp4">
-                    </video>
-                    {/if}
-                    {if $my_role_id eq 7}
-                    <video style="display: block;margin: 0 auto;" width="480" controls preload="none">
-                        <source src="{$media_url}/docs/Lehrer.mp4" type="video/mp4">
-                    </video>
-                    {/if}
-                    {if $my_role_id eq 6}
-                    <video style="display: block;margin: 0 auto;" width="480" controls preload="none">
-                        <source src="{$media_url}/docs/Schuladmin.mp4" type="video/mp4">
-                    </video>
-                    {/if}
-                    <a href="http://docs.joachimdieterich.de"><img src="{$media_url}/images/wiki.png"></a>
-                </div>  
-            </div>
-       </div>
-        <div style="clear: both;"></div>
-        
-        <div class="col-sm-6 col-md-6 col-lg-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4>Allgemeine Informationen</h4>
-                </div>
-                <div class="panel-body">
+        <div class="col-md-4 top-buffer">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                      <h3 class="box-title">Allgemeine Informationen</h3>
+                      <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                        <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                      </div>
+                    </div><!-- /.box-header -->
+                <div class="box-body">
                     <strong>Datenschutzerklärung und Nutzungsbedingungen</strong><br>
                      Die Datenschutzerklärung und Nutzungsbedingungen für diese Lernplattform können Sie <a href="{$media_url}/docs/curriculum_Terms_Of_Use_2015.pdf">hier</a> einsehen. <br><br>
                      <strong>Ansprechpartner</strong><br>
@@ -191,8 +126,203 @@
                 </div>    
             </div>
         </div>
-        <div style="clear: both;"></div>
+        
+        <div class="col-md-4 top-buffer">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                      <h3 class="box-title">Erfolge</h3>
+                      <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                        <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                      </div>
+                    </div><!-- /.box-header -->
+                <div class="box-body">
+                {if isset($enabledObjectives)} 
+                  Hier siehst du, welche Ziele du in den letzten <strong>{$my_acc_days}</strong> Tagen erreicht hast.
+                      {foreach key=enaid item=ena from=$enabledObjectives}
+                          <div class="panel panel-success">
+                              <div class="panel-heading">
+                                <h3 class="panel-title"> {$ena->curriculum}<span class="pull-right">{$ena->accomplished_teacher}</span></h3>
+                              </div>
+                              <div class="panel-body">
+                                  {$ena->enabling_objective|truncate:100}<!--{$ena->description}-->
+                              </div> 
+                          </div>
+                      {/foreach}
+                  {else}<p>In den letzten <strong>{$my_acc_days}</strong> Tagen hast du keine Ziele abgeschlossen.</p>{/if}
+                </div>
+            </div>  
+        </div>
+        
+        {if isset($myClasses)}
+        {foreach key=claid item=cla from=$myClasses}    
+        <div class="col-md-4 top-buffer">
+            <!-- Widget: user widget style 1 -->
+            <div class="box box-widget widget-user">
+              <!-- Add the bg color to the header using any of the bg-* classes -->
+              <div class="widget-user-header bg-yellow">
+                <h3 class="widget-user-username">{$cla->group}</h3>
+                <h5 class="widget-user-desc">{$cla->institution_id|truncate:50}</h5>
+              </div>
+              <div class="box-footer no-padding">
+                <ul class="nav nav-stacked">
+                    {foreach item=cur_menu from=$my_enrolments}
+                        {if $cur_menu->group_id eq $cla->id}
+                            <li><a href="index.php?action=view&curriculum={$cur_menu->id}&group={$cur_menu->group_id}">{$cur_menu->curriculum} </a></li>
+                        {/if}
+                    {/foreach}
+                </ul>
+              </div>
+            </div><!-- /.widget-user -->
+        </div><!-- /.col -->        
+        {/foreach}  
+        {/if}        
 
+        {if checkCapabilities('page:showCronjob', $my_role_id, false)}
+        <div class="col-md-4 top-buffer">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Abgelaufene Ziele</h3>
+                    <div class="box-tools pull-right">
+                      <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                      <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                    </div>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                {*$cronjob*}
+                </div>
+             </div>
+        </div>
+        {/if}
+
+        <!-- Hilfe -->  
+        <div class="col-md-4 top-buffer">
+             <div class="box box-primary">
+                 <div class="box-header with-border">
+                       <h3 class="box-title">Hilfe</h3>
+                       <div class="box-tools pull-right">
+                         <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                         <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                       </div>
+                     </div><!-- /.box-header -->
+                 <div class="box-body text-center">
+                     {if $my_role_id eq 0}
+                     <video width="100%" controls preload="none">
+                         <source src="{$media_url}/docs/Teilnehmer.mp4" type="video/mp4">
+                     </video>
+                     {/if}
+                     {if $my_role_id eq 7}
+                     <video  width="100%"  controls preload="none">
+                         <source src="{$media_url}/docs/Lehrer.mp4" type="video/mp4">
+                     </video>
+                     {/if}
+                     {if $my_role_id eq 6}
+                     <video  width="100%"  controls preload="none">
+                         <source src="{$media_url}/docs/Schuladmin.mp4" type="video/mp4">
+                     </video>
+                     {/if}
+                     <a  href="http://docs.joachimdieterich.de"><img src="{$media_url}/images/wiki.png"></a>
+                 </div>  
+             </div>
+        </div>
+                 
+        <!-- Moodle Login -->         
+        <div class="col-md-4 top-buffer">
+             <div class="box box-primary">
+                 <div class="box-header with-border">
+                       <h3 class="box-title">Moodle</h3>
+                       <div class="box-tools pull-right">
+                         <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                         <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                       </div>
+                 </div><!-- /.box-header -->
+                 <div class="box-body text-center">
+                     <form target="_blank" action="https://lms.bildung-rp.de/mz-suew/login/index.php" method="post">
+                        <div class="form-group has-feedback">
+                          <input type="text" name="username" class="form-control" placeholder="Benutzername">
+                          <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                        </div>
+                        <div class="form-group has-feedback">
+                          <input type="password" name="password" class="form-control" placeholder="Passwort">
+                          <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-4">
+                            <button type="submit" class="btn btn-primary btn-block btn-flat">Anmelden</button>
+                          </div><!-- /.col -->
+                        </div>
+                      </form>
+                 </div>
+             </div>
+        </div>
+        
+        <!-- OMEGA -->         
+        <div class="col-md-4 top-buffer">
+             <div class="box box-primary">
+                 <div class="box-header with-border">
+                       <h3 class="box-title">OMEGA - Online Medien-Gesamtangebot des Landes Rheinland-Pfalz</h3>
+                       <div class="box-tools pull-right">
+                         <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                         <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                       </div>
+                 </div><!-- /.box-header -->
+                 <div class="box-body text-center">
+                     <a target="_blank" href="https://omega.bildung-rp.de/?doc=welcome"><img src="https://omega.bildung-rp.de/images/omega.png" alt="Logo" title="Logo"> </a>
+                </div>
+             </div>
+        </div>
+                 
+        <!-- Bildungsserver -->         
+        <div class="col-md-4 top-buffer">
+             <div class="box box-primary">
+                 <div class="box-header with-border">
+                       <h3 class="box-title">Bildungsserver</h3>
+                       <div class="box-tools pull-right">
+                         <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                         <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                       </div>
+                 </div><!-- /.box-header -->
+                 <div class="box-body text-center">
+                     <a target="_blank" href="http://www.bildung-rp.de">Bildungsserver Rheinland-Pfalz</a>
+                </div>
+             </div>
+        </div>         
+        <!-- TIS -->         
+        <div class="col-md-4 top-buffer">
+             <div class="box box-primary">
+                 <div class="box-header with-border">
+                       <h3 class="box-title">TIS - Fortbildung Online</h3>
+                       <div class="box-tools pull-right">
+                         <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                         <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                       </div>
+                 </div><!-- /.box-header -->
+                 <div class="box-body text-center">
+                     <a target="_blank" href="https://tis.bildung-rp.de"><img src="https://bildung-rp.de/fileadmin/_processed_/csm_120716_Banner_FortbildungOnline_klein_603b051cb2.jpg" alt="Logo" title="Logo"> </a>
+                </div>
+             </div>
+        </div>         
+                 
+        <!-- INMIS -->         
+        <div class="col-md-4 top-buffer">
+             <div class="box box-primary">
+                 <div class="box-header with-border">
+                       <h3 class="box-title">Inmis - Verleihsystem der kommunalen Medienzentren</h3>
+                       <div class="box-tools pull-right">
+                         <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                         <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                       </div>
+                 </div><!-- /.box-header -->
+                 <div class="box-body text-center">
+                     <a target="_blank" href="https://inmis.bildung-rp.de"><img src="http://www.kmz-cochem.de/wp-content/uploads/2010/11/inMIS_beschriftet.png" alt="Logo" title="Logo"> </a>
+                </div>
+             </div>
+        </div>         
+                 
+                 
+
+    </div>
+</section>                 
 {/block}
 
 {block name=sidebar}{$smarty.block.parent}{/block}

@@ -23,14 +23,14 @@
 global $CFG, $USER, $_SESSION, $PAGE, $INSTITUTION, $TEMPLATE;
 $USER = new User();
 
-if (isset($_SESSION['USER'])){                                                  // Wenn $USER Object uin Session existiert diesen übernehmen --> weniger db Traffic
+if (isset($_SESSION['USER'])){                                                  // Wenn $USER Object uin Session existiert diesen übernehmen
     assign_to_template($_SESSION['USER'],'my_');                                // $_SESSION['USER'] im $TEMPLATE verfügbar machen
     $USER                   =  $_SESSION['USER'];
     $institution = new Institution();
     $CFG->timeout = $institution->getTimeout($USER->institution_id);
     $TEMPLATE->assign('global_timeout', $CFG->timeout);
 } else {                                                                        // ... anderenfalls $USER aus db laden
-    $_SESSION['USER']       =  new stdClass();  
+    $_SESSION['USER']       =  new User();  
     session_reload_user();
  }
 /**
@@ -70,7 +70,10 @@ if (isset($_SESSION['PAGE'])){
         $PAGE->previous_action  = $PAGE->action;
         $PAGE->action           = filter_input(INPUT_GET, 'action');
     }
-    $PAGE->message = null;
+    $PAGE->target_url           = null;   //reset target_url  
+    if (!isset($_SESSION['PAGE']->message)){                                    // to get messages from popups
+        $PAGE->message          = null;                                     //reset page messages
+    } 
     $_SESSION['PAGE']           =& $PAGE;
     assign_to_template($_SESSION['PAGE'],'page_');                              // assign $_SESSION['PAGE'] to $TEMPLATE 
 } else {
@@ -80,11 +83,25 @@ if (isset($_SESSION['PAGE'])){
     $PAGE->php                  = curPageName();
     $PAGE->previous_action      = 'null'; 
     $PAGE->action               = filter_input(INPUT_GET, 'action');
-    $PAGE->browser              = $_SERVER['HTTP_USER_AGENT'];                  //$_SERVER nicht filtern --> http://php.net/manual/de/function.filter-input.php#77307
+    $PAGE->browser              = $_SERVER['HTTP_USER_AGENT'];   //$_SERVER nicht filtern --> http://php.net/manual/de/function.filter-input.php#77307
     
     $_SESSION['PAGE']           =  new stdClass();
     $_SESSION['PAGE']           =& $PAGE;
     assign_to_template($_SESSION['PAGE'],'page_');                              // assign $_SESSION['PAGE'] to $TEMPLATE 
+}
+
+if (null !== (filter_input(INPUT_GET, 'course'))){
+    $COURSE                     = new stdClass();
+    list ($curriculum_id, $group_id) = explode('_', filter_input(INPUT_GET, 'course'));
+    $course                     = new Course();
+    $course                     = $course->getCourseId($curriculum_id, $group_id);
+    $_SESSION['COURSE']         =& $course;
+    
+    
+} else {
+    if (isset($_SESSION['COURSE'])){
+    $COURSE                     = $_SESSION['COURSE'];
+    }
 }
 
 /**
@@ -99,7 +116,7 @@ if (isset($_SESSION['INSTITUTION'])){
     $institution                = new Institution(); 
     $institution->loadConfig('user', $USER->id);
     
-    $_SESSION['INSTITUTION']    =  new stdClass();                              // Store $INSTITUTION in Session
+    $_SESSION['INSTITUTION']    =  new Institution();                           // Store $INSTITUTION in Session
     $_SESSION['INSTITUTION']    =& $INSTITUTION;
     assign_to_template($_SESSION['INSTITUTION'],'institution_');                // assign $_SESSION['INSTITUTION'] to $TEMPLATE 
 }

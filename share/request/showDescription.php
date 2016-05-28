@@ -25,27 +25,19 @@ $USER       = $_SESSION['USER'];
 if (filter_input(INPUT_GET, 'enablingObjectiveID', FILTER_VALIDATE_INT)) {
     $ena    = new EnablingObjective();
     $ena->id= filter_input(INPUT_GET, 'enablingObjectiveID', FILTER_VALIDATE_INT);
-    $ena->load();
-    
+    $ena->load();  
 } 
 $ter        = new TerminalObjective();
 $ter->id    = filter_input(INPUT_GET, 'terminalObjectiveID', FILTER_VALIDATE_INT);
 $ter->load();
-
-echo '<div class="messageboxClose" onclick="closePopup();"></div><div class="contentheader">Beschreibung</div>
-      <div id="popupcontent">';
-if ($ter->description){
-    echo '<lable></label><p class="materialtxt">'.$ter->description;
-} 
-
-if (isset($ena->description)){ 
-        echo '<br>'.$ena->description;
-} 
-
+$content    = '';
+if ($ter->description){         $content .= $ter->description; } 
+if (isset($ena->description)){  $content .= '<br>'.$ena->description; } 
 if (!isset($ena->description) && !isset($ter->description)){    
-        echo '<p class="materialtxt"><p>Keine Beschreibung vorhanden</p>';
+  $content .= 'Keine Beschreibung vorhanden';
 }
-    
-echo '</p><div class="materialseperator"></div><div class="space-top"></div>
-      <input type="submit" name="Submit" value="Fenster schließen" onclick="closePopup()"/>
-      </div></div>';
+
+$html = Form::modal(array('title'   => 'Beschreibung',
+                          'content' => $content));
+
+echo json_encode(array('html'=>$html));

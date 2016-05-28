@@ -145,6 +145,7 @@ if (checkCapabilities('user:listNewUsers', $USER->role_id, false)){
 function loadSelectData($page_title, $user = false, $readonly = false){
     global $CFG, $TEMPLATE, $USER; 
     $TEMPLATE->assign('page_title',         $page_title);
+    $TEMPLATE->assign('breadcrumb',  array($page_title => 'index.php?action=profile'));
     $TEMPLATE->assign('readonly',           $readonly);
     
     if (!$user){ //keine ID übergeben

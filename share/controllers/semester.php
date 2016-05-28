@@ -18,71 +18,19 @@
 */
 global $USER, $TEMPLATE;
 
-if (isset($_GET['function'])) {
-     switch ($_GET['function']) {
-        case 'new':     checkCapabilities('semester:add',   $USER->role_id);      // USER berechtigt?
-                        $TEMPLATE->assign('showForm',       true); 
-            break;
-        case 'edit':    checkCapabilities('semester:update',$USER->role_id);      // USER berechtigt?
-                        $TEMPLATE->assign('showForm',       true);
-                        $TEMPLATE->assign('editBtn',        true);
-
-                        $edit_semester      = new Semester();
-                        $edit_semester->id  = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-                        $edit_semester->load();
-                        $TEMPLATE->assign('institution_id', $edit_semester->institution_id);
-                        assign_to_template($edit_semester);               
-            break;
-        default: break;
-    }
-}
-
-             
-if($_POST ){
-    $new_semester                 = new Semester();
-    if (isset($_POST['id'])){
-        $new_semester->id         = filter_input(INPUT_POST, 'id',          FILTER_VALIDATE_INT);
-    }
-    $new_semester->semester       = filter_input(INPUT_POST, 'semester',    FILTER_SANITIZE_STRING);
-    $new_semester->description    = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING); 
-    $new_semester->begin          = filter_input(INPUT_POST, 'begin',       FILTER_UNSAFE_RAW); 
-    $new_semester->end            = filter_input(INPUT_POST, 'end',         FILTER_UNSAFE_RAW);
-    $new_semester->creator_id     = $USER->id;  
-    $new_semester->institution_id = filter_input(INPUT_POST, 'institution_id', FILTER_VALIDATE_INT);
-
-    $gump   = new Gump();                 /* Validation */
-    $_POST  = $gump->sanitize($_POST);   //sanitize $_POST
-    $gump->validation_rules(array(
-    'semester'        => 'required',
-    'description'     => 'required',
-    'begin'           => 'required',
-    'end'             => 'required'
-    ));
-    $validated_data = $gump->run($_POST);
-
-    if($validated_data === false) {/* validation failed */
-        assign_to_template($new_semester);    
-        $TEMPLATE->assign('v_error',    $gump->get_readable_errors());     
-        $TEMPLATE->assign('showForm',   true); 
-    } else {/* validation successful */
-        if (isset($_POST['add']))       { $new_semester->add(); }
-        if (isset($_POST['update']))    { $new_semester->update(); }       
-    }   
-}
-/*******************************************************************************
- * END POST / GET 
- */ 
-
-$TEMPLATE->assign('page_title', 'Lernzeiträume verwalten');
+$TEMPLATE->assign('page_title', 'Lernzeiträume');
+$TEMPLATE->assign('breadcrumb',  array('Lernzeiträume' => 'index.php?action=semester'));
 $semesters                  = new Semester();
 $semesters->institution_id  = $USER->institutions; 
 
-$p_options = array('delete' => array('onclick' => "del('subject',__id__, $USER->id);", 
-                                     'capability' => checkCapabilities('semester:delete', $USER->role_id, false)),
-                    'edit'  => array('href'    => 'index.php?action=semester&function=edit&id=__id__'),
-                                     'capability' => checkCapabilities('semester:update', $USER->role_id, false));
-$p_config =   array('id'         => 'checkbox',
-                    'semester'    => 'Lerzeitraum', 
+$p_options = array('delete' => array('onclick'    => "del('semester',__id__, $USER->id);", 
+                                     'capability' => checkCapabilities('semester:delete', $USER->role_id, false),
+                                     'icon'       => 'fa fa-minus'),
+                    'edit'  => array('onclick'    => "formloader('semester','edit',__id__);", 
+                                     'capability' => checkCapabilities('semester:update', $USER->role_id, false),
+                                     'icon'       => 'fa fa-edit'));
+$p_config = array('id'            => 'checkbox',
+                  'semester'      => 'Lerzeitraum', 
                   'description'   => 'Beschreibung',
                   'institution'   => 'Institution',
                   'begin'         => 'Lernzeitraum-Beginn',

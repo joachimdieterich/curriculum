@@ -17,6 +17,7 @@
 */
 global $USER, $PAGE, $TEMPLATE, $LOG;
 $TEMPLATE->assign('page_title', 'Startseite'); 
+$TEMPLATE->assign('breadcrumb',  array('Dashboard' => 'index.php?action=dashboard'));
 
 $acc_obj        = new EnablingObjective();
 $TEMPLATE->assign('enabledObjectives', $acc_obj->getLastEnablingObjectives()); /* Load last accomplished Objectives */
@@ -36,19 +37,6 @@ $TEMPLATE->assign('myClasses', $groups->getGroups('user', $USER->id));
 
 if (checkCapabilities('dashboard:globalAdmin', $USER->role_id, false) OR checkCapabilities('dashboard:institutionalAdmin', $USER->role_id, false)){/* Shows additional information depending on user role */
     //$TEMPLATE->assign('cronjob', 'Es wurde zuletzt am '.$cron->check_cronjob().' geprüft, ob Ziele abgelaufen sind.<br>');
-}
-
-if (checkCapabilities('menu:readMessages', $USER->role_id, false)){
-    $update = new Mail();
-    
-    //$update->updateDB(); --> updates old db to 9.1 -> checkboxes under solutions
-    
-    $mail = new Mailbox();
-    
-    $mail->loadNewMessages($USER->id);
-    if (isset($mail->inbox)){
-        $TEMPLATE->assign('mails', $mail->inbox);
-    }
 }
 
 $LOG->add($USER->id, 'view', $PAGE->url,  'Browser: '.$PAGE->browser. ' View: '.$PAGE->url); /* add log */

@@ -82,7 +82,7 @@ class Backup {
         global $CFG, $USER;
         $this->curriculum_id = $id;        
 
-        checkCapabilities('backup:addBackup', $USER->role_id);                                    // Benutzerrechte überprüfen
+        checkCapabilities('backup:add', $USER->role_id);                                    // Benutzerrechte überprüfen
         $c                      = new Curriculum();
         $c->id                  = $this->curriculum_id;
         $c->load(true);                                                                             // Lade curriculum with objectives (für xml)
@@ -106,10 +106,11 @@ class Backup {
         $file->title            = 'Backup '.$c->curriculum; 
         $file->description      = 'Backup vom '.$timestamp_folder;
         $file->author           = $USER->firstname.' '.$USER->lastname.' ('.$USER->username.')';
-        $file->licence          = 2;                                                                // --> alle Rechte vorbehalten
+        $file->license          = 2;                                                                // --> alle Rechte vorbehalten
         $file->type             = '.imscc';
         $file->path             = $c->id.'/';
         $file->context_id       = 8;
+        $file->file_context     = 1;
         $file->creator_id       = $USER->id;
         $file->curriculum_id    = $this->curriculum_id;
         $file->terminal_objective_id = '-1';

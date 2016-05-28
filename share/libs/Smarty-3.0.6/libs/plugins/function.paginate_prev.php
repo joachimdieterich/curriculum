@@ -74,7 +74,7 @@ function smarty_function_paginate_prev($params, &$smarty, $bootstrap = false) {
     }
     
     if ($bootstrap){
-        return $_show ? '<button type="button" class="btn btn-default"><a class="glyphicon glyphicon-chevron-left" href="' . str_replace('&','&amp;', $_url) . '"' . $_attrs . '></a></button>' : '';
+        return $_show ? '<button type="button" class="btn btn-default" onclick="location.href=$(this).children(\'a:first\').attr(\'href\');"><a class="glyphicon glyphicon-chevron-left" href="' . str_replace('&','&amp;', $_url) . '"' . $_attrs . '></a></button>' : '';
     } else {
         return $_show ? '<a href="' . str_replace('&','&amp;', $_url) . '"' . $_attrs . '>' . $_text . '</a>' : '';
     }

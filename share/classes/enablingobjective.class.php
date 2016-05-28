@@ -241,7 +241,7 @@ class EnablingObjective {
                                     $this->repeat_interval_id      = $result->repeat_interval;
                                     $this->creation_time           = $result->creation_time;
                                     $this->creator_id              = $result->creator_id;     
-                                    $this->files                   = $files->getFiles('enabling_objective', $this->id);
+                                    $this->files                   = $files->getFiles('enabling_objective', $this->id, 'default', true); // nicht benötigt --> viel bessere performance
                                     $objectives[]                  = clone $this; 
                                 }   
                 break;    
@@ -467,7 +467,7 @@ class EnablingObjective {
                             usa.accomplished_time as accomplished_time, usa.creator_id as teacher_id, us.firstname, us.lastname
                         FROM enablingObjectives AS ena, user_accomplished AS usa, curriculum AS cur, users AS us
                         WHERE ena.id = usa.enabling_objectives_id
-                        AND us.id = usa.user_id
+                        AND us.id = usa.creator_id
                         AND ena.curriculum_id = cur.id AND usa.user_id = ? AND usa.status_id = 1
                         AND usa.accomplished_time > DATE_SUB(now(), INTERVAL ? DAY)');
         $db->execute(array($USER->id, $USER->acc_days));

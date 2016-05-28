@@ -1,134 +1,153 @@
-{if isset($mySemester) AND count($mySemester) > 1}
-<ul class="nav nav-sidebar">
-    <li class="text-uppercase"><a href="#"><strong class="hidden-sm">Lernzeitraum</strong></a></li>
-    
-        
-    <div class="dropdown hidden-sm" style="margin-left:20px;"><ico class="clockbtn invert"></ico>
-        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-          {$my_semester}
-          <span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-            {section name=res loop=$mySemester}  
-                <li><a href="index.php?action={$page_action}&mySemester={$mySemester[res]->id}">{$mySemester[res]->semester} ({$mySemester[res]->institution})</a></li>
-                
-            {/section}
+<!-- Left side column. contains the logo and sidebar -->
+      <aside class="main-sidebar">
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+          <!-- sidebar menu: : style can be found in sidebar.less -->
+          <ul class="sidebar-menu">
+            <li class="header">Lernzeitraum</li>
+            {if isset($mySemester) AND count($mySemester) > 1}
+            <li class="treeview">
+                <div class="dropdown"><i class="fa fa-calendar"></i>
+                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                          {$my_semester}
+                          <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu " aria-labelledby="dropdownMenu1" >
+                            {section name=res loop=$mySemester}  
+                                <li><a {*href="index.php?action={$page_action}&mySemester={$mySemester[res]->id}"*} onclick="setSemester({$mySemester[res]->id});">{$mySemester[res]->semester} ({$mySemester[res]->institution})</a></li>
+                                <OPTION label="{$mySemester[res]->semester} ({$mySemester[res]->institution})" {if isset($my_semester_id)}{if $mySemester[res]->id eq $my_semester_id}selected{/if}{/if} ></OPTION>
+                            {/section} 
+                        </ul>
+                </div>
+            </li>
+            {/if}
             
-            <OPTION label="{$mySemester[res]->semester} ({$mySemester[res]->institution})" value={$mySemester[res]->id} {if isset($my_semester_id)}{if $mySemester[res]->id eq $my_semester_id}selected{/if}{/if}>{$mySemester[res]->semester} ({$mySemester[res]->institution})</OPTION>
-        </ul>
-    </div>
+            {if checkCapabilities('menu:readMyCurricula', $my_role_id, false)}
+            <li class="header">Lehrpläne</li>
+            <li class="treeview">
+                {if $my_enrolments != ''}
+                    {foreach item=cur_menu from=$my_enrolments}
+                        {if $cur_menu->semester_id eq $my_semester_id}
+                        <li {if isset($page_curriculum )}{if ($page_curriculum eq $cur_menu->id) && ($page_group eq $cur_menu->group_id)} class="active"{/if}{/if}>
+                            <a href="index.php?action=view&curriculum_id={$cur_menu->id}&group={$cur_menu->group_id}">
+                                <i class="fa fa-dashboard"></i><span>{$cur_menu->curriculum}</span><small class="label pull-right bg-green">{$cur_menu->groups}</small>
+                            </a>
+                        </li>
+                        {/if}
+                    {/foreach}
+                {else}<li><p>Sie sind in keinem Lehrplan eingeschrieben</p></li>
+                {/if}   
+            {/if} 
+            
+            <!-- Institution Menu -->
+            {if checkCapabilities('menu:readMyInstitution', $my_role_id, false)}
+                <li class="header">Institution</li>
+                {if checkCapabilities('menu:readObjectives', $my_role_id, false)}
+                <li class="treeview {if $page_action eq 'objectives'}active{/if}">
+                    <a href="index.php?action=objectives&reset=true">
+                        <i class="fa fa-edit"></i> <span>Lernstand eingeben</span>
+                    </a>
+                </li>
+                {/if}
+                {if checkCapabilities('menu:readCourseBook', $my_role_id, false)}
+                <li class="treeview {if $page_action eq 'courseBook'}active{/if}">
+                    <a href="index.php?action=coursebook&reset=true">
+                        <i class="fa fa-book"></i> <span>Kursbuch</span>
+                    </a>
+                </li>
+                {/if}
 
-</ul>
-{/if}
+                {if checkCapabilities('menu:readCurriculum', $my_role_id, false)}
+                <li class="treeview {if $page_action eq 'curriculum'}active{/if}">
+                    <a href="index.php?action=curriculum&reset=true">
+                        <i class="fa fa-th"></i> <span>Lehrpläne</span>
+                    </a>
+                </li>                  
+                {/if}
 
-{if checkCapabilities('menu:readMyCurricula', $my_role_id, false)}
-<ul class="nav nav-sidebar">
-    <li class="text-uppercase"><a href="#"><strong class="hidden-sm">Lehrpläne</strong></a></li>
-    {if $my_enrolments != ''}
-        {foreach item=cur_menu from=$my_enrolments}
-            {if $cur_menu->semester_id eq $my_semester_id}
-            <li {if ($page_curriculum eq $cur_menu->id) && ($page_group eq $cur_menu->group_id)} class="active"{/if}>
-                <a href="index.php?action=view&curriculum={$cur_menu->id}&group={$cur_menu->group_id}">
-                    <ico class="listbtn invert"></ico><span class="hidden-sm">{$cur_menu->curriculum}<span class="nav-title floatright"> {$cur_menu->groups}</span></span>
+                {if checkCapabilities('menu:readGroup', $my_role_id, false)}
+                    <li class="treeview {if $page_action eq 'group'}active{/if}">
+                        <a href="index.php?action=group&reset=true">
+                            <i class="fa fa-group"></i><span>Lerngruppen</span>
+                        </a>
+                    </li>
+                {/if}
+
+                {if checkCapabilities('menu:readUser', $my_role_id, false)}
+                    <li class="treeview {if $page_action eq 'user'}active{/if}">
+                        <a href="index.php?action=user&reset=true">
+                            <i class="fa fa-user"></i><span>Benutzer</span>
+                        </a>
+                    </li>
+                {/if}
+
+                {if checkCapabilities('menu:readRole', $my_role_id, false)}
+                    <li class="treeview {if $page_action eq 'role'}active{/if}">
+                        <a href="index.php?action=role&reset=true">
+                            <i class="fa fa-key"></i><span>Rollenverwaltung</span>
+                        </a>
+                    </li>
+                {/if}
+                {if checkCapabilities('menu:readGrade', $my_role_id, false)}
+                    <li class="treeview {if $page_action eq 'grade'}active{/if}">
+                        <a href="index.php?action=grade">
+                            <i class="fa fa-signal"></i><span>Klassenstufen</span>
+                        </a>
+                    </li>
+                {/if}
+                {if checkCapabilities('menu:readSubject', $my_role_id, false)}
+                    <li class="treeview {if $page_action eq 'subject'}active{/if}">
+                        <a href="index.php?action=subject&reset=true">
+                            <i class="fa fa-language"></i><span>Fächer</span>
+                        </a>
+                    </li>
+                {/if}
+                {if checkCapabilities('menu:readSemester', $my_role_id, false)}
+                    <li class="treeview {if $page_action eq 'semester'}active{/if}">
+                        <a href="index.php?action=semester&reset=true">
+                            <i class="fa fa-calendar"></i><span>Lernzeiträume</span>
+                        </a>
+                    </li>
+                {/if}
+                {if checkCapabilities('menu:readBackup', $my_role_id, false)}
+                    <li class="treeview {if $page_action eq 'backup'}active{/if}">
+                        <a href="index.php?action=backup&reset=true">
+                            <i class="fa fa-cloud-download"></i><span>Backup</span>
+                        </a>
+                    </li>
+                {/if}
+                {if checkCapabilities('menu:readCertificate', $my_role_id, false)}   
+                    <li class="treeview {if $page_action eq 'certificate'}active{/if}">
+                        <a href="index.php?action=certificate&reset=true">
+                            <i class="fa fa-files-o"></i><span>Zertifikate</span>
+                        </a>
+                    </li>
+                {/if}
+                {if checkCapabilities('menu:readInstitution', $my_role_id, false)}   
+                    <li class="treeview {if $page_action eq 'institution'}active{/if}">
+                        <a href="index.php?action=institution&reset=true">
+                            <i class="fa fa-university"></i><span>Institutionen</span>
+                        </a>
+                    </li>
+                {/if}
+            {/if}
+            
+            {if checkCapabilities('menu:readLog', $my_role_id, false)}
+            <li class="header">Administration</li>    
+            
+            <li {if $page_action eq 'log'}class="active"{/if}>
+                <a href="index.php?action=log">
+                    <i class="fa fa-list"></i><span>Berichte</span>
                 </a>
             </li>
             {/if}
-        {/foreach}
-    {else}<li><p>Sie sind in keinem Lehrplan eingeschrieben</p></li>
-    {/if}    
-</ul>
-{/if}      
+            
+        </section>
+        <!-- /.sidebar -->
+      </aside>
 
-{if checkCapabilities('menu:readMyInstitution', $my_role_id, false)}
-<ul class="nav nav-sidebar">
-    <li class="text-uppercase"><a href="#"><strong class="hidden-sm">Institution</strong></a></li>
-    {if checkCapabilities('menu:readObjectives', $my_role_id, false)}
-        <li {if $page_action eq 'objectives'}class="active"{/if}>
-            <a href="index.php?action=objectives&reset=true">
-                <ico class="checkbtn invert"></ico><span class="hidden-sm">Lernstand</span>
-            </a>
-        </li> 
-    {/if}
-    {if checkCapabilities('menu:readCurriculum', $my_role_id, false)}
-        <li {if $page_action eq 'curriculum'}class="active"{/if}>
-            <a href="index.php?action=curriculum&reset=true">
-                <ico class="smallthumbbtn invert"></ico><span class="hidden-sm">Lehrpläne</span>
-            </a>
-        </li>                    
-    {/if}
-    {if checkCapabilities('menu:readGroup', $my_role_id, false)}
-        <li {if $page_action eq 'group'}class="active"{/if}>
-            <a href="index.php?action=group&reset=true">
-                <ico class="groupbtn invert"></ico><span class="hidden-sm">Lerngruppen</span>
-            </a>
-        </li>
-    {/if}
-    {if checkCapabilities('menu:readUser', $my_role_id, false)}
-        <li {if $page_action eq 'user'}class="active"{/if}>
-            <a href="index.php?action=user&reset=true">
-                <ico class="userbtn invert"></ico><span class="hidden-sm">Benutzer</span>
-            </a>
-        </li>
-    {/if}
-    {if checkCapabilities('menu:readRole', $my_role_id, false)}
-        <li {if $page_action eq 'role'}class="active"{/if}>
-            <a href="index.php?action=role&reset=true">
-                <ico class="rolebtn invert"></ico><span class="hidden-sm">Rollenverwaltung</span>
-            </a>
-        </li>
-    {/if}
-    {if checkCapabilities('menu:readGrade', $my_role_id, false)}
-        <li {if $page_action eq 'grade'}class="active"{/if}>
-            <a href="index.php?action=grade">
-                <ico class="numberedbtn invert"></ico><span class="hidden-sm">Klassenstufen</span>
-            </a>
-        </li>
-    {/if}
-    {if checkCapabilities('menu:readSubject', $my_role_id, false)}
-        <li {if $page_action eq 'subject'}class="active"{/if}>
-            <a href="index.php?action=subject&reset=true">
-                <ico class="tagsbtn invert"></ico><span class="hidden-sm">Fächer</span>
-            </a>
-        </li>
-    {/if}
-    {if checkCapabilities('menu:readSemester', $my_role_id, false)}
-        <li {if $page_action eq 'semester'}class="active"{/if}>
-            <a href="index.php?action=semester&reset=true">
-                <ico class="clockbtn invert"></ico><span class="hidden-sm">Lernzeiträume</span>
-            </a>
-        </li>
-    {/if}
-    {if checkCapabilities('menu:readBackup', $my_role_id, false)}
-        <li {if $page_action eq 'backup'}class="active"{/if}>
-            <a href="index.php?action=backup&reset=true">
-                <ico class="downbtn invert"></ico><span class="hidden-sm">Backup</span>
-            </a>
-        </li>
-    {/if}
-    {if checkCapabilities('menu:readCertificate', $my_role_id, false)}   
-        <li {if $page_action eq 'certificate'}class="active"{/if}>
-            <a href="index.php?action=certificate&reset=true">
-                <ico class="certificatebtn invert"></ico><span class="hidden-sm">Zertifikate</span>
-            </a>
-        </li>
-    {/if}
-    {if checkCapabilities('menu:readInstitution', $my_role_id, false)}   
-    <li {if $page_action eq 'institution'}class="active"{/if}>
-        <a href="index.php?action=institution&reset=true">
-            <ico class="institutionbtn invert"></ico><span class="hidden-sm">Institutionen</span>
-        </a>
-    </li>
-    {/if} 
-</ul>
-{/if}
 
-{if checkCapabilities('menu:readLog', $my_role_id, false)}
-<ul class="nav nav-sidebar">
-    <li class="text-uppercase"><a href="#"><strong class="hidden-sm">Administration</strong></a></li>
-    <li {if $page_action eq 'log'}class="active"{/if}>
-        <a href="index.php?action=log">
-            <ico class="listaltbtn invert"></ico><span class="hidden-sm">Berichte</span>
-        </a>
-    </li>
-</ul>
-{/if}
+
+
+
+

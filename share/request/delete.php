@@ -36,13 +36,18 @@ switch ($db) {
     
     case "enablingObjectives":  $t = new EnablingObjective();   break;
     case "terminalObjectives":  $t = new TerminalObjective();   break;
+    case "task":                $t = new Task();                break;
     default: break;
 }
 
-    $t->id      = $id;
+$t->id      = $id;
 
 if ($t->delete()){
-    Render::popup('Information', '<p>Datensatz wurde erfolgreich gelöscht.</p>');
+    $html = Render::popup('Information', 'Datensatz wurde erfolgreich gelöscht.');
+    echo json_encode(array('html'=>$html, 'class'=>'modal-info'));
+    
+        
 } else { 
-    Render::popup('Information', '<p>Datensatz konnte nicht gelöscht werden.</p>');   
+    $html = Render::popup('Information', 'Datensatz konnte nicht gelöscht werden.');
+    echo json_encode(array('html'=>$html, 'class'=>'modal-danger'));   
 }

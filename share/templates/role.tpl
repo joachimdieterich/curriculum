@@ -8,9 +8,16 @@
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
 {block name=content}
-<div class="border-box">
-    <h3 class="page-header">{$page_title}<input class="curriculumdocsbtn pull-right" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Rollen_und_Rechte');"/></h3>
+<!-- Content Header (Page header) -->
+{content_header p_title=$page_title pages=$breadcrumb help='http://docs.joachimdieterich.de/index.php?title=Rollen_und_Rechte'}      
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-primary">
+                <div class="box-body"></div>    
     
+<div class="border-box">
     {if !isset($showForm) && checkCapabilities('role:add', $my_role_id, false)}
         <div class="btn-group" role="group" aria-label="...">
             <button type="button" class="btn btn-default"><a href="index.php?action=role&function=new">
@@ -53,6 +60,11 @@
     
     {html_paginator id='roleP'}
 </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {/block}
 
 {block name=sidebar}{$smarty.block.parent}{/block}

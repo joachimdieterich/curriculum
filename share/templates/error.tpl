@@ -8,10 +8,21 @@
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
 {block name=content} 
-    <div class="contentheader ">Fehler - "{$prev_page_name}" kann nicht aufgerufen werden</div>
-    <div>
-        <p>{$curriculum_exception}</p>
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-primary">
+                <div class="box-body">        
+                <div class="contentheader ">Fehler - "{$prev_page_name}" kann nicht aufgerufen werden</div>
+                <div>
+                    <p>{$curriculum_exception}</p>
+                </div>
+                </div>
+            </div>
+        </div>
     </div>
+</section>    
 {/block}
 
 {block name=sidebar}{$smarty.block.parent}{/block}

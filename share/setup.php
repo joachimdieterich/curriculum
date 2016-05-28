@@ -27,6 +27,7 @@ include('function.php');
 global $CFG;
 global $USER;                                                       // Nutzerdaten
 global $PAGE;                                                       // Daten der aktuellen Seite
+global $COURSE;                                                     // Daten des aktuelle Kurses
 global $INSTITUTION;                                                // Daten der (letzten --> laut DB-Abfrage) Institution des aktuellen Nutzers --> Es können mehr als eine Institution gegeben sein... optimieren!
 global $TEMPLATE;                                                   // Smarty TEMPLATE object
 
@@ -36,7 +37,6 @@ $TEMPLATE = new Smarty();
 $TEMPLATE->template_dir             = $CFG->smarty_template_dir; 
 $TEMPLATE->compile_dir              = $CFG->smarty_template_compile_dir;
 $TEMPLATE->cache_dir                = $CFG->smarty_template_cache_dir;
-$TEMPLATE->assign('tiny_mce',       true);                          // Aktiviere TinyMCE
 $TEMPLATE->assign('tb_param',       $CFG->tb_param);
 $TEMPLATE->assign('global_timeout', $CFG->timeout);
 $TEMPLATE->assign('message_timeout',$CFG->message_timeout);
@@ -54,4 +54,6 @@ $TEMPLATE->assign('solutions_path', $CFG->solutions_path);
 $TEMPLATE->assign('template_url',   $CFG->smarty_template_dir);
 
 $TEMPLATE->assign('app_title',      $CFG->app_title);
+$TEMPLATE->assign('app_version',    $CFG->version);
 $TEMPLATE->assign('app_footer',     $CFG->app_footer);
+?>

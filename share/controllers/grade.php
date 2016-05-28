@@ -17,6 +17,8 @@
 * http://www.gnu.org/copyleft/gpl.html      
 */
 global $USER, $TEMPLATE;
+$TEMPLATE->assign('breadcrumb',  array('Klassenstufen' => 'index.php?action=grade'));
+$TEMPLATE->assign('page_title', 'Klassenstufen');  
 
 if (isset($_GET['function'])) {
      switch ($_GET['function']) {
@@ -73,12 +75,14 @@ if($_POST ){
 /****** END POST / GET ******/
 $grade                  = new Grade();
 $grade->institution_id  = $USER->institutions;
-$TEMPLATE->assign('page_title', 'Klassenstufen');  
 
-$p_options = array('delete' => array('onclick' => "del('grade',__id__, $USER->id);", 
-                                     'capability' => checkCapabilities('grade:delete', $USER->role_id, false)),
-                    'edit'  => array('href'    => 'index.php?action=grade&function=edit&id=__id__'),
-                                     'capability' => checkCapabilities('grade:update', $USER->role_id, false));
+
+$p_options = array('delete' => array('onclick'    => "del('grade',__id__, $USER->id);", 
+                                     'capability' => checkCapabilities('grade:delete', $USER->role_id, false),
+                                     'icon'       => 'fa fa-minus'),
+                    'edit'  => array('href'       => 'index.php?action=grade&function=edit&id=__id__',
+                                     'capability' => checkCapabilities('grade:update', $USER->role_id, false),
+                                     'icon'       => 'fa fa-edit'));
 $p_config =   array('id'         => 'checkbox',
                     'grade'       => 'Klassenstufe', 
                     'description' => 'Beschreibung', 

@@ -1,10 +1,20 @@
-curriculum BETA Version 0.9.2
+curriculum BETA Version 0.9.3
 
+Version 0.9.3
+=================
+- Bootstrap Layout (AdminLTE 2)
+- Input-Forms von Views abgekoppelt (Input Forms werden jetzt immer in Modals aufgerufen)
+- Modals können nun per JS von jedem Punkt aus aufgerufen werden.
+- Neu: Form Processors
+- Progressbar beim Upload
+- Font Awesome 4.6.1
+
+Bugfixes:
+    - Std. Profilbild wurde beim importieren falsch gesetzt
 Version 0.9.2
 =================
-- Added HTML_QuickFom2
 - Pinnwand (Dashboard) 
-- Dateizugriff abgesichert (with session)
+- Dateizugriff abgesichert (session)
 - Seitenzähler an Paginatoren optimiert (function.paginate_middle.php)
 - XML Import / Export von Lehrplänen
 - https wird unterstützt

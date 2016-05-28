@@ -20,261 +20,6 @@
    html5doctor.com/html-5-reset-stylesheet/
 */
 
-
-html, body, div, span, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp,
-small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, figcaption, figure, hgroup, menu, nav, section, summary,
-time, mark, audio, video {
-    margin:0;
-    padding:0;
-    border:0;
-    font-size:100%;
-    font: inherit;
-    vertical-align:baseline;
-}
-ico {
-    -webkit-font-smoothing: antialiased;
-    box-sizing: border-box;
-    color: rgb(171, 177, 183);
-    cursor: auto;
-    display: inline-block;
-    font-size: 12px;
-    font-style: normal;
-    font-variant: normal;
-    font-weight: normal;
-    height: 16px;
-    line-height: 16px;
-    list-style-type: disc;
-    margin-left: 10px;
-    padding-bottom: 0px;
-    padding-left: 0px;
-    padding-right: 10px;
-    padding-top: 0px;
-    text-align: left;
-    vertical-align: middle;
-    text-decoration: none;
-    width:16px;
-}
-
-.nav-title {
-    color: rgb(171, 177, 183);
-    vertical-align: middle;
-    padding-left: 10px;
-}
-
-
-h2, h3, h4, h5, h6, #content p, .boxleftpadding { padding-left: 10px; }
-h1,h2,h3,h4,h5,h6 { font-weight: bold; }
-h3 { 
-    padding-top: 10px;
-    margin-left: 2px;
-    margin-right: 2px;
-}
-html, body {
-    height: 100%;
-    width: 100%;
-}
-article, aside, details, figcaption, figure, hgroup,  nav, section {
-    display:block;
-}
-
-blockquote, q { quotes:none; }
-
-blockquote:before, blockquote:after,
-q:before, q:after { content:''; content:none; }
-
-ins { background-color:#ff9; color:#000; text-decoration:none; }
-
-mark { background-color:#ff9; color:#000; font-style:italic; font-weight:bold; }
-
-del { text-decoration: line-through; }
-
-abbr[title], dfn[title] { border-bottom:1px dotted; cursor:help; }
-
-table { border-collapse:collapse; border-spacing:0; }
-
-hr { display:block; height:1px; border:0; border-top:1px solid #ccc; margin:1em 0; padding:0; }
-
-input, select { 
-    vertical-align: middle;  
-    width:          210px;
-}
-/* END RESET CSS */
-
-/* font normalization inspired by  from the YUI Library's fonts.css: developer.yahoo.com/yui/ */
-body { 
-    font:13px/1.231 sans-serif; *font-size:small; } /* hack retained to preserve specificity */
-select, input, textarea, button { font:99% sans-serif; }
-
-/* normalize monospace sizing
- * en.wikipedia.org/wiki/MediaWiki_talk:Common.css/Archive_11#Teletype_style_fix_for_Chrome */
-pre, code, kbd, samp { font-family: monospace, sans-serif; }
-
-/*
- * minimal base styles
- */
-body, select, input, textarea {
-    color: #444;                        /* #444 looks better than black: twitter.com/H_FJ/statuses/11800719859 */
-    font-family: sans-serif, serif;     /* set your base font here, to apply evenly */
-    /*font-family: ubuntu, serif;     /* google fonts */   
-}
-
-
-
-/* always force a scrollbar in non-IE: */
-html, textarea { overflow: auto;}
-
-/* accessible focus treatment: people.opera.com/patrickl/experiments/keyboard/test */
-a:hover, a:active { outline: none; }
-
-a, a:active, a:visited { color: #607890; }
-a:hover { color: #036; }
-
-ul, ol { margin-left: 2em; }
-ol { list-style-type: decimal; }
-
-/* remove margins for navigation lists */
-nav ul, nav li, .contentlist { margin: 0; list-style:none; list-style-image: none; }
-
-small { font-size: 85%; }
-strong, th { font-weight: bold; }
-
-/* set sub, sup without affecting line-height: gist.github.com/413930 */
-sub, sup { font-size: 75%; line-height: 0; position: relative; }
-sup { top: -0.5em; }
-sub { bottom: -0.25em; }
-
-pre {/* www.pathf.com/blogs/2008/05/formatting-quoted-code-in-blog-posts-css21-white-space-pre-wrap/ */
-    white-space: pre; white-space: pre-wrap; white-space: pre-line; word-wrap: break-word;
-    padding: 15px;
-}
-
-.ie6 legend, .ie7 legend { margin-left: -7px; } /* thnx ivannikolic! */
-
-//input[type="radio"], .ie6 input, input[type="checkbox"] { vertical-align: text-bottom; }
-input[type="checkbox"] { width:          15px;}
-.checkbox={margin: 0px;}
-
-//.ie7 input[type="checkbox"] { vertical-align: baseline; }
-
-/* hand cursor on clickable input elements label,*/ 
-input[type="button"], input[type="submit"], input[type="image"], button, .pointer { cursor: pointer; }
-
-/* webkit browsers add a 2px margin outside the chrome of form elements */
-button, input, select, textarea { margin: 0; }
-
-/* colors for form validity */
-input:valid, textarea:valid   {  }
-input:invalid, textarea:invalid {
-    border-radius: 1px; -moz-box-shadow: 0px 0px 5px red; -webkit-box-shadow: 0px 0px 5px red; box-shadow: 0px 0px 5px red;
-}
-.no-boxshadow input:invalid, .no-boxshadow textarea:invalid { background-color: #f0dddd; }
-
-/* These selection declarations have to be separate.
-   No text-shadow: twitter.com/miketaylr/status/12228805301
-*/
-::-moz-selection { background: #b5d0ad; color:#fff; text-shadow: none; }
-::selection { background:#b5d0ad; color:#fff; text-shadow: none; }
-
-/*  j.mp/webkit-tap-highlight-color */
-a:link { -webkit-tap-highlight-color: #FF5E99; }
-
-/* make buttons play nice in IE:
-   www.viget.com/inspire/styling-the-button-element-in-internet-explorer/ */
-button {  width: auto; overflow: auto; }
-
-.completed {                                
-    background: #0F0;
-}
-
-.cssimgbtn {  
-    padding: 2px;
-    margin-bottom: 10px;
-    margin-left: 10px;
-    color:#000!important;
-}
-
-.cssbtnmargin {
-    padding-left: 24px;
-    height: 16px !important;
-    text-decoration: none;
-    color:#000!important;
-}
-
-.cssbtntext {
-    vertical-align:middle !important;
-    line-height: 24px;
-    text-indent: 0px;
-}
-
-/* bicubic resizing for non-native sized IMG:
-   code.flickr.com/blog/2008/11/12/on-ui-quality-the-little-things-client-side-image-resizing/ */
-.ie7 img { -ms-interpolation-mode: bicubic; }
-
-/*css tooltip */
-.tooltip, .tooltip_left {
-    position: relative;
-    text-decoration: none;  
-}
-.tooltip:after, .tooltip_left:after{
-    content: attr(data-tooltip);
-    position: absolute;
-    bottom: 130%;
-    background: #bfbfbf;
-    padding: 0px 5px;
-    color: black;
-    white-space: nowrap;
-    opacity: 0;
-    -webkit-transition: all 0.4s ease;
-    -moz-transition   : all 0.4s ease;
-    transition   : all 0.4s ease;
-    z-index: 10002;
-}
-.tooltip:after{left: 20%;} 
-.tooltip_left:after{right: 0px !important;} 
-.tooltip:before, .tooltip_left:before {
-    content: "";
-    position: absolute;
-    width: 0;
-    height: 0;
-    border-top: 15px solid #bfbfbf;
-    border-left: 15px solid transparent;
-    border-right: 15px solid transparent;
-    -webkit-transition: all 0.4s ease;
-    -moz-transition   : all 0.4s ease;
-    transition   : all 0.4s ease;
-    opacity: 0;
-    bottom: 90%;
-    z-index: 10001;
-  }
-.tooltip:before { left: 30%; }
-.tooltip_left:before { right: 0px; }
-  
-.tooltip:hover:after, .tooltip_left:hover:after {
-  bottom: 100%;
-}
-.tooltip:hover:before, .tooltip_left:hover:before {
-  bottom: 60%;
-}
-.tooltip:hover:after, .tooltip:hover:before, .tooltip_left:hover:after, .tooltip_left:hover:before {
-  opacity: 1;
-}
-
-  
-/* Images */
-.icon_tiny {                                        // Bilder in Tabellen
-    height: 16px;
-    width: 16px;  
-}
-.icon_listposition{
-    padding-right:4px; 
-    margin-left: -6px;
-}
-
 .printbtn, .editbtn,.filebtn, .certificatebtn, .clockbtn, .tagsbtn, .numberedbtn, .rolebtn, .userbtn, .deletebtn, .removebtn, .addbtn, .addmaterialbtn, .leftbtn, .rightbtn, .upbtn, .downbtn, 
 .addsolutionbtn, .okbtn, .ok2btn, .notbtn, .groupbtn, .institutionbtn, .calbtn, .listbtn, .listaltbtn, .downloadbtn, .helpbtn, .curriculumdocsbtn, .answerbtn,
 .mailinbtn, .mailoutbtn, .mailnewbtn, .maildelbtn, .bdgbtn, .infobtn, .checkbtn, .smallthumbbtn, .checkgreenbtn, .checkredbtn, .checkorangebtn, .checkwhitebtn,
@@ -455,7 +200,7 @@ button {  width: auto; overflow: auto; }
 .mid_btn                        {background-image: url('../images/filetypes/midi-48_32.png');}
 
 /* Borderradius*/
-.border-radius, nav div > img, .notificationContent img{
+.border-radius, nav div > img{
     border-radius: 6px;
     -o-border-radius: 6px;
     -moz-border-radius: 6px;
@@ -463,7 +208,7 @@ button {  width: auto; overflow: auto; }
     -webkit-border-radius: 6px;   
 }
 /* Top Borderradius*/
-.border-top-radius, .notificationContent img {
+.border-top-radius {
     border-top-left-radius: 5px;
     -o-border-top-left-radius: 5px;
     -moz-border-top-left-radius: 5px;
@@ -476,7 +221,7 @@ button {  width: auto; overflow: auto; }
     -webkit-border-top-right-radius: 5px;   
 }
 
-.border-bottom-radius,  .tzSelect, .tzSelect li:last-of-type, .tzSelect .selectBox:hover, .notificationContent img  {
+.border-bottom-radius,  .tzSelect, .tzSelect li:last-of-type, .tzSelect .selectBox:hover {
     border-bottom-left-radius: 5px;
     -o-border-bottom-left-radius: 5px;
     -moz-border-bottom-left-radius: 5px;
@@ -546,127 +291,6 @@ button {  width: auto; overflow: auto; }
     border-color: red;
     margin-left: 6px !important;
 }
-
-.centerbox {
-    position:               absolute;
-    width:                  450px;
-    height:                 220px;
-    top:                    300px;
-    left:                   50%;     
-    margin-left:            -225px;
-}
-
-.card1 {
-    margin: 10px 10px 10px 10px;
-    float: left;
-    height: 200px;
-    width: 310px;
-    position: relative;
-}
-
-.card1 > div:first-child {
-    border-bottom: rgb(221, 221, 221);
-    padding-top: 10px;
-    margin-bottom: 1px;
-    position: absolute;
-    text-align: center;
-    font-weight:        bold;
-    text-indent: 10px;
-    top :0px; left:0px; right:0px;
-    width: 100%;
-    height: 65px;
-    font-size: 100%;
-}
- .card1 > div:first-child img, .card2 > div:first-child img {
-    vertical-align: middle;
-    max-height: 50px;
-    max-width: 300px;
-}
-
-.card1 > div:last-child { 
-    text-align: center;
-    background-color:  hsl(0,0%,70%);
-    margin-top: 65px;
-    padding: 10px 10px 10px 10px;
-    height: 115px;
-}
-
-.colII {
-    margin: 0px;
-    width:50%;  
-    min-width:570px;
-    float: left;
-}
-.colIII {
-    margin: 0px;
-    width:33%;  
-    min-width:330px;
-    float: left;
-}
-
-
-.card2 {
-    margin: 10px 10px 10px 10px;
-    float: left;
-    /*min-height: 200px;*/
-    width: 310px;
-    position: relative;
-}
-
-.card2 > div:first-child { /*header*/
-    background-color:  hsl(0,0%,70%);
-    border-bottom: rgb(221, 221, 221);
-    padding-top: 10px;
-    margin-bottom: 1px;
-    position: absolute;
-    text-align: center;
-    text-indent: 10px;
-    top :0px; left:0px; right:0px;
-    width: 100%;
-    height: 55px;
-    font-size: 100%;
-}
-
-.card2 > div:last-child { /*card content*/
-    margin-top: 65px;
-    padding: 20px 10px 10px 10px;
-    overflow: auto;
-}
-
-.card3 {
-    margin: 10px 10px 0px 10px;
-    float: left;
-    height: 80px;
-    width: 310px;
-    position: relative;
-}
-
-.card3 > div:first-child { /* header*/
-    background-color:  hsl(0,0%,70%);
-    border-bottom: rgb(221, 221, 221);
-    padding-top: 5px;
-    margin-bottom: 1px;
-    position: absolute;
-    text-align: left;
-    text-indent: 10px;
-    top :0px; left:0px; right:0px;
-    width: 100%;
-    height: 20px;
-    font-size: 100%;
-}
-
-.card3 > div:first-child span{
-    float: right; 
-    padding-right: 10px;
-}
-
-.card3 > div:last-child  { /*content*/
-    
-    padding: 30px 10px 10px 10px;
-    height: 40px;
-    overflow: auto;
-}
-
 
 .box {
     float: left;
@@ -787,7 +411,6 @@ header { /*Anpassung an curriculumonline.de*/
 }
 
 header:before{
-        //position: absolute;
         border-bottom: 4px solid #871d33;   /*RLP Linie*/
         height: 74px;
         width: 220px;
@@ -810,10 +433,7 @@ header a, header, #app_title a, .logininfo{
 }
 
 #app_title{
-    font-family:    Arial, Helvetica, sans-serif;
     font-size:      18px;
-    //font-size:      1.7vw;
-    font-style:     normal;
     font-weight:    bold;
     height:59px;
     padding: 11px 0px 0px 75px;
@@ -823,7 +443,6 @@ header a, header, #app_title a, .logininfo{
 
 .logininfo {  
     float:right;
-    font-family: 'Open Sans', Arial, sans-serif;
     font-size: 14px;
     font-weight: 600;
     list-style-image: none;
@@ -914,65 +533,12 @@ header a, header, #app_title a, .logininfo{
 
 }
 
-#wrapper{
-    clear:  both;
-    width:  100%;
-    padding-top:    70px;
-    
-}
-
-#sidebar2{
-    background:  #FF7B53;
-    padding: 5px 0px 5px 5px;
-    border: 1px solid rgb(209, 206, 206);
-    clear: both;
-    right: 0px; 
-    top: 50%;
-    position:fixed;
-    z-index: 10000;
-}
-
-
-.centerbox_header{
-    border-bottom:  1px solid rgb(209, 206, 206);
-    font-size:      19px;
-    text-align:     center;
-}
-
 .menu {
     /*margin:         10px;*/
     width:          230px;
     background-color: #2d3c4b;
 }
 
-#page-footer {
-    position:       fixed;
-    bottom:         0px;
-    background:     #d0d0d0;
-    width:          100%;
-}
-
-.copyright {
-    color:          rgb(54, 54, 54);
-    font-size:      11px;
-    text-decoration:none;
-    padding:        10px 0px 10px 20px;
-}
-
-.menuheader{
-    //background:     #fff;//rgb(238, 238, 238);//#013363;
-    padding-top:    25px;
-    text-indent:    10px;
-    //height:         20px;
-    color: rgb(213, 216, 219);
-    /*color:          #333;//#FFF;*/
-    /*margin:         0 0 10px 0;
-    border-bottom:  1px solid #d1cece;*/
-    font-family: 'Open Sans', Arial, sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-}
 .contentheader{
     color:          #333;
     font-family:    'Open Sans', Arial, sans-serif;
@@ -1052,7 +618,7 @@ nav div > img {
     width:          50px;
 }
 
- .contenttablerow, .activecontenttablerow, #contenttablehead, h3, .line, .contentlist { 
+ /*.contenttablerow, .activecontenttablerow, #contenttablehead, h3, .line, .contentlist { 
     border-bottom:  1px solid hsl(0,0%,70%);
     margin-bottom:  1px;    
 }
@@ -1068,7 +634,7 @@ nav div > img {
     border-bottom:      1px solid hsl(0,0%,70%);
     -webkit-box-shadow: none; 
     box-shadow:         none;
-}
+}*/
 .line-top {
     border-top:  1px solid hsl(0,0%,70%);
     margin-top:  1px;
@@ -1077,7 +643,7 @@ nav div > img {
     padding-bottom: 10px;
 
 }
-
+/*
 #main { 
     overflow:       auto;
     padding-bottom: 40px;
@@ -1094,7 +660,7 @@ nav div > img {
     width:          -moz-calc(100% - 20px);
     width:          calc(100% - 20px);
     font-size:      90%;
-}
+}*/
 
 /* message.tpl */
 .mailheader         { vertical-align: baseline !important;
@@ -1122,10 +688,11 @@ nav div > img {
                       position:absolute;
 }
 
+/*
 .activecontenttablerow, .activefilenail, .contenttablerow:hover{
     background: #5f5f5f !important;
     color: #ccc !important;    
-}
+}*/
 
 .filenail:hover, .activefilenail:hover {
     background: #8f8f8f !important;
@@ -1143,13 +710,13 @@ nav div > img {
     display: inline-block;
 }
 
-#contenttable td, #contentsmalltable td { vertical-align: middle ; }
+/*#contenttable td, #contentsmalltable td { vertical-align: middle ; }
 #contenttable td:first-child            { padding-left: 5px ; }
 #contenttable tr:nth-child(odd)     { //background-color:  rgb(238, 238, 238); }
 #contenttable tr:nth-child(even)    { background-color:  rgb(246, 246, 246); }
 #contenttable > tr {
     margin-left: 10px;
-}
+}*/
 .centervertical {
     margin-top: 6px;
     vertical-align: middle !important;
@@ -1163,20 +730,20 @@ form > p > label {
     text-indent: 0px;
 }
 
-#contenttablehead {
+/*#contenttablehead {
     border-top: 2px groove hsl(0,0%,100%);
     height: 20px;
     font-weight: bold;
-}   
+} */  
 
-#contentsmalltable {
+/*#contentsmalltable {
     padding-top: 10px;
     margin-left:        10px;
     width:              50%;
     font-size:          90%;
     height:40px;
     vertical-align: middle;
-}
+}*/
 
 .scroll{
     overflow:auto;
@@ -1323,7 +890,7 @@ form > p > label {
     margin-left:    -300px; /* negative half the size of width */
     z-index:        10000;/* place overlay on top of other elements */
     position:       fixed;
-    display:        none; // muss unter display:none stehen! --> sonst funktioniert es bei Win 98
+    display:        none; /* muss unter display:none stehen! --> sonst funktioniert es bei Win 98*/
     
     
     
@@ -1424,7 +991,6 @@ iframe { width: 600px;
 
 .uploadframe_footer {
     display: block;
-    //border-top: 1px solid hsl(0,0%,70%);
     background-color: #fff !important;
     font-weight: normal;
     font-size: 11px;
@@ -1435,130 +1001,3 @@ iframe { width: 600px;
     bottom:0px; left:205px; right:0px;
     width: 100%;
 }
-
-/* Layout -------------------------------------------------------------------------- */
-/*#page { 
-    width: 100%;
-        position: absolute; }
-*/
-/* Hide for both screenreaders and browsers css-discuss.incutio.com/wiki/Screenreader_Visibility */
-.hidden { display: none; visibility: hidden; }
-
-/* Hide visually and from screenreaders, but maintain layout */
-.invisible { visibility: collapse; width: 8px;}
-
-/* >> The Magnificent CLEARFIX: Updated to prevent margin-collapsing on child elements << j.mp/bestclearfix */
-.clearfix:before, .clearfix:after, .group:before, .group:after { content: "\0020"; display: block; height: 0; visibility: hidden; }
-.clearfix:after, .group:after { clear: both; }
-/* fix clearfix: blueprintcss.lighthouseapp.com/projects/15318/tickets/5-extra-margin-padding-bottom-of-page */
-.clearfix, .group { zoom: 1; }
-
-/* Notification Popup - 9Lessons */
-#notification_li{
-    padding-right:      10px; 
-    position:           absolute;
-    right:              40px;
-    top:                42px;
-    font-family: 'Open Sans', Arial, sans-serif;
-    font-size: 10px;
-    font-weight: 600;
-}
-#notificationContainer {
-    background-color:   #fff;
-    border:             1px solid rgba(100, 100, 100, .4);
-    -webkit-box-shadow: 0 3px 8px rgba(0, 0, 0, .25);
-    overflow:           visible;
-    position:           absolute;
-    top:                35px;
-    right:              10px;
-    width:              400px;
-    z-index:            1001;
-    display:            none; 
-}
-#notificationContainer:before {
-    content:            '';
-    display:            block;
-    position:           absolute;
-    width:              0;
-    height:             0;
-    color:              transparent;
-    border:             10px solid black;
-    border-color:       transparent transparent hsl(0,0%,70%);
-    margin-top:         -20px;
-    margin-left:        350px;
-}
-#notificationTitle {
-    text-align:         left;
-    color:              #444;
-    z-index:            1002;
-    font-weight:        bold;
-    padding:            5px 0px 5px 15px;
-    font-size:          13px;
-    background-color:   #f2f2f2;
-    width:              384px;
-    border-bottom:      1px solid hsl(0,0%,70%);
-}
-#notificationsBody {
-    overflow:           auto;
-    max-height:         200px;
-}
-
-.notificationContent{
-    font-weight:        normal;
-    padding:            10px;
-    text-align:         left;
-    color:              #444;
-    min-height:         40px !important;
-}
-
-.notificationContent img{
-    margin-right:       10px;
-    background:         #013363;
-    background:         -webkit-gradient(linear, 0 0, 0 100%, from(#154D70), to(#013363));
-    background:         -webkit-linear-gradient(top, #154D70, #013363);
-    background:         -o-linear-gradient(top, #154D70, #013363);
-    background:         -moz-linear-gradient(top, #154D70, #013363);
-    background:         -ms-linear-gradient(top, #154D70, #013363);
-    background:         linear-gradient(top, #154D70, #013363);
-    height:             40px;
-    float:              left;
-}
-
-#notificationFooter {
-    background-color:   #f2f2f2;
-    text-align:         center;
-    font-weight:        bold;
-    padding:            8px;
-    font-size:          12px;
-    border-top:         1px solid hsl(0,0%,70%);
-}
-#notification_count {
-    padding:            3px 7px 3px 7px;
-    background:         #cc0000;
-    color:              #ffffff;
-    font-weight:        bold;
-    margin-left:        40px;
-    border-radius:      20px;
-    position:           absolute;
-    margin-top:         -1px;
-    font-size:          8px;
-    line-height: 7px;
-}
-.notifications{
-    padding:            5px;
-    color:              #444;
-    font-weight:        bold;
-    font-size:          12px;
-    text-align:         left;
-}
-
-/* CSS iPad */
-@media only screen and (max-width: 1024px) {
-    //#sidebar1 { display: none;}
-    
-} 
-/* CSS iPhone*/
-@media only screen and (max-width: 480px) {
-    //#sidebar1 { display: none;}
-    
-} 

@@ -295,7 +295,7 @@ class Institution {
     
     public function setBulletinBoard($title, $text){ //z. Zt. kann in jeder Institution nur ein Pinnwandeintrag erstellt werden. 
         global $USER;
-        checkCapabilities('dasboard:editBulletinBoard', $USER->role_id);
+        checkCapabilities('dashboard:editBulletinBoard', $USER->role_id);
         $db = DB::prepare('SELECT COUNT(id) FROM bulletinBoard WHERE institution_id = ?');
         $db->execute(array($this->id));
         if($db->fetchColumn() >= 1) { 

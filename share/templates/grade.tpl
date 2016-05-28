@@ -8,7 +8,16 @@
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
 {block name=content}
-    <h3 class="page-header">Klassenstufen verwalten<input class="curriculumdocsbtn pull-right" type="button" name="help" onclick="curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Klassenstufen_anlegen');"/></h3>
+<!-- Content Header (Page header) -->
+{content_header p_title=$page_title pages=$breadcrumb help='http://docs.joachimdieterich.de/index.php?title=Klassenstufen_anlegen'}  
+
+<!-- Main content -->
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-primary">
+                <div class="box-body">  
+
     {if !isset($showForm) AND checkCapabilities('grade:add', $my_role_id, false)}
     <div class="btn-group" role="group" aria-label="...">
         <button type="button" class="btn btn-default"><a href="index.php?action=grade&function=new">
@@ -39,6 +48,12 @@
     {/if}
     
 {html_paginator id='gradeP'}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>    
 {/block}
 
 {block name=sidebar}{$smarty.block.parent}{/block}

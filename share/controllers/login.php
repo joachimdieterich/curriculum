@@ -16,39 +16,16 @@
 * http://www.gnu.org/copyleft/gpl.html      
 */
 global $TEMPLATE; 
-
+//print_r($_SERVER);
 $user       = new User();
 $message    = '';
 
-$form       = new HTML_QuickForm2('Login');               // Instantiate the HTML_QuickForm2 object
-$fieldset   = $form->addElement('fieldset');
-$username   = $fieldset->addElement('text', 'username', array('size' => 40, 'maxlength' => 255, 'id' => 'username'))
-                       ->setLabel('Anmeldename');
-$password   = $fieldset->addElement('password', 'password', array('size' => 40, 'maxlength' => 255))
-                       ->setLabel('Passwort');
-$fieldset->addElement('submit', null, array('value' => 'Anmelden'));
-
-// Define filters and validation rules
-$username->addFilter('trim');
-$username->addRule('required', 'Bitte Anmeldenamen eingeben');
-$password->addRule('required', 'Bitte Passwort eingeben');
-
-if (filter_input(INPUT_POST, 'terms', FILTER_UNSAFE_RAW)){          // Nutzungsbedingungen akzeptiert
-    switch (filter_input(INPUT_POST, 'Submit', FILTER_UNSAFE_RAW)) {
-        case 'Ja':  $user->load('username', $_SESSION['username'], true);
-                    $user->acceptTerms();
-                    route($user);
-            break;
-        case 'Nein':header('Location:index.php?action=logout'); 
-            break;
-        default:
-            break;
-    } 
-} else if ($form->validate()) {// Try to validate a form
-   $user->username = $username->getValue();
-   $user->password = md5($password->getValue());
-   
-   if($user->checkLoginData()) { 
+if(filter_input(INPUT_POST, 'login', FILTER_UNSAFE_RAW)) {
+    $user->username = (filter_input(INPUT_POST,     'username', FILTER_UNSAFE_RAW));     
+    $user->password = (md5(filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW)));
+    $TEMPLATE->assign('username', $user->username);                 // Benutzername bei falschem Passwort automatisch einsetzen.
+    
+    if($user->checkLoginData()) { 
         session_destroy();                                          // Verhindert, dass eine bestehende Session genutzt wird --> verursacht Probleme (token / uploadframe)
         session_start();
         
@@ -58,17 +35,31 @@ if (filter_input(INPUT_POST, 'terms', FILTER_UNSAFE_RAW)){          // Nutzungsb
         
         $user->setLastLogin();
         
-        if ($user->checkTermsOfUse() == false){ //Nutzungsbedingungen akzeptiert?
+        //Nutzungsbedingungen akzeptiert?
+        if ($user->checkTermsOfUse() == false){
            header('Location:../share/request/getTermsofUse.php'); exit();
         }
         route($user); 
     } else { 
         $PAGE->message[] =  'Benutzername bzw. Passwort falsch.';   
     }  
+    
+} else if (filter_input(INPUT_POST, 'terms', FILTER_UNSAFE_RAW)){
+    switch (filter_input(INPUT_POST, 'Submit', FILTER_UNSAFE_RAW)) {
+        case 'Ja':  $user->load('username', $_SESSION['username'], true);
+                    $user->acceptTerms();
+                    route($user);
+            break;
+        case 'Nein':header('Location:index.php?action=logout'); 
+            break;
+        default:
+            break;
+    }
 }
 
-$TEMPLATE->assign('login_form', $form);     // assign the form
+
 $TEMPLATE->assign('page_title',     'Login');
+$TEMPLATE->assign('breadcrumb',  array('Login' => 'index.php?action=login'));
 $TEMPLATE->assign('message',        $message);
 
 function route($usr){
@@ -78,7 +69,11 @@ function route($usr){
             break;
         case 2:     //header('Location:index.php?action=password&login=first');//ab Version 0.5 BETA nicht verwendet // --> 1. Login nach erfolgreichem Registrieren
             break;
-        case 3:     header('Location:index.php?action=password&login=changePW'); 
+        case 3:     $_SESSION['FORM']->id      = null;
+                    $_SESSION['FORM']->form    = 'password';
+                    $_SESSION['FORM']->func    = 'changePW';
+                    header('Location:index.php?action=dashboard');
+            
             break;
         case 4:     //$PAGE->message[] = 'Ihr Account wurde noch nicht durch den Administrator freigegeben. Bitte probieren Sie es später noch einmal.'; //wurde für die PL Version herausgenommen // --> noch nicht freigegeben
             break; 

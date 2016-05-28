@@ -19,6 +19,7 @@
 global $USER, $TEMPLATE, $PAGE, $LOG;
 
 $TEMPLATE->assign('page_title', 'Berichte'); 
+$TEMPLATE->assign('breadcrumb',  array('Berichte' => 'index.php?action=log'));
 $LOG->add($USER->id, 'view', $PAGE->url, 'Log'); 
     
 if (checkCapabilities('menu:readLog', $USER->role_id)){

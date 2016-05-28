@@ -227,6 +227,18 @@ class SmartyPaginate {
     static function getUrl($id = 'default') {
         return $_SESSION['SmartyPaginate'][$id]['url'];
     }    
+    /**
+     * set width of paginator e.g. col-sm-12
+     * @param type $width
+     * @param type $id
+     */
+    static function setWidth($width, $id = 'default') {
+        $_SESSION['SmartyPaginate'][$id]['width'] = $width;
+    }
+    
+    static function getWidth($id = 'default') {
+        return $_SESSION['SmartyPaginate'][$id]['width'];
+    }    
     
     /**
      * set the url variable ie. ?next=10

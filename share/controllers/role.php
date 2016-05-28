@@ -91,9 +91,11 @@ $TEMPLATE->assign('page_title', 'Rollen verwalten');
 $role = new Roles();
 
 $p_options = array('delete' => array('onclick' => "del('role',__id__, $USER->id);", 
-                                     'capability' => checkCapabilities('role:delete', $USER->role_id, false)),
-                    'edit'  => array('href'    => 'index.php?action=role&function=edit&id=__id__'),
-                                     'capability' => checkCapabilities('role:update', $USER->role_id, false));
+                                     'capability' => checkCapabilities('role:delete', $USER->role_id, false),
+                                     'icon'         => 'fa fa-plus'),
+                    'edit'  => array('href'    => 'index.php?action=role&function=edit&id=__id__',
+                                     'capability' => checkCapabilities('role:update', $USER->role_id, false),
+                                     'icon'         => 'fa fa-edit'));
 $p_config =   array('id'         => 'checkbox',
                     'role'    => 'Rolle', 
                   'description'   => 'Beschreibung', 

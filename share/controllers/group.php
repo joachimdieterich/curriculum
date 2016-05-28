@@ -18,6 +18,9 @@
 */  
 global $USER, $TEMPLATE, $PAGE;
 
+$TEMPLATE->assign('page_title', 'Lerngruppen');  
+$TEMPLATE->assign('breadcrumb',  array('Lerngruppen' => 'index.php?action=group'));
+
 $selectedCurriculum = (isset($_GET['curriculum']) && $_GET['curriculum'] != '' ? $_GET['curriculum'] : '_'); //'_' ist das Trennungszeichen 
 $TEMPLATE->assign('selectedCurriculum', $selectedCurriculum);
 $curriculum = new Curriculum();
@@ -162,7 +165,6 @@ if($_POST ){
  * END POST / GET 
  */
 
-$TEMPLATE->assign('page_title', 'Lerngruppen verwalten');  
 
 $curricula                  = new Curriculum();                             //Load curricula
 $result                     = $curricula->getCurricula('user', $USER->id); 
@@ -178,13 +180,17 @@ $TEMPLATE->assign('semester', $semesters->getSemesters());
 
 $groups                     = new Group(); 
 $p_options = array('delete' => array('onclick'      => "del('group',__id__, $USER->id);", 
-                                     'capability'   => checkCapabilities('groups:delete', $USER->role_id, false)),
+                                     'capability'   => checkCapabilities('groups:delete', $USER->role_id, false),
+                                     'icon'         => 'fa fa-minus'),
                    'cal'    => array('href'         => "index.php?action=group&function=semester&group_id=__id__", 
-                                     'capability'   => checkCapabilities('groups:changeSemester', $USER->role_id, false)),
-                   'edit'   => array('href'         => 'index.php?action=group&function=edit&group_id=__id__'),
+                                     'capability'   => checkCapabilities('groups:changeSemester', $USER->role_id, false),
+                                     'icon'         => 'fa fa-calendar'),
+                   'edit'   => array('href'         => 'index.php?action=group&function=edit&group_id=__id__',
                                      'capability'   => checkCapabilities('groups:update', $USER->role_id, false),
+                                     'icon'         => 'fa fa-edit'),
                    'list'    => array('href'        => "index.php?action=group&function=showCurriculum&group_id=__id__", 
-                                      'capability'  => checkCapabilities('groups:showCurriculumEnrolments', $USER->role_id, false)));
+                                      'capability'  => checkCapabilities('groups:showCurriculumEnrolments', $USER->role_id, false),
+                                      'icon'        => 'fa fa-list'));
 $p_config =   array('id'         => 'checkbox',
                     'group'        => 'Lerngruppen',          //ändern auf groups in Object, da db Eintrag groups ist und die Suche so nicht funktioniert
                     'grade'         => '(Klassen)stufe',  

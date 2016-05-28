@@ -17,6 +17,7 @@
 *                                                                       
 * http://www.gnu.org/copyleft/gpl.html      
 */
+ob_start();
 include_once('setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 global $CFG, $USER;
 
@@ -50,17 +51,32 @@ if (isset($id)){
 
 if (!is_file($path)){ die(); }
 
+if (filter_input(INPUT_GET, 'video') == true){
+    $stream = new VideoStream($path);
+    $stream->start();
+    exit;
+}
+
 if (filter_input(INPUT_GET, 'download') == true){
+    //header("Pragma: public"); //Useful when you come across this error: http://trac.edgewall.org/ticket/1020. IE 8 & less seems to like to cache things when they are on a SSL server. Putting 'Pragma:public' helps with: "Internet Explorer was not able to open this Internet site. The requested site is either unavailable or cannot be found. Please try again later"
     header('Content-Description: File Transfer');
     header('Content-Type: application/octet-stream');
     header('Content-Disposition: attachment; filename='.basename($path));
     header('Content-Length: ' . filesize($path));
+    ob_flush(); flush();// empty output buffer
     readfile($path);
     exit();
-} else {
+} else { 
+    //header("Pragma: public"); //Useful when you come across this error: http://trac.edgewall.org/ticket/1020. IE 8 & less seems to like to cache things when they are on a SSL server. Putting 'Pragma:public' helps with: "Internet Explorer was not able to open this Internet site. The requested site is either unavailable or cannot be found. Please try again later"
+    //header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+    //header("Cache-Control: private", false); // required for certain browsers 
+    header('Expires: 0');
+   
+    header("Content-Transfer-Encoding: binary"); 
     header('Content-Type: ' . mime_content_type($path));
     header('Content-Disposition: attachment; filename='.basename($path));
     header('Content-Length: ' . filesize($path));
+    ob_flush(); flush(); // empty output buffer
     readfile($path);
     exit();
 }

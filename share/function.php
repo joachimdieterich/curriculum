@@ -105,8 +105,10 @@ function curPageName() {
  * @param array $resultData
  * @param string $returnVar
  * @param string $currentURL 
+ * @param array $config
+ * @param string $width 
  */
-function setPaginator($instance, $template, $data, $returnVar, $currentURL, $config = false) {
+function setPaginator($instance, $template, $data, $returnVar, $currentURL, $config = false, $width = 'col-sm-12') {
     global $CFG, $USER;
     $SmartyPaginate         = new SmartyPaginate(); 
     $SmartyPaginate->connect($instance);
@@ -116,11 +118,10 @@ function setPaginator($instance, $template, $data, $returnVar, $currentURL, $con
     } else {          
         if (filter_input(INPUT_GET, 'paginator_limit', FILTER_UNSAFE_RAW) && filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW)){
             SmartyPaginate::setLimit(filter_input(INPUT_GET, 'paginator_limit', FILTER_UNSAFE_RAW), filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW));
-        } /*else {
-            $SmartyPaginate->setLimit($USER->paginator_limit, $instance);
-        }*/ 
+        } 
     }
     $SmartyPaginate->setUrl($currentURL, $instance);
+    $SmartyPaginate->setWidth($width, $instance);
     $SmartyPaginate->setUrlVar($instance, $instance);
     $SmartyPaginate->setPrevText('zurück',$instance);
     $SmartyPaginate->setNextText('vor',$instance);
@@ -293,7 +294,7 @@ function renderList($formname, $dependency, $data_dir, $ID_Postfix, $targetID, $
             <tr><td class="p_info"><strong>Titel:</strong></td>        <td id="<?php echo $ID_Postfix; ?>p_title" class="p_info "></td></tr>
             <tr><td class="p_info"><strong>Beschreibung:</strong></td> <td id="<?php echo $ID_Postfix; ?>p_description" class="p_info "></td></tr>
             <tr><td class="p_info"><strong>Author:</strong></td>       <td id="<?php echo $ID_Postfix; ?>p_author" class="p_info "></td></tr>
-            <tr><td class="p_info"><strong>Lizenz</strong></td>        <td id="<?php echo $ID_Postfix; ?>p_licence" class="p_info "></td></tr>
+            <tr><td class="p_info"><strong>Lizenz</strong></td>        <td id="<?php echo $ID_Postfix; ?>p_license" class="p_info "></td></tr>
         </table>
     </div>
 </div>
@@ -488,7 +489,7 @@ function generateThumbnail($upload_dir, $filename, $context){
             case "userFiles":   break;
             case "curriculum":
             case "institution":
-            case "userView":    saveThumbnail($upload_dir, $filename, 150, 225,'xs');
+            case "solution":    saveThumbnail($upload_dir, $filename, 150, 225,'xs');
                                 saveThumbnail($upload_dir, $filename, 534, 800,'l');
                                 break;  
             case "subjectIcon": break;
@@ -522,10 +523,28 @@ function translate_size($size){
     }
 }
 
-function validate_msg($v_error, $field){
-   if (isset($v_error[$field]['message'][0])){ 
-       echo '<div class="error">',$v_error[$field]['message'][0],'</div>';     
-   } 
+/**
+ * Returns status bootstrap class (true) or error Message (default) 
+ * @param array $v_error
+ * @param string $field
+ * @param boolean $return_status
+ * @return string
+ */
+function validate_msg($v_error, $field, $return_status = false){
+    if (!is_array($v_error)){ return; }
+    switch ($return_status) {
+        case true:  if (isset($v_error[$field]['message'][0])) {
+                        return 'has-error'; //-> bootstrap class
+                    } else {
+                        return 'has-success';
+                    }
+             break;
+
+        default:    if (isset($v_error[$field]['message'][0])){ 
+                        return '<i class="fa fa-times-circle-o"></i> '.$v_error[$field]['message'][0];
+                    }
+            break;
+    }
 }
 
 function str_lreplace($search, $replace, $subject)
@@ -593,3 +612,126 @@ function getImmediateChildrenByTagName(DOMElement $element, $tagName)
     }
     return $result;
 }
+
+
+function resolveFileType($type){
+    switch ($type) {
+                        /* Archive */ 
+        case '.cab':   
+        case '.lha':    
+        case '.lzh':    
+        case '.z7':    
+        case '.rar':    
+        case '.bz2':    
+        case '.tar':    $class = 'fa fa-file-archive-o';
+            break;
+                        /* Data-Images */
+        case '.dmg':   
+        case '.img':   
+        case '.iso':    $class = 'fa fa-hdd-o';
+            break;
+                        /* Audio */
+        case '.acc':
+        case '.aif':
+        case '.aiff':
+        case '.mp3': 
+        case '.wav':
+        case '.wma':    $class = 'fa fa-file-audio-o';
+            break;
+                        /* Videos */
+        case '.avi':    
+        case '.flv':    
+        case '.mp4':    
+        case '.mpg':    
+        case '.mpeg':    
+        case '.mov':    
+        case '.swf':    
+        case '.wmv':    $class = 'fa fa-file-movie-o';
+            break;
+                        /* Images*/
+        case '.bmp':    
+        case '.gif':    
+        case '.ai':    
+        case '.png':    
+        case '.svg':    
+        case '.psd':    
+        case '.tif':    
+        case '.tiff':    
+        case '.jpeg':    
+        case '.jpg':    $class = 'fa fa-file-image-o';
+            break;
+        
+                        /* Text */
+        case '.txt':    
+        case '.rtf':    
+                        $class = 'fa fa-file-text-o';
+            break;
+                        /* Word */
+        case '.doc':    
+        case '.docx':    
+        case '.dot':    $class = 'fa fa-file-word-o';
+            break;
+        
+                        /* Excel */
+        case '.xlsx': 
+        case '.xlsm': 
+        case '.xlsb': 
+        case '.xltx': 
+        case '.xltm': 
+        case '.xlt': 
+        case '.xlm': 
+        case '.xlw': 
+        case '.xls':    $class = 'fa fa-file-word-o';
+            break;
+                        /* Code */
+        case '.class':
+        case '.php':
+        case '.cpp':
+        case '.htm':
+        case '.html':
+        case '.xml':
+        case '.js':      $class = 'fa fa-file-word-o';
+            break;   
+                        /* PDF */
+        case '.pdf':   $class = 'fa fa-file-pdf-o';
+            break;    
+                        /* Powerpoint */
+        case '.ppa':   
+        case '.pps':   
+        case '.ppsm':   
+        case '.ppsx': 
+        case '.pot': 
+        case '.potx':
+        case '.potm':
+        case '.ppt':
+        case '.pptm':
+        case '.pptx':   $class = 'fa fa-file-powerpoint-o';
+            break;    
+
+        default:        $class = 'fa fa-file-o';
+            break;
+    }
+    return $class;
+}
+
+
+
+function PHPArrayObjectSorter($array,$sortBy,$direction='asc'){
+        $sortedArray=array();
+        $tmpArray=array();
+        foreach($array as $obj){
+            $tmpArray[]=$obj->$sortBy;
+        }
+        
+        if($direction=='asc'){
+            asort($tmpArray);
+        }else{
+            arsort($tmpArray);
+        }
+
+        foreach($tmpArray as $k=>$tmp){
+            $sortedArray[]=$array[$k];
+        }
+        
+        return $sortedArray;
+    }
