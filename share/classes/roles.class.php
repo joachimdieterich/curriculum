@@ -94,18 +94,18 @@ class Roles {
                 $db     = DB::prepare('SELECT role_id FROM role_capabilities WHERE role_id = ? AND capability = ?');
                 $db->execute(array($this->id, $v_key));
                 $result = $db->fetchObject();            
-                    if (isset($result->role_id)){   
+                    if (isset($result->role_id)){                       
                         $db = DB::prepare('UPDATE role_capabilities SET permission= '.$v_value.', creator_id = ?
                                             WHERE role_id = ? AND capability = ?');
                         $update_role_capabilities = $db->execute(array($this->creator_id, $this->id, $v_key));
-                    } else {
+                    } else {  
                         $db = DB::prepare('INSERT INTO role_capabilities (role_id, capability, permission, creator_id) 
                                             VALUES (?, ?, ?, ?)');
                         $update_role_capabilities = $db->execute(array($this->id, $v_key, $v_value, $this->creator_id));
                     }
                 }
             }
-
+            
             if ($update_role == true AND $update_role_capabilities == true){
                 return true;
             } else {
@@ -143,6 +143,9 @@ class Roles {
         $this->description  = $result->description;
         $this->creation_time= $result->creation_time;
         $this->creator_id   = $result->creator_id;   
+        $capabilities       = new Capability();
+        $this->capabilities =  $capabilities->getCapabilities($this->id);
+        
     }
     
     /**

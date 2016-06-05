@@ -17,7 +17,7 @@
  * http://www.gnu.org/copyleft/gpl.html      
  */
 include(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
-
+include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER, $CFG;
 $USER           = $_SESSION['USER'];
 if (!isset($_SESSION['PAGE']->target_url)){     //if target_url is not set -> use last PAGE url
@@ -57,7 +57,7 @@ if (!$user->checkLoginData()){
         $_SESSION['FORM']->func      = $_POST['func'];
     } else {
         if ($user->changePassword(md5($password))){
-            $_SESSION['PAGE']->message[] = 'Passwort erfolgreich geändert';
+            $_SESSION['PAGE']->message[] = array('message' => 'Passwort erfolgreich geändert', 'icon' => 'fa-key text-success');
         }
         $_SESSION['FORM']            = null;                     // reset Session Form object 
     }

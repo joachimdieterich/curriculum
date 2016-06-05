@@ -23,7 +23,6 @@
                         </button>
                     </div>
                 {/if}    
-
                 {html_paginator id='certificateP'}
                 </div>
             </div>

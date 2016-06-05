@@ -107,7 +107,6 @@ function uploadFile(form, func, fSelector, fName, fProgress, fPercent)
         document.getElementById(fPercent).innerHTML = p + "%";
         
         if (p === 100){
-            
             if (func === 'import'){
                 document.getElementById(form).style.display = 'none';
                 $(document.getElementById('bImport')).removeClass("hidden");
@@ -115,12 +114,17 @@ function uploadFile(form, func, fSelector, fName, fProgress, fPercent)
         }
     };
     client.onloadend = function (e){
-        alert(document.getElementById('target').value);
+        //alert(document.getElementById('target').value);
+        
         $.nmTop().close();          // close dialog
         if (func === 'import'){
             c = new Array();
             c = setFormData(file.name);   
             document.getElementById('importFileName').value = document.getElementById(fName).innerHTML; // allgemeiner lösen
+        } else {
+            target = document.getElementById('target').value;
+            alert(client.responseText);
+            document.getElementById(target).value       = client.responseText;
         }
     };
 	

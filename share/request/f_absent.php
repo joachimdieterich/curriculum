@@ -18,13 +18,16 @@
  */
 $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
-
+include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $CFG, $USER, $COURSE;
 $USER           = $_SESSION['USER'];
 $COURSE         = $_SESSION['COURSE'];
 
 /*Variablen anlegen -> vermeidet unnötige if-Abfragen im Formular*/
 $absent_id      = null;
+$reason         = null;
+$user_list      = null;
+$done           = null;
 $func           = $_GET['func'];
 
 $error          =   null;
@@ -53,15 +56,16 @@ if (isset($_GET['func'])){
         case "edit":        checkCapabilities('absent:update', $USER->role_id);
                             $header     = 'Anwesenheitsliste aktualisieren';
                             $edit       = true; 
-                            $tsk         = new Task();
-                            $tsk->load('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
-                            $task_id   = $tsk->id;
-                            foreach ($tsk as $key => $value){
+                            $abs         = new Absent();
+                            $abs->load('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
+                            $absent_id   = $abs->id;
+                            foreach ($abs as $key => $value){
                                 if (!is_object($value)){
                                     $$key = $value;
                                     //error_log($key. ': '.$value);
                                 }
                             }
+                            $reference_id = $cb_id; // to get reference 
                         
             break;
         default: break;
@@ -87,17 +91,18 @@ $html ='<div class="modal-dialog" style="overflow-y: initial !important;">
 $html .='<form id="form_absent"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_absent.php"';
 
 if (isset($currentUrlId)){ $html .= $currentUrlId; }
-$html .= '">
+$html .= '"><input type="hidden" name="reference_id" id="reference_id" value="'.$reference_id.'"/>
 <input type="hidden" name="func" id="func" value="'.$func.'"/>';
-if (isset($task_id)){
-$html .= '<input type="hidden" name="task_id" id="task_id" value="'.$task_id.'"/> ';
-}
-if (isset($reference_id)){
-$html .= '<input type="hidden" name="reference_id" id="reference_id" value="'.$reference_id.'"/> ';
+if (isset($absent_id)){
+$html .= '<input type="hidden" name="absent_id" id="absent_id" value="'.$absent_id.'"/> ';
+$html .= '<input type="hidden" name="user_id" id="user_id" value="'.$user_id.'"/> ';
+$html .= Form::input_text('username', 'Benutzername', $user, $error,'','text',null, null, 'col-sm-3','col-sm-9', true);
 }
 $html .= Form::input_text('reason', 'Fehlgrund', $reason, $error, 'z. B. Krankmeldung');
-$html .= Form::input_select_multiple('absent_id', 'Kursmitglieder', $members, 'firstname, lastname', 'id', $absent_id, $error );
-$html .= Form::input_checkbox('done', 'Entschuldigt', $done, $error);
+if (!isset($absent_id)){
+$html .= Form::input_select_multiple('user_list', 'Kursmitglieder', $members, 'firstname, lastname', 'id', $user_list, $error );
+}
+$html .= Form::input_checkbox('status', 'Entschuldigt', $status, $error);
 
 $html       .= '</div><!-- /.modal-body -->
             <div class="modal-footer">';

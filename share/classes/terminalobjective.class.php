@@ -194,6 +194,23 @@ class TerminalObjective {
                                         $enabling_objectives = new EnablingObjective();
                                         $this->enabling_objectives = $enabling_objectives->getObjectives('terminal_objective', $this->id);
                                     }
+                                    
+                                    /* Check if Material or external Reference is set */
+                                    $db_02 = DB::prepare('SELECT COUNT(*) AS MAX FROM files WHERE ter_id = ? AND ena_id < 1 AND context_id = 2');
+                                    $db_02->execute(array($result->id));
+                                    $res_02 = $db_02->fetchObject();
+                                    if (file_exists('../share/plugins/omega.class.php')){ // prüfen, ob OMEGA Plugin vorhanden ist.
+                                        $db_04 = DB::prepare('SELECT COUNT(*) AS MAX FROM plugin_omega WHERE objective_id = ? AND type = 0');
+                                        $db_04->execute(array($result->id));
+                                        $res_04 = $db_04->fetchObject();
+                                        if ($res_04->MAX >= 1){
+                                            $ext= '/ext';
+                                        } else {
+                                            $ext = '';
+                                        }
+                                    }
+                                    $this->files                = $res_02->MAX.$ext; //nummer of materials
+                                    
                                     $objectives[]               = clone $this; 
                                 }
                                 break;

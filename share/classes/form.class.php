@@ -20,7 +20,7 @@
  */
 class Form {
     
-    public static function info($id, $label, $content, $class_left='col-sm-4', $class_right='col-sm-7'){
+    public static function info($id, $label, $content, $class_left='col-sm-3', $class_right='col-sm-9'){
         $form = '<div class="form-group">
                   <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
                   <div class="'.$class_right.'">'.$content.'</div>
@@ -40,7 +40,7 @@ class Form {
       * @param string $class_right
       * @return string
       */
-    public static function input_text($id, $label, $input, $error, $placeholder ='Text...', $type='text', $min=null, $max=null, $class_left='col-sm-4', $class_right='col-sm-7', $readonly = null){
+    public static function input_text($id, $label, $input, $error, $placeholder ='Text...', $type='text', $min=null, $max=null, $class_left='col-sm-3', $class_right='col-sm-9', $readonly = null){
         $form = '<div class="form-group '.validate_msg($error, $id, true).'">
                   <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
                   <div class="'.$class_right.'">'.validate_msg($error, $id).'<input id="'.$id.'" name="'.$id.'" type="'.$type.'" ';
@@ -58,7 +58,7 @@ class Form {
         return $form;
     }
     
-    public static function input_textarea($id, $label, $input, $error, $placeholder ='Text...', $class_left='col-sm-4', $class_right='col-sm-7'){
+    public static function input_textarea($id, $label, $input, $error, $placeholder ='Text...', $class_left='col-sm-3', $class_right='col-sm-9'){
         $form  = '<div class="form-group '.validate_msg($error, $id, true).'"><label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
                   <div class="'.$class_right.'">';
         $form .= '<textarea id="'.$id.'" name="'.$id.'" class="ckeditor" rows="10" cols="80" style="visibility: hidden; display: none;">';
@@ -68,28 +68,37 @@ class Form {
             $form .=  $placeholder;
         }
         $form .= '</textarea>';
-        //$form .= '</div>';
-        /*/*$form = '<div class="form-group '.validate_msg($error, $id, true).'">
-                  <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
-                  <div class="'.$class_right.'">'.validate_msg($error, $id).'<input id="'.$id.'" name="'.$id.'" type="'.$type.'" ';
-                  if ($min) {$form .= 'min="'.$min.'" ';}
-                  if ($min) {$form .= 'max="'.$max.'" ';}
-        $form .= 'class="form-control" placeholder="'.$placeholder.'" ';
-         * 
-         */
-        /*if (isset($input)) { 
-            $form .=  'value="'.$input.'"';  
-        } */
-         $form .= '</div></div>'; 
+        $form .= '</div></div>'; 
 
         return $form;
     }
     
-    public static function input_checkbox($id, $label, $input, $error, $type='checkbox', $onclick='', $class_left='col-sm-4', $class_right='col-sm-7'){
+    public static function input_checkbox($id, $label, $input, $error, $type='checkbox', $onclick='', $class_left='col-sm-3', $class_right='col-sm-9'){
         $form = '<div class="form-group '.validate_msg($error, $id, true).'">
                   <label class="control-label '.$class_left.'" for="'.$id.'"></label>
-                  <div class="'.$class_right.'">'.validate_msg($error, $id).'<input id="'.$id.'" name="'.$id.'" type="'.$type.'" onclick="'.$onclick.'" class="'.$type.'" ';
+                  <div class="'.$class_right.'">'.validate_msg($error, $id).'<input id="'.$id.'" name="'.$id.'" type="'.$type.'"';
+        if ($input == true){
+            $form .= 'checked="checked';
+        }    
+        $form .= ' onclick="'.$onclick.'" class="'.$type.'" ';
         $form .= ' /> '.$label.'</div></div>';  
+
+        return $form;
+    }
+    
+    public static function input_switch($id, $label, $input, $error, $class_left='col-sm-3', $class_right='col-sm-9'){
+        $form = '<div class="form-group '.validate_msg($error, $id, true).'">
+                  <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'<br><small>'.$input->capability.'</small></label>
+                  <div class="'.$class_right.'" style="padding-left:85px;">'.validate_msg($error, $id).'
+                <input type="checkbox" name="'.$input->capability.'" id="'.$input->capability.'" class="ios-toggle" ';
+                if ($input->permission == 1){
+                    $form .= ' value="true" checked ';
+                } else {
+                    $form .= ' value="false" ';
+                }
+                $form .= ' onclick="switchValue(\''.$input->capability.'\');"/>
+                 <label for="'.$input->capability.'" class="checkbox-label" data-off="nicht erlaubt" data-on="erlaubt"></label>'; 
+        $form .= '</div></div>';  
 
         return $form;
     }
@@ -108,7 +117,7 @@ class Form {
      * @param type $class_right
      * @return string
      */
-    public static function input_select($id, $label, $select_data, $select_label, $select_value, $input, $error, $onchange= '', $placeholder ='---', $class_left='col-sm-4', $class_right='col-sm-7'){
+    public static function input_select($id, $label, $select_data, $select_label, $select_value, $input, $error, $onchange= '', $placeholder ='---', $class_left='col-sm-3', $class_right='col-sm-9'){
         $form = '<div class="form-group '.validate_msg($error, $id, true).'">
                   <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
                   <div class="'.$class_right.'">
@@ -131,11 +140,11 @@ class Form {
         
         return $form;
     }
-    public static function input_select_multiple($id, $label, $select_data, $select_label, $select_value, $input, $error, $onchange= '', $placeholder ='---', $class_left='col-sm-4', $class_right='col-sm-7'){
+    public static function input_select_multiple($id, $label, $select_data, $select_label, $select_value, $input, $error, $onchange= '', $placeholder ='---', $class_left='col-sm-3', $class_right='col-sm-9'){
         $form = '<div class="form-group '.validate_msg($error, $id, true).'">
                   <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
                   <div class="'.$class_right.'">
-                      <select multiple id="'.$id.'" name="'.$id.'" class="form-control" onchange="'.$onchange.'">';
+                      <select multiple id="'.$id.'[]" name="'.$id.'[]" class="form-control" onchange="'.$onchange.'">';
                        if (count($select_data) > 0){
                             foreach ($select_data as $value) {
                                 if (strpos($select_label, ',')){ // more than one field in select_label
@@ -158,8 +167,8 @@ class Form {
     public static function input_color($params){
         $label = 'Farbe';
         $rgb = '#3cc95b';
-        $class_left='col-sm-4'; 
-        $class_right='col-sm-7';
+        $class_left='col-sm-3'; 
+        $class_right='col-sm-9';
         foreach($params as $key => $val) {
             $$key = $val;
         }
@@ -179,8 +188,8 @@ class Form {
     
     public static function input_date($params){
         $type = 'date';
-        $class_left='col-sm-4'; 
-        $class_right='col-sm-7';
+        $class_left='col-sm-3'; 
+        $class_right='col-sm-9';
         foreach($params as $key => $val) {
             $$key = $val;
         }
@@ -207,7 +216,7 @@ class Form {
         return $form;
     }
     
-    public static function upload_form($id, $label, $input, $error, $onclick='', $class_left='col-sm-4', $class_right='col-sm-7'){
+    public static function upload_form($id, $label, $input, $error, $onclick='', $class_left='col-sm-3', $class_right='col-sm-9'){
         $form = '<div id="'.$id.'" class="form-group '.validate_msg($error, $id, true).'">
                     <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
                     <div class="'.$class_right.'">

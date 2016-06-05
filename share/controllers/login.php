@@ -41,7 +41,7 @@ if(filter_input(INPUT_POST, 'login', FILTER_UNSAFE_RAW)) {
         }
         route($user); 
     } else { 
-        $PAGE->message[] =  'Benutzername bzw. Passwort falsch.';   
+        $PAGE->message[] = array('message' => 'Benutzername bzw. Passwort falsch.', 'icon' => 'fa-key text-warning');     
     }  
     
 } else if (filter_input(INPUT_POST, 'terms', FILTER_UNSAFE_RAW)){

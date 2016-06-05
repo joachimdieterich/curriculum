@@ -281,7 +281,7 @@ class User {
         $db = DB::prepare('SELECT COUNT(id) FROM users WHERE UPPER(username) = UPPER(?)');
         $db->execute(array($this->username));
         if($db->fetchColumn() >= 1) { 
-                $PAGE->message[] = 'Benutzer '.$this->firstname.' '.$this->lastname.'('.$this->username.') existiert bereits';
+            $PAGE->message[] = array('message' => 'Benutzer '.$this->firstname.' '.$this->lastname.'('.$this->username.') existiert bereits', 'icon' => 'fa fa-user text-warning');// Schließen und speichern
         } else {
             $db = DB::prepare('INSERT INTO users (username,firstname,lastname,email,postalcode,city,state_id,country_id,avatar_id,password,confirmed,creator_id,paginator_limit,acc_days) 
                                             VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
@@ -294,7 +294,7 @@ class User {
                 if ($group_id != null){
                     $this->enroleToGroup($group_id, $this->creator_id);
                 }
-                $PAGE->message[]    = 'Der Benutzer <strong>'.$this->username.'</strong> wurde erfolgreich angelegt.';
+                $PAGE->message[] = array('message' => 'Der Benutzer <strong>'.$this->username.'</strong> wurde erfolgreich angelegt.', 'icon' => 'fa fa-user text-success');// Schließen und speichern
                 return $this->id; 
             } else {
                 return false; 
@@ -401,12 +401,11 @@ class User {
                             return $group_members;
                 break;
             default:        if (checkCapabilities('user:userListComplete', $USER->role_id,false)){
-                                $db = DB::prepare('SELECT DISTINCT usr.id, usr.firstname, usr.lastname, usr.username 
-                                    FROM users AS usr');//Zeige alle User --> nur für globale Admin Rolle !. 
+                                $db = DB::prepare('SELECT DISTINCT us.id, us.firstname, us.lastname, us.username FROM users AS us ORDER BY us.lastname');//Zeige alle User --> nur für globale Admin Rolle !. 
                                 $db->execute(array()); 
                             } else {
-                                $db = DB::prepare('SELECT DISTINCT usr.id, usr.firstname, usr.lastname, usr.username 
-                                    FROM users AS usr, groups_enrolments AS cle, institution_enrolments AS ie, groups as gr 
+                                $db = DB::prepare('SELECT DISTINCT usr.id, usr.firstname, usr.lastname, usr.username
+                                    FROM users AS usr, groups_enrolments AS cle, institution_enrolments AS ie, groups AS gr 
                                     WHERE cle.group_id IN (SELECT DISTINCT group_id FROM groups_enrolments WHERE user_id = ?)
                                     AND ie.user_id = ?
                                     AND usr.id = cle.user_id AND gr.id = cle.group_id and gr.institution_id = ie.institution_id');//Zeigt nur User in deren Gruppe man eingeschrieben ist. 
@@ -414,13 +413,8 @@ class User {
                             }
                             
                             while($result = $db->fetchObject()) { 
-                                    $class_members["id"][]     = $result->id;  //todo: besser als object realisieren
-                                    $class_members["user"][]   = $result->firstname.' '.$result->lastname.' ('.$result->username.')'; 
+                                    $class_members[]     = clone $result;
                             } 
-                            if ($USER->role_id != 0){
-                                    $class_members["id"][]     = 102;  //HACK für RLP Pilotierung
-                                    $class_members["user"][]   = 'Joachim Dieterich (Admin)';
-                            }
                             if (isset($class_members)){
                                 return $class_members;
                             } else return false; 
@@ -492,10 +486,10 @@ class User {
         } else {
             $db = DB::prepare('INSERT INTO institution_enrolments (institution_id,user_id,role_id,creator_id,status) VALUES(?,?,?,?,1)');
             if ($db->execute(array($institution_id, $this->id, $this->role_id, $USER->id))){
-                $PAGE->message[]    = '<strong>'.$this->username.'</strong> erfolgreich in die Institution eingeschrieben.';
+                $PAGE->message[] = array('message' => '<strong>'.$this->username.'</strong> erfolgreich in die Institution eingeschrieben.', 'icon' => 'fa fa-user text-success');// Schließen und speichern
                 return true; 
             } else {
-                $PAGE->message[]    = 'Benutzereinschreibung konnte nicht in die Institution eingeschrieben werden.';
+                $PAGE->message[] = array('message' => '<strong>'.$this->username.'</strong> konnte nicht in die Institution eingeschrieben werden.', 'icon' => 'fa fa-user text-warning');// Schließen und speichern
                 return false;
             }
         } 
@@ -606,7 +600,7 @@ class User {
                         $error[] = array('username' => $this->username, 
                                         'error'    => $validated_data); 
                         foreach ($error as $value) {
-                        $PAGE->message[] = 'Benutzer: '.$value['username'].' Error: '.array2str($value['error']);
+                            $PAGE->message[] = array('message' => 'Benutzer: '.$value['username'].' Error: '.array2str($value['error']), 'icon' => 'fa fa-group text-warning');// Schließen und speichern
                         }
                     }
                 }
@@ -614,7 +608,7 @@ class User {
         }
         fclose($handle);
         if (!isset($error)){ //if there are any error messages
-            $PAGE->message[] = 'Benutzerliste erfolgreich importiert';
+            $PAGE->message[] = array('message' => 'Benutzerliste erfolgreich importiert', 'icon' => 'fa fa-group text-success');// Schließen und speichern
         } 
     }
     

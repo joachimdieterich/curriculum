@@ -21,7 +21,7 @@
           <div class="row">
             <!-- mail menu -->  
             <div class="col-md-3">
-              <a href="index.php?action=messages&function=shownewMessage" class="btn btn-primary btn-block margin-bottom">Nachricht schreiben </a>
+              <a href="#" class="btn btn-primary btn-block margin-bottom" onclick="formloader('mail','new');">Nachricht schreiben </a>
               <div class="box box-solid">
                 <div class="box-header with-border">
                   <h3 class="box-title">Postfächer</h3>
@@ -66,7 +66,7 @@
                   <ul class="nav nav-pills nav-stacked">
                     {if isset($messages[0])}  
                         {section name=mail loop=$messages}
-                        <li><a onclick="loadmail({$messages[mail]->id}, '{$box}')"><i class="fa fa-circle-o text-light-blue"></i> 
+                        <li name='{$box}_{$messages[mail]->id}' id='{$box}_{$messages[mail]->id}'><a onclick="loadmail({$messages[mail]->id}, '{$box}')"><i class="fa fa-circle-o text-light-blue"></i> 
                                 {if isset($showInbox)}
                                     {$messages[mail]->sender_firstname} {$messages[mail]->sender_lastname}&nbsp;({$messages[mail]->sender_username})
                                 {else}
@@ -176,39 +176,14 @@
             <div class="col-md-9 " id="mailbox">
               
             </div><!-- /.col -->
-            
-            
     {/if}       
-            
           </div><!-- /.row -->
         </section>   
-    
     
     <input type='hidden' name='timestamp' value='{$timestamp}'/>  
     {if isset($showInbox)} 
         <a id="answer_btn" class="answerbtn  " style="display: none;" href="">antworten</a>
     {/if}
-
-    {if isset($shownewMessage)} 
-    <form id='messages' method='post' action='index.php?action=messages'> 
-      <p><h3>Neue Nachricht</h3></p>
-      {if isset($class_members)}
-         {if isset($receiver_id)}
-              <p><label>An:</label>{html_options name='receiver_id' values=$class_members.id output=$class_members.user selected=$receiver_id}</p>    
-         {else}
-              <p><label>An:</label>{html_options name='receiver_id' values=$class_members.id output=$class_members.user}</p>  
-         {/if}  
-         <p><label>Betreff: </label><input class='inputlarge' name='subject' id='subject' {if isset($subject)}value='{$subject}'{/if}/></p> 
-         {validate_msg field='subject'}
-         <p><label>Nachricht: </label>{validate_msg field='message_text'}
-              <textarea name="message_text">{if isset($message_text)}{$message_text}{/if}</textarea></p>    
-         <p><label></label><input type='submit' name='sendMessage' value='Nachricht senden' /></p>
-      {else}
-          <p>Keine Gruppenmitglieder vorhanden.</p>
-      {/if}
-    </form>
-    {/if}
-
 {/block}
 
 

@@ -27,27 +27,6 @@ $curriculum = new Curriculum();
 
 if (isset($_GET['function'])) {
      switch ($_GET['function']) {       
-        case "new":     checkCapabilities('groups:add',         $USER->role_id);    // USER berechtigt?
-                        $TEMPLATE->assign('showForm',           true); 
-                        $TEMPLATE->assign('g_grade_id',         null);              // müssen gesetzt sein um unnötige if-Bedingungen zu vermeiden
-                        $TEMPLATE->assign('g_semester_id',      null);              // müssen gesetzt sein um unnötige if-Bedingungen zu vermeiden
-                        $TEMPLATE->assign('g_institution_id',   null);              // müssen gesetzt sein um unnötige if-Bedingungen zu vermeiden
-                        $institution = new Institution();
-                        $TEMPLATE->assign('myInstitutions',     $institution->getInstitutions('user', null, $USER->id));
-            break;
-        
-        case "semester":$TEMPLATE->assign('new_semester_form',  true); 
-        case "edit":    $TEMPLATE->assign('showForm',           true);
-                        $TEMPLATE->assign('edit_group_form',    true);
-                        $institution = new Institution();
-                        $TEMPLATE->assign('myInstitutions',     $institution->getInstitutions('user', null, $USER->id));
-
-                        $group       = new Group();
-                        $group->id   = filter_input(INPUT_GET, 'group_id',              FILTER_VALIDATE_INT);
-                        $group->load();
-                        assign_to_template($group, 'g_');   
-            break; 
-        
         case "expel": 
         case "showCurriculum": 
                         $g_id                 = filter_input(INPUT_GET, 'group_id',     FILTER_VALIDATE_INT);
@@ -58,7 +37,8 @@ if (isset($_GET['function'])) {
                             $curriculum->id   = filter_input(INPUT_GET, 'curriculumID', FILTER_VALIDATE_INT);
                             if ($group->expel($USER->id, $curriculum->id)) {
                                 $curriculum->load();
-                                $PAGE->message[]    = 'Lerngruppe <strong>'.$group->group.'</strong> wurde erfolgreich aus <strong>'.$curriculum->curriculum.'</strong> ausgeschrieben.';  
+                                $PAGE->message[] = array('message' => 'Lerngruppe <strong>'.$group->group.'</strong> wurde erfolgreich aus <strong>'.$curriculum->curriculum.'</strong> ausgeschrieben.', 'icon' => 'fa-group text-success');
+                                
                             }
                         }
                         
@@ -86,75 +66,34 @@ if (isset($_GET['function'])) {
 if($_POST ){ 
     $group = new Group();
     switch ($_POST) {
-        case isset($_POST['enrole']): 
+        case isset($_POST['enrol']): 
         case isset($_POST['expel']):   foreach ($_POST['id'] as $check ) { 
                                             if ($check == "none" ) {   
                                                 if (count($_POST['id']) == 1){  // Diese Abfrage ist wichtig, da sonst Meldungen doppelt ausgegeben werden. 
-                                                    $PAGE->message[]    = 'Es muss mindestens eine Lerngruppe ausgewählt werden!'; 
+                                                    $PAGE->message[] = array('message' => 'Es muss mindestens eine Lerngruppe ausgewählt werden!', 'icon' => 'fa-group text-warning');
                                                 }
                                             } else {
                                                 $curriculum->id         = filter_input(INPUT_POST, 'curriculum', FILTER_VALIDATE_INT);
                                                 $curriculum->load();
                                                 $group->id = $check;
                                                 $group->load();
-                                                if (isset($_POST['enrole'])){
+                                                if (isset($_POST['enrol'])){
                                                     if($group->checkEnrolment($curriculum->id ) > 0) { 
-                                                        $PAGE->message[] = 'Die Lerngruppe <strong>'.$group->group.'</strong> ist bereits in <strong>'.$curriculum->curriculum.'</strong> eingeschrieben.';
+                                                        $PAGE->message[] = array('message' => 'Die Lerngruppe <strong>'.$group->group.'</strong> ist bereits in <strong>'.$curriculum->curriculum.'</strong> eingeschrieben.', 'icon' => 'fa-group text-warning');
                                                     } else {
                                                         $group->enrol($USER->id, $curriculum->id );
-                                                        $PAGE->message[] = 'Die Lerngruppe <strong>'.$group->group.'</strong> wurde erfolgreich in <strong>'.$curriculum->curriculum.'</strong> eingeschrieben.';  
+                                                        $PAGE->message[] = array('message' => 'Die Lerngruppe <strong>'.$group->group.'</strong> wurde erfolgreich in <strong>'.$curriculum->curriculum.'</strong> eingeschrieben.', 'icon' => 'fa-group text-success');  
                                                     }   
                                                 }
                                                 if (isset($_POST['expel'])){
                                                     if ($group->expel($USER->id, $curriculum->id )) {
-                                                        $PAGE->message[] = 'Lerngruppe <strong>'.$group->group.'</strong> wurde erfolgreich aus <strong>'.$curriculum->curriculum.'</strong> ausgeschrieben.';  
+                                                        $PAGE->message[] = array('message' => 'Lerngruppe <strong>'.$group->group.'</strong> wurde erfolgreich aus <strong>'.$curriculum->curriculum.'</strong> ausgeschrieben.', 'icon' => 'fa-group text-success');
                                                     } else {
-                                                        $PAGE->message[] = 'Lerngruppe <strong>'.$group->group.'</strong> war nicht in <strong>'.$curriculum->curriculum.'</strong> eingeschrieben.';  
+                                                        $PAGE->message[] = array('message' => 'Lerngruppe <strong>'.$group->group.'</strong> war nicht in <strong>'.$curriculum->curriculum.'</strong> eingeschrieben.', 'icon' => 'fa-group text-warning');
                                                     }
                                                 }
                                             }        
                                         }
-            break;
-          
-        case isset($_POST['add']):
-        case isset($_POST['update']):
-        case isset($_POST['change']):   if (isset($_POST['g_id'])){
-                                            $group->id         = filter_input(INPUT_POST, 'g_id',           FILTER_VALIDATE_INT);
-                                        }
-                                        $group->group          = filter_input(INPUT_POST, 'g_group',        FILTER_SANITIZE_STRING);
-                                        $group->description    = filter_input(INPUT_POST, 'g_description',  FILTER_SANITIZE_STRING);
-                                        $group->grade_id       = filter_input(INPUT_POST, 'grade',          FILTER_VALIDATE_INT);
-                                        $group->semester_id    = filter_input(INPUT_POST, 'semester',       FILTER_VALIDATE_INT);
-                                        $group->creator_id     = $USER->id;  
-                                        $group->institution_id = filter_input(INPUT_POST, 'institution',    FILTER_VALIDATE_INT);
-
-                                        $gump = new Gump();                 /* Validation */
-                                        $_POST = $gump->sanitize($_POST);   //sanitize $_POST
-                                        $gump->validation_rules(array(
-                                        'g_group'        => 'required',
-                                        'g_description'  => 'required',
-                                        'grade'          => 'required',
-                                        'semester'       => 'required'
-                                        ));
-                                        $validated_data = $gump->run($_POST);
-
-                                        if($validated_data === false) {/* validation failed */
-                                            assign_to_template($group,      'g_'); 
-                                            $TEMPLATE->assign('v_error',    $gump->get_readable_errors());     
-                                            $TEMPLATE->assign('showForm',   true); 
-                                            if (isset($_POST['update'])){
-                                                $TEMPLATE->assign('edit_group_form', true);
-                                            }
-                                        } else {/* validation successful */
-                                            if (isset($_POST['add']))   { $group->add(); }
-                                            if (isset($_POST['update'])){ $group->update(); }       
-                                            if (isset($_POST['change'])){
-                                                if ($group->add('semester')) { //assume group members
-                                                   if (isset($_POST['assumeUsers'])){ $group->changeSemester(); } 
-                                                }
-                                                $PAGE->message[] = 'Bei der Klasse <strong>('.$group->group.')</strong> wurde der Lernzeitraum erfolgreich geändert!';
-                                            }       
-                                        }  
             break;
                                            
         default: break;      
@@ -182,10 +121,10 @@ $groups                     = new Group();
 $p_options = array('delete' => array('onclick'      => "del('group',__id__, $USER->id);", 
                                      'capability'   => checkCapabilities('groups:delete', $USER->role_id, false),
                                      'icon'         => 'fa fa-minus'),
-                   'cal'    => array('href'         => "index.php?action=group&function=semester&group_id=__id__", 
+                   'cal'    => array('onclick'      => 'formloader(\'group\',\'semester\',__id__)',
                                      'capability'   => checkCapabilities('groups:changeSemester', $USER->role_id, false),
                                      'icon'         => 'fa fa-calendar'),
-                   'edit'   => array('href'         => 'index.php?action=group&function=edit&group_id=__id__',
+                   'edit'   => array('onclick'      => 'formloader(\'group\',\'edit\',__id__)',
                                      'capability'   => checkCapabilities('groups:update', $USER->role_id, false),
                                      'icon'         => 'fa fa-edit'),
                    'list'    => array('href'        => "index.php?action=group&function=showCurriculum&group_id=__id__", 

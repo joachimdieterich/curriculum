@@ -461,10 +461,10 @@ class Backup {
                 $zip->addFile(realpath($key), str_replace($this->temp_path, '/', $key)) or die ("ERROR: Could not add file: $key"); //str_replace: $url abschneiden, da sonst der komplette Pfad als Ordnerstuktur in der zip erscheint
             }
         }
-        if ($zip->close()){                                                                             // Schließen und speichern
-            $PAGE->message[]        = 'Backup <strong>"' . $filename . '"</strong> wurde erfolgreich erstellt.';
+        if ($zip->close()){  
+            $PAGE->message[] = array('message' => 'Backup <strong>"' . $filename . '"</strong> wurde erfolgreich erstellt.', 'icon' => 'fa fa-cloud-download text-success');// Schließen und speichern
         } else {
-            $PAGE->message[]        = 'Backup fehlgeschlagen.';
+            $PAGE->message[] = array('message' => 'Backup fehlgeschlagen.', 'icon' => 'fa fa-cloud-download text-danger');// Schließen und speichern
         }
         
         delete_folder($this->temp_path);                                        // Löscht temporäre Dateien

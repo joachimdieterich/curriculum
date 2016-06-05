@@ -138,7 +138,7 @@ class Curriculum {
         $enrdb = DB::prepare('SELECT id FROM curriculum_enrolments WHERE curriculum_id=?');
         $enrdb->execute(array($this->id));
         if ($enrdb->fetchObject()){
-            $PAGE->message[] = 'Lehrplan kann nicht gelöscht werden. Es sind Gruppen eingeschrieben.'; 
+            $PAGE->message[] = array('message' => 'Lehrplan kann nicht gelöscht werden. Es sind Gruppen eingeschrieben', 'icon' => 'fa fa-th text-success');// Schließen und speichern
             return false;
         } else { // delete curriculum
             $db = DB::prepare('DELETE FROM curriculum WHERE id=?');

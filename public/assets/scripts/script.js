@@ -95,40 +95,20 @@ function loadmail(mail_id, mailbox) {
             req.open("GET", url, true);
             req.send(null);
         }
- 
-    if (mailbox === 'inbox'){   // generate Link for answering Button  
-        url = "../share/request/getMailAnswerBtn.php?mailID="+ mail_id; 
-        req_1 = XMLobject();
-        if(req_1) {        
-            req_1.onreadystatechange = function (){
-                if (req_1.readyState === 4 ) {  
-                    if (req_1.status === 200) {
-                       if (req_1.responseText.length !== 1){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen
-                              document.getElementById('answer_btn').href = "index.php?action=messages&function=shownewMessage&answer=true&receiver_id="+req_1.responseText;
-                              document.getElementById('answer_btn').style.display = "inline";
-                       } else {
-                           window.location.reload();
-                       }
-                    }
-                }
-            };
-            req_1.open("GET", url, true);
-            req_1.send(null);
-        }
-    }
 }
 
 function mail(mail_id, mailbox) {
     if (req.readyState === 4) {  
         if (req.status === 200) {
-           if (req.responseText.length !== 1){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen
-                  document.getElementById('mailbox').innerHTML = req.responseText;
-                  document.getElementById(mailbox+'_'+mail_id).className = 'contenttablerow';
-                  document.getElementById('mailbox').style.width = (document.body.offsetWidth - 555) +"px";
-                  document.getElementById('border-box').style.height = "100%";
-           } else {
-               window.location.reload();
-           }
+            if (req.responseText.length !== 1){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen
+                document.getElementById('mailbox').innerHTML = req.responseText;
+                if ($('li[name*='+mailbox+']').hasClass("active")){ //deactivate all active li tags
+                    $('li[name*='+mailbox+']').removeClass("active");
+                }
+                $('li[name='+mailbox+'_'+mail_id+']').addClass("active");
+            } else {
+                window.location.reload();
+            } 
         }
     }   
 }
@@ -245,7 +225,7 @@ function process(){
 }
 
 function scriptloader(script){
-    alert(script);
+    //alert(script);
     //script;
 }
 

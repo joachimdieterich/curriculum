@@ -52,9 +52,8 @@ if (isset($_POST['printCertificate'])){
         $certificate->load();
         $pdf->template = $certificate->template;
         $pdf->generate_certificate_from_template('from_template');
-        
     } else {
-        $PAGE->message[] = 'Zertifikatvorlage muss gewählt werden';
+        $PAGE->message[] = array('message' => 'Zertifikatvorlage muss gewählt werden', 'icon' => 'fa-files-o text-warning');
     }
 } 
 if ($selected_curriculum != '' AND $selected_user_id != '' AND $selected_user_id[0] !== '') {

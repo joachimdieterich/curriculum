@@ -74,3 +74,6 @@ include('plugins/omega.class.php');
 include('plugins/omega.class.php');
 /*Videostream*/
 include('classes/video_stream.class.php');     
+
+/*HTML Purifier*/
+require 'libs/htmlpurifier-4.7.0-standalone/HTMLPurifier.standalone.php';     

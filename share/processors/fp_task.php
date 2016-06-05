@@ -17,14 +17,20 @@
  * http://www.gnu.org/copyleft/gpl.html      
  */
 include(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
-
+include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER, $CFG;
 $USER   = $_SESSION['USER'];
 if (!isset($_SESSION['PAGE']->target_url)){     //if target_url is not set -> use last PAGE url
     $_SESSION['PAGE']->target_url       = $_SESSION['PAGE']->url;
 }
 $task                = new Task();
-$task->description   = filter_input(INPUT_POST, 'description', FILTER_UNSAFE_RAW);   //--> to get html  // security???                       
+
+$purify = HTMLPurifier_Config::createDefault();
+$purify->set('Core.Encoding', 'UTF-8'); // replace with your encoding
+$purify->set('HTML.Doctype', 'HTML 4.01 Transitional'); // replace with your doctype
+$purifier = new HTMLPurifier($purify);
+
+$task->description = $purifier->purify(filter_input(INPUT_POST, 'description', FILTER_UNSAFE_RAW));                  
 
 $gump = new Gump();    /* Validation */
 $_POST = $gump->sanitize($_POST);       //sanitize $_POST

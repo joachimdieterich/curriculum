@@ -20,7 +20,7 @@
                 <div class="box-header with-border">
                     {if checkCapabilities('user:addUser', $my_role_id, false)}
                     <div class="btn-group" role="group" aria-label="...">
-                        <button type="button" class="btn btn-default"><a  href="index.php?action=profile&function=new">
+                        <button type="button" class="btn btn-default" onclick="formloader('profile', 'new');"><a  href="#">
                                 <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Benutzer hinzufügen</a>
                         </button>
                         {if checkCapabilities('menu:readuserImport', $my_role_id, false)}

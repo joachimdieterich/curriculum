@@ -85,8 +85,8 @@ if (isset($_POST) ){
     foreach ($_POST['id'] as $edit_user->id ) { //Array per schleife abarbeiten
         if($edit_user->id  == "none") {
             if (count($_POST['id']) == 1){
-                $PAGE->message[] = 'Es muss mindestens ein Nutzer ausgewählt werden!';
-                }	
+                $PAGE->message[] = array('message' => 'Es muss mindestens ein Nutzer ausgewählt werden!', 'icon' => 'fa-user text-warning');
+            }	
         } else { 	
             $edit_user->load('id',$edit_user->id);      // load current user 
             switch ($_POST) {
@@ -100,9 +100,9 @@ if (isset($_POST) ){
                                     $validated_data = $edit_user->validate(true);
                                     if($validated_data === true) {/* validation successful */
                                         if ($edit_user->resetPassword()) {
-                                                $PAGE->message[] = 'Passwort des Nutzers '.$edit_user->firstname.' '.$edit_user->lastname.' ('.$edit_user->username.') wurde zurückgesetzt.';
+                                                $PAGE->message[] = array('message' => 'Passwort des Nutzers '.$edit_user->firstname.' '.$edit_user->lastname.' ('.$edit_user->username.') wurde zurückgesetzt.', 'icon' => 'fa-key text-success');
                                             } else {
-                                                $PAGE->message[] = 'Password konnte nicht zurückgesetzt werden.';
+                                                $PAGE->message[] = array('message' => 'Password konnte nicht zurückgesetzt werden.', 'icon' => 'fa-key text-warning');
                                             }  
                                     } else {
                                         $new_subject($edit_user); 
@@ -112,25 +112,24 @@ if (isset($_POST) ){
                 case isset($_POST['deleteUser']):
                                     if ($edit_user->id != $USER->id) {
                                         if ($edit_user->delete()){
-                                            $PAGE->message[] = 'Benutzerkonten wurden erfolgreich gelöscht!';
+                                            $PAGE->message[] = array('message' => 'Benutzerkonten wurden erfolgreich gelöscht!', 'icon' => 'fa-user text-success');
                                         }
                                     } else {
-                                        $PAGE->message[] = 'Man kann sich nicht selbst löschen!';	
+                                        $PAGE->message[] = array('message' => 'Man kann sich nicht selbst löschen!', 'icon' => 'fa-user text-warning');
                                     }
                     break; 
                 case isset($_POST['enroleGroups']):
                                     if ($edit_user->enroleToGroup($_POST['groups'], $USER->id)){
                                         $groups->id = $_POST['groups']; 
                                         $groups->load();
-                                        $PAGE->message[] = 'Nutzer <strong>'.$edit_user->username.'</strong> erfolgreich in <strong>'.$groups->group.'</strong> eingeschrieben.';  
-
+                                        $PAGE->message[] = array('message' => 'Nutzer <strong>'.$edit_user->username.'</strong> erfolgreich in <strong>'.$groups->group.'</strong> eingeschrieben.', 'icon' => 'fa-user text-success');
                                     }
                     break; 
                 case isset($_POST['expelGroups']):
                                     if ($edit_user->expelFromGroup($_POST['groups'])){
                                         $groups->id = $_POST['groups']; 
                                         $groups->load();
-                                        $PAGE->message[] = 'Nutzer <strong>'.$edit_user->username.'</strong> erfolgreich aus <strong>'.$groups->group.'</strong> ausgeschrieben.';  
+                                        $PAGE->message[] = array('message' => 'Nutzer <strong>'.$edit_user->username.'</strong> erfolgreich aus <strong>'.$groups->group.'</strong> ausgeschrieben.', 'icon' => 'fa-user text-success');
                                     }
                     break;     
                 case isset($_POST['enroleInstitution']): 
@@ -142,14 +141,14 @@ if (isset($_POST) ){
                                     $edit_user->role_id = $_POST['roles'];
                                     if ($edit_user->enroleToInstitution($institution->id)){
                                         $institution->load();
-                                        $PAGE->message[] = 'Nutzer <strong>'.$edit_user->username.'</strong> erfolgreich in die Institution <strong>'.$institution->institution.'</strong> eingeschrieben.';  
+                                        $PAGE->message[] = array('message' => 'Nutzer <strong>'.$edit_user->username.'</strong> erfolgreich in die Institution <strong>'.$institution->institution.'</strong> eingeschrieben.', 'icon' => 'fa-user text-success');
                                     }
                     break; 
                 case isset($_POST['expelInstitution']):
                                     if ($edit_user->expelFromInstitution($_POST['institution'])){
                                         $institution->id = $_POST['institution']; 
                                         $institution->load();
-                                        $PAGE->message[] = 'Nutzer <strong>'.$edit_user->username.'</strong> erfolgreich aus der Institution<strong>'.$institution->institution.'</strong> ausgeschrieben.';  
+                                        $PAGE->message[] = array('message' => 'Nutzer <strong>'.$edit_user->username.'</strong> erfolgreich aus der Institution<strong>'.$institution->institution.'</strong> ausgeschrieben.', 'icon' => 'fa-user text-success');
                                     }
                     break;     
                 default:
@@ -180,7 +179,7 @@ $users = new USER();
 $p_options = array('delete' => array('onclick'      => "del('user',__id__, $USER->id);", 
                                      'capability'   => checkCapabilities('user:delete', $USER->role_id, false),
                                      'icon'         => 'fa fa-minus'),
-                    'edit'  => array('href'         => 'index.php?action=profile&function=editUser&userID=__id__',
+                    'edit'  => array('onclick'      => "formloader('profile','editUser',__id__);", 
                                      'capability'   => checkCapabilities('user:updateUser', $USER->role_id, false),
                                      'icon'         => 'fa fa-edit'),
                     'group'  => array('href'        => 'index.php?action=user&function=showGroups&userID=__id__',

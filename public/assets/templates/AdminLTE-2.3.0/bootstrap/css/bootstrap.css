@@ -6017,21 +6017,35 @@ button.close {
 }
 @media (min-width: 768px) {
   .modal-dialog {
-    width: 600px;
+    width: 700px;
     margin: 30px auto;
   }
   .modal-content {
     -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, .5);
             box-shadow: 0 5px 15px rgba(0, 0, 0, .5);
   }
+  .modal-md {
+    width: 700px;
+  }
   .modal-sm {
     width: 300px;
   }
 }
 @media (min-width: 992px) {
-  .modal-lg {
-    width: 900px;
+  .modal-dialog {
+    width: 930px;
+    margin: 30px auto;
   }
+  .modal-lg {
+    width: 930px;
+  }
+  .modal-md {
+    width: 700px;
+  }
+  .modal-sm {
+    width: 300px;
+  }
+  
 }
 .tooltip {
   position: absolute;

@@ -162,10 +162,30 @@ class Mail {
      * post Mail
      * @return boolean 
      */
-    public function postMail(){
+    public function postMail($dependency = 'person', $id = null){
         checkCapabilities('mail:postMail', $_SESSION['USER']->role_id); // User kann per cronjob festgelegt sein, daher $_SESSION
-        $db = DB::prepare('INSERT INTO message (sender_id,receiver_id,subject,message,sender_status,receiver_status) VALUES (?,?,?,?,1,0)');
-        return $db->execute(array($this->sender_id, $this->receiver_id, $this->subject, $this->message));
+        
+        switch ($dependency) {
+            case 'person': $db = DB::prepare('INSERT INTO message (sender_id,receiver_id,subject,message,sender_status,receiver_status) VALUES (?,?,?,?,1,0)');
+                           return $db->execute(array($this->sender_id, $this->receiver_id, $this->subject, $this->message));
+                break;
+            case 'group':  $user = new User();
+                           $group_members = $user->getGroupMembers('group', $id);
+                           foreach ($group_members as $value) {
+                              $db = DB::prepare('INSERT INTO message (sender_id,receiver_id,subject,message,sender_status,receiver_status) VALUES (?,?,?,?,1,0)');
+                              if (!$db->execute(array($this->sender_id, $value, $this->subject, $this->message))){
+                                  $error = true;
+                              } 
+                           }
+                           if (isset($error)){
+                               return true;
+                           }
+                break;
+
+            default:
+                break;
+        }
+        
     }
     
     /**
