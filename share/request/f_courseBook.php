@@ -18,7 +18,7 @@
  */
 $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
-
+include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $CFG, $USER, $COURSE;
 $USER           = $_SESSION['USER'];
 $COURSE         = $_SESSION['COURSE'];
@@ -71,7 +71,6 @@ if (isset($_GET['func'])){
                         foreach ($course_book as $key => $value){
                             if (!is_object($value)){
                                 $$key = $value;
-                                error_log($key. ': '.$value);
                             }
                         }
             break;

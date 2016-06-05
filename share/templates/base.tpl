@@ -42,6 +42,7 @@
         <!-- Font Awesome -->
         <!--link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"-->
         <link rel="stylesheet" href="{$lib_url}/font-awesome-4.6.1/css/font-awesome.min.css">
+        <link rel="stylesheet" href="{$media_url}stylesheets/google-fonts.css" >
         <!-- Ionicons --><!-- not used yet -->
         <!--link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"-->
         <!-- jvectormap -->
@@ -68,7 +69,7 @@
         <!-- End AdminLTE -->
         
         <!-- Custom styles for this template -->
-        <link href="{$media_url}stylesheets/all-bs.css" rel="stylesheet">
+        <link rel="stylesheet" href="{$media_url}stylesheets/all-bs.css">
         
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
@@ -82,9 +83,8 @@
         
         <!--<link rel="stylesheet" href="{$media_url}stylesheets/all.css" media="all">-->
         <!--<link rel="stylesheet" href="{$media_url}stylesheets/date.css" media="all">
-        <link rel="stylesheet" href="{$media_url}stylesheets/buttons.css" media="all">
-        <link rel="stylesheet" href="{$media_url}stylesheets/quickform.css" media="all">
         -->
+        <link rel="stylesheet" href="{$media_url}stylesheets/buttons.css" media="all">
         <link rel="stylesheet" href="{$media_url}jquery.nyroModal/styles/nyroModal.css" media="all">
         
         {block name=additional_stylesheets}{/block}
@@ -183,8 +183,11 @@
                                   {section name=mes loop=$page_message}
                                   <li>
                                       <a href="#">
-                                        <i class="fa fa-warning text-yellow"></i> {$page_message[mes]}
-                                        <!--<i class="fa fa-info text-yellow"></i> {$page_message[mes]}-->
+                                        {if is_array($page_message[mes])}
+                                            <i class="fa {if isset($page_message[mes]['icon'])}{$page_message[mes]['icon']}{else}fa-warning text-yellow{/if}"></i> {$page_message[mes]['message']}
+                                        {else}
+                                            <i class="fa fa-warning text-yellow"></i> {$page_message[mes]}
+                                        {/if}
                                       </a>
                                   </li>
                                   {/section}
@@ -229,7 +232,7 @@
                             <li class="user-footer">
                               <div class="pull-left">
                                   {if checkCapabilities('menu:readProfile', $my_role_id, false)}
-                                      <a href="index.php?action=profile&function=edit" class="btn btn-default btn-flat">Profil</a>
+                                      <a href="#" class="btn btn-default btn-flat" onclick="formloader('profile', 'edit');">Profil</a>
                                   {/if}
                               </div>
                               <div class="pull-right">
@@ -274,7 +277,7 @@
         
 <!-- SCRIPTS-->  
     <!-- CK Editor -->
-    <script src="{$lib_url}/ckeditor/ckeditor.js"></script>
+    <script src="{$lib_url}ckeditor/ckeditor.js"></script>
     <!--script src="https://cdn.ckeditor.com/4.4.3/standard/ckeditor.js"></script-->
     <!-- moment -->
     <script src="{$media_url}templates/AdminLTE-2.3.0/plugins/moment/moment.min.js"></script>
@@ -340,15 +343,13 @@
         </script>
          <!-- end Logout - Timer  -->
          
-         <!-- Nyromodal  -->
-         <script type="text/javascript">
+        <!-- Nyromodal  -->
+        <script type="text/javascript">
         $(function() {
             $('.nyroModal').nyroModal();
             $('#popup_generate').nyroModal();
             //$('.colorpicker').colorpicker();
         });
-        
-        
         </script>
         {if isset($smarty.session.FORM->form)}
             <script type="text/javascript" > 

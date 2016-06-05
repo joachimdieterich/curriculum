@@ -18,7 +18,7 @@
  */
 $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
-
+include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER, $CFG;
 $USER                   = $_SESSION['USER'];
 $terminal_objective_id  = '';
@@ -78,7 +78,7 @@ $html     = Form::modal(array('title'     => $header,
                               'f_content' => $f_content));  
 
 $script = "<!-- daterangepicker -->
-       <script id='modal_script'>alert('test');
+       <script id='modal_script'>
         $.getScript('".$CFG->base_url ."public/assets/templates/AdminLTE-2.3.0/plugins/colorpicker/bootstrap-colorpicker.min.js', function (){
         $('.color-picker').colorpicker();
         });</script>";

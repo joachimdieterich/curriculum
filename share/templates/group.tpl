@@ -16,99 +16,43 @@
         <div class="col-xs-12">
             <div class="box box-primary">
                 <div class="box-body">
-
-        {if !isset($showForm) && checkCapabilities('groups:add', $my_role_id, false)}    
-            <div class="btn-group" role="group" aria-label="...">
-                <button type="button" class="btn btn-default"><a  href="index.php?action=group&function=new">
-                        <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Lerngruppe hinzufügen</a>
-                </button>
-            </div>
-        {else}
-            <form id='GroupForm' method='post' action='index.php?action=group&next={$currentUrlId}'>
-            {if isset($edit_group_form) OR isset($new_semester_form)}
-                <input id="g_id" name="g_id" type="text" class="hidden" value={$g_id}>
-            {/if} 
-            <p><label>Lerngruppen-Name: </label>    <input id='g_group' name='g_group' class='inputlarge' {if isset($g_group)}value='{$g_group}'{/if} /></p>   
-            {validate_msg field='group'}
-            <p><label>Beschreibung: </label>        <input name='g_description' class='inputlarge'{if isset($g_description)}value='{$g_description}'{/if}/></p>
-            {validate_msg field='description'}
-            <p><label>Klassenstufe:</label>
-            <select name="grade" class='inputlarge'>
-                {section name=res loop=$grade}  
-                    <option label="{$grade[res]->grade}" value={$grade[res]->id} {if $g_grade_id eq $grade[res]->id}selected="selected"{/if}>{$grade[res]->grade}</option>
-                {/section}
-            </select> 
-            {validate_msg field='grade'}
-            {if $semester}
-                <p><label>Lernzeitraum: </label>
-                <select name="semester" class='inputlarge'>
-                    {section name=res loop=$semester}  
-                        <option label="{$semester[res]->semester}" value={$semester[res]->id} {if $g_semester_id eq $semester[res]->id}selected="selected"{/if}>{$semester[res]->semester}</option>
-                    {/section}
-                </select> 
-                {validate_msg field='semester'}  
-            {else}<p><strong>Keine Lernzeiträume vorhanden! Um Lerngruppen anzulegen müssen zuerst Lernzeiträume angelegt werden.</strong></p>{/if}
-            {if isset($myInstitutions)}
-                <p><label>Institution / Schule*: </label>
-                    <select name="institution" class='inputlarge'>
-                    {section name=res loop=$myInstitutions}  
-                        <option label="{$myInstitutions[res]->institution}" value={$myInstitutions[res]->id} {if $g_institution_id eq $myInstitutions[res]->id}selected="selected"{/if}>{$myInstitutions[res]->institution}</option>
-                    {/section}
-                </select> 
-            {else}<p><strong>Sie müssen zuerst eine Institution anlegen</strong></p>{/if}
-            {if isset($new_semester_form)}
-                <p><label>Personen übernehmen?: </label>
-                    <input id="assumeUsers" name="assumeUsers" type="checkbox" checked="checked" /> Um eine leere Lerngruppe zu erstellen, Haken entfernen.
-                </p>  
-            {/if}
-            <p><label></label><input name="back" type='submit' value='zurück'/>
-            {if isset($edit_group_form) AND !isset($new_semester_form)}
-                <input name="update" type='submit' value='Lerngruppe aktualisieren' /></p>
-            {elseif isset($new_semester_form)}
-                <input name="change" type='submit' value='Lernzeitraum ändern' /></p>
-            {else}
-                <input name="add" type='submit' value='Lerngruppe hinzufügen' /></p>
-            {/if}
-             <script type='text/javascript'> document.getElementById('g_group').focus(); </script>
-            </form>	
-        {/if}
-        <form id='classlist' method='post' action='index.php?action=group&next={$currentUrlId}'>
-        {html_paginator id='groupP'}
-        
-            {if !isset($showForm)}
-                {if checkCapabilities('groups:enrol', $my_role_id, false) OR checkCapabilities('groups:expel', $my_role_id, false)}
-                    {if isset($curriculum_list)}
-                    <p><h3>Markierte Lerngruppe(n)in Lehrplan ein- und ausschreiben:</h3>
-                    <p class="floatleft">
+                {if checkCapabilities('groups:add', $my_role_id, false)}    
+                    <div class="btn-group" role="group" aria-label="...">
+                        <button type="button" class="btn btn-default" onclick="formloader('group','new');"><a  href="#">
+                                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Lerngruppe hinzufügen</a>
+                        </button>
+                    </div>	
+                {/if}
+                <form id='classlist' method='post' action='index.php?action=group&next={$currentUrlId}'>
+                {html_paginator id='groupP'}
+                    {if checkCapabilities('groups:enrol', $my_role_id, false) OR checkCapabilities('groups:expel', $my_role_id, false)}
+                        {if isset($curriculum_list)}
+                        <p><h4>Markierte Lerngruppe(n)in Lehrplan ein- und ausschreiben:</h4>
                         <select class='floatleft' name="curriculum">
-                            {section name=res loop=$curriculum_list}  
-                                <option label="{$curriculum_list[res]->curriculum} | {$curriculum_list[res]->grade} | {$curriculum_list[res]->description}" value="{$curriculum_list[res]->id}">{$curriculum_list[res]->curriculum} | {$curriculum_list[res]->grade} | {$curriculum_list[res]->description}</option>
-                            {/section}
-                        </select> 
-                        
-                            <div class=" pull-left">
-                        {if checkCapabilities('groups:enrol', $my_role_id, false)}
-                            <a class="glyphicon glyphicon-plus-sign  " onclick="document.getElementById('enrole').click();">einschreiben</a>
-                        {else}
-                            <a class="glyphicon glyphicon-plus-sign deactivatebtn " >einschreiben</a>
+                                {section name=res loop=$curriculum_list}  
+                                    <option label="{$curriculum_list[res]->curriculum} | {$curriculum_list[res]->grade} | {$curriculum_list[res]->description}" value="{$curriculum_list[res]->id}">{$curriculum_list[res]->curriculum} | {$curriculum_list[res]->grade} | {$curriculum_list[res]->description}</option>
+                                {/section}
+                            </select> 
+                        <div class="btn-group" role="group" aria-label="...">
+                            {if checkCapabilities('groups:enrol', $my_role_id, false)}
+                                <button type="submit" class="btn btn-default" onclick="document.getElementById('enrol').click();"><a href="#">
+                                    <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> einschreibenn</a>
+                                </button>
+                                <input class="invisible" type='submit' id='enrol' name='enrol' value='einschreiben' />
+                            {/if}
+                            {if checkCapabilities('groups:expel', $my_role_id, false)}
+                                <button id="expel" name="expel" type="submit" class="btn btn-default" onclick="document.getElementById('expel').click();"><a href="#">
+                                    <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> ausschreiben</a>
+                                </button>
+                                <input class="invisible" type='submit' id='expel' name='expel' value='ausschreiben' />
+                            {/if}
+                        </div>
                         {/if}
-                            </div><input class="invisible" type='submit' id='enrole' name='enrole' value='einschreiben' />
-                        
-                        <div class="pull-left">
-                        {if checkCapabilities('groups:expel', $my_role_id, false)}
-                            <a class="glyphicon glyphicon-minus-sign" onclick="document.getElementById('expel').click();">ausschreiben</a>
-                        {else}
-                            <a class="glyphicon glyphicon-minus-sign " >ausschreiben</a>
-                        {/if}    
-                        </div><input class="invisible" type='submit' id='expel' name='expel' value='ausschreiben' />
-                    </p>
-                    {/if}
-                 {/if}   
-            {/if}
-        </form> 
-        {if isset($cu_val)}
-            {html_paginator id='curriculumP' action="index.php?action=groups&next={$currentUrlId}"}
-        {/if}
+                     {/if}   
+                </form> 
+                {if isset($cu_val)}
+                    {html_paginator id='curriculumP' action="index.php?action=groups&next={$currentUrlId}"}
+                {/if}
                 </div>
             </div>
         </div>

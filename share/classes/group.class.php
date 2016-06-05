@@ -212,6 +212,7 @@ class Group {
         global $USER;
         checkCapabilities('groups:changeSemester', $USER->role_id);
         $users          = new User(); 
+        error_log('groupid '.$this->id);
         $group_members  = $users->getGroupMembers('group', $this->id);                                              // Load group members
         $db             = DB::prepare('SELECT id FROM groups WHERE UPPER(groups) = UPPER(?) AND semester_id = ?');  // Load new group id
         $db->execute(array($this->group, $this->semester_id));

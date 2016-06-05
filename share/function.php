@@ -707,7 +707,8 @@ function resolveFileType($type){
         case '.pptm':
         case '.pptx':   $class = 'fa fa-file-powerpoint-o';
             break;    
-
+        case '.url':   $class = 'fa fa-link';
+            break; 
         default:        $class = 'fa fa-file-o';
             break;
     }

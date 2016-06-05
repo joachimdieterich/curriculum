@@ -17,39 +17,63 @@
  * http://www.gnu.org/copyleft/gpl.html      
  */
 include(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
-
+include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER, $CFG;
 $USER   = $_SESSION['USER'];
 if (!isset($_SESSION['PAGE']->target_url)){     //if target_url is not set -> use last PAGE url
     $_SESSION['PAGE']->target_url       = $_SESSION['PAGE']->url;
 }
-$user                = new User();
+$absent              = new Absent();
 
 $gump = new Gump();    /* Validation */
 $_POST = $gump->sanitize($_POST);       //sanitize $_POST
 
-$absent_id           = $_POST['absent_id']; 
-$reference_id        = $_POST['reference_id']; 
-$user_list           = $
-$task->creator_id    = $USER->id;
+$absent->cb_id       = $_POST['reference_id']; 
+if (isset($_POST['absent_id'])){
+    $absent->id          = $_POST['absent_id']; 
+}
+$absent->reason      = $_POST['reason'];
+if (isset($_POST['user_list'])){
+    $user_list           = $_POST['user_list'];
+}
+if (isset($_POST['status'])){
+    $absent->status  = 1;
+    $absent->done    = date("Y-m-d H:i:s");
+} else {
+    $absent->status  = 0;
+    $absent->done    = date("Y-m-d H:i:s");
+}
+if (isset($_POST['user_id'])){
+    $absent->user_id        = $_POST['user_id'];
+}
         
 $gump->validation_rules(array(
-'absent_id'             => 'required'
+'reason'             => 'required'
 ));
 $validated_data = $gump->run($_POST);
 if($validated_data === false) {/* validation failed */
+    $_SESSION = new stdClass();
     $_SESSION['FORM']->form      = 'absent';
-    foreach($task as $key => $value){
+    foreach($absent as $key => $value){
         $_SESSION['FORM']->$key  = $value;
         //error_log($key.': '.$_SESSION['FORM']->$key);
     } 
+    $_SESSION['FORM']->user_list = $user_list;
     $_SESSION['FORM']->error     = $gump->get_readable_errors();
     $_SESSION['FORM']->func      = $_POST['func'];
 } else {
     if ($_POST['func'] == 'edit'){
-        /*$task->id         = $_POST['task_id'];
-        $task->update();*/
+        $absent->id         = $_POST['absent_id'];
+        $absent->update();
     }  else {
+        foreach ($user_list as $value) {
+            $absent->user_id = $value;
+            if ($absent->add()){
+                $_SESSION['PAGE']->message[] = array('message' => $USER->resolveUserId($value).' als abwesend eingetragen.', 'icon' => 'fa-envelope-o text-success');
+            } else {
+                $_SESSION['PAGE']->message[] = array('message' => $USER->resolveUserId($value).' konnte nicht als abwesend eingetragen werden.', 'icon' => 'fa-envelope-o text-danger');
+            }
+        }
        /* $task->id = $task->add(); 
         
         if (filter_input(INPUT_POST, 'reference_id', FILTER_VALIDATE_INT)){

@@ -19,7 +19,7 @@
 
 include_once '../setup.php'; //Läd alle benötigten Dateien
 global $CFG, $PAGE, $USER, $LOG;
-
+include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 $file = new File();
 $error = '';
 $image = '';

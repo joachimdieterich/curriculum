@@ -120,14 +120,20 @@ class Render {
                                     </div>
                                 </li>';
                     break;
-
+                case '.url':    $html .= '<li>
+                                    <span class="mailbox-attachment-icon"><i class="'.resolveFileType($file->type).'"></i></span>
+                                    <div class="mailbox-attachment-info">
+                                      <a href="'.$file->filename.'" class="mailbox-attachment-name" style="word-wrap: break-word;"> '.$file->filename.'</a>
+                                    </div>
+                                </li>';
+                    break;
                 default:        $html .= '<li>
                                     <span class="mailbox-attachment-icon"><i class="'.resolveFileType($file->type).'"></i></span>
                                     <div class="mailbox-attachment-info">
                                       <a href="#" class="mailbox-attachment-name" style="word-wrap: break-word;"><i class="fa fa-paperclip"></i> '.$file->filename.'</a>
-                                      <span class="mailbox-attachment-size">
-                                        '.$file->getHumanFileSize().'
-                                        <a href="'.$file->getFileUrl().'" class="btn btn-default btn-xs pull-right"><i class="fa fa-cloud-download"></i></a>
+                                      <span class="mailbox-attachment-size">'
+                                        .$file->getHumanFileSize().
+                                        '<a href="'.$file->getFileUrl().'" class="btn btn-default btn-xs pull-right"><i class="fa fa-cloud-download"></i></a>
                                       </span>
                                     </div>
                                 </li>';
@@ -187,8 +193,8 @@ class Render {
                   <div class="box-tools pull-right" >
                     <div class="btn-group">
                       
-                      <button class="btn btn-default btn-sm" data-toggle="tooltip" title="Reply"><i class="fa fa-reply"></i> Antworten</button>
-                      <button class="btn btn-default btn-sm" data-toggle="tooltip" title="Forward"><i class="fa fa-share"></i> Weiterleiten</button>
+                      <button class="btn btn-default btn-sm" data-toggle="tooltip" title="Reply" onclick="formloader(\'mail\',\'reply\','.$mail->id.')"><i class="fa fa-reply"></i> Antworten</button>
+                      <button class="btn btn-default btn-sm" data-toggle="tooltip" title="Forward" onclick="formloader(\'mail\',\'forward\','.$mail->id.')"><i class="fa fa-share"></i> Weiterleiten</button>
                     </div><!-- /.btn-group -->
                     <button class="btn btn-default btn-sm" data-toggle="tooltip" title="Print"><i class="fa fa-print"></i> Drucken</button>
                     <div class="btn-group">
@@ -258,7 +264,6 @@ class Render {
     } 
     
     public static function quiz($question, $attempt = false, $correction = false){
-        
         if (isset($question)){
             if (!$attempt){
                 echo '<p class="space-left">Bitte wähle die richtige Antwort aus.</p><br>'; 
@@ -446,7 +451,8 @@ class Render {
             $r      .= '<li>
                         <i class="fa fa-check bg-green"></i>
                         <div class="timeline-item">
-                          <span class="time" onclick="formloader(\'coursebook\',\'edit\','.$cb->id.');"><i class="fa fa-edit"></i></span>    
+                          <span class="time" onclick="del(\'courseBook\','.$cb->id.');"><i class="fa fa-trash-o"></i></span>
+                          <span class="time" onclick="formloader(\'coursebook\',\'edit\','.$cb->id.');"><i class="fa fa-edit"></i></span>
                           <span class="time"><i class="fa fa-clock-o"></i> '.$cb->creation_time.'</span>
                           
                           <h3 class="timeline-header"><a href="#">';

@@ -23,33 +23,6 @@
                     </button>
                 </div>
                 {/if}
-               {* {if !isset($showForm) && checkCapabilities('semester:add', $my_role_id, false)}
-                    
-                {else}
-                    <form id='semesterForm' method='post' action='index.php?action=semester&next={$currentUrlId}'>
-                    <input id='id' name='id' type='hidden' {if isset($id)}value='{$id}'{/if}/>       
-                    <p><label>Lernzeitraum*:</label>        <input id='semester' name='semester' class='inputlarge' {if isset($semester)}value='{$semester}'{/if} /></p>   
-                    {validate_msg field='semester'}
-                    <p><label>Beschreibung*:</label>        <input id='description' name='description' class='inputlarge' {if isset($description)}value='{$description}'{/if}/></p>
-                    {validate_msg field='description'}
-                    <p><label>Lernzeitraum-Beginn*:</label> <input id='begin' name='begin' type='date' {if isset($begin)}value='{$begin}'{/if}/>
-                    {validate_msg field='begin'}
-                    <p><label>Lernzeitraum-Ende*:</label>   <input id='end' name='end' type='date' {if isset($end)}value='{$end}'{/if}/>
-                    {validate_msg field='end'}
-                    <p><label>Institution / Schule*:</label><SELECT  name='institution_id' id='institution_id' />
-                        {foreach key=insid item=ins from=$my_institutions}
-                            <OPTION  value="{$ins->institution_id}"  {if $ins->institution_id eq $institution_id}selected="selected"{/if}>{$ins->institution}</OPTION>
-                        {/foreach} 
-                    </SELECT></p>
-                    {if !isset($editBtn)}
-                        <p><label></label><input name="add" type='submit' value='Lernzeitraum erstellen' /></p>
-                    {else}
-                        <p><label></label><input name="back" type='submit' value='zurück'/><input name="update" type='submit' value='Lernzeitraum aktualisieren' /></p>
-                    {/if}
-                    </form>	
-                    <script type='text/javascript'> document.getElementById('semester').focus(); </script>
-                {/if} *}
-
                 {html_paginator id='semesterP'}         
                 </div> 
             </div>

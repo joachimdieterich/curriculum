@@ -32,21 +32,6 @@ if (isset($_GET['function'])){
             break;
         case 'showOutbox':      $TEMPLATE->assign('showOutbox', true); outbox($mailbox);
             break;
-        case 'shownewMessage':  $TEMPLATE->assign('shownewMessage', true);
-                                if(isset($_GET['help_request'])) {
-                                     $TEMPLATE->assign('receiver_id', filter_input(INPUT_GET, 'receiver_id',    FILTER_VALIDATE_INT));
-                                     $enabling_objective            = new EnablingObjective();
-                                     $enabling_objective->id        = filter_input(INPUT_GET, 'subject',        FILTER_VALIDATE_INT);
-                                     $enabling_objective->load();
-                                     $TEMPLATE->assign('subject', 'Benutzer '.$USER->username.' braucht Hilfe beim erreichen des Ziels: '.$enabling_objective->enabling_objective);
-                                }
-                                if(isset($_GET['answer'])) {
-                                     $TEMPLATE->assign('receiver_id', filter_input(INPUT_GET, 'receiver_id',    FILTER_VALIDATE_INT));
-                                     $TEMPLATE->assign('subject',     filter_input(INPUT_GET, 'subject',        FILTER_UNSAFE_RAW));
-                                } 
-                                
-                                
-            break;
         default:  break;
     }
 }
@@ -78,7 +63,7 @@ if ($_POST){
             $TEMPLATE->assign('v_error',        $gump->get_readable_errors());     
             $TEMPLATE->assign('shownewMessage', true); 
         } else {
-            if ($newMail->postMail()){ $PAGE->message[] = 'Nachricht an erfolgreich gesendet.'; }
+            if ($newMail->postMail()){ $PAGE->message[] = array('message' => 'Nachricht an erfolgreich gesendet.', 'icon' => 'fa-envelope-o text-success');  }
         }                 
     }           
 } 

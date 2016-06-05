@@ -54,20 +54,22 @@
                             <a onclick="showDescription('{$ter->id}');"><span class="fa fa-info pull-right box-sm-icon"></span></a>
                         {/if}
                         {if isset($showaddObjectives)}
-                            {if checkCapabilities('badge:addBadge', $my_role_id, false)}
+                            {*if checkCapabilities('badge:addBadge', $my_role_id, false)}
                                 <a onclick="badge('{$course[0]->curriculum_id}','{$ter->id}','{$my_id}','{$my_token}','{$my_last_login}');"><span class="fa fa-star pull-right box-sm-icon"></span></a>
-                            {/if}
+                            {/if*}
                             {if checkCapabilities('file:upload', $my_role_id, false)}
                                 <a href="../share/request/uploadframe.php?userID={$my_id}&last_login={$my_last_login}&context=curriculum&curID={$course[0]->curriculum_id}&terID={$ter->id}{$tb_param}" class="nyroModal"><span class="fa fa-plus pull-right box-sm-icon"></span></a>                        
                             {/if} 
-                        {else}
+                        {*else}
                             {if checkCapabilities('badge:getBadge', $my_role_id, false)}
                                 <a onclick="getBadge({$course[0]->curriculum_id},{$ter->id});"><span class="fa fa-star pull-right box-sm-icon"></span></a>
-                            {/if}
+                            {/if*}
                         {/if}
 
-                        {if checkCapabilities('file:loadMaterial', $my_role_id, false)}
-                            <a onclick="formloader('material','ter',{$ter->id})"><span class="fa fa-briefcase box-sm-icon"></span></a>
+                        {if checkCapabilities('file:loadMaterial', $my_role_id, false) AND $ter->files neq '0'}
+                            <a onclick="formloader('material','ter',{$ter->id})"><span class="fa fa-briefcase box-sm-icon"></span>  <span class="badge label-primary" style="margin-top: -3px;font-size: 8px;line-height: .8">{$ter->files}</span></a>
+                        {else}
+                            <span class="fa fa-briefcase box-sm-icon deactivate"></span> <span class="badge label-primary deactivate" style="margin-top: -3px;font-size: 8px;line-height: .8">{$ter->files}</span>
                         {/if}
                     </div>
                   </div> 
@@ -140,9 +142,11 @@
                                        <a onclick="showQuiz({$course[0]->curriculum_id},{$ter->id},{$ena->id});"><span class="fa fa-check-square-o pull-right box-sm-icon"></span></a>
                                    {/if}
                                {/if}  
-                               {if checkCapabilities('file:loadMaterial', $my_role_id, false)}
-                                   <a onclick="formloader('material','ena', {$ena->id});"><span class="fa fa-briefcase box-sm-icon"></span></a>
-                               {/if} 
+                               {if checkCapabilities('file:loadMaterial', $my_role_id, false) AND $ena->files neq '0'}
+                               <a onclick="formloader('material','ena', {$ena->id});"><i class="fa fa-briefcase box-sm-icon"></i> <span class="badge label-primary" style="margin-top: -3px;font-size: 8px;line-height: .8">{$ena->files}</span></a>
+                                {else}
+                                    <span class="fa fa-briefcase box-sm-icon deactivate"></span> <span class="badge label-primary deactivate" style="margin-top: -3px;font-size: 8px;line-height: .8">{$ena->files}</span>
+                                {/if} 
                            </div>
                        </div>    
                    {/if}

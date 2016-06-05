@@ -56,7 +56,7 @@ $CFG->demo_root                     = $CFG->curriculumdata_root.'support/demo/';
 $CFG->access_file                   = '../share/accessfile.php?file=';
 $CFG->access_file_url               = $CFG->base_url.'share/accessfile.php?file=';
 $CFG->access_token_url              = $CFG->base_url.'share/accessfile.php?token=';
-$CFG->access_id_url              = $CFG->base_url.'share/accessfile.php?id=';
+$CFG->access_id_url                 = $CFG->base_url.'share/accessfile.php?id=';
 $CFG->support_path                  = $CFG->access_file.'support/';
 $CFG->subjects_path                 = $CFG->access_file.'subjects/';
 $CFG->solutions_path                = $CFG->access_file.'solutions/';
@@ -67,6 +67,7 @@ $CFG->web_backup_path               = $CFG->access_file.'backups/';
 $CFG->request_url                   = implode('/', array_slice(explode('/', $CFG->protocol.filter_input(INPUT_SERVER, 'SERVER_NAME', FILTER_UNSAFE_RAW).filter_input(INPUT_SERVER, 'REQUEST_URI', FILTER_UNSAFE_RAW)), 0, -1)).'/';
 $CFG->media_url                     = $CFG->request_url.'assets/';
 $CFG->lib_url                       = $CFG->request_url.'../share/libs/';
+
 
 /* BADGEKIT */
 $CFG->badge_url                     = $CFG->protocol.'localhost:5000';  

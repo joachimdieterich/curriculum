@@ -182,7 +182,7 @@ class EnablingObjective {
      * @return array of EnablingObjective objects|boolean 
      */
     public function getObjectives($dependency = null, $id = null, $group = null) {
-        global $USER; 
+        global $USER, $CFG; 
         switch ($dependency) {
                 case 'user':  $db = DB::prepare('SELECT en.*, ua.status_id, ua.accomplished_time, ua.creator_id AS teacher_id
                                             FROM enablingObjectives AS en 
@@ -316,6 +316,24 @@ class EnablingObjective {
                                     } else {
                                         $this->accomplished_percent= round($anz->anzAccomplished/$cntEnroled->cntEnroled*100, 0);     
                                     }
+                                    /* Check if Material or external Reference is set */
+                                    $db_03 = DB::prepare('SELECT COUNT(*) AS MAX FROM files AS fi WHERE ena_id = ? AND context_id = 2');
+                                    $db_03->execute(array($result->id));
+                                    $res_03 = $db_03->fetchObject();
+                                    if (file_exists('../share/plugins/omega.class.php')){ // prüfen, ob OMEGA Plugin vorhanden ist.
+                                        $db_04 = DB::prepare('SELECT COUNT(*) AS MAX FROM plugin_omega AS po WHERE objective_id = ? AND type = 1');
+                                        $db_04->execute(array($result->id));
+                                        $res_04 = $db_04->fetchObject();
+                                        if ($res_04->MAX >= 1){
+                                            $ext = '/ext';
+                                        } else {
+                                            $ext = '';
+                                        }
+                                    } 
+                                    
+                                    $this->files                = $res_03->MAX.$ext; //nummer of materials
+                                    
+                                    
                                     $objectives[]                  = clone $this;     
                                 }
                                 break;

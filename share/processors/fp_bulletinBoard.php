@@ -17,22 +17,28 @@
  * http://www.gnu.org/copyleft/gpl.html      
  */
 include(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
-
+include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER, $CFG;
 $USER           = $_SESSION['USER'];
 if (!isset($_SESSION['PAGE']->target_url)){     //if target_url is not set -> use last PAGE url
     $_SESSION['PAGE']->target_url       = $_SESSION['PAGE']->url;
 }
 $bulletinBoard = new Institution();
+
+$purify        = HTMLPurifier_Config::createDefault();
+$purify->set('Core.Encoding', 'UTF-8'); // replace with your encoding
+$purify->set('HTML.Doctype', 'HTML 4.01 Transitional'); // replace with your doctype
+$purifier      = new HTMLPurifier($purify);
+$bb_text       = $purifier->purify(filter_input(INPUT_POST, 'text', FILTER_UNSAFE_RAW));
+
 $gump          = new Gump();    /* Validation */
-$bb_text       = filter_input(INPUT_POST, 'text', FILTER_UNSAFE_RAW);   //--> to get html  // security???      
 $_POST         = $gump->sanitize($_POST);       //sanitize $_POST
 
-$bb_title = $_POST['title']; 
+$bb_title      = $_POST['title']; 
 $bulletinBoard->id = $USER->institution_id; //todo use input_select in b_bulletinBoard.php
 $gump->validation_rules(array(
-'title'          => 'required',
-'text'           => 'required'
+'title'        => 'required',
+'text'         => 'required'
 ));
 $validated_data = $gump->run($_POST);
 if($validated_data === false) {/* validation failed */
@@ -42,7 +48,7 @@ if($validated_data === false) {/* validation failed */
     $_SESSION['FORM']->func      = $_POST['func'];
 } else {
     $bulletinBoard->setBulletinBoard($bb_title, $bb_text);
-    $_SESSION['PAGE']->message[] = 'Pinnwand erfolgreich geändert';
+    $_SESSION['PAGE']->message[] = array('message' => 'Pinnwand erfolgreich geändert', 'icon' => 'fa-newspaper-o text-success');
     $_SESSION['FORM']            = null;                     // reset Session Form object 
 }
 

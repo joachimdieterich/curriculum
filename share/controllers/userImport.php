@@ -25,8 +25,8 @@ if(isset($_FILES['datei']['name'])){                                            
         $new_userlist->creator_id   = $USER->id;                                                                         
         $new_userlist->import(filter_input(INPUT_POST, 'institution_id', FILTER_VALIDATE_INT),$CFG->curriculumdata_root.'temp/'.$_FILES['datei']['name']); //Importieren
         unlink($CFG->curriculumdata_root.'temp/'.$_FILES['datei']['name']);                                             //TEMP-Datei löschen  
-    } else {                                                                                                            //Datei zu groß
-        $PAGE->message[] = "Die Datei darf nicht größer als ".$INSTITUTION->csv_size." MB sein ";
+    } else {   
+        $PAGE->message[] = array('message' => 'Die Datei darf nicht größer als '.$INSTITUTION->csv_size.' MB sein', 'icon' => 'fa-user text-success');//Datei zu groß
     }
 } 
 /********************************************************************************

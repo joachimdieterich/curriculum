@@ -15,8 +15,7 @@
 <section class="content">
     <div class="row">
         <div class="col-xs-12">
-            
-                    
+                
             <!-- The time line -->
             <ul class="timeline">
                 {assign var="p_date"  value=' '} 
@@ -32,7 +31,6 @@
                 {/if}
                 <!-- /.timeline-label -->    
                
-                
                 <!-- timeline item enabling objectives-->
                 <li>
                   <i class="fa fa-check bg-green"></i>

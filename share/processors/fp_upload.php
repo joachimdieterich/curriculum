@@ -18,7 +18,7 @@
  */
 $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
-
+include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $CFG, $PAGE, $USER, $LOG;
 if (!isset($_SESSION['USER'])){ die(); }    // logged in?
 $USER   = $_SESSION['USER'];
@@ -157,8 +157,9 @@ if($validated_data === false) {
             $file->filename    = str_replace(' ', '_', $my_upload->the_file);
             $file->type        = $my_upload->get_extension($my_upload->the_file);
             $file->path        = $folders;
-            $my_upload->id     = $file->add();
-            $file->id          = $my_upload->id; // doppelt $my_upload->id im code ersetzen.
+            $file->id          = $file->add();
+            /*$my_upload->id     = $file->add();
+            $file->id          = $my_upload->id; // doppelt $my_upload->id im code ersetzen.*/
             $href_mail         = $CFG->access_file_url.'solutions/'.$folders.''.rawurlencode(str_replace(' ', '_', $my_upload->the_file));
             if ($CFG->thumbnails){ // Generate Thumbs // todo: var to define thumbs (sizes)
                generateThumbnail($my_upload->upload_dir, $my_upload->the_file, $context);
@@ -197,3 +198,4 @@ if($validated_data === false) {
 //}
  //////////////// Errorbehandlung ?
 $error = $my_upload->show_error_string();    
+echo $file->id;

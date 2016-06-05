@@ -18,7 +18,7 @@
  */
 $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
-
+include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER, $CFG;
 $USER                   = $_SESSION['USER'];
 $enabling_objective_id  = '';
@@ -27,7 +27,7 @@ $description            = '';
 $curriculum_id          = '';
 $terminal_objective_id  = '';
 $reference              = '';
-$repeat_interval        = -1;
+$repeat_interval        = 0;
 $error                  = '';
 $ena_objective          = new EnablingObjective(); 
 $func                   = $_GET['func'];

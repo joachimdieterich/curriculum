@@ -33,7 +33,44 @@ class Absent {
     public $creator_id;
 
 
-  
+    public function add(){
+        global $USER;
+        checkCapabilities('absent:add', $USER->role_id);
+        $db = DB::prepare('INSERT INTO user_absent (cb_id,user_id,reason,done,status,creator_id) VALUES (?,?,?,?,?,?)');
+        return $db->execute(array($this->cb_id, $this->user_id, $this->reason, $this->done,$this->status,$USER->id));
+    }
+    
+    public function update(){
+        global $USER;
+        checkCapabilities('absent:update', $USER->role_id);
+        $db = DB::prepare('UPDATE user_absent SET cb_id = ?,user_id = ?, reason = ?, done = ?, status = ?, creator_id = ? WHERE id = ?');
+        return $db->execute(array($this->cb_id, $this->user_id, $this->reason, $this->done,$this->status,$USER->id, $this->id));
+    }
+    
+    public function load($dependency = 'id', $value = null){
+        if (isset($value)){ $v = $value; } else { $v = $this->id; }
+        $db         = DB::prepare('SELECT * FROM user_absent WHERE '.$dependency.' = ?');
+        $db->execute(array($v));
+        $result     = $db->fetchObject();
+        if ($result){
+            $user   = new User(); 
+            $this->id            = $result->id;
+            $this->cb_id         = $result->cb_id;
+            $this->user_id       = $result->user_id;
+            //$user->load('id', $result->user_id, false);
+            $this->user          = $user->resolveUserId($result->user_id);
+            $this->reason        = $result->reason;
+            $this->status        = $result->status;
+            $this->done          = $result->done;
+            $this->creator_id    = $result->creator_id;
+            $this->creation_time = $result->creation_time;
+            return true;                                                        
+        } else { 
+            return false; 
+        }
+    }
+    
+    
     
     public function get($paginator = ''){
         $order_param = orderPaginator($paginator, array()); 

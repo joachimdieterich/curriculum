@@ -17,7 +17,7 @@
  * http://www.gnu.org/copyleft/gpl.html      
  */
 include(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
-
+include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER;
 $USER   = $_SESSION['USER'];
 $db     = filter_input(INPUT_GET, 'db',           FILTER_SANITIZE_STRING);
@@ -37,6 +37,7 @@ switch ($db) {
     case "enablingObjectives":  $t = new EnablingObjective();   break;
     case "terminalObjectives":  $t = new TerminalObjective();   break;
     case "task":                $t = new Task();                break;
+    case "courseBook":          $t = new CourseBook();          break;
     default: break;
 }
 
