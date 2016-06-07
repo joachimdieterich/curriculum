@@ -3,13 +3,7 @@
 {block name=title}{$page_title}{/block}
 {block name=description}{$smarty.block.parent}{/block}
 {block name=nav}{$smarty.block.parent}{/block}
-{block name=additional_scripts}{$smarty.block.parent}
-{if isset($form_data)}
-    <script type="text/javascript" > 
-        $(document).ready(loadForm('institution','{$form_function}',{json_encode($form_data)})); {*2. Parameter darf nicht in Anführungszeichen stehen!*}
-    </script>
-{/if}
-{/block}
+{block name=additional_scripts}{$smarty.block.parent}{/block}
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
 {block name=content}   
@@ -23,7 +17,7 @@
             <div class="box box-primary">   
                 <div class="box-body">
                 {if checkCapabilities('institution:add', $my_role_id, false)}
-                    <div class="btn-group " role="group" aria-label="..." onclick="loadForm('institution','new');">
+                    <div class="btn-group " role="group" aria-label="..." onclick="formloader('institution','new');">
                         <button type="button" class="btn btn-default">
                                     <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Institution hinzufügen
                         </button>     

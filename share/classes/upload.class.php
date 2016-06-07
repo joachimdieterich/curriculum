@@ -163,7 +163,7 @@ class file_upload {
     /**
      * File upload
      */
-    function file_upload() {
+    function __construct() {
             $this->language = 'de'; // choice of en, nl, es
             $this->rename_file = false;
             $this->ext_string = '';

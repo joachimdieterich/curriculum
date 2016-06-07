@@ -22,6 +22,7 @@ include(dirname(__FILE__).'/../login-check.php');  //check login status and rese
 global $CFG, $USER, $INSTITUTION;
 $USER           = $_SESSION['USER'];
 $INSTITUTION    = $_SESSION['INSTITUTION'];
+$func           = $_GET['func'];
 $cur            = new Curriculum();
 /*Variablen anlegen -> vermeidet unnötige if-Abfragen im Formular*/
 $id             =   null; 
@@ -44,8 +45,8 @@ if (is_array($data)) {
     }
 }
             
-if (isset($_GET['function'])){
-    switch ($_GET['function']) {
+if (isset($_GET['func'])){
+    switch ($_GET['func']) {
         case "new":     checkCapabilities('curriculum:add',     $USER->role_id);     //USER berechtigt?
                         $header = 'Lehrplan hinzufügen';
                         if (!isset($country_id)){ 
@@ -53,7 +54,6 @@ if (isset($_GET['function'])){
                             $state_id   = $INSTITUTION->state_id;         
                         }
                         $add = true;      
-                       
             break;
         case "edit":    checkCapabilities('curriculum:update',     $USER->role_id);     //USER berechtigt?
                         $header  = 'Lehrplan bearbeiten';
@@ -65,6 +65,7 @@ if (isset($_GET['function'])){
                         $edit = true; 
             break;
         case "import":  checkCapabilities('curriculum:import',     $USER->role_id);     //USER berechtigt?
+                        $header = 'Lehrplan importieren';
                         $import = true;
             break;
         default: break;
@@ -84,9 +85,9 @@ $html ='<div class="modal-dialog">
 if (!isset($edit)){ // Tabs ausblenden wenn im Edit-Modus
 $html .= '<div class="nav-tabs-custom">';
 $html .= '<ul class="nav nav-tabs">
-        <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false" onclick="toggle([\'curriculumForm\', \'bAdd\'], [\'tab_1\']);">Lehrplan hinzufügen</a></li>';
+        <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false" onclick="toggle([\'form_curriculum\', \'bAdd\'], [\'tab_1\']);">Lehrplan hinzufügen</a></li>';
         if (checkCapabilities('curriculum:import', $USER->role_id, false)){
-          $html .= '<li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="true" onclick="toggle([\'tab_1\'], [\'curriculumForm\', \'bAdd\']);">Lehrplan importieren</a></li>';
+          $html .= '<li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="true" onclick="toggle([\'tab_1\'], [\'form_curriculum\', \'bAdd\']);">Lehrplan importieren</a></li>';
         }
 $html .='</ul>';
 
@@ -125,11 +126,12 @@ $html .= '<div class="tab-content">
   </div><!-- /.nav-tab-custom -->';
 }
             
-$html .='<form id="curriculumForm"  class="form-horizontal" role="form" method="post" action="index.php?action=curriculum&function='.$_GET['function'];
+$html .='<form id="form_curriculum"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_curriculum.php"';
 
 if (isset($currentUrlId)){ $html .= $currentUrlId; }
 $html .= '">
 <input id="importFileName" name="importFileName" type="text" class="hidden" value="">
+<input type="hidden" name="func" id="func" value="'.$func.'"/>
 <input id="id" name="id" type="text" class="invisible" ';
 if (isset($id)) { $html .= 'value="'.$id.'"';} $html .= '>';
 

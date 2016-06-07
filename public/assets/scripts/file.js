@@ -60,7 +60,7 @@ function uploadFile(form, func, fSelector, fName, fProgress, fPercent)
     if (typeof(fPercent)  ==='undefined') fPercent          = form+'_fPercent';
     if (typeof(fAbort)    ==='undefined') fAbort            = form+'_fAbort';
     if (func === 'import'){
-        $(document.getElementById('curriculumForm')).removeClass("hidden");
+        $(document.getElementById('form_curriculum')).removeClass("hidden");
     }
     $(document.getElementById(form+'_fAbort')).removeClass("hidden");
 

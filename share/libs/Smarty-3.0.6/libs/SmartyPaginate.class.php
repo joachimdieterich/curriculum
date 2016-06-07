@@ -31,7 +31,7 @@ class SmartyPaginate {
     /**
      * Class Constructor
      */
-     function SmartyPaginate() { }
+     function __construct() { }
 
     /**
      * initialize the session data

@@ -22,18 +22,20 @@ include(dirname(__FILE__).'/../login-check.php');  //check login status and rese
 global $CFG, $USER, $INSTITUTION;
 $USER           = $_SESSION['USER'];
 $INSTITUTION    = $_SESSION['INSTITUTION'];
+$func           = $_GET['func'];
 $cur            = new Curriculum();
 /*Variablen anlegen -> vermeidet unnötige if-Abfragen im Formular*/
 $id                     =   null; 
 $institution            =   null; 
 $description            =   null; 
 $schooltype_id          =   null; 
+$btn_newSchooltype      = null;
 $new_schooltype         =   null;
 $schooltype_description =   null; 
 $country_id             =   null;
 $state_id               =   null;
 $file_id                =   null; 
-
+$icon_id                = null;
 $paginator_limit        =   null; 
 $std_role               =   null; 
 $csv_size               =   null; 
@@ -47,12 +49,12 @@ $data = json_decode($object, true);
 if (is_array($data)) {
     foreach ($data as $key => $value){
         $$key = $value;
-        error_log($key.': '.$value);
+        //error_log($key.': '.$value);
     }
 }
             
-if (isset($_GET['function'])){
-    switch ($_GET['function']) {
+if (isset($_GET['func'])){
+    switch ($_GET['func']) {
         case "new":     checkCapabilities('institution:add',    $USER->role_id);
                         $header = 'Institution hinzufügen';
                         if (!isset($country_id)){ 
@@ -62,8 +64,17 @@ if (isset($_GET['function'])){
                         $add = true;              
             break;
         case "edit":    checkCapabilities('institution:update',    $USER->role_id);
-                        $header = 'Institution bearbeiten';
-                        $edit = true; 
+                        $header     = 'Institution bearbeiten';
+                        $edit       = true; 
+                        $ins        = new Institution();
+                        $ins->id    = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+                        $ins->load();
+                        
+                        foreach ($ins as $key => $value){
+                             $$key = $value;
+                             //error_log($key. ': '.$value);
+                         }
+                        
             break;
         default: break;
     }
@@ -80,10 +91,11 @@ $html ='<div class="modal-dialog" style="overflow-y: initial !important;">
             </div>
             <div class="modal-body" style="max-height: 500px; overflow-y: auto;">';
    
-$html .='<form id="institutionForm"  class="form-horizontal" role="form" method="post" action="index.php?action=institution&function='.$_GET['function'];
+$html .='<form id="form_institution" class="form-horizontal" role="form" method="post" action="../share/processors/fp_institution.php"';
 
 if (isset($currentUrlId)){ $html .= $currentUrlId; }
 $html .= '"><h4>Institution</h4>
+<input type="hidden" name="func" id="func" value="'.$func.'"/>
 <input id="id" name="id" type="text" class="invisible" ';
 if (isset($id)) { $html .= 'value="'.$id.'"';} $html .= '>';
 
@@ -124,7 +136,8 @@ $html .= '<h4>Einstellungen</h4>';
 $rol         = new Roles(); 
 $html .= Form::input_select('std_role', 'Rolle', $rol->get(), 'role', 'id', $std_role , $error);
 if ($semester_id){
-    $html .= Form::input_select('semester_id', 'Semester', $rol->get(), 'semester', 'id', $semester_id , $error);
+    $sem   =  new Semester();
+    $html .= Form::input_select('semester_id', 'Semester', $sem->getSemesters(), 'semester', 'id', $semester_id , $error);
 }
 $html .= Form::input_text('paginator_limit', 'Listeneinträge / Seite', $paginator_limit, $error, '30','number',5,150);
 $html .= Form::input_text('acc_days', 'Lernerfolge x Tage anzeigen', $acc_days, $error, '7','number',1,356);
@@ -135,10 +148,10 @@ $html .= Form::input_text('material_size', 'Dateien (byte)', $csv_size, $error, 
 $html       .= '</div><!-- /.modal-body -->
             <div class="modal-footer">';
             if (isset($edit)){
-                $html .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right"> Institution aktualisieren</button>'; 
+                $html .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_institution\').submit();"> Institution aktualisieren</button>'; 
             } 
             if (isset($add)){
-                $html .= '<button id="add" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right"> Institution hinzufügen</button> ';
+                $html .= '<button id="add" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_institution\').submit();"> Institution hinzufügen</button> ';
             }    
 $html .=  '</div></form></div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->';

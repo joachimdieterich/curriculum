@@ -1,0 +1,95 @@
+<?php
+/** This file is part of curriculum - http://www.joachimdieterich.de
+ * FormProcessor
+ * @package core
+ * @filename fp_institution.php
+ * @copyright 2016 Joachim Dieterich
+ * @author Joachim Dieterich
+ * @date 2016.05.28 18:06
+ * @license: 
+ *
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by  
+ * the Free Software Foundation; either version 3 of the License, or (at your option) any later version.                                   
+ *                                                                       
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of        
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details:                          
+ *                                                                       
+ * http://www.gnu.org/copyleft/gpl.html      
+ */
+include(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
+include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
+global $USER, $CFG;
+$USER            = $_SESSION['USER'];
+if (!isset($_SESSION['PAGE']->target_url)){     //if target_url is not set -> use last PAGE url
+    $_SESSION['PAGE']->target_url       = $_SESSION['PAGE']->url;
+}
+
+$gump            = new Gump();    /* Validation */
+$_POST           = $gump->sanitize($_POST);       //sanitize $_POST
+
+// todo alle Regeln definieren
+$gump->validation_rules(array(
+'institution'    => 'required',
+'description'    => 'required'   
+));
+$validated_data  = $gump->run($_POST);
+if (!isset($_POST['state'])){ $_POST['state'] = 1; }
+if($validated_data === false) {/* validation failed */
+    $_SESSION['FORM']            = new stdClass();
+    $_SESSION['FORM']->form      = 'institution'; 
+    $_SESSION['FORM']->error     = $gump->get_readable_errors();
+    $_SESSION['FORM']->func      = $_POST['func'];
+} else {
+    $new_institution = new Institution(); 
+    if (isset($_POST['id'])){
+        $new_institution->id            = filter_input(INPUT_POST, 'id',                FILTER_VALIDATE_INT);
+    }
+    $new_institution->institution       = filter_input(INPUT_POST, 'institution',       FILTER_SANITIZE_STRING);
+    $new_institution->description       = filter_input(INPUT_POST, 'description',       FILTER_SANITIZE_STRING);
+    $new_institution->schooltype_id     = filter_input(INPUT_POST, 'schooltype_id',     FILTER_VALIDATE_INT);
+    $new_institution->country_id        = filter_input(INPUT_POST, 'country_id',        FILTER_VALIDATE_INT);
+    $new_institution->state_id          = filter_input(INPUT_POST, 'state_id',          FILTER_VALIDATE_INT);
+    $new_institution->creator_id        = $USER->id; // system user
+    $new_institution->confirmed         = 1;  // institution is confirmed
+    $new_institution->paginator_limit   = filter_input(INPUT_POST, 'paginator_limit',   FILTER_VALIDATE_INT);
+    $new_institution->std_role          = filter_input(INPUT_POST, 'std_role',          FILTER_VALIDATE_INT);
+    $new_institution->csv_size          = filter_input(INPUT_POST, 'csv_size',          FILTER_VALIDATE_INT);
+    $new_institution->avatar_size       = filter_input(INPUT_POST, 'avatar_size',       FILTER_VALIDATE_INT);
+    $new_institution->material_size     = filter_input(INPUT_POST, 'material_size',     FILTER_VALIDATE_INT);
+    $new_institution->acc_days          = filter_input(INPUT_POST, 'acc_days',          FILTER_VALIDATE_INT);
+    $new_institution->timeout           = filter_input(INPUT_POST, 'timeout',           FILTER_VALIDATE_INT);
+    $new_institution->semester_id       = filter_input(INPUT_POST, 'semester_id',       FILTER_VALIDATE_INT);
+    $new_institution->file_id           = filter_input(INPUT_POST, 'file_id',           FILTER_VALIDATE_INT);
+    switch ($_POST['func']) {
+        case 'new':     if (isset($_POST['btn_newSchooltype'])){ 
+                            $new_schooltype = new Schooltype();
+                            $new_schooltype->schooltype = filter_input(INPUT_POST, 'new_schooltype',    FILTER_SANITIZE_STRING);
+                            $new_schooltype->description= filter_input(INPUT_POST, 'schooltype_description',FILTER_SANITIZE_STRING);
+                            $new_schooltype->country_id = filter_input(INPUT_POST, 'country',           FILTER_VALIDATE_INT);
+                            $new_schooltype->state_id   = filter_input(INPUT_POST, 'state',             FILTER_VALIDATE_INT);
+                            $new_schooltype->creator_id =  $USER->id; 
+                            $_POST['schooltype_id']     = $new_schooltype->add(); 
+                        }
+                        $new_institution->schooltype_id = filter_input(INPUT_POST, 'schooltype_id',    FILTER_VALIDATE_INT);
+
+                        $institution_id                 = $new_institution->add();
+                        $USER->enroleToInstitution($institution_id); 
+                        $TEMPLATE->assign('institution_id', $institution_id);
+                        if (isset($institution_id)){
+                            $_SESSION['PAGE']->message[] = array('message' => 'Institution hinzufgefügt', 'icon' => 'fa-university text-success');
+                         }               
+            
+            break;
+        case 'edit':     if ($new_institution->update()){
+                            $_SESSION['PAGE']->message[] = array('message' => 'Institution erfolgreich aktualisiert', 'icon' => 'fa-university text-success');
+                         }
+            break;
+
+        default:
+            break;
+    }
+
+    $_SESSION['FORM']            = null;                     // reset Session Form object 
+}
+
+header('Location:'.$_SESSION['PAGE']->target_url);
