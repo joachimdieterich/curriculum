@@ -70,9 +70,9 @@ $CFG->lib_url                       = $CFG->request_url.'../share/libs/';
 
 
 /* BADGEKIT */
-$CFG->badge_url                     = $CFG->protocol.'localhost:5000';  
+/*$CFG->badge_url                     = $CFG->protocol.'localhost:5000';  
 $CFG->badge_secret                  = 'yoursecret';
-$CFG->badge_system                  = 'badgekit';
+$CFG->badge_system                  = 'badgekit';*/
 
 /* TB Parameter for uploadframe */
 $CFG->tb_param                      = '&modal=true&format=1&TB_iframe=true&width=710'; 
