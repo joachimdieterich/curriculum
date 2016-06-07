@@ -27,7 +27,7 @@ try { // Error handling
  switch ($PAGE->action) {
      case 'login':  $TEMPLATE->assign('page_action',      'login');                                      
      case 'install':  
-     case 'criteria':  //wichtig für Badges-Info ohne Login
+     //case 'criteria':  //wichtig für Badges-Info ohne Login
          break;
      
      default:   if(filter_input(INPUT_GET, 'mySemester', FILTER_VALIDATE_INT)){                                          // Lernzeitraum wurde gewechselt --> vor session.php damit Änderungen übernommen werden

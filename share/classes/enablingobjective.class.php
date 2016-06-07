@@ -651,8 +651,8 @@ class EnablingObjective {
                             }
                             break;
             case 'teacher': checkCapabilities('objectives:setStatus', $USER->role_id);
-                            $slug = new Badges();        
-                            $badge_slug = $slug->getBadgeSlug($this->terminal_objective_id, $this->id);
+                            //$slug = new Badges();        
+                            //$badge_slug = $slug->getBadgeSlug($this->terminal_objective_id, $this->id);
 
                             $db = DB::prepare('SELECT COUNT(id) FROM user_accomplished WHERE enabling_objectives_id = ? AND user_id = ?');
                             $db->execute(array($this->id, $user_id));
@@ -661,20 +661,20 @@ class EnablingObjective {
                                     $issuing = new Issuing();  
                                     $email = new User();
                                     $issuing->email = $email->getValue('email', $user_id);
-                                    if ($badge_slug != false){
+                                    /*if ($badge_slug != false){
                                         $res = $issuing->deleteInstance($CFG->badge_system, $badge_slug); 
-                                    }
+                                    }*/
                                 }
                                 $db = DB::prepare('UPDATE user_accomplished SET status_id = ?, creator_id = ? WHERE enabling_objectives_id = ? AND user_id = ?');
                                 return $db->execute(array($status, $creator_id, $this->id, $user_id));
                             } else {
-                                if ($badge_slug != false){
+                                /*if ($badge_slug != false){
                                     $issuing = new Issuing();
                                     $email = new User();
                                     $issuing->email = $email->getValue('email', $user_id);
-                                    /* create Badge Instance --> only once --> ???*/
+                                    // create Badge Instance --> only once --> ???
                                     $res = $issuing->createBadgeInstance($CFG->badge_system, $badge_slug);
-                                }
+                                }*/
 
                                 $db = DB::prepare('INSERT INTO user_accomplished(enabling_objectives_id,user_id,status_id,creator_id) VALUES (?,?,?,?)');
                                 return $db->execute(array($this->id, $user_id, $status, $creator_id));

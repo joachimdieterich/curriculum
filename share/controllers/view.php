@@ -46,8 +46,8 @@ if ($_POST){
     if (isset($_POST['terminal_objective_id']) AND !isset($_POST['enabling_objective_id'])){ $func = 'update_terminal_objective'; } else {$func = 'add_terminal_objective';}
     
     switch ($func) {   
-        case isset($_POST['add_badge']):
-        case isset($_POST['update_badge']): $gump = new Gump();        /* Validation */
+        /*case isset($_POST['add_badge']):
+        case isset($_POST['update_badge']): $gump = new Gump();        
                                             $_POST = $gump->sanitize($_POST);           //sanitize $_POST
                                             $badge = new Badges();
                                             
@@ -69,7 +69,7 @@ if ($_POST){
                                             object_to_array($badge);
                                             $badge->add($_POST['terminal_objective_id'], $_POST['enabling_objective_id'],$_POST['badge_criteria']);
 
-            break;
+            break;*/
         case isset($_POST['deleteMaterial']):   $file = new File(); 
                                                 $file->id = $_POST['id'];
                                                 $file->delete();

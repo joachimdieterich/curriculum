@@ -710,23 +710,23 @@ function showSubjectIcon(path, icon){
 /**
  * add a badge
  **/
-function badge() {
+/*function badge() {
    if (arguments.length === 4) {
         var url = "../share/request/addBadge.php?curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1] +"&enablingObjectiveID=notset"+"&userID="+ arguments[2]+"&lastlogin="+ arguments[3]; 
     } else if (arguments.length === 5) { 
         var url = "../share/request/addBadge.php?curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1] +"&enablingObjectiveID="+ arguments[2]+"&userID="+ arguments[3]+"&lastlogin="+ arguments[4]; 
     }
     getRequest(url);
-}
+}*/
 
-function getBadge() {
+/*function getBadge() {
     if (arguments.length === 2) {
        var url = "../share/request/getBadge.php?curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1]; 
     } else if (arguments.length === 3) {
        var url = "../share/request/getBadge.php?curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1] +"&enablingObjectiveID="+ arguments[2]; 
     }
     getRequest(url);
-}
+}*/
 function addQuiz() {
     if (arguments.length === 2) {
        var url = "../share/request/addQuiz.php?curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1]; 
