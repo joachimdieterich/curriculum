@@ -23,7 +23,7 @@ $acc_obj        = new EnablingObjective();
 $TEMPLATE->assign('enabledObjectives', $acc_obj->getLastEnablingObjectives()); /* Load last accomplished Objectives */
 
 $institution    = new Institution();
-$TEMPLATE->assign('myInstitutions', $institution->getInstitutions('user', null, $USER->id)); /* Institution / Schulen laden */
+$TEMPLATE->assign('myInstitutions', $institution->getStatistic($USER->id)); /* Institution / Schulen laden */
 $institution->id = $USER->institution_id;
 $TEMPLATE->assign('bulletinBoard', $institution->getBulletinBoard());
 

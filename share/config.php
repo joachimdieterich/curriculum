@@ -75,7 +75,7 @@ $CFG->badge_secret                  = 'yoursecret';
 $CFG->badge_system                  = 'badgekit';*/
 
 /* TB Parameter for uploadframe */
-$CFG->tb_param                      = '&modal=true&format=1&TB_iframe=true&width=710'; 
+$CFG->tb_param                      = '&modal=true&format=1'; 
 
 /* Files */
 $CFG->thumbnails                    = true;                                     //generate Thumbnails

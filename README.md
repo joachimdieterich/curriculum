@@ -4,13 +4,12 @@ Version 0.9.3
 =================
 - Bootstrap Layout (AdminLTE 2)
 - Input-Forms von Views abgekoppelt (Input Forms werden jetzt immer in Modals aufgerufen)
-- Modals können nun per JS von jedem Punkt aus aufgerufen werden.
-- Neu: Form Processors
+- Modals können jetzt per JS von jedem Punkt aus aufgerufen werden.
+- Neu: Form Processors unter /share/processors
 - Progressbar beim Upload
 - Font Awesome 4.6.1
-
-Bugfixes:
-    - Std. Profilbild wurde beim importieren falsch gesetzt
+- div. Bugfixes
+    
 Version 0.9.2
 =================
 - Pinnwand (Dashboard) 
