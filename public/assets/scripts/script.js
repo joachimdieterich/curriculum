@@ -73,7 +73,6 @@ function toggle_input_size(){ // allgemeine definieren . arg 1 soll angezeigt we
 }
 
 function toggle_column(){ 
-    
     if ($('td[name='+arguments[0]+']').hasClass("hidden")){
        $('td[name='+arguments[0]+']').removeClass("hidden");
        $("#cb_"+arguments[0]).prop("checked", true);            // Checkbox
@@ -495,26 +494,6 @@ function editObjective() {
     getRequest(url);
 }
 
-/**
- * loadForm
- * @param {string} form
- * @param {string} func
- * @param {array}  data
- * @param {int}    id
- * @returns {undefined}
- */
-function loadForm(form, func, data, id) {
-    req = XMLobject();
-    if(req) {        
-        req.onreadystatechange = process;
-        req.open("POST", "../share/request/form_"+form+".php?function="+func+"&id="+id); // ! security ! im Formular muss überprüft werden, ob user die Daten (bez. auf id) sehen darf
-        //alert(JSON.stringify(form+".php?function="+func+"&id="+id));
-        req.setRequestHeader('Content-Type', 'application/json; charset=utf-8'); //Kann Meldung "Automatically populating $HTTP_RAW_POST_DATA is deprecated " in der Konsole erzeugen: Lösung: always_populate_raw_post_data = -1 //in der php.ini auf -1 setzen. 
-        var postData = JSON.stringify(data);
-        req.send(postData);
-    }  
-}
-
 /*
  * Form Loader
  * Opens Modal
@@ -524,7 +503,6 @@ function loadForm(form, func, data, id) {
 function formloader(form, func, id){
     getRequest("../share/request/f_"+ form +".php?func="+ func +"&id="+ id);
 }
-
 
 function order() {
     if (arguments.length === 4) {
@@ -539,7 +517,6 @@ function order() {
         req.send(null);
     }
 }
-
 /**
  * delete a dataset in a db-table
  **/
@@ -696,10 +673,6 @@ function hideMaterial(){
     document.getElementById('popup').style.visibility='hidden';
 }
 
-
-
-
-
 function checkPaginatorRow(paginatorName, rowNr) {
     var ch = document.getElementById(paginatorName+''+rowNr);
     if(ch) {
@@ -822,7 +795,7 @@ function popupFunction(e){
             resizeModal();      // if ckeditor is used, then modal has to be resized after ckeditor is ready
         }); 
     }
-};
+}
 
 /**
  * Important Hack for webkit browsers to remove audio / video data from cache.
@@ -837,8 +810,9 @@ function removeMedia() {
     this.src = '';
     $(this).children('source').prop('src', '');
     this.remove();
-  });}
-;
+  });
+}
+
 
 function setFormData() {
     var url     = "../share/request/setFormData.php?file="+ arguments[0];   
@@ -898,4 +872,3 @@ function set_select(element, val, field, level) {
         }
     }
 }
-

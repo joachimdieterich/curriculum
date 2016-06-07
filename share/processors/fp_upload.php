@@ -109,7 +109,7 @@ default:            $folders = '';
     break;
 }
 
-$my_upload = new file_upload; // my_upload muss auch bei URLs existieren da sonst Bedingung nach validation nicht funktioniert
+$my_upload = new file_upload(); // my_upload muss auch bei URLs existieren da sonst Bedingung nach validation nicht funktioniert
 if (isset($_FILES['upload'])){
     $my_upload->upload_dir = $CFG->curriculumdata_root.$file->getContextPath($context).$folders; //Set current uploaddir;
     $my_upload->extensions = array(".png", ".jpg", ".jpeg", ".gif", ".pdf", ".doc", ".docx", ".ppt", ".pptx", ".txt", ".rtf", ".bmp", ".tiff", ".tif", ".mpg", ".mpeg" , ".mpe", ".mp3", ".m4a", ".qt", ".mov", ".mp4", ".avi", ".aif", ".aiff", ".wav", ".zip", ".rar", ".mid", ".imscc", ".curriculum"); // allowed extensions

@@ -24,8 +24,8 @@ if (!isset($_SESSION['PAGE']->target_url)){     //if target_url is not set -> us
     $_SESSION['PAGE']->target_url       = $_SESSION['PAGE']->url;
 }
 $user                 = new User();
-$gump                  = new Gump();    /* Validation */
-$_POST                 = $gump->sanitize($_POST);       //sanitize $_POST
+$gump                 = new Gump();    /* Validation */
+$_POST                = $gump->sanitize($_POST);       //sanitize $_POST
 
 
 
