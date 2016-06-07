@@ -138,32 +138,33 @@ foreach ($_POST as $key => $value) { $$key = $value; }
         } 
         
         if ($action == 'lastFiles'){ ?>
-        <div class="box box-widget">
-          <?php renderList('uploadframe.php', 'user',       $CFG->access_file, '_filelastuploadbtn',   $target, $returnFormat, $multipleFiles, $USER->id);        //FileLastUpload div?>
+        <div class="box box-widget form-horizontal">
+          <?php error_log($USER->id);
+          RENDER::filelist('uploadframe.php', 'user',       $CFG->access_file, '_filelastuploadbtn',   $target, $format, $multiple, $USER->id);        //FileLastUpload div?>
         </div>
         <?php }
         
         if ($action == 'curriculumFiles'){ ?>
         <div class="box box-widget">
-          <?php renderList('uploadframe.php', 'curriculum', $CFG->access_file, '_curriculumfilesbtn',  $target, $returnFormat, $multipleFiles, $curriculum_id);   //curriculumfiles?>
+          <?php RENDER::filelist('uploadframe.php', 'curriculum', $CFG->access_file, '_curriculumfilesbtn',  $target, $format, $multiple, $curriculum_id);   //curriculumfiles?>
         </div>
         <?php }
         
         if ($action == 'mySolutions'){ ?>
         <div class="box box-widget">
-          <?php  renderList('uploadframe.php', 'solution',   $CFG->access_file, '_solutionfilesbtn',   $target, $returnFormat, $multipleFiles, $curriculum_id);       //solutionfiles div?>
+          <?php  RENDER::filelist('uploadframe.php', 'solution',   $CFG->access_file, '_solutionfilesbtn',   $target, $format, $multiple, $curriculum_id);       //solutionfiles div?>
         </div>
         <?php }
         
         if ($action == 'myFiles'){ ?>
         <div class="box box-widget">
-          <?php renderList('uploadframe.php', 'userfiles',  $CFG->access_file, '_myfilesbtn',          $target, $returnFormat, $multipleFiles, $USER->id);          //myfiles div?>
+          <?php RENDER::filelist('uploadframe.php', 'userfiles',  $CFG->access_file, '_myfilesbtn',          $target, $format, $multiple, $USER->id);          //myfiles div?>
         </div>
         <?php }
         
         if ($action == 'myAvatars'){ ?>
         <div class="box box-widget">
-          <?php renderList('uploadframe.php', 'avatar',     $CFG->access_file, '_avatarfilesbtn',      $target, $returnFormat, $multipleFiles, $USER->id);         //avatarfiles div?>
+          <?php RENDER::filelist('uploadframe.php', 'avatar',     $CFG->access_file, '_avatarfilesbtn',      $target, $format, $multiple, $USER->id);         //avatarfiles div?>
         </div>
         <?php } ?>
         </div><!--. content-wrapper -->          

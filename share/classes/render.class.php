@@ -94,8 +94,11 @@ class Render {
     
     public static function thumb($file_list){
         global $CFG;
-        $file = new File();
-        $html = '';
+        $height   = 192;
+        $width    = 133;
+        $truncate = 15;
+        $file     = new File();
+        $html     = '';
         foreach ($file_list as $f) {
             //var_dump($f);
             $file->id = $f;
@@ -109,10 +112,10 @@ class Render {
                 case '.svg':    
                 case '.jpeg':    
                 case '.jpg':    if ($file->getThumb() == false){ $url = $file->getFileUrl(); } else { $url = $file->getThumb();}
-                                $html .= '<li>
-                                    <span class="mailbox-attachment-icon has-img"><img src="'.$url.'" style="min-width:100%;" alt="Attachment"></span>
+                                $html .= '<li style="width:'.$width.'px !important; height:'.$height.'px !important;">
+                                    <span class="mailbox-attachment-icon has-img" style="height:'.$width.'px"><img src="'.$url.'" style="max-width:80%; height:auto;" alt="Attachment"></span>
                                     <div class="mailbox-attachment-info">
-                                      <a href="#" class="mailbox-attachment-name" style="word-wrap: break-word;"><i class="fa fa-paperclip"></i> '.$file->filename.'</a>
+                                      <a href="#" class="mailbox-attachment-name" style="word-wrap: break-word;"><!--i class="fa fa-paperclip"></i--> <small>'.truncate($file->filename, $truncate).'</small></a>
                                       <span class="mailbox-attachment-size">
                                         '.$file->getHumanFileSize().'
                                         <a href="'.$file->getFileUrl().'" class="btn btn-default btn-xs pull-right"><i class="fa fa-cloud-download"></i></a>
@@ -120,17 +123,17 @@ class Render {
                                     </div>
                                 </li>';
                     break;
-                case '.url':    $html .= '<li>
-                                    <span class="mailbox-attachment-icon"><i class="'.resolveFileType($file->type).'"></i></span>
+                case '.url':    $html .= '<li  style="height:'.$height.'px !important; width:'.$width.'px !important;">
+                                    <span class="mailbox-attachment-icon" style="height:'.$width.'px"><i class="'.resolveFileType($file->type).'"></i></span>
                                     <div class="mailbox-attachment-info">
-                                      <a href="'.$file->filename.'" class="mailbox-attachment-name" style="word-wrap: break-word;"> '.$file->filename.'</a>
+                                      <a href="'.$file->filename.'" class="mailbox-attachment-name" style="word-wrap: break-word;"><small>'.truncate($file->filename, $truncate).'</small></a>
                                     </div>
                                 </li>';
                     break;
-                default:        $html .= '<li>
-                                    <span class="mailbox-attachment-icon"><i class="'.resolveFileType($file->type).'"></i></span>
+                default:        $html .= '<li  style="height:'.$height.'px !important; width:'.$width.'px !important;">
+                                    <span class="mailbox-attachment-icon" style="height:'.$width.'px"><i class="'.resolveFileType($file->type).'"></i></span>
                                     <div class="mailbox-attachment-info">
-                                      <a href="#" class="mailbox-attachment-name" style="word-wrap: break-word;"><i class="fa fa-paperclip"></i> '.$file->filename.'</a>
+                                      <a href="#" class="mailbox-attachment-name" style="word-wrap: break-word;"><!--i class="fa fa-paperclip"></i--> <small>'.truncate($file->filename, $truncate).'</small></a>
                                       <span class="mailbox-attachment-size">'
                                         .$file->getHumanFileSize().
                                         '<a href="'.$file->getFileUrl().'" class="btn btn-default btn-xs pull-right"><i class="fa fa-cloud-download"></i></a>
@@ -389,6 +392,25 @@ class Render {
         }
     }
     
+    public static function filelist($form, $dependency, $dir, $postfix, $target, $format, $multiple, $id){
+        global $CFG;
+        $file = new File();
+        $files = $file->getFiles($dependency, $id);?>
+        <form name="<?php echo $form ?>" action="<?php echo $form ?>" method="post" enctype="multipart/form-data">
+            <ul class="mailbox-attachments clearfix">
+            <?php  
+            foreach ($files as $f) {
+                echo RENDER::thumb(array('id' => $f->id)); 
+            }
+            ?>
+            </ul>
+        </form>
+        <?php if ($target != 'NULL'){ // verhindert, dass der Button angezeigt wird wenn das Target NULL ist ?>
+            <div id="uploadframe_footer" class="uploadframe_footer" >
+                <input type="submit"  value="Datei(en) verwenden" onclick="iterateListControl('<?php echo 'div'.$postfix ?>','<?php echo $postfix ?>','<?php echo $target;?>','<?php echo $format;?>','<?php echo $multiple;?>');"/>
+            </div>
+        <?php } 
+    }
     
     public static function filenail($files, $ID_Postfix, $i = false, $preview = false, $delete = false, $link = false){
         global $CFG;
@@ -409,7 +431,9 @@ class Render {
             if  ($file->title != '')        { $r .= $file->title;        }  $r .= '\', \'';
             if  ($file->description != '')  { $r .= $file->description;  }  $r .= '\', \'';  
             if  ($file->author != '')       { $r .= $file->author;       }  $r .= '\', \''; 
-            $r .= $file->getLicense($file->license).'\')" onmouseout="exitpreviewFile(\''.$ID_Postfix.'\')">';
+            $license = new License();
+            $lic = $license->get($file->license);
+            $r .= $lic[0]->license.'\')" onmouseout="exitpreviewFile(\''.$ID_Postfix.'\')">';
         }
         
         $r .= '<a id="href_a_'.$file->id.'" href="'.$CFG->access_file_url.''.$file->context_path.''.$file->path.''.rawurlencode($file->filename).'"  target="_blank">';

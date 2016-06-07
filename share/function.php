@@ -258,11 +258,11 @@ function detect_reload(){
  * @param string $returnFormat
  * @param string $multipleFiles 
  */
-function renderList($formname, $dependency, $data_dir, $ID_Postfix, $targetID, $returnFormat, $multipleFiles, $id){
+/*function renderList($formname, $dependency, $data_dir, $ID_Postfix, $targetID, $returnFormat, $multipleFiles, $id){
     global $CFG;
     $file = new File();
     $files = $file->getFiles($dependency, $id);?>
-    <div id="div<?php echo $ID_Postfix ?>" class="floatleft" style="display:none;">
+    <!--div id="div<?php echo $ID_Postfix ?>" class="floatleft" style="display:none;"-->
     <form name="<?php echo $formname ?>" action="<?php echo $formname ?>" method="post" enctype="multipart/form-data">
         <div> 
         <table>
@@ -299,9 +299,9 @@ function renderList($formname, $dependency, $data_dir, $ID_Postfix, $targetID, $
     </div>
 </div>
    
-</div>
+<!--/div-->
 <?php   
-}
+}*/
 
 
 function renderSelect($name, $label, $values, $select){?>
@@ -735,4 +735,12 @@ function PHPArrayObjectSorter($array,$sortBy,$direction='asc'){
         }
         
         return $sortedArray;
+    }
+    
+    function truncate($text, $chars = 25) {
+        $text = substr($text,0,$chars);
+        if (strlen($text) >= $chars){
+            $text = $text."...";
+        }
+        return $text;
     }

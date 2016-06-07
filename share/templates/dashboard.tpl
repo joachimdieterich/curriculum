@@ -74,27 +74,31 @@
             <div class="col-md-4">
                 <div class="box box-widget widget-user">
                   <!-- Add the bg color to the header using any of the bg-* classes -->
-                  <div class="widget-user-header bg-aqua-active" style="background: url('{$access_file}{$ins->file_id|resolve_file_id}') center right;background-size: contain; background-repeat: no-repeat;">
-                    <h3 class="widget-user-username">{$ins->institution}</h3>
-                    <h5 class="widget-user-desc">{$ins->schooltype_id}</h5>
+                  {if $ins->file_id eq 0}
+                    <div class="widget-user-header bg-aqua-active">
+                  {else}
+                    <div class="widget-user-header bg-aqua-active" style="background: url('{$access_file}{$ins->file_id|resolve_file_id}') center right;background-size: cover; background-repeat: no-repeat;">
+                  {/if}
+                    <h3 class="widget-user-username" style="text-shadow: 1px 1px #ff0000;">{$ins->institution}</h3>
+                    <h5 class="widget-user-desc" style="text-shadow: 1px 1px #ff0000;">{$ins->description}</h5>
                   </div>
                   <div class="box-body">
                     <div class="row">
                       <div class="col-sm-4 border-right">
                         <div class="description-block">
-                          <h5 class="description-header">3,200</h5>
+                          <h5 class="description-header">{$ins->statistic.0}</h5>
                           <span class="description-text">SCHÜLER</span>
                         </div><!-- /.description-block -->
                       </div><!-- /.col -->
                       <div class="col-sm-4 border-right">
                         <div class="description-block">
-                          <h5 class="description-header">13,000</h5>
+                          <h5 class="description-header">{$ins->statistic.accomplished}</h5>
                           <span class="description-text">ERREICHTE ZIELE</span>
                         </div><!-- /.description-block -->
                       </div><!-- /.col -->
                       <div class="col-sm-4">
                         <div class="description-block">
-                          <h5 class="description-header">35</h5>
+                          <h5 class="description-header">{$ins->statistic.7}</h5>
                           <span class="description-text">LEHRER</span>
                         </div><!-- /.description-block -->
                         {*<strong>{$ins->institution}</strong><br>
@@ -116,7 +120,7 @@
         <div class="col-md-4 col-sm-12 col-xs-12">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                  <h3 class="box-title">Abgeschlossene Ziele</h3>
+                  <h3 class="box-title">Statistik</h3>
                   <div class="box-tools pull-right">
                     <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                     <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
@@ -124,11 +128,23 @@
                 </div><!-- /.box-header -->
                 <div class="box-footer no-padding">
                   <ul class="nav nav-pills nav-stacked">
-                    <li><a href="#">Gesamt <span class="pull-right text-red">{$stat_acc_all}</span></a></li>
-                    <li><a href="#">davon Heute <span class="pull-right text-red">{$stat_acc_today}</span></a></li>
-                    <li><a href="#">User Online <span class="pull-right text-red">{$stat_users_online}</span></a></li>
-                    <li><a href="#">Heute <span class="pull-right text-green"> {$stat_users_today}</span></a></li>
+                    <li><a href="#"><strong>Erreichte Ziele</strong></a></li>
+                    <li><a href="#">Gesamt <span class="pull-right text-green">{$stat_acc_all}</span></a></li>
+                    <li><a href="#">davon Heute <span class="pull-right text-green">{$stat_acc_today}</span></a></li>
                   </ul>
+                  
+                  {if checkCapabilities('page:showCronjob', $my_role_id, false)}
+                      <ul class="nav nav-pills nav-stacked">
+                          <li><a href="#"><strong>Wiederholungen</strong></a></li>
+                          <li><a href="#">Ziele die Wiederholt werden müssen<span class="pull-right text-red">{*$cronjob*}0</span></a></li>
+                      </ul>
+                  {/if}
+                  <ul class="nav nav-pills nav-stacked">
+                    <li><a href="#"><strong>Online</strong></a></li>
+                    <li><a href="#">Jetzt online <span class="pull-right">{$stat_users_online}</span></a></li>
+                    <li><a href="#">Heute <span class="pull-right"> {$stat_users_today}</span></a></li>
+                  </ul>
+                  
                 </div><!-- /.footer -->
             </div><!-- /.box -->
         </div>    
@@ -148,7 +164,7 @@
                 <ul class="nav nav-stacked">
                     {foreach item=cur_menu from=$my_enrolments}
                         {if $cur_menu->group_id eq $cla->id}
-                            <li><a href="index.php?action=view&curriculum={$cur_menu->id}&group={$cur_menu->group_id}">{$cur_menu->curriculum} </a></li>
+                            <li><a href="index.php?action=view&curriculum_id={$cur_menu->id}&group={$cur_menu->group_id}">{$cur_menu->curriculum} </a></li>
                         {/if}
                     {/foreach}
                 </ul>
@@ -157,23 +173,6 @@
         </div><!-- /.col -->        
         {/foreach}  
         {/if}        
-
-        {if checkCapabilities('page:showCronjob', $my_role_id, false)}
-        <div class="col-md-4 ">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Abgelaufene Ziele</h3>
-                    <div class="box-tools pull-right">
-                      <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                      <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                    </div>
-                </div><!-- /.box-header -->
-                <div class="box-body">
-                {*$cronjob*}
-                </div>
-             </div>
-        </div>
-        {/if}
 
         <!-- Hilfe -->  
         <div class="col-md-4 ">

@@ -72,6 +72,7 @@ class Institution {
     public $timeout;
     public $semester_id;
     public $file_id;
+    public $statistic;
        
     /**
      * load  institution from db depending on id
@@ -284,6 +285,37 @@ class Institution {
             $value = NULL;
         } 
         return $value;
+    }
+    
+    public function getStatistic($id){
+        $db =DB::prepare('SELECT ins.id, ins.institution, ins.description, ins.file_id
+                            FROM institution AS ins, institution_enrolments AS ie
+                            WHERE ie.institution_id = ins.id
+                            AND ie.user_id = ? AND ie.status = 1 ');
+                        $db->execute(array($id));
+        
+        while($result = $db->fetchObject()) { 
+            $this->id          = $result->id;
+            $this->institution = $result->institution;
+            $this->description = $result->description;
+            $this->file_id     = $result->file_id;
+            $roles             = new Roles();
+            foreach ($roles->get() as $r) {
+                $db1     = DB::prepare('SELECT count(id) as max FROM institution_enrolments WHERE institution_id = ? AND role_id = ?');
+                $db1->execute(array($this->id, $r->id));
+                $r1      = $db1->fetchObject();
+                $this->statistic[$r->id] = $r1->max;
+            }
+            
+            $db2     = DB::prepare('SELECT count(ua.id) as max FROM user_accomplished AS ua, institution_enrolments AS ie 
+                                WHERE ua.user_id = ie.user_id AND ua.status_id > 0 AND ie.institution_id = ?');
+            $db2->execute(array($this->id));
+            $r2 = $db2->fetchObject();
+            $this->statistic['accomplished'] = $r2->max;
+                
+            $data[] = clone $this;
+        }                
+        return $data;
     }
     
     public function getTimeout($id){

@@ -126,11 +126,12 @@ $html .= Form::input_text('file_id', 'Logo', $file_id, $error, '... hier klicken
 /*$html .= Form::input_select('icon_id', 'Fach-Icon', $icons->getFiles('context', 5), 'title', 'id', $icon_id , $error, 'showSubjectIcon(\''.$CFG->access_id_url .'\', this.options[this.selectedIndex].value);');*/
 /* Icon Preview */
 $html .= '<div class="form-group"><label class="control-label col-sm-4"></label>
-      <div class="col-sm-7"> <div id="icon_img" class="form-control input-lg bg-white col-sm-7" ';
+      <div class="col-sm-7"><a href="'.$CFG->request_url .'uploadframe.php?&context=institution&target=file_id&format=0&multiple=false" class="nyroModal">
+        <div id="icon_img" class="form-control input-lg bg-white col-sm-7" ';
 if ($icon_id){
     $html .= 'style="background-image: url(\''.$CFG->access_id_url . $icon_id.'\'); background-position: 50% 50%; background-repeat: initial initial;"';
 }
-$html .= '></div></div></div>';
+$html .= '></div></a></div></div>';
 
 $html .= '<h4>Einstellungen</h4>';
 $rol         = new Roles(); 
@@ -155,5 +156,10 @@ $html       .= '</div><!-- /.modal-body -->
             }    
 $html .=  '</div></form></div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->';
-
-echo json_encode(array('html'=>$html));
+$script = '<script type="text/javascript">
+        $(function() {
+            $(\'.nyroModal\').nyroModal();
+            $(\'#popup_generate\').nyroModal();
+        });
+        </script>';
+echo json_encode(array('html'=>$html, 'script' => $script));
