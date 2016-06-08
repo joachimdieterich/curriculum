@@ -21,11 +21,10 @@ include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $CFG, $USER, $COURSE;
 $USER           = $_SESSION['USER'];
-$func              = $_GET['func'];
-
-$error             =   null;
-$object = file_get_contents("php://input");
-$data = json_decode($object, true);
+$func           = $_GET['func'];
+$error          = null;
+$object         = file_get_contents("php://input");
+$data           = json_decode($object, true);
 if (is_array($data)) {
     foreach ($data as $key => $value){
         $$key = $value;
@@ -43,11 +42,12 @@ if (isset($func)){
         default: break;
     }
 }
-
 /* if validation failed, get formdata from session*/
-if (is_object($_SESSION['FORM'])) {
-    foreach ($_SESSION['FORM'] as $key => $value){
-        $$key = $value;
+if (isset($_SESSION['FORM'])){
+    if (is_object($_SESSION['FORM'])) {
+        foreach ($_SESSION['FORM'] as $key => $value){
+            $$key = $value;
+        }
     }
 }
 

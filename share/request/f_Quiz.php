@@ -2,7 +2,7 @@
 /** This file is part of curriculum - http://www.joachimdieterich.de
  * 
  * @package core
- * @filename showQuiz.php
+ * @filename f_Quiz.php
  * @copyright 2015 Joachim Dieterich
  * @author Joachim Dieterich
  * @date 2015.12.03 19:37
@@ -21,23 +21,26 @@ include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER;
 $USER       = $_SESSION['USER'];
-if (filter_input(INPUT_GET, 'enablingObjectiveID', FILTER_VALIDATE_INT)) {
-    $objective_id   =  filter_input(INPUT_GET, 'enablingObjectiveID', FILTER_VALIDATE_INT);
-    $objective_type = 1;
-} else {
-    $ter_id         =  filter_input(INPUT_GET, 'terminalObjectiveID', FILTER_VALIDATE_INT);
-    $objective_type = 0;
+$func       = $_GET['func'];
+switch ($func) {
+    case 'terminal_objective':  $objective_id   =  filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+                                $objective_type = 0;
+        break;
+    case 'enabling_objective':  $objective_id   =  filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+                                $objective_type = 1;                       
+        break;
+
+    default:
+        break;
 }
+
 $list                 = new Question();
 $list->objective_id   = $objective_id;
 $list->objective_type = $objective_type;
 $q_list               = $list->getQuestions('objective');
+$content              = Render::quiz($q_list);
+$html                 = Form::modal(array('title'     => 'Quiz',
+                              'content'   => $content, 
+                              'f_content' => ''));  
 
-echo '<div class="messageboxClose" onclick="closePopup();"></div><div class="contentheader">Quiz</div>
-      <div id="popupcontent" class="scroll"><div id="ajax_quiz_form_result">';
-
-Render::quiz($q_list);
-
-echo '</div><div class="materialseperator"></div><div class="space-top"></div>';
-/*echo '<input type="submit" name="Submit" value="Fenster schließen" onclick="closePopup()"/>';*/
-echo '</div></div>';
+echo json_encode(array('html'=> $html));

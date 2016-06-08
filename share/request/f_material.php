@@ -36,15 +36,21 @@ switch (filter_input(INPUT_GET, 'func', FILTER_UNSAFE_RAW)) {
 
 $edit       = checkCapabilities('file:editMaterial',    $USER->role_id, false); // DELETE / edit anzeigen
 $header     = 'Material';
-$f_content  = '';
-$content    = ''; 
-$m_boxes = '';
+$f_content  = null;
+$content    = null; 
+$m_boxes    = '';
 
 if (!$files){
     $content .= 'Es gibt leider kein Material zum gewählten Lernziel.';
 } else {
     $file_context = 1;
     for($i = 0; $i < count($files); $i++) {
+        /* reset vars */
+        $m_footer       = '';
+        $m_player       = null;
+        $m_icon_class   = null;
+        $m_preview      = null;
+        
         $m_content    = ''; 
         if ($files[$i]->file_context >= $file_context){ 
             switch ($files[$i]->file_context) {
@@ -142,7 +148,6 @@ if (!$files){
         
             $m_footer .= '<div class="info-box-text" style="padding-top:10px;white-space:normal; text-transform:none; display:block;">
                            <div class="row">
-                           
                     <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
                       <div id="sparkline-1"></div><div class="knob-label">';
             if (isset($license->license)){ $m_footer .= $license->license; }
@@ -186,7 +191,7 @@ if (!$files){
                                          'player'      => $m_player,
                                          'content'     => $m_content, 
                                          'footer'      => $m_footer));
-        unset($m_id, $m_preview, $m_icon_class, $m_delete, $m_url, $m_onclick, $m_title, $m_description, $m_player, $m_content, $m_footer, $m_hits, $f_versions, $license);
+                             unset($m_id, $m_preview, $m_icon_class, $m_delete, $m_url, $m_onclick, $m_title, $m_description, $m_player, $m_content, $m_footer, $m_hits, $f_versions, $license);
         
         /* context box */   
         $close = false;
@@ -199,6 +204,7 @@ if (!$files){
             $content   .= Form::box(array('header' => $level_header,
                                          'content' => $m_boxes));  
             unset($m_boxes);
+            $m_boxes = '';
         }
 
     }

@@ -421,32 +421,6 @@ function getRequest(url){
        
 }
 
-/**
- * shows description
- * @param string description
- * @returns html
- */
-function showDescription(/*terID, enaID*/) {
-    if (arguments.length === 1) {
-        var url = "../share/request/showDescription.php?terminalObjectiveID="+ arguments[0]; 
-    } else if (arguments.length === 2) {
-        var url = "../share/request/showDescription.php?terminalObjectiveID="+ arguments[0]+"&enablingObjectiveID="+ arguments[1]; 
-    }
-    getRequest(url);
-}
-
-/**
- * Show material of a objective
- **/
-function showMaterial() {
-    if (arguments.length === 3) {
-       var url = "../share/request/showMaterial.php?edit="+arguments[0]+"&terminalObjectiveID="+ arguments[1] +"&enablingObjectiveID="+ arguments[2];
-    } else if (arguments.length === 2) {
-       var url = "../share/request/showMaterial.php?edit="+arguments[0]+"&terminalObjectiveID="+ arguments[1];
-    }
-    getRequest(url);
-}
-
 
 /**
  * show Learner who have complete this objective
@@ -462,37 +436,6 @@ function getHelp(group, enablingObjectiveID) {
 function curriculumdocs(link) {
     window.open(link, '_blank', '')
 }
-/**
- * Add topic
- * @param {int} curriculumID
- * @returns {html}
- */
-function addterminalObjective(curriculumID) {  
-    getRequest("../share/request/terminalObjective.php?curriculum_id="+ curriculumID);
-}
- 
-/**
- * Add objective
- * @param {int} curriculumID
- * @param {int} terminalObjectiveID
- * @returns {html}
- */
-function addenablingObjective(curriculumID, terminalObjectiveID) {
-    var url = "../share/request/enablingObjective.php?curriculumID="+ curriculumID+"&terminalObjectiveID="+ terminalObjectiveID;
-    getRequest(url);
-}
-
-
-
-function editObjective() {
-    if (arguments.length === 2) {
-       var url = "../share/request/terminalObjective.php?curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1]+ "&edit=true"; 
-    }
-    else if (arguments.length === 3) {
-       var url = "../share/request/enablingObjective.php?curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1] +"&enablingObjectiveID="+ arguments[2] + "&edit=true"; 
-    }
-    getRequest(url);
-}
 
 /*
  * Form Loader
@@ -505,11 +448,8 @@ function formloader(form, func, id){
 }
 
 function order() {
-    if (arguments.length === 4) {
-        var url = "../share/request/orderObjectives.php?order="+ arguments[0] +"&orderID="+ arguments[1]+"&curriculumID="+ arguments[2] +"&terminalObjectiveID="+ arguments[3];
-    } else if (arguments.length === 5) {
-        var url = "../share/request/orderObjectives.php?order="+ arguments[0] +"&orderID="+ arguments[1]+"&curriculumID="+ arguments[2] +"&terminalObjectiveID="+ arguments[3]+"&enablingObjectiveID="+ arguments[4]; 
-    }
+    var url = "../share/request/orderObjectives.php?order="+ arguments[0] +"&func="+ arguments[1]+"&id="+ arguments[2];
+    
     req = XMLobject();
     if(req) {        
         req.onloadend = window.location.reload();
@@ -707,26 +647,6 @@ function showSubjectIcon(path, icon){
     document.getElementById('icon_img').style.background =  "url('"+path+icon+"') center center";
 }
 
-/**
- * add a badge
- **/
-/*function badge() {
-   if (arguments.length === 4) {
-        var url = "../share/request/addBadge.php?curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1] +"&enablingObjectiveID=notset"+"&userID="+ arguments[2]+"&lastlogin="+ arguments[3]; 
-    } else if (arguments.length === 5) { 
-        var url = "../share/request/addBadge.php?curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1] +"&enablingObjectiveID="+ arguments[2]+"&userID="+ arguments[3]+"&lastlogin="+ arguments[4]; 
-    }
-    getRequest(url);
-}*/
-
-/*function getBadge() {
-    if (arguments.length === 2) {
-       var url = "../share/request/getBadge.php?curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1]; 
-    } else if (arguments.length === 3) {
-       var url = "../share/request/getBadge.php?curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1] +"&enablingObjectiveID="+ arguments[2]; 
-    }
-    getRequest(url);
-}*/
 function addQuiz() {
     if (arguments.length === 2) {
        var url = "../share/request/addQuiz.php?curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1]; 
@@ -735,21 +655,21 @@ function addQuiz() {
     }
     getRequest(url);
 }
-function showQuiz() {
+/*function showQuiz() {
     if (arguments.length === 2) {
        var url = "../share/request/showQuiz.php?curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1]; 
     } else if (arguments.length === 3) {
        var url = "../share/request/showQuiz.php?curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1] +"&enablingObjectiveID="+ arguments[2]; 
     }
     getRequest(url);
-}
+}*/
 
 function sendForm(form_id, file){
     var form = $('#'+form_id);
     var data = form.serialize();
     //alert('test: ');
     $.post('../share/request/'+file, data, function(response) {
-        $('#'+form_id+'_result').html(response)            
+        $('#'+form_id+'').html(response)            
     });
     return false;           
     
@@ -764,11 +684,6 @@ function updateFileHits(){
             req.send(null);
         }  
 }
-
-/*function editBulletinBoard() {
-    var url = "../share/request/bulletinBoard.php";
-    getRequest(url);
-}*/
 
 function resizeModal(){
     if ($('.modal-content').height() > window.innerHeight){

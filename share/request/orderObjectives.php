@@ -20,19 +20,21 @@ $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER;
-$USER   = $_SESSION['USER'];
 
-if (filter_input(INPUT_GET, 'enablingObjectiveID', FILTER_VALIDATE_INT)){// enabling objective
-    $enabling_objective = new EnablingObjective();
-    $enabling_objective->id =                       filter_input(INPUT_GET, 'enablingObjectiveID',  FILTER_VALIDATE_INT);
-    $enabling_objective->curriculum_id =            filter_input(INPUT_GET, 'curriculumID',         FILTER_VALIDATE_INT);
-    $enabling_objective->terminal_objective_id =    filter_input(INPUT_GET, 'terminalObjectiveID',  FILTER_VALIDATE_INT);
-    $enabling_objective->order_id =                 filter_input(INPUT_GET, 'orderID',              FILTER_VALIDATE_INT);
-    $enabling_objective->order(filter_input(INPUT_GET, 'order', FILTER_SANITIZE_STRING));
-} else {// terminal objective 
-    $terminal_objective = new TerminalObjective();
-    $terminal_objective->id =                       filter_input(INPUT_GET, 'terminalObjectiveID',  FILTER_VALIDATE_INT);
-    $terminal_objective->curriculum_id =            filter_input(INPUT_GET, 'curriculumID',         FILTER_VALIDATE_INT);
-    $terminal_objective->order_id =                 filter_input(INPUT_GET, 'orderID',              FILTER_VALIDATE_INT);
-    $terminal_objective->order(filter_input(INPUT_GET, 'order', FILTER_SANITIZE_STRING));
+$USER       = $_SESSION['USER'];
+$func       = $_GET['func'];
+switch ($func) {
+    case 'enabling_objective':  $enabling_objective         = new EnablingObjective();
+                                $enabling_objective->id     = filter_input(INPUT_GET, 'id',  FILTER_VALIDATE_INT);
+                                $enabling_objective->load();
+                                $enabling_objective->order(filter_input(INPUT_GET, 'order', FILTER_SANITIZE_STRING));
+        break;
+    case 'terminal_objective':  $terminal_objective         = new TerminalObjective();
+                                $terminal_objective->id     = filter_input(INPUT_GET, 'id',  FILTER_VALIDATE_INT);
+                                $terminal_objective->load();
+                                $terminal_objective->order(filter_input(INPUT_GET, 'order', FILTER_SANITIZE_STRING));                   
+        break;
+
+    default:
+        break;
 }

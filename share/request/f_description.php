@@ -2,7 +2,7 @@
 /** This file is part of curriculum - http://www.joachimdieterich.de
  * 
  * @package core
- * @filename showDescription.php
+ * @filename f_description.php
  * @copyright 2015 Joachim Dieterich
  * @author Joachim Dieterich
  * @date 2015.05.31 19:51
@@ -21,14 +21,22 @@ include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER;
 $USER       = $_SESSION['USER'];
+$func       = $_GET['func'];
 
-if (filter_input(INPUT_GET, 'enablingObjectiveID', FILTER_VALIDATE_INT)) {
-    $ena    = new EnablingObjective();
-    $ena->id= filter_input(INPUT_GET, 'enablingObjectiveID', FILTER_VALIDATE_INT);
-    $ena->load();  
-} 
 $ter        = new TerminalObjective();
-$ter->id    = filter_input(INPUT_GET, 'terminalObjectiveID', FILTER_VALIDATE_INT);
+switch ($func) {
+    case 'terminal_objective':  $ter->id    = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+        break;
+    case 'enabling_objective':  $ena        = new EnablingObjective();
+                                $ena->id    = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+                                $ena->load();  
+                                $ter->id    = $ena->terminal_objective_id;                       
+        break;
+
+    default:
+        break;
+}
+
 $ter->load();
 $content    = '';
 if ($ter->description){         $content .= $ter->description; } 

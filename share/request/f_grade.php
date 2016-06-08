@@ -36,7 +36,6 @@ switch ($func) {
                     $grade_obj->load();                                 //Läd die bestehenden Daten aus der db
                     foreach ($grade_obj as $key => $value){
                         $$key = $value;
-                        //error_log($key. ': '.$value);
                     }
                     $header                       = 'Klassenstufe aktualisieren';           
         break;
@@ -47,10 +46,12 @@ switch ($func) {
     default:
         break;
 }
-/* if validation failed */
-if (is_object($_SESSION['FORM'])) {
-    foreach ($_SESSION['FORM'] as $key => $value){
-        $$key = $value;
+/* if validation failed, get formdata from session*/
+if (isset($_SESSION['FORM'])){
+    if (is_object($_SESSION['FORM'])) {
+        foreach ($_SESSION['FORM'] as $key => $value){
+            $$key = $value;
+        }
     }
 }
 

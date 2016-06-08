@@ -22,177 +22,164 @@
                     {if isset($showaddObjectives)}
                     <p>Beschreibung: {$course[0]->description} ({$course[0]->schooltype})<br/>Bundesland: {$course[0]->state} ({$course[0]->country})</p>
                     {/if}
-    {if $terminal_objectives != false}
-        {assign var="sol_btn" value="false"}  
-        {*Thema Row*}
-        {foreach name=foreach_ter key=terid item=ter from=$terminal_objectives}   
-         <div class="row" >
-             <div class="col-xs-12"> 
-                 {*Thema Row*}
-                <div class="panel panel-default box-objective"> 
-                    <div class="panel-heading boxheader" style="background: {$ter->color}">
-                         {if isset($showaddObjectives)}
-                             <a onclick="del('terminalObjectives', {$ter->id}, {$my_id});"><span class="fa fa-minus pull-right invert box-sm-icon"></span></a>
-                             <a onclick="formloader('terminalObjective','edit', {$ter->id});"><span class="fa fa-edit pull-right invert box-sm-icon"></span></a>
-                             {if $ter->order_id neq '1'}
-                                 <a onclick="order('down', {$ter->order_id},{$course[0]->curriculum_id},{$ter->id});"><span class="fa fa-arrow-up pull-left box-sm-icon"></span></a>
-                             {/if}
-                             {if not $smarty.foreach.foreach_ter.last}
-                                 <a onclick="order('up', {$ter->order_id},{$course[0]->curriculum_id},{$ter->id});"><span class="fa fa-arrow-down pull-left box-sm-icon"></span></a>
-                             {/if}
-                         {/if}
-                    </div>
-                    <div id="ter_{$ter->id}" class="panel-body boxwrap">
-                        <div class="boxscroll">
-                                <div class="boxcontent">
-                                    {$ter->terminal_objective}
+                    {if $terminal_objectives != false}
+                        {assign var="sol_btn" value="false"}  
+                        {*Thema Row*}
+                        {foreach name=foreach_ter key=terid item=ter from=$terminal_objectives}   
+                         <div class="row" >
+                             <div class="col-xs-12"> 
+                                 {*Thema Row*}
+                                <div class="panel panel-default box-objective"> 
+                                    <div class="panel-heading boxheader" style="background: {$ter->color}">
+                                         {if isset($showaddObjectives)}
+                                             <a onclick="del('terminalObjectives', {$ter->id}, {$my_id});"><span class="fa fa-minus pull-right invert box-sm-icon"></span></a>
+                                             <a onclick="formloader('terminalObjective','edit', {$ter->id});"><span class="fa fa-edit pull-right invert box-sm-icon"></span></a>
+                                             {if $ter->order_id neq '1'}
+                                                 <a onclick="order('down', 'terminal_objective','{$ter->id}');"><span class="fa fa-arrow-up pull-left box-sm-icon"></span></a>
+                                             {/if}
+                                             {if not $smarty.foreach.foreach_ter.last}
+                                                 <a onclick="order('up', 'terminal_objective','{$ter->id}');"><span class="fa fa-arrow-down pull-left box-sm-icon"></span></a>
+                                             {/if}
+                                         {/if}
+                                    </div>
+                                    <div id="ter_{$ter->id}" class="panel-body boxwrap">
+                                        <div class="boxscroll">
+                                                <div class="boxcontent">
+                                                    {$ter->terminal_objective}
+                                                </div>
+                                            </div>
+                                    </div>
+                                    <div class="panel-footer boxfooter">
+                                        {if $ter->description neq ''}
+                                            <a onclick="formloader('description', 'terminal_objective', '{$ter->id}');"><span class="fa fa-info pull-right box-sm-icon"></span></a>
+                                        {/if}
+                                        {if isset($showaddObjectives)}
+                                            {if checkCapabilities('file:upload', $my_role_id, false)}
+                                                <a href="../share/request/uploadframe.php?userID={$my_id}&last_login={$my_last_login}&context=curriculum&curID={$course[0]->curriculum_id}&terID={$ter->id}{$tb_param}" class="nyroModal"><span class="fa fa-plus pull-right box-sm-icon"></span></a>                        
+                                            {/if} 
+                                        {/if}
+
+                                        {if checkCapabilities('file:loadMaterial', $my_role_id, false) AND $ter->files neq '0'}
+                                            <a onclick="formloader('material','ter',{$ter->id})"><span class="fa fa-briefcase box-sm-icon"></span>  <span class="badge label-primary" style="margin-top: -3px;font-size: 8px;line-height: .8">{$ter->files}</span></a>
+                                        {else}
+                                            <span class="fa fa-briefcase box-sm-icon deactivate"></span> <span class="badge label-primary deactivate" style="margin-top: -3px;font-size: 8px;line-height: .8">{$ter->files}</span>
+                                        {/if}
+                                    </div>
+                                  </div> 
+                            {*Ende Thema*}
+
+                             {*Ziele*}
+                               {if $enabledObjectives != false}
+                                   {foreach key=enaid item=ena from=$enabledObjectives}
+                                   {if $ena->terminal_objective_id eq $ter->id}
+                                       <div id="ena_{$ena->id}" class="panel panel-default box-objective {if $ena->accomplished_status_id eq 1} boxgreen {elseif $ena->accomplished_status_id eq 2} boxorange {elseif $ena->accomplished_status_id eq '0'} boxred {/if}"> 
+                                           <div class="panel-heading boxheader" style="background: {$ter->color}">
+                                               {if checkCapabilities('groups:showAccomplished', $my_role_id, false)}
+                                                   {if isset($ena->accomplished_users) and isset($ena->enroled_users) and isset($ena->accomplished_percent)}
+                                                       <span class=" pull-left hidden-sm hidden-xs">{$ena->accomplished_users} von {$ena->enroled_users} (</span>{$ena->accomplished_percent}%<span class="hidden-sm hidden-xs">)</span><!--Ziel-->  
+                                                   {/if}
+                                               {/if}
+                                               {if !isset($showaddObjectives) AND checkCapabilities('user:getHelp', $my_role_id, false)}
+                                                   <a onclick="getHelp({$page_group}, {$ena->id});"><span class="fa fa-support invert pull-right box-sm-icon"></span></a>
+                                               {/if} 
+                                               {if !isset($showaddObjectives) AND checkCapabilities('file:solutionUpload', $my_role_id, false)}
+                                                   {if $solutions != false}
+                                                       {foreach key=solID item=sol from=$solutions}
+                                                           {if $sol->enabling_objective_id eq $ena->id AND $sol_btn neq $ena->id}
+                                                               {assign var="sol_btn" value=$ena->id}
+                                                           {/if}
+                                                       {/foreach}
+                                                   {/if}
+                                                   {if checkCapabilities('file:upload', $my_role_id, false)}
+                                                       <a href="../share/request/uploadframe.php?userID={$my_id}&last_login={$my_last_login}&context=solution&curID={$course[0]->curriculum_id}&terID={$ter->id}&enaID={$ena->id}{$tb_param}" class="nyroModal">
+                                                       <span class="{if $sol_btn eq $ena->id OR $sol_btn eq false}green{/if} fa fa-upload invert pull-right box-sm-icon"></span></a>
+                                                   {/if}  
+                                               {/if}
+                                               {if isset($showaddObjectives)}
+                                                    {if $ena->terminal_objective_id eq $enabledObjectives[{$enaid+1}]->terminal_objective_id}
+                                                        <a  onclick="order('up', 'enabling_objective', '{$ena->id}');"><span class="fa fa-arrow-right pull-right box-sm-icon"></span></a>
+                                                    {/if}
+                                                    <a  onclick="del('enablingObjectives', {$ena->id}, {$my_id});"><span class="fa fa-minus pull-right box-sm-icon"</a>
+                                                    <a  onclick="formloader('enablingObjective','edit', {$ena->id});"><span class="fa fa-edit pull-right box-sm-icon"></span></a>
+                                                    {*<a  onclick="editObjective({$course[0]->curriculum_id},{$ter->id},{$ena->id});"><span class="fa fa-edit pull-right"></span></a>*}
+                                                   {if $ena->order_id neq '1'}
+                                                       <a  onclick="order('down', 'enabling_objective', '{$ena->id}');"><span class="fa fa-arrow-left pull-left box-sm-icon"></span></a>
+
+                                                   {/if}
+                                                {/if}
+                                           </div>
+                                           <div {*id="ena_{$ena->id}"*} class="panel-body boxwrap">
+                                               <div class="boxscroll">
+                                                       <div class="boxcontent">
+                                                           {$ena->enabling_objective}
+                                                       </div>
+                                                   </div>
+                                           </div>
+                                           <div class="panel-footer boxfooter">
+                                                {if $ter->description neq '' AND $ena->description neq ''}
+                                                    <a onclick="formloader('description', 'enabling_objective','{$ena->id}');"><span class="fa fa-info pull-right box-sm-icon"></span></a>
+                                                {/if}
+                                               {if isset($showaddObjectives)}
+                                                   {*<input class="bdgbtn pull-right " type="button" name="badge" onclick="badge('{$course[0]->curriculum_id}','{$ter->id}','{$ena->id}','{$my_id}','{$my_token}','{$my_last_login}')">*}
+                                                   <a onclick="addQuiz({$course[0]->curriculum_id},{$ter->id},{$ena->id});"><span class="fa fa-check-square-o pull-right box-sm-icon"></span></a>
+
+                                                   {if checkCapabilities('file:upload', $my_role_id, false)}
+                                                       <a href="../share/request/uploadframe.php?userID={$my_id}&last_login={$my_last_login}&context=curriculum&curID={$course[0]->curriculum_id}&terID={$ter->id}&enaID={$ena->id}{$tb_param}" class="nyroModal">
+                                                        <span class="fa fa-plus pull-right box-sm-icon" ></span></a>
+                                                   {/if}
+                                               {else}
+                                                   {if checkCapabilities('quiz:showQuiz', $my_role_id, false) AND $ena->quiz neq '0'}
+                                                       <a onclick="formloader('quiz','enabling_objective','{$ena->id}');"><span class="fa fa-check-square-o pull-right box-sm-icon"></span></a>
+                                                   {/if}
+                                               {/if}  
+                                               {if checkCapabilities('file:loadMaterial', $my_role_id, false) AND $ena->files neq '0'}
+                                               <a onclick="formloader('material','ena', {$ena->id});"><i class="fa fa-briefcase box-sm-icon"></i> <span class="badge label-primary" style="margin-top: -3px;font-size: 8px;line-height: .8">{$ena->files}</span></a>
+                                                {else}
+                                                    <span class="fa fa-briefcase box-sm-icon deactivate"></span> <span class="badge label-primary deactivate" style="margin-top: -3px;font-size: 8px;line-height: .8">{$ena->files}</span>
+                                                {/if} 
+                                           </div>
+                                       </div>    
+                                   {/if}
+                                   {/foreach}
+                                {/if}
+
+                                {if isset($showaddObjectives)}  
+                                    <div class="panel panel-default box-objective"> 
+                                        <div class="panel-heading boxheader" style="background: {$ter->color}">
+                                            <a  onclick="formloader('enablingObjective','new', {$ter->id});"><span class="fa fa-plus pull-right box-sm-icon"></span></a>
+                                            {*<a onclick="addenablingObjective({$course[0]->curriculum_id},{$ter->id});"><span class="fa fa-plus pull-right invert"></span></a>*}
+                                        </div>
+                                        <div class="panel-body boxwrap">
+                                            <div class="boxscroll">
+                                                <div class="boxcontent">
+                                                    Ziel hinzufügen
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="panel-footer boxfooter"></div>
+                                    </div>
+                                {/if}
+                             </div> <!-- /.col -->
+                           </div><!-- .row-->
+                           <div class="hidden-lg hidden-md"><br/></div>
+                           {/foreach}
+                    {/if}
+                    {* Neues Thema *}        
+                    {if isset($showaddObjectives)}  
+                        <div class="panel panel-default box-objective"> 
+                            <div class="panel-heading boxheader">
+                                <a onclick="formloader('terminalObjective','new', {$course[0]->curriculum_id});"><span class="fa fa-plus pull-right invert box-sm-icon"></span></a>
+                            </div>
+                            <div class="panel-body boxwrap">
+                                <div class="boxscroll">
+                                    <div class="boxcontent">
+                                        Thema hinzufügen
+                                    </div>
                                 </div>
                             </div>
-                    </div>
-                    <div class="panel-footer boxfooter">
-                        {if $ter->description neq ''}
-                            <a onclick="showDescription('{$ter->id}');"><span class="fa fa-info pull-right box-sm-icon"></span></a>
-                        {/if}
-                        {if isset($showaddObjectives)}
-                            {*if checkCapabilities('badge:addBadge', $my_role_id, false)}
-                                <a onclick="badge('{$course[0]->curriculum_id}','{$ter->id}','{$my_id}','{$my_token}','{$my_last_login}');"><span class="fa fa-star pull-right box-sm-icon"></span></a>
-                            {/if*}
-                            {if checkCapabilities('file:upload', $my_role_id, false)}
-                                <a href="../share/request/uploadframe.php?userID={$my_id}&last_login={$my_last_login}&context=curriculum&curID={$course[0]->curriculum_id}&terID={$ter->id}{$tb_param}" class="nyroModal"><span class="fa fa-plus pull-right box-sm-icon"></span></a>                        
-                            {/if} 
-                        {*else}
-                            {if checkCapabilities('badge:getBadge', $my_role_id, false)}
-                                <a onclick="getBadge({$course[0]->curriculum_id},{$ter->id});"><span class="fa fa-star pull-right box-sm-icon"></span></a>
-                            {/if*}
-                        {/if}
-
-                        {if checkCapabilities('file:loadMaterial', $my_role_id, false) AND $ter->files neq '0'}
-                            <a onclick="formloader('material','ter',{$ter->id})"><span class="fa fa-briefcase box-sm-icon"></span>  <span class="badge label-primary" style="margin-top: -3px;font-size: 8px;line-height: .8">{$ter->files}</span></a>
-                        {else}
-                            <span class="fa fa-briefcase box-sm-icon deactivate"></span> <span class="badge label-primary deactivate" style="margin-top: -3px;font-size: 8px;line-height: .8">{$ter->files}</span>
-                        {/if}
-                    </div>
-                  </div> 
-            {*Ende Thema*}
-
-             {*Ziele*}
-               {if $enabledObjectives != false}
-                   {foreach key=enaid item=ena from=$enabledObjectives}
-                   {if $ena->terminal_objective_id eq $ter->id}
-                       <div id="ena_{$ena->id}" class="panel panel-default box-objective {if $ena->accomplished_status_id eq 1} boxgreen {elseif $ena->accomplished_status_id eq 2} boxorange {elseif $ena->accomplished_status_id eq '0'} boxred {/if}"> 
-                           <div class="panel-heading boxheader" style="background: {$ter->color}">
-                               {if checkCapabilities('groups:showAccomplished', $my_role_id, false)}
-                                   {if isset($ena->accomplished_users) and isset($ena->enroled_users) and isset($ena->accomplished_percent)}
-                                       <span class=" pull-left hidden-sm hidden-xs">{$ena->accomplished_users} von {$ena->enroled_users} (</span>{$ena->accomplished_percent}%<span class="hidden-sm hidden-xs">)</span><!--Ziel-->  
-                                   {/if}
-                               {/if}
-                               {if !isset($showaddObjectives) AND checkCapabilities('user:getHelp', $my_role_id, false)}
-                                   <a onclick="getHelp({$page_group}, {$ena->id});"><span class="fa fa-support invert pull-right box-sm-icon"></span></a>
-                               {/if} 
-                               {if !isset($showaddObjectives) AND checkCapabilities('file:solutionUpload', $my_role_id, false)}
-                                   {if $solutions != false}
-                                       {foreach key=solID item=sol from=$solutions}
-                                           {if $sol->enabling_objective_id eq $ena->id AND $sol_btn neq $ena->id}
-                                               {*<input class="ok2btn pull-right" type="button" name="submitedMaterial"> *}
-                                               {assign var="sol_btn" value=$ena->id}
-                                           {/if}
-                                       {/foreach}
-                                   {/if}
-                                   {if checkCapabilities('file:upload', $my_role_id, false)}
-                                       <a href="../share/request/uploadframe.php?userID={$my_id}&last_login={$my_last_login}&context=solution&curID={$course[0]->curriculum_id}&terID={$ter->id}&enaID={$ena->id}{$tb_param}" class="nyroModal">
-                                       <span class="{if $sol_btn eq $ena->id OR $sol_btn eq false}green{/if} fa fa-upload invert pull-right box-sm-icon"></span></a>
-                                   {/if}  
-                               {/if}
-                               {if isset($showaddObjectives)}
-                                    {if $ena->terminal_objective_id eq $enabledObjectives[{$enaid+1}]->terminal_objective_id}
-                                        <a  onclick="order('up', {$ena->order_id},{$course[0]->curriculum_id},{$ter->id},{$ena->id});"><span class="fa fa-arrow-right pull-right box-sm-icon"></span></a>
-                                    {/if}
-                                    <a  onclick="del('enablingObjectives', {$ena->id}, {$my_id});"><span class="fa fa-minus pull-right box-sm-icon"</a>
-                                    <a  onclick="formloader('enablingObjective','edit', {$ena->id});"><span class="fa fa-edit pull-right box-sm-icon"></span></a>
-                                    {*<a  onclick="editObjective({$course[0]->curriculum_id},{$ter->id},{$ena->id});"><span class="fa fa-edit pull-right"></span></a>*}
-                                   {if $ena->order_id neq '1'}
-                                       <a  onclick="order('down', {$ena->order_id},{$course[0]->curriculum_id},{$ter->id},{$ena->id});"><span class="fa fa-arrow-left pull-left box-sm-icon"></span></a>
-                                       
-                                   {/if}
-                                {/if}
-                           </div>
-                           <div {*id="ena_{$ena->id}"*} class="panel-body boxwrap">
-                               <div class="boxscroll">
-                                       <div class="boxcontent">
-                                           {$ena->enabling_objective}
-                                       </div>
-                                   </div>
-                           </div>
-                           <div class="panel-footer boxfooter">
-                                {if $ter->description neq '' AND $ena->description neq ''}
-                                    <a onclick="showDescription('{$ter->id}','{$ena->id}');"><span class="fa fa-info pull-right box-sm-icon"></span></a>
-                                {/if}
-                               {if isset($showaddObjectives)}
-                                   {*<input class="bdgbtn pull-right " type="button" name="badge" onclick="badge('{$course[0]->curriculum_id}','{$ter->id}','{$ena->id}','{$my_id}','{$my_token}','{$my_last_login}')">*}
-                                   <a onclick="addQuiz({$course[0]->curriculum_id},{$ter->id},{$ena->id});"><span class="fa fa-check-square-o pull-right box-sm-icon"></span></a>
-                                   
-                                   {if checkCapabilities('file:upload', $my_role_id, false)}
-                                       <a href="../share/request/uploadframe.php?userID={$my_id}&last_login={$my_last_login}&context=curriculum&curID={$course[0]->curriculum_id}&terID={$ter->id}&enaID={$ena->id}{$tb_param}" class="nyroModal">
-                                        <span class="fa fa-plus pull-right box-sm-icon" ></span></a>
-                                   {/if} 
-
-                               {else}
-                                   {*<input class="bdgbtn pull-right" type="button" name="getBadge" onclick="getBadge({$course[0]->curriculum_id},{$ter->id},{$ena->id})">*}
-                                   {if checkCapabilities('quiz:showQuiz', $my_role_id, false)}
-                                       <a onclick="showQuiz({$course[0]->curriculum_id},{$ter->id},{$ena->id});"><span class="fa fa-check-square-o pull-right box-sm-icon"></span></a>
-                                   {/if}
-                               {/if}  
-                               {if checkCapabilities('file:loadMaterial', $my_role_id, false) AND $ena->files neq '0'}
-                               <a onclick="formloader('material','ena', {$ena->id});"><i class="fa fa-briefcase box-sm-icon"></i> <span class="badge label-primary" style="margin-top: -3px;font-size: 8px;line-height: .8">{$ena->files}</span></a>
-                                {else}
-                                    <span class="fa fa-briefcase box-sm-icon deactivate"></span> <span class="badge label-primary deactivate" style="margin-top: -3px;font-size: 8px;line-height: .8">{$ena->files}</span>
-                                {/if} 
-                           </div>
-                       </div>    
-                   {/if}
-                   {/foreach}
-                {/if}
-                
-                {if isset($showaddObjectives)}  
-                    <div class="panel panel-default box-objective"> 
-                        <div class="panel-heading boxheader" style="background: {$ter->color}">
-                            <a  onclick="formloader('enablingObjective','new', {$ter->id});"><span class="fa fa-plus pull-right box-sm-icon"></span></a>
-                            {*<a onclick="addenablingObjective({$course[0]->curriculum_id},{$ter->id});"><span class="fa fa-plus pull-right invert"></span></a>*}
+                            <div class="panel-footer boxfooter"></div>
                         </div>
-                        <div class="panel-body boxwrap">
-                            <div class="boxscroll">
-                                <div class="boxcontent">
-                                    Ziel hinzufügen
-                                </div>
-                            </div>
-                        </div>
-                        <div class="panel-footer boxfooter"></div>
-                    </div>
-                {/if}
-                
-                
-             </div> <!-- /.col -->
-           </div><!-- .row-->
-           <div class="hidden-lg hidden-md"><br/></div>
-           {/foreach}
-    {/if}
-            {* Neues Thema *}        
-            {if isset($showaddObjectives)}  
-                <div class="panel panel-default box-objective"> 
-                    <div class="panel-heading boxheader">
-                        <a onclick="formloader('terminalObjective','new', {$course[0]->curriculum_id});"><span class="fa fa-plus pull-right invert box-sm-icon"></span></a>
-                    </div>
-                    <div class="panel-body boxwrap">
-                        <div class="boxscroll">
-                            <div class="boxcontent">
-                                Thema hinzufügen
-                            </div>
-                        </div>
-                    </div>
-                    <div class="panel-footer boxfooter"></div>
-                </div>
-            {/if}        
-
+                    {/if}        
                 </div>
             </div>
         </div>
