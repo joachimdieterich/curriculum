@@ -29,13 +29,13 @@ $id                     =   null;
 $institution            =   null; 
 $description            =   null; 
 $schooltype_id          =   null; 
-$btn_newSchooltype      = null;
+$btn_newSchooltype      =   null;
 $new_schooltype         =   null;
 $schooltype_description =   null; 
 $country_id             =   null;
 $state_id               =   null;
 $file_id                =   null; 
-$icon_id                = null;
+$icon_id                =   null;
 $paginator_limit        =   null; 
 $std_role               =   null; 
 $csv_size               =   null; 
@@ -44,12 +44,11 @@ $acc_days               =   null;
 $timeout                =   null; 
 $semester_id            =   null; 
 $error                  =   null;
-$object = file_get_contents("php://input");
-$data = json_decode($object, true);
+$object                 = file_get_contents("php://input");
+$data                   = json_decode($object, true);
 if (is_array($data)) {
     foreach ($data as $key => $value){
         $$key = $value;
-        //error_log($key.': '.$value);
     }
 }
             
@@ -80,6 +79,14 @@ if (isset($_GET['func'])){
     }
 }
 
+/* if validation failed, get formdata from session*/
+if (isset($_SESSION['FORM'])){
+    if (is_object($_SESSION['FORM'])) {
+        foreach ($_SESSION['FORM'] as $key => $value){
+            $$key = $value;
+        }
+    }
+}
 
 $help = "curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Institutionen');"; // not used yet
 

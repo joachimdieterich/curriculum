@@ -267,111 +267,111 @@ class Render {
     } 
     
     public static function quiz($question, $attempt = false, $correction = false){
+        $html= '';
         if (isset($question)){
             if (!$attempt){
-                echo '<p class="space-left">Bitte wähle die richtige Antwort aus.</p><br>'; 
+                $html .= '<h3>Bitte wähle die richtige Antwort aus.</h3><br>'; 
             }
             
-            echo '<form id="ajax_quiz_form" action="" name="addQuestion" method="post">';
-            
+            $html .= '<form id="ajax_quiz_form" action="" name="addQuestion" method="post">';
             foreach ($question as $value) {
-                echo '<h3>'.$value->question.'</h3><br>';
+                $html .= '<h4>'.$value->question.'</h4>';
                 switch ($value->type) {
                     case 0: foreach ($value->answers as $a) {
                                 if ($attempt){
-                                    echo '<div class="space-left';
-                                    if ($attempt[$value->id] == 1 AND $a->correct == 1){ echo ' right-block ';}
-                                    if ($attempt[$value->id] == 1 AND $a->correct == 0){ echo ' wrong-block ';}
-                                    if ($attempt[$value->id] == 0 AND $a->correct == 1){ echo ' right-box ';}
-                                    echo '"><input style="width:40px;" type="radio" name="'.$value->id.'" ';
-                                    if ($attempt[$value->id] == 1) { echo 'checked="checked"';}
-                                    echo 'value="1">Wahr';
+                                    $html .= '<div class="';
+                                    if ($attempt[$value->id] == 1 AND $a->correct == 1){ $html .= ' callout callout-success ';}
+                                    if ($attempt[$value->id] == 1 AND $a->correct == 0){ $html .= ' callout callout-danger ';}
+                                    if ($attempt[$value->id] == 0 AND $a->correct == 1){ $html .= ' callout callout-success ';}
+                                    $html .= '"><input style="width:40px;" type="radio" name="'.$value->id.'" ';
+                                    if ($attempt[$value->id] == 1) { $html .= 'checked="checked"';}
+                                    $html .= 'value="1">Wahr';
                                 
                                     if ($attempt[$value->id] == 1 AND $a->correct == 1){
-                                        echo '<div class="floatright">Richtig</div>';
+                                        $html .= '<div class="pull-right">Richtig</div>';
                                     }  else if ($attempt[$value->id] == 1 AND $a->correct == 0){
-                                        echo '<div class="floatright">Falsch</div>';
+                                        $html .= '<div class="pull-right">Falsch</div>';
                                     }  
                                 } else {
-                                    echo '<div class="space-left"><input style="width:40px;" type="radio" name="'.$value->id.'" value="1">Richtig';
+                                    $html .= '<div ><input style="width:40px;" type="radio" name="'.$value->id.'" value="1">Richtig';
                                 }
-                                echo '</div>';
+                                $html .= '</div>';
                                 if ($attempt){
-                                    echo '<div class="space-left ';
-                                    if ($attempt[$value->id] == 0 AND $a->correct == 0){ echo ' right-block ';}
-                                    if ($attempt[$value->id] == 0 AND $a->correct == 1){ echo ' wrong-block ';}
-                                    if ($attempt[$value->id] == 1 AND $a->correct == 0){ echo ' right-box ';}
-                                    echo '"><input style="width:40px;" type="radio" name="'.$value->id.'" ';
-                                    if ($attempt[$value->id] == 0) { echo 'checked="checked"';}
-                                    echo 'value="0">Falsch';
+                                    $html .= '<div class="space-left ';
+                                    if ($attempt[$value->id] == 0 AND $a->correct == 0){ $html .= ' callout callout-success ';}
+                                    if ($attempt[$value->id] == 0 AND $a->correct == 1){ $html .= ' callout callout-danger ';}
+                                    if ($attempt[$value->id] == 1 AND $a->correct == 0){ $html .= ' callout callout-success ';}
+                                    $html .= '"><input style="width:40px;" type="radio" name="'.$value->id.'" ';
+                                    if ($attempt[$value->id] == 0) { $html .=  'checked="checked"';}
+                                    $html .= 'value="0">Falsch';
                                     if ($attempt[$value->id] == 0 AND $a->correct == 0){
-                                        echo '<div class="floatright">Richtig</div>';
+                                        $html .= '<div class="pull-right">Richtig</div>';
                                     }   else if ($attempt[$value->id] == 0 AND $a->correct == 1){
-                                        echo '<div class="floatright">Falsch</div>';
+                                        $html .= '<div class="pull-right">Falsch</div>';
                                     }    
                                 } else {
-                                    echo '<div class="space-left"><input style="width:40px;" type="radio" name="'.$value->id.'" value="0">Falsch';
+                                    $html .= '<div class=""><input style="width:40px;" type="radio" name="'.$value->id.'" value="0">Falsch';
                                 }
-                                echo '</div>';
+                                $html .= '</div>';
                             }
                         break;
                     case 1: foreach ($value->answers as $a) {
                                 if ($attempt){
-                                    echo '<div class="space-left ';
-                                    if ($attempt[$value->id] == $a->id AND $a->correct == 1){ echo ' right-block '; }
-                                    if ($attempt[$value->id] == $a->id AND $a->correct == 0){ echo ' wrong-block '; }
-                                    if ($attempt[$value->id] != $a->id AND $a->correct == 1){ echo ' right-box '; }
-                                    echo '"><input style="width:40px;" type="radio" name="'.$value->id.'" value="'.$a->id.'" ';
-                                    if ($attempt[$value->id] == $a->id) { echo 'checked="checked"';}
-                                    echo '>'.$a->answer;
+                                    $html .= '<div class=" ';
+                                    if ($attempt[$value->id] == $a->id AND $a->correct == 1){ $html .= ' callout callout-success '; }
+                                    if ($attempt[$value->id] == $a->id AND $a->correct == 0){ $html .= ' callout callout-danger '; }
+                                    if ($attempt[$value->id] != $a->id AND $a->correct == 1){ $html .= ' callout callout-success '; }
+                                    $html .= '"><input style="width:40px;" type="radio" name="'.$value->id.'" value="'.$a->id.'" ';
+                                    if ($attempt[$value->id] == $a->id) { $html .= 'checked="checked"';}
+                                    $html .= '>'.$a->answer;
                                     if ($attempt[$value->id] == $a->id AND $a->correct == 1){
-                                        echo '<div class="floatright">Richtig</div>';
+                                        $html .= '<div class="pull-right">Richtig</div>';
                                     }   else if ($attempt[$value->id] == $a->id AND $a->correct != 1){
-                                        echo '<div class="floatright">Falsch</div>';
+                                        $html .= '<div class="pull-right">Falsch</div>';
                                     } 
                                 } else {
-                                    echo '<div class="space-left"><input style="width:40px;" type="radio" name="'.$value->id.'" value="'.$a->id.'">'.$a->answer;
+                                    $html .= '<div class=""><input style="width:40px;" type="radio" name="'.$value->id.'" value="'.$a->id.'">'.$a->answer;
                                 }
-                                echo'</div>';
+                                $html .='</div>';
                             }
                         break;
                     case 2: foreach ($value->answers as $a) {
                                 if ($attempt){
-                                    echo '<div class="space-left ';
-                                    if ($attempt[$value->id] == $a->answer){ echo ' right-block '; }
-                                    if ($attempt[$value->id] != $a->answer ){ echo ' wrong-block '; }
-                                    echo '"><input style="width:40px;" type="text" name="'.$value->id.'" value="'.$attempt[$value->id].'" >';
+                                    $html .= '<div class=" ';
+                                    if ($attempt[$value->id] == $a->answer){ $html .= ' callout callout-success '; }
+                                    if ($attempt[$value->id] != $a->answer ){ $html .= ' callout callout-danger '; }
+                                    $html .= '"><input style="width:40px;" type="text" name="'.$value->id.'" value="'.$attempt[$value->id].'" >';
                                     if ($attempt[$value->id] == $a->answer ){
-                                        echo '<div class="floatright">Richtig</div>';
+                                        $html .= '<div class="pull-right">Richtig</div>';
                                     }   else if ($attempt[$value->id] != $a->answer ){
-                                        echo '<div class="floatright">Richtige Antwort ist<strong> '.$a->answer.'</strong></div>';
+                                        $html .= '<div class="pull-right">Richtige Antwort ist<strong> '.$a->answer.'</strong></div>';
                                     } 
                                 } else {
-                                    echo '<div class="space-left"><input style="width:40px;" type="text" name="'.$value->id.'" onkeydown="if (event.keyCode == 13) {event.preventDefault();}">';
+                                    $html .= '<div class=""><input style="width:40px;" type="text" name="'.$value->id.'" onkeydown="if (event.keyCode == 13) {event.preventDefault();}">';
                                 }
-                                echo'</div>';
+                                $html .='</div>';
                             }
                         break;
-                    case 3: echo '<div id="div2" class="floatright border-box" style="height:30px;width:90px;" ondrop="drop_answer(event, '.$value->id.')" ondragover="allowDrop(event)"></div>';
-                            echo '<input style="width:40px;" type="hidden" name="'.$value->id.'" value="">';
+                    case 3: $html .= '<div id="div2" class="pull-right border-box" style="height:30px;width:90px;" ondrop="drop_answer(event, '.$value->id.')" ondragover="allowDrop(event)"></div>';
+                            $html .= '<input style="width:40px;" type="hidden" name="'.$value->id.'" value="">';
                             foreach ($value->answers as $a) {
                                 if ($attempt){
-                                    echo '<div class="space-left ';
-                                    if ($attempt[$value->id] == $a->answer){ echo ' right-block '; }
-                                    if ($attempt[$value->id] != $a->answer ){ echo ' wrong-block '; }
-                                    echo '"><input style="width:40px;" type="text" name="'.$value->id.'" value="'.$attempt[$value->id].'" >';
+                                    $html .= '<div class=" ';
+                                    if ($attempt[$value->id] == $a->answer){ $html .= ' callout callout-success '; }
+                                    if ($attempt[$value->id] != $a->answer ){ $html .= ' callout callout-danger '; }
+                                    $html .= '"><input style="width:40px;" type="text" name="'.$value->id.'" value="'.$attempt[$value->id].'" >';
                                     if ($attempt[$value->id] == $a->answer ){
-                                        echo '<div class="floatright">Richtig</div>';
+                                        $html .= '<div class="pull-right">Richtig</div>';
                                     }   else if ($attempt[$value->id] != $a->answer ){
-                                        echo '<div class="floatright">Richtige Antwort ist<strong> '.$a->answer.'</strong></div>';
+                                        $html .= '<div class="pull-right">Richtige Antwort ist<strong> '.$a->answer.'</strong></div>';
                                     } 
                                 } else {
-                                    echo '<div class="space-left">';
-                                    echo '<div id="div_'.$a->id.'" class="border-box" style="height:30px;width:90px;" ondrop="drop(event)" ondragover="allowDrop(event)">
+                                    $html .= '<div class="space-left">';
+                                    $html .= '<div id="div_'.$a->id.'" class="border-box" style="height:30px;width:90px;" ondrop="drop(event)" ondragover="allowDrop(event)">
                                     <img src="'.$a->answer.'" draggable="true" ondragstart="drag(event, '.$value->id.')" id="'.$a->id.'" width="88" height="31">
                                   </div>';
                                 }
-                                echo '</div>';
+                                $html .= '</div>';
                             }
                             
                         break;
@@ -379,17 +379,16 @@ class Render {
                     default:
                         break;
                 }
-                echo '<br>';
+                $html .= '<br>';
             } 
             if (!$attempt){
-                echo '<div class="border-box" onclick="sendForm(\'ajax_quiz_form\', \'evaluateQuiz.php\')">Quiz beenden</div>';
+                $html .= '<button class="btn btn-block btn-default" onclick="sendForm(\'ajax_quiz_form\', \'evaluateQuiz.php\');return false">Quiz beenden</button>';
             } else {
-                echo '<input value="Fenster schließen" type="submit">';
+                $html .= '<button class="btn btn-block btn-default">Fenster schließen</button>';
             }
-            echo '</form><div id="ajax_quiz_form_result"></div>';
-        } else {
-            echo '<p class="materialtxt"><p class="space-left">Keine Quiz vorhanden</p>';
-        }
+            $html .= '</form>';
+        } 
+        return $html;
     }
     
     public static function filelist($form, $dependency, $dir, $postfix, $target, $format, $multiple, $id){

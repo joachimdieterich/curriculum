@@ -44,15 +44,13 @@ $timeend           = null;
 $timerange         = null;
 $status            = null;
 
-$func                   = $_GET['func'];
-
-$error                  =   null;
-$object = file_get_contents("php://input");
+$func              = $_GET['func'];
+$error             =   null;
+$object            = file_get_contents("php://input");
 $data = json_decode($object, true);
 if (is_array($data)) {
     foreach ($data as $key => $value){
         $$key = $value;
-        error_log($key.': '.$value);
     }
 }
             
@@ -81,9 +79,11 @@ if (isset($_GET['func'])){
 }
 
 /* if validation failed, get formdata from session*/
-if (is_object($_SESSION['FORM'])) {
-    foreach ($_SESSION['FORM'] as $key => $value){
-        $$key = $value;
+if (isset($_SESSION['FORM'])){
+    if (is_object($_SESSION['FORM'])) {
+        foreach ($_SESSION['FORM'] as $key => $value){
+            $$key = $value;
+        }
     }
 }
 
@@ -105,23 +105,9 @@ $html .= '<input type="hidden" name="event_id" id="event_id" value="'.$event_id.
 }
 $html .= Form::input_text('event', 'Termin', $event, $error, 'z. B. Treffen in der Aula');
 $html .= Form::input_textarea('description', 'Beschreibung', $description, $error, 'Beschreibung');
-/*
-$courses = new Course(); 
-if(checkCapabilities('user:userListComplete', $USER->role_id, false)){
-    $courses = $courses->getCourse('admin', $USER->id);  
-} else if(checkCapabilities('user:userList', $USER->role_id, false)){
-    $courses = $courses->getCourse('teacher', $USER->id);  // abhängig von USER->my_semester id --> s. Select in objectives.tpl, 
-}                                               // Load schooltype 
-$html       .= Form::input_select('course_id', 'Kurs / Klasse', $courses, 'course', 'course_id', $course_id , $error);
+$html .= Form::input_date(array('id'=>'timerange', 'label' => 'Dauer' , 'time' => $timerange, 'error' => $error, 'placeholder' => '', $type = 'date'));
 
-$g           = new Group();
-$html       .= Form::input_select('group_id', 'Gruppe', $g->getGroups('user',$USER->id), 'group', 'id', $group_id , $error);
-
-$u           = new User();
-$html       .= Form::input_select('user_id', 'Gruppe', $u->userList(), 'firstname, lastname', 'id', $group_id , $error);*/
-$html       .= Form::input_date(array('id'=>'timerange', 'label' => 'Dauer' , 'time' => $timerange, 'error' => $error, 'placeholder' => '', $type = 'date'));
-
-$html       .= '</div><!-- /.modal-body -->
+$html .= '</div><!-- /.modal-body -->
             <div class="modal-footer">';
             if (isset($edit)){
                 $html .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_event\').submit();">'.$header.'</button>'; 

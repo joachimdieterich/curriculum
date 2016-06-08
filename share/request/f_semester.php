@@ -20,7 +20,7 @@ $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER, $CFG;
-$USER                   = $_SESSION['USER'];
+$USER            = $_SESSION['USER'];
 
 $semester_id     = '';
 $semester        = '';
@@ -47,10 +47,12 @@ switch ($func) {
     default:
         break;
 }
-/* if validation failed */
-if (is_object($_SESSION['FORM'])) {
-    foreach ($_SESSION['FORM'] as $key => $value){
-        $$key = $value;
+/* if validation failed, get formdata from session*/
+if (isset($_SESSION['FORM'])){
+    if (is_object($_SESSION['FORM'])) {
+        foreach ($_SESSION['FORM'] as $key => $value){
+            $$key = $value;
+        }
     }
 }
 

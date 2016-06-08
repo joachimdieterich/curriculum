@@ -113,6 +113,7 @@ class EnablingObjective {
      * @var array of file object
      */
     public $files; 
+    public $quiz;
             
             
     /**
@@ -330,9 +331,13 @@ class EnablingObjective {
                                             $ext = '';
                                         }
                                     } 
-                                    
                                     $this->files                = $res_03->MAX.$ext; //nummer of materials
                                     
+                                    /* Check if Quiz is available for this enabling objective*/
+                                    $db_05       = DB::prepare('SELECT COUNT(*) AS MAX FROM quiz_questions WHERE objective_id = ? AND objective_type = 1');
+                                    $db_05->execute(array($result->id));
+                                    $res_05      = $db_05->fetchObject();
+                                    $this->quiz  = $res_05->MAX;
                                     
                                     $objectives[]                  = clone $this;     
                                 }

@@ -38,7 +38,6 @@ switch ($func) {
                     $ena_objective->load();                                 //Läd die bestehenden Daten aus der db
                     foreach ($ena_objective as $key => $value){
                         $$key = $value;
-                        //error_log($key. ': '.$value);
                     }
                     $omega                        = new Omega();
                     $reference                    = $omega->getReference('enabling_objective', $ena_objective->id);
@@ -56,9 +55,12 @@ switch ($func) {
         break;
 }
 
-if (is_object($_SESSION['FORM'])) {
-    foreach ($_SESSION['FORM'] as $key => $value){
-        $$key = $value;
+/* if validation failed, get formdata from session*/
+if (isset($_SESSION['FORM'])){
+    if (is_object($_SESSION['FORM'])) {
+        foreach ($_SESSION['FORM'] as $key => $value){
+            $$key = $value;
+        }
     }
 }
 
@@ -73,7 +75,6 @@ $content .= Form::input_textarea('description', 'Beschreibung', $description, $e
 $content .= Form::input_text('reference', 'OMEGA Link', $reference, $error, 'Beschreibung');
 
 $intervals = new Interval();
-
 $content .= Form::input_select('repeat_interval', 'Ziel wiederholen?',$intervals->getIntervals(), 'description', 'repeat_interval', $repeat_interval, $error );
 
 $f_content = '';

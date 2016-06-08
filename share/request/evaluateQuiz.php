@@ -22,15 +22,11 @@ include(dirname(__FILE__).'/../login-check.php');  //check login status and rese
 global $USER;
 $USER       = $_SESSION['USER'];
 
-$list                 = new Question();
-$list->id             = array_shift(array_keys($_POST));
-$list->load();
-$q_list               = $list->getQuestions('objective');
-
-
+$html = '';
 $question   = new Question();
 $i          = 0; 
 $c          = 0;
+
 foreach($_POST as $key =>$value){
     $question->id        = $key;
     $question->load();
@@ -54,21 +50,24 @@ foreach($_POST as $key =>$value){
     $i++;
 }
 $enabling_objectives = new EnablingObjective();
-if ( $question->objective_type = 1){ // Fall dass ein Thema mit einem Test versehen wird ist noch nicht fertig
+if ( $question->objective_type == 1){ // Fall dass ein Thema mit einem Test versehen wird ist noch nicht fertig
     $enabling_objectives->id = $question->objective_id;
 }
 $percent = round($c/$i*100);
 if ($percent >= 90) {
     $enabling_objectives->setAccomplishedStatus('quiz', $USER->id, $USER->id, 1); 
-    echo '<p>Sie haben '.$c.' von '.$i.' Fragen ('. $percent .'%) richtig beantwortet. Das Ziel ... wurde auf grün gesetzt.</p>';        
+    $html .= '<p>Sie haben '.$c.' von '.$i.' Fragen ('. $percent .'%) richtig beantwortet. Das Ziel ... wurde auf grün gesetzt.</p>';        
 } else if ($percent >= 50 AND $percent < 90 ) {
     $enabling_objectives->setAccomplishedStatus('quiz', $USER->id, $USER->id, 2);
-    echo '<p>Sie haben '.$c.' von '.$i.' Fragen ('. $percent .'%) richtig beantwortet. Das Ziel ... wurde auf orange gesetzt.</p>';
+    $html .=  '<p>Sie haben '.$c.' von '.$i.' Fragen ('. $percent .'%) richtig beantwortet. Das Ziel ... wurde auf orange gesetzt.</p>';
 } else {
     $enabling_objectives->setAccomplishedStatus('quiz', $USER->id, $USER->id, 0); 
-    echo '<p>Sie haben '.$c.' von '.$i.' Fragen ('. $percent .'%) richtig beantwortet. Das Ziel ... wurde auf rot gesetzt</p>';
+    $html .=  '<p>Sie haben '.$c.' von '.$i.' Fragen ('. $percent .'%) richtig beantwortet. Das Ziel ... wurde auf rot gesetzt</p>';
 }
 
-Render::quiz($q_list, $_POST, true);
+$q_list               = $question->getQuestions('objective');
+
+$html .= Render::quiz($q_list, $_POST, true);
+echo $html;
 
 //object_to_array($_POST);

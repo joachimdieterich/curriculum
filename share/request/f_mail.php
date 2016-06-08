@@ -23,14 +23,14 @@ global $CFG, $USER, $COURSE;
 $USER           = $_SESSION['USER'];
 $func           = $_GET['func'];
 $mail_id        = null;
-$receiver_id        = null;
+$receiver_id    = null;
 $group_id       = null;
 $subject        = null;
 $message_text   = null;
 
-$error          =   null;
-$object = file_get_contents("php://input");
-$data = json_decode($object, true);
+$error          = null;
+$object         = file_get_contents("php://input");
+$data           = json_decode($object, true);
 if (is_array($data)) {
     foreach ($data as $key => $value){
         $$key = $value;
@@ -41,6 +41,12 @@ if (isset($func)){
     switch ($func) {
         case 'new':      checkCapabilities('mail:postMail', $USER->role_id);
                          $header            = 'Nachricht schreiben';
+                         $add               = true;
+        break;
+        case 'gethelp':  checkCapabilities('mail:postMail', $USER->role_id);
+                         $header            = 'Nachricht schreiben';
+                         $subject           = $USER->firstname.' '.$USER->lastname.' braucht Deine Hilfe.';
+                         $receiver_id       = filter_input(INPUT_GET, 'id',    FILTER_UNSAFE_RAW);
                          $add               = true;
         break;
         case 'reply':

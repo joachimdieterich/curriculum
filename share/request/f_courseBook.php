@@ -23,9 +23,9 @@ global $CFG, $USER, $COURSE;
 $USER           = $_SESSION['USER'];
 $COURSE         = $_SESSION['COURSE'];
 
-$cur            = new Curriculum();
+$cur               = new Curriculum();
 /*Variablen anlegen -> vermeidet unnötige if-Abfragen im Formular*/
-$id             = null;
+$id                = null;
 $topic             = null; 
 $description       = null;
 $creation_time     = null;
@@ -79,12 +79,13 @@ if (isset($_GET['func'])){
 }
 
 /* if validation failed, get formdata from session*/
-if (is_object($_SESSION['FORM'])) {
-    foreach ($_SESSION['FORM'] as $key => $value){
-        $$key = $value;
+if (isset($_SESSION['FORM'])){
+    if (is_object($_SESSION['FORM'])) {
+        foreach ($_SESSION['FORM'] as $key => $value){
+            $$key = $value;
+        }
     }
 }
-
 
 $html ='<div class="modal-dialog" style="overflow-y: initial !important;">
           <div class="modal-content">

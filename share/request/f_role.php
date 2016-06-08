@@ -21,11 +21,9 @@ include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER, $CFG;
 $USER           = $_SESSION['USER'];
-
 $role_id        = null;
 $role           = null;
 $description    = null;
-
 $error          = null; 
 $role_obj       = new Roles(); 
 $func           = $_GET['func'];

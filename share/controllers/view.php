@@ -22,15 +22,14 @@ $TEMPLATE->assign('breadcrumb',  array('Lehrplan' => 'index.php?action=view'));
 $function = '';
 if ($_GET){ 
     switch ($_GET) {
-        case isset($_GET['group']): $PAGE->group = $_GET['group'];
-                                    $TEMPLATE->assign('page_group',     $PAGE->group);
-                                    $group = new Group(); 
-                                    $group->id = $_GET['group'];
-                                    $group->load(); 
-                                    $TEMPLATE->assign('group',     $group);
+        case isset($_GET['group']):         $PAGE->group = $_GET['group'];
+                                            $TEMPLATE->assign('page_group',     $PAGE->group);
+                                            $group = new Group(); 
+                                            $group->id = $_GET['group'];
+                                            $group->load(); 
+                                            $TEMPLATE->assign('group',     $group);
         case isset($_GET['curriculum_id']): $PAGE->curriculum = $_GET['curriculum_id'];
-                                    $TEMPLATE->assign('page_curriculum',     $PAGE->curriculum);
-                                    
+                                            $TEMPLATE->assign('page_curriculum',     $PAGE->curriculum);                 
             break;
         
         default:
@@ -38,48 +37,7 @@ if ($_GET){
     }
 }
 
-if ($_POST){
-    foreach ($_POST as $key => $value) {
-                error_log($key.': '.$value);
-            }
-            
-    if (isset($_POST['terminal_objective_id']) AND !isset($_POST['enabling_objective_id'])){ $func = 'update_terminal_objective'; } else {$func = 'add_terminal_objective';}
-    
-    switch ($func) {   
-        /*case isset($_POST['add_badge']):
-        case isset($_POST['update_badge']): $gump = new Gump();        
-                                            $_POST = $gump->sanitize($_POST);           //sanitize $_POST
-                                            $badge = new Badges();
-                                            
-                                            $link = new File();             //load Filename --> besser direkt Link vom uploadframe übergeben lassn (format 2 --> funktioniert im moment nicht richtig)
-                                            $link->id = $_POST['badge_image'];
-                                            $link->load();
-                                            $badge->imageUrl            = $CFG->access_file_url.$link->full_path;
-                                            $badge->name                = $_POST['badge_name'];
-                                            $badge->type                = $_POST['badge_type'];
-                                            $badge->earnerDescription   = $_POST['badge_description'];
-                                            $badge->consumerDescription = $_POST['badge_description'];
-                                            $badge->criteriaUrl         = $CFG->request_url.'index.php?action=criteria&t='.$_POST['terminal_objective_id'].'&e='.$_POST['enabling_objective_id'];
-                                            $badge->criteria            = array (
-                                                                          "description" => $_POST['badge_criteria'],
-                                                                          "required" => 1,
-                                                                          "note" => "",
-                                                                            );
-                                            $badge->unique              = false;
-                                            object_to_array($badge);
-                                            $badge->add($_POST['terminal_objective_id'], $_POST['enabling_objective_id'],$_POST['badge_criteria']);
-
-            break;*/
-        case isset($_POST['deleteMaterial']):   $file = new File(); 
-                                                $file->id = $_POST['id'];
-                                                $file->delete();
-            break; 
-        default:
-            break;
-    }
-}
-
-if ((isset($_GET['function']) AND $_GET['function'] == 'addObjectives') || (isset($_POST['function']) AND $_POST['function'] == 'addObjectives')) {
+if ((isset($_GET['function']) AND $_GET['function'] == 'addObjectives')) {
     $function = 'addObjectives';
     $TEMPLATE->assign('showaddObjectives', true); //blendet die addButtons ein
 }

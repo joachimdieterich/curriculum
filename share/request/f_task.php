@@ -23,7 +23,6 @@ global $CFG, $USER, $COURSE;
 $USER           = $_SESSION['USER'];
 $COURSE         = $_SESSION['COURSE'];
 
-
 /*Variablen anlegen -> vermeidet unnötige if-Abfragen im Formular*/
 $task_id           = null;
 $task              = null; 
@@ -37,12 +36,11 @@ $timerange         = null;
 $func              = $_GET['func'];
 
 $error             =   null;
-$object = file_get_contents("php://input");
-$data = json_decode($object, true);
+$object            = file_get_contents("php://input");
+$data              = json_decode($object, true);
 if (is_array($data)) {
     foreach ($data as $key => $value){
         $$key = $value;
-        error_log('input: '.$key.': '.$value);
     }
 }
             
@@ -72,12 +70,13 @@ if (isset($_GET['func'])){
 }
 
 /* if validation failed, get formdata from session*/
-if (is_object($_SESSION['FORM'])) {
-    foreach ($_SESSION['FORM'] as $key => $value){
-        $$key = $value;
+if (isset($_SESSION['FORM'])){
+    if (is_object($_SESSION['FORM'])) {
+        foreach ($_SESSION['FORM'] as $key => $value){
+            $$key = $value;
+        }
     }
 }
-
 
 $html ='<div class="modal-dialog" style="overflow-y: initial !important;">
           <div class="modal-content">
