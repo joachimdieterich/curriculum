@@ -120,9 +120,7 @@
                                                     <a onclick="formloader('description', 'enabling_objective','{$ena->id}');"><span class="fa fa-info pull-right box-sm-icon"></span></a>
                                                 {/if}
                                                {if isset($showaddObjectives)}
-                                                   {*<input class="bdgbtn pull-right " type="button" name="badge" onclick="badge('{$course[0]->curriculum_id}','{$ter->id}','{$ena->id}','{$my_id}','{$my_token}','{$my_last_login}')">*}
-                                                   <a onclick="addQuiz({$course[0]->curriculum_id},{$ter->id},{$ena->id});"><span class="fa fa-check-square-o pull-right box-sm-icon"></span></a>
-
+                                                   <a onclick="formloader('addQuiz','enabling_objective','{$ena->id}');"><span class="fa fa-check-square-o pull-right box-sm-icon"></span></a>
                                                    {if checkCapabilities('file:upload', $my_role_id, false)}
                                                        <a href="../share/request/uploadframe.php?userID={$my_id}&last_login={$my_last_login}&context=curriculum&curID={$course[0]->curriculum_id}&terID={$ter->id}&enaID={$ena->id}{$tb_param}" class="nyroModal">
                                                         <span class="fa fa-plus pull-right box-sm-icon" ></span></a>

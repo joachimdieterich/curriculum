@@ -28,11 +28,9 @@ if(isset($_POST['tfDesc']) || isset($_POST['mcDesc'])){
         if ($_POST['tfDesc'] != ''){$question       = $_POST['tfDesc']; $type = 'tf'; $type_id = 0;}
         if ($_POST['mcDesc'] != ''){$question       = $_POST['mcDesc']; $type = 'mc'; $type_id = 1;}
         if ($_POST['saDesc'] != ''){$question       = $_POST['saDesc']; $type = 'sa'; $type_id = 2;}
-        if ($_POST['ena_id'] != ''){
-            $objective_id   = $_POST['ena_id']; $objective_type = 1;
-        } else if ($_POST['ter_id'] != ''){
-            $objective_id   = $_POST['ter_id']; $objective_type = 0;
-        }
+        $objective_id   = $_POST['objective_id']; 
+        $objective_type = $_POST['objective_type']; 
+        
         
         $q      = DB::prepare('INSERT INTO quiz_questions (question, type, objective_id, objective_type) VALUES (?,?,?,?)');
         $q->execute(array($question, $type_id, $objective_id, $objective_type));
