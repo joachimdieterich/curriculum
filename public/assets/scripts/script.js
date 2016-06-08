@@ -37,7 +37,8 @@ function switchValue(ElementID){
     }
 }
 
-function toggle(){ // 
+function toggle(){ 
+    
     for(var i = 0, j = arguments[0].length; i < j; ++i) {
         if ($(document.getElementById(arguments[0][i])).hasClass("hidden")){
             $(document.getElementById(arguments[0][i])).removeClass("hidden");
@@ -76,7 +77,6 @@ function toggle_column(){
     if ($('td[name='+arguments[0]+']').hasClass("hidden")){
        $('td[name='+arguments[0]+']').removeClass("hidden");
        $("#cb_"+arguments[0]).prop("checked", true);            // Checkbox
-
     } else {
         $('td[name='+arguments[0]+']').addClass("hidden");
         $("#cb_"+arguments[0]).prop("checked", false);          // uncheck Checkbox
@@ -133,7 +133,6 @@ function checkrow(/*rowNr,link*/) {
     if (arguments.length === 4) { //multiple Auswahl über die Checkboxen (Lernstand)
         var values = new Array();           //Array of all checked values
         $.each($('[name="'+arguments[1]+'"]:checked'), function() {
-            //alert($(this).val());
             if ($(this).val() !== 'none'){
                 values.push($(this).val());                             
             }
@@ -222,31 +221,6 @@ function process(){
         }
     }  
 }
-
-function scriptloader(script){
-    //alert(script);
-    //script;
-}
-
-/*function answer() {
-    $('#popup').show(); 
-    if (req.readyState === 4) {  
-        if (req.status === 200) {   
-           if (req.responseText.length !== 0){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen --> auf 0 geändert - testen!
-                
-                if (document.getElementById('popup')){
-                     document.getElementById('popup').innerHTML = req.responseText;  
-                     $('#popup').show(); 
-                     raiseEvent('load', 'popup');
-                } else {
-                    alert(req.responseText); //unschön, aber #popup ist vom modalframe aus nicht verfügbar
-                }    
-           } else {
-               window.location.reload();
-           }
-        }
-    }   
-}*/
 
 function reloadPage() {
     if (req.readyState === 4) { 
@@ -363,13 +337,6 @@ function setAccomplishedObjectives(creatorID, userID, paginatorfirst, paginatorL
 
 //SetAccomplishedObjectivesBySolution
 function setAccomplishedObjectivesBySolution(creatorID, userID, enablingObjectiveID, statusID){       
-   /*var text = '';
-   if (statusID === 0){
-        text = 'Soll Ziel gesperrt werden?';
-   } else { 
-        text = 'Soll Ziel freigeschaltet werden?';
-    }
-   if (confirm(text)){*/
     var url = "../share/request/setAccObjectives.php?userID="+ userID +"&creatorID="+ creatorID +"&enablingObjectiveID="+ enablingObjectiveID+"&statusID="+statusID;
     req = XMLobject();
     if(req) {        
@@ -402,7 +369,6 @@ function setAccomplishedObjectivesBySolution(creatorID, userID, enablingObjectiv
             req.open("GET", url, true);
             req.send(null);
         }
-    //}
 }
 /**
  * 
@@ -417,10 +383,8 @@ function getRequest(url){
         req.open("GET", url); // ! security ! im Formular muss überprüft werden, ob user die Daten (bez. auf id) sehen darf
         req.setRequestHeader('Content-Type', 'application/json; charset=utf-8'); //Kann Meldung "Automatically populating $HTTP_RAW_POST_DATA is deprecated " in der Konsole erzeugen: Lösung: always_populate_raw_post_data = -1 //in der php.ini auf -1 setzen. 
         req.send();
-    } 
-       
+    }   
 }
-
 
 /**
  * show Learner who have complete this objective
@@ -626,7 +590,6 @@ function checkPaginatorRow(paginatorName, rowNr) {
     }
 }
 
-
 //Fileuploadframe ausblenden
 function hideUploadframe(){
        document.getElementById('uploadframe').style.display = 'none';
@@ -646,23 +609,6 @@ function showSubjectIcon(path, icon){
     //document.getElementById('icon_img').src = path + icon;
     document.getElementById('icon_img').style.background =  "url('"+path+icon+"') center center";
 }
-
-function addQuiz() {
-    if (arguments.length === 2) {
-       var url = "../share/request/addQuiz.php?curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1]; 
-    } else if (arguments.length === 3) {
-       var url = "../share/request/addQuiz.php?curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1] +"&enablingObjectiveID="+ arguments[2]; 
-    }
-    getRequest(url);
-}
-/*function showQuiz() {
-    if (arguments.length === 2) {
-       var url = "../share/request/showQuiz.php?curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1]; 
-    } else if (arguments.length === 3) {
-       var url = "../share/request/showQuiz.php?curriculumID="+ arguments[0] +"&terminalObjectiveID="+ arguments[1] +"&enablingObjectiveID="+ arguments[2]; 
-    }
-    getRequest(url);
-}*/
 
 function sendForm(form_id, file){
     var form = $('#'+form_id);
