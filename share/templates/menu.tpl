@@ -22,7 +22,7 @@
             </li>
             {/if}
             
-            {if checkCapabilities('menu:readMyCurricula', $my_role_id, false)}
+            
             <li class="header">Lehrpläne</li>
             <li class="treeview">
                 {if $my_enrolments != ''}
@@ -37,7 +37,7 @@
                     {/foreach}
                 {else}<li><p>Sie sind in keinem Lehrplan eingeschrieben</p></li>
                 {/if}   
-            {/if} 
+            
             
             <!-- Institution Menu -->
             {if checkCapabilities('menu:readMyInstitution', $my_role_id, false)}

@@ -63,5 +63,10 @@ switch ($function) {
         break;
 }
 
+/* Todo Niveaus */
+$niveau = new Curriculum();
+$niveau->id = $PAGE->curriculum;
+$TEMPLATE->assign('niveaus', $niveau->getNiveau());
+
 $files = new File(); 
 $TEMPLATE->assign('solutions', $files->getSolutions('course', $USER->id, $PAGE->curriculum));  // load solutions

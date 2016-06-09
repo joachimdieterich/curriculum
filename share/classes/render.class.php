@@ -475,7 +475,7 @@ class Render {
                         <i class="fa fa-check bg-green"></i>
                         <div class="timeline-item">
                           <span class="time" onclick="del(\'courseBook\','.$cb->id.');"><i class="fa fa-trash-o"></i></span>
-                          <span class="time" onclick="formloader(\'coursebook\',\'edit\','.$cb->id.');"><i class="fa fa-edit"></i></span>
+                          <span class="time" onclick="formloader(\'courseBook\',\'edit\','.$cb->id.');"><i class="fa fa-edit"></i></span>
                           <span class="time"><i class="fa fa-clock-o"></i> '.$cb->creation_time.'</span>
                           
                           <h3 class="timeline-header"><a href="#">';
@@ -501,7 +501,7 @@ class Render {
 
         }
         $r      .= '    <li>
-                            <i class="fa fa-clock-o bg-gray" onclick="formloader(\'coursebook\',\'new\');"></i>
+                            <i class="fa fa-clock-o bg-gray" onclick="formloader(\'courseBook\',\'new\');"></i>
                         </li>';
         
         $r      .=  '</ul><!-- timleline -->
