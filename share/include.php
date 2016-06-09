@@ -64,9 +64,8 @@ include('classes/user.class.php');
 
 /*omega plugin*/
 if (file_exists('plugins/omega.class.php')) {
-include('plugins/omega.class.php');
+    include('plugins/omega.class.php');
 }
-include('plugins/omega.class.php');
 /*Videostream*/
 include('classes/video_stream.class.php');     
 

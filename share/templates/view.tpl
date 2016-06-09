@@ -50,7 +50,7 @@
                                              {/if}
                                          {/if}
                                     </div>
-                                    <div id="ter_{$ter->id}" class="panel-body boxwrap">
+                                    <div id="ter_{$ter->id}" class="panel-body bg-gray disabled color-palette boxwrap">
                                         <div class="boxscroll">
                                                 <div class="boxcontent">
                                                     {$ter->terminal_objective}

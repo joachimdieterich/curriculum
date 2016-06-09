@@ -26,8 +26,7 @@ try { // Error handling
    
  switch ($PAGE->action) {
      case 'login':  $TEMPLATE->assign('page_action',      'login');                                      
-     case 'install':  
-     //case 'criteria':  //wichtig für Badges-Info ohne Login
+     //case 'install':  
          break;
      
      default:   if(filter_input(INPUT_GET, 'mySemester', FILTER_VALIDATE_INT)){                                          // Lernzeitraum wurde gewechselt --> vor session.php damit Änderungen übernommen werden
@@ -113,11 +112,17 @@ try { // Error handling
             $TEMPLATE->assign('page_message',       $PAGE->message);
             $_SESSION['PAGE']->message = null;  //reset to prevent multiple notifications
         } 
-    } else { throw new CurriculumException($PAGE->action .'.php nicht vorhanden.'); }
+    } else {  
+        $TEMPLATE->assign('page_name',         $PAGE->action);  
+        $PAGE->action = 'error-404';
+        throw new CurriculumException($PAGE->action .'.php nicht vorhanden.'); 
+    }
  } catch (CurriculumException $e){ // CurriculumException im controller
-        $TEMPLATE->assign('prev_page_name',         $PAGE->action);  
-        $TEMPLATE->assign('curriculum_exception',   $e);  
-        $PAGE->action = 'error';      
+    if ($PAGE->action != 'error-404'){
+        $TEMPLATE->assign('page_name',         $PAGE->action);  
+        $PAGE->action = 'error-403';
+    }
+    $TEMPLATE->assign('curriculum_exception',   $e);  
 } 
 //object_to_array($USER);
 //error_log(var_dump($INSTITUTION));
@@ -129,7 +134,7 @@ try { // Error handling
 try {   
     $TEMPLATE->display((isset($TEMPLATE_prefix) ? $TEMPLATE_prefix : '').$PAGE->action .'.tpl');
 } catch (CurriculumException $e){   // wenn CurriculumException erst im Template geworfen wird.
-        echo '<p>'.$e.'</p>';       // Ausgabe des Fehlers
+    echo '<p>'.$e.'</p>';       // Ausgabe des Fehlers
 } catch (SmartyException $e) {    
     $TEMPLATE->display($CFG->smarty_template_dir.'error-404.tpl');
 } catch (Exception $e) {
