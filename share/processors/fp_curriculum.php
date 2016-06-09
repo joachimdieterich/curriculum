@@ -1,21 +1,27 @@
 <?php
 /** This file is part of curriculum - http://www.joachimdieterich.de
- * FormProcessor
- * @package core
- * @filename fp_curriculum.php
- * @copyright 2016 Joachim Dieterich
- * @author Joachim Dieterich
- * @date 2016.05.28 18:06
- * @license: 
- *
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by  
- * the Free Software Foundation; either version 3 of the License, or (at your option) any later version.                                   
- *                                                                       
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of        
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details:                          
- *                                                                       
- * http://www.gnu.org/copyleft/gpl.html      
- */
+* FormProcessor
+* @package core
+* @filename fp_curriculum.php
+* @copyright 2016 Joachim Dieterich
+* @author Joachim Dieterich
+* @date 2016.05.28 18:06
+* @license: 
+*
+* The MIT License (MIT)
+* Copyright (c) 2012 Joachim Dieterich http://www.curriculumonline.de
+* 
+* Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
+* to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+* and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+* 
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+* 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
+* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
+* THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
 include(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER, $CFG;
@@ -38,6 +44,21 @@ $gump->validation_rules(array(
 'country_id'     => 'required',
 'icon_id'        => 'required'   
 ));
+
+$curriculum = new Curriculum();
+if (isset($_POST['id'])){
+    $curriculum->id         = filter_input(INPUT_POST, 'id',          FILTER_VALIDATE_INT);
+}
+$curriculum->curriculum     = filter_input(INPUT_POST, 'curriculum',  FILTER_SANITIZE_STRING);
+$curriculum->description    = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);  
+$curriculum->subject_id     = filter_input(INPUT_POST, 'subject_id',     FILTER_VALIDATE_INT);
+$curriculum->grade_id       = filter_input(INPUT_POST, 'grade_id',       FILTER_VALIDATE_INT);
+$curriculum->schooltype_id  = filter_input(INPUT_POST, 'schooltype_id',  FILTER_VALIDATE_INT);
+$curriculum->state_id       = filter_input(INPUT_POST, 'state_id',       FILTER_VALIDATE_INT);
+$curriculum->country_id     = filter_input(INPUT_POST, 'country_id',     FILTER_VALIDATE_INT);
+$curriculum->icon_id        = filter_input(INPUT_POST, 'icon_id',        FILTER_VALIDATE_INT);
+$curriculum->creator_id     = $USER->id;  
+
 $validated_data  = $gump->run($_POST);
 if (!isset($_POST['state'])){ $_POST['state'] = 1; }
 if($validated_data === false) {/* validation failed */
@@ -45,23 +66,11 @@ if($validated_data === false) {/* validation failed */
     $_SESSION['FORM']->form      = 'curriculum'; 
     foreach($curriculum as $key => $value){
         $_SESSION['FORM']->$key  = $value;
+        error_log($key. ': '.$value);
     }
     $_SESSION['FORM']->error     = $gump->get_readable_errors();
     $_SESSION['FORM']->func      = $_POST['func'];
 } else {
-    $curriculum = new Curriculum();
-    if (isset($_POST['id'])){
-        $curriculum->id         = filter_input(INPUT_POST, 'id',          FILTER_VALIDATE_INT);
-    }
-    $curriculum->curriculum     = filter_input(INPUT_POST, 'curriculum',  FILTER_SANITIZE_STRING);
-    $curriculum->description    = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);  
-    $curriculum->subject_id     = filter_input(INPUT_POST, 'subject_id',     FILTER_VALIDATE_INT);
-    $curriculum->grade_id       = filter_input(INPUT_POST, 'grade_id',       FILTER_VALIDATE_INT);
-    $curriculum->schooltype_id  = filter_input(INPUT_POST, 'schooltype_id',  FILTER_VALIDATE_INT);
-    $curriculum->state_id       = filter_input(INPUT_POST, 'state_id',       FILTER_VALIDATE_INT);
-    $curriculum->country_id     = filter_input(INPUT_POST, 'country_id',     FILTER_VALIDATE_INT);
-    $curriculum->icon_id        = filter_input(INPUT_POST, 'icon_id',        FILTER_VALIDATE_INT);
-    $curriculum->creator_id     = $USER->id;  
     switch ($_POST['func']) {
         case 'new':     if ($curriculum->add()){
                             $_SESSION['PAGE']->message[] = array('message' => 'Lehrplan hinzufgefügt', 'icon' => 'fa-th text-success');

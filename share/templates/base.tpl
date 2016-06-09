@@ -17,7 +17,6 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
         <title>{block name=title}{/block} | {strip_tags($app_title)}</title>
         <meta name="description" content="{block name="description"}{/block}">
         <meta name="author" content="Joachim Dieterich (www.curriculumonline.de)">
@@ -59,31 +58,8 @@
         <link rel="stylesheet" href="{$media_url}templates/AdminLTE-2.3.0/dist/css/skins/_all-skins.min.css">
         <!-- Bootstrap Color Picker -->
         <link rel="stylesheet" href="{$media_url}templates/AdminLTE-2.3.0/plugins/colorpicker/bootstrap-colorpicker.min.css">
-
-        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-        <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-            <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-        <![endif]-->
-        <!-- End AdminLTE -->
-        
         <!-- Custom styles for this template -->
         <link rel="stylesheet" href="{$media_url}stylesheets/all-bs.css">
-        
-        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
-          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-        <![endif]-->
-        
-        <!--<script src="{$media_url}scripts/modernizr-1.6.min.js"></script>-->
-        <!--<script>!window.jQuery && document.write(unescape('%3Cscript src="{$media_url}scripts/jquery-1.4.4.min.js"%3E%3C/script%3E'));</script>-->
-        <!--<script src="{$media_url}scripts/jquery.tools.min.js"></script>-->
-        
-        <!--<link rel="stylesheet" href="{$media_url}stylesheets/all.css" media="all">-->
-        <!--<link rel="stylesheet" href="{$media_url}stylesheets/date.css" media="all">
-        -->
         <link rel="stylesheet" href="{$media_url}stylesheets/buttons.css" media="all">
         <link rel="stylesheet" href="{$media_url}jquery.nyroModal/styles/nyroModal.css" media="all">
         
@@ -91,7 +67,7 @@
     </head>
     
     {if $page_action eq 'login'}
-        <body class="hold-transition login-page" style="background-image: url('{$request_url}assets/images/backgrounds/CC-BY-SA-miniBLOCKHELDEN20131221_bouldern0004.jpg'); background-size: cover;" >
+    <body class="hold-transition login-page" style="background-image: url('{$request_url}assets/images/backgrounds/CC-BY-SA-miniBLOCKHELDEN20131221_bouldern0004.jpg'); background-size: cover;" >
         {block name=content} {/block}
     </body>
     {else}
@@ -259,7 +235,7 @@
             
             <!-- Content Wrapper. Contains page content -->
             <div class="content-wrapper">
-                <div id="popup" class="modal" onload="popupFunction(this.id);"></div> <!-- Popup -->    
+                <div id="popup" class="modal" onload="popupFunction(this.id);"><div class="modal-dialog"><div class="box"><div class="box-header"><h3 class="box-title">Loading...</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div></div></div> <!-- Popup -->    
                 {block name=content} {/block}
             </div> 
             
@@ -297,70 +273,65 @@
     <script src="{$media_url}templates/AdminLTE-2.3.0/plugins/slimScroll/jquery.slimscroll.min.js"></script>
     <!-- ChartJS 1.0.1 -->
     <!--script src="{$media_url}templates/AdminLTE-2.3.0/plugins/chartjs/Chart.min.js"></script-->
-    <!-- bootstrap color picker -->
-    <!--script src="{$media_url}templates/AdminLTE-2.3.0/plugins/colorpicker/bootstrap-colorpicker.min.js"></script-->
-    <!-- daterangepicker load dynamic via request -->
-    <!--script src="{$media_url}templates/AdminLTE-2.3.0/plugins/daterangepicker/daterangepicker.js"></script-->
     
-    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-    <!--<script src="{$media_url}templates/AdminLTE-2.3.0/dist/js/pages/dashboard2.js"></script>-->
     <!-- AdminLTE for demo purposes -->
     <script src="{$media_url}templates/AdminLTE-2.3.0/dist/js/demo.js"></script>
     
     <!-- jquery.nyroModal -->
     <script src="{$media_url}jquery.nyroModal/js/jquery.nyroModal.custom.js"></script> 
     
-    
-        <script src="{$media_url}scripts/script.js"></script> 
-        <script src="{$media_url}scripts/file.js"></script>
-        <script src="{$media_url}scripts/dragndrop.js"></script>     
-        {block name=additional_scripts} 
+    <script src="{$media_url}scripts/script.js"></script> 
+    <script src="{$media_url}scripts/file.js"></script>
+    <script src="{$media_url}scripts/dragndrop.js"></script>     
+    {block name=additional_scripts} 
         
-        <!-- Logout - Timer  -->
-        {if isset($institution_timeout)}
-        <script type="text/javascript">
-            idleMax = {$global_timeout};        // Logout based on global timout value
-            idleTime = 0;
-            $(document).ready(function () {
-                var idleInterval = setInterval("timerIncrement()", 60000); 
-                $(document.getElementById('popup')).attr('class', 'modal');
-            });
-            function timerIncrement() {
-                idleTime = idleTime + 1;
-                if (idleTime === idleMax) { 
-                    window.location="index.php?action=logout&timout=true";
-                }
-            }
-        </script>
-        {/if}
-        <script type="text/javascript">
-        function closePopup(){
-            removeMedia();  // Important to empty audio element cache in webkit browsers. see description on function
-            $('#popup').hide();  
-            document.getElementById('popup').innerHTML = '<img src="{$base_url}public/assets/images/loadingAnimation.gif"/>';    
-        }
-        </script>
-         <!-- end Logout - Timer  -->
-         
-        <!-- Nyromodal  -->
-        <script type="text/javascript">
-        $(function() {
-            $('.nyroModal').nyroModal();
-            $('#popup_generate').nyroModal();
-            //$('.colorpicker').colorpicker();
+    <!-- Logout - Timer  -->
+    {if isset($institution_timeout)}
+    <script type="text/javascript">
+        idleMax = {$global_timeout};        // Logout based on global timout value
+        idleTime = 0;
+        $(document).ready(function () {
+            var idleInterval = setInterval("timerIncrement()", 60000); 
+            $(document.getElementById('popup')).attr('class', 'modal');
         });
-        </script>
-        {if isset($smarty.session.FORM->form)}
-            <script type="text/javascript" > 
-                {if isset($smarty.session.FORM->id)}
+        function timerIncrement() {
+            idleTime = idleTime + 1;
+            if (idleTime === idleMax) { 
+                window.location="index.php?action=logout&timout=true";
+            }
+        }
+    </script>
+    {/if}
+    <script type="text/javascript">
+    function closePopup(){
+        removeMedia();  // Important to empty audio element cache in webkit browsers. see description on function
+        $('#popup').hide();  
+        document.getElementById('popup').innerHTML = '<div class="modal-dialog"><div class="box"><div class="box-header"><h3 class="box-title">Loading...</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div></div>';    
+    }
+    </script>
+     <!-- end Logout - Timer  -->
+
+    <!-- Nyromodal  -->
+    <script type="text/javascript">
+    $(function() {
+        $('.nyroModal').nyroModal();
+        $('#popup_generate').nyroModal();
+        //$('.colorpicker').colorpicker();
+    });
+    </script>
+    {if isset($smarty.session.FORM->form)}
+        <script type="text/javascript" > 
+            {if isset($smarty.session.FORM->id)}
+                {if $smarty.session.FORM->id neq ''}
                     $(document).ready(formloader('{$smarty.session.FORM->form}', '{$smarty.session.FORM->func}', {$smarty.session.FORM->id}));
                 {else}
                     $(document).ready(formloader('{$smarty.session.FORM->form}', '{$smarty.session.FORM->func}'));
                 {/if}
-            </script>
-        {/if} 
-        
-        {/block}  
+            {/if}    
+        </script>
+    {/if} 
+
+    {/block}  
     </body>
     {/if}
 </html>

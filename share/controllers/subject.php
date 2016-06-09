@@ -9,73 +9,21 @@
 * @date 2013.03.08 13:26
 * @license: 
 *
-* This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by  
-* the Free Software Foundation; either version 3 of the License, or (at your option) any later version.                                   
-*                                                                      
-* This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of        
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details:                          
-*                                                                       
-* http://www.gnu.org/copyleft/gpl.html      
+* The MIT License (MIT)
+* Copyright (c) 2012 Joachim Dieterich http://www.curriculumonline.de
+* 
+* Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
+* to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+* and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+* 
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+* 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
+* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
+* THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-
-global $USER, $PAGE, $TEMPLATE; 
-/*if (isset($_GET['function'])) {
-     switch ($_GET['function']) {
-        case 'new':   checkCapabilities('subject:add',    $USER->role_id);      // USER berechtigt?
-                                    $TEMPLATE->assign('showForm',       true); 
-             break;
-        case 'edit':  checkCapabilities('subject:update', $USER->role_id);      // USER berechtigt?
-                                    $TEMPLATE->assign('showForm',       true);
-                                    $TEMPLATE->assign('editBtn',        true);
-
-                                    $edit_subject       = new Subject();
-                                    $edit_subject->id   = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-                                    $edit_subject->load();
-                                    $TEMPLATE->assign('institution_id', $edit_subject->institution_id);
-                                    assign_to_template($edit_subject);
-        default: break;
-    }
-}
-
-// Formular für neuen Rollentyp anzeigen
-if($_POST){
-    switch ($_POST) {
-        case isset($_POST['add']):      
-        case isset($_POST['update']):   
-                                        $new_subject                 = new Subject();
-                                        if (isset($_POST['id'])){
-                                            $new_subject->id         = filter_input(INPUT_POST, 'id',           FILTER_VALIDATE_INT);    
-                                        }
-                                        $new_subject->subject        = filter_input(INPUT_POST, 'subject',      FILTER_UNSAFE_RAW);
-                                        $new_subject->subject_short  = filter_input(INPUT_POST, 'subject_short',FILTER_UNSAFE_RAW);
-                                        $new_subject->description    = filter_input(INPUT_POST, 'description',  FILTER_UNSAFE_RAW);
-                                        $new_subject->creator_id     = $USER->id;
-                                        $new_subject->institution_id = filter_input(INPUT_POST, 'institution_id',  FILTER_VALIDATE_INT); //um $USER->institutions muss einauswahlfeld geben, wenn man in mehr als einer institution eingeschrieben ist, damit fach eindeutig zugeordnet wird
-
-                                        $gump = new Gump();                        
-                                        $_POST = $gump->sanitize($_POST);           //sanitize $_POST
-                                        $gump->validation_rules(array(
-                                        'subject'         => 'required',
-                                        'subject_short'   => 'required|max_len,5',
-                                        'description'     => 'required'
-                                        ));
-                                        $validated_data = $gump->run($_POST);
-
-                                        if($validated_data === false) {            
-                                            assign_to_template($new_subject);     
-                                            $TEMPLATE->assign('v_error', $gump->get_readable_errors());     
-                                            $TEMPLATE->assign('showForm', true); 
-                                        } else {
-                                            if (isset($_POST['add']))   { $new_subject->add(); }
-                                            if (isset($_POST['update'])){ $new_subject->update($USER->id); }       
-                                        }       
-            break;
-        default: break;
-    }
-}*/
-/*******************************************************************************
- * END POST / GET 
- */
+global $USER, $TEMPLATE;
 $TEMPLATE->assign('page_title', 'Fächer');
 $TEMPLATE->assign('breadcrumb',  array('Fächer' => 'index.php?action=subject'));
 $subject                    = new Subject();
