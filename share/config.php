@@ -68,13 +68,7 @@ $CFG->request_url                   = implode('/', array_slice(explode('/', $CFG
 $CFG->media_url                     = $CFG->request_url.'assets/';
 $CFG->lib_url                       = $CFG->request_url.'../share/libs/';
 
-
-/* BADGEKIT */
-/*$CFG->badge_url                     = $CFG->protocol.'localhost:5000';  
-$CFG->badge_secret                  = 'yoursecret';
-$CFG->badge_system                  = 'badgekit';*/
-
-/* TB Parameter for uploadframe */
+/* Parameter for uploadframe */
 $CFG->tb_param                      = '&modal=true&format=1'; 
 
 /* Files */
