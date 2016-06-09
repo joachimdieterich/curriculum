@@ -62,15 +62,10 @@ include('classes/terminalobjective.class.php');
 include('classes/upload.class.php');  
 include('classes/user.class.php');     
 
-/*badgkit-api*/
-//include('classes/badges/badgekitconnection.class.php');     //BadgekitConnection Class
-//include('classes/badges/badges.class.php');
-//include('classes/badges/issuing.class.php');
-
 /*omega plugin*/
-/*if (file_exists('plugins/omega.class.php')) {
+if (file_exists('plugins/omega.class.php')) {
 include('plugins/omega.class.php');
-}*/
+}
 include('plugins/omega.class.php');
 /*Videostream*/
 include('classes/video_stream.class.php');     
