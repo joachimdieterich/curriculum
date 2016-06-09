@@ -267,6 +267,20 @@ class Curriculum {
         return $curriculum;
    }
    
+   public function getNiveau($paginator = ''){
+       $order_param = orderPaginator($paginator, array('curriculum' => 'cn',
+                                                        'description' => 'cn'));  
+       $db = DB::prepare('SELECT cn.* FROM curriculum_niveaus AS cn
+                                                WHERE cn.base_curriculum_id = (SELECT base_curriculum_id FROM curriculum_niveaus
+                                                WHERE curriculum_id = ?)'.$order_param);
+                            $db->execute(array($this->id));
+                            $niveaus = array();
+                            while($result = $db->fetchObject()) {
+                                        $niveaus[] = $result; 
+                            }
+                            return $niveaus;
+   }
+   
    public function loadImportFormData($file){
         global $CFG, $USER;
         

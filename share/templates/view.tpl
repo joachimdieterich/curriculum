@@ -19,6 +19,14 @@
         <div class="col-xs-12">
             <div class="box box-primary">
                 <div class="box-body">
+                    {if isset($niveaus)}
+                        <div class="btn-group pull-right">
+                        {foreach name=foreach_niveau item=niveau from=$niveaus} 
+                            <button type="button" class="btn btn-default"><a href="index.php?action=view&curriculum_id={$niveau->curriculum_id}&group={$page_group}">{$niveau->name}</a></button>
+                        {/foreach}
+                         </div>
+                     {/if}
+                    
                     {if isset($showaddObjectives)}
                     <p>Beschreibung: {$course[0]->description} ({$course[0]->schooltype})<br/>Bundesland: {$course[0]->state} ({$course[0]->country})</p>
                     {/if}
@@ -145,7 +153,6 @@
                                     <div class="panel panel-default box-objective"> 
                                         <div class="panel-heading boxheader" style="background: {$ter->color}">
                                             <a  onclick="formloader('enablingObjective','new', {$ter->id});"><span class="fa fa-plus pull-right box-sm-icon"></span></a>
-                                            {*<a onclick="addenablingObjective({$course[0]->curriculum_id},{$ter->id});"><span class="fa fa-plus pull-right invert"></span></a>*}
                                         </div>
                                         <div class="panel-body boxwrap">
                                             <div class="boxscroll">

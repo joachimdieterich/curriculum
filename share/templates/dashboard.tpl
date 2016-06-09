@@ -77,7 +77,7 @@
                   {if $ins->file_id eq 0}
                     <div class="widget-user-header bg-aqua-active">
                   {else}
-                    <div class="widget-user-header bg-aqua-active" style="background: url('{$access_file}{$ins->file_id|resolve_file_id}') center right;background-size: cover; background-repeat: no-repeat;">
+                    <div class="widget-user-header bg-aqua-active" style="background: url('{$access_file}{$ins->file_id|resolve_file_id:"l"}') center right;background-size: cover; background-repeat: no-repeat;">
                   {/if}
                     <h3 class="widget-user-username" style="text-shadow: 1px 1px #ff0000;">{$ins->institution}</h3>
                     <h5 class="widget-user-desc" style="text-shadow: 1px 1px #ff0000;">{$ins->description}</h5>
@@ -114,7 +114,32 @@
            </div><!-- /.col -->
         {/foreach}
         {/if}
-
+        
+        {if isset($myClasses)}
+        {foreach key=claid item=cla from=$myClasses}    
+        <div class="col-md-4 ">
+            <!-- Widget: user widget style 1 -->
+            <div class="box box-widget widget-user">
+              <!-- Add the bg color to the header using any of the bg-* classes -->
+              <div class="widget-user-header bg-yellow">
+                <h3 class="widget-user-username">{$cla->group}</h3>
+                <h5 class="widget-user-desc">{$cla->institution_id|truncate:50}</h5>
+              </div>
+              <div class="box-footer no-padding">
+                <ul class="nav nav-stacked">
+                    {foreach item=cur_menu from=$my_enrolments}
+                        {if $cur_menu->group_id eq $cla->id}
+                            <li><a href="index.php?action=view&curriculum_id={$cur_menu->id}&group={$cur_menu->group_id}">{$cur_menu->curriculum} </a></li>
+                        {/if}
+                    {/foreach}
+                </ul>
+              </div>
+            </div><!-- /.widget-user -->
+        </div><!-- /.col -->        
+        {/foreach}  
+        {/if}    
+        
+        
         
         {if isset($stat_users_online) && checkCapabilities('menu:readPassword', $my_role_id, false)}
         <div class="col-md-4 col-sm-12 col-xs-12">
@@ -149,30 +174,6 @@
             </div><!-- /.box -->
         </div>    
         {/if}
-        
-        {if isset($myClasses)}
-        {foreach key=claid item=cla from=$myClasses}    
-        <div class="col-md-4 ">
-            <!-- Widget: user widget style 1 -->
-            <div class="box box-widget widget-user">
-              <!-- Add the bg color to the header using any of the bg-* classes -->
-              <div class="widget-user-header bg-yellow">
-                <h3 class="widget-user-username">{$cla->group}</h3>
-                <h5 class="widget-user-desc">{$cla->institution_id|truncate:50}</h5>
-              </div>
-              <div class="box-footer no-padding">
-                <ul class="nav nav-stacked">
-                    {foreach item=cur_menu from=$my_enrolments}
-                        {if $cur_menu->group_id eq $cla->id}
-                            <li><a href="index.php?action=view&curriculum_id={$cur_menu->id}&group={$cur_menu->group_id}">{$cur_menu->curriculum} </a></li>
-                        {/if}
-                    {/foreach}
-                </ul>
-              </div>
-            </div><!-- /.widget-user -->
-        </div><!-- /.col -->        
-        {/foreach}  
-        {/if}        
 
         <!-- Hilfe -->  
         <div class="col-md-4 ">
