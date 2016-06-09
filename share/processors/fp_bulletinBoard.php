@@ -44,7 +44,10 @@ $validated_data = $gump->run($_POST);
 if($validated_data === false) {/* validation failed */
     $_SESSION['FORM'] = new stdClass();
     $_SESSION['FORM']->form      = 'bulletinBoard'; 
-    $_SESSION['FORM']->error     = $gump->get_readable_errors();
+    
+    $_SESSION['FORM']->title     = $bb_title; 
+    $_SESSION['FORM']->text      = $bb_text; 
+    $_SESSION['FORM']->error     = $gump->get_readable_errors(); 
     $_SESSION['FORM']->func      = $_POST['func'];
 } else {
     $bulletinBoard->setBulletinBoard($bb_title, $bb_text);

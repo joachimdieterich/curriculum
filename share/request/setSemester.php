@@ -2,7 +2,7 @@
 /** This file is part of curriculum - http://www.joachimdieterich.de
  * 
  * @package core
- * @filename delete.php
+ * @filename setSemester.php
  * @copyright 2015 Joachim Dieterich
  * @author Joachim Dieterich
  * @date 2015.06.03 10:28

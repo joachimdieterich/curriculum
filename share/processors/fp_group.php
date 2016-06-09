@@ -51,6 +51,9 @@ $validated_data = $gump->run($_POST);
 if($validated_data === false) {/* validation failed */
     $_SESSION['FORM'] = new stdClass();
     $_SESSION['FORM']->form      = 'group'; 
+    foreach($group as $key => $value){
+        $_SESSION['FORM']->$key  = $value;
+    } 
     $_SESSION['FORM']->error     = $gump->get_readable_errors();
     $_SESSION['FORM']->func      = $_POST['func'];
 } else {

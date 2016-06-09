@@ -42,7 +42,6 @@ if($validated_data === false) {/* validation failed */
     $_SESSION['FORM']->form      = 'semester';
     foreach($enabling_objective as $key => $value){
         $_SESSION['FORM']->$key  = $value;
-        //error_log($key.': '.$_SESSION['FORM']->$key);
     } 
     $_SESSION['FORM']->error     = $gump->get_readable_errors();
     $_SESSION['FORM']->func      = $_POST['func'];

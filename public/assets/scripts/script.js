@@ -426,7 +426,7 @@ function order() {
  **/
 function del() {
     if (confirm("Datensatz wirklich löschen?")) {   //Meldung "Wirklich löschen?"
-        var url = "../share/request/delete.php?db="+arguments[0]+"&id="+ arguments[1]; 
+        var url = "../share/processors/p_delete.php?db="+arguments[0]+"&id="+ arguments[1]; 
         
         req = XMLobject();
         if(req) {      

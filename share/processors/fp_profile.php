@@ -92,6 +92,9 @@ if($validated_data === false) {/* validation failed */
     $_SESSION['FORM'] = new stdClass();
     $_SESSION['FORM']->form  = 'profile'; 
     $_SESSION['FORM']->error = $gump->get_readable_errors();
+    foreach($user as $key => $value){
+        $_SESSION['FORM']->$key  = $value;
+    }
     $_SESSION['FORM']->func  = $_POST['func'];
 } else {
     switch ($_POST['func']) {

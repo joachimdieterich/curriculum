@@ -56,7 +56,6 @@ if($validated_data === false) {/* validation failed */
     $_SESSION['FORM']->form      = 'absent';
     foreach($absent as $key => $value){
         $_SESSION['FORM']->$key  = $value;
-        //error_log($key.': '.$_SESSION['FORM']->$key);
     } 
     $_SESSION['FORM']->user_list = $user_list;
     $_SESSION['FORM']->error     = $gump->get_readable_errors();
