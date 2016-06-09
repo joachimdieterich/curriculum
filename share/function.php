@@ -248,62 +248,6 @@ function detect_reload(){
     }
 } 
 
-/**
- * Die Funktion renderList() erzeugt die Dateilisten im Uploadframe
- * @param string $formname
- * @param array $files
- * @param string $data_dir
- * @param int $ID_Postfix
- * @param int $targetID
- * @param string $returnFormat
- * @param string $multipleFiles 
- */
-/*function renderList($formname, $dependency, $data_dir, $ID_Postfix, $targetID, $returnFormat, $multipleFiles, $id){
-    global $CFG;
-    $file = new File();
-    $files = $file->getFiles($dependency, $id);?>
-    <!--div id="div<?php echo $ID_Postfix ?>" class="floatleft" style="display:none;"-->
-    <form name="<?php echo $formname ?>" action="<?php echo $formname ?>" method="post" enctype="multipart/form-data">
-        <div> 
-        <table>
-            <tr><?php 
-            if (!empty($files)){
-                for ($i=0; $i < count($files); $i++){?>
-                    <td>  
-                       <?php echo RENDER::filenail($files, $ID_Postfix, $i, true, true); ?>
-                    </td> <?php 
-                    if (($i+1) % 5 == 0) { ?> 
-                    </tr><tr> <?php 
-                    }    
-                }
-            } else { ?>
-                   <td><div  class="filelist filenail">Keine Dateien vorhanden. </div></td><?php
-            } ?>    
-        </tr>
-    </table>
-    </div>
-</form>
- <?php if ($targetID != 'NULL'){ // verhindert, dass der Button angezeigt wird wenn das Target NULL ist ?>
-    <div id="uploadframe_footer" class="uploadframe_footer" >
-        <input type="submit"  value="Datei(en) verwenden" onclick="iterateListControl('<?php echo 'div'.$ID_Postfix ?>','<?php echo $ID_Postfix ?>','<?php echo $targetID;?>','<?php echo $returnFormat;?>','<?php echo $multipleFiles;?>');"/>
-    </div>
-    <?php } ?>        
-<div id="<?php echo $ID_Postfix; ?>uploadframe_info" class="uploadframe_footer" style="visibility:hidden;">
-    <div id="<?php echo $ID_Postfix; ?>p_information" class="floatleft" style="width:593px; ">
-        <table>
-            <tr><td class="p_info"><strong>Titel:</strong></td>        <td id="<?php echo $ID_Postfix; ?>p_title" class="p_info "></td></tr>
-            <tr><td class="p_info"><strong>Beschreibung:</strong></td> <td id="<?php echo $ID_Postfix; ?>p_description" class="p_info "></td></tr>
-            <tr><td class="p_info"><strong>Author:</strong></td>       <td id="<?php echo $ID_Postfix; ?>p_author" class="p_info "></td></tr>
-            <tr><td class="p_info"><strong>Lizenz</strong></td>        <td id="<?php echo $ID_Postfix; ?>p_license" class="p_info "></td></tr>
-        </table>
-    </div>
-</div>
-   
-<!--/div-->
-<?php   
-}*/
-
-
 function renderSelect($name, $label, $values, $select){?>
     <p><label><?php echo $name;?></label>
         <select id="<?php echo $label;?>" name="<?php echo $label;?>" class="centervertical"> <?php 
