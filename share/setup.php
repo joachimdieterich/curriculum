@@ -52,6 +52,7 @@ $TEMPLATE->assign('request_url',    $CFG->request_url);
 $TEMPLATE->assign('media_url',      $CFG->media_url);
 $TEMPLATE->assign('lib_url',        $CFG->lib_url);
 $TEMPLATE->assign('access_file',    $CFG->access_file);
+$TEMPLATE->assign('access_file_id', $CFG->access_id_url);
 $TEMPLATE->assign('avatar_path',    $CFG->avatar_path);
 $TEMPLATE->assign('support_path',   $CFG->support_path);
 $TEMPLATE->assign('subjects_path',  $CFG->subjects_path);

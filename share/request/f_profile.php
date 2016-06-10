@@ -122,9 +122,9 @@ $html .= Form::input_text('lastname', 'Nachname', $lastname, $error);
 $html .= Form::input_text('email', 'Email', $email, $error);
 $html .= Form::input_text('postalcode', 'PLZ', $postalcode, $error);
 $html .= Form::input_text('city', 'Ort', $city, $error);
-$countries   = new State($country_id);                                                   //Load country   
-$html .= Form::input_select('country_id', 'Land', $countries->getCountries(), 'de', 'id', $country_id , $error, 'getStates(this.value, \'state_id\');');
-$html .= Form::input_select('state_id', 'Bundesland/Region', $countries->getStates('profile',$country_id), 'state', 'id', $state_id , $error);
+$cs    = new State($country_id);                                                   //Load country   
+$html .= Form::input_select('country_id', 'Land', $cs->getCountries(), 'de', 'id', $country_id , $error, 'getStates(this.value, \'state_id\');');
+$html .= Form::input_select('state_id', 'Bundesland/Region', $cs->getStates('profile',$country_id), 'state', 'id', $state_id , $error);
 if ($func == 'new' OR $func == 'editUser'){
 $html .= Form::input_text('password', 'Kennwort', null, $error, '','password');
 $html .= Form::input_checkbox('show_pw', 'Passwort anzeigen', $show_pw, $error, 'checkbox', 'unmask(\'password\', this.checked);');

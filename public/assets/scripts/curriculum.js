@@ -1,5 +1,5 @@
 /**
- * AdminLTE Demo Menu
+ * curriculum Sidebar Menu
  * ------------------
  * You should not use this file in production.
  * This file is for demo purposes only.
@@ -46,16 +46,16 @@
           .before(tab_button);
 
   //Create the menu
-  var demo_settings = $("<div />");
+  var curriculum_settings = $("<div />");
 
   //Layout options
-  demo_settings.append(
+  curriculum_settings.append(
           "<h4 class='control-sidebar-heading'>"
-          + "Layout Options"
+          + "Layout"
           + "</h4>"
           //Fixed layout
           + "<div class='form-group'>"
-          + "<label class='control-sidebar-subheading'>"
+          /*+ "<label class='control-sidebar-subheading'>"
           + "<input type='checkbox' data-layout='fixed' class='pull-right'/> "
           + "Fixed layout"
           + "</label>"
@@ -84,22 +84,22 @@
           + "Sidebar Expand on Hover"
           + "</label>"
           + "<p>Let the sidebar mini expand on hover</p>"
-          + "</div>"
+          + "</div>"*/
           //Control Sidebar Toggle
           + "<div class='form-group'>"
           + "<label class='control-sidebar-subheading'>"
           + "<input type='checkbox' data-controlsidebar='control-sidebar-open' class='pull-right'/> "
-          + "Toggle Right Sidebar Slide"
+          + "Seitenleiste einblenden"
           + "</label>"
-          + "<p>Toggle between slide over content and push content effects</p>"
+          + "<p>Seitenleiste dauerhaft einblenden</p>"
           + "</div>"
           //Control Sidebar Skin Toggle
           + "<div class='form-group'>"
           + "<label class='control-sidebar-subheading'>"
           + "<input type='checkbox' data-sidebarskin='toggle' class='pull-right'/> "
-          + "Toggle Right Sidebar Skin"
+          + "Farbe der Seitenleiste ändern"
           + "</label>"
-          + "<p>Toggle between dark and light skins for the right sidebar</p>"
+          + "<p>Umschalten zwischen dunklen und hellen Farben für den rechten Seitenleiste</p>"
           + "</div>"
           );
   var skins_list = $("<ul />", {"class": 'list-unstyled clearfix'});
@@ -111,7 +111,7 @@
                   + "<div><span style='display:block; width: 20%; float: left; height: 7px; background: #367fa9;'></span><span class='bg-light-blue' style='display:block; width: 80%; float: left; height: 7px;'></span></div>"
                   + "<div><span style='display:block; width: 20%; float: left; height: 20px; background: #222d32;'></span><span style='display:block; width: 80%; float: left; height: 20px; background: #f4f5f7;'></span></div>"
                   + "</a>"
-                  + "<p class='text-center no-margin'>Blue</p>");
+                  + "<p class='text-center no-margin'>Blau</p>");
   skins_list.append(skin_blue);
   var skin_black =
           $("<li />", {style: "float:left; width: 33.33333%; padding: 5px;"})
@@ -119,7 +119,7 @@
                   + "<div style='box-shadow: 0 0 2px rgba(0,0,0,0.1)' class='clearfix'><span style='display:block; width: 20%; float: left; height: 7px; background: #fefefe;'></span><span style='display:block; width: 80%; float: left; height: 7px; background: #fefefe;'></span></div>"
                   + "<div><span style='display:block; width: 20%; float: left; height: 20px; background: #222;'></span><span style='display:block; width: 80%; float: left; height: 20px; background: #f4f5f7;'></span></div>"
                   + "</a>"
-                  + "<p class='text-center no-margin'>Black</p>");
+                  + "<p class='text-center no-margin'>Schwarz</p>");
   skins_list.append(skin_black);
   var skin_purple =
           $("<li />", {style: "float:left; width: 33.33333%; padding: 5px;"})
@@ -127,7 +127,7 @@
                   + "<div><span style='display:block; width: 20%; float: left; height: 7px;' class='bg-purple-active'></span><span class='bg-purple' style='display:block; width: 80%; float: left; height: 7px;'></span></div>"
                   + "<div><span style='display:block; width: 20%; float: left; height: 20px; background: #222d32;'></span><span style='display:block; width: 80%; float: left; height: 20px; background: #f4f5f7;'></span></div>"
                   + "</a>"
-                  + "<p class='text-center no-margin'>Purple</p>");
+                  + "<p class='text-center no-margin'>Violett</p>");
   skins_list.append(skin_purple);
   var skin_green =
           $("<li />", {style: "float:left; width: 33.33333%; padding: 5px;"})
@@ -135,7 +135,7 @@
                   + "<div><span style='display:block; width: 20%; float: left; height: 7px;' class='bg-green-active'></span><span class='bg-green' style='display:block; width: 80%; float: left; height: 7px;'></span></div>"
                   + "<div><span style='display:block; width: 20%; float: left; height: 20px; background: #222d32;'></span><span style='display:block; width: 80%; float: left; height: 20px; background: #f4f5f7;'></span></div>"
                   + "</a>"
-                  + "<p class='text-center no-margin'>Green</p>");
+                  + "<p class='text-center no-margin'>Grün</p>");
   skins_list.append(skin_green);
   var skin_red =
           $("<li />", {style: "float:left; width: 33.33333%; padding: 5px;"})
@@ -143,7 +143,7 @@
                   + "<div><span style='display:block; width: 20%; float: left; height: 7px;' class='bg-red-active'></span><span class='bg-red' style='display:block; width: 80%; float: left; height: 7px;'></span></div>"
                   + "<div><span style='display:block; width: 20%; float: left; height: 20px; background: #222d32;'></span><span style='display:block; width: 80%; float: left; height: 20px; background: #f4f5f7;'></span></div>"
                   + "</a>"
-                  + "<p class='text-center no-margin'>Red</p>");
+                  + "<p class='text-center no-margin'>Rot</p>");
   skins_list.append(skin_red);
   var skin_yellow =
           $("<li />", {style: "float:left; width: 33.33333%; padding: 5px;"})
@@ -151,7 +151,7 @@
                   + "<div><span style='display:block; width: 20%; float: left; height: 7px;' class='bg-yellow-active'></span><span class='bg-yellow' style='display:block; width: 80%; float: left; height: 7px;'></span></div>"
                   + "<div><span style='display:block; width: 20%; float: left; height: 20px; background: #222d32;'></span><span style='display:block; width: 80%; float: left; height: 20px; background: #f4f5f7;'></span></div>"
                   + "</a>"
-                  + "<p class='text-center no-margin'>Yellow</p>");
+                  + "<p class='text-center no-margin'>Gelb</p>");
   skins_list.append(skin_yellow);
 
   //Light sidebar skins
@@ -161,7 +161,7 @@
                   + "<div><span style='display:block; width: 20%; float: left; height: 7px; background: #367fa9;'></span><span class='bg-light-blue' style='display:block; width: 80%; float: left; height: 7px;'></span></div>"
                   + "<div><span style='display:block; width: 20%; float: left; height: 20px; background: #f9fafc;'></span><span style='display:block; width: 80%; float: left; height: 20px; background: #f4f5f7;'></span></div>"
                   + "</a>"
-                  + "<p class='text-center no-margin' style='font-size: 12px'>Blue Light</p>");
+                  + "<p class='text-center no-margin' style='font-size: 12px'>Blau Light</p>");
   skins_list.append(skin_blue_light);
   var skin_black_light =
           $("<li />", {style: "float:left; width: 33.33333%; padding: 5px;"})
@@ -169,7 +169,7 @@
                   + "<div style='box-shadow: 0 0 2px rgba(0,0,0,0.1)' class='clearfix'><span style='display:block; width: 20%; float: left; height: 7px; background: #fefefe;'></span><span style='display:block; width: 80%; float: left; height: 7px; background: #fefefe;'></span></div>"
                   + "<div><span style='display:block; width: 20%; float: left; height: 20px; background: #f9fafc;'></span><span style='display:block; width: 80%; float: left; height: 20px; background: #f4f5f7;'></span></div>"
                   + "</a>"
-                  + "<p class='text-center no-margin' style='font-size: 12px'>Black Light</p>");
+                  + "<p class='text-center no-margin' style='font-size: 12px'>Schwarz Light</p>");
   skins_list.append(skin_black_light);
   var skin_purple_light =
           $("<li />", {style: "float:left; width: 33.33333%; padding: 5px;"})
@@ -177,7 +177,7 @@
                   + "<div><span style='display:block; width: 20%; float: left; height: 7px;' class='bg-purple-active'></span><span class='bg-purple' style='display:block; width: 80%; float: left; height: 7px;'></span></div>"
                   + "<div><span style='display:block; width: 20%; float: left; height: 20px; background: #f9fafc;'></span><span style='display:block; width: 80%; float: left; height: 20px; background: #f4f5f7;'></span></div>"
                   + "</a>"
-                  + "<p class='text-center no-margin' style='font-size: 12px'>Purple Light</p>");
+                  + "<p class='text-center no-margin' style='font-size: 12px'>Violett Light</p>");
   skins_list.append(skin_purple_light);
   var skin_green_light =
           $("<li />", {style: "float:left; width: 33.33333%; padding: 5px;"})
@@ -185,7 +185,7 @@
                   + "<div><span style='display:block; width: 20%; float: left; height: 7px;' class='bg-green-active'></span><span class='bg-green' style='display:block; width: 80%; float: left; height: 7px;'></span></div>"
                   + "<div><span style='display:block; width: 20%; float: left; height: 20px; background: #f9fafc;'></span><span style='display:block; width: 80%; float: left; height: 20px; background: #f4f5f7;'></span></div>"
                   + "</a>"
-                  + "<p class='text-center no-margin' style='font-size: 12px'>Green Light</p>");
+                  + "<p class='text-center no-margin' style='font-size: 12px'>Grün Light</p>");
   skins_list.append(skin_green_light);
   var skin_red_light =
           $("<li />", {style: "float:left; width: 33.33333%; padding: 5px;"})
@@ -193,7 +193,7 @@
                   + "<div><span style='display:block; width: 20%; float: left; height: 7px;' class='bg-red-active'></span><span class='bg-red' style='display:block; width: 80%; float: left; height: 7px;'></span></div>"
                   + "<div><span style='display:block; width: 20%; float: left; height: 20px; background: #f9fafc;'></span><span style='display:block; width: 80%; float: left; height: 20px; background: #f4f5f7;'></span></div>"
                   + "</a>"
-                  + "<p class='text-center no-margin' style='font-size: 12px'>Red Light</p>");
+                  + "<p class='text-center no-margin' style='font-size: 12px'>Rot Light</p>");
   skins_list.append(skin_red_light);
   var skin_yellow_light =
           $("<li />", {style: "float:left; width: 33.33333%; padding: 5px;"})
@@ -201,13 +201,13 @@
                   + "<div><span style='display:block; width: 20%; float: left; height: 7px;' class='bg-yellow-active'></span><span class='bg-yellow' style='display:block; width: 80%; float: left; height: 7px;'></span></div>"
                   + "<div><span style='display:block; width: 20%; float: left; height: 20px; background: #f9fafc;'></span><span style='display:block; width: 80%; float: left; height: 20px; background: #f4f5f7;'></span></div>"
                   + "</a>"
-                  + "<p class='text-center no-margin' style='font-size: 12px;'>Yellow Light</p>");
+                  + "<p class='text-center no-margin' style='font-size: 12px;'>Gelb Hell</p>");
   skins_list.append(skin_yellow_light);
 
-  demo_settings.append("<h4 class='control-sidebar-heading'>Skins</h4>");
-  demo_settings.append(skins_list);
+  curriculum_settings.append("<h4 class='control-sidebar-heading'>Skins</h4>");
+  curriculum_settings.append(skins_list);
 
-  tab_pane.append(demo_settings);
+  tab_pane.append(curriculum_settings);
   $("#control-sidebar-home-tab").after(tab_pane);
 
   setup();

@@ -25,9 +25,11 @@
 $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
-global $CFG, $USER, $COURSE;
+global $CFG, $USER;//, $COURSE;
 $USER           = $_SESSION['USER'];
-$COURSE         = $_SESSION['COURSE'];
+/*if (isset($_SESSION['COURSE'])){
+    $COURSE         = $_SESSION['COURSE'];
+}*/
 
 
 /*Variablen anlegen -> vermeidet unnötige if-Abfragen im Formular*/
@@ -41,7 +43,7 @@ $course_id         = $COURSE->id;
 }*/
 $group_id          = null;
 $user_id           = null;
-$context_id        = null;
+$context_id        = 1;
 $repeat_id         = null;
 $sequence          = null;
 $reminder_interval = null;
@@ -105,7 +107,8 @@ $html .='<form id="form_event"  class="form-horizontal" role="form" method="post
 
 if (isset($currentUrlId)){ $html .= $currentUrlId; }
 $html .= '">
-<input type="hidden" name="func" id="func" value="'.$func.'"/>';
+<input type="hidden" name="func" id="func" value="'.$func.'"/>
+<input type="hidden" name="context_id" id="context_id" value="'.$context_id.'"/>';
 if (isset($event_id)){
 $html .= '<input type="hidden" name="event_id" id="event_id" value="'.$event_id.'"/> ';
 }

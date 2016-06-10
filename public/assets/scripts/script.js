@@ -417,6 +417,16 @@ function formloader(form, func, id){
     getRequest("../share/request/f_"+ form +".php?func="+ func +"&id="+ id);
 }
 
+function processor(proc, func, val){
+    var url = "../share/processors/p_"+ proc +".php?func="+ func +"&val="+ val;
+    req = XMLobject();
+    if(req) {      
+            //req.onreadystatechange = process; //Dialog mit Meldungen zeigen 
+            req.open("GET", url, true);
+            req.send(null);
+        }
+}
+
 function order() {
     var url = "../share/request/orderObjectives.php?order="+ arguments[0] +"&func="+ arguments[1]+"&id="+ arguments[2];
     
@@ -738,4 +748,10 @@ function set_select(element, val, field, level) {
             }
         }
     }
+}
+
+function closePopup(){
+    removeMedia();  // Important to empty audio element cache in webkit browsers. see description on function
+    $('#popup').hide();  
+    document.getElementById('popup').innerHTML = '<div class="modal-dialog"><div class="box"><div class="box-header"><h3 class="box-title">Loading...</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div></div>';    
 }

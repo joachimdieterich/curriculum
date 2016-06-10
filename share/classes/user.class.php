@@ -312,23 +312,23 @@ class User {
      * update User
      * @return boolean
      */
-    public function update() {
+    public function update($dependency = 'full', $key = '', $value = '') {
         global $USER; 
-        if(checkCapabilities('user:updateUser', $USER->role_id) OR checkCapabilities('user:update', $USER->role_id)){ //2. Bedingung für Änderung des eigenen Profils  
-            $db = DB::prepare('UPDATE users 
-                    SET username = ?, 
-                        firstname = ?, 
-                        lastname = ?, 
-                        email = ?, 
-                        postalcode = ?, 
-                        city = ?, 
-                        state_id = ?, 
-                        country_id = ?,
-                        avatar_id = ?, 
-                        acc_days  = ?,
-                        paginator_limit   = ?
-                    WHERE id = ?');
-            return $db->execute(array($this->username,$this->firstname,$this->lastname,$this->email,$this->postalcode,$this->city,$this->state_id,$this->country_id,$this->avatar_id,$this->acc_days,$this->paginator_limit,$this->id));    
+        switch ($dependency) {
+            case 'full': if(checkCapabilities('user:updateUser', $USER->role_id) OR checkCapabilities('user:update', $USER->role_id)){ //2. Bedingung für Änderung des eigenen Profils  
+                            $db = DB::prepare('UPDATE users 
+                                    SET username = ?, firstname = ?, lastname = ?, email = ?, postalcode = ?, city = ?, state_id = ?, 
+                                        country_id = ?, avatar_id = ?, acc_days  = ?, paginator_limit   = ?
+                                    WHERE id = ?');
+                            $r =  $db->execute(array($this->username,$this->firstname,$this->lastname,$this->email,$this->postalcode,$this->city,$this->state_id,$this->country_id,$this->avatar_id,$this->acc_days,$this->paginator_limit,$this->id));    
+                        }
+                break;
+            case 'value':   $db = DB::prepare('UPDATE users SET '.$key.' = ? WHERE id = ?');
+                            $r =  $db->execute(array($value, $USER->id));    
+                break;
+
+            default:
+                break;
         }
     }
     

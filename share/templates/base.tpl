@@ -39,7 +39,6 @@
         <!-- Bootstrap 3.3.5 -->
         <link rel="stylesheet" href="{$media_url}templates/AdminLTE-2.3.0/bootstrap/css/bootstrap.min.css">
         <!-- Font Awesome -->
-        <!--link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"-->
         <link rel="stylesheet" href="{$lib_url}/font-awesome-4.6.1/css/font-awesome.min.css">
         <link rel="stylesheet" href="{$media_url}stylesheets/google-fonts.css" >
         <!-- Ionicons --><!-- not used yet -->
@@ -53,16 +52,15 @@
         <link rel="stylesheet" href="{$media_url}templates/AdminLTE-2.3.0/plugins/daterangepicker/daterangepicker.css">
         <!-- Theme style -->
         <link rel="stylesheet" href="{$media_url}templates/AdminLTE-2.3.0/dist/css/AdminLTE.min.css">
-        <!-- AdminLTE Skins. Choose a skin from the css/skins
-             folder instead of downloading all of them to reduce the load. -->
+        <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
         <link rel="stylesheet" href="{$media_url}templates/AdminLTE-2.3.0/dist/css/skins/_all-skins.min.css">
+        <!--link rel="stylesheet" href="{$media_url}templates/AdminLTE-2.3.0/dist/css/skins/skin-blue-light.min.css"-->
         <!-- Bootstrap Color Picker -->
         <link rel="stylesheet" href="{$media_url}templates/AdminLTE-2.3.0/plugins/colorpicker/bootstrap-colorpicker.min.css">
         <!-- Custom styles for this template -->
         <link rel="stylesheet" href="{$media_url}stylesheets/all-bs.css">
         <link rel="stylesheet" href="{$media_url}stylesheets/buttons.css" media="all">
         <link rel="stylesheet" href="{$media_url}jquery.nyroModal/styles/nyroModal.css" media="all">
-        
         {block name=additional_stylesheets}{/block}
     </head>
     
@@ -139,9 +137,7 @@
                         </li>
                         {else}
                         <li class=" messages-menu">   
-                        <a href="index.php?action=messages&function=showInbox" >
-                            <i class="fa fa-envelope-o"></i>
-                          </a>
+                            <a href="index.php?action=messages&function=showInbox" ><i class="fa fa-envelope-o"></i></a>
                         </li>
                         {/if} 
 
@@ -224,13 +220,11 @@
                     </div>    
                     {/if}   
                 </nav>         
-            </header>         
+            </header>        
+                
             <!-- Sidebar left - Menu -->
-            {if $page_name eq 'login' OR $page_name eq 'error' OR $page_name eq 'criteria'}
-                <!--Kein Menu -->
-            {else}         
-                {block name=nav}{include file='menu.tpl'}{/block}
-                 
+            {if $page_name neq 'login'} <!--Kein Menu -->        
+                {block name=nav}{include file='menu.tpl'}{/block} 
             {/if}
             
             <!-- Content Wrapper. Contains page content -->
@@ -247,13 +241,11 @@
             </footer>    
             
             {block name=sidebar_right}{include file='sidebar_right.tpl'}{/block}
-            
         </div><!-- ./wrapper -->
         
 <!-- SCRIPTS-->  
     <!-- CK Editor -->
     <script src="{$lib_url}ckeditor/ckeditor.js"></script>
-    <!--script src="https://cdn.ckeditor.com/4.4.3/standard/ckeditor.js"></script-->
     <!-- moment -->
     <script src="{$media_url}templates/AdminLTE-2.3.0/plugins/moment/moment.min.js"></script>
     <!-- jQuery 2.1.4 -->
@@ -274,8 +266,8 @@
     <!-- ChartJS 1.0.1 -->
     <!--script src="{$media_url}templates/AdminLTE-2.3.0/plugins/chartjs/Chart.min.js"></script-->
     
-    <!-- AdminLTE for demo purposes -->
-    <script src="{$media_url}templates/AdminLTE-2.3.0/dist/js/demo.js"></script>
+    <!-- curriculum settings (sidebar) -->
+    <script src="{$media_url}scripts/curriculum.js"></script>
     
     <!-- jquery.nyroModal -->
     <script src="{$media_url}jquery.nyroModal/js/jquery.nyroModal.custom.js"></script> 
@@ -283,8 +275,8 @@
     <script src="{$media_url}scripts/script.js"></script> 
     <script src="{$media_url}scripts/file.js"></script>
     <script src="{$media_url}scripts/dragndrop.js"></script>     
+    
     {block name=additional_scripts} 
-        
     <!-- Logout - Timer  -->
     {if isset($institution_timeout)}
     <script type="text/javascript">
@@ -302,21 +294,13 @@
         }
     </script>
     {/if}
-    <script type="text/javascript">
-    function closePopup(){
-        removeMedia();  // Important to empty audio element cache in webkit browsers. see description on function
-        $('#popup').hide();  
-        document.getElementById('popup').innerHTML = '<div class="modal-dialog"><div class="box"><div class="box-header"><h3 class="box-title">Loading...</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div></div>';    
-    }
-    </script>
-     <!-- end Logout - Timer  -->
+    <!-- end Logout - Timer  -->
 
     <!-- Nyromodal  -->
     <script type="text/javascript">
     $(function() {
         $('.nyroModal').nyroModal();
         $('#popup_generate').nyroModal();
-        //$('.colorpicker').colorpicker();
     });
     </script>
     {if isset($smarty.session.FORM->form)}

@@ -134,15 +134,33 @@ class Mail {
         } 
     }
     
-    public function loadCorrespondence($id, $sender_id, $receiver_id){
-        checkCapabilities('mail:loadMail', $_SESSION['USER']->role_id); //$_SESSION is used to work with request script
-        $db = DB::prepare('SELECT * FROM message WHERE (id < ? AND sender_id = ? AND receiver_id= ?) OR (id < ? AND sender_id = ? AND receiver_id = ?) ORDER BY creation_time DESC');
-        $db->execute(array($id, $sender_id, $receiver_id, $id, $receiver_id, $sender_id));
-        
+    public function loadCorrespondence($id, $sender_id, $receiver_id, $dependency = 'mail'){
+        switch ($dependency) {
+            case 'mail':    checkCapabilities('mail:loadMail', $_SESSION['USER']->role_id); //$_SESSION is used to work with request script
+                            $db = DB::prepare('SELECT * FROM message WHERE (id < ? AND sender_id = ? AND receiver_id= ?) OR (id < ? AND sender_id = ? AND receiver_id = ?) ORDER BY creation_time DESC');
+                            $db->execute(array($id, $sender_id, $receiver_id, $id, $receiver_id, $sender_id));
+            break;
+            case 'recent':  checkCapabilities('mail:loadMail', $_SESSION['USER']->role_id); //$_SESSION is used to work with request script
+                            $db = DB::prepare('SELECT * FROM message WHERE sender_id = ? OR receiver_id= ? ORDER BY creation_time DESC LIMIT ?');
+                            $db->execute(array($sender_id, $receiver_id, $id,));
+            break;
+        }
+        $user = new User();
         while ($result = $db->fetchObject()) {
             $this->id               = $result->id;
             $this->sender_id        = $result->sender_id;
+            
+            $user->load('id', $this->sender_id, false);
+            $this->sender_firstname = $user->firstname;
+            $this->sender_lastname  = $user->lastname;
+            $this->sender_file_id   = $user->avatar_id;
+            
             $this->receiver_id      = $result->receiver_id;
+            $user->load('id', $this->receiver_id, false);
+            $this->receiver_firstname = $user->firstname;
+            $this->receiver_lastname  = $user->lastname;
+            $this->receiver_file_id   = $user->avatar_id;
+            
             $this->subject          = $result->subject;
             $this->message          = $result->message;
             $this->creation_time    = $result->creation_time;
@@ -203,27 +221,5 @@ class Mail {
     public function setStatus($field = 'receiver', $status){
        $db = DB::prepare('UPDATE message SET '.$field.'_status = ? WHERE id = ?');
        return $db->execute(array($status, $this->id));
-    }
-    
-    public function updateDB(){
-        $db = DB::prepare('SELECT * FROM message');
-        $db->execute();
-        
-        while ($result = $db->fetchObject()) {
-            $this->id               = $result->id;
-            $this->sender_id        = $result->sender_id;
-            $this->receiver_id      = $result->receiver_id;
-            $this->subject          = $result->subject;
-            $this->message          = $result->message;
-            $this->creation_time    = $result->creation_time;
-            $this->sender_status    = $result->sender_status;  
-            $this->receiver_status  = $result->receiver_status;  
-            $result->message        = preg_replace_callback('/<p class="pointer" onclick="setAccomplishedObjectivesBySolution.\d+,.\d+,.(\d+), 1\)">Ziel freischalten<\/p><br>\n.+Ziel deaktivieren<\/p>/', 
-            function($r){
-                return '<accomplish id="'.$r[1].'"></accomplish>';
-            }, $result->message);
-        $db1 = DB::prepare('UPDATE message SET message = ? WHERE id = ?');
-        $db1->execute(array($result->message, $this->id));
-        } 
     }
 }

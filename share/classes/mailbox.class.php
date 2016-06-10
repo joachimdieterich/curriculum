@@ -177,8 +177,6 @@ class Mailbox {
                 }
                 $xml->appendChild($message);
             }
-
-
             $xml->preserveWhiteSpace    = false; 
             $xml->formatOutput          = true;
 

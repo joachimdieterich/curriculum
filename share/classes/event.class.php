@@ -112,7 +112,7 @@ class Event {
      * Get all availible Grades of current institution
      * @return array of Grade objects 
      */
-    public function get($dependency = 'course', $id = null, $paginator = ''){
+    public function get($dependency = 'course', $id = null, $paginator = '', $limit = 5){
         global $USER;
         if ($id == null){
             $id = $this->id;
@@ -130,6 +130,11 @@ class Event {
                                                     FROM event AS ev
                                                     WHERE ev.creator_id = ? '.$order_param );
                             $db->execute(array($id));
+                break;
+            case 'upcoming':$db = DB::prepare('SELECT ev.*
+                                                    FROM event AS ev
+                                                    WHERE ev.creator_id = ? AND timestart >= NOW() ORDER BY timestart ASC LIMIT ?'.$order_param );
+                            $db->execute(array($id, $limit));
                 break;
 
             default:
