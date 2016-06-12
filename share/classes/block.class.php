@@ -44,7 +44,7 @@ class Block {
     public function load(){
         $db = DB::prepare('SELECT bi.*, bl.block, bl.visible FROM block_instances AS bi, block AS bl 
                                         WHERE bi.block_id = bl.id
-                                        AND context_id = ? AND institution_id = ? OR institution_id = 0 ORDER BY bi.weight'); //0 == all institutions
+                                        AND context_id = ? AND (institution_id = ? OR institution_id = 0) ORDER BY bi.weight'); //0 == all institutions
         $db->execute(array($this->context_id, $this->institution_id));
         $blocks = array();
         while($result = $db->fetchObject()) { 

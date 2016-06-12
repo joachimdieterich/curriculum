@@ -176,8 +176,8 @@
         {/if}
       
         <!-- Additional Blocks -->   
-        {foreach key=blockid item=block from=$blocks} 
-            {$block->configdata}
+        {foreach key=blockid item=block from=$blocks}
+            {html_block block=$block->block configdata=$block->configdata visible=$block->visible}
         {/foreach}       
     </div>
 </section>                 
