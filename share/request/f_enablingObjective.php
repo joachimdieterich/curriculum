@@ -45,8 +45,9 @@ switch ($func) {
                     foreach ($ena_objective as $key => $value){
                         $$key = $value;
                     }
-                    $omega                        = new Omega();
-                    $reference                    = $omega->getReference('enabling_objective', $ena_objective->id);
+                    if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
+                        $reference                = $CFG->repository->getReference('enabling_objective', $ena_objective->id);
+                    }
                     $header                       = 'Ziel bearbeiten';           
         break;
     case 'new':     $ter_objective                = new TerminalObjective();
@@ -78,7 +79,7 @@ $content = '<form id="form_enabling_objective" method="post" action="../share/pr
 <input type="hidden" name="func" id="func" value="'.$func.'"/>'; 
 $content .= Form::input_textarea('enabling_objective', 'Ziel', $enabling_objective, $error, 'z.B. ');
 $content .= Form::input_textarea('description', 'Beschreibung', $description, $error, 'z.B. ');
-$content .= Form::input_text('reference', 'OMEGA Link', $reference, $error, 'Beschreibung');
+$content .= Form::input_text('reference', 'Externe Referenz', $reference, $error, 'Beschreibung');
 
 $intervals = new Interval();
 $content .= Form::input_select('repeat_interval', 'Ziel wiederholen?',$intervals->getIntervals(), 'description', 'repeat_interval', $repeat_interval, $error );

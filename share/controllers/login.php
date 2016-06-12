@@ -21,7 +21,7 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-global $TEMPLATE; 
+global $TEMPLATE, $PAGE; 
 
 $user       = new User();
 $message    = '';
@@ -32,8 +32,12 @@ if(filter_input(INPUT_POST, 'login', FILTER_UNSAFE_RAW)) {
     $TEMPLATE->assign('username', $user->username);                 // Benutzername bei falschem Passwort automatisch einsetzen.
     
     if($user->checkLoginData()) { 
+        if (isset($_SESSION['wantsurl'])){  
+            $PAGE->wantsurl = $_SESSION['wantsurl'];                // save wantsurl in $PAGE, session gets destroyed!
+        }
         session_destroy();                                          // Verhindert, dass eine bestehende Session genutzt wird --> verursacht Probleme (token / uploadframe)
         session_start();
+        
         
         $_SESSION['username']   = $user->username;
         $_SESSION['timein']     = time();
@@ -63,23 +67,26 @@ if(filter_input(INPUT_POST, 'login', FILTER_UNSAFE_RAW)) {
     }
 }
 
-
-$TEMPLATE->assign('page_title',     'Login');
+$TEMPLATE->assign('page_title',  'Login');
 $TEMPLATE->assign('breadcrumb',  array('Login' => 'index.php?action=login'));
-$TEMPLATE->assign('message',        $message);
+$TEMPLATE->assign('message',     $message);
 
 function route($usr){
+    global $PAGE;
     $confirmed = $usr->getConfirmed();
     switch ($confirmed) {
-        case 1:     header('Location:index.php?action=dashboard'); 
+        case 1:     if (isset($PAGE->wantsurl)){            //if user wants a url -> redirect
+                        header('Location:'.$PAGE->wantsurl); 
+                    } else {
+                        header('Location:index.php?action=dashboard'); 
+                    }
             break;
         case 2:     //header('Location:index.php?action=password&login=first');//ab Version 0.5 BETA nicht verwendet // --> 1. Login nach erfolgreichem Registrieren
             break;
-        case 3:     $_SESSION['FORM']->id      = null;
-                    $_SESSION['FORM']->form    = 'password';
-                    $_SESSION['FORM']->func    = 'changePW';
+        case 3:     $_SESSION['FORM']->id   = null;
+                    $_SESSION['FORM']->form = 'password';
+                    $_SESSION['FORM']->func = 'changePW';
                     header('Location:index.php?action=dashboard');
-            
             break;
         case 4:     //$PAGE->message[] = 'Ihr Account wurde noch nicht durch den Administrator freigegeben. Bitte probieren Sie es später noch einmal.'; //wurde für die PL Version herausgenommen // --> noch nicht freigegeben
             break; 

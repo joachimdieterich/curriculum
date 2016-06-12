@@ -104,7 +104,8 @@ if($_POST ){
                                            
         default: break;      
     }
-    session_reload_user(); // --> get the changes immediately   
+    //session_reload_user(); // --> get the changes immediately  
+    
 }
 /*******************************************************************************
  * END POST / GET 

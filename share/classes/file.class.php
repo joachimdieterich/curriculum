@@ -441,7 +441,7 @@ class File {
      * @return array of file objects|boolean 
      */
     public function getFiles($dependency = null, $id = null, $paginator = '', $getExternalFiles = null){
-        global $USER;
+        global $USER, $CFG;
         
         $order_param = orderPaginator($paginator, array('title'         => 'fl', 
                                                         'description'   => 'fl',
@@ -532,15 +532,13 @@ class File {
                 $files[]                     = clone $this;       
         }
            
-        
-        if (file_exists('../plugins/omega.class.php') AND $getExternalFiles == 1){ // prüfen, ob OMEGA Plugin vorhanden ist.
-            $omega_files    = new Omega();
-            $allfiles       = $omega_files->getFiles($dependency, $id, $files);
-            return $allfiles;
+        if (isset($CFG->repository) AND $getExternalFiles == true){
+           $repo     = get_plugin('repository', $CFG->settings->repository);
+           $allfiles = $repo->getFiles($dependency, $id, $files);
+           return $allfiles; 
         } else {
             return $files;
         }
-        
     }
 
      /**

@@ -694,3 +694,37 @@ function PHPArrayObjectSorter($array,$sortBy,$direction='asc'){
         }
         return $text;
     }
+    
+ /**
+ * Returns an plugin instance.
+ *
+ * @param string $type type of plugin
+ * @param string $plugin name of plugin
+ * @return plugin_base An instance of the required  plugin.
+ */
+function get_plugin($type, $plugin) {
+    global $CFG;
+    // Check the plugin exists first.
+    if (! exists_plugin($type, $plugin)) {
+        print_error($type.'pluginnotfound', 'debug', '', $plugin);
+    }
+
+    // Return plugin instance.
+    require_once("{$CFG->plugins_root}/$type/$plugin/plugin.php");
+    $class = "plugin_$plugin";
+    return new $class;
+}
+
+/**
+ * Returns whether a given plugin exists.
+ * @param string $type type of plugin
+ * @param string $plugin to check for. Defaults to the global setting in {@link $CFG}.
+ * @return boolean Whether the plugin is available.
+ */
+function exists_plugin($type, $plugin) {
+    global $CFG;
+    if (file_exists("{$CFG->plugins_root}/$type/$plugin/plugin.php")) {
+        return is_readable("{$CFG->plugins_root}/$type/$plugin/plugin.php");
+    }
+    return false;
+}

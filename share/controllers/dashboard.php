@@ -38,6 +38,11 @@ $TEMPLATE->assign('myClasses', $groups->getGroups('user', $USER->id));
 
 $TEMPLATE->assign('myClasses', $groups->getGroups('user', $USER->id));
 
+/* Load blocks*/
+$blocks         = new Block();
+$blocks->context_id = 11; //== dashboard todo get value from context table
+$blocks->institution_id = $USER->institution_id;
+$TEMPLATE->assign('blocks', $blocks->load());
 //$cron           = new Cron(); 
 //$cron->detectExpiredObjective();      // Überprüft einmal pro Tag ob Ziele abgelaufen sind.
 

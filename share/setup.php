@@ -62,4 +62,13 @@ $TEMPLATE->assign('template_url',   $CFG->smarty_template_dir);
 $TEMPLATE->assign('app_title',      $CFG->app_title);
 $TEMPLATE->assign('app_version',    $CFG->version);
 $TEMPLATE->assign('app_footer',     $CFG->app_footer);
-?>
+
+/* Load Plugins */
+$config = new Config();
+$CFG->settings = $config->load();
+if (isset($CFG->settings->repository)){
+    $CFG->repository = get_plugin('repository',$CFG->settings->repository);
+}
+/*if (isset($CFG->settings->auth)){
+    $CFG->auth = get_plugin('auth',$CFG->settings->auth);
+}*/

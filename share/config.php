@@ -47,6 +47,7 @@ $CFG->curriculumdata_root           = '/Applications/MAMP/cur_data_pl/';
 /*  Paths - do not edit */
 $CFG->document_root                 = dirname(__FILE__).'/../public/';
 $CFG->controllers_root              = dirname(__FILE__).'/controllers/'; 
+$CFG->plugins_root                  = dirname(__FILE__).'/plugins/'; 
 $CFG->user_root                     = $CFG->curriculumdata_root.'user/';
 $CFG->curriculum_root               = $CFG->curriculumdata_root.'curriculum/';
 $CFG->subjects_root                 = $CFG->curriculumdata_root.'subjects/'; 

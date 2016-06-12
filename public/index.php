@@ -113,14 +113,13 @@ try { // Error handling
     * load controller 
     */ 
     $PAGE->controller = $CFG->controllers_root.'/'.$PAGE->action .'.php';
-    if (file_exists($PAGE->controller)) {                                               
+    
+    if (file_exists($PAGE->controller)) {   
         include($PAGE->controller);  
         $TEMPLATE->assign('page_name',  $PAGE->action );
-        
         if (isset($PAGE->message)){/* Systemnachrichten */
             $TEMPLATE->assign('page_message_count', count($PAGE->message));
             $TEMPLATE->assign('page_message',       $PAGE->message);
-            $_SESSION['PAGE'] = new stdClass();
             $_SESSION['PAGE']->message = null;  //reset to prevent multiple notifications
         } 
     } else {  
@@ -128,6 +127,7 @@ try { // Error handling
         $PAGE->action = 'error-404';
         throw new CurriculumException($PAGE->action .'.php nicht vorhanden.'); 
     }
+    
  } catch (CurriculumException $e){ // CurriculumException im controller
     if ($PAGE->action != 'error-404'){
         $TEMPLATE->assign('page_name',         $PAGE->action);  
@@ -135,7 +135,9 @@ try { // Error handling
     }
     $TEMPLATE->assign('curriculum_exception',   $e);  
 } 
-//object_to_array($USER);
+
+//object_to_array($_SESSION);
+//object_to_array($PAGE);
 //error_log(var_dump($INSTITUTION));
 //object_to_array($INSTITUTION);
 //object_to_array($CFG);

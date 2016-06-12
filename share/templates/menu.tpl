@@ -22,22 +22,22 @@
             </li>
             {/if}
             
-            
             <li class="header">Lehrpläne</li>
             <li class="treeview">
-                {if $my_enrolments != ''}
-                    {foreach item=cur_menu from=$my_enrolments}
-                        {if $cur_menu->semester_id eq $my_semester_id}
+            {if $my_enrolments != ''}
+                {foreach item=cur_menu from=$my_enrolments}
+                    {if $cur_menu->semester_id eq $my_semester_id}
+                        {if  $cur_menu->id eq $cur_menu->base_curriculum_id || $cur_menu->base_curriculum_id eq null}
                         <li {if isset($page_curriculum )}{if ($page_curriculum eq $cur_menu->id) && ($page_group eq $cur_menu->group_id)} class="active"{/if}{/if}>
                             <a href="index.php?action=view&curriculum_id={$cur_menu->id}&group={$cur_menu->group_id}">
                                 <i class="fa fa-dashboard"></i><span>{$cur_menu->curriculum}</span><small class="label pull-right bg-green">{$cur_menu->groups}</small>
                             </a>
                         </li>
                         {/if}
-                    {/foreach}
-                {else}<li><p>Sie sind in keinem Lehrplan eingeschrieben</p></li>
-                {/if}   
-            
+                    {/if}
+                {/foreach}
+            {else}<li><p>Sie sind in keinem Lehrplan eingeschrieben</p></li>
+            {/if}   
             
             <!-- Institution Menu -->
             {if checkCapabilities('menu:readMyInstitution', $my_role_id, false)}

@@ -149,7 +149,9 @@ class Backup {
         $cur->setAttribute("creator",       $usr->firstname . ' ' . $usr->lastname );
         $cur->setAttribute("icon_id",       $c->icon_id);
         if (count($c->terminal_objectives) >= 1){
-            $ext_ref    = new Omega();
+            if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
+                $ext_ref    = $CFG->repository;
+            }
             $file       = new File();
             /* terminal objectives */
             foreach($c->terminal_objectives as $ter_value){ 
@@ -160,7 +162,9 @@ class Backup {
                 $ter->setAttribute("order_id",           $ter_value->order_id);
                 $ter->setAttribute("repeat_interval",    $ter_value->repeat_interval);
                 $ter->setAttribute("color",              $ter_value->color);
-                $ter->setAttribute("ext_reference",      $ext_ref->getReference('terminal_objective', $ter_value->id));
+                if (isset($ext_ref)){
+                    $ter->setAttribute("ext_reference",      $ext_ref->getReference('terminal_objective', $ter_value->id));
+                }
                 
                 /* terminal objective material */
                 $ter_files  = $file->getFiles('terminal_objective', $ter_value->id);
@@ -185,7 +189,9 @@ class Backup {
                         $ena->setAttribute('description',        $ena_value->description);
                         $ena->setAttribute('order_id',           $ena_value->order_id);
                         $ena->setAttribute('repeat_interval',    $ena_value->repeat_interval);
-                        $ena->setAttribute('ext_reference',      $ext_ref->getReference('enabling_objective', $ena_value->id));
+                        if (isset($ext_ref)){
+                            $ena->setAttribute('ext_reference',      $ext_ref->getReference('enabling_objective', $ena_value->id));
+                        }
                         /* enabling objective material */
                         $ena_files  = $file->getFiles('enabling_objective', $ena_value->id);
                         foreach($ena_files as $f_value) {

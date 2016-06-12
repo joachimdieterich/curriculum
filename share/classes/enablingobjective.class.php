@@ -248,7 +248,7 @@ class EnablingObjective {
                                     $this->repeat_interval_id      = $result->repeat_interval;
                                     $this->creation_time           = $result->creation_time;
                                     $this->creator_id              = $result->creator_id;     
-                                    $this->files                   = $files->getFiles('enabling_objective', $this->id, 'default', true); // nicht benötigt --> viel bessere performance
+                                    $this->files                   = $files->getFiles('enabling_objective', $this->id, 'default', false); // 3. Parameter false da nicht benötigt --> viel bessere performance
                                     $objectives[]                  = clone $this; 
                                 }   
                 break;    
@@ -327,15 +327,8 @@ class EnablingObjective {
                                     $db_03 = DB::prepare('SELECT COUNT(*) AS MAX FROM files AS fi WHERE ena_id = ? AND context_id = 2');
                                     $db_03->execute(array($result->id));
                                     $res_03 = $db_03->fetchObject();
-                                    if (file_exists('../share/plugins/omega.class.php')){ // prüfen, ob OMEGA Plugin vorhanden ist.
-                                        $db_04 = DB::prepare('SELECT COUNT(*) AS MAX FROM plugin_omega AS po WHERE objective_id = ? AND type = 1');
-                                        $db_04->execute(array($result->id));
-                                        $res_04 = $db_04->fetchObject();
-                                        if ($res_04->MAX >= 1){
-                                            $ext = '/ext';
-                                        } else {
-                                            $ext = '';
-                                        }
+                                    if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
+                                        $ext = $CFG->repository->count(1,$result->id);
                                     } 
                                     $this->files                = $res_03->MAX.$ext; //nummer of materials
                                     

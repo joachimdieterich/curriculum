@@ -27,8 +27,10 @@
 /* Klassen laden */
 include('classes/absent.class.php');
 include('classes/backup.class.php');
+include('classes/block.class.php');
 include('classes/capability.class.php');
 include('classes/certificate.class.php');
+include('classes/config.class.php');
 include('classes/context.class.php');
 include('classes/country.class.php');
 include('classes/course.class.php'); 
@@ -54,6 +56,7 @@ $LOG = new Log();                                   // Funktion ist so  innerhal
 include('classes/mail.class.php');
 include('classes/mailbox.class.php');               
 include('classes/pdf.class.php'); 
+include('classes/plugin.class.php');     
 include('classes/portfolio.class.php'); 
 include('classes/quiz_question.class.php'); 
 include('classes/quiz_answer.class.php'); 
@@ -69,10 +72,6 @@ include('classes/terminalobjective.class.php');
 include('classes/upload.class.php');  
 include('classes/user.class.php');     
 
-/*omega plugin*/
-if (file_exists(dirname(__FILE__).'/plugins/omega.class.php')) {
-    include('plugins/omega.class.php');
-}
 /*Videostream*/
 include('classes/video_stream.class.php');     
 

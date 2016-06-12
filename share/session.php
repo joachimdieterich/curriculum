@@ -80,6 +80,7 @@ if (isset($_SESSION['PAGE'])){
     if (!isset($_SESSION['PAGE']->message)){                                    // to get messages from popups
         $PAGE->message          = null;                                     //reset page messages
     } 
+    $_SESSION['PAGE']           = new stdClass();
     $_SESSION['PAGE']           =& $PAGE;
     assign_to_template($_SESSION['PAGE'],'page_');                              // assign $_SESSION['PAGE'] to $TEMPLATE 
 } else {
@@ -102,8 +103,6 @@ if (null !== (filter_input(INPUT_GET, 'course'))){
     $course                     = new Course();
     $course                     = $course->getCourseId($curriculum_id, $group_id);
     $_SESSION['COURSE']         =& $course;
-    
-    
 } else {
     if (isset($_SESSION['COURSE'])){
     $COURSE                     = $_SESSION['COURSE'];

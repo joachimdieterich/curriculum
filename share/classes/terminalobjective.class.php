@@ -180,6 +180,7 @@ class TerminalObjective {
      * @return array of TerminalObjective objects|boolean 
      */
     public function getObjectives($dependency = null, $id = null, $load_enabling_objectives = false) {
+        global $CFG;
         switch ($dependency) {
             case 'curriculum':  $files = new File(); 
                                 $db = DB::prepare('SELECT * FROM terminalObjectives
@@ -195,7 +196,7 @@ class TerminalObjective {
                                     $this->repeat_interval      = $result->repeat_interval;
                                     $this->creation_time        = $result->creation_time;
                                     $this->creator_id           = $result->creator_id;
-                                    $this->files                = $files->getFiles('terminal_objective', $this->id, 'default', true); // nicht benötigt --> viel bessere performance
+                                    $this->files                = $files->getFiles('terminal_objective', $this->id, 'default', false); // 3. Parameter false da nicht benötigt --> viel bessere performance
                                     if ($load_enabling_objectives){
                                         $enabling_objectives = new EnablingObjective();
                                         $this->enabling_objectives = $enabling_objectives->getObjectives('terminal_objective', $this->id);
@@ -205,15 +206,9 @@ class TerminalObjective {
                                     $db_02 = DB::prepare('SELECT COUNT(*) AS MAX FROM files WHERE ter_id = ? AND ena_id < 1 AND context_id = 2');
                                     $db_02->execute(array($result->id));
                                     $res_02 = $db_02->fetchObject();
-                                    if (file_exists('../share/plugins/omega.class.php')){ // prüfen, ob OMEGA Plugin vorhanden ist.
-                                        $db_04 = DB::prepare('SELECT COUNT(*) AS MAX FROM plugin_omega WHERE objective_id = ? AND type = 0');
-                                        $db_04->execute(array($result->id));
-                                        $res_04 = $db_04->fetchObject();
-                                        if ($res_04->MAX >= 1){
-                                            $ext= '/ext';
-                                        } else {
-                                            $ext = '';
-                                        }
+                                    
+                                    if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
+                                        $ext = $CFG->repository->count(0,$result->id);
                                     }
                                     $this->files                = $res_02->MAX.$ext; //nummer of materials
                                     

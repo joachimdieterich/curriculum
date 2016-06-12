@@ -929,17 +929,18 @@ class User {
      * @return string | array
      */
    public function get_curriculum_enrolments() { 
-        $db = DB::prepare('SELECT cu.curriculum, cu.id, cu.grade_id, gp.id AS group_id, gp.semester_id, gp.groups, fl.filename 
-                            FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp, files AS fl
+        $db = DB::prepare('SELECT cu.curriculum, cu.id, cu.grade_id, gp.id AS group_id, gp.semester_id, gp.groups, fl.filename, cn.base_curriculum_id, cn.level 
+                            FROM curriculum_enrolments AS ce, groups AS gp, files AS fl, curriculum AS cu
+                            LEFT JOIN curriculum_niveaus AS cn ON cn.curriculum_id = cu.id
                             WHERE cu.id = ce.curriculum_id AND ce.status = 1 AND gp.id = ce.group_id AND cu.icon_id = fl.id
-                            AND ce.group_id = ANY (SELECT group_id FROM groups_enrolments 
-                                                    WHERE user_id = (SELECT id FROM users WHERE username = ?)
-                                                    AND status = 1)
+                            AND ce.group_id = ANY (SELECT group_id FROM groups_enrolments WHERE user_id = ? AND status = 1)
                             ORDER BY gp.groups, cu.curriculum ASC');
-        $db->execute(array($this->username));
+        $db->execute(array($this->id));
         
         while($result = $db->fetchObject()) { 
-                $data[] = $result;         
+            $c        = new Curriculum();
+            $c->id    = $result->id;
+            $data[]   = $result;         
         } 
         if (isset($data)){ return $data; } 
         else             { return false; }
@@ -1040,6 +1041,16 @@ class User {
         } else { 
             $db = DB::prepare('INSERT INTO accept_terms (status,user_id) VALUES (1,?)');//Status 1 == accepted
             return $db->execute(array($this->id));
+        }
+    }
+    
+    public function exists($key, $value){
+        $db = DB::prepare('SELECT count(id) FROM users WHERE '.$key.' = ?');
+        $db->execute(array($value));
+        if($db->fetchColumn() > 0) {
+            return true;
+        } else { 
+            return false;
         }
     }
     

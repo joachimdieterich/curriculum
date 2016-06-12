@@ -22,7 +22,7 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.   
 */
-global $CFG, $USER; 
+global $CFG, $USER, $PAGE; 
 if(isset($_SESSION['USER']->id)) {                          // Angemeldet?
     $session_life       = time() - $_SESSION['timein'];     // Errechne vergangene Zeit seit letzter Aktion
     if($session_life > ($CFG->timeout)*60){                 // *60 = Minuten
@@ -30,12 +30,13 @@ if(isset($_SESSION['USER']->id)) {                          // Angemeldet?
     }
     $_SESSION['timein'] = time();                           // Session nicht abgelaufen -> neue Zeitsignatur setzen
 } else {
+    $_SESSION['wantsurl'] = $_SERVER['REQUEST_URI'];
     header('Location:index.php?action=login');              // Nicht angemeldet --> login zeigen.
 }
 
 function logout(){                                          // Benutzer abmelden
     global $USER;
     $USER->userLogout();                                    // Schreibt Zeitsignatur 
-    session_destroy();                                      // Session löschen
+    //session_destroy();                                    // Session löschen
     header('Location:index.php?action=login');              // Nicht angemeldet --> login zeigen.
 }

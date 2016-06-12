@@ -273,12 +273,10 @@ class Curriculum {
         return $curriculum;
    }
    
-   public function getNiveau($paginator = ''){
-       $order_param = orderPaginator($paginator, array('curriculum' => 'cn',
-                                                        'description' => 'cn'));  
+   public function getNiveau(){  
        $db = DB::prepare('SELECT cn.* FROM curriculum_niveaus AS cn
                                                 WHERE cn.base_curriculum_id = (SELECT base_curriculum_id FROM curriculum_niveaus
-                                                WHERE curriculum_id = ?)'.$order_param);
+                                                WHERE curriculum_id = ?) ORDER BY level');
                             $db->execute(array($this->id));
                             $niveaus = array();
                             while($result = $db->fetchObject()) {
@@ -299,9 +297,6 @@ class Curriculum {
         
         $xml = new DOMDocument( "1.0", "UTF-8" );
         $xml->load($CFG->backup_root.$import_folder.'/'.$import_folder.'.xml');
-        if (file_exists('../plugins/omega.class.php')) {
-            $ext_reference = new Omega();
-        }
         foreach($xml->getElementsByTagName('curriculum') as $curriculum) {
                  $old_cur_id              = $curriculum->getAttribute('id');
                  $this->curriculum        = $curriculum->getAttribute('curriculum');
@@ -339,8 +334,8 @@ class Curriculum {
         
         $xml = new DOMDocument( "1.0", "UTF-8" );
         $xml->load($CFG->backup_root.$import_folder.'/'.$import_folder.'.xml');
-        if (file_exists('../plugins/omega.class.php')) {
-            $ext_reference = new Omega();
+        if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
+            $ext_reference = get_plugin('repository', $CFG->settings->repository);
         }
         foreach($xml->getElementsByTagName('curriculum') as $curriculum) {
                 $old_cur_id              = $curriculum->getAttribute('id');

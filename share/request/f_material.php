@@ -64,7 +64,7 @@ if (!$files){
                 case 2: $level_header = 'Dateien meiner Instution(en)'; break;
                 case 3: $level_header = 'Dateien meiner Gruppe(n)';break;
                 case 4: $level_header = 'Meine Dateien'; break;
-                case 5: $level_header = 'OMEGA Materialien'; break;
+                case 5: $level_header = 'Externe Medien'; break;
                 default: break;
             } $file_context       = $files[$i]->file_context+1; //file_context auf nächstes Level setzen
         }
@@ -81,11 +81,11 @@ if (!$files){
                     if ($k == 'filename'){  $filename = $v; }
                     if ($k == 'size')    {      $size = $v; }
                 }
-                if ($files[$i]->type != 'omega'){
+                if ($files[$i]->type != 'external'){
                     $f_versions .= '<a class="pull-right" href="'.$CFG->curriculum_path.$files[$i]->path.$filename .'" target="_blank">'.translate_size($key).' ('.$size.')</a><br>'; 
                 }        
                 if ($key == 't'){
-                    if ($files[$i]->type == 'omega'){
+                    if ($files[$i]->type == 'external'){
                         $preview =  $filename ;
                     } else {
                         $preview =  $CFG->curriculum_path.$files[$i]->path.$filename;
@@ -96,14 +96,14 @@ if (!$files){
         }
         /* . Icon */
 
-        if ($files[$i]->type != 'omega'){ $m_onclick      = 'updateFileHits('.$files[$i]->id.')'; }
+        if ($files[$i]->type != 'external'){ $m_onclick      = 'updateFileHits('.$files[$i]->id.')'; }
         $m_title        = $files[$i]->title;
         $m_description  = $files[$i]->description;
         
         switch ($files[$i]->type) {
-            case '.url':    $m_url = $files[$i]->path;       
+            case '.url':      $m_url = $files[$i]->path;       
                 break;
-            case 'omega':   $m_url = $files[$i]->filename;
+            case 'external':  $m_url = $files[$i]->filename;
                 break;
             case '.mp3':    /* Player*/  
                             $m_player =  '<audio width="100%" controls preload="none">
@@ -121,7 +121,7 @@ if (!$files){
                 break;
         }
         
-        if (checkCapabilities('file:showHits', $USER->role_id, false)  && $files[$i]->type != 'omega'){ // für omega können keine Zugriffszahlen erfasst werden
+        if (checkCapabilities('file:showHits', $USER->role_id, false)  && $files[$i]->type != 'external'){ // für Externe Medien können keine Zugriffszahlen erfasst werden
             $m_hits     = $files[$i]->hits;
         }  
             
@@ -129,7 +129,7 @@ if (!$files){
         $license = new License();
         if ($files[$i]->license != '' && isset($files[$i]->license)){
             if ($files[$i]->file_context == 5){
-                $license->license = $files[$i]->license;  //OMEGA
+                $license->license = $files[$i]->license;  //Externes Medium
             } else { 
                 $license->get($files[$i]->license);
             }
@@ -144,14 +144,14 @@ if (!$files){
             $m_icon_class = resolveFileType($files[$i]->type);
         }     
         
-        if (checkCapabilities('file:editMaterial', $USER->role_id, false) && $edit && ($files[$i]->type != 'omega')){
+        if (checkCapabilities('file:editMaterial', $USER->role_id, false) && $edit && ($files[$i]->type != 'external')){
             $m_delete = true;
         }
 
         /* Material footer */
         /* End Material footer*/
-        if ($files[$i]->type != 'omega'){
-        
+        if ($files[$i]->type != 'external'){
+
             $m_footer .= '<div class="info-box-text" style="padding-top:10px;white-space:normal; text-transform:none; display:block;">
                            <div class="row">
                     <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
@@ -174,7 +174,7 @@ if (!$files){
                       </div><!-- ./row -->
                       </div><!-- ./info-box-text -->';
             
-        } else { // Bei OMEGA Materialien nur die Lizenz zeigen
+        } else { // Bei Externen Medien nur die Lizenz zeigen
             $m_footer .= '<div class="info-box-text">
                            <div class="row">   
                             <div class="col-xs-12 text-center">

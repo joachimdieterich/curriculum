@@ -43,8 +43,10 @@ switch ($func) {
                     foreach ($ter_objective as $key => $value){
                         $$key = $value;
                     }
-                    $omega                        = new Omega();
-                    $reference                    = $omega->getReference('terminal_objective', $ter_objective->id);
+                    
+                    if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
+                        $reference  = $CFG->repository->getReference('terminal_objective', $ter_objective->id);
+                    }
                     $header                       = 'Thema bearbeiten';           
         break;
     case 'new':     $ter_objective->curriculum_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
@@ -72,7 +74,7 @@ $content = '<form id="form_terminal_objective" method="post" action="../share/pr
 <input type="hidden" name="func" id="func" value="'.$func.'"/>'; 
 $content .= Form::input_textarea('terminal_objective', 'Thema', $terminal_objective, $error, 'z.B. ');
 $content .= Form::input_textarea('description', 'Beschreibung', $description, $error, 'z.B. ');
-$content .= Form::input_text('reference', 'OMEGA Link', $reference, $error, 'Beschreibung');
+$content .= Form::input_text('reference', 'Externe Referenz', $reference, $error, 'Beschreibung');
 $content .= Form::input_color(array('id' => 'color', 'rgb' => $color, 'error' => $error));
 
 $f_content = '';

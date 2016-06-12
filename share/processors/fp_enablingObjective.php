@@ -72,11 +72,13 @@ if($validated_data === false) {/* validation failed */
     $_SESSION['FORM']            = null;                     // reset Session Form object
     $curriculum                  = $_POST['curriculum_id'];   
 }
-$omega = new Omega();
+if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
+    $repo = $CFG->repository;
+}
 if (filter_input(INPUT_POST, 'reference', FILTER_UNSAFE_RAW)){
-    $omega->setReference('enabling_objective', $ena_id, filter_input(INPUT_POST, 'reference', FILTER_UNSAFE_RAW));
+    $repo->setReference('enabling_objective', $ena_id, filter_input(INPUT_POST, 'reference', FILTER_UNSAFE_RAW));
 } else {
-    $omega->setReference('enabling_objective', $ena_id, ''); // damit update übernommen wird
+    $repo->setReference('enabling_objective', $ena_id, ''); // damit update übernommen wird
 }
 
 header('Location:'.$_SESSION['PAGE']->target_url);
