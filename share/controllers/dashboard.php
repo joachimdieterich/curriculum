@@ -36,8 +36,6 @@ $TEMPLATE->assign('bulletinBoard', $institution->getBulletinBoard());
 $groups         = new Group(); 
 $TEMPLATE->assign('myClasses', $groups->getGroups('user', $USER->id));
 
-$TEMPLATE->assign('myClasses', $groups->getGroups('user', $USER->id));
-
 /* Load blocks*/
 $blocks         = new Block();
 $blocks->context_id = 11; //== dashboard todo get value from context table

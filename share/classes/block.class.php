@@ -35,6 +35,7 @@ class Block {
     public $weight;
     public $configdata;
     public $institution_id;
+    public $role_id;
     
     
     public function __construct() {
@@ -58,7 +59,9 @@ class Block {
             $this->weight          = $result->weight; 
             $this->configdata      = $result->configdata; 
             $this->institution_id  = $result->institution_id;
-            $blocks[]           = clone $this;
+            $this->role_id         = $result->role_id;
+            $this->status          = 'collapsed-box'; //todo: load status based on userconfig
+            $blocks[]              = clone $this;
         }
         return $blocks;
     }

@@ -575,22 +575,25 @@ class Render {
     }
     
     /* Todo: add more config options*/
-    public static function moodle_login($params){ 
-        error_log('ja');
-        foreach($params as $key => $val) {
+    public static function moodle_block($params){ 
+        global $USER;
+        $width  = 'col-md-4';
+        $status = '';
+        foreach($params['blockdata'] as $key => $val) {
             $$key = $val;
         }
-        $html  = '<div class="col-md-4 ">
-                    <div class="box box-primary">
+        if ($USER->role_id === $role_id OR $role_id === '0'){
+        $html  = '<div class="'.$width.'">
+                    <div class="box box-primary '.$status.'">
                         <div class="box-header with-border">
-                              <h3 class="box-title">Moodle</h3>
+                              <h3 class="box-title">'.$name.'</h3>
                               <div class="box-tools pull-right">
                                 <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                                 <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
                               </div>
                         </div><!-- /.box-header -->
                         <div class="box-body text-center">
-                            <form target="_blank" action="'.$link.'" method="post">
+                            <form target="_blank" action="'.$configdata.'" method="post">
                                <div class="form-group has-feedback">
                                  <input type="text" name="username" class="form-control" placeholder="Benutzername">
                                  <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
@@ -608,8 +611,39 @@ class Render {
                         </div>
                     </div>
                </div>';
-        return $html; 
+            if ($visible == 1){
+                return $html; 
+            }
+        }
+    }
     
+    public static function html_block($params){ 
+        global $USER;
+        $width  = 'col-md-4';
+        $status = '';
+        foreach($params['blockdata'] as $key => $val) {
+            $$key = $val;
+        }
+        if ($USER->role_id === $role_id OR $role_id === '0'){
+            $html  = '<div class="'.$width.'">
+                        <div class="box box-primary '.$status.'">
+                            <div class="box-header with-border">
+                                  <h3 class="box-title">'.$name.'</h3>
+                                  <div class="box-tools pull-right">
+                                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                    <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                  </div>
+                            </div><!-- /.box-header -->
+                            <div class="box-body">
+                                '.$configdata.'
+                            </div>
+                        </div>
+                   </div>';
+
+            if ($visible == 1){
+                return $html; 
+            }
+        }
     }
     
     

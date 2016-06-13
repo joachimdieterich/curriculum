@@ -20,27 +20,12 @@ function smarty_function_html_block($params, $template) {
     
     foreach($params as $_key => $_val) {
         switch ($_key) {
-            case 'block':      $block                = $_val;
+            case 'blockdata':  $blockfunction =   $_val->block.'_block';
+                               $_html = RENDER::$blockfunction($params);
                 break;
-            case 'configdata':  $configdata          = $_val;
-                break;
-            case 'visible':     $visible             = $_val;
-                break;
-          
             default: break;
         } 
     } 
     
-    switch ($block) {
-        case 'moodle_login':    $_html = RENDER::moodle_login(array('link' => $configdata));
-            break;
-        case 'html':            $_html = $configdata;
-        
-        default:
-            break;
-    }
-    
-    if ($visible != 0){
-        return $_html;
-    }
+     return $_html;
 }
