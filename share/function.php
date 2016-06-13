@@ -706,7 +706,7 @@ function get_plugin($type, $plugin) {
     global $CFG;
     // Check the plugin exists first.
     if (! exists_plugin($type, $plugin)) {
-        print_error($type.'pluginnotfound', 'debug', '', $plugin);
+        error_log($type.'pluginnotfound: '. $plugin);
     }
 
     // Return plugin instance.

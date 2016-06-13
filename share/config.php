@@ -34,7 +34,7 @@ $CFG->app_footer='<a href="http://www.joachimdieterich.de">© Copyright 2014 - J
 $CFG->db_host='127.0.0.1';
 $CFG->db_user='root';
 $CFG->db_password ='root';
-$CFG->db_name='dev';
+$CFG->db_name='empty_db_0.9.3';
 if ($CFG->db_name != ''){
     $DB = new PDO('mysql:host='.$CFG->db_host.';dbname='.$CFG->db_name.';charset=utf8', $CFG->db_user, $CFG->db_password ); 
     $DB->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

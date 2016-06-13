@@ -655,9 +655,6 @@ class EnablingObjective {
                             }
                             break;
             case 'teacher': checkCapabilities('objectives:setStatus', $USER->role_id);
-                            //$slug = new Badges();        
-                            //$badge_slug = $slug->getBadgeSlug($this->terminal_objective_id, $this->id);
-
                             $db = DB::prepare('SELECT COUNT(id) FROM user_accomplished WHERE enabling_objectives_id = ? AND user_id = ?');
                             $db->execute(array($this->id, $user_id));
                             if($db->fetchColumn() >= 1) { 
