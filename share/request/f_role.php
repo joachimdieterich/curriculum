@@ -75,8 +75,8 @@ foreach ($capabilities as $key => $value) {
 
     if ($section != substr($value->capability, 0, $pos)){
         $content .= '<div class="form-group">
-                     <label class="control-label col-sm-6" for=""></label>
-                     <div class="col-sm-6"><h4>'.substr($value->capability, 0, $pos).'</h4></div></div>';
+                     <label class="control-label col-sm-3" for=""></label>
+                     <div class="col-sm-9"><h4>'.substr($value->capability, 0, $pos).'</h4></div></div>';
                 
     }
     $content .= Form::input_switch($value->capability, $value->name, $value, $error, 'col-sm-6', 'col-sm-6');

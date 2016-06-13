@@ -253,7 +253,7 @@ class User {
         //Aktuelle Rolle laden (abhängig von der Institution --> ermittelt über das aktuelle Semester
         $db = DB::prepare('SELECT COUNT(id) FROM institution_enrolments AS ie WHERE ie.user_id = ? AND ie.status = 1');
         $db->execute(array($this->id));
-        if($db->fetchColumn() > 1) {
+        if($db->fetchColumn() > 1 AND isset($this->semester_id)) {
             $db1 = DB::prepare('SELECT ie.role_id, ie.institution_id FROM institution_enrolments AS ie, semester AS se 
                                 WHERE se.id = ? AND se.institution_id = ie.institution_id AND ie.user_id = ? AND ie.status = 1');
             $db1->execute(array($this->semester_id, $this->id)); 

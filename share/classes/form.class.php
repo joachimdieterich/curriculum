@@ -124,6 +124,7 @@ class Form {
      * @return string
      */
     public static function input_select($id, $label, $select_data, $select_label, $select_value, $input, $error, $onchange= '', $placeholder ='---', $class_left='col-sm-3', $class_right='col-sm-9'){
+        
         $form = '<div class="form-group '.validate_msg($error, $id, true).'">
                   <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
                   <div class="'.$class_right.'">
@@ -147,6 +148,8 @@ class Form {
         return $form;
     }
     public static function input_select_multiple($id, $label, $select_data, $select_label, $select_value, $input, $error, $onchange= '', $placeholder ='---', $class_left='col-sm-3', $class_right='col-sm-9'){
+        $class_left='col-sm-3'; 
+        $class_right='col-sm-9';
         $form = '<div class="form-group '.validate_msg($error, $id, true).'">
                   <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
                   <div class="'.$class_right.'">
