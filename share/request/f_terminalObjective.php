@@ -68,7 +68,7 @@ if (isset($_SESSION['FORM'])){
 }
 
 $content = '<form id="form_terminal_objective" method="post" action="../share/processors/fp_terminalObjective.php">
- <div class="form-horizontal"><div class="form-group">   
+ <div class="form-horizontal">
 <input type="hidden" name="terminal_objective_id" id="terminal_objective_id" value="'.$terminal_objective_id.'"/> 
 <input type="hidden" name="curriculum_id" id="curriculum_id" value="'.$curriculum_id.'"/>
 <input type="hidden" name="func" id="func" value="'.$func.'"/>'; 
@@ -76,14 +76,14 @@ $content .= Form::input_textarea('terminal_objective', 'Thema', $terminal_object
 $content .= Form::input_textarea('description', 'Beschreibung', $description, $error, 'z.B. ');
 $content .= Form::input_text('reference', 'Externe Referenz', $reference, $error, 'Beschreibung');
 $content .= Form::input_color(array('id' => 'color', 'rgb' => $color, 'error' => $error));
-
+$content .= '</div></form>';
 $f_content = '';
 if ($func == 'edit'){ 
     $f_content .= '<button id="update_terminal_objective" name="update_terminal_objective" type="submit" class="btn btn-primary fa fa-check-circle-o pull-right" onclick="document.getElementById(\'form_terminal_objective\').submit();"> Thema aktualisieren</button>';
 } else {
     $f_content .= '<button id="add_terminal_objective" name="add_terminal_objective" type="submit" class="btn btn-primary fa fa-plus pull-right" onclick="document.getElementById(\'form_terminal_objective\').submit();"> Thema hinzufügen</button>';
 }
-$content .= '</div></div></form>';
+
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
                               'f_content' => $f_content));  

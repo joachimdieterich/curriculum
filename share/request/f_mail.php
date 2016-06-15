@@ -83,40 +83,34 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$html ='<div class="modal-dialog" style="overflow-y: initial !important;">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closePopup()"><span aria-hidden="true">×</span></button>
-              <h4 class="modal-title">'.$header.'</h4>
-            </div>
-            <div class="modal-body" style="max-height: 500px; overflow-y: auto;">';
-$html .='<form id="form_mail"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_mail.php"';
+$content = '<form id="form_mail"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_mail.php"';
 
-if (isset($currentUrlId)){ $html .= $currentUrlId; }
-$html .= '"><input type="hidden" name="mail_id" id="mail_id" value="'.$mail_id.'"/>
+if (isset($currentUrlId)){ $content .= $currentUrlId; }
+$content .= '"><input type="hidden" name="mail_id" id="mail_id" value="'.$mail_id.'"/>
             <input type="hidden" name="func" id="func" value="'.$func.'"/>';
-$html .= '<div class="nav-tabs-custom">';
-$html .= '<ul class="nav nav-tabs">
+$content .= '<div class="nav-tabs-custom">';
+$content .= '<ul class="nav nav-tabs">
           <li class="active"><a href="#persons" data-toggle="tab" aria-expanded="false" onclick="toggle([\'persons\', \'add_person\'], [\'groups\', \'add_group\']);">Personen</a></li>
           <li class=""><a href="#groups" data-toggle="tab" aria-expanded="true" onclick="toggle([\'groups\', \'add_group\'], [\'persons\', \'add_person\']);">Gruppen</a></li>';    
-$html .='</ul>
+$content .='</ul>
           <div class="tab-content">
             <div class="tab-pane active" id="persons">
             '. Form::input_select('receiver_id', 'Empfänger', $USER->getGroupMembers(), 'firstname, lastname', 'id', $receiver_id , $error) .'
             </div><!-- /.tab-pane -->';
-$html .= '<div class="tab-pane" id="groups">';
+$content .= '<div class="tab-pane" id="groups">';
 $groups = new Group();
-$html .= Form::input_select('group_id', 'Empfänger', $groups->getGroups('group', $USER->id), 'group, institution', 'id', $group_id , $error);
-$html .= '</div><!-- /.tab-pane -->';
-$html .= Form::input_text('subject', 'Betreff', $subject, $error);
-$html .= Form::input_textarea('message_text', 'Nachricht', $message_text, $error, 'Sehr geehrter Empfänger ...');
-$html .= '</div><!-- /.modal-body -->
-          <div class="modal-footer">   
-          <button id="add_person" name="add_person" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" > '.$header.'</button> 
-          <button id="add_group" name="add_group" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right hidden" > '.$header.'</button> ';
+$content .= Form::input_select('group_id', 'Empfänger', $groups->getGroups('group', $USER->id), 'group, institution', 'id', $group_id , $error);
+$content .= '</div><!-- /.tab-pane -->';
+$content .= Form::input_text('subject', 'Betreff', $subject, $error);
+$content .= Form::input_textarea('message_text', 'Nachricht', $message_text, $error, 'Sehr geehrter Empfänger ...');
+
+$content .= '</div></form>';
+
+$f_content = '<button id="add_person" name="add_person" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" > '.$header.'</button> 
+              <button id="add_group" name="add_group" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right hidden" > '.$header.'</button> ';
               
-$html .=  '</div><!-- /.tab-content -->
-            </div></form></div><!-- /.modal-content -->
-           </div><!-- /.modal-dialog -->';
+$html     = Form::modal(array('title'     => $header,
+                              'content'   => $content, 
+                              'f_content' => $f_content));  
 
 echo json_encode(array('html'=>$html));

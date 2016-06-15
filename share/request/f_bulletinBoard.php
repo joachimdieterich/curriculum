@@ -65,30 +65,24 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$html ='<div class="modal-dialog" style="overflow-y: initial !important;">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closePopup()"><span aria-hidden="true">×</span></button>
-              <h4 class="modal-title">'.$header.'</h4>
-            </div>
-            <div class="modal-body" style="max-height: 500px; overflow-y: auto;">';
-$html .='<form id="form_bulletinBoard"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_bulletinBoard.php"';
+$content .='<form id="form_bulletinBoard"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_bulletinBoard.php"';
 
-if (isset($currentUrlId)){ $html .= $currentUrlId; }
-$html .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
+if (isset($currentUrlId)){ $content .= $currentUrlId; }
+$content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
 /* Only edit bulletinboard of current institution todo, load bulletinboard on input_select*/
 //$html .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'institution_id', $institution_id , $error);
-$html .= Form::input_text('title', 'Überschrift', $title, $error,'z.B. Ankündigung');
-$html .= Form::input_textarea('text', 'Pinnwand-Text', $text, $error);
-$html .= '</div><!-- /.modal-body -->
-          <div class="modal-footer">';
-          if (isset($edit)){
-              $html .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_bulletinBoard\').submit();"> '.$header.'</button>'; 
-          } 
-          if (isset($add)){
-              $html .= '<button id="add" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_bulletinBoard\').submit();"> '.$header.'</button> ';
-          }    
-$html .=  '</div></form></div><!-- /.modal-content -->
-           </div><!-- /.modal-dialog -->';
+$content .= Form::input_text('title', 'Überschrift', $title, $error,'z.B. Ankündigung');
+$content .= Form::input_textarea('text', 'Pinnwand-Text', $text, $error);
+$content .= '</div></form>';
+$f_content = '';
+if (isset($edit)){
+    $f_content .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_bulletinBoard\').submit();"> '.$header.'</button>'; 
+} 
+if (isset($add)){
+    $f_content .= '<button id="add" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_bulletinBoard\').submit();"> '.$header.'</button> ';
+}    
+$html     = Form::modal(array('title'     => $header,
+                              'content'   => $content, 
+                              'f_content' => $f_content));
 
 echo json_encode(array('html'=>$html));

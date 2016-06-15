@@ -40,7 +40,6 @@ $timeend           = null;
 $timerange         = null;
 
 $func              = $_GET['func'];
-
 $error             =   null;
 $object            = file_get_contents("php://input");
 $data              = json_decode($object, true);
@@ -84,39 +83,28 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$html ='<div class="modal-dialog" style="overflow-y: initial !important;">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closePopup()"><span aria-hidden="true">×</span></button>
-              <h4 class="modal-title">'.$header.'</h4>
-            </div>
-            <div class="modal-body" style="max-height: 500px; overflow-y: auto;">';
-   
-$html .='<form id="form_task"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_task.php"';
-
-if (isset($currentUrlId)){ $html .= $currentUrlId; }
-$html .= '">
+$content .='<form id="form_task"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_task.php"';
+if (isset($currentUrlId)){ $content .= $currentUrlId; }
+$content .= '">
 <input type="hidden" name="func" id="func" value="'.$func.'"/>';
 if (isset($task_id)){
-$html .= '<input type="hidden" name="task_id" id="task_id" value="'.$task_id.'"/> ';
+    $content .= '<input type="hidden" name="task_id" id="task_id" value="'.$task_id.'"/> ';
 }
 if (isset($reference_id)){
-$html .= '<input type="hidden" name="reference_id" id="reference_id" value="'.$reference_id.'"/> ';
+$content .= '<input type="hidden" name="reference_id" id="reference_id" value="'.$reference_id.'"/> ';
 }
-$html .= Form::input_text('task', 'Aufgabe', $task, $error, 'z. B. Erstellen einer Mindmap zum Thema Pressefreiheit');
-$html .= Form::input_textarea('description', 'Beschreibung', $description, $error, 'Beschreibung');
-$html       .= Form::input_date(array('id'=>'timerange', 'label' => 'Zeitraum zum Erledigen' , 'time' => $timerange, 'error' => $error, 'placeholder' => '', $type = 'date'));
+$content .= Form::input_text('task', 'Aufgabe', $task, $error, 'z. B. Erstellen einer Mindmap zum Thema Pressefreiheit');
+$content .= Form::input_textarea('description', 'Beschreibung', $description, $error, 'Beschreibung');
+$content .= Form::input_date(array('id'=>'timerange', 'label' => 'Zeitraum zum Erledigen' , 'time' => $timerange, 'error' => $error, 'placeholder' => '', $type = 'date'));
+$content .= '</div></form>';
 
-$html       .= '</div><!-- /.modal-body -->
-            <div class="modal-footer">';
-            if (isset($edit)){
-                $html .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_task\').submit();"> '.$header.'</button>'; 
-            } 
-            if (isset($add)){
-                $html .= '<button id="add" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_task\').submit();"> '.$header.'</button> ';
-            }    
-$html .=  '</div></form></div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->';
+$f_content = '';
+if (isset($edit)){
+    $f_content .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_task\').submit();"> '.$header.'</button>'; 
+} 
+if (isset($add)){
+    $f_content .= '<button id="add" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_task\').submit();"> '.$header.'</button> ';
+}    
 
 $script = "<!-- daterangepicker -->
         <script id='modal_script'>
@@ -124,4 +112,9 @@ $script = "<!-- daterangepicker -->
         //$('.color-picker').colorpicker();
         $('.datepicker').daterangepicker({timePicker: true, timePickerIncrement: 1, timePicker24Hour: true, locale: {format: 'DD.MM.YYYY HH:mm'}});
         });</script>";
+
+$html     = Form::modal(array('title'     => $header,
+                              'content'   => $content, 
+                              'f_content' => $f_content));  
+
 echo json_encode(array('html'=>$html, 'script'=> $script));

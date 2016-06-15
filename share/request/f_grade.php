@@ -68,13 +68,14 @@ $content = '<form id="form_grade" method="post" action="../share/processors/fp_g
 $content .= Form::input_text('grade', 'Klassenstufe', $grade, $error, 'z. B. 7. Klasse');
 $content .= Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung');
 $content .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'institution_id', $institution_id , $error);
+$content .= '</div></form>';
 $f_content = '';
 if ($func == 'edit'){ 
     $f_content .= '<button type="submit" class="btn btn-primary fa fa-check-circle-o pull-right" onclick="document.getElementById(\'form_grade\').submit();"> '.$header.'</button>';
 } else {
     $f_content .= '<button type="submit" class="btn btn-primary fa fa-plus pull-right" onclick="document.getElementById(\'form_grade\').submit();"> '.$header.'</button>';
 }
-$content .= '</div></form>';
+
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
                               'f_content' => $f_content));  

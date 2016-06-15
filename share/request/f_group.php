@@ -80,44 +80,36 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$html ='<div class="modal-dialog" style="overflow-y: initial !important;">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closePopup()"><span aria-hidden="true">×</span></button>
-              <h4 class="modal-title">'.$header.'</h4>
-            </div>
-            <div class="modal-body" style="max-height: 500px; overflow-y: auto;">';
-$html .='<form id="form_group"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_group.php"';
-
-if (isset($currentUrlId)){ $html .= $currentUrlId; }
-$html .= '"><input type="hidden" name="group_id" id="group_id" value="'.$group_id.'"/>
+$content ='<form id="form_group"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_group.php"';
+if (isset($currentUrlId)){ $content .= $currentUrlId; }
+$content .= '"><input type="hidden" name="group_id" id="group_id" value="'.$group_id.'"/>
             <input type="hidden" name="func" id="func" value="'.$func.'"/>';
-
-$html .= Form::input_text('group', 'Lerngruppe', $group, $error);
-$html .= Form::input_text('description', 'Beschreibung', $description, $error);
+$content .= Form::input_text('group', 'Lerngruppe', $group, $error);
+$content .= Form::input_text('description', 'Beschreibung', $description, $error);
 $grades                     = new Grade();                                      //Load Grades
 $grades->institution_id     = $USER->institutions; 
-$html .= Form::input_select('grade_id', 'Klassenstufe', $grades->getGrades(), 'grade', 'id', $grade_id , $error);
+$content .= Form::input_select('grade_id', 'Klassenstufe', $grades->getGrades(), 'grade', 'id', $grade_id , $error);
 $semesters                  = new Semester();                                   //Load Semesters
 $semesters->institution_id  = $USER->institutions; 
-$html .= Form::input_select('semester_id', 'Lernzeitraum', $semesters->getSemesters(), 'semester', 'id', $semester_id , $error);
-$html .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'institution_id', $institution_id , $error);
+$content .= Form::input_select('semester_id', 'Lernzeitraum', $semesters->getSemesters(), 'semester', 'id', $semester_id , $error);
+$content .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'institution_id', $institution_id , $error);
 if (isset($change_semester)){
-    $html .= Form::info('p_group', ' ', 'Um eine leere Lerngruppe zu erstellen, Haken entfernen.');
-    $html .= Form::input_checkbox('assumeUsers', 'Personen übernehmen', $assumeUsers , $error);
+    $content .= Form::info('p_group', ' ', 'Um eine leere Lerngruppe zu erstellen, Haken entfernen.');
+    $content .= Form::input_checkbox('assumeUsers', 'Personen übernehmen', $assumeUsers , $error);
 }
-$html .= '</div><!-- /.modal-body -->
-          <div class="modal-footer">';
-          if (isset($edit)){
-              $html .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_group\').submit();"> '.$header.'</button>'; 
-          } 
-          if (isset($change_semester)){
-              $html .= '<button id="change" name="change" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_group\').submit();"> '.$header.'</button> ';
-          }    
-          if (isset($add)){
-              $html .= '<button id="add" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_group\').submit();"> '.$header.'</button> ';
-          }    
-$html .=  '</div></form></div><!-- /.modal-content -->
-           </div><!-- /.modal-dialog -->';
+$content .= '</div></form>';
+$f_content = '';
+if (isset($edit)){
+    $f_content .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_group\').submit();"> '.$header.'</button>'; 
+} 
+if (isset($change_semester)){
+    $f_content .= '<button id="change" name="change" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_group\').submit();"> '.$header.'</button> ';
+}    
+if (isset($add)){
+    $f_content .= '<button id="add" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_group\').submit();"> '.$header.'</button> ';
+}    
+$html     = Form::modal(array('title'     => $header,
+                              'content'   => $content, 
+                              'f_content' => $f_content));
 
 echo json_encode(array('html'=>$html));

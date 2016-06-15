@@ -72,30 +72,22 @@ if (isset($_SESSION['FORM'])){
         }
     }
 }
-
-$html ='<div class="modal-dialog" style="overflow-y: initial !important;">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closePopup()"><span aria-hidden="true">×</span></button>
-              <h4 class="modal-title">'.$header.'</h4>
-            </div>
-            <div class="modal-body" style="max-height: 500px; overflow-y: auto;">';
    
-$html .='<form id="form_backup"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_backup.php"';
+$content .='<form id="form_backup"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_backup.php"';
 
-if (isset($currentUrlId)){ $html .= $currentUrlId; }
-$html .= '">
-<input type="hidden" name="func" id="func" value="'.$func.'"/>';
-$html .= Form::input_select('curriculum_id', 'Lehrplan', $options, 'course', 'curriculum_id', null , $error);
-$html       .= '</div><!-- /.modal-body -->
-            <div class="modal-footer">';
-            if (isset($edit)){
-                $html .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_backup\').submit();"> '.$header.'</button>'; 
-            } 
-            if (isset($add)){
-                $html .= '<button id="add" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_backup\').submit();"> '.$header.'</button> ';
-            }    
-$html .=  '</div></form></div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->';
+if (isset($currentUrlId)){ $content .= $currentUrlId; }
+$content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
+$content .= Form::input_select('curriculum_id', 'Lehrplan', $options, 'course', 'curriculum_id', null , $error);
+$content .= '</div></form>';
+$f_content = '';
+if (isset($edit)){
+    $f_content .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_backup\').submit();"> '.$header.'</button>'; 
+} 
+if (isset($add)){
+    $f_content .= '<button id="add" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_backup\').submit();"> '.$header.'</button> ';
+}    
+$html     = Form::modal(array('title'     => $header,
+                              'content'   => $content, 
+                              'f_content' => $f_content));
 
 echo json_encode(array('html'=>$html));

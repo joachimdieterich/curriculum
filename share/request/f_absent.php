@@ -85,41 +85,33 @@ if (isset($_SESSION['FORM'])){
         }
     }
 }
-
-$html ='<div class="modal-dialog" style="overflow-y: initial !important;">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closePopup()"><span aria-hidden="true">×</span></button>
-              <h4 class="modal-title">'.$header.'</h4>
-            </div>
-            <div class="modal-body" style="max-height: 500px; overflow-y: auto;">';
    
-$html .='<form id="form_absent"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_absent.php"';
+$content .='<form id="form_absent"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_absent.php"';
 
-if (isset($currentUrlId)){ $html .= $currentUrlId; }
-$html .= '"><input type="hidden" name="reference_id" id="reference_id" value="'.$reference_id.'"/>
+if (isset($currentUrlId)){ $content .= $currentUrlId; }
+$content .= '"><input type="hidden" name="reference_id" id="reference_id" value="'.$reference_id.'"/>
 <input type="hidden" name="func" id="func" value="'.$func.'"/>';
 if (isset($absent_id)){
-$html .= '<input type="hidden" name="absent_id" id="absent_id" value="'.$absent_id.'"/> ';
-$html .= '<input type="hidden" name="user_id" id="user_id" value="'.$user_id.'"/> ';
-$html .= Form::input_text('username', 'Benutzername', $user, $error,'','text',null, null, 'col-sm-3','col-sm-9', true);
+$content .= '<input type="hidden" name="absent_id" id="absent_id" value="'.$absent_id.'"/> ';
+$content .= '<input type="hidden" name="user_id" id="user_id" value="'.$user_id.'"/> ';
+$content .= Form::input_text('username', 'Benutzername', $user, $error,'','text',null, null, 'col-sm-3','col-sm-9', true);
 }
-$html .= Form::input_text('reason', 'Fehlgrund', $reason, $error, 'z. B. Krankmeldung');
+$content .= Form::input_text('reason', 'Fehlgrund', $reason, $error, 'z. B. Krankmeldung');
 if (!isset($absent_id)){
-$html .= Form::input_select_multiple('user_list', 'Kursmitglieder', $members, 'firstname, lastname', 'id', $user_list, $error );
+$content .= Form::input_select_multiple('user_list', 'Kursmitglieder', $members, 'firstname, lastname', 'id', $user_list, $error );
 }
-$html .= Form::input_checkbox('status', 'Entschuldigt', $status, $error);
-
-$html       .= '</div><!-- /.modal-body -->
-            <div class="modal-footer">';
-            if (isset($edit)){
-                $html .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_absent\').submit();"> '.$header.'</button>'; 
-            } 
-            if (isset($add)){
-                $html .= '<button id="add" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_absent\').submit();"> '.$header.'</button> ';
-            }    
-$html .=  '</div></form></div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->';
+$content .= Form::input_checkbox('status', 'Entschuldigt', $status, $error);
+$content .= '</div></form>';
+$f_content = '';
+if (isset($edit)){
+    $f_content .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_absent\').submit();"> '.$header.'</button>'; 
+} 
+if (isset($add)){
+    $f_content .= '<button id="add" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_absent\').submit();"> '.$header.'</button> ';
+}    
+$html     = Form::modal(array('title'     => $header,
+                              'content'   => $content, 
+                              'f_content' => $f_content));
 
 $script = "<!-- daterangepicker -->
         <script id='modal_script'>

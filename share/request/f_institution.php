@@ -79,7 +79,7 @@ if (isset($_GET['func'])){
                              $$key = $value;
                              //error_log($key. ': '.$value);
                          }
-                        
+                        $icon_id = $file_id;
             break;
         default: break;
     }
@@ -94,81 +94,74 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$help = "curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Institutionen');"; // not used yet
+$content ='<form id="form_institution" class="form-horizontal" role="form" method="post" action="../share/processors/fp_institution.php"';
 
-$html ='<div class="modal-dialog" style="overflow-y: initial !important;">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closePopup()"><span aria-hidden="true">×</span></button>
-              <h4 class="modal-title">'.$header.'</h4>
-            </div>
-            <div class="modal-body" style="max-height: 500px; overflow-y: auto;">';
-   
-$html .='<form id="form_institution" class="form-horizontal" role="form" method="post" action="../share/processors/fp_institution.php"';
-
-if (isset($currentUrlId)){ $html .= $currentUrlId; }
-$html .= '"><h4>Institution</h4>
+if (isset($currentUrlId)){ $content .= $currentUrlId; }
+$content .= '"><h4>Institution</h4>
 <input type="hidden" name="func" id="func" value="'.$func.'"/>
 <input id="id" name="id" type="text" class="invisible" ';
-if (isset($id)) { $html .= 'value="'.$id.'"';} $html .= '>';
+if (isset($id)) { $content .= 'value="'.$id.'"';} $content .= '>';
 
-$html .= Form::input_text('institution', 'Institution / Schule', $institution, $error, 'z. B. Realschule Plus Landau');
-$html .= Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung');
+$content .= Form::input_text('institution', 'Institution / Schule', $institution, $error, 'z. B. Realschule Plus Landau');
+$content .= Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung');
 
 /* schooltypes */ 
 $sch     = new Schooltype();
-$html .= Form::input_select('schooltype_id', 'Schulart', $sch->getSchooltypes(), 'schooltype', 'id', $schooltype_id , $error);
+$content .= Form::input_select('schooltype_id', 'Schulart', $sch->getSchooltypes(), 'schooltype', 'id', $schooltype_id , $error);
 
 
 /* add new schooltype*/ 
-$html .= Form::input_checkbox('btn_newSchooltype', 'Neuen Schultyp anlegen', $btn_newSchooltype, $error, 'checkbox', 'toggle([\'newSchooltype\'], [\'schooltype_id\']);');
-$html .= '<div id="newSchooltype" ';
-if (!isset($new_schooltype) AND !isset($schooltype_description)){ $html .= 'class="hidden"';} // only hide if no Data is given
-$html .= '>';
-$html .= Form::input_text('newSchool', 'Neue Schulart', $new_schooltype, $error, 'z. B. Medienzentrum Landau');
-$html .= Form::input_text('schooltype_description', 'Beschreibung', $schooltype_description, $error, 'Beschreibung der neuen Schulart');
-$html .= '</div>';
+$content .= Form::input_checkbox('btn_newSchooltype', 'Neuen Schultyp anlegen', $btn_newSchooltype, $error, 'checkbox', 'toggle([\'newSchooltype\'], [\'schooltype_id\']);');
+$content .= '<div id="newSchooltype" ';
+if (!isset($new_schooltype) AND !isset($schooltype_description)){ $content .= 'class="hidden"';} // only hide if no Data is given
+$content .= '>';
+$content .= Form::input_text('newSchool', 'Neue Schulart', $new_schooltype, $error, 'z. B. Medienzentrum Landau');
+$content .= Form::input_text('schooltype_description', 'Beschreibung', $schooltype_description, $error, 'Beschreibung der neuen Schulart');
+$content .= '</div>';
 
-$countries   = new State($country_id);                                                   //Load country   
-$html       .= Form::input_select('state_id', 'Bundesland/Region', $countries->getStates(), 'state', 'id', $state_id , $error);
-$html       .= Form::input_select('country_id', 'Land', $countries->getCountries(), 'de', 'id', $country_id , $error, 'getStates(this.value, \'state_id\');');
+$countries = new State($country_id);                                                   //Load country   
+$content .= Form::input_select('state_id', 'Bundesland/Region', $countries->getStates(), 'state', 'id', $state_id , $error);
+$content .= Form::input_select('country_id', 'Land', $countries->getCountries(), 'de', 'id', $country_id , $error, 'getStates(this.value, \'state_id\');');
    
 /* Schullogo */ 
 $logo = new File(); 
-$html .= Form::input_text('file_id', 'Logo', $file_id, $error, '... hier klicken');
+$content .= Form::input_text('file_id', 'Logo', $file_id, $error, '... hier klicken');
 /*$html .= Form::input_select('icon_id', 'Fach-Icon', $icons->getFiles('context', 5), 'title', 'id', $icon_id , $error, 'showSubjectIcon(\''.$CFG->access_id_url .'\', this.options[this.selectedIndex].value);');*/
 /* Icon Preview */
-$html .= '<div class="form-group"><label class="control-label col-sm-4"></label>
-      <div class="col-sm-7"><a href="'.$CFG->request_url .'uploadframe.php?&context=institution&target=file_id&format=0&multiple=false" class="nyroModal">
-        <div id="icon_img" class="form-control input-lg bg-white col-sm-7" ';
+$content .= '<div class="form-group"><label class="control-label col-sm-3"></label>
+      <div class="col-sm-9"><a href="'.$CFG->request_url .'uploadframe.php?&context=institution&target=file_id&format=0&multiple=false" class="nyroModal">
+        <div id="icon_img" class="form-control input-lg bg-white col-sm-9" ';
 if ($icon_id){
-    $html .= 'style="background-image: url(\''.$CFG->access_id_url . $icon_id.'\'); background-position: 50% 50%; background-repeat: initial initial;"';
+    $content .= 'style="background-image: url(\''.$CFG->access_id_url . $icon_id.'\'); background-position: 50% 50%; background-repeat: initial initial;"';
 }
-$html .= '></div></a></div></div>';
+$content .= '></div></a></div></div>';
 
-$html .= '<h4>Einstellungen</h4>';
+$content .= '<h4>Einstellungen</h4>';
 $rol         = new Roles(); 
-$html .= Form::input_select('std_role', 'Rolle', $rol->get(), 'role', 'id', $std_role , $error);
+$content .= Form::input_select('std_role', 'Rolle', $rol->get(), 'role', 'id', $std_role , $error);
 if ($semester_id){
     $sem   =  new Semester();
-    $html .= Form::input_select('semester_id', 'Semester', $sem->getSemesters(), 'semester', 'id', $semester_id , $error);
+    $content .= Form::input_select('semester_id', 'Semester', $sem->getSemesters(), 'semester', 'id', $semester_id , $error);
 }
-$html .= Form::input_text('paginator_limit', 'Listeneinträge / Seite', $paginator_limit, $error, '30','number',5,150);
-$html .= Form::input_text('acc_days', 'Lernerfolge x Tage anzeigen', $acc_days, $error, '7','number',1,356);
-$html .= Form::input_text('timeout', 'Timeout (Minuten)', $acc_days, $error, '15','number',1,240);
-$html .= Form::input_text('csv_size', 'CSV-Dateien (byte)', $csv_size, $error, '30','number',5000,1048576);
-$html .= Form::input_text('avatar_size', 'Profilfotos (byte)', $csv_size, $error, '30','number',5000,1048576);
-$html .= Form::input_text('material_size', 'Dateien (byte)', $csv_size, $error, '30','number',5000,1048576);
-$html       .= '</div><!-- /.modal-body -->
-            <div class="modal-footer">';
-            if (isset($edit)){
-                $html .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_institution\').submit();"> Institution aktualisieren</button>'; 
-            } 
-            if (isset($add)){
-                $html .= '<button id="add" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_institution\').submit();"> Institution hinzufügen</button> ';
-            }    
-$html .=  '</div></form></div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->';
+$content .= Form::input_text('paginator_limit', 'Listeneinträge / Seite', $paginator_limit, $error, '30','number',5,150);
+$content .= Form::input_text('acc_days', 'Lernerfolge x Tage anzeigen', $acc_days, $error, '7','number',1,356);
+$content .= Form::input_text('timeout', 'Timeout (Minuten)', $acc_days, $error, '15','number',1,240);
+$content .= Form::input_text('csv_size', 'CSV-Dateien (byte)', $csv_size, $error, '30','number',5000,1048576);
+$content .= Form::input_text('avatar_size', 'Profilfotos (byte)', $csv_size, $error, '30','number',5000,1048576);
+$content .= Form::input_text('material_size', 'Dateien (byte)', $csv_size, $error, '30','number',5000,1048576);
+$content .= '</div></form>';
+$f_content = '';
+if (isset($edit)){
+    $f_content .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_institution\').submit();"> Institution aktualisieren</button>'; 
+} 
+if (isset($add)){
+    $f_content .= '<button id="add" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_institution\').submit();"> Institution hinzufügen</button> ';
+}    
+
+$html     = Form::modal(array('title'     => $header,
+                              'content'   => $content, 
+                              'f_content' => $f_content));
+
 $script = '<script type="text/javascript">
         $(function() {
             $(\'.nyroModal\').nyroModal();

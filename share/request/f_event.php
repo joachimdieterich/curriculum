@@ -94,38 +94,29 @@ if (isset($_SESSION['FORM'])){
         }
     }
 }
-
-$html ='<div class="modal-dialog" style="overflow-y: initial !important;">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closePopup()"><span aria-hidden="true">×</span></button>
-              <h4 class="modal-title">'.$header.'</h4>
-            </div>
-            <div class="modal-body" style="max-height: 500px; overflow-y: auto;">';
    
-$html .='<form id="form_event"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_event.php"';
-
-if (isset($currentUrlId)){ $html .= $currentUrlId; }
-$html .= '">
-<input type="hidden" name="func" id="func" value="'.$func.'"/>
+$content ='<form id="form_event"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_event.php"';
+if (isset($currentUrlId)){ $content .= $currentUrlId; }
+$content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>
 <input type="hidden" name="context_id" id="context_id" value="'.$context_id.'"/>';
 if (isset($event_id)){
-$html .= '<input type="hidden" name="event_id" id="event_id" value="'.$event_id.'"/> ';
+    $content .= '<input type="hidden" name="event_id" id="event_id" value="'.$event_id.'"/> ';
 }
-$html .= Form::input_text('event', 'Termin', $event, $error, 'z. B. Treffen in der Aula');
-$html .= Form::input_textarea('description', 'Beschreibung', $description, $error, 'Beschreibung');
-$html .= Form::input_date(array('id'=>'timerange', 'label' => 'Dauer' , 'time' => $timerange, 'error' => $error, 'placeholder' => '', $type = 'date'));
+$content .= Form::input_text('event', 'Termin', $event, $error, 'z. B. Treffen in der Aula');
+$content .= Form::input_textarea('description', 'Beschreibung', $description, $error, 'Beschreibung');
+$content .= Form::input_date(array('id'=>'timerange', 'label' => 'Dauer' , 'time' => $timerange, 'error' => $error, 'placeholder' => '', $type = 'date'));
+$content .= '</div></form>';
 
-$html .= '</div><!-- /.modal-body -->
-            <div class="modal-footer">';
-            if (isset($edit)){
-                $html .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_event\').submit();">'.$header.'</button>'; 
-            } 
-            if (isset($add)){
-                $html .= '<button id="add" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_event\').submit();">'.$header.'</button> ';
-            }    
-$html .=  '</div></form></div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->';
+$f_content = '';
+if (isset($edit)){
+    $f_content .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_event\').submit();">'.$header.'</button>'; 
+} 
+if (isset($add)){
+    $f_content .= '<button id="add" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_event\').submit();">'.$header.'</button> ';
+}    
+$html     = Form::modal(array('title'     => $header,
+                              'content'   => $content, 
+                              'f_content' => $f_content));
 
 $script = "<!-- daterangepicker -->
         <script id='modal_script'>

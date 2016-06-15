@@ -57,35 +57,31 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$html ='<div class="modal-dialog" style="overflow-y: initial !important;">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closePopup()"><span aria-hidden="true">×</span></button>
-              <h4 class="modal-title">'.$header.'</h4>
-            </div>
-            <div class="modal-body" style="max-height: 500px; overflow-y: auto;">';
-$html .='<form id="form_password"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_password.php"';
+$content = '<form id="form_password"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_password.php"';
 
-if (isset($currentUrlId)){ $html .= $currentUrlId; }
-$html .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
+if (isset($currentUrlId)){ $content .= $currentUrlId; }
+$content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
 
 if (isset($info)){
-    $html .= Form::info('p_rule', ' ', 'Ihr Kennwort wurde neu angelegt bzw. zurückgesetzt. Bitte ändern Sie daher das Kennwort um unbefugten Zugriff auf Ihre Daten zu vermeiden.');
+    $content .= Form::info('p_rule', ' ', 'Ihr Kennwort wurde neu angelegt bzw. zurückgesetzt. Bitte ändern Sie daher das Kennwort um unbefugten Zugriff auf Ihre Daten zu vermeiden.');
 }
-$html .= Form::input_text('username', 'Benutzername', $username, $error,'','text',null, null, 'col-sm-4','col-sm-7', true);
-$html .= Form::info('p_rule', ' ', 'Das Kennwort muss ...<br>- mind. 8 Zeichen lang sein<br>- mind. 1 Großbuchstaben <br>- mind. 1 Kleinbuchstaben<br>- mind. 1 Zahl<br>- mind. 1 Sonderzeichen <br> enthalten. ');
-$html .= Form::input_text('oldpassword', 'Altes Kennwort', null, $error, '','password');
-$html .= Form::input_text('password', 'Kennwort', null, $error, '','password');
-$html .= Form::input_text('confirm', 'Kennwort bestätigen', null, $error, '','password');
-$html .= '</div><!-- /.modal-body -->
-          <div class="modal-footer">';
-          if (isset($edit)){
-              $html .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_password\').submit();"> '.$header.'</button>'; 
-          } 
-          if (isset($add)){
-              $html .= '<button id="add" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_password\').submit();"> '.$header.'</button> ';
-          }    
-$html .=  '</div></form></div><!-- /.modal-content -->
-           </div><!-- /.modal-dialog -->';
+$content .= Form::input_text('username', 'Benutzername', $username, $error,'','text',null, null, 'col-sm-3','col-sm-9', true);
+$content .= Form::info('p_rule', ' ', 'Das Kennwort muss ...<br>- mind. 8 Zeichen lang sein<br>- mind. 1 Großbuchstaben <br>- mind. 1 Kleinbuchstaben<br>- mind. 1 Zahl<br>- mind. 1 Sonderzeichen <br> enthalten. ');
+$content .= Form::input_text('oldpassword', 'Altes Kennwort', null, $error, '','password');
+$content .= Form::input_text('password', 'Kennwort', null, $error, '','password');
+$content .= Form::input_text('confirm', 'Kennwort bestätigen', null, $error, '','password');
+$content .= '</div></form>';
+
+$f_content = '';
+if (isset($edit)){
+    $f_content .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_password\').submit();"> '.$header.'</button>'; 
+} 
+if (isset($add)){
+    $f_content .= '<button id="add" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_password\').submit();"> '.$header.'</button> ';
+}   
+
+$html     = Form::modal(array('title'     => $header,
+                              'content'   => $content, 
+                              'f_content' => $f_content)); 
 
 echo json_encode(array('html'=>$html));

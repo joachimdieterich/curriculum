@@ -72,7 +72,7 @@ if (isset($_SESSION['FORM'])){
 }
 
 $content = '<form id="form_enabling_objective" method="post" action="../share/processors/fp_enablingObjective.php">
- <div class="form-horizontal"><div class="form-group">   
+ <div class="form-horizontal">
 <input type="hidden" name="curriculum_id" id="curriculum_id" value="'.$curriculum_id.'"/>
 <input type="hidden" name="terminal_objective_id" id="terminal_objective_id" value="'.$terminal_objective_id.'"/> 
 <input type="hidden" name="enabling_objective_id" id="enabling_objective_id" value="'.$enabling_objective_id.'"/> 
@@ -83,6 +83,7 @@ $content .= Form::input_text('reference', 'Externe Referenz', $reference, $error
 
 $intervals = new Interval();
 $content .= Form::input_select('repeat_interval', 'Ziel wiederholen?',$intervals->getIntervals(), 'description', 'repeat_interval', $repeat_interval, $error );
+$content .= '</div></form>';
 
 $f_content = '';
 if ($func == 'edit'){ 
@@ -90,7 +91,7 @@ if ($func == 'edit'){
 } else {
     $f_content .= '<button type="submit" class="btn btn-primary fa fa-plus pull-right" onclick="document.getElementById(\'form_enabling_objective\').submit();"> Ziel hinzufügen</button>';
 }
-$content .= '</div></div></form>';
+
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
                               'f_content' => $f_content));  

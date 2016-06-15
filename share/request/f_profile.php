@@ -95,58 +95,53 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$html ='<div class="modal-dialog" style="overflow-y: initial !important;">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closePopup()"><span aria-hidden="true">×</span></button>
-              <h4 class="modal-title">'.$header.'</h4>
-            </div>
-            <div class="modal-body" style="max-height: 500px; overflow-y: auto;">';
-$html .='<form id="form_profile"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_profile.php"';
+$content = '<form id="form_profile"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_profile.php"';
 
 if (isset($currentUrlId)){ $html .= $currentUrlId; }
-$html .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>
+$content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>
             <input type="hidden" name="user_id" id="user_id" value="'.$user_id.'"/>
             <input type="hidden" name="avatar_id" id="avatar_id" value="'.$avatar_id.'"/>';
 if ($func == 'new'){
-    $html .= Form::input_text('username', 'Benutzername', $username, $error);
+    $content .= Form::input_text('username', 'Benutzername', $username, $error);
 } else {
-    $html .= '<div class="col-xs-4"></div><div class="col-xs-6">'
+    $content .= '<div class="col-xs-3"></div><div class="col-xs-9">'
             . '<a href="'.$CFG->request_url .'uploadframe.php?&context=avatar&target=avatar_id&format=0&multiple=false" class="nyroModal">'
             . '<img id="avatar" style="height:100px; margin-left: -5px; padding-bottom:10px;" src="'.$CFG->access_file.$avatar.'" alt="Profilfoto">'
             . '</a></div>';
-    $html .= Form::input_text('username', 'Benutzername', $username, $error,'','text',null, null, 'col-sm-4','col-sm-7', true);
+    $content .= Form::input_text('username', 'Benutzername', $username, $error,'','text',null, null, 'col-sm-3','col-sm-9', true);
 }
-$html .= Form::input_text('firstname', 'Vorname', $firstname, $error);
-$html .= Form::input_text('lastname', 'Nachname', $lastname, $error);
-$html .= Form::input_text('email', 'Email', $email, $error);
-$html .= Form::input_text('postalcode', 'PLZ', $postalcode, $error);
-$html .= Form::input_text('city', 'Ort', $city, $error);
-$cs    = new State($country_id);                                                   //Load country   
-$html .= Form::input_select('country_id', 'Land', $cs->getCountries(), 'de', 'id', $country_id , $error, 'getStates(this.value, \'state_id\');');
-$html .= Form::input_select('state_id', 'Bundesland/Region', $cs->getStates('profile',$country_id), 'state', 'id', $state_id , $error);
+$content .= Form::input_text('firstname', 'Vorname', $firstname, $error);
+$content .= Form::input_text('lastname', 'Nachname', $lastname, $error);
+$content .= Form::input_text('email', 'Email', $email, $error);
+$content .= Form::input_text('postalcode', 'PLZ', $postalcode, $error);
+$content .= Form::input_text('city', 'Ort', $city, $error);
+$cs       = new State($country_id);                                                   //Load country   
+$content .= Form::input_select('country_id', 'Land', $cs->getCountries(), 'de', 'id', $country_id , $error, 'getStates(this.value, \'state_id\');');
+$content .= Form::input_select('state_id', 'Bundesland/Region', $cs->getStates('profile',$country_id), 'state', 'id', $state_id , $error);
 if ($func == 'new' OR $func == 'editUser'){
-$html .= Form::input_text('password', 'Kennwort', null, $error, '','password');
-$html .= Form::input_checkbox('show_pw', 'Passwort anzeigen', $show_pw, $error, 'checkbox', 'unmask(\'password\', this.checked);');
-$html .= Form::input_checkbox('confirm', 'Passwortänderung', $confirm, $error );
+$content .= Form::input_text('password', 'Kennwort', null, $error, '','password');
+$content .= Form::input_checkbox('show_pw', 'Passwort anzeigen', $show_pw, $error, 'checkbox', 'unmask(\'password\', this.checked);');
+$content .= Form::input_checkbox('confirm', 'Passwortänderung', $confirm, $error );
 }
 if ($func == 'new'){
-    $roles = new Roles();
-    $html .= Form::input_select('role_id', 'Rolle', $roles->get(), 'role', 'id', $role_id , $error); 
-    $html .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'institution_id', $institution_id , $error);
-    $group = new Group();
-    $html .= Form::input_select('group_id', 'Lerngruppe', $group->getGroups('institution', $USER->institution_id), 'group', 'id', $group_id , $error); 
+    $roles    = new Roles();
+    $content .= Form::input_select('role_id', 'Rolle', $roles->get(), 'role', 'id', $role_id , $error); 
+    $content .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'institution_id', $institution_id , $error);
+    $group    = new Group();
+    $content .= Form::input_select('group_id', 'Lerngruppe', $group->getGroups('institution', $USER->institution_id), 'group', 'id', $group_id , $error); 
 }
+$content .= '</div></form>';
 
-$html .= '</div><!-- /.modal-body -->
-          <div class="modal-footer">';
-          $html .= '<button name="submit" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_profile\').submit();"> '.$header.'</button>';    
-$html .=  '</div></form></div><!-- /.modal-content -->
-           </div><!-- /.modal-dialog -->';
+$f_content = '<button name="submit" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_profile\').submit();"> '.$header.'</button>';    
+
 $script = '<script type="text/javascript">
         $(function() {
             $(\'.nyroModal\').nyroModal();
             $(\'#popup_generate\').nyroModal();
         });
         </script>';
+
+$html     = Form::modal(array('title'     => $header,
+                              'content'   => $content, 
+                              'f_content' => $f_content));  
 echo json_encode(array('html'=>$html, 'script' => $script));

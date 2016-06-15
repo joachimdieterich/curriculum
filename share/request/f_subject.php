@@ -71,13 +71,15 @@ $content .= Form::input_text('subject', 'Fach', $subject, $error, 'z. B. Mathema
 $content .= Form::input_text('subject_short', 'Kürzel', $subject_short, $error, 'z. B. MA');
 $content .= Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung');
 $content .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'institution_id', $institution_id , $error);
+$content .= '</div></form>';
+
 $f_content = '';
 if ($func == 'edit'){ 
     $f_content .= '<button type="submit" class="btn btn-primary fa fa-check-circle-o pull-right" onclick="document.getElementById(\'form_subject\').submit();"> '.$header.'</button>';
 } else {
     $f_content .= '<button type="submit" class="btn btn-primary fa fa-plus pull-right" onclick="document.getElementById(\'form_subject\').submit();"> '.$header.'</button>';
 }
-$content .= '</div></form>';
+
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
                               'f_content' => $f_content));  
