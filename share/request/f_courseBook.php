@@ -109,8 +109,8 @@ $html .= '">
 <input id="id" name="id" type="text" class="invisible" ';
 if (isset($id)) { $html .= 'value="'.$id.'"';} $html .= '>';
 
-$html .= Form::input_text('topic', 'Thema', $topic, $error, 'Studenthema');
-$html .= Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung');
+$html .= Form::input_textarea('topic', 'Thema', $topic, $error, 'Studenthema');
+$html .= Form::input_textarea('description', 'Beschreibung', $description, $error, 'Beschreibung');
 
 $courses = new Course(); 
 if(checkCapabilities('user:userListComplete', $USER->role_id, false)){
