@@ -660,11 +660,11 @@ function resizeModal(){
  * @returns {undefined}
  */
 function popupFunction(e){
-    eval($("#"+e).children("script").text()); // aktiviert scripte im Element e
-    resizeModal();              // resize modal 
-    // Replace the <textarea id="editor1"> with a CKEditor
-    // instance, using default configuration
-    textareas = document.getElementsByTagName("textarea");
+    $("body").addClass("modal-open");                                           //prevent scrolling on body tag
+    eval($("#"+e).children("script").text());                                   // aktiviert scripte im Element e
+    resizeModal();                                                              // resize modal 
+    
+    textareas = document.getElementsByTagName("textarea");                      // Replace the <textarea id="editor1"> with a CKEditor instance, using default configuration
     for (var i = 0, len = textareas.length; i < len; i++) {
         CKEDITOR.replace(textareas[i].id, {toolbarStartupExpanded : false});
         CKEDITOR.on('instanceReady',function(){
@@ -753,5 +753,6 @@ function set_select(element, val, field, level) {
 function closePopup(){
     removeMedia();  // Important to empty audio element cache in webkit browsers. see description on function
     $('#popup').hide();  
+    $("body").removeClass("modal-open"); //reactivate scrolling on body
     document.getElementById('popup').innerHTML = '<div class="modal-dialog"><div class="box"><div class="box-header"><h3 class="box-title">Loading...</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div></div>';    
 }

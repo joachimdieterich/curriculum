@@ -378,3 +378,7 @@
     background: -ms-linear-gradient(top, #f2f2f2, #FF8000);
     background: linear-gradient(top, #f2f2f2, #FF8000);
 }
+
+body .modal-open {
+    overflow: hidden;
+}
