@@ -751,6 +751,7 @@ function set_select(element, val, field, level) {
 }
 
 function closePopup(){
+    processor('reset', '', '');
     removeMedia();  // Important to empty audio element cache in webkit browsers. see description on function
     $('#popup').hide();  
     $("body").removeClass("modal-open"); //reactivate scrolling on body

@@ -45,6 +45,9 @@ if($validated_data === false) {/* validation failed */
     $_SESSION['FORM']->form      = 'institution'; 
     $_SESSION['FORM']->error     = $gump->get_readable_errors();
     $_SESSION['FORM']->func      = $_POST['func'];
+    foreach($_POST as $key => $value){
+        $_SESSION['FORM']->$key  = $value;
+    } 
 } else {
     $new_institution = new Institution(); 
     if (isset($_POST['id'])){
