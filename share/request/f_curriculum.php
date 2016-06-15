@@ -89,7 +89,7 @@ if (isset($_SESSION['FORM'])){
 
 $help = "curriculumdocs('http://docs.joachimdieterich.de/index.php?title=Lehrplan_anlegen');"; // not used yet
 
-$html ='<div class="modal-dialog">
+$html ='<div class="modal-dialog" style="overflow-y: initial !important;">
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closePopup()"><span aria-hidden="true">×</span></button>

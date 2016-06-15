@@ -63,7 +63,7 @@ if (isset($_SESSION['FORM'])){
 }
 
 $content = '<form id="form_semester" method="post" action="../share/processors/fp_semester.php">
- <div class="form-horizontal"><div class="form-group">   
+ <div class="form-horizontal">
 <input type="hidden" name="semester_id" id="semester_id" value="'.$semester_id.'"/>
 <input type="hidden" name="func" id="func" value="'.$func.'"/>'; 
 $content .= Form::input_text('semester', 'Lernzeitrum', $semester, $error, 'z. B. Schuljahr 2015/16');
@@ -76,7 +76,7 @@ if ($func == 'edit'){
 } else {
     $f_content .= '<button type="submit" class="btn btn-primary fa fa-plus pull-right" onclick="document.getElementById(\'form_semester\').submit();"> '.$header.'</button>';
 }
-$content .= '</div></div></form>';
+$content .= '</div></form>';
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
                               'f_content' => $f_content));  

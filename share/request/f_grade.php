@@ -62,7 +62,7 @@ if (isset($_SESSION['FORM'])){
 }
 
 $content = '<form id="form_grade" method="post" action="../share/processors/fp_grade.php">
- <div class="form-horizontal"><div class="form-group">   
+ <div class="form-horizontal">
 <input type="hidden" name="grade_id" id="grade_id" value="'.$grade_id.'"/>
 <input type="hidden" name="func" id="func" value="'.$func.'"/>'; 
 $content .= Form::input_text('grade', 'Klassenstufe', $grade, $error, 'z. B. 7. Klasse');
@@ -74,7 +74,7 @@ if ($func == 'edit'){
 } else {
     $f_content .= '<button type="submit" class="btn btn-primary fa fa-plus pull-right" onclick="document.getElementById(\'form_grade\').submit();"> '.$header.'</button>';
 }
-$content .= '</div></div></form>';
+$content .= '</div></form>';
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
                               'f_content' => $f_content));  

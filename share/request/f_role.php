@@ -64,7 +64,7 @@ if (isset($_SESSION['FORM'])){
 }
 
 $content = '<form id="form_role" method="post" action="../share/processors/fp_role.php">
-            <div class="form-horizontal"><div class="form-group">   
+            <div class="form-horizontal">
             <input type="hidden" name="role_id" id="role_id" value="'.$role_id.'"/>
             <input type="hidden" name="func" id="func" value="'.$func.'"/>'; 
 $content .= Form::input_text('role', 'Rollenname', $role, $error, 'z. B. Schul-Administrator');
@@ -88,7 +88,7 @@ if ($func == 'edit'){
 } else {
     $f_content .= '<button type="submit" class="btn btn-primary fa fa-plus pull-right" onclick="document.getElementById(\'form_role\').submit();"> '.$header.'</button>';
 }
-$content .= '</div></div></form>';
+$content .= '</div></form>';
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
                               'f_content' => $f_content));  

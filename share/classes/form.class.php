@@ -264,7 +264,7 @@ class Form {
         foreach($params as $key => $val) {
             $$key = $val;
         }
-        $html ='<div class="modal-dialog" >
+        $html ='<div class="modal-dialog" style="overflow-y: initial !important;">
                     <div class="modal-content" ><!-- height is dynamic set by popupFunction() -->
                         <div class="modal-header">';
                         if (isset($h_content)){
@@ -275,7 +275,7 @@ class Form {
                         $html .= '<h4 class="modal-title">'.$title.'</h4>';
             if (isset($background)){$background = 'background:'.$background.';';} else{$background = '';}
             $html .=   '</div>
-                        <div class="modal-body" style="overflow: auto !important; width:100%;'.$background.'"><div class="form-horizontal">
+                        <div class="modal-body" style="overflow: auto !important; '.$background.'"><div class="form-horizontal">
                             '.$content.'
                         </div><!-- /.modal-body -->';
                         if (isset($f_content)){

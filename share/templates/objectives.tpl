@@ -25,12 +25,11 @@
         <div class="col-lg-6 col-md-8 col-sm-12 col-xs-12" >
             <div class="box box-primary" id="row_objectives_userlist">
                 <div class="box-header with-border">
-                    <div class="box-tools pull-right">
+                    <!--div class="box-tools pull-right">
                         <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                         <!--button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button-->
-                    </div>
-                </div>
-                <div class="box-body">
+                    <!--/div-->
+                
                     {if isset($courses)}
                     <select  class='pull-left' id='course' name='course' onchange="window.location.assign('index.php?action=objectives&course='+this.value);"> {*_blank global regeln*}
                         <option value="-1" data-skip="1">Kurs / Klasse wählen...</option>
@@ -70,7 +69,9 @@
                 {if isset($user->avatar)}
                                 <!--img class="pull-right attachment-img" src="{$access_file}{$user->avatar}" alt="Profilfoto"-->
                             {/if}    
-
+                </div>
+                
+                <div class="box-body">
                 {if isset($userPaginator)}   
                             {html_paginator id='userPaginator'} 
                 {elseif $showuser eq true}Keine eingeschriebenen Benutzer{/if}
@@ -97,7 +98,7 @@
                         {*Thema Row*}
                         <div class="panel panel-default box-objective"> 
                             <div class="panel-heading boxheader" style="background: {$ter->color}"></div>
-                            <div id="ter_{$ter->id}" class="panel-body boxwrap">
+                            <div id="ter_{$ter->id}" class="panel-body bg-gray disabled color-palette boxwrap">
                                 <div class="boxscroll">
                                     <div class="boxcontent">
                                         {$ter->terminal_objective}

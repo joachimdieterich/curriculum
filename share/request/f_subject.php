@@ -64,7 +64,7 @@ if (isset($_SESSION['FORM'])){
 }
 
 $content = '<form id="form_subject" method="post" action="../share/processors/fp_subject.php">
- <div class="form-horizontal"><div class="form-group">   
+ <div class="form-horizontal">
 <input type="hidden" name="subject_id" id="subjectr_id" value="'.$subject_id.'"/>
 <input type="hidden" name="func" id="func" value="'.$func.'"/>'; 
 $content .= Form::input_text('subject', 'Fach', $subject, $error, 'z. B. Mathematik');
@@ -77,7 +77,7 @@ if ($func == 'edit'){
 } else {
     $f_content .= '<button type="submit" class="btn btn-primary fa fa-plus pull-right" onclick="document.getElementById(\'form_subject\').submit();"> '.$header.'</button>';
 }
-$content .= '</div></div></form>';
+$content .= '</div></form>';
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
                               'f_content' => $f_content));  
