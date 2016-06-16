@@ -90,6 +90,7 @@ function toggle_column(){
 }
 
 function loadmail(mail_id, mailbox) {
+    document.getElementById('mailbox').innerHTML = '<div class="box"><div class="box-header"><h3 class="box-title">Loading...</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div>';    
     var url = "../share/request/getMail.php?mailID="+ mail_id+"&box="+mailbox; 
 
     req = XMLobject();

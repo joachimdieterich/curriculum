@@ -27,18 +27,24 @@
 global $PAGE, $USER, $TEMPLATE;
 $TEMPLATE->assign('breadcrumb',  array('Nachrichten' => 'index.php?action=messages'));
 $mailbox = new Mailbox();
-$TEMPLATE->assign('timestamp', time());  //hack, damit bei wiederholten anklicken eines postfachs die funktion detect_reload() nicth ausgelöst wird
-
+$TEMPLATE->assign('timestamp', time());                                         //hack, damit bei wiederholten anklicken eines postfachs die funktion detect_reload() nicht ausgelöst wird
+$TEMPLATE->assign('index', 0);                                                  // set default
+    
 if (isset($_GET['function'])){
     switch ($_GET['function']) {
         case 'showInbox':       $TEMPLATE->assign('showInbox', true); inbox($mailbox);
                                 if (filter_input(INPUT_GET, 'id',    FILTER_VALIDATE_INT)){
                                     $TEMPLATE->assign('load_id', filter_input(INPUT_GET, 'id',    FILTER_VALIDATE_INT));
                                 }
+                                $TEMPLATE->assign('mailbox_func', 'showInbox'); //todo: use mailbox_func instead of if isset showInbox....
             break;
         case 'showOutbox':      $TEMPLATE->assign('showOutbox', true); outbox($mailbox);
+                                $TEMPLATE->assign('mailbox_func', 'showOutbox');
             break;
         default:  break;
+    }
+    if (filter_input(INPUT_GET, 'index',    FILTER_VALIDATE_INT)){
+        $TEMPLATE->assign('index', filter_input(INPUT_GET, 'index',    FILTER_VALIDATE_INT));
     }
 }
 
@@ -94,7 +100,8 @@ $TEMPLATE->assign('class_members', $USER->getGroupMembers()); //'class:members' 
 function outbox($mailbox){
     global $USER, $TEMPLATE;
     $mailbox->loadOutbox($USER->id);
-    setPaginator('outboxPaginator', $TEMPLATE, $mailbox->outbox, 'outbox', 'index.php?action=messages&function=showOutbox'); //set Paginator    
+    $TEMPLATE->assign('outbox', $mailbox->outbox); 
+    //setPaginator('outboxPaginator', $TEMPLATE, $mailbox->outbox, 'outbox', 'index.php?action=messages&function=showOutbox'); //set Paginator    
 }
 
 /**
@@ -106,7 +113,8 @@ function outbox($mailbox){
 function inbox($mailbox){
     global $USER, $TEMPLATE;
     $mailbox->loadInbox($USER->id);
-    setPaginator('inboxPaginator', $TEMPLATE, $mailbox->inbox, 'inbox', 'index.php?action=messages&function=showInbox'); //set Paginator    
+    $TEMPLATE->assign('inbox', $mailbox->inbox); 
+    //setPaginator('inboxPaginator', $TEMPLATE, $mailbox->inbox, 'inbox', 'index.php?action=messages&function=showInbox'); //set Paginator    
 }
 
 /**

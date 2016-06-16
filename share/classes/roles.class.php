@@ -144,14 +144,15 @@ class Roles {
         $db     = DB::prepare('SELECT * FROM roles WHERE id = ?');
         $db->execute(array($this->id)); 
         $result = $db->fetchObject();
-        $this->id           = $result->id;
-        $this->role         = $result->role;
-        $this->description  = $result->description;
-        $this->creation_time= $result->creation_time;
-        $this->creator_id   = $result->creator_id;   
-        $capabilities       = new Capability();
-        $this->capabilities =  $capabilities->getCapabilities($this->id);
-        
+        if ($result){
+            $this->id           = $result->id;
+            $this->role         = $result->role;
+            $this->description  = $result->description;
+            $this->creation_time= $result->creation_time;
+            $this->creator_id   = $result->creator_id;   
+            $capabilities       = new Capability();
+            $this->capabilities =  $capabilities->getCapabilities($this->id);
+        }
     }
     
     /**
@@ -161,12 +162,7 @@ class Roles {
     public function get($paginator = ''){
         global $USER;
         $order_param = orderPaginator($paginator); 
-        $db          = DB::prepare('SELECT * FROM roles WHERE order_id >= (SELECT order_id FROM roles WHERE id = ?) '.$order_param); //id = id damit suche funktioniert
-        /*if ($USER->role_id == 1){ //HACK damit Adminrolle nicht zugewiesen werden kann, wenn man selbst nicht admin ist. --> Idee: man darf nur Rollen vergeben, die man selbst besitzt
-            $db          = DB::prepare('SELECT * FROM roles WHERE id = id '.$order_param); //id = id damit suche funktioniert
-        } else {
-            $db          = DB::prepare('SELECT * FROM roles WHERE id <> 1 '.$order_param);
-        }*/
+        $db          = DB::prepare('SELECT * FROM roles WHERE order_id >= (SELECT order_id FROM roles WHERE id = ?) '.$order_param); //man darf nur rollen vergeben die unter der eigenen sind. id = id damit suche funktioniert
         $db->execute(array($USER->role_id));
         while ($result = $db->fetchObject()) {
             $this->id           = $result->id;

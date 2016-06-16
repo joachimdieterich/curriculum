@@ -54,7 +54,6 @@
                     {assign var="new"       value='sender_status'}
                 {/if}
              
-             
              <div class="box box-solid">
                 <div class="box-header with-border">
                   <h3 class="box-title">{if $box eq 'inbox'}Posteingang{else if $box eq 'outbox'}Postausgang{/if}</h3>
@@ -65,7 +64,7 @@
                 <div class="box-body no-padding">
                   <ul class="nav nav-pills nav-stacked">
                     {if isset($messages[0])}  
-                        {section name=mail loop=$messages}
+                        {section name=mail loop=$messages start=$index max=$my_paginator_limit}
                         <li name='{$box}_{$messages[mail]->id}' id='{$box}_{$messages[mail]->id}'><a onclick="loadmail({$messages[mail]->id}, '{$box}')"><i class="fa fa-circle-o text-light-blue"></i> 
                                 {if isset($showInbox)}
                                     {$messages[mail]->sender_firstname} {$messages[mail]->sender_lastname}&nbsp;({$messages[mail]->sender_username})
@@ -74,7 +73,12 @@
                                 {/if}
                                 <br><small>{$messages[mail]->subject|truncate:25:"...":true}</small>
                                 <br><small>{strip_tags($messages[mail]->message|truncate:60:"...":true)}</small>
-                            </a></li>
+                            </a>
+                            {if ($smarty.section.mail.index eq ($index+$my_paginator_limit-1))}
+                            <li><span class="pull-right" style="padding-right:20px;">{$index+1} - {$smarty.section.mail.index+1}</span><a href="index.php?action=messages&function={$mailbox_func}&index={$smarty.section.mail.index}" class="text-center"><i class="fa fa-plus text-light-blue"></i>Weitere Nachrichten laden</li></a>
+                            {/if}
+                            
+                        </li>        
                         {/section}
                     {else}
                         <li><a href="#">Keine Nachrichten vorhanden</a></li>
@@ -83,109 +87,16 @@
                   </ul>
                 </div><!-- /.box-body -->
               </div><!-- /.box -->
-             
             </div><!-- /.col -->
             <!-- /mail menu-->
             
-    
- 
-                {*<form id='{$box}' method='post' action='index.php?action=messages'>
-                 <!--tr class="{if $messages[mail]->$new eq 0}mailnew{/if} contenttablerow " id="{$box}_{$messages[mail]->id}" onclick="loadmail({$messages[mail]->id}, '{$box}')"-->
-                <p>{paginate_prev id="{$box}Paginator"} {paginate_middle id="{$box}Paginator"} {paginate_next id="{$box}Paginator"}</p>*}
-  
-            <!-- /mail list-->
-            {*<div class="col-md-9">
-              <div class="box box-primary">
-                <div class="box-header with-border">
-                  <h3 class="box-title">{if $box eq 'inbox'}Posteingang{else if $box eq 'outbox'}Postausgang{/if}</h3>
-                  <div class="box-tools pull-right">
-                    <div class="has-feedback">
-                      <input type="text" class="form-control input-sm" placeholder="Search Mail">
-                      <span class="glyphicon glyphicon-search form-control-feedback"></span>
-                    </div>
-                  </div><!-- /.box-tools -->
-                </div><!-- /.box-header -->
-                <div class="box-body no-padding">
-                  <div class="mailbox-controls">
-                    <!-- Check all button -->
-                    <button class="btn btn-default btn-sm checkbox-toggle"><i class="fa fa-square-o"></i></button>
-                    <div class="btn-group">
-                      <button class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
-                      <button class="btn btn-default btn-sm"><i class="fa fa-reply"></i></button>
-                      <button class="btn btn-default btn-sm"><i class="fa fa-share"></i></button>
-                    </div><!-- /.btn-group -->
-                    <button class="btn btn-default btn-sm"><i class="fa fa-refresh"></i></button>
-                    <div class="pull-right">
-                      1-50/200
-                      <div class="btn-group">
-                        <button class="btn btn-default btn-sm"><i class="fa fa-chevron-left"></i></button>
-                        <button class="btn btn-default btn-sm"><i class="fa fa-chevron-right"></i></button>
-                      </div><!-- /.btn-group -->
-                    </div><!-- /.pull-right -->
-                  </div>
-                  <div class="table-responsive mailbox-messages">
-                      
-                    {if isset($messages[0])}
-                    <table class="table table-hover table-striped">
-                      <tbody>
-                        {section name=mail loop=$messages}
-                        <tr>
-                          <td><div class="icheckbox_flat-blue" aria-checked="false" aria-disabled="false" style="position: relative;"><input id="{$messages[mail]->id}" name="id[]" value={$messages[mail]->id} type="checkbox" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background-color: rgb(255, 255, 255); border: 0px; opacity: 0; background-position: initial initial; background-repeat: initial initial;"></ins></div></td>
-                          <td class="mailbox-star"><a href="#"><i class="fa fa-star text-yellow"></i></a></td>
-                          <td class="mailbox-name"><a href="read-mail.html">
-                                {if isset($showInbox)}
-                                    {$messages[mail]->sender_firstname} {$messages[mail]->sender_lastname}&nbsp;({$messages[mail]->sender_username})
-                                {else}
-                                    {$messages[mail]->receiver_firstname} {$messages[mail]->receiver_lastname}&nbsp;({$messages[mail]->receiver_username})
-                                {/if}
-                              </a></td>
-                              <td class="mailbox-subject"><b>{$messages[mail]->subject|truncate:25:"...":true}</b>&nbsp;{strip_tags($messages[mail]->message|truncate:80:"...":true)}</td>
-                          <td class="mailbox-attachment"></td>
-                          <td class="mailbox-date">{$messages[mail]->creation_time}</td>
-                        </tr>
-                        {/section}
-                      </tbody>
-                    </table><!-- /.table -->
-                    {/if}
-                  </div><!-- /.mail-box-messages -->
-                </div><!-- /.box-body -->
-                <div class="box-footer no-padding">
-                  <div class="mailbox-controls">
-                    <!-- Check all button -->
-                    <button class="btn btn-default btn-sm checkbox-toggle"><i class="fa fa-square-o"></i></button>
-                    <div class="btn-group">
-                      <button class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
-                      <button class="btn btn-default btn-sm"><i class="fa fa-reply"></i></button>
-                      <button class="btn btn-default btn-sm"><i class="fa fa-share"></i></button>
-                    </div><!-- /.btn-group -->
-                    <button class="btn btn-default btn-sm"><i class="fa fa-refresh"></i></button>
-                    <div class="pull-right">
-                      1-50/200
-                      <div class="btn-group">
-                        <button class="btn btn-default btn-sm"><i class="fa fa-chevron-left"></i></button>
-                        <button class="btn btn-default btn-sm"><i class="fa fa-chevron-right"></i></button>
-                      </div><!-- /.btn-group -->
-                    </div><!-- /.pull-right -->
-                  </div>
-                </div>
-              </div><!-- /. box -->
-            </div><!-- /.col -->
-            <!-- /mail list -->
-            *}
-            
-            <div class="col-md-9 " id="mailbox">
-              
-            </div><!-- /.col -->
-    {/if}       
+            <div class="col-md-9 " id="mailbox"> <!-- placeholder for mails--></div><!-- /.col -->
+            {/if}       
           </div><!-- /.row -->
         </section>   
     
-    <input type='hidden' name='timestamp' value='{$timestamp}'/>  
-    {if isset($showInbox)} 
-        <a id="answer_btn" class="answerbtn  " style="display: none;" href="">antworten</a>
-    {/if}
+    <input type='hidden' name='timestamp' value='{$timestamp}'/>
 {/block}
-
 
 {block name=sidebar}{$smarty.block.parent}{/block}
 {block name=footer}{$smarty.block.parent}{/block}
