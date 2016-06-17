@@ -291,7 +291,7 @@ class User {
         } else {
             $db = DB::prepare('INSERT INTO users (username,firstname,lastname,email,postalcode,city,state_id,country_id,avatar_id,password,confirmed,creator_id,paginator_limit,acc_days) 
                                             VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
-            if($db->execute(array($this->username,$this->firstname,$this->lastname,$this->email,$this->postalcode,$this->city,$this->state_id,$this->country_id,$this->avatar_id,md5($this->password),$this->confirmed,$this->creator_id,$this->paginator_limit,$this->acc_days))){
+            if($db->execute(array($this->username,$this->firstname,$this->lastname,$this->email,$this->postalcode,$this->city,$this->state_id,$this->country_id,intval($this->avatar_id),md5($this->password),$this->confirmed,$this->creator_id,$this->paginator_limit,$this->acc_days))){
                 $db = DB::prepare('SELECT id from users WHERE UPPER(username) = UPPER(?)');
                 $db->execute(array($this->username));
                 $result = $db->fetchObject();
