@@ -895,8 +895,9 @@ class User {
         $db->execute(array($this->id));
         $this->last_action = $db->fetchColumn();
         //set last_action
-        $db = DB::prepare('UPDATE users SET last_action = TIMESTAMPADD(MINUTE,-?, ?) WHERE id = ?');        
-        $db->execute(array($CFG->timeout, $this->last_action, $this->id));
+        $min= intval($CFG->timeout);
+        $db = DB::prepare("UPDATE users SET last_action = TIMESTAMPADD(MINUTE,-$min, ?) WHERE id = ?");
+        $db->execute(array($this->last_action, $this->id));
    }
            
    /**
