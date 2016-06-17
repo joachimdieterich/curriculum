@@ -61,7 +61,7 @@ if (isset($_POST['show_pw'])){
 if ($_POST['avatar_id']){ 
     $user->avatar_id    =  filter_input(INPUT_POST, 'avatar_id',   FILTER_VALIDATE_INT);
 } else {
-    $user->avatar_id    =  '';
+    $user->avatar_id    =  $CFG->standard_avatar_id;
 }
 
 switch ($_POST['func']) {
