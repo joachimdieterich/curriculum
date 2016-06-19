@@ -308,10 +308,10 @@
             {if isset($smarty.session.FORM->id)}
                 {if $smarty.session.FORM->id neq ''}
                     $(document).ready(formloader('{$smarty.session.FORM->form}', '{$smarty.session.FORM->func}', {$smarty.session.FORM->id}));
-                {else}
-                    $(document).ready(formloader('{$smarty.session.FORM->form}', '{$smarty.session.FORM->func}'));
                 {/if}
-            {/if}    
+            {else}
+                $(document).ready(formloader('{$smarty.session.FORM->form}', '{$smarty.session.FORM->func}'));
+            {/if}
         </script>
     {/if} 
 

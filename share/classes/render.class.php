@@ -62,7 +62,6 @@ class Render {
                     break;
             }
             
-            
             $course = new Course();
             $ena->load();
             $group_id = $course->getGroupID($ena->curriculum_id, $teacher, $student);

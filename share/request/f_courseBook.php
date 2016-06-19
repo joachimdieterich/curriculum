@@ -109,7 +109,6 @@ if(checkCapabilities('user:userListComplete', $USER->role_id, false)){
     $courses = $courses->getCourse('teacher', $USER->id);  // abhängig von USER->my_semester id --> s. Select in objectives.tpl, 
 }                                               // Load schooltype 
 $content .= Form::input_select('course_id', 'Kurs / Klasse', $courses, 'course', 'course_id', $course_id , $error);
-
 $content .= Form::input_date(array('id'=>'timerange', 'label' => 'Dauer' , 'time' => $timerange, 'error' => $error, 'placeholder' => '', $type = 'date'));
 $content .= '</div></form>';
 $f_content = '';

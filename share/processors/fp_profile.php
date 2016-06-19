@@ -33,8 +33,6 @@ $user                 = new User();
 $gump                 = new Gump();    /* Validation */
 $_POST                = $gump->sanitize($_POST);       //sanitize $_POST
 
-
-
 $user->username       = $_POST['username']; 
 $user->firstname      = $_POST['firstname']; 
 $user->lastname       = $_POST['lastname']; 
@@ -77,7 +75,7 @@ switch ($_POST['func']) {
         break;
 }
 
-if ($_POST['func'] == 'new' OR $_POST['func'] == 'editUser'){  // don't validate password
+if ($_POST['func'] == 'edit' OR $_POST['func'] == 'editUser'){  // don't validate password
     $gump->validation_rules(array(
         'username'          => 'required|max_len,100|min_len,3',
         'firstname'         => 'required|max_len,100',
@@ -89,18 +87,18 @@ if ($_POST['func'] == 'new' OR $_POST['func'] == 'editUser'){  // don't validate
         'username'          => 'required|max_len,100|min_len,3',
         'firstname'         => 'required|max_len,100',
         'lastname'          => 'required|max_len,100',
-        'email'             => 'required|valid_email'
+        'email'             => 'required|valid_email',
+        'password'          => 'required|max_len,100|min_len,6'
     ));
 }
 $validated_data = $gump->run($_POST);
 if($validated_data === false) {/* validation failed */
-    $_SESSION['FORM'] = new stdClass();
+    $_SESSION['FORM']        = new stdClass();
     $_SESSION['FORM']->form  = 'profile'; 
-    var_dump($gump->get_readable_errors());
-    $_SESSION['FORM']->error = $gump->get_readable_errors();
     foreach($user as $key => $value){
         $_SESSION['FORM']->$key  = $value;
     }
+    $_SESSION['FORM']->error = $gump->get_readable_errors();
     $_SESSION['FORM']->func  = $_POST['func'];
 } else {
     switch ($_POST['func']) {
