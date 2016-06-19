@@ -31,9 +31,10 @@ $USER = $_SESSION['USER'];                  // $USER not defined but required on
 
 /* set defaults */
 $file       = new File();
-$curID      = null;
-$terID      = null; 
-$enaID      = null;
+$curID      = null;         //todo: only use ref_id
+$terID      = null;         //todo: only use ref_id
+$enaID      = null;         //todo: only use ref_id
+$ref_id     = null;         //todo: only use ref_id
 $target     = null;         // id of target field
 $format     = null;         // return format 0 == file_id; 1 == file_name; 2 == filePath / URL
 $multiple   = null;         // upload multiple files // not used yet  false == returns one file, true = returns array of files_id/file_name/file_path (depends on $format)
@@ -85,7 +86,7 @@ foreach ($_POST as $key => $value) { $$key = $value; }
                     if (checkCapabilities($value['capabilities'], $USER->role_id, false)){ //don't throw exeption!?>
                         <li class="treeview <?php if ($action == $value['action']){echo 'active';}?>" >
                             <a id="<?php echo $value['id']?>" href="../share/request/uploadframe.php?action=<?php 
-                                    echo $value['action'].'&context='.$context.'&curID='.$curID.'&terID='.$terID.'&enaID='.$enaID.'&target='.$target.'&format='.$format.'&multiple='.$multiple;
+                                    echo $value['action'].'&context='.$context.'&curID='.$curID.'&terID='.$terID.'&enaID='.$enaID.'&ref_id='.$ref_id.'&target='.$target.'&format='.$format.'&multiple='.$multiple;
                                      ?>" class="nyroModal">
                                 <i class="<?php echo $value['class']?>"></i> <span><?php echo $value['name']?></span>
                             </a>
@@ -107,6 +108,7 @@ foreach ($_POST as $key => $value) { $$key = $value; }
           <form id="uploadform" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
             <p><input id="context" name="context" type="hidden" value="<?php echo $context; ?>" /></p> <!-- context = von wo wird das Uploadfenster aufgerufen-->
             <p><input id="action" name="action" type="hidden" value="<?php   echo $action; ?>" /></p>
+            <p><input id="ref_id" name="ref_id" type="hidden" value="<?php   echo $ref_id; ?>" /></p>
             <p><input id="curID"   name="curID" type="hidden" value="<?php   echo $curID; ?>" /></p>
             <p><input id="terID" name="terID" type="hidden" value="<?php   echo $terID; ?>" /></p>
             <p><input id="enaID" name="enaID" type="hidden" value="<?php   echo $enaID; ?>" /></p> <?php

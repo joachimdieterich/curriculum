@@ -74,11 +74,8 @@
             <div class="col-md-4">
                 <div class="box box-widget widget-user">
                   <!-- Add the bg color to the header using any of the bg-* classes -->
-                  {if $ins->file_id eq 0}
-                    <div class="widget-user-header bg-aqua-active">
-                  {else}
                     <div class="widget-user-header bg-aqua-active" style="background: url('{$access_file}{$ins->file_id|resolve_file_id:"l"}') center right;background-size: cover; background-repeat: no-repeat;">
-                  {/if}
+                  
                     <h3 class="widget-user-username" style="text-shadow: 1px 1px #ff0000;">{$ins->institution}</h3>
                     <h5 class="widget-user-desc" style="text-shadow: 1px 1px #ff0000;">{$ins->description}</h5>
                   </div>
@@ -86,7 +83,7 @@
                     <div class="row">
                       <div class="col-sm-4 border-right">
                         <div class="description-block">
-                          <h5 class="description-header">{$ins->statistic.0}</h5>
+                          <h5 class="description-header">{$ins->statistic.$institution_std_role}</h5>
                           <span class="description-text">SCHÜLER</span>
                         </div><!-- /.description-block -->
                       </div><!-- /.col -->

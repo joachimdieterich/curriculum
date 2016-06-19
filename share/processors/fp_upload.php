@@ -47,6 +47,7 @@ $copy_link  = '';
 $curID      = NULL;
 $terID      = NULL;
 $enaID      = NULL;
+$ref_id     = NULL; 
 
 //$v_error  = false;
 /* get url parameters */
@@ -73,7 +74,7 @@ case "curriculum":  if ($enaID != NULL){
 
 case "badge":       $folders = '/'; //siehe unten                        
     break;  
-case "institution": $folders = $insID.'/'; //geändert, vorher wurde curID für den Wert verwendet! 
+case "institution": $folders = $ref_id.'/';                                     //ref_id == institution_id
     break;  
 default:            $folders = '';    
     break;

@@ -84,6 +84,7 @@ function uploadFile(form, func, fSelector, fName, fProgress, fPercent)
     formData.append("upload",       file);                                            //Fügt dem formData Objekt unser File Objekt hinzu
     if (typeof(document.getElementById('uploadform')) !== 'undefined'){               // append formData in uploadframe
         formData.append("action",        document.getElementById('action').value); 
+        formData.append("ref_id",        document.getElementById('ref_id').value); 
         formData.append("curID",        document.getElementById('curID').value); 
         formData.append("terID",        document.getElementById('terID').value); 
         formData.append("enaID",        document.getElementById('enaID').value); 
@@ -151,6 +152,7 @@ function uploadURL()
     client       = new XMLHttpRequest();                                              //XMLHttpRequest Objekt erzeugen
     if (typeof(document.getElementById('uploadform')) !== 'undefined'){               // append formData in uploadframe
         formData.append("action",       document.getElementById('action').value); 
+        formData.append("ref_id",       document.getElementById('ref_id').value); 
         formData.append("curID",        document.getElementById('curID').value); 
         formData.append("terID",        document.getElementById('terID').value); 
         formData.append("enaID",        document.getElementById('enaID').value); 

@@ -83,7 +83,7 @@ $CFG->thumbnails                    = true;                                     
 ;/* Standard Values */
 $CFG->acc_days                      = 7; 
 $CFG->paginator_limit               = 30; 
-$CFG->standard_role                 = 0; 
+$CFG->standard_role                 = 0;  // Schüler!
 $CFG->standard_country              = 56; 
 $CFG->standard_state                = 11;
 $CFG->csv_size                      = 1048576;
@@ -93,6 +93,7 @@ $CFG->timeout                       = 30;
 $CFG->message_timeout               = 4000; //in millisec.
 $CFG->standard_avatar               = 'user/noprofile.jpg';
 $CFG->standard_avatar_id            = 0;
+$CFG->standard_ins_logo_id          = 1;
 
 $CFG->mail_paginator_limit          = 10;                                       // bessere Darstellung
 /* Paginators - do not edit */

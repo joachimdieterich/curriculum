@@ -40,8 +40,7 @@ $new_schooltype         =   null;
 $schooltype_description =   null; 
 $country_id             =   null;
 $state_id               =   null;
-$file_id                =   null; 
-$icon_id                =   null;
+$file_id                =   $CFG->standard_ins_logo_id; 
 $paginator_limit        =   null; 
 $std_role               =   null; 
 $csv_size               =   null; 
@@ -79,7 +78,6 @@ if (isset($_GET['func'])){
                              $$key = $value;
                              //error_log($key. ': '.$value);
                          }
-                        $icon_id = $file_id;
             break;
         default: break;
     }
@@ -123,19 +121,13 @@ $countries = new State($country_id);                                            
 $content .= Form::input_select('state_id', 'Bundesland/Region', $countries->getStates(), 'state', 'id', $state_id , $error);
 $content .= Form::input_select('country_id', 'Land', $countries->getCountries(), 'de', 'id', $country_id , $error, 'getStates(this.value, \'state_id\');');
    
-/* Schullogo */ 
-$logo = new File(); 
-$content .= Form::input_text('file_id', 'Logo', $file_id, $error, '... hier klicken');
-/*$html .= Form::input_select('icon_id', 'Fach-Icon', $icons->getFiles('context', 5), 'title', 'id', $icon_id , $error, 'showSubjectIcon(\''.$CFG->access_id_url .'\', this.options[this.selectedIndex].value);');*/
-/* Icon Preview */
-$content .= '<div class="form-group"><label class="control-label col-sm-3"></label>
-      <div class="col-sm-9"><a href="'.$CFG->request_url .'uploadframe.php?&context=institution&target=file_id&format=0&multiple=false" class="nyroModal">
-        <div id="icon_img" class="form-control input-lg bg-white col-sm-9" ';
-if ($icon_id){
-    $content .= 'style="background-image: url(\''.$CFG->access_id_url . $icon_id.'\'); background-position: 50% 50%; background-repeat: initial initial;"';
+/* Schulbild */ 
+if (isset($id)) { // id have to be set to add image
+$content .= '<input type="hidden" name="file_id" id="file_id" value="'.$file_id.'"/><div class="col-xs-3"></div><div class="col-xs-9">'
+            . '<a href="'.$CFG->request_url .'uploadframe.php?&context=institution&target=file_id&ref_id='.$id.'&format=0&multiple=false" class="nyroModal">'
+            . '<img id="icon" style="height:100px; margin-left: -5px; padding-bottom:10px;" src="'.$CFG->access_id_url.$file_id.'" alt="Foto der Institution">'
+            . '</a></div>';
 }
-$content .= '></div></a></div></div>';
-
 $content .= '<h4>Einstellungen</h4>';
 $rol         = new Roles(); 
 $content .= Form::input_select('std_role', 'Rolle', $rol->get(), 'role', 'id', $std_role , $error);
@@ -162,10 +154,13 @@ $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
                               'f_content' => $f_content));
 
-$script = '<script type="text/javascript">
+$script = '<script id=\'modal_script\'>
         $(function() {
             $(\'.nyroModal\').nyroModal();
             $(\'#popup_generate\').nyroModal();
+        });
+        $(\'#file_id\').change(\'input\', function() {
+            document.getElementById("icon").src = "'.$CFG->access_id_url.'"+document.getElementById("file_id").value;
         });
         </script>';
 echo json_encode(array('html'=>$html, 'script' => $script));
