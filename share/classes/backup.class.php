@@ -117,8 +117,8 @@ class Backup {
         $file->file_context     = 1;
         $file->creator_id       = $USER->id;
         $file->curriculum_id    = $this->curriculum_id;
-        $file->terminal_objective_id = '-1';
-        $file->enabling_objective_id = '-1';
+        $file->terminal_objective_id = NULL;
+        $file->enabling_objective_id = NULL;
         $file->add();
         $this->zipBackup($file->path, $file->filename);                                            //$path = curriculum_id/
 

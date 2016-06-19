@@ -197,7 +197,7 @@ if (!$files){
                                          'player'      => $m_player,
                                          'content'     => $m_content, 
                                          'footer'      => $m_footer));
-                             unset($m_id, $m_preview, $m_icon_class, $m_delete, $m_url, $m_onclick, $m_title, $m_description, $m_player, $m_content, $m_footer, $m_hits, $f_versions, $license);
+        unset($m_id, $preview, $m_preview, $m_icon_class, $m_delete, $m_url, $m_onclick, $m_title, $m_description, $m_player, $m_content, $m_footer, $m_hits, $f_versions, $license);
         
         /* context box */   
         $close = false;

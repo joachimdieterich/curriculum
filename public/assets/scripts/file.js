@@ -40,7 +40,6 @@ function fileChange(form, fSelector, fName, fSize, fType, fUpload, fProgress, fP
         return;
     
     document.getElementById(fSelector).style.visibility = 'hidden'; 
-    
     document.getElementById(fName).innerHTML            = file.name;
     document.getElementById(fSize).innerHTML            = 'Dateigröße: ' + formatBytes(file.size, 1);
     document.getElementById(fType).innerHTML            = 'Dateityp: ' + file.type;
@@ -70,7 +69,6 @@ function uploadFile(form, func, fSelector, fName, fProgress, fPercent)
     }
     $(document.getElementById(form+'_fAbort')).removeClass("hidden");
 
-    
     var file        = document.getElementById(fSelector).files[0];              //Wieder unser File Objekt
     var formData    = new FormData();                                 //FormData Objekt erzeugen
     
@@ -85,6 +83,7 @@ function uploadFile(form, func, fSelector, fName, fProgress, fPercent)
  
     formData.append("upload",       file);                                            //Fügt dem formData Objekt unser File Objekt hinzu
     if (typeof(document.getElementById('uploadform')) !== 'undefined'){               // append formData in uploadframe
+        formData.append("action",        document.getElementById('action').value); 
         formData.append("curID",        document.getElementById('curID').value); 
         formData.append("terID",        document.getElementById('terID').value); 
         formData.append("enaID",        document.getElementById('enaID').value); 
@@ -120,8 +119,6 @@ function uploadFile(form, func, fSelector, fName, fProgress, fPercent)
         }
     };
     client.onloadend = function (e){
-        //alert(document.getElementById('target').value);
-        
         $.nmTop().close();          // close dialog
         if (func === 'import'){
             c = new Array();
@@ -129,13 +126,57 @@ function uploadFile(form, func, fSelector, fName, fProgress, fPercent)
             document.getElementById('importFileName').value = document.getElementById(fName).innerHTML; // allgemeiner lösen
         } else {
             target = document.getElementById('target').value;
-            alert(client.responseText);
-            document.getElementById(target).value       = client.responseText;
+            //alert(client.responseText);
+            if($("#"+target).get(0)){
+                document.getElementById(target).value       = client.responseText;
+                $("#"+target).trigger('change');
+             }
+             if (document.getElementById('curID').value > 0){
+                 window.opener.location.reload(false);
+             }
         }
     };
 	
     client.onabort = function(e) {
             alert("Upload abgebrochen");
+    };
+ 
+    client.open("POST", "../share/processors/fp_upload.php");
+    client.send(formData);
+}
+
+function uploadURL()
+{
+    var formData = new FormData();                                 //FormData Objekt erzeugen
+    client       = new XMLHttpRequest();                                              //XMLHttpRequest Objekt erzeugen
+    if (typeof(document.getElementById('uploadform')) !== 'undefined'){               // append formData in uploadframe
+        formData.append("action",       document.getElementById('action').value); 
+        formData.append("curID",        document.getElementById('curID').value); 
+        formData.append("terID",        document.getElementById('terID').value); 
+        formData.append("enaID",        document.getElementById('enaID').value); 
+        formData.append("target",       document.getElementById('target').value); 
+        formData.append("format",       document.getElementById('format').value); 
+        formData.append("multiple",     document.getElementById('multiple').value); 
+        formData.append("context",      document.getElementById('context').value); 
+        formData.append("title",        document.getElementById('title').value); 
+        formData.append("description",  document.getElementById('description').value);
+        formData.append("license",      document.getElementById('license').value);
+        formData.append("file_context", document.getElementById('file_context').value);
+        formData.append("fileURL",      document.getElementById('fileURL').value);
+    }
+    client.onerror = function(e) { alert("onError"); };
+    
+    client.onloadend = function (e){
+        $.nmTop().close();          // close dialog
+        target = document.getElementById('target').value;
+        cur    = document.getElementById('curID').value;
+        if($("#"+target).get(0)){
+           document.getElementById(target).value       = client.responseText;
+           $("#"+target).trigger('change');
+        }
+        if (document.getElementById('curID').value > 0){
+            window.opener.location.reload(false);
+        }
     };
  
     client.open("POST", "../share/processors/fp_upload.php");

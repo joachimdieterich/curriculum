@@ -34,7 +34,6 @@ class Render {
         return preg_replace_callback('/<accomplish id="(\d+)"><\/accomplish>/i', 
             function($r){ 
                 global $s, $t; 
-                $ena = new EnablingObjective(); 
                 return Render::accCheckboxes($r[1], $s, $t);
             }, $string);     
     }
@@ -62,10 +61,16 @@ class Render {
                 default:
                     break;
             }
+            
+            
+            $course = new Course();
+            $ena->load();
+            $group_id = $course->getGroupID($ena->curriculum_id, $teacher, $student);
             return '<input id="'.$id.'_green" class="space-left '.$green.' pointer_hand" type="button" name="setAccStatus1" onclick="setAccomplishedObjectivesBySolution('.$teacher.', '.$student.', '.$id.', 1)">'
             . '     <input id="'.$id.'_orange" class="space-left '.$orange.' pointer_hand" type="button" name="setAccStatus2" onclick="setAccomplishedObjectivesBySolution('.$teacher.', '.$student.', '.$id.', 2)">'
             . '     <input id="'.$id.'_white" class="space-left '.$white.' pointer_hand" type="button" name="setAccStatus3" onclick="setAccomplishedObjectivesBySolution('.$teacher.', '.$student.', '.$id.', 3)">'
-            . '     <input id="'.$id.'_red" class="space-left '.$red.' pointer_hand" type="button" name="setAccStatus0" onclick="setAccomplishedObjectivesBySolution('.$teacher.', '.$student.', '.$id.', 0)">';
+            . '     <input id="'.$id.'_red" class="space-left '.$red.' pointer_hand" type="button" name="setAccStatus0" onclick="setAccomplishedObjectivesBySolution('.$teacher.', '.$student.', '.$id.', 0)">'
+            . '     <button class="btn btn-default btn-sm"><a href="index.php?action=objectives&course='.$ena->curriculum_id.'_'.$group_id.'&paginator=userPaginator&userPaginator_sel_id='.$student.'&certificate_template=-1"><i class="fa fa-th"></i> Zum Lehrplan</a></button>'     ;
         }
     }
     

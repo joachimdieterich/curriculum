@@ -228,7 +228,15 @@ class EnablingObjective {
                                     $this->order_id                = $result->order_id;
                                     $this->repeat_interval_id      = $result->repeat_interval;
                                     $this->creation_time           = $result->creation_time;
-                                    $this->creator_id              = $result->creator_id;      
+                                    $this->creator_id              = $result->creator_id;     
+                                    /* Check if Material or external Reference is set */
+                                    $db_03 = DB::prepare('SELECT COUNT(*) AS MAX FROM files AS fi WHERE ena_id = ? AND context_id = 2');
+                                    $db_03->execute(array($result->id));
+                                    $res_03 = $db_03->fetchObject();
+                                    if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
+                                        $ext = $CFG->repository->count(1,$result->id);
+                                    } 
+                                    $this->files                = $res_03->MAX.$ext; //nummer of materials
                                     $objectives[]               = clone $this; 
                                 }  
                 break;   

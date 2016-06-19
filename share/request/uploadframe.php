@@ -42,7 +42,7 @@ $title      = null;
 $description= null; 
 $author     = $USER->firstname.' '.$USER->lastname;
 $license    = 2;
-$url        = null; 
+$fileURL    = null; 
 $action     = 'upload';
 
 $error      = '';
@@ -84,7 +84,9 @@ foreach ($_POST as $key => $value) { $$key = $value; }
                 foreach($values as $value){
                     if (checkCapabilities($value['capabilities'], $USER->role_id, false)){ //don't throw exeption!?>
                         <li class="treeview <?php if ($action == $value['action']){echo 'active';}?>" >
-                            <a id="<?php echo $value['id']?>" href="../share/request/uploadframe.php?action=<?php echo $value['action']?>" class="nyroModal">
+                            <a id="<?php echo $value['id']?>" href="../share/request/uploadframe.php?action=<?php 
+                                    echo $value['action'].'&context='.$context.'&curID='.$curID.'&terID='.$terID.'&enaID='.$enaID.'&target='.$target.'&format='.$format.'&multiple='.$multiple;
+                                     ?>" class="nyroModal">
                                 <i class="<?php echo $value['class']?>"></i> <span><?php echo $value['name']?></span>
                             </a>
                         </li> <?php 
@@ -102,8 +104,9 @@ foreach ($_POST as $key => $value) { $$key = $value; }
         <?php if ($action == 'upload' OR $action == 'url'){ ?>
         <div class="box box-widget">
           <!--?php echo $action;  echo var_dump($action); ?-->
-          <form id="uploadform" action="uploadframe.php" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
+          <form id="uploadform" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
             <p><input id="context" name="context" type="hidden" value="<?php echo $context; ?>" /></p> <!-- context = von wo wird das Uploadfenster aufgerufen-->
+            <p><input id="action" name="action" type="hidden" value="<?php   echo $action; ?>" /></p>
             <p><input id="curID"   name="curID" type="hidden" value="<?php   echo $curID; ?>" /></p>
             <p><input id="terID" name="terID" type="hidden" value="<?php   echo $terID; ?>" /></p>
             <p><input id="enaID" name="enaID" type="hidden" value="<?php   echo $enaID; ?>" /></p> <?php
@@ -113,21 +116,20 @@ foreach ($_POST as $key => $value) { $$key = $value; }
             $l = new License();
             echo Form::input_select('license', 'Lizenz', $l->get(), 'license', 'id', $license , $error);
             $c = new Context();
-            echo Form::input_select('file_context', 'Freigabe-Level', $c->get(), 'description', 'id', $context , $error);
+            echo Form::input_select('file_context', 'Freigabe-Level', $c->get(), 'description', 'id', $context , $error);?>
+            <p><input id="target" name="target" type="hidden" value="<?php  echo $target; ?>" /></p>
+            <p><input id="format" name="format" type="hidden" value="<?php  echo $format; ?>" /></p>
+            <p><input id="multiple" name="multiple" type="hidden" value="<?php echo $multiple; ?>" /></p>
+            <?php 
             if ($action == 'upload') { ?> 
             <span id="div_fileuplbtn">    <!-- Fileupload-->
                 <?php echo Form::upload_form('uploadbtn', 'Datei hochladen', '', $error); ?>
-                <p><input id="target" name="target" type="hidden" value="<?php  echo $target; ?>" /></p>
-                <p><input id="format" name="format" type="hidden" value="<?php  echo $format; ?>" /></p>
-                <p><input id="multiple" name="multiple" type="hidden" value="<?php echo $multiple; ?>" /></p>
-                <!--p><input name="upload" type="file" size="15" /-->
-                <!--input id="uploadbtn" type="submit" name="Submit" value="Datei hochladen" /-->
             </span><?php } 
             if ($action == 'url') { ?> 
-            <span id="div_fileURLbtn" >     <!-- URLupload-->
-                <p>URL:</p>
-                <p><input type="input" class="inputlarge" name="fileURL"  value="<?php if (isset($_POST['fileURL'])){echo $_POST['fileURL'];}?>"/></p>
-                <p><input type="submit" name="Submit" value="URL einfügen"  /></p>
+            <span id="div_fileURLbtn" >     <!-- URLupload--><?php
+                echo Form::input_text('fileURL', 'URL', $fileURL, $error, 'http://www.curriculumonline.de'); 
+                echo '<button name="update" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="uploadURL();"> URL hinzufügen</button><br>';
+                ?>
             </span>
             <?php } ?>
             </form>    

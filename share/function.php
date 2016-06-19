@@ -728,3 +728,22 @@ function exists_plugin($type, $plugin) {
     }
     return false;
 }
+
+/**
+ * reload user
+ */
+function session_reload_user(){
+    global $USER, $CFG, $TEMPLATE;
+    
+    $USER->load('username', $_SESSION['username']);                       // Benutzer aus DB laden
+    $USER->password         = '';                                               // Passwort aus Session löschen
+    $_SESSION['USER']       =& $USER;
+    assign_to_template($_SESSION['USER'],'my_');                                
+    
+    $semester = new Semester();                                                 // akt. Semester /Lernzeitraum  laden
+    $_SESSION['SEMESTER']   = $semester->getMySemesters($USER->id);             // .todo. akt. Semester der Institution laden, da sonst bei neu angelegten Benutzern semester_id evtl. nicht stimmt (wenn Benutzer in anderer Institution angelegt wurden)
+    
+    $institution = new Institution();   
+    $CFG->timeout = $institution->getTimeout($USER->institution_id);            // Set timeout based on Institution
+    $TEMPLATE->assign('global_timeout', $CFG->timeout);
+}

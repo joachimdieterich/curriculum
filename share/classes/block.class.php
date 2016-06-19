@@ -42,6 +42,29 @@ class Block {
         
     }
     
+    /**
+     * Add Block
+     * @return boolean 
+     */
+    public function add(){
+        global $USER;
+        checkCapabilities('block:add', $USER->role_id);
+        $db = DB::prepare('INSERT INTO block_instances (block_id,name,context_id,region,weight,configdata,institution_id,role_id) 
+                                        VALUES (?,?,?,?,?,?,?,?)');
+        return $db->execute(array($this->block_id, $this->name, $this->context_id, $this->region, $this->weight,$this->configdata,$this->institution_id,$this->role_id));
+    }
+    
+    /**
+     * Update current Block
+     * @return boolean 
+     */
+    public function update(){
+        global $USER;
+        checkCapabilities('block:update', $USER->role_id);
+        $db = DB::prepare('UPDATE block_instances  SET name = ?, configdata = ? WHERE id = ?');
+        return $db->execute(array($this->name, $this->configdata, $this->id));
+    }
+    
     public function load(){
         $db = DB::prepare('SELECT bi.*, bl.block, bl.visible FROM block_instances AS bi, block AS bl 
                                         WHERE bi.block_id = bl.id
@@ -49,6 +72,7 @@ class Block {
         $db->execute(array($this->context_id, $this->institution_id));
         $blocks = array();
         while($result = $db->fetchObject()) { 
+            
             $this->id              = $result->id;
             $this->block           = $result->block; 
             $this->visible         = $result->visible; 
@@ -64,6 +88,21 @@ class Block {
             $blocks[]              = clone $this;
         }
         return $blocks;
+    }
+    
+    public function types(){
+        $db         = DB::prepare('SELECT bl.* FROM  block AS bl'); 
+        $db->execute(array());
+        $types      = new stdClass();
+        $type_list  = array();
+                
+        while($result = $db->fetchObject()) {
+            foreach ($result as $key => $value) {
+                $types->$key = $value;
+            }
+            $type_list[] = clone $types;
+        }
+        return $type_list;
     }
     
 }

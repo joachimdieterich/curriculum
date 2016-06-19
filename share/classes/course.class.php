@@ -167,7 +167,7 @@ class Course {
    public function getTeacher($user_id, $curriculum_id){
         $teachers = array();
         $db = DB::prepare('SELECT ge.user_id  FROM role_capabilities AS rc, institution_enrolments AS ie, groups AS gp, groups_enrolments AS ge
-                        WHERE rc.capability = ?
+                        WHERE rc.capability = \'course:setAccomplishedStatus\'
                         AND rc.permission = 1
                         AND ie.status = 1
                         AND ie.role_id = rc.role_id
@@ -179,7 +179,7 @@ class Course {
                                     FROM groups_enrolments as ge, curriculum_enrolments as ce
                                     WHERE ge.user_id = ? AND ce.curriculum_id = ? AND ce.status = 1 AND 		
                                     ce.group_id = ge.group_id)'); 
-        $db->execute(array('course:setAccomplishedStatus', $user_id, $curriculum_id));    
+        $db->execute(array($user_id, $curriculum_id));    
         while($result = $db->fetchObject()) {
             $teachers[] = $result->user_id;
         }
@@ -191,7 +191,6 @@ class Course {
                         WHERE ce.curriculum_id = ? AND ce.group_id = ?');
        $db->execute(array($curriculum_id, $group_id));
        $result = $db->fetchObject();
-        $user = new User();
         if ($result){
             $this->id            = $result->id;
             $this->status        = $result->status;
@@ -216,5 +215,17 @@ class Course {
        return $users;
    }
    
+   public function getGroupID($cur_id, $teacher, $student){
+       $db = DB::prepare('SELECT DISTINCT ce.group_id from curriculum_enrolments AS ce, groups_enrolments AS ge 
+                            WHERE ce.curriculum_id = ? AND ge.user_id = ? AND ge.status = 1
+                            AND ge.group_id = (Select group_id FROM groups_enrolments 
+                                                                WHERE user_id = ? and ge.group_id = group_id AND status = 1)');
+        $db->execute(array($cur_id, $teacher, $student));  
+        $result = $db->fetchObject();
+        if ($result){
+            return $result->group_id;
+        }
+       
+   }
    
 }

@@ -44,7 +44,6 @@ function switchValue(ElementID){
 }
 
 function toggle(){ 
-    
     for(var i = 0, j = arguments[0].length; i < j; ++i) {
         if ($(document.getElementById(arguments[0][i])).hasClass("hidden")){
             $(document.getElementById(arguments[0][i])).removeClass("hidden");
@@ -623,7 +622,6 @@ function confirmDialog(text) {
 
 //icon function
 function showSubjectIcon(path, icon){
-    //document.getElementById('icon_img').src = path + icon;
     document.getElementById('icon_img').style.background =  "url('"+path+icon+"') center center";
 }
 

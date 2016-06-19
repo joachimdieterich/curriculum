@@ -89,14 +89,14 @@ if ($_POST['func'] == 'new' OR $_POST['func'] == 'editUser'){  // don't validate
         'username'          => 'required|max_len,100|min_len,3',
         'firstname'         => 'required|max_len,100',
         'lastname'          => 'required|max_len,100',
-        'email'             => 'required|valid_email',
-        'password'          => 'required|max_len,100|min_len,6'
+        'email'             => 'required|valid_email'
     ));
 }
 $validated_data = $gump->run($_POST);
 if($validated_data === false) {/* validation failed */
     $_SESSION['FORM'] = new stdClass();
     $_SESSION['FORM']->form  = 'profile'; 
+    var_dump($gump->get_readable_errors());
     $_SESSION['FORM']->error = $gump->get_readable_errors();
     foreach($user as $key => $value){
         $_SESSION['FORM']->$key  = $value;
@@ -110,6 +110,9 @@ if($validated_data === false) {/* validation failed */
             break;
         case 'editUser': 
         case 'edit':     if ($user->update()){
+                            if ($user->id == $USER->id){                        // eigenes Profil --> reload session
+                                session_reload_user();
+                            }
                             $_SESSION['PAGE']->message[] = array('message' => 'Benutzer erfolgreich aktualisiert', 'icon' => 'fa-user text-success');
                          }
             break;

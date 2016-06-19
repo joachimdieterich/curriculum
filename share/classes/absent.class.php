@@ -58,24 +58,16 @@ class Absent {
         $db->execute(array($v));
         $result     = $db->fetchObject();
         if ($result){
-            $user   = new User(); 
-            $this->id            = $result->id;
-            $this->cb_id         = $result->cb_id;
-            $this->user_id       = $result->user_id;
-            //$user->load('id', $result->user_id, false);
-            $this->user          = $user->resolveUserId($result->user_id);
-            $this->reason        = $result->reason;
-            $this->status        = $result->status;
-            $this->done          = $result->done;
-            $this->creator_id    = $result->creator_id;
-            $this->creation_time = $result->creation_time;
+            foreach ($result as $key => $value) {
+                $this->$key = $value; 
+            }
+            $user           = new User(); 
+            $this->user     = $user->resolveUserId($result->user_id);
             return true;                                                        
         } else { 
             return false; 
         }
     }
-    
-    
     
     public function get($paginator = ''){
         $order_param = orderPaginator($paginator, array()); 
@@ -84,17 +76,13 @@ class Absent {
                             $db->execute(array($this->cb_id));
         
         while($result = $db->fetchObject()) { 
-                $user = new User(); 
-                $this->id            = $result->id;
-                $this->cb_id         = $result->cb_id;
-                $this->user_id       = $result->user_id;
-                $user->load('id', $result->user_id, false);
-                $this->user          = $user;
-                $this->reason        = $result->reason;
-                $this->status        = $result->status;
-                $this->done          = $result->done;
-                $this->creator_id    = $result->creator_id;
-                $entrys[]            = clone $this;        //it has to be clone, to get the object and not the reference
+            foreach ($result as $key => $value) {
+                $this->$key = $value; 
+            }
+            $user        = new User();
+            $user->load('id', $result->user_id);
+            $this->user  = $user;
+            $entrys[]    = clone $this;        //it has to be clone, to get the object and not the reference
         } 
         if (isset($entrys)){
             return $entrys;                    

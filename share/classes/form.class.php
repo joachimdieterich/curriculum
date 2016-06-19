@@ -329,7 +329,7 @@ class Form {
         $html .= '<div class="info-box-content">';
         if (isset($delete)){
         $html .= '<div class="pull-right">
-                    <button class="btn btn-box-tool" onclick="deleteFile('.$id.')"><i class="fa fa-trash"></i></button>
+                    <button class="btn btn-box-tool" onclick="removeMaterial('.$id.')"><i class="fa fa-trash"></i></button>
                   </div>';
         }
         $html .= '<span class="info-box-text">';

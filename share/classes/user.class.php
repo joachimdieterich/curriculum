@@ -194,7 +194,7 @@ class User {
      * @param string $key
      * @param string $user_value 
      */
-    public function load($key, $user_value, $get_auth = false, $view = '') {
+    public function load($key, $user_value, $enrolments = true) {
         if ($key == 'username'){
             $db = DB::prepare('SELECT * FROM users WHERE UPPER('.$key.') = UPPER(?)');
             $db->execute(array($user_value));
@@ -241,7 +241,7 @@ class User {
         $this->creation_time     = $result->creation_time;
         $this->creator_id        = $result->creator_id;
           
-        if ($view != 'user'){    // Die folgenden Daten nicht laden, wenn in der Benutzerverwaltung --> Geschwindigkeit
+        if ($enrolments){    // Die folgenden Daten nicht laden, wenn in der Benutzerverwaltung --> Geschwindigkeit
             $this->enrolments    = $this->get_curriculum_enrolments();
             $this->institutions  = $this->get_instiution_enrolments();
         }
@@ -330,6 +330,7 @@ class User {
             default:
                 break;
         }
+        return $r;
     }
     
     public function updateRole(){
@@ -666,7 +667,6 @@ class User {
             $this->email        = $result->email;
             $this->postalcode   = $result->postalcode;
             $this->city         = $result->city;
-            //$this->load('id', $result->id, false, 'user');
             
             $users[] = clone $this;
         } 

@@ -127,6 +127,11 @@ class File {
     public function add(){
         global $USER, $LOG;
         if (checkCapabilities('file:upload', $USER->role_id, false) OR checkCapabilities('file:uploadAvatar', $USER->role_id, false));
+        
+        /* SET cur_id, ter_id and ena_id NULL if not int > 0*/
+        if ($this->curriculum_id < 1)        { $this->curriculum_id         = NULL; }
+        if ($this->terminal_objective_id < 1){ $this->terminal_objective_id = NULL; }
+        if ($this->enabling_objective_id < 1){ $this->enabling_objective_id = NULL; }
         $db             = DB::prepare('INSERT INTO files (title, filename, description, author, license, type, path, context_id, file_context, creator_id, cur_id, ter_id, ena_id) 
                             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)');
         if($db->execute(array($this->title, $this->filename, $this->description, $this->author, $this->license, $this->type, $this->path, $this->context_id, $this->file_context, $this->creator_id, $this->curriculum_id, $this->terminal_objective_id, $this->enabling_objective_id))){
@@ -135,6 +140,7 @@ class File {
             $result     = $db->fetchObject();
             $this->id   = $result->id;
             $LOG->add($USER->id, 'uploadframe.php', dirname(__FILE__), 'Context: '.$this->context_id.' Upload: '.$this->path.''.$this->filename);
+            $_SESSION['PAGE']->message[] = array('message' => 'Datei erfolgreich hochgeladen', 'icon' => 'fa-file text-success');
             return $this->id; 
         } else {
             return false; 
@@ -148,6 +154,10 @@ class File {
     public function update(){
         global $USER;
         checkCapabilities('file:update', $USER->role_id);
+        /* SET cur_id, ter_id and ena_id NULL if not int > 0*/
+        if ($this->curriculum_id < 1)        { $this->curriculum_id         = NULL; }
+        if ($this->terminal_objective_id < 1){ $this->terminal_objective_id = NULL; }
+        if ($this->enabling_objective_id < 1){ $this->enabling_objective_id = NULL; }
         $db = DB::prepare('UPDATE files SET title = ?, filename = ?, description = ?, license = ?, author = ?, type = ?, path = ?, context_id = ?, creator_id = ?, cur_id = ?, ter_id = ?, ena_id = ? WHERE id = ?');
         return $db->execute(array($this->title, $this->filename, $this->description, $this->author, $this->license, $this->type, $this->path, $this->context_id, $this->creator_id, $this->curriculum_id, $this->terminal_objective_id, $this->enabling_objective_id, $this->id));
     }
@@ -165,7 +175,7 @@ class File {
             switch ($this->context_id) {
                 case 1: $path = $CFG->user_root.$this->path; 
                     break;
-                case 2: if ($this->enabling_objective_id === '-1'){ // Terminal objective
+                case 2: if ($this->enabling_objective_id === NULL){ // Terminal objective
                             $path = $CFG->curriculum_root.$this->curriculum_id.'/'.$this->terminal_objective_id.'/'; //Datei vom Server löschen     
                         } else {// enabling objecitve
                             $path = $CFG->curriculum_root.$this->curriculum_id.'/'.$this->terminal_objective_id.'/'.$this->enabling_objective_id.'/'; //Datei vom Server löschen     
@@ -460,7 +470,7 @@ class File {
                 $db->execute(array($id));
                 break;
             case 'terminal_objective':  $db = DB::prepare('SELECT DISTINCT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
-                                                            WHERE fl.ter_id = ? AND fl.ena_id = "-1" AND fl.context_id = 2 AND fl.context_id = ct.context_id
+                                                            WHERE fl.ter_id = ? AND ISNULL(fl.ena_id) AND fl.context_id = 2 AND fl.context_id = ct.context_id
                                                             AND( fl.file_context = 1 /*Global Material*/
                                                             OR ( fl.file_context = 2 AND fl.creator_id = ANY (SELECT user_id from institution_enrolments WHERE institution_id = ? )) /*Institutional Material*/
                                                             OR ( fl.file_context = 3 AND fl.creator_id = ANY (SELECT user_id from groups_enrolments WHERE group_id = ANY (Select group_id from groups_enrolments WHERE user_id = ?))) /*Group Material*/
@@ -568,47 +578,6 @@ class File {
             return  $result->context_id;
         } else {return false;}
     }
-    
-    /* now in License Class*/
-    /*public function getLicense($id = NULL){
-        $values = new stdClass();
-        if ($id == NULL){
-            $db = DB::prepare('SELECT * FROM file_license');
-            $db->execute();
-            while($result = $db->fetchObject()) {
-                //$values[] = array('value' => $result->id, 'label' => $result->license);
-                $values->id         = $result->id;
-                $values->license    = $result->license;
-                $license[]          = clone $values;       
-            }
-            return $license;
-        } else {
-            $db = DB::prepare('SELECT license FROM file_license WHERE id = ?');
-            $db->execute(array($id));
-            $result = $db->fetchObject();
-            if ($result) {
-                return  $result->license;
-            } else {return false;}
-        }
-    }*/
-
-    /*public function getFileContext($id = NULL){
-        if ($id == NULL){
-            $db = DB::prepare('SELECT * FROM file_context');
-            $db->execute();
-            while($result = $db->fetchObject()) {
-                $values[] = array('value' => $result->id, 'label' => $result->description);
-            }
-            return $values;
-        } else {
-            $db = DB::prepare('SELECT description FROM file_context WHERE id = ?');
-            $db->execute(array($id));
-            $result = $db->fetchObject();
-            if ($result) {
-                return  $result->description;
-            } else {return false;}
-        }
-    }*/
     
     public function hit(){ // hit counter
         $db = DB::prepare('UPDATE files SET hits = hits + 1 WHERE id = ?');

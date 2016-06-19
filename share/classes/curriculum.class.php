@@ -395,7 +395,7 @@ class Curriculum {
                     $f->creator_id              = $USER->id;
                     $f->curriculum_id           = $c_id;
                     $f->terminal_objective_id   = $t_id;
-                    $f->enabling_objective_id   = -1;
+                    $f->enabling_objective_id   = NULL;
                     $f->add();
                     if ($f->type != '.url'){
                         silent_mkdir($CFG->curriculum_root.$f->path);

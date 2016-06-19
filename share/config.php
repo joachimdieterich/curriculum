@@ -92,6 +92,7 @@ $CFG->material_size                 = 1048576;
 $CFG->timeout                       = 30;
 $CFG->message_timeout               = 4000; //in millisec.
 $CFG->standard_avatar               = 'user/noprofile.jpg';
+$CFG->standard_avatar_id            = 0;
 
 $CFG->mail_paginator_limit          = 10;                                       // bessere Darstellung
 /* Paginators - do not edit */

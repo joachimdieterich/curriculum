@@ -104,8 +104,10 @@
                                                    {/if}  
                                                {/if}
                                                {if isset($showaddObjectives)}
-                                                    {if $ena->terminal_objective_id eq $enabledObjectives[{$enaid+1}]->terminal_objective_id}
-                                                        <a  onclick="order('up', 'enabling_objective', '{$ena->id}');"><span class="fa fa-arrow-right pull-right box-sm-icon"></span></a>
+                                                    {if isset($enabledObjectives[{$enaid+1}])} 
+                                                        {if $ena->terminal_objective_id eq $enabledObjectives[{$enaid+1}]->terminal_objective_id}
+                                                            <a  onclick="order('up', 'enabling_objective', '{$ena->id}');"><span class="fa fa-arrow-right pull-right box-sm-icon"></span></a>
+                                                        {/if}
                                                     {/if}
                                                     <a  onclick="del('enablingObjectives', {$ena->id}, {$my_id});"><span class="fa fa-minus pull-right box-sm-icon"</a>
                                                     <a  onclick="formloader('enablingObjective','edit', {$ena->id});"><span class="fa fa-edit pull-right box-sm-icon"></span></a>

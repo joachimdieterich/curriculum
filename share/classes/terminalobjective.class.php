@@ -196,14 +196,13 @@ class TerminalObjective {
                                     $this->repeat_interval      = $result->repeat_interval;
                                     $this->creation_time        = $result->creation_time;
                                     $this->creator_id           = $result->creator_id;
-                                    $this->files                = $files->getFiles('terminal_objective', $this->id, 'default', false); // 3. Parameter false da nicht benötigt --> viel bessere performance
                                     if ($load_enabling_objectives){
                                         $enabling_objectives = new EnablingObjective();
                                         $this->enabling_objectives = $enabling_objectives->getObjectives('terminal_objective', $this->id);
                                     }
                                     
                                     /* Check if Material or external Reference is set */
-                                    $db_02 = DB::prepare('SELECT COUNT(*) AS MAX FROM files WHERE ter_id = ? AND ena_id < 1 AND context_id = 2');
+                                    $db_02 = DB::prepare('SELECT COUNT(*) AS MAX FROM files WHERE ter_id = ? AND ISNULL(ena_id) AND context_id = 2');
                                     $db_02->execute(array($result->id));
                                     $res_02 = $db_02->fetchObject();
                                     

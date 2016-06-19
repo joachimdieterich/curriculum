@@ -40,12 +40,12 @@ if (isset($_SESSION['USER'])){                                                  
     session_reload_user();
  }
 /**
- * reload user
+ * reload user --> moved to function.php
  */
-function session_reload_user(){
+/*function session_reload_user(){
     global $USER, $CFG, $TEMPLATE;
     
-    $USER->load('username', $_SESSION['username'], true);                       // Benutzer aus DB laden
+    $USER->load('username', $_SESSION['username']);                       // Benutzer aus DB laden
     $USER->password         = '';                                               // Passwort aus Session löschen
     $_SESSION['USER']       =& $USER;
     assign_to_template($_SESSION['USER'],'my_');                                
@@ -56,7 +56,7 @@ function session_reload_user(){
     $institution = new Institution();   
     $CFG->timeout = $institution->getTimeout($USER->institution_id);            // Set timeout based on Institution
     $TEMPLATE->assign('global_timeout', $CFG->timeout);
-}
+}*/
 /**
  * Setup global $PAGE  
  * $PAGE = new stdClass() in index.php

@@ -95,8 +95,7 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$content = '<form id="form_profile"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_profile.php"';
-
+$content  = '<form id="form_profile"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_profile.php"';
 if (isset($currentUrlId)){ $html .= $currentUrlId; }
 $content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>
             <input type="hidden" name="user_id" id="user_id" value="'.$user_id.'"/>
@@ -106,7 +105,7 @@ if ($func == 'new'){
 } else {
     $content .= '<div class="col-xs-3"></div><div class="col-xs-9">'
             . '<a href="'.$CFG->request_url .'uploadframe.php?&context=avatar&target=avatar_id&format=0&multiple=false" class="nyroModal">'
-            . '<img id="avatar" style="height:100px; margin-left: -5px; padding-bottom:10px;" src="'.$CFG->access_file.$avatar.'" alt="Profilfoto">'
+            . '<img id="avatar" style="height:100px; margin-left: -5px; padding-bottom:10px;" src="'.$CFG->access_id_url.$avatar_id.'" alt="Profilfoto">'
             . '</a></div>';
     $content .= Form::input_text('username', 'Benutzername', $username, $error,'','text',null, null, 'col-sm-3','col-sm-9', true);
 }
@@ -134,10 +133,13 @@ $content .= '</div></form>';
 
 $f_content = '<button name="submit" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_profile\').submit();"> '.$header.'</button>';    
 
-$script = '<script type="text/javascript">
+$script = '<script id=\'modal_script\'>
         $(function() {
             $(\'.nyroModal\').nyroModal();
             $(\'#popup_generate\').nyroModal();
+        });
+        $(\'#avatar_id\').change(\'input\', function() {
+            document.getElementById("avatar").src = "'.$CFG->access_id_url.'"+document.getElementById("avatar_id").value;
         });
         </script>';
 

@@ -108,10 +108,9 @@ class Grade {
         $db->execute(array($v));
         $result = $db->fetchObject();
         if ($result){
-            $this->id          = $result->id;
-            $this->grade       = $result->grade;
-            $this->description = $result->description;
-            $this->institution_id = $result->institution_id;
+            foreach ($result as $key => $value) {
+                $this->$key          = $value; 
+            }
             return true;                                                        // wichtig! f. loadImportFormData
         } else { 
             return false; 
@@ -135,14 +134,10 @@ class Grade {
         $db->execute(array($USER->id));
         
         while($result = $db->fetchObject()) { 
-                $this->id               = $result->id;
-                $this->grade            = $result->grade;
-                $this->description      = $result->description;
-                $this->institution      = $result->institution;
-                $this->creation_times   = $result->creation_time;
-                $this->creator_id       = $result->creator_id;
-                $this->institution_id   = $result->institution_id;
-                $grades[]               = clone $this;        //it has to be clone, to get the object and not the reference
+            foreach ($result as $key => $value) {
+                $this->$key = $value; 
+            }
+            $grades[]       = clone $this;        //it has to be clone, to get the object and not the reference
         } 
         
         return $grades;

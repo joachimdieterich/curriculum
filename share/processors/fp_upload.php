@@ -31,7 +31,6 @@ $USER   = $_SESSION['USER'];
 
 foreach ($_POST as $key => $value) {
     $$key = $value;
-    //error_log($key.': '.$value);
 }
 
 $file       = new File();
@@ -45,6 +44,9 @@ $license    = 2;
 $error      = '';
 $image      = '';
 $copy_link  = '';
+$curID      = NULL;
+$terID      = NULL;
+$enaID      = NULL;
 
 //$v_error  = false;
 /* get url parameters */
@@ -61,11 +63,11 @@ case "editor":      $folders = $USER->id.'/'; //siehe unten
 case "solution":    $folders = $curID.'/'.$terID.'/'.$enaID.'/'; //siehe unten                
                     break;  
                 
-case "curriculum":  if ($enaID != 0){
+case "curriculum":  if ($enaID != NULL){
                         $folders = $curID.'/'.$terID.'/'.$enaID.'/'; // Dateien die zu einem Ziel gehören
                     } else {
                         $folders = $curID.'/'.$terID.'/'; // Dateien die zum Thema gehören
-                        $enaID = -1; //todo statt -1 sollte null verwendet werden
+                        $enaID   = NULL; 
                     }
                     break;
 
@@ -93,7 +95,7 @@ if (isset($_FILES['upload'])){
     $my_upload->http_error = $_FILES['upload']['error'];    
 }
 
-if ($my_upload->upload()) {//in datenbank eintragen
+if ($my_upload->upload() OR filter_var($fileURL, FILTER_VALIDATE_URL)) {//in datenbank eintragen
     $file->title                 = $title; 
     $file->description           = $description;
     $file->author                = $author;
@@ -104,21 +106,36 @@ if ($my_upload->upload()) {//in datenbank eintragen
     $file->curriculum_id         = $curID;
     $file->terminal_objective_id = $terID;
     $file->enabling_objective_id = $enaID;
-
-    $copy_link         = ' <input type="submit" id="closelink" name="Submit" value="Datei verwenden"/>';
-    $file->filename    = str_replace(' ', '_', $my_upload->the_file);
-    $file->type        = $my_upload->get_extension($my_upload->the_file);
-    $file->path        = $folders;
-    $file->id          = $file->add();
-    $href_mail         = $CFG->access_file_url.'solutions/'.$folders.''.rawurlencode(str_replace(' ', '_', $my_upload->the_file));
-    if ($CFG->thumbnails){ // Generate Thumbs // todo: var to define thumbs (sizes)
-       generateThumbnail($my_upload->upload_dir, $my_upload->the_file, $context);
+    
+    switch ($action) {
+        case 'upload':  $copy_link         = ' <input type="submit" id="closelink" name="Submit" value="Datei verwenden"/>';
+                        $file->filename    = str_replace(' ', '_', $my_upload->the_file);
+                        $file->type        = $my_upload->get_extension($my_upload->the_file);
+                        $file->path        = $folders;
+                        $file->id          = $file->add();
+                        $href_mail         = $CFG->access_file_url.'solutions/'.$folders.''.rawurlencode(str_replace(' ', '_', $my_upload->the_file));
+                        if ($CFG->thumbnails){ // Generate Thumbs // todo: var to define thumbs (sizes)
+                           generateThumbnail($my_upload->upload_dir, $my_upload->the_file, $context);
+                        }
+            break;
+        case 'url':     $file->filename    = $fileURL; //todo: doppelt gespeichert... muss noch optimiert werden
+                        $file->path        = $fileURL; //todo: doppelt gespeichert... muss noch optimiert werden
+                        $file->type        = '.url';
+                        $file->add();
+                        $href_mail         = $file->path;
+            break;
+        default:
+            break;
     }
+    
 
     if ($context == "solution") { // --> upload of solution file
-        $course = new Course(); 
-        $teachers = $course->getTeacher($USER->id, $enabling_objective->curriculum_id); //get Teachers
-
+        $course                 = new Course(); 
+        $enabling_objective     = new EnablingObjective();
+        $enabling_objective->id = $file->enabling_objective_id;
+        $enabling_objective->load();
+        $teachers               = $course->getTeacher($USER->id, $enabling_objective->curriculum_id); //get Teachers
+        
         $mail = new Mail();
         for($i = 0; $i < count($teachers); ++$i) {
             $mail->sender_id    = $USER->id;
