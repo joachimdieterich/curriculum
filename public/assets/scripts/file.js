@@ -79,15 +79,12 @@ function uploadFile(form, func, fSelector, fName, fProgress, fPercent)
         return;
  
     prog.value = 0;
-    prog.max = 100;
+    prog.max   = 100;
  
     formData.append("upload",       file);                                            //Fügt dem formData Objekt unser File Objekt hinzu
     if (typeof(document.getElementById('uploadform')) !== 'undefined'){               // append formData in uploadframe
         formData.append("action",        document.getElementById('action').value); 
         formData.append("ref_id",        document.getElementById('ref_id').value); 
-        formData.append("curID",        document.getElementById('curID').value); 
-        formData.append("terID",        document.getElementById('terID').value); 
-        formData.append("enaID",        document.getElementById('enaID').value); 
         formData.append("target",       document.getElementById('target').value); 
         formData.append("format",       document.getElementById('format').value); 
         formData.append("multiple",     document.getElementById('multiple').value); 
@@ -132,8 +129,8 @@ function uploadFile(form, func, fSelector, fName, fProgress, fPercent)
                 document.getElementById(target).value       = client.responseText;
                 $("#"+target).trigger('change');
              }
-             if (document.getElementById('curID').value > 0){
-                 window.opener.location.reload(false);
+             if (document.getElementById('context').value === 'terminal_objective' || document.getElementById('context').value === 'enabling_objective'){
+                parent.window.location.reload();
              }
         }
     };
@@ -153,9 +150,6 @@ function uploadURL()
     if (typeof(document.getElementById('uploadform')) !== 'undefined'){               // append formData in uploadframe
         formData.append("action",       document.getElementById('action').value); 
         formData.append("ref_id",       document.getElementById('ref_id').value); 
-        formData.append("curID",        document.getElementById('curID').value); 
-        formData.append("terID",        document.getElementById('terID').value); 
-        formData.append("enaID",        document.getElementById('enaID').value); 
         formData.append("target",       document.getElementById('target').value); 
         formData.append("format",       document.getElementById('format').value); 
         formData.append("multiple",     document.getElementById('multiple').value); 
@@ -171,13 +165,12 @@ function uploadURL()
     client.onloadend = function (e){
         $.nmTop().close();          // close dialog
         target = document.getElementById('target').value;
-        cur    = document.getElementById('curID').value;
         if($("#"+target).get(0)){
            document.getElementById(target).value       = client.responseText;
            $("#"+target).trigger('change');
         }
-        if (document.getElementById('curID').value > 0){
-            window.opener.location.reload(false);
+        if (document.getElementById('context').value === 'terminal_objective' || document.getElementById('context').value === 'enabling_objective'){
+            parent.window.location.reload();
         }
     };
  

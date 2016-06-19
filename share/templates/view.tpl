@@ -63,7 +63,7 @@
                                         {/if}
                                         {if isset($showaddObjectives)}
                                             {if checkCapabilities('file:upload', $my_role_id, false)}
-                                                <a href="../share/request/uploadframe.php?userID={$my_id}&last_login={$my_last_login}&context=curriculum&curID={$course[0]->curriculum_id}&terID={$ter->id}{$tb_param}" class="nyroModal"><span class="fa fa-plus pull-right box-sm-icon"></span></a>                        
+                                                <a href="../share/request/uploadframe.php?context=terminal_objective&ref_id={$ter->id}{$tb_param}" class="nyroModal"><span class="fa fa-plus pull-right box-sm-icon"></span></a>                        
                                             {/if} 
                                         {/if}
 
@@ -99,7 +99,7 @@
                                                        {/foreach}
                                                    {/if}
                                                    {if checkCapabilities('file:upload', $my_role_id, false)}
-                                                       <a href="../share/request/uploadframe.php?userID={$my_id}&last_login={$my_last_login}&context=solution&curID={$course[0]->curriculum_id}&terID={$ter->id}&enaID={$ena->id}{$tb_param}" class="nyroModal">
+                                                       <a href="../share/request/uploadframe.php?context=solution&ref_id={$ena->id}{$tb_param}" class="nyroModal">
                                                        <span class="{if $sol_btn eq $ena->id OR $sol_btn eq false}green{/if} fa fa-upload invert pull-right box-sm-icon"></span></a>
                                                    {/if}  
                                                {/if}
@@ -132,7 +132,7 @@
                                                {if isset($showaddObjectives)}
                                                    <a onclick="formloader('addQuiz','enabling_objective','{$ena->id}');"><span class="fa fa-check-square-o pull-right box-sm-icon"></span></a>
                                                    {if checkCapabilities('file:upload', $my_role_id, false)}
-                                                       <a href="../share/request/uploadframe.php?userID={$my_id}&last_login={$my_last_login}&context=curriculum&curID={$course[0]->curriculum_id}&terID={$ter->id}&enaID={$ena->id}{$tb_param}" class="nyroModal">
+                                                       <a href="../share/request/uploadframe.php?context=enabling_objective&ref_id={$ena->id}{$tb_param}" class="nyroModal">
                                                         <span class="fa fa-plus pull-right box-sm-icon" ></span></a>
                                                    {/if}
                                                {else}

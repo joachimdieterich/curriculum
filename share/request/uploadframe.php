@@ -31,9 +31,6 @@ $USER = $_SESSION['USER'];                  // $USER not defined but required on
 
 /* set defaults */
 $file       = new File();
-$curID      = null;         //todo: only use ref_id
-$terID      = null;         //todo: only use ref_id
-$enaID      = null;         //todo: only use ref_id
 $ref_id     = null;         //todo: only use ref_id
 $target     = null;         // id of target field
 $format     = null;         // return format 0 == file_id; 1 == file_name; 2 == filePath / URL
@@ -83,14 +80,18 @@ foreach ($_POST as $key => $value) { $$key = $value; }
                                  6 => array('capabilities' =>  'file:myAvatars',        'id' =>  'avatarfilesbtn',      'name' => 'Meine Profilbilder',   'class' => 'fa  fa-user',      'action' => 'myAvatars')
                 );
                 foreach($values as $value){
-                    if (checkCapabilities($value['capabilities'], $USER->role_id, false)){ //don't throw exeption!?>
-                        <li class="treeview <?php if ($action == $value['action']){echo 'active';}?>" >
-                            <a id="<?php echo $value['id']?>" href="../share/request/uploadframe.php?action=<?php 
-                                    echo $value['action'].'&context='.$context.'&curID='.$curID.'&terID='.$terID.'&enaID='.$enaID.'&ref_id='.$ref_id.'&target='.$target.'&format='.$format.'&multiple='.$multiple;
-                                     ?>" class="nyroModal">
-                                <i class="<?php echo $value['class']?>"></i> <span><?php echo $value['name']?></span>
-                            </a>
-                        </li> <?php 
+                    if (checkCapabilities($value['capabilities'], $USER->role_id, false)){ //don't throw exeption!
+                        if (($value['action'] == 'curriculumFiles' AND ($context != 'terminal_objective' AND $context != 'enabling_objective')) OR ($value['action'] == 'mySolutions' AND $context != 'solution'))  { 
+                            // do nothing
+                        } else { ?>
+                            <li class="treeview <?php if ($action == $value['action']){echo 'active';}?>" >
+                                <a id="<?php echo $value['id']?>" href="../share/request/uploadframe.php?action=<?php 
+                                        echo $value['action'].'&context='.$context.'&ref_id='.$ref_id.'&target='.$target.'&format='.$format.'&multiple='.$multiple;
+                                         ?>" class="nyroModal">
+                                    <i class="<?php echo $value['class']?>"></i> <span><?php echo $value['name']?></span>
+                                </a>
+                            </li> <?php 
+                        }
                     }
                 } ?>
             
@@ -108,10 +109,7 @@ foreach ($_POST as $key => $value) { $$key = $value; }
           <form id="uploadform" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
             <p><input id="context" name="context" type="hidden" value="<?php echo $context; ?>" /></p> <!-- context = von wo wird das Uploadfenster aufgerufen-->
             <p><input id="action" name="action" type="hidden" value="<?php   echo $action; ?>" /></p>
-            <p><input id="ref_id" name="ref_id" type="hidden" value="<?php   echo $ref_id; ?>" /></p>
-            <p><input id="curID"   name="curID" type="hidden" value="<?php   echo $curID; ?>" /></p>
-            <p><input id="terID" name="terID" type="hidden" value="<?php   echo $terID; ?>" /></p>
-            <p><input id="enaID" name="enaID" type="hidden" value="<?php   echo $enaID; ?>" /></p> <?php
+            <p><input id="ref_id" name="ref_id" type="hidden" value="<?php   echo $ref_id; ?>" /></p><?php
             echo Form::input_text('title', 'Titel', $title, $error, 'z. B. Diagramm eLearning'); 
             echo Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung'); 
             echo Form::input_text('author', 'Autor', $author, $error, 'Max Mustermann'); 
@@ -150,13 +148,13 @@ foreach ($_POST as $key => $value) { $$key = $value; }
         
         if ($action == 'curriculumFiles'){ ?>
         <div class="box box-widget">
-          <?php RENDER::filelist('uploadframe.php', 'curriculum', $CFG->access_file, '_curriculumfilesbtn',  $target, $format, $multiple, $curriculum_id);   //curriculumfiles?>
+          <?php RENDER::filelist('uploadframe.php', 'curriculum', $CFG->access_file, '_curriculumfilesbtn',  $target, $format, $multiple, $ref_id);   //curriculumfiles?>
         </div>
         <?php }
         
         if ($action == 'mySolutions'){ ?>
         <div class="box box-widget">
-          <?php  RENDER::filelist('uploadframe.php', 'solution',   $CFG->access_file, '_solutionfilesbtn',   $target, $format, $multiple, $curriculum_id);       //solutionfiles div?>
+          <?php  RENDER::filelist('uploadframe.php', 'solution',   $CFG->access_file, '_solutionfilesbtn',   $target, $format, $multiple, $ref_id);       //solutionfiles div?>
         </div>
         <?php }
         

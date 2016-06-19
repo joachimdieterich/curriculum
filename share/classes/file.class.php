@@ -377,10 +377,14 @@ class File {
     public function getHumanFileSize($path = null){
         global $CFG;
         if (isset($path)){
-            return human_filesize(filesize($path));
+            if (file_exists($path)){
+                return human_filesize(filesize($path));
+            }
         } else {
             //error_log($CFG->curriculumdata_root.$this->context_path.$this->path);
-            return human_filesize(filesize($CFG->curriculumdata_root.$this->context_path.$this->path));
+            if (file_exists($CFG->curriculumdata_root.$this->context_path.$this->path)){
+                return human_filesize(filesize($CFG->curriculumdata_root.$this->context_path.$this->path));
+            }
         }
     }
     /**

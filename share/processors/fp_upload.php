@@ -27,7 +27,7 @@ include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $CFG, $PAGE, $USER, $LOG;
 if (!isset($_SESSION['USER'])){ die(); }    // logged in?
-$USER   = $_SESSION['USER'];
+$USER       = $_SESSION['USER'];
 
 foreach ($_POST as $key => $value) {
     $$key = $value;
@@ -59,24 +59,40 @@ foreach ($_POST as $key => $value) { $$key = $value; }
 switch ($context) {
 case "userFiles":   
 case "avatar":
-case "editor":      $folders = $USER->id.'/'; //siehe unten                
-                    break;
-case "solution":    $folders = $curID.'/'.$terID.'/'.$enaID.'/'; //siehe unten                
-                    break;  
-                
-case "curriculum":  if ($enaID != NULL){
-                        $folders = $curID.'/'.$terID.'/'.$enaID.'/'; // Dateien die zu einem Ziel gehören
-                    } else {
-                        $folders = $curID.'/'.$terID.'/'; // Dateien die zum Thema gehören
-                        $enaID   = NULL; 
-                    }
-                    break;
+case "editor":              $folders = $USER->id.'/';                       // set upload-folder 
+                            break;
 
-case "badge":       $folders = '/'; //siehe unten                        
+case "enabling_objective":  $context = 'curriculum';                        // ! set context to curriculum to get right context_id, enabling_objective is used to load curID and terID
+case "solution":            $eo      = new EnablingObjective();     
+                            $eo->id  = $ref_id;
+                            $eo->load();                                    // load ids folders
+                            $curID = $eo->curriculum_id;
+                            $terID = $eo->terminal_objective_id;
+                            $enaID = $eo->id;
+                            $folders = $curID.'/'.$terID.'/'.$enaID.'/';    // set upload-folder 
+                            break;       
+case "terminal_objective":  $to      = new EnablingObjective();     
+                            $to->id  = $ref_id;
+                            $to->load();                                    // load ids folders
+                            $curID = $to->curriculum_id;
+                            $terID = $to->id;
+                            $folders = $curID.'/'.$terID.'/';               // set upload-folder 
+                            $context = 'curriculum';                        // ! set context to curriculum to get right context_id, terminal_objective is used to load curID
+                            break;                 
+case "curriculum":          // see case enabling_objective and terminal_objective
+                            /*if ($enaID != NULL){
+                                $folders = $curID.'/'.$terID.'/'.$enaID.'/'; // Dateien die zu einem Ziel gehören
+                            } else {
+                                $folders = $curID.'/'.$terID.'/';            // Dateien die zum Thema gehören
+                                $enaID   = NULL; 
+                            }
+                            break;*/
+
+case "badge":               $folders = '/';                                  // siehe unten                        
     break;  
-case "institution": $folders = $ref_id.'/';                                     //ref_id == institution_id
+case "institution":         $folders = $ref_id.'/';                          //ref_id == institution_id
     break;  
-default:            $folders = '';    
+default:                    $folders = '';    
     break;
 }
 
@@ -128,7 +144,6 @@ if ($my_upload->upload() OR filter_var($fileURL, FILTER_VALIDATE_URL)) {//in dat
         default:
             break;
     }
-    
 
     if ($context == "solution") { // --> upload of solution file
         $course                 = new Course(); 
@@ -150,6 +165,6 @@ if ($my_upload->upload() OR filter_var($fileURL, FILTER_VALIDATE_URL)) {//in dat
         }
     }
 }
- //////////////// Errorbehandlung ?
+ //////////////// todo: Errorbehandlung 
 $error = $my_upload->show_error_string();    
 echo $file->id;
