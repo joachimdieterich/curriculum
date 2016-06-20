@@ -37,9 +37,11 @@ $file       = new File();
 
 /* set defaults*/
 $title      = null; 
+$description= null;
 $context    = null; 
 $author     = $USER->firstname.' '.$USER->lastname;
 $action     = 'upload';
+$file_context = 1;
 $license    = 2;
 $error      = '';
 $image      = '';
@@ -89,6 +91,8 @@ case "curriculum":          // see case enabling_objective and terminal_objectiv
                             break;*/
 
 case "badge":               $folders = '/';                                  // siehe unten                        
+    break;  
+case "backup":              $folders = '/';                                  // siehe unten                        
     break;  
 case "institution":         $folders = $ref_id.'/';                          //ref_id == institution_id
     break;  

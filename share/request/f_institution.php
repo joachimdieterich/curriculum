@@ -41,12 +41,12 @@ $schooltype_description =   null;
 $country_id             =   null;
 $state_id               =   null;
 $file_id                =   $CFG->standard_ins_logo_id; 
-$paginator_limit        =   null; 
-$std_role               =   null; 
-$csv_size               =   null; 
-$avatar_size            =   null; 
-$acc_days               =   null; 
-$timeout                =   null; 
+$paginator_limit        =   $CFG->paginator_limit;
+$std_role               =   $CFG->standard_role;
+$csv_size               =   $CFG->csv_size;
+$avatar_size            =   $CFG->avatar_size;
+$acc_days               =   $CFG->acc_days;
+$timeout                =   $CFG->timeout;
 $semester_id            =   null; 
 $error                  =   null;
 $object                 = file_get_contents("php://input");
@@ -96,10 +96,10 @@ $content ='<form id="form_institution" class="form-horizontal" role="form" metho
 
 if (isset($currentUrlId)){ $content .= $currentUrlId; }
 $content .= '"><h4>Institution</h4>
-<input type="hidden" name="func" id="func" value="'.$func.'"/>
-<input id="id" name="id" type="text" class="invisible" ';
-if (isset($id)) { $content .= 'value="'.$id.'"';} $content .= '>';
-
+<input type="hidden" name="func" id="func" value="'.$func.'"/>';
+if (isset($id)) {                                                               // only set id input field if set! prevents error on validation form reload
+     $content .= '<input id="id" name="id" type="text" class="invisible" value="'.$id.'">';
+}
 $content .= Form::input_text('institution', 'Institution / Schule', $institution, $error, 'z. B. Realschule Plus Landau');
 $content .= Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung');
 
@@ -122,12 +122,14 @@ $content .= Form::input_select('state_id', 'Bundesland/Region', $countries->getS
 $content .= Form::input_select('country_id', 'Land', $countries->getCountries(), 'de', 'id', $country_id , $error, 'getStates(this.value, \'state_id\');');
    
 /* Schulbild */ 
+
+$content .= '<input type="hidden" name="file_id" id="file_id" value="'.$file_id.'"/>';
 if (isset($id)) { // id have to be set to add image
-$content .= '<input type="hidden" name="file_id" id="file_id" value="'.$file_id.'"/><div class="col-xs-3"></div><div class="col-xs-9">'
+$content .= '<div class="col-xs-3"></div><div class="col-xs-9">'
             . '<a href="'.$CFG->request_url .'uploadframe.php?&context=institution&target=file_id&ref_id='.$id.'&format=0&multiple=false" class="nyroModal">'
             . '<img id="icon" style="height:100px; margin-left: -5px; padding-bottom:10px;" src="'.$CFG->access_id_url.$file_id.'" alt="Foto der Institution">'
             . '</a></div>';
-}
+} 
 $content .= '<h4>Einstellungen</h4>';
 $rol         = new Roles(); 
 $content .= Form::input_select('std_role', 'Rolle', $rol->get(), 'role', 'id', $std_role , $error);

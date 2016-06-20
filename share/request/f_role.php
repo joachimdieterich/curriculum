@@ -27,7 +27,7 @@ include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER, $CFG;
 $USER           = $_SESSION['USER'];
-$role_id        = null;
+//$role_id        = null;
 $role           = null;
 $description    = null;
 $error          = null; 
@@ -64,9 +64,11 @@ if (isset($_SESSION['FORM'])){
 }
 
 $content = '<form id="form_role" method="post" action="../share/processors/fp_role.php">
-            <div class="form-horizontal">
-            <input type="hidden" name="role_id" id="role_id" value="'.$role_id.'"/>
-            <input type="hidden" name="func" id="func" value="'.$func.'"/>'; 
+            <div class="form-horizontal">';
+if (isset($role_id)){
+    $content .= '<input type="hidden" name="role_id" id="role_id" value="'.$role_id.'"/>';
+}
+$content .= '<input type="hidden" name="func" id="func" value="'.$func.'"/>'; 
 $content .= Form::input_text('role', 'Rollenname', $role, $error, 'z. B. Schul-Administrator');
 $content .= Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung');
 $section = '';
@@ -77,18 +79,18 @@ foreach ($capabilities as $key => $value) {
         $content .= '<div class="form-group">
                      <label class="control-label col-sm-3" for=""></label>
                      <div class="col-sm-9"><h4>'.substr($value->capability, 0, $pos).'</h4></div></div>';
-                
     }
     $content .= Form::input_switch($value->capability, $value->name, $value, $error, 'col-sm-6', 'col-sm-6');
     $section = substr($value->capability, 0, $pos);
 }
+$content .= '</div></form>';
 $f_content = '';
 if ($func == 'edit'){ 
     $f_content .= '<button type="submit" class="btn btn-primary fa fa-check-circle-o pull-right" onclick="document.getElementById(\'form_role\').submit();"> '.$header.'</button>';
 } else {
     $f_content .= '<button type="submit" class="btn btn-primary fa fa-plus pull-right" onclick="document.getElementById(\'form_role\').submit();"> '.$header.'</button>';
 }
-$content .= '</div></form>';
+
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
                               'f_content' => $f_content));  

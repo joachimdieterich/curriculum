@@ -290,7 +290,7 @@ class Curriculum {
         
         $import_folder = basename($file, ".curriculum");
         $zip = new ZipArchive;
-        if ($zip->open($CFG->backup_root.'tmp/'.$file) === TRUE) {
+        if ($zip->open($CFG->backup_root.''.$file) === TRUE) {
             $zip->extractTo($CFG->backup_root.$import_folder.'/');
             $zip->close();
         } 

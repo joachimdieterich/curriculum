@@ -37,8 +37,8 @@ $purify->set('HTML', 'Trusted', true); // enable comments, required for certific
 $purifier                     = new HTMLPurifier($purify);
 $certificate->template        = $purifier->purify(filter_input(INPUT_POST, 'template', FILTER_UNSAFE_RAW));
 
-$gump = new Gump();    /* Validation */
-$_POST = $gump->sanitize($_POST);       //sanitize $_POST
+$gump                         = new Gump();    /* Validation */
+$_POST                        = $gump->sanitize($_POST);       //sanitize $_POST
 
 $certificate->certificate     = $_POST['certificate']; 
 $certificate->description     = $_POST['description']; 
@@ -51,7 +51,7 @@ $gump->validation_rules(array(
 ));
 $validated_data = $gump->run($_POST);
 if($validated_data === false) {/* validation failed */
-    $_SESSION['FORM'] = new stdClass();
+    $_SESSION['FORM']            = new stdClass();
     $_SESSION['FORM']->form      = 'certificate';
     foreach($certificate as $key => $value){
         $_SESSION['FORM']->$key  = $value;

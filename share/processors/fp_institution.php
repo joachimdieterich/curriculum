@@ -29,25 +29,24 @@ $USER            = $_SESSION['USER'];
 if (!isset($_SESSION['PAGE']->target_url)){     //if target_url is not set -> use last PAGE url
     $_SESSION['PAGE']->target_url       = $_SESSION['PAGE']->url;
 }
-
+if (!isset($_POST['state'])){ $_POST['state'] = 1; }
 $gump            = new Gump();    /* Validation */
 $_POST           = $gump->sanitize($_POST);       //sanitize $_POST
-
 // todo alle Regeln definieren
 $gump->validation_rules(array(
 'institution'    => 'required',
 'description'    => 'required'   
 ));
+
 $validated_data  = $gump->run($_POST);
-if (!isset($_POST['state'])){ $_POST['state'] = 1; }
 if($validated_data === false) {/* validation failed */
     $_SESSION['FORM']            = new stdClass();
-    $_SESSION['FORM']->form      = 'institution'; 
-    $_SESSION['FORM']->error     = $gump->get_readable_errors();
-    $_SESSION['FORM']->func      = $_POST['func'];
-    foreach($_POST as $key => $value){
+    $_SESSION['FORM']->form      = 'institution';
+    foreach($_POST as $key => $value){                                         
         $_SESSION['FORM']->$key  = $value;
-    } 
+    }
+    $_SESSION['FORM']->error     = $gump->get_readable_errors();
+    $_SESSION['FORM']->func      = $_POST['func']; 
 } else {
     $new_institution = new Institution(); 
     if (isset($_POST['id'])){
@@ -86,18 +85,17 @@ if($validated_data === false) {/* validation failed */
                         $TEMPLATE->assign('institution_id', $institution_id);
                         if (isset($institution_id)){
                             $_SESSION['PAGE']->message[] = array('message' => 'Institution hinzufgefügt', 'icon' => 'fa-university text-success');
-                         }               
+                        }               
             
             break;
-        case 'edit':     if ($new_institution->update()){
+        case 'edit':    if ($new_institution->update()){
                             $_SESSION['PAGE']->message[] = array('message' => 'Institution erfolgreich aktualisiert', 'icon' => 'fa-university text-success');
-                         }
+                        }
             break;
 
         default:
             break;
     }
-
     $_SESSION['FORM']            = null;                     // reset Session Form object 
 }
 

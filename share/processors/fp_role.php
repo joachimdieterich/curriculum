@@ -33,11 +33,6 @@ $role                  = new Roles();
 $gump                  = new Gump();    /* Validation */
 $_POST                 = $gump->sanitize($_POST);       //sanitize $_POST
 
-$role->id             = $_POST['role_id']; 
-$role->role           = $_POST['role']; 
-$role->description    = $_POST['description'];  
-$role->creator_id     = $USER->id;
-
 foreach($_POST as $key => $value){ // vorhandene Capabilities erfassen 
     if ($value === "true" OR $value === "false") {
         $role->capabilities[] = array ($key => $value);
@@ -51,18 +46,24 @@ $gump->validation_rules(array(
 ));
 $validated_data = $gump->run($_POST);
 if($validated_data === false) {/* validation failed */
-    $_SESSION['FORM'] = new stdClass();
+    $_SESSION['FORM']            = new stdClass();
     $_SESSION['FORM']->form      = 'role'; 
+    foreach($_POST as $key => $value){                                         
+        $_SESSION['FORM']->$key  = $value;
+    }
     $_SESSION['FORM']->error     = $gump->get_readable_errors();
     $_SESSION['FORM']->func      = $_POST['func'];
 } else {  
+    $role->role           = $_POST['role']; 
+    $role->description    = $_POST['description'];  
+    $role->creator_id     = $USER->id;
     switch ($_POST['func']) {
-        case 'new':      if ($role->add()){                error_log('add');
+        case 'new':      if ($role->add()){    
                             $_SESSION['PAGE']->message[] = array('message' => 'Rolle hinzufgefügt', 'icon' => 'fa-key text-success');
                          }               
-            
             break;
-        case 'edit':     if ($role->update()){
+        case 'edit':     $role->id = $_POST['role_id']; 
+                         if ($role->update()){
                             $_SESSION['PAGE']->message[] = array('message' => 'Klassenstufe erfolgreich aktualisiert', 'icon' => 'fa-key text-success');
                          }
             break;

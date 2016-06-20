@@ -46,7 +46,7 @@ $gump->validation_rules(array(
 $validated_data = $gump->run($_POST);
 if($validated_data === false) {/* validation failed */
     $_SESSION['FORM']->form      = 'subject';
-    foreach($enabling_objective as $key => $value){
+    foreach($subject as $key => $value){
         $_SESSION['FORM']->$key  = $value;
     } 
     $_SESSION['FORM']->error     = $gump->get_readable_errors();

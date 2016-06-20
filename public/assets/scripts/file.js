@@ -82,9 +82,9 @@ function uploadFile(form, func, fSelector, fName, fProgress, fPercent)
     prog.max   = 100;
  
     formData.append("upload",       file);                                            //Fügt dem formData Objekt unser File Objekt hinzu
-    if (typeof(document.getElementById('uploadform')) !== 'undefined'){               // append formData in uploadframe
-        formData.append("action",        document.getElementById('action').value); 
-        formData.append("ref_id",        document.getElementById('ref_id').value); 
+    if (document.getElementById('uploadform') !== null){                           // append formData in uploadframe.php
+        formData.append("action",       document.getElementById('action').value); 
+        formData.append("ref_id",       document.getElementById('ref_id').value); 
         formData.append("target",       document.getElementById('target').value); 
         formData.append("format",       document.getElementById('format').value); 
         formData.append("multiple",     document.getElementById('multiple').value); 
@@ -94,6 +94,9 @@ function uploadFile(form, func, fSelector, fName, fProgress, fPercent)
         formData.append("license",      document.getElementById('license').value);
         formData.append("file_context", document.getElementById('file_context').value);
     }
+    if (func === 'import'){
+        formData.append("context",      'backup'); 
+    } 
     client.onerror = function(e) {
         alert("onError");
     };
@@ -116,13 +119,14 @@ function uploadFile(form, func, fSelector, fName, fProgress, fPercent)
             }
         }
     };
-    client.onloadend = function (e){
-        $.nmTop().close();          // close dialog
+    client.onloadend = function (e){        
         if (func === 'import'){
             c = new Array();
             c = setFormData(file.name);   
             document.getElementById('importFileName').value = document.getElementById(fName).innerHTML; // allgemeiner lösen
+            document.getElementById('func').value = func;
         } else {
+            $.nmTop().close();                                                  // close dialog
             target = document.getElementById('target').value;
             //alert(client.responseText);
             if($("#"+target).get(0)){
