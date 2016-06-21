@@ -135,10 +135,6 @@ class File {
         $db             = DB::prepare('INSERT INTO files (title, filename, description, author, license, type, path, context_id, file_context, creator_id, cur_id, ter_id, ena_id) 
                             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)');
         if($db->execute(array($this->title, $this->filename, $this->description, $this->author, $this->license, $this->type, $this->path, $this->context_id, $this->file_context, $this->creator_id, $this->curriculum_id, $this->terminal_objective_id, $this->enabling_objective_id))){
-            /*$db         = DB::prepare('SELECT id from files WHERE title = ? AND filename = ? AND description = ? AND author = ?');
-            $db->execute(array($this->title, $this->filename, $this->description, $this->author));
-            $result     = $db->fetchObject();
-            $this->id   = $result->id;*/
             $LOG->add($USER->id, 'uploadframe.php', dirname(__FILE__), 'Context: '.$this->context_id.' Upload: '.$this->path.''.$this->filename);
             $_SESSION['PAGE']->message[] = array('message' => 'Datei erfolgreich hochgeladen', 'icon' => 'fa-file text-success');
             return DB::lastInsertId(); 
@@ -195,7 +191,6 @@ class File {
                     break;
                 case 9: $path = $CFG->institutions_root.$this->path; 
                     break;
-
                 default: $return = false; 
                     break;
             }
@@ -381,7 +376,6 @@ class File {
                 return human_filesize(filesize($path));
             }
         } else {
-            //error_log($CFG->curriculumdata_root.$this->context_path.$this->path);
             if (file_exists($CFG->curriculumdata_root.$this->context_path.$this->path)){
                 return human_filesize(filesize($CFG->curriculumdata_root.$this->context_path.$this->path));
             }
@@ -561,7 +555,7 @@ class File {
      * @return string 
      */
     public function getContextPath($value){ //get Context by context name
-        $db = DB::prepare('SELECT path FROM context WHERE context = ?');   
+        $db     = DB::prepare('SELECT path FROM context WHERE context = ?');   
         $db->execute(array($value));
         $result = $db->fetchObject();
         if ($result->path) {
@@ -575,7 +569,7 @@ class File {
      * @return string 
      */
     public function getContextId($context){ //get Context by context name
-        $db = DB::prepare('SELECT context_id FROM context WHERE context = ?');
+        $db     = DB::prepare('SELECT context_id FROM context WHERE context = ?');
         $db->execute(array($context));
         $result = $db->fetchObject();
         if ($result) {
@@ -596,28 +590,28 @@ class File {
      */
     public function isUsed(){
         $occurrence = array();
-        $db0 = DB::prepare('SELECT id FROM certificate WHERE logo_id = ?');
+        $db0    = DB::prepare('SELECT id FROM certificate WHERE logo_id = ?');
         $db0->execute(array($this->id));
         $result0 = $db0->fetchObject();
         if ($result0){
             $occurrence['certificate'] = $result0->id;
         } 
         
-        $db1 = DB::prepare('SELECT id FROM curriculum WHERE icon_id = ?');
+        $db1     = DB::prepare('SELECT id FROM curriculum WHERE icon_id = ?');
         $db1->execute(array($this->id));
         $result1 = $db1->fetchObject();
         if ($result1){
             $occurrence['curriculum'] = $result1->id;
         } 
         
-        $db2 = DB::prepare('SELECT id FROM institution WHERE file_id = ?');
+        $db2     = DB::prepare('SELECT id FROM institution WHERE file_id = ?');
         $db2->execute(array($this->id));
         $result2 = $db2->fetchObject();
         if ($result2){
             $occurrence['institution'] = $result2->id;
         } 
         
-        $db3 = DB::prepare('SELECT id FROM users WHERE avatar_id = ?');
+        $db3     = DB::prepare('SELECT id FROM users WHERE avatar_id = ?');
         $db3->execute(array($this->id));
         $result3 = $db2->fetchObject();
         if ($result3){

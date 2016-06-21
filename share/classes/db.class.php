@@ -72,6 +72,5 @@ class DB {
     final public static function __callStatic( $chrMethod, $arrArguments ) {
         $objInstance = self::getInstance();
         return call_user_func_array(array($objInstance, $chrMethod), $arrArguments);
-       
     } # end method   
 }

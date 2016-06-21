@@ -104,7 +104,6 @@ class CourseBook {
             //$this->task_id       = $result->task_id;
             $t                   = new Task();
             $this->task          = $t->get('coursebook', $this->id);
-            
             return true;                                                        
         } else { 
             return false; 
@@ -136,13 +135,11 @@ class CourseBook {
                 break;
         }
         
-        
         while($result = $db->fetchObject()) { 
                 $this->id            = $result->cb_id;
                 $this->load();
                 $entrys[]            = clone $this;        //it has to be clone, to get the object and not the reference
         } 
-        
         return $entrys;
     }
     

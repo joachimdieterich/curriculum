@@ -73,9 +73,7 @@ class Schooltype {
         if($db->fetchColumn() >= 1) { 
             return false;
         } else {
-            $db     = DB::prepare('INSERT INTO schooltype (schooltype, description, country_id, state_id, creator_id) 
-                                   VALUES (?,?,?,?,?)');
-            
+            $db = DB::prepare('INSERT INTO schooltype (schooltype, description, country_id, state_id, creator_id) VALUES (?,?,?,?,?)');
             if ($db->execute(array($this->schooltype, $this->description, $this->country_id, $this->state_id, $this->creator_id))){
                 return DB::lastInsertId();
             } else { return false;} 

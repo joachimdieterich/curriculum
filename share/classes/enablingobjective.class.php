@@ -677,14 +677,6 @@ class EnablingObjective {
                                 $db = DB::prepare('UPDATE user_accomplished SET status_id = ?, creator_id = ? WHERE enabling_objectives_id = ? AND user_id = ?');
                                 return $db->execute(array($status, $creator_id, $this->id, $user_id));
                             } else {
-                                /*if ($badge_slug != false){
-                                    $issuing = new Issuing();
-                                    $email = new User();
-                                    $issuing->email = $email->getValue('email', $user_id);
-                                    // create Badge Instance --> only once --> ???
-                                    $res = $issuing->createBadgeInstance($CFG->badge_system, $badge_slug);
-                                }*/
-
                                 $db = DB::prepare('INSERT INTO user_accomplished(enabling_objectives_id,user_id,status_id,creator_id) VALUES (?,?,?,?)');
                                 return $db->execute(array($this->id, $user_id, $status, $creator_id));
                             }

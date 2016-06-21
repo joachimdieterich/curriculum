@@ -50,7 +50,6 @@ class Context {
             $db->execute();   
         } 
         while($result = $db->fetchObject()) {
-            //$values[] = array('value' => $result->id, 'label' => $result->description);
             $this->id          = $result->id;
             $this->context     = $result->context;
             $this->description = $result->description;

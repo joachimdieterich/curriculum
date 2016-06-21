@@ -341,8 +341,7 @@ class Institution {
             $db = DB::prepare('UPDATE bulletinBoard SET title = ?, text = ?, creator_id = ?, creation_time = NOW() WHERE institution_id = ?');
             return $db->execute(array($title, $text, $USER->id, $this->id));
         } else {
-            $db = DB::prepare('INSERT INTO bulletinBoard (title, text, creator_id, institution_id, creation_time)
-                                            VALUES (?,?,?,?,NOW())');
+            $db = DB::prepare('INSERT INTO bulletinBoard (title, text, creator_id, institution_id, creation_time) VALUES (?,?,?,?,NOW())');
             return $db->execute(array($title, $text, $USER->id, $this->id));	
         } 
     }
@@ -350,9 +349,7 @@ class Institution {
     public function getBulletinBoard(){
         $db = DB::prepare('SELECT * FROM bulletinBoard WHERE institution_id = ?');
         if ($db->execute(array($this->id))) {
-          $result = $db->fetchObject();
-          
-          return $result;
+            return $db->fetchObject();
         }
     }
     

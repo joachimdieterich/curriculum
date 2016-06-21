@@ -139,7 +139,6 @@ class Grade {
             }
             $grades[]       = clone $this;        //it has to be clone, to get the object and not the reference
         } 
-        
         return $grades;
     }
     

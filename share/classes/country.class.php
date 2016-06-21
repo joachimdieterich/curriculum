@@ -82,7 +82,6 @@ class Country {
             $this->de    = $result->de; 
             $countries[] = clone $this; 
         }
-        
         return $countries;
     }    
 }

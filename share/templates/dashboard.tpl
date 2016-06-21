@@ -46,6 +46,7 @@
             </div>  
         </div>
         
+        {if checkCapabilities('dashboard:editBulletinBoard', $my_role_id, false) || $bulletinBoard} 
         <div class="col-md-8 col-sm-12 col-xs-12">
             <div class="box box-primary">
                 <div class="box-header with-border">
@@ -62,11 +63,13 @@
                 {if $bulletinBoard}
                     <h4>{$bulletinBoard->title}</h4>
                     {$bulletinBoard->text}
+                {else}
+                    Um einen Eintrag zu erstellen klicken Sie auf das <i class="fa fa-edit"></i>-Symbol.
                 {/if}
                 </div>
             </div>  
         </div>  
-        
+        {/if}
        
    
         {if isset($myInstitutions)}     

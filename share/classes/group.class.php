@@ -145,7 +145,7 @@ class Group {
      * Load group with id $this->id 
      */
     public function load(){
-        $db = DB::prepare('SELECT gr.*, se.semester FROM groups AS gr, semester AS se WHERE gr.id = ? AND gr.semester_id = se.id');
+        $db     = DB::prepare('SELECT gr.*, se.semester FROM groups AS gr, semester AS se WHERE gr.id = ? AND gr.semester_id = se.id');
         $db->execute(array($this->id));              
         $result = $db->fetchObject();
         $this->group            = $result->groups;
@@ -296,8 +296,8 @@ class Group {
                 $this->creation_time        = $result->creation_time;
                 $this->creator_id           = $result->creator_id;
                 if ($dependency == 'group'){
-                    $this->institution          = $result->institution;
-                    $this->creator              = $result->username;
+                    $this->institution      = $result->institution;
+                    $this->creator          = $result->username;
                 }
                 $groups[] = clone $this;        //it has to be clone, to get the object and not the reference
         } 

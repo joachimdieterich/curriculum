@@ -49,8 +49,7 @@ class Block {
     public function add(){
         global $USER;
         checkCapabilities('block:add', $USER->role_id);
-        $db = DB::prepare('INSERT INTO block_instances (block_id,name,context_id,region,weight,configdata,institution_id,role_id) 
-                                        VALUES (?,?,?,?,?,?,?,?)');
+        $db = DB::prepare('INSERT INTO block_instances (block_id,name,context_id,region,weight,configdata,institution_id,role_id) VALUES (?,?,?,?,?,?,?,?)');
         return $db->execute(array($this->block_id, $this->name, $this->context_id, $this->region, $this->weight,$this->configdata,$this->institution_id,$this->role_id));
     }
     
@@ -66,9 +65,7 @@ class Block {
     }
     
     public function load(){
-         $db = DB::prepare('SELECT bi.*, bl.block, bl.visible FROM block_instances AS bi, block AS bl 
-                                        WHERE bi.block_id = bl.id
-                                        AND bi.id = ?'); //0 == all institutions
+        $db = DB::prepare('SELECT bi.*, bl.block, bl.visible FROM block_instances AS bi, block AS bl WHERE bi.block_id = bl.id AND bi.id = ?'); //0 == all institutions
         $db->execute(array($this->id));
         while($result = $db->fetchObject()) { 
             $this->id              = $result->id;

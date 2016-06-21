@@ -125,7 +125,6 @@ class Cron {
                 }
             } else { $message              .= "Keine Ziele mit Wiederholungen vorhanden<br>"; }
             $LOG->add(-1, 'cronjob', $PAGE->url,  $message);
-            //$PAGE->message[]                = $message; //--> könnte ausgegeben werden.
             $cronjob = new Cron();
             $cronjob->add(__FUNCTION__, $execUser, 'DB auf abgelaufene Ziele überprüft.');
         }

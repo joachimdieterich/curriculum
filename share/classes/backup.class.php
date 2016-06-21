@@ -179,7 +179,7 @@ class Backup {
                 $ter->setAttribute("repeat_interval",    $ter_value->repeat_interval);
                 $ter->setAttribute("color",              $ter_value->color);
                 if (isset($ext_ref)){
-                    $ter->setAttribute("ext_reference",      $ext_ref->getReference('terminal_objective', $ter_value->id));
+                    $ter->setAttribute("ext_reference",  $ext_ref->getReference('terminal_objective', $ter_value->id));
                 }
                 
                 /* terminal objective material */

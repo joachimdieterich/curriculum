@@ -224,8 +224,7 @@ class Course {
         $result = $db->fetchObject();
         if ($result){
             return $result->group_id;
-        }
-       
+        } 
    }
    
 }

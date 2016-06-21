@@ -380,7 +380,6 @@ class Curriculum {
            }
            /* ter files */
            $ter_file_nodes = getImmediateChildrenByTagName($ter, 'file');
-           //foreach($ter->getElementsByTagName('file') as $ter_fil) {
            foreach($ter_file_nodes as $ter_fil) {
                     $f = new File();
                     $f->title                   = $ter_fil->getAttribute('title');
@@ -422,7 +421,6 @@ class Curriculum {
                 
                 /* ena files*/
                 $ena_file_nodes = getImmediateChildrenByTagName($ena, 'file');
-                //foreach($ena->getElementsByTagName('file') as $ena_fil) {
                 foreach($ena_file_nodes as $ena_fil) {
                     $f = new File();
                     $f->title                   = $ena_fil->getAttribute('title');
@@ -444,7 +442,7 @@ class Curriculum {
                         copy($CFG->backup_root.$import_folder.'/'.$old_cur_id.'/'.$old_ter_id.'/'.$old_ena_id.'/'.$f->filename, $CFG->curriculum_root.$f->path.$f->filename);
                     }
                 } 
-          }     
+            }     
         }
        
         delete_folder($CFG->backup_root.$import_folder);                        // Löscht temporäre Dateien
