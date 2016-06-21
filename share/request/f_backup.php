@@ -37,7 +37,6 @@ $institution_id    = null;
 $template          = null;
 
 $func              = $_GET['func'];
-
 $error             =   null;
 $object            = file_get_contents("php://input");
 $data              = json_decode($object, true);
@@ -50,8 +49,8 @@ if (is_array($data)) {
 if (isset($func)){
     switch ($func) {
         case "new":         checkCapabilities('backup:add',    $USER->role_id);
-                            $header     = 'Backup erstellen';
-                            $add        = true;              
+                            $header             = 'Backup erstellen';
+                            $add                = true;              
                             /* load backups and courses */
                             $courses            = new Course(); //load Courses
                             if (checkCapabilities('backup:getAllBackups', $USER->role_id, false)) {                          // Administrators
@@ -73,7 +72,7 @@ if (isset($_SESSION['FORM'])){
     }
 }
    
-$content .='<form id="form_backup"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_backup.php"';
+$content  ='<form id="form_backup"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_backup.php"';
 
 if (isset($currentUrlId)){ $content .= $currentUrlId; }
 $content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';

@@ -31,9 +31,11 @@ $func       = $_GET['func'];
 $block      = new Block();
 $types      = $block->types();
 $name       = null;
+$context_id = 11;
+$region     = null;
 $configdata = null;
 
-$error      =   null;
+$error      = null;
 $object     = file_get_contents("php://input");
 $data       = json_decode($object, true);
 if (is_array($data)) {
@@ -50,13 +52,14 @@ if (isset($func)){
                          $block_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
                      } else {
                          $block_id = $types[0]->id;
-                     }
-                     
+                     }    
+                     $add              = true;   
             break;
-        case "edit": checkCapabilities('block:edit', $USER->role_id);
+        case "edit": checkCapabilities('block:update', $USER->role_id);
                      $header            = 'Block ändern';
                      $edit              = true;   
-                     $block->load(filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
+                     $block->id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+                     $block->load();
                      foreach ($block as $key => $value){
                          if (!is_object($value)){
                              $$key = $value;
@@ -79,22 +82,13 @@ if (isset($_SESSION['FORM'])){
 $content  ='<form id="form_block"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_block.php"';
 
 if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>'
-        .   '<input type="hidden" name="id" id="id" value="'.$id.'"/>';
-
+$content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
+if (isset($id)){
+    $content .= '<input type="hidden" name="id" id="id" value="'.$id.'"/>';
+}
 $content .= Form::input_select('block_id', 'Blocktyp', $types, 'block', 'id', $block_id , $error, 'formloader(\'block\',\'new\', this.value);');
-$c            = new stdClass();
-$c->id        = 11;
-$c->context   = 'Dashboard';
-$content .= Form::input_select('context_id', 'Bereich', array($c), 'context', 'id', $context_id , $error);
-$r            = new stdClass();
-$r->id        = null;
-$r->region   = 'Übersicht';
-$content .= Form::input_select('region', 'Position', array($r), 'region', 'id', $region , $error);
-// sortierung neues input element generiern
 
 $content .= Form::input_text('name', 'Titel', $name, $error,'z.B. Links');
-$content .= Form::input_select('block_id', 'Anzeigen für:', $types, 'block', 'id', $block_id , $error, 'formloader(\'block\',\'new\', this.value);');
 //get current type to render correct form elements
 foreach($types as $typ) {
     if ($block_id == $typ->id) {
@@ -108,6 +102,20 @@ if ($t->block == 'moodle'){
 if ($t->block == 'html'){
     $content .= Form::input_textarea('html_block', 'HTML-Code', $configdata, $error);
 }
+$c            = new stdClass();
+$c->id        = 11;
+$c->context   = 'Dashboard';
+$content .= Form::input_select('context_id', 'Bereich', array($c), 'context', 'id', $context_id , $error);
+$r            = new stdClass();
+$r->id        = null;
+$r->region   = 'Übersicht';
+$content .= Form::input_select('region', 'Position', array($r), 'region', 'id', $region , $error);
+// sortierung neues input element generiern
+
+
+$roles    = new Roles();
+$content .= Form::input_select('role_id', 'Anzeigen für:', $roles->get(), 'role', 'id', $block_id , $error);
+
 
 $content .= '</div></form>';
 $f_content = '';

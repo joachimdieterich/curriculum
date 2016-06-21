@@ -66,13 +66,33 @@ class Block {
     }
     
     public function load(){
+         $db = DB::prepare('SELECT bi.*, bl.block, bl.visible FROM block_instances AS bi, block AS bl 
+                                        WHERE bi.block_id = bl.id
+                                        AND bi.id = ?'); //0 == all institutions
+        $db->execute(array($this->id));
+        while($result = $db->fetchObject()) { 
+            $this->id              = $result->id;
+            $this->block           = $result->block; 
+            $this->visible         = $result->visible; 
+            $this->block_id        = $result->block_id;
+            $this->name            = $result->name;
+            $this->context_id      = $result->context_id; 
+            $this->region          = $result->region; 
+            $this->weight          = $result->weight; 
+            $this->configdata      = $result->configdata; 
+            $this->institution_id  = $result->institution_id;
+            $this->role_id         = $result->role_id;
+            $this->status          = 'collapsed-box'; //todo: load status based on userconfig
+        }
+    }
+    
+    public function get(){
         $db = DB::prepare('SELECT bi.*, bl.block, bl.visible FROM block_instances AS bi, block AS bl 
                                         WHERE bi.block_id = bl.id
                                         AND context_id = ? AND (institution_id = ? OR institution_id = 0) ORDER BY bi.weight'); //0 == all institutions
         $db->execute(array($this->context_id, $this->institution_id));
         $blocks = array();
         while($result = $db->fetchObject()) { 
-            
             $this->id              = $result->id;
             $this->block           = $result->block; 
             $this->visible         = $result->visible; 

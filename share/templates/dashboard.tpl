@@ -176,7 +176,20 @@
         {foreach key=blockid item=block from=$blocks}
             {*html_block block=$block->block configdata=$block->configdata visible=$block->visible*}
             {html_block blockdata=$block}
-        {/foreach}       
+        {/foreach}  
+        <!-- Add Block -->
+        {if checkCapabilities('menu:readPassword', $my_role_id, false)}
+        <div class="col-md-4 col-sm-12 col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                  <h3 class="box-title">Block hinzufügen</h3>
+                  <div class="box-tools pull-right">
+                    <button class="btn btn-box-tool" data-widget="add" onclick="formloader('block','new');"><i class="fa fa-plus"></i></button>
+                  </div>
+                </div><!-- /.box-header -->
+            </div><!-- /.box -->
+        </div>    
+        {/if}
     </div>
 </section>                 
 {/block}

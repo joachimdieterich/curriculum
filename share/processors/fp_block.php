@@ -25,30 +25,36 @@
 include(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER, $CFG;
-$USER           = $_SESSION['USER'];
+$USER                  = $_SESSION['USER'];
 if (!isset($_SESSION['PAGE']->target_url)){     //if target_url is not set -> use last PAGE url
     $_SESSION['PAGE']->target_url       = $_SESSION['PAGE']->url;
 }
 $block = new Block();
 
 if (isset($_POST['html_block'])){
-$purify             = HTMLPurifier_Config::createDefault();
+$purify                = HTMLPurifier_Config::createDefault();
 $purify->set('Core.Encoding', 'UTF-8'); // replace with your encoding
 $purify->set('HTML.Doctype', 'HTML 4.01 Transitional'); // replace with your doctype
-$purifier           = new HTMLPurifier($purify);
-$block->configdata  = $purifier->purify(filter_input(INPUT_POST, 'html_block', FILTER_UNSAFE_RAW));
+$purifier              =    new HTMLPurifier($purify);
+$block->configdata     = $purifier->purify(filter_input(INPUT_POST, 'html_block', FILTER_UNSAFE_RAW));
 }
 
-$gump               = new Gump();    /* Validation */
-$_POST              = $gump->sanitize($_POST);       //sanitize $_POST
+$gump                  = new Gump();    /* Validation */
+$_POST                 = $gump->sanitize($_POST);       //sanitize $_POST
 
-$block->name        = $_POST['name']; 
-$block->block_id    = $_POST['block_id']; 
+$block->name           = $_POST['name']; 
+$block->block_id       = $_POST['block_id']; 
+$block->context_id     = $_POST['context_id']; 
+$block->region         = $_POST['region']; 
+$block->weight         = 0;//todo $_POST['weight']; 
+$block->role_id        = $_POST['role_id']; 
+$block->institution_id = $USER->institution_id;                                 //set institution_id to current id
+
 if (isset($_POST['moodle_block'])){
     $block->configdata    = $_POST['moodle_block']; 
 }
 $gump->validation_rules(array(
-'block'        => 'required',
+'block_id'        => 'required',
 'name'         => 'required'
 ));
 $validated_data = $gump->run($_POST);
@@ -62,8 +68,9 @@ if($validated_data === false) {/* validation failed */
     $_SESSION['FORM']->func      = $_POST['func'];
 } else {
     if ($_POST['func'] == 'edit'){
+        $block->id                =  $_POST['id'];
         $block->update();
-        $_SESSION['PAGE']->message[] = array('message' => 'Block erfolgreich hinzugefügt', 'icon' => 'fa-pencil-square text-success');
+        $_SESSION['PAGE']->message[] = array('message' => 'Block erfolgreich geändert', 'icon' => 'fa-pencil-square text-success');
         $_SESSION['FORM']            = null;                     // reset Session Form object 
     } else {
         $block->context_id = 11;    //todo --> selector to use more contexts

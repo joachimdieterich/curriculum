@@ -580,18 +580,19 @@ class Render {
     
     /* Todo: add more config options*/
     public static function moodle_block($params){ 
-        global $USER;
+        global $USER, $CFG;
         $width  = 'col-md-4';
         $status = '';
         foreach($params['blockdata'] as $key => $val) {
             $$key = $val;
         }
-        if ($USER->role_id === $role_id OR $role_id === '0'){
+        if ($USER->role_id === $role_id OR $role_id == $CFG->standard_role){
         $html  = '<div class="'.$width.'">
                     <div class="box box-primary '.$status.'">
                         <div class="box-header with-border">
                               <h3 class="box-title">'.$name.'</h3>
                               <div class="box-tools pull-right">
+                              <button class="btn btn-box-tool" data-widget="edit" onclick="formloader(\'block\',\'edit\','.$id.');"><i class="fa fa-edit"></i></button>
                                 <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                                 <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
                               </div>
@@ -622,18 +623,19 @@ class Render {
     }
     
     public static function html_block($params){ 
-        global $USER;
+        global $USER,$CFG;
         $width  = 'col-md-4';
         $status = '';
         foreach($params['blockdata'] as $key => $val) {
             $$key = $val;
         }
-        if ($USER->role_id === $role_id OR $role_id === '0'){
+        if ($USER->role_id === $role_id OR $role_id == $CFG->standard_role){
             $html  = '<div class="'.$width.'">
                         <div class="box box-primary '.$status.'">
                             <div class="box-header with-border">
                                   <h3 class="box-title">'.$name.'</h3>
                                   <div class="box-tools pull-right">
+                                    <button class="btn btn-box-tool" data-widget="edit" onclick="formloader(\'block\',\'edit\','.$id.');"><i class="fa fa-edit"></i></button>
                                     <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                                     <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
                                   </div>
