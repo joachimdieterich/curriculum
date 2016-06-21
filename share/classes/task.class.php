@@ -32,7 +32,6 @@ class Task {
     public $creation_time; 
     public $creator_id; 
     public $creator; 
-    
     public $timestart;
     public $timeend;
     public $timerange;
@@ -157,7 +156,6 @@ class Task {
             return $db->execute(array($context_id, $reference_id, $this->id, $USER->id));
         }
     }
-    
     
     /**
     * function used during the install process to set up creator id to new admin

@@ -26,7 +26,6 @@
 */
 class Statistic {
     
-    
     /**
      * add cronjob log into db
      * @param string $cronjob
@@ -40,14 +39,11 @@ class Statistic {
                             $db->execute();
                             $result = $db->fetchObject();
                             return $result->max;
-
                 break;
             case 'today':   $db = DB::prepare('SELECT count(id) as max FROM user_accomplished WHERE DATE(accomplished_time) = CURDATE() AND (status_id = 1 OR status_id = 2)');
                             $db->execute();
                             $result = $db->fetchObject();
                             return $result->max;
-
-
                 break;
 
             default:

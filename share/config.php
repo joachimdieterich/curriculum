@@ -94,7 +94,6 @@ $CFG->message_timeout               = 4000; //in millisec.
 $CFG->standard_avatar               = 'user/noprofile.jpg';
 $CFG->standard_avatar_id            = 0;
 $CFG->standard_ins_logo_id          = 1;
-
 $CFG->mail_paginator_limit          = 10;                                       // bessere Darstellung
 /* Paginators - do not edit */
 $CFG->paginator_name                = '';                                       // Paginatoren die benutzt wurden

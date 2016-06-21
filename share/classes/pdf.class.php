@@ -28,13 +28,11 @@ class Pdf {
     public $creator         = 'curriculum';
     public $author          = 'www.joachimdieterich.de';
     public $title           = 'Zertifikat';
-    
     public $font_size       =  10.0;
     public $font_name       = 'Helvetica';
     public $font_encoding   = 'utf8/unicode';
     public $template;
     public $filename        = 'zertifikat.pdf';
-    
     public $user_id        ;
     public $curriculum_id  ;
     public $group_id       ;
@@ -53,11 +51,11 @@ class Pdf {
         $enabling_objectives->curriculum_id = $this->curriculum_id;
        
         foreach($this->user_id as $key=>$member){
-            $this->content = $this->template;
-            $mpdf = new mPDF($this->font_encoding, 'A4', $this->font_size, $this->font_name);
-            $stylesheet = file_get_contents(dirname(__FILE__).'/../../public/assets/stylesheets/certificate.css');
+            $this->content  = $this->template;
+            $mpdf           = new mPDF($this->font_encoding, 'A4', $this->font_size, $this->font_name);
+            $stylesheet     = file_get_contents(dirname(__FILE__).'/../../public/assets/stylesheets/certificate.css');
             $mpdf->WriteHTML($stylesheet,1);
-            $ena = $enabling_objectives->getObjectives('user', $member);
+            $ena            = $enabling_objectives->getObjectives('user', $member);
             $user->load('id', $member);
 
             //Textblöcke ersetzen
@@ -79,7 +77,7 @@ class Pdf {
 
             //Bereiche //evtl. besser über regex realisieren z.B. /<bereich value="[(\d+),]+">.+<\/bereich>/g
             $anz_bereiche           = substr_count($s_2, '<!--Bereich');
-            $offset = 0;
+            $offset                 = 0;
             for ($i = 1; $i <= $anz_bereiche; $i++){
                 $bereich_begin      = stripos($s_2, "<!--Bereich"     ); // besser über regex lösen
                 $bereich_end        = stripos($s_2, "<!--/Bereich-->");

@@ -204,7 +204,6 @@ class User {
             $db->execute(array($user_value));
             $result = $db->fetchObject();
         }
-        
         $this->id                = $result->id;
         $this->username          = $result->username;
         $this->password          = $result->password;
@@ -234,7 +233,7 @@ class User {
         $this->confirmed         = $result->confirmed; 
         $this->last_login        = $result->last_login; 
         $this->avatar_id         = $result->avatar_id;
-        // //nur Thumb laden um Bandbreite zu sparen
+        //nur Thumb laden um Bandbreite zu sparen
         $filename = $this->resolve_file($this->avatar_id);
         $this->avatar            = $thumb_xs = substr($filename, 0, strrpos($filename, '.')) . '_xs.png'; 
         
@@ -292,10 +291,6 @@ class User {
             $db = DB::prepare('INSERT INTO users (username,firstname,lastname,email,postalcode,city,state_id,country_id,avatar_id,password,confirmed,creator_id,paginator_limit,acc_days) 
                                             VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
             if($db->execute(array($this->username,$this->firstname,$this->lastname,$this->email,$this->postalcode,$this->city,$this->state_id,$this->country_id,intval($this->avatar_id),md5($this->password),$this->confirmed,$this->creator_id,$this->paginator_limit,$this->acc_days))){
-                /*$db = DB::prepare('SELECT id from users WHERE UPPER(username) = UPPER(?)');
-                $db->execute(array($this->username));
-                $result = $db->fetchObject();
-                $this->id = $result->id;*/
                 $this->enroleToInstitution($institution_id); // in Institution einschreiben
                 if ($group_id != null){
                     $this->enroleToGroup($group_id, $this->creator_id);
@@ -586,23 +581,22 @@ class User {
                 $row++; //Tielzeile überspringen
                 if ($row > 2) {	
                     $this->role_id = $CFG->standard_role; //reset role id to avoid wrong permissions 
-                    if (!isset($username_position))       {$this->username   = '';}                  else {$this->username   = $data[$username_position];}
-                    if (!isset($firstname_position))      {$this->firstname  = '';}                  else {$this->firstname  = $data[$firstname_position];}
-                    if (!isset($lastname_position))       {$this->lastname   = '';}                  else {$this->lastname   = $data[$lastname_position];}
-                    if (!isset($email_position))          {$this->email      = '';}                  else {$this->email      = trim($data[$email_position]);} //trim da sonst bei Leerzeichen die Validierung fehlschlägt!
-                    if (!isset($postalcode_position))     {$this->postalcode = '';}                  else {$this->postalcode = $data[$postalcode_position];}
-                    if (!isset($city_position))           {$this->city       = '';}                  else {$this->city       = $data[$city_position];}
-                    if (!isset($state_position))          {$this->state_id   = $CFG->standard_state;}   else {$this->state_id      = $data[$state_position];}
-                    if (!isset($country_position))        {$this->country_id = $CFG->standard_country;} else {$this->country_id    = $data[$country_position];}
-                    if (!isset($avatar_position))         {$this->avatar_id  = '0';}               else {$this->avatar_id  = $data[$avatar_position];}
-                    if (!isset($password_position))       {$this->password   = 'password';}          else {$this->password   = $data[$password_position];} //todo: besser Fehlermeldung, wenn Passwort nicht gesetzt
-                    if (!isset($role_id_position))        {$this->role_id    = $this->role_id;}      else {$this->role_id    = $data[$role_id_position];}
-                    if (!isset($confirmed_position))      {$this->confirmed  = '3';}                 else {$this->confirmed  = $data[$confirmed_position];}
+                    if (!isset($username_position))       {$this->username   = '';}                         else {$this->username   = $data[$username_position];}
+                    if (!isset($firstname_position))      {$this->firstname  = '';}                         else {$this->firstname  = $data[$firstname_position];}
+                    if (!isset($lastname_position))       {$this->lastname   = '';}                         else {$this->lastname   = $data[$lastname_position];}
+                    if (!isset($email_position))          {$this->email      = '';}                         else {$this->email      = trim($data[$email_position]);} //trim da sonst bei Leerzeichen die Validierung fehlschlägt!
+                    if (!isset($postalcode_position))     {$this->postalcode = '';}                         else {$this->postalcode = $data[$postalcode_position];}
+                    if (!isset($city_position))           {$this->city       = '';}                         else {$this->city       = $data[$city_position];}
+                    if (!isset($state_position))          {$this->state_id   = $CFG->standard_state;}       else {$this->state_id      = $data[$state_position];}
+                    if (!isset($country_position))        {$this->country_id = $CFG->standard_country;}     else {$this->country_id    = $data[$country_position];}
+                    if (!isset($avatar_position))         {$this->avatar_id  = $CFG->standard_avatar_id;}   else {$this->avatar_id  = $data[$avatar_position];}
+                    if (!isset($password_position))       {$this->password   = 'password';}                 else {$this->password   = $data[$password_position];} //todo: besser Fehlermeldung, wenn Passwort nicht gesetzt
+                    if (!isset($role_id_position))        {$this->role_id    = $this->role_id;}             else {$this->role_id    = $data[$role_id_position];}
+                    if (!isset($confirmed_position))      {$this->confirmed  = '3';}                        else {$this->confirmed  = $data[$confirmed_position];}
 
                     $validated_data = $this->validate();
                     if ($validated_data === true) {
                         $this->add($institution_id);
-                        //$this->enroleToInstitution($institution_id);
                     } else {
                         $error[] = array('username' => $this->username, 
                                         'error'    => $validated_data); 
@@ -1108,8 +1102,7 @@ class User {
             $c_backup = new Backup();
             $c_backup->temp_path = $CFG->backup_root.'tmp/'.$this->username.'/';
             $c_backup->generateXML($c, $value, 'xml');
-        }
-        
+        }   
     }
     /**
     * function used during the install process to set up creator id to new admin

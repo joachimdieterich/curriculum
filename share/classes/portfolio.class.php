@@ -199,7 +199,7 @@ class Portfolio {
             $db_1->execute(array($this->accomplished_teacher_id));
             $teacher = $db_1->fetchObject();
             $this->accomplished_teacher = $teacher->firstname.' '.$teacher->lastname;   
-            $artefacts[]                  =  clone $this; 
+            $artefacts[]                =  clone $this; 
         }
         
         if (isset($artefacts)) {    
@@ -225,7 +225,7 @@ class Portfolio {
             $db_1 = DB::prepare('SELECT firstname, lastname FROM users WHERE id = ?');
             $db_1->execute(array($this->accomplished_teacher_id));
             $teacher = $db_1->fetchObject();
-            $this->accomplished_teacher = $teacher->firstname.' '.$teacher->lastname;   
+            $this->accomplished_teacher   = $teacher->firstname.' '.$teacher->lastname;   
             $artefacts[]                  =  clone $this; 
         }
 
@@ -244,7 +244,7 @@ class Portfolio {
             $db_1 = DB::prepare('SELECT firstname, lastname FROM users WHERE id = ?');
             $db_1->execute(array($this->accomplished_teacher_id));
             $teacher = $db_1->fetchObject();
-            $this->accomplished_teacher = $teacher->firstname.' '.$teacher->lastname;   
+            $this->accomplished_teacher   = $teacher->firstname.' '.$teacher->lastname;   
             $artefacts[]                  =  clone $this; 
         }
         if (isset($artefacts)) {    
@@ -268,7 +268,7 @@ class Portfolio {
             $this->filename              = rawurlencode($result->filename);
               
             $extension_pos = strrpos($this->filename, '.'); // find position of the last dot, so where the extension starts
-            $this->thumb_filename       = substr($this->filename, 0, $extension_pos) . '_t.png';
+            $this->thumb_filename        = substr($this->filename, 0, $extension_pos) . '_t.png';
             $this->description           = $result->description;
             $this->author                = $result->author;
             switch ($result->license) {
@@ -286,7 +286,7 @@ class Portfolio {
                     
             }
             $this->path                  = $CFG->access_file.$result->context_path.$result->path;
-            $this->type              = $result->type;
+            $this->type                  = $result->type;
             $this->curriculum_id         = $result->cur_id;
             $this->terminal_objective_id = $result->ter_id;
             $this->enabling_objective_id = $result->ena_id;
@@ -301,8 +301,5 @@ class Portfolio {
             return $artefacts;
         } else {return NULL;}  
     }
- 
-    
-    
+   
 }
-?>

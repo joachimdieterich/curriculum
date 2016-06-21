@@ -48,7 +48,6 @@ include('classes/group.class.php');
 include('classes/gump.class.php');                  //validator class
 include('classes/institution.class.php'); 
 include('classes/interval.class.php'); 
-include('classes/jwt.class.php');                   //jwt class
 include('classes/license.class.php'); 
 include('classes/log.class.php'); 
 global $LOG;

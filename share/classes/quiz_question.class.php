@@ -51,13 +51,12 @@ class Question {
     public $creator_id; 
 
     public function load(){
-        $db     = DB::prepare('SELECT * FROM quiz_questions WHERE id = ?');
+        $db                     = DB::prepare('SELECT * FROM quiz_questions WHERE id = ?');
         $db->execute(array($this->id));
         $result = $db->fetchObject();        
         $this->id               = $result->id;
         $this->question         = $result->question;
-
-        $a = new Answer();
+        $a                      = new Answer();
         $a->question_id         = $this->id; 
         $this->answers          = $a->getAnswers();
         $this->type             = $result->type;
@@ -67,7 +66,7 @@ class Question {
     
     public function getQuestions($dependency = 'objective'){
         switch ($dependency) {
-            case 'objective':   $db     = DB::prepare('SELECT * FROM quiz_questions WHERE objective_type = ? AND objective_id = ?');
+            case 'objective':   $db = DB::prepare('SELECT * FROM quiz_questions WHERE objective_type = ? AND objective_id = ?');
                                 $db->execute(array($this->objective_type, $this->objective_id));
                 break;
 
@@ -78,14 +77,13 @@ class Question {
         while ($result = $db->fetchObject()) {
             $this->id               = $result->id;
             $this->question         = $result->question;
-            
-            $a = new Answer();
+            $a                      = new Answer();
             $a->question_id         = $this->id; 
             $this->answers          = $a->getAnswers();
             $this->type             = $result->type;
             $this->objective_type   = $result->objective_type;
             $this->objective_id     = $result->objective_id;
-            $questions[] = clone $this;
+            $questions[]            = clone $this;
         }
         if (isset($questions)){
             return $questions;
@@ -93,7 +91,5 @@ class Question {
             return false;
         }
     }
-
     
- 
 }

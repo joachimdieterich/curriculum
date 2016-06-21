@@ -41,16 +41,12 @@ class Interval {
      */
     public $description; 
     
-    
-    
     public function __construct($id = '') {
         if ($id != ''){
             $this->id = $id;
             $this->load();
         }
     }
-    
-    
     
     /**
      * Load semester 
@@ -73,16 +69,14 @@ class Interval {
         global $USER;
        
         $intervals = array();
-        $db = DB::prepare('SELECT * FROM repeat_interval');
+        $db        = DB::prepare('SELECT * FROM repeat_interval');
         $db->execute();
         while($result = $db->fetchObject()) { 
                 $this->id                  = $result->id;
                 $this->repeat_interval     = $result->repeat_interval;
                 $this->description         = $result->description;
-
-                $intervals[] = clone $this;
+                $intervals[]               = clone $this;
         } 
-
         return $intervals;     
     }
       

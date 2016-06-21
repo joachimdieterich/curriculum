@@ -101,8 +101,7 @@ class Subject {
         if($db->fetchColumn() >= 1) { 
             return 'Diesen Fächernamen gibt es bereits.';
         } else {
-            $db = DB::prepare('INSERT INTO subjects (subject,subject_short,description,creator_id,institution_id) 
-                                            VALUES (?,?,?,?,?)');
+            $db = DB::prepare('INSERT INTO subjects (subject,subject_short,description,creator_id,institution_id) VALUES (?,?,?,?,?)');
             return $db->execute(array($this->subject, $this->subject_short, $this->description, $this->creator_id, $this->institution_id));
         }
     }

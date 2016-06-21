@@ -209,7 +209,6 @@ class Render {
                     </div><!-- /.btn-group -->
                     <button class="btn btn-default btn-sm" data-toggle="tooltip" title="Delete" onclick="del(\'message\', '. $mail->id.', \''.$box.'\')"><i class="fa fa-trash-o"></i> Löschen</button>
                   </div>
-                
                 </div><!-- /.box-header -->
                 <div class="box-body no-padding">
                   <div class="mailbox-read-info">
@@ -505,9 +504,8 @@ class Render {
         }
         $r      .= '    <li>
                             <i class="fa fa-clock-o bg-gray" onclick="formloader(\'courseBook\',\'new\');"></i>
-                        </li>';
-        
-        $r      .=  '</ul><!-- timleline -->
+                        </li>
+                    </ul><!-- timleline -->
                     </div></div>';
         return $r;
                 
@@ -644,6 +642,5 @@ class Render {
             }
         }
     }
-    
     
 }
