@@ -135,13 +135,13 @@ class File {
         $db             = DB::prepare('INSERT INTO files (title, filename, description, author, license, type, path, context_id, file_context, creator_id, cur_id, ter_id, ena_id) 
                             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)');
         if($db->execute(array($this->title, $this->filename, $this->description, $this->author, $this->license, $this->type, $this->path, $this->context_id, $this->file_context, $this->creator_id, $this->curriculum_id, $this->terminal_objective_id, $this->enabling_objective_id))){
-            $db         = DB::prepare('SELECT id from files WHERE title = ? AND filename = ? AND description = ? AND author = ?');
+            /*$db         = DB::prepare('SELECT id from files WHERE title = ? AND filename = ? AND description = ? AND author = ?');
             $db->execute(array($this->title, $this->filename, $this->description, $this->author));
             $result     = $db->fetchObject();
-            $this->id   = $result->id;
+            $this->id   = $result->id;*/
             $LOG->add($USER->id, 'uploadframe.php', dirname(__FILE__), 'Context: '.$this->context_id.' Upload: '.$this->path.''.$this->filename);
             $_SESSION['PAGE']->message[] = array('message' => 'Datei erfolgreich hochgeladen', 'icon' => 'fa-file text-success');
-            return $this->id; 
+            return DB::lastInsertId(); 
         } else {
             return false; 
         } 

@@ -82,8 +82,10 @@ class Backup {
     * @param int id  curriculum id
     * @return string filename of backup file
     */
-    function add($id, $xmlbackup = true){
+    function add($id, $xmlbackup = true, $imscc = false){
         global $CFG, $USER;
+        $file = new File();
+        
         $this->curriculum_id = $id;        
 
         checkCapabilities('backup:add', $USER->role_id);                                    // Benutzerrechte überprüfen
@@ -93,35 +95,49 @@ class Backup {
         $timestamp_folder       = date("Y-m-d_H-i-s").'_curriculum_nr_'.$this->curriculum_id;       // Generiere Verzeichnisname
         $this->temp_path        = $CFG->backup_root.'tmp/'.$timestamp_folder;                       // Speichere in /tmp/[timestamp]_curriculum_nr_[cur_id] Verzeichnis
         mkdir($this->temp_path, 0700);                                                              // Lese- und Schreibrechte nur für den Besitzer
-        /*Test xml export*/
+        /*Start xml export*/
         if ($xmlbackup){
-            $this->generateXML($c, $timestamp_folder);                            // generate xml Backup
+            $this->generateXML($c, $timestamp_folder);                                              // generate xml Backup
+            $file->filename         = $timestamp_folder.'.curriculum';
+            $file->title            = 'Backup '.$c->curriculum; 
+            $file->description      = 'Backup vom '.$timestamp_folder;
+            $file->author           = $USER->firstname.' '.$USER->lastname.' ('.$USER->username.')';
+            $file->license          = 2;                                                                // --> alle Rechte vorbehalten
+            $file->type             = '.curriculum';
+            $file->path             = $c->id.'/';
+            $file->context_id       = 8;
+            $file->file_context     = 1;
+            $file->creator_id       = $USER->id;
+            $file->curriculum_id    = $this->curriculum_id;
+            $file->terminal_objective_id = NULL;
+            $file->enabling_objective_id = NULL;
+            $file->add();
         }
-        /*End Test*/
-        
-        include (dirname(__FILE__).'../../libs/Backup/cc_constants.php');                           // Konstanten laden
-        
-        
-        mkdir($this->temp_path, 0700);                                                              // Lese- und Schreibrechte nur für den Besitzer
-        $this->manifest();                                                                          // Manifest (Backup) erzeugen
+        /*End XML export*/
+        /*Start imscc export todo: fix bugs--> see php error log */
+        if ($imscc){
+            include (dirname(__FILE__).'../../libs/Backup/cc_constants.php');                           // Konstanten laden
+            
+            mkdir($this->temp_path, 0700);                                                              // Lese- und Schreibrechte nur für den Besitzer
+            $this->manifest();                                                                          // Manifest (Backup) erzeugen
 
-        $file = new File();
-        $file->filename         = $timestamp_folder.'.imscc';
-        $file->title            = 'Backup '.$c->curriculum; 
-        $file->description      = 'Backup vom '.$timestamp_folder;
-        $file->author           = $USER->firstname.' '.$USER->lastname.' ('.$USER->username.')';
-        $file->license          = 2;                                                                // --> alle Rechte vorbehalten
-        $file->type             = '.imscc';
-        $file->path             = $c->id.'/';
-        $file->context_id       = 8;
-        $file->file_context     = 1;
-        $file->creator_id       = $USER->id;
-        $file->curriculum_id    = $this->curriculum_id;
-        $file->terminal_objective_id = NULL;
-        $file->enabling_objective_id = NULL;
-        $file->add();
-        $this->zipBackup($file->path, $file->filename);                                            //$path = curriculum_id/
-
+            $file->filename         = $timestamp_folder.'.imscc';
+            $file->title            = 'Backup '.$c->curriculum; 
+            $file->description      = 'Backup vom '.$timestamp_folder;
+            $file->author           = $USER->firstname.' '.$USER->lastname.' ('.$USER->username.')';
+            $file->license          = 2;                                                                // --> alle Rechte vorbehalten
+            $file->type             = '.imscc';
+            $file->path             = $c->id.'/';
+            $file->context_id       = 8;
+            $file->file_context     = 1;
+            $file->creator_id       = $USER->id;
+            $file->curriculum_id    = $this->curriculum_id;
+            $file->terminal_objective_id = NULL;
+            $file->enabling_objective_id = NULL;
+            $file->add();
+            $this->zipBackup($file->path, $file->filename);                                            //$path = curriculum_id/
+        }
+        /*End imscc export*/
         return $file->filename;
     }
     
@@ -148,7 +164,7 @@ class Backup {
         $usr = new User($c->creator_id);
         $cur->setAttribute("creator",       $usr->firstname . ' ' . $usr->lastname );
         $cur->setAttribute("icon_id",       $c->icon_id);
-        if (count($c->terminal_objectives) >= 1){
+        if (count($c->terminal_objectives) >= 1 ){
             if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
                 $ext_ref    = $CFG->repository;
             }
@@ -168,20 +184,21 @@ class Backup {
                 
                 /* terminal objective material */
                 $ter_files  = $file->getFiles('terminal_objective', $ter_value->id);
-                
-                foreach($ter_files as $f_value) {
-                    
-                    $f_ter  = $xml->createElement('file');
-                    $this->array_to_Attribute($f_ter, $f_value);   
-                    $ter->appendChild( $f_ter );        // Datei enabling objective zuordnen
-                    /* Datei in Backup Temp kopieren */
-                    silent_mkdir($this->temp_path.'/'.$f_value->path);
-                    if ($f_value->type != '.url'){
-                        copy($CFG->curriculumdata_root.$f_value->full_path, $this->temp_path.'/'.$f_value->path.$f_value->filename);
+                if (count($ter_files) >= 1){
+                    foreach($ter_files as $f_value) {
+                        $f_ter  = $xml->createElement('file');
+                        $this->array_to_Attribute($f_ter, $f_value);   
+                        $ter->appendChild( $f_ter );        // Datei enabling objective zuordnen
+                        /* Datei in Backup Temp kopieren */
+                        silent_mkdir($this->temp_path.'/'.$f_value->path);
+                        if ($f_value->type != '.url'){
+                            copy($CFG->curriculumdata_root.$f_value->full_path, $this->temp_path.'/'.$f_value->path.$f_value->filename);
+                        }
                     }
                 }
                 /* enabling objectives */
-                if (count($ter_value->enabling_objectives) >= 1){
+                if (count($ter_value->enabling_objectives) >= 1 AND $ter_value->enabling_objectives != false){
+                    //error_log(json_encode($ter_value->enabling_objectives));
                     foreach($ter_value->enabling_objectives as $ena_value){ 
                         $ena = $xml->createElement('enabling_objective');
                         $ena->setAttribute('id',                 $ena_value->id);
@@ -194,15 +211,17 @@ class Backup {
                         }
                         /* enabling objective material */
                         $ena_files  = $file->getFiles('enabling_objective', $ena_value->id);
-                        foreach($ena_files as $f_value) {
-                            $f_ena  = $xml->createElement('file');
-                            $this->array_to_Attribute($f_ena, $f_value);
-                            $ena->appendChild( $f_ena );        // Datei enabling objective zuordnen
-                            /* Datei in Backup Temp kopieren */
-                            //error_log($CFG->curriculumdata_root.$f_value->full_path.' : '.$tmp_folder.$f_value->full_path);
-                            silent_mkdir($this->temp_path.'/'.$f_value->path);
-                            if ($f_value->type != '.url'){
-                                copy($CFG->curriculumdata_root.$f_value->full_path, $this->temp_path.'/'.$f_value->path.$f_value->filename);
+                        if (count($ena_files) >= 1){
+                            foreach($ena_files as $f_value) {
+                                $f_ena  = $xml->createElement('file');
+                                $this->array_to_Attribute($f_ena, $f_value);
+                                $ena->appendChild( $f_ena );        // Datei enabling objective zuordnen
+                                /* Datei in Backup Temp kopieren */
+                                //error_log($CFG->curriculumdata_root.$f_value->full_path.' : '.$tmp_folder.$f_value->full_path);
+                                silent_mkdir($this->temp_path.'/'.$f_value->path);
+                                if ($f_value->type != '.url'){
+                                    copy($CFG->curriculumdata_root.$f_value->full_path, $this->temp_path.'/'.$f_value->path.$f_value->filename);
+                                }
                             }
                         }
                         $ter->appendChild( $ena );        // Datei enabling objective zuordnen

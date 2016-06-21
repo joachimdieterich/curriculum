@@ -50,7 +50,7 @@ if($validated_data === false) {/* validation failed */
     $_SESSION['FORM']->func      = $_POST['func'];
 } else {
     if ($_POST['func'] == 'new'){
-        $backup->add($curriculum_id); 
+        $backup->add($curriculum_id, true, false);           // 2. arg = generate  xml backup //todo: 3. parameter =generate imscc
     }
     $_SESSION['FORM']            = null;                     // reset Session Form object 
 }

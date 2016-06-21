@@ -691,7 +691,7 @@ function removeMedia() {
 
 
 function setFormData() {
-    var url     = "../share/request/setFormData.php?file="+ arguments[0];   
+    var url     = "../share/processors/p_setFormData.php?file="+ arguments[0];   
     
     req         = XMLobject();
     if(req) {        

@@ -80,7 +80,7 @@ if($validated_data === false) {/* validation failed */
                          }
             break;
         case 'import':  if (isset($_POST['importFileName'])){
-                            $file = $CFG->backup_root.'tmp/'. filter_input(INPUT_POST, 'importFileName', FILTER_UNSAFE_RAW);
+                            $file = $CFG->backup_root.''. filter_input(INPUT_POST, 'importFileName', FILTER_UNSAFE_RAW);
                             if ($curriculum->import($file)){
                                 $_SESSION['PAGE']->message[] = array('message' => 'Lehrplan erfolgreich importiert', 'icon' => 'fa-th text-success');
                             }

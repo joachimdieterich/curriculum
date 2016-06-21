@@ -102,26 +102,26 @@ $content .= '<div class="tab-content">
       </div><!-- /.tab-pane -->
       <div class="tab-pane " id="tab_2">
         <div id="upload_form">
-            <form id="curriculum" action="" method="post" enctype="multipart/form-data">
+            <form id="curriculum_upload" action="" method="post" enctype="multipart/form-data">
                 <div class="form-group clearfix">
                   <div class="pull-left">
-                    <span id="curriculum_fName" class="hidden"></span><br>
-                    <span id="curriculum_fSize" class="hidden"></span><br>
-                    <span id="curriculum_fType" class="hidden"></span>
-                    <div id="curriculum_fProgress" class="progress">
-                        <div id="curriculum_fProgress_bar" class="progress-bar progress-bar-primary progress-bar-striped" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" >
-                          <span class="sr-only" id="curriculum_fPercent"></span>
+                    <span id="curriculum_upload_fName" class="hidden"></span><br>
+                    <span id="curriculum_upload_fSize" class="hidden"></span><br>
+                    <span id="curriculum_upload_fType" class="hidden"></span>
+                    <div id="curriculum_upload_fProgress" class="progress">
+                        <div id="curriculum_upload_fProgress_bar" class="progress-bar progress-bar-primary progress-bar-striped" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" >
+                          <span class="sr-only" id="curriculum_upload_fPercent"></span>
                         </div>
                      </div>
                      </span>
                   </div> 
-                  <button id="curriculum_fUpload" name="fileUpload" type="button" value="" class="btn btn-primary pull-right hidden " onclick="uploadFile(\'curriculum\', \'import\');" >
+                  <button id="curriculum_upload_fUpload" name="fileUpload" type="button" value="" class="btn btn-primary pull-right hidden " onclick="uploadFile(\'curriculum_upload\', \'import\');" >
                         <span class="fa fa-cloud-upload" aria-hidden="true" ></span> Sicherung laden
                   </button>
-                  <button id="curriculum_fAbort" name="abort" type="button" value="" class="btn btn-primary pull-right hidden" onclick="uploadAbort();">
+                  <button id="curriculum_upload_fAbort" name="abort" type="button" value="" class="btn btn-primary pull-right hidden" onclick="uploadAbort();">
                         <span class="fa fa-times" aria-hidden="true"></span> Abbrechen
                   </button>
-                  <input id="curriculum_fSelector" name="file" type="file"  class="btn btn-primary pull-left" onchange="fileChange(\'curriculum\');">
+                  <input id="curriculum_upload_fSelector" name="file" type="file"  class="btn btn-primary pull-left" onchange="fileChange(\'curriculum_upload\');">
                 </div>  
             </form>
         </div>
