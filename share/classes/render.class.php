@@ -62,14 +62,14 @@ class Render {
                     break;
             }
             
-            $course = new Course();
+            $course     = new Course();
             $ena->load();
-            $group_id = $course->getGroupID($ena->curriculum_id, $teacher, $student);
+            $group_id   = $course->getGroupID($ena->curriculum_id, $teacher, $student);
             return '<input id="'.$id.'_green" class="space-left '.$green.' pointer_hand" type="button" name="setAccStatus1" onclick="setAccomplishedObjectivesBySolution('.$teacher.', '.$student.', '.$id.', 1)">'
             . '     <input id="'.$id.'_orange" class="space-left '.$orange.' pointer_hand" type="button" name="setAccStatus2" onclick="setAccomplishedObjectivesBySolution('.$teacher.', '.$student.', '.$id.', 2)">'
             . '     <input id="'.$id.'_white" class="space-left '.$white.' pointer_hand" type="button" name="setAccStatus3" onclick="setAccomplishedObjectivesBySolution('.$teacher.', '.$student.', '.$id.', 3)">'
             . '     <input id="'.$id.'_red" class="space-left '.$red.' pointer_hand" type="button" name="setAccStatus0" onclick="setAccomplishedObjectivesBySolution('.$teacher.', '.$student.', '.$id.', 0)">'
-            . '     <button class="btn btn-default btn-sm"><a href="index.php?action=objectives&course='.$ena->curriculum_id.'_'.$group_id.'&paginator=userPaginator&userPaginator_sel_id='.$student.'&certificate_template=-1"><i class="fa fa-th"></i> Zum Lehrplan</a></button>'     ;
+            . '     <button class="btn btn-default btn-sm"><a href="index.php?action=objectives&course='.$ena->curriculum_id.'_'.$group_id.'&reset=true&paginator=userPaginator&userPaginator_sel_id='.$student.'&certificate_template=-1"><i class="fa fa-th"></i> Zum Lehrplan</a></button>'     ;
         }
     }
     
@@ -86,20 +86,13 @@ class Render {
     }
     public static function link($string, $context){
         global $c, $thumb_list;
-        $c = $context;
-         preg_match_all('/<link id="(\d+)"><\/link>/i', $string, $hits, PREG_SET_ORDER); 
-         //var_dump($hits);
-         $list = array();
-         foreach ($hits as $h){
-             $list[] = $h[1];
-         }
-         return $list;
-            /*function($r){
-                global $c, $thumb_list;
-                $file = new File(); 
-                $file->load($context);
-                return $file->renderFile($r[1],$c);
-            }, );*/
+        $c      = $context;
+        preg_match_all('/<link id="(\d+)"><\/link>/i', $string, $hits, PREG_SET_ORDER); 
+        $list   = array();
+        foreach ($hits as $h){
+           $list[] = $h[1];
+        }
+        return $list;
     }
     
     public static function thumb($file_list){
