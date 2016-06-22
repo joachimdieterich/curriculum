@@ -18,7 +18,9 @@
                         {/if}
                     {/if}
                 {/foreach}
-            {else}<li><p>Sie sind in keinem Lehrplan eingeschrieben</p></li>
+            {else}<li><a href="">
+                                <i class="fa fa-dashboard"></i><span>Sie sind in keinen Lehrplan <br>eingeschrieben</span>
+                      </a></li>
             {/if}   
             
             <!-- Institution Menu -->
