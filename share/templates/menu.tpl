@@ -4,24 +4,6 @@
         <section class="sidebar">
           <!-- sidebar menu: : style can be found in sidebar.less -->
           <ul class="sidebar-menu">
-            <li class="header">Lernzeitraum</li>
-            {if isset($mySemester) AND count($mySemester) > 1}
-            <li class="treeview">
-                <div class="dropdown"><i class="fa fa-calendar"></i>
-                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                          {$my_semester}
-                          <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu " aria-labelledby="dropdownMenu1" >
-                            {section name=res loop=$mySemester}  
-                                <li><a {*href="index.php?action={$page_action}&mySemester={$mySemester[res]->id}"*} onclick="setSemester({$mySemester[res]->id});">{$mySemester[res]->semester} ({$mySemester[res]->institution})</a></li>
-                                <OPTION label="{$mySemester[res]->semester} ({$mySemester[res]->institution})" {if isset($my_semester_id)}{if $mySemester[res]->id eq $my_semester_id}selected{/if}{/if} ></OPTION>
-                            {/section} 
-                        </ul>
-                </div>
-            </li>
-            {/if}
-            
             <li class="header">Lehrpläne</li>
             <li class="treeview">
             {if $my_enrolments != ''}

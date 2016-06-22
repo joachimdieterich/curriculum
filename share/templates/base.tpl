@@ -90,7 +90,24 @@
                     </a>
                     <!-- Navbar Right Menu -->
                     <div class="navbar-custom-menu">
+                         
                       <ul class="nav navbar-nav">
+                         <li> 
+                         {if isset($mySemester) AND count($mySemester) > 1}
+                                <div class="dropdown top-buffer">
+                                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                          {$my_semester}
+                                          <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu " aria-labelledby="dropdownMenu1" >
+                                            {section name=res loop=$mySemester}  
+                                                <li><a {*href="index.php?action={$page_action}&mySemester={$mySemester[res]->id}"*} onclick="setSemester({$mySemester[res]->id});">{$mySemester[res]->semester} ({$mySemester[res]->institution})</a></li>
+                                                <OPTION label="{$mySemester[res]->semester} ({$mySemester[res]->institution})" {if isset($my_semester_id)}{if $mySemester[res]->id eq $my_semester_id}selected{/if}{/if} ></OPTION>
+                                            {/section} 
+                                        </ul>
+                                </div>
+                         {/if} 
+                         </li>
                         <li class="calendar-menu">   
                         <a href="index.php?action=calendar" >
                             <i class="fa fa-calendar"></i>
