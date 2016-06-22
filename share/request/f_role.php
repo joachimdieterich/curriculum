@@ -37,7 +37,7 @@ $func           = $_GET['func'];
 switch ($func) {
     case 'new':     $header                       = 'Benutzerrolle hinzufügen';
                     $role_obj         = new Capability();
-                    $capabilities     = $role_obj->getCapabilities(0);     
+                    $capabilities     = $role_obj->getCapabilities($CFG->standard_role);     
         break;
     case 'edit':    $edit_role        = new Roles();
                     $edit_role->id    = filter_input(INPUT_GET, 'id', FILTER_UNSAFE_RAW); // kein INT da Systemrolle -1
@@ -80,6 +80,7 @@ foreach ($capabilities as $key => $value) {
                      <label class="control-label col-sm-3" for=""></label>
                      <div class="col-sm-9"><h4>'.substr($value->capability, 0, $pos).'</h4></div></div>';
     }
+    if (isset($_SESSION['FORM']->{$value->capability})){$value->permission = 1;} // if validation failed get permission from session
     $content .= Form::input_switch($value->capability, $value->name, $value, $error, 'col-sm-6', 'col-sm-6');
     $section = substr($value->capability, 0, $pos);
 }

@@ -51,6 +51,7 @@ if($validated_data === false) {/* validation failed */
     foreach($_POST as $key => $value){                                         
         $_SESSION['FORM']->$key  = $value;
     }
+    
     $_SESSION['FORM']->error     = $gump->get_readable_errors();
     $_SESSION['FORM']->func      = $_POST['func'];
 } else {  

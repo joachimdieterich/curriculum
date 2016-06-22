@@ -367,25 +367,6 @@ class User {
         $db = DB::prepare('UPDATE users SET password = ?, confirmed = 1 WHERE UPPER(username) = UPPER(?)');
         return $db->execute(array($password, $this->username));
     }
-  
-    /**
-     * Get password
-     * @param string $table
-     * @param string $format
-     * @return string 
-     */
-    public function getPassword($table='users', $format='md5') {
-        global $USER; 
-        checkCapabilities('user:getPassword', $USER->role_id);
-        $db = DB::prepare('SELECT password FROM '.$table.' WHERE UPPER(username) = UPPER(?)');
-        $db->execute(array($this->username));
-        $result = $db->fetchObject();
-        if ($format == 'md5'){
-            return  md5($result->password);
-        } else {
-            return  $result->password;
-        }      
-    }
     
     /**
      * get group members (of all groups in which current user is enroled)
