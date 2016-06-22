@@ -33,7 +33,9 @@ $group                 = new Group();
 $gump                  = new Gump();    /* Validation */
 $_POST                 = $gump->sanitize($_POST);       //sanitize $_POST
 
-$group->id             = $_POST['group_id']; 
+if (isset($_POST['group_id'])){
+    $group->id             = $_POST['group_id']; 
+}
 $group->group          = $_POST['group']; 
 $group->description    = $_POST['description']; 
 $group->grade_id       = $_POST['grade_id'];  

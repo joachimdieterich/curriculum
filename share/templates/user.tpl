@@ -24,7 +24,7 @@
                                 <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Benutzer hinzufügen</a>
                         </button>
                         {if checkCapabilities('menu:readuserImport', $my_role_id, false)}
-                            <button type="button" class="btn btn-default"><a href="index.php?action=userImport&reset=true">
+                            <button type="button" class="btn btn-default" onclick="location.href='index.php?action=userImport&reset=true'"><a href="index.php?action=userImport&reset=true">
                                     <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Benutzerliste importieren</a>
                             </button>
                         {/if}

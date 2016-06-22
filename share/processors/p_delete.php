@@ -47,14 +47,9 @@ switch ($db) {
     default: break;
 }
 
-$t->id      = $id;
-
+$t->id = $id;
 if ($t->delete()){
-    $html = Render::popup('Information', 'Datensatz wurde erfolgreich gelöscht.');
-    echo json_encode(array('html'=>$html, 'class'=>'modal-info'));
-    
-        
+    $_SESSION['PAGE']->message[] = array('message' => 'Datensatz erfolgreich gelöscht', 'icon' => 'fa-trash-o text-success');
 } else { 
-    $html = Render::popup('Information', 'Datensatz konnte nicht gelöscht werden.');
-    echo json_encode(array('html'=>$html, 'class'=>'modal-danger'));   
+    $_SESSION['PAGE']->message[] = array('message' => 'Datensatz konnte nicht gelöscht werden.', 'icon' => 'fa-trash-o text-danger');
 }

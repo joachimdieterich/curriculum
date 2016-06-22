@@ -54,14 +54,13 @@ if (isset($func)){
         case 'semester': checkCapabilities('groups:changeSemester',         $USER->role_id);
                          $header            = 'Lernzeitraum ändern';
                          $change_semester   = true;
-                         $group_id          = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);  // edit case: id == ena_id
+                         $id          = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);  // edit case: id == ena_id
             break;
         case "edit":     checkCapabilities('groups:update', $USER->role_id);
                          $header            = 'Lerngruppe bearbeiten';
                          $edit              = true;  
                          $gr_obj            = new Group();
                          $gr_obj->id        = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);  // edit case: id == ena_id
-                         $group_id          = $gr_obj->id;
                          $gr_obj->load();                                 //Läd die bestehenden Daten aus der db
                          foreach ($gr_obj as $key => $value){
                              $$key = $value;
@@ -82,8 +81,11 @@ if (isset($_SESSION['FORM'])){
 
 $content ='<form id="form_group"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_group.php"';
 if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content .= '"><input type="hidden" name="group_id" id="group_id" value="'.$group_id.'"/>
-            <input type="hidden" name="func" id="func" value="'.$func.'"/>';
+$content .= '">';
+if (isset($id)){
+    $content .= '"><input type="hidden" name="group_id" id="group_id" value="'.$id.'"/>';    
+}
+$content .= '<input type="hidden" name="func" id="func" value="'.$func.'"/>';
 $content .= Form::input_text('group', 'Lerngruppe', $group, $error);
 $content .= Form::input_text('description', 'Beschreibung', $description, $error);
 $grades                     = new Grade();                                      //Load Grades

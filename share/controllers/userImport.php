@@ -28,8 +28,11 @@ if(isset($_FILES['datei']['name'])){                                            
     if($_FILES['datei']['size'] <  $INSTITUTION->csv_size) {                                                            //Dateigröße prüfen
         move_uploaded_file($_FILES['datei']['tmp_name'], $CFG->curriculumdata_root.'temp/'.$_FILES['datei']['name']);   //Datei auf Server kopieren
         $new_userlist               = new User();
-        //$new_userlist->creator_id   = $USER->id;                                                                      // now set in add function
-        $new_userlist->import(filter_input(INPUT_POST, 'institution_id', FILTER_VALIDATE_INT),$CFG->curriculumdata_root.'temp/'.$_FILES['datei']['name']); //Importieren
+        $new_userlist->import(array('institution_id' => filter_input(INPUT_POST, 'institution_id', FILTER_VALIDATE_INT),
+                                    'role_id'        => filter_input(INPUT_POST, 'role_id', FILTER_VALIDATE_INT),
+                                    'group_id'       => filter_input(INPUT_POST, 'group_id', FILTER_VALIDATE_INT),
+                                    'import_file'    => $CFG->curriculumdata_root.'temp/'.$_FILES['datei']['name'],
+                                    'delimiter'      => filter_input(INPUT_POST, 'delimiter', FILTER_UNSAFE_RAW))); //Importieren
         unlink($CFG->curriculumdata_root.'temp/'.$_FILES['datei']['name']);                                             //TEMP-Datei löschen  
     } else {   
         $PAGE->message[] = array('message' => 'Die Datei darf nicht größer als '.$INSTITUTION->csv_size.' MB sein', 'icon' => 'fa-user text-success');//Datei zu groß
@@ -42,6 +45,12 @@ $TEMPLATE->assign('page_title', 'Benutzerkonten importieren');
 $TEMPLATE->assign('breadcrumb',  array('Benutzerverwaltung' => 'index.php?action=user', 
                                        'Benutzerkonten importieren' => 'index.php?action=userImport'));
 $TEMPLATE->assign('filesize',   round(convertByteToMb($INSTITUTION->csv_size),2));
+$roles     = new Roles();
+$TEMPLATE->assign('roles',      $roles->get());
+$group     = new Group();
+$TEMPLATE->assign('groups',     $group->getGroups('institution', $USER->institution_id));
+$TEMPLATE->assign('role_id',    $CFG->standard_role);
+$TEMPLATE->assign('delimiter',  ';');
 
 $new_users = new User();
 $p_options =    $p_config =   array('id'         => 'checkbox',

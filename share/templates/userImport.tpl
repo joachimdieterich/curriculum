@@ -37,29 +37,21 @@
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-5">
                                 <h4>CSV-Vorlagen</h4>
-                                <a class="btn btn-app" href="{$support_path}Vorlage-min.csv">
-                                    <i class="fa fa-save"></i> Minimal - nur benötigte Felder
-                                </a>
-                                <a class="btn btn-app" href="{$support_path}Vorlage-max.csv">
-                                    <i class="fa fa-save"></i> Maximal - nur benötigte Felder
-                                </a>
+                                <a class="btn btn-app" href="{$support_path}Vorlage-min.csv"><i class="fa fa-save"></i> Minimal - nur benötigte Felder</a>
+                                <a class="btn btn-app" href="{$support_path}Vorlage-max.csv"><i class="fa fa-save"></i> Maximal - nur benötigte Felder</a>
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="form-group col-xs-12 col-sm-12 col-md-5 col-lg-4" >
-                                <label>Institution / Schule</label>
-                                <select class="form-control" name="institution_id" id="institution_id">
-                                    {foreach key=insid item=ins from=$my_institutions}
-                                        <option  value="{$ins->institution_id}"  {if $ins->institution_id eq $institution_id}selected="selected"{/if}>{$ins->institution}</option>
-                                    {/foreach} 
-                                </select>
-                            </div>
+                        <div class="row col-xs-12 col-sm-12 col-md-5 col-lg-5">
+                            <p>{Form::input_select('institution_id', 'Institution', $my_institutions, 'institution', 'institution_id', $my_institution_id, null)}</p>
+                            <p>{Form::input_select('role_id', 'Rolle', $roles, 'role', 'id', $role_id, null)}</p>
+                            <p>{Form::input_select('group_id', 'Lerngruppe', $groups, 'group', 'id', null, null)}</p>
+                            <p>{Form::input_text('delimiter', 'Trennzeichen', $delimiter, null)}</p>
+                            <p>
+                              <label for="exampleInputFile">CSV-Datei hochladen</label>
+                              <input name="datei" type="file" value="">
+                            </p> 
                         </div>
-                        <div class="form-group">
-                          <label for="exampleInputFile">CSV-Datei hochladen</label>
-                          <input name="datei" type="file" value="">
-                        </div>        
                     </div>
                                 
                     <div class="box-footer">

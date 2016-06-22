@@ -68,7 +68,6 @@ if (isset($func)){
                          $user_id           = filter_input(INPUT_GET,  'id', FILTER_VALIDATE_INT);
                          foreach ($user as $key => $value){
                              $$key = $value;
-                             //error_log($key. ': '.$value);
                          }
         break;
         
@@ -79,7 +78,6 @@ if (isset($func)){
                          $user_id           = $USER->id;//Läd die bestehenden Daten aus der db
                          foreach ($user as $key => $value){
                              $$key = $value;
-                             //error_log($key. ': '.$value);
                          }
             break;
         default: break;

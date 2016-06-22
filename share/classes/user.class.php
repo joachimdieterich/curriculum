@@ -54,7 +54,7 @@ class User {
      * role id
      * @var int 
      */
-    public $role_id = 0;    //Standard Role !important
+    public $role_id;
     /**
      * role name
      * @var string 
@@ -291,12 +291,13 @@ class User {
             $db = DB::prepare('INSERT INTO users (username,firstname,lastname,email,postalcode,city,state_id,country_id,avatar_id,password,confirmed,creator_id,paginator_limit,acc_days) 
                                             VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
             if($db->execute(array($this->username,$this->firstname,$this->lastname,$this->email,$this->postalcode,$this->city,$this->state_id,$this->country_id,intval($this->avatar_id),md5($this->password),$this->confirmed,$USER->id,$this->paginator_limit,$this->acc_days))){
-                $this->enroleToInstitution($institution_id); // in Institution einschreiben
-                if ($group_id != null){
+                $this->id = DB::lastInsertId(); 
+                $this->enroleToInstitution($institution_id);                    // enrol to institution
+                if ($group_id != null){                                         // enrol to group if id is set
                     $this->enroleToGroup($group_id, $USER->id);
                 }
                 $PAGE->message[] = array('message' => 'Der Benutzer <strong>'.$this->username.'</strong> wurde erfolgreich angelegt.', 'icon' => 'fa fa-user text-success');// Schließen und speichern
-                return DB::lastInsertId(); 
+                return $this->id;
             } else {
                 return false; 
             }
@@ -496,7 +497,7 @@ class User {
      * @param int $creator_id
      * @return boolean 
      */
-    public function enroleToGroup($group_id, $creator_id){
+    public function enroleToGroup($group_id){
         global $USER; 
         checkCapabilities('user:enroleToGroup', $USER->role_id);
         $db = DB::prepare('SELECT count(id) FROM groups_enrolments WHERE group_id = ? AND user_id = ?');
@@ -507,7 +508,7 @@ class User {
         } else { 
             $db = DB::prepare('INSERT INTO groups_enrolments (status,group_id,user_id,creator_id) 
                                             VALUES (1,?,?,?)');//Status 1 == enroled
-            return $db->execute(array($group_id, $this->id, $creator_id));
+            return $db->execute(array($group_id, $this->id, $USER->id));
         }
     }
     
@@ -535,7 +536,11 @@ class User {
      * @param string $delimiter
      * @return boolean 
      */
-    public function import($institution_id, $import_file, $delimiter = ';'){
+    //public function import($institution_id, $role_id, $group_id, $import_file, $delimiter = ';'){
+    public function import($params){
+        foreach($params as $key => $val) {
+            $$key = $val;
+        }
         global $CFG, $USER, $PAGE;
         checkCapabilities('menu:readuserImport', $USER->role_id);
         $row = 1;   //row counter
@@ -545,42 +550,45 @@ class User {
                     $num = count($data);        
                 if ($row == 1) {	// Hier werden die Felder verknüpft.
                     for ($c=0; $c < $num; $c++) {
-                        if ($data[$c] == "username")    {$username_position       = $c;}
-                        if ($data[$c] == "password")    {$password_position       = $c;}
-                        if ($data[$c] == "role_id")     {$role_id_position        = $c;}
-                        if ($data[$c] == "email")       {$email_position          = $c;}
-                        if ($data[$c] == "confirmed")   {$confirmed_position      = $c;}
-                        if ($data[$c] == "firstname")   {$firstname_position      = $c;}
-                        if ($data[$c] == "lastname")    {$lastname_position       = $c;}
-                        if ($data[$c] == "postalcode")  {$postalcode_position     = $c;}
-                        if ($data[$c] == "city")        {$city_position           = $c;}
-                        if ($data[$c] == "state_id")    {$state_position          = $c;}
-                        if ($data[$c] == "couconntry_id")  {$country_position        = $c;}
-                        if ($data[$c] == "avatar_id")   {$avatar_position         = $c;}
+                        if ($data[$c] == "username")        { $username_position       = $c; }
+                        if ($data[$c] == "password")        { $password_position       = $c; }
+                        if ($data[$c] == "role_id")         { $role_id_position        = $c; }
+                        if ($data[$c] == "email")           { $email_position          = $c; }
+                        if ($data[$c] == "confirmed")       { $confirmed_position      = $c; }
+                        if ($data[$c] == "firstname")       { $firstname_position      = $c; }
+                        if ($data[$c] == "lastname")        { $lastname_position       = $c; }
+                        if ($data[$c] == "postalcode")      { $postalcode_position     = $c; }
+                        if ($data[$c] == "city")            { $city_position           = $c; }
+                        if ($data[$c] == "state_id")        { $state_position          = $c; }
+                        if ($data[$c] == "country_id")      { $country_position        = $c; }
+                        if ($data[$c] == "avatar_id")       { $avatar_position         = $c; }
                     }    
                 }
                 $row++; //Tielzeile überspringen
                 if ($row > 2) {	
                     $this->role_id = $CFG->standard_role; //reset role id to avoid wrong permissions 
-                    if (!isset($username_position))       {$this->username   = '';}                         else {$this->username   = $data[$username_position];}
-                    if (!isset($firstname_position))      {$this->firstname  = '';}                         else {$this->firstname  = $data[$firstname_position];}
-                    if (!isset($lastname_position))       {$this->lastname   = '';}                         else {$this->lastname   = $data[$lastname_position];}
-                    if (!isset($email_position))          {$this->email      = '';}                         else {$this->email      = trim($data[$email_position]);} //trim da sonst bei Leerzeichen die Validierung fehlschlägt!
-                    if (!isset($postalcode_position))     {$this->postalcode = '';}                         else {$this->postalcode = $data[$postalcode_position];}
-                    if (!isset($city_position))           {$this->city       = '';}                         else {$this->city       = $data[$city_position];}
-                    if (!isset($state_position))          {$this->state_id   = $CFG->standard_state;}       else {$this->state_id      = $data[$state_position];}
-                    if (!isset($country_position))        {$this->country_id = $CFG->standard_country;}     else {$this->country_id    = $data[$country_position];}
-                    if (!isset($avatar_position))         {$this->avatar_id  = $CFG->standard_avatar_id;}   else {$this->avatar_id  = $data[$avatar_position];}
-                    if (!isset($password_position))       {$this->password   = 'password';}                 else {$this->password   = $data[$password_position];} //todo: besser Fehlermeldung, wenn Passwort nicht gesetzt
-                    if (!isset($role_id_position))        {$this->role_id    = $this->role_id;}             else {$this->role_id    = $data[$role_id_position];}
-                    if (!isset($confirmed_position))      {$this->confirmed  = '3';}                        else {$this->confirmed  = $data[$confirmed_position];}
+                    if (!isset($username_position))       { $this->username   = ''; }                         else { $this->username   = $data[$username_position]; }
+                    if (!isset($firstname_position))      { $this->firstname  = ''; }                         else { $this->firstname  = $data[$firstname_position]; }
+                    if (!isset($lastname_position))       { $this->lastname   = ''; }                         else { $this->lastname   = $data[$lastname_position]; }
+                    if (!isset($email_position))          { $this->email      = ''; }                         else { $this->email      = trim($data[$email_position]); } //trim da sonst bei Leerzeichen die Validierung fehlschlägt!
+                    if (!isset($postalcode_position))     { $this->postalcode = ''; }                         else { $this->postalcode = $data[$postalcode_position]; }
+                    if (!isset($city_position))           { $this->city       = ''; }                         else { $this->city       = $data[$city_position]; }
+                    if (!isset($state_position))          { $this->state_id   = $CFG->standard_state; }       else { $this->state_id   = $data[$state_position]; }
+                    if (!isset($country_position))        { $this->country_id = $CFG->standard_country; }     else { $this->country_id = $data[$country_position]; }
+                    if (!isset($avatar_position))         { $this->avatar_id  = $CFG->standard_avatar_id; }   else { $this->avatar_id  = $data[$avatar_position]; }
+                    if (!isset($password_position))       { $this->password   = 'password'; }                 else { $this->password   = $data[$password_position]; } //todo: besser Fehlermeldung, wenn Passwort nicht gesetzt
+                    if (!isset($role_id_position))        { 
+                        if (isset($role_id)){ $this->role_id  = $role_id; } else { $this->role_id  = $CFG->standard_role; }
+                    } else { 
+                        $this->role_id    = $data[$role_id_position]; 
+                    }
+                    if (!isset($confirmed_position))      { $this->confirmed  = '3'; }                        else { $this->confirmed  = $data[$confirmed_position]; } 
 
                     $validated_data = $this->validate();
                     if ($validated_data === true) {
-                        $this->add($institution_id);
+                        $this->add($institution_id, $group_id);
                     } else {
-                        $error[] = array('username' => $this->username, 
-                                        'error'    => $validated_data); 
+                        $error[] = array('username' => $this->username, 'error'    => $validated_data); 
                         foreach ($error as $value) {
                             $PAGE->message[] = array('message' => 'Benutzer: '.$value['username'].' Error: '.array2str($value['error']), 'icon' => 'fa fa-group text-warning');// Schließen und speichern
                         }
