@@ -100,10 +100,11 @@ try { // Error handling
             $mail->loadNewMessages($USER->id);
             if (isset($mail->inbox)){
                 $TEMPLATE->assign('mails', $mail->inbox);
+                /* Load recent Mails for Sidebar */
+                $recent_mails = new Mail();   
+                $TEMPLATE->assign('recent_mails', $recent_mails->loadCorrespondence(5, $USER->id, $USER->id, 'recent')); 
             }
-            /* Load recent Mails for Sidebar */
-             $recent_mails = new Mail();   
-             $TEMPLATE->assign('recent_mails', $recent_mails->loadCorrespondence(5, $USER->id, $USER->id, 'recent'));   
+              
         }   
         $upcoming_events = new Event();
         $TEMPLATE->assign('upcoming_events', $upcoming_events->get('upcoming', $USER->id, '', 5));

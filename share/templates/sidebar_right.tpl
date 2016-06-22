@@ -11,17 +11,19 @@
     <div class="tab-pane" id="control-sidebar-home-tab">
       <h3 class="control-sidebar-heading">Letzte Nachrichten</h3>
       <ul class="control-sidebar-menu">
-        {foreach item=rm from=$recent_mails}  
-        <li>
-          <a href="index.php?action=messages&function=showInbox&id={$rm->id}">
-              <img src="{$access_file_id}{$rm->sender_file_id}" class="user-image menu-icon fa" alt="User Image"></img>
-            <div class="menu-info">
-              <h4 class="control-sidebar-subheading">{$rm->sender_firstname}</h4>
-              <p>{$rm->subject}</p>
-            </div>
-          </a>
-        </li>
-        {/foreach}
+        {if isset($recent_mails)}  
+            {foreach item=rm from=$recent_mails}  
+            <li>
+              <a href="index.php?action=messages&function=showInbox&id={$rm->id}">
+                  <img src="{$access_file_id}{$rm->sender_file_id}" class="user-image menu-icon fa" alt="User Image"></img>
+                <div class="menu-info">
+                  <h4 class="control-sidebar-subheading">{$rm->sender_firstname}</h4>
+                  <p>{$rm->subject}</p>
+                </div>
+              </a>
+            </li>
+            {/foreach}
+        {/if}
       </ul><!-- /.control-sidebar-menu -->
 
       <h3 class="control-sidebar-heading">Anstehende Termine</h3>

@@ -130,7 +130,6 @@
                             <li>
                               <!-- inner menu: contains the actual data -->
                               <ul class="menu">
-                                 
                                   {section name=mes loop=$mails}
                                       <li><!-- start message -->
                                           <a href="index.php?action=messages&function=showInbox&id={$mails[mes]->id}">

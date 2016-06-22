@@ -29,17 +29,17 @@ class Mailbox {
      * inbox array
      * @var array 
      */
-    public $inbox;//array();
+    public $inbox = null;//array();
      /**
      * outbox array
      * @var array 
      */
-    public $outbox;//array();
+    public $outbox = null;//array();
      /**
      * inbox array
      * @var array 
      */
-    public $deleted_messages;//array();
+    public $deleted_messages = null;//array();
     
     /**
      * class constructor 

@@ -101,12 +101,6 @@
                           <h5 class="description-header">{$ins->statistic.7}</h5>
                           <span class="description-text">LEHRER</span>
                         </div><!-- /.description-block -->
-                        {*<strong>{$ins->institution}</strong><br>
-                                    {$ins->schooltype_id}<br><br>
-                                    {$ins->description}<br>
-
-                                    {$ins->state_id}, {$ins->country}<br>
-                                    {$ins->creator_id}*}
                       </div><!-- /.col -->
                     </div><!-- /.row -->
                   </div>
