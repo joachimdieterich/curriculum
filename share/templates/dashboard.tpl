@@ -141,7 +141,7 @@
         
         
         
-        {if isset($stat_users_online) && checkCapabilities('menu:readPassword', $my_role_id, false)}
+        {if isset($stat_users_online) && checkCapabilities('user:userListComplete', $my_role_id, false)}
         <div class="col-md-4 col-sm-12 col-xs-12">
             <div class="box box-primary">
                 <div class="box-header with-border">
@@ -181,7 +181,7 @@
             {html_block blockdata=$block}
         {/foreach}  
         <!-- Add Block -->
-        {if checkCapabilities('menu:readPassword', $my_role_id, false)}
+        {if checkCapabilities('user:userListComplete', $my_role_id, false)}
         <div class="col-md-4 col-sm-12 col-xs-12">
             <div class="box box-primary">
                 <div class="box-header with-border">

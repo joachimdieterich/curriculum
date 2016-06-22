@@ -187,7 +187,7 @@
                             <!-- Menu Body -->
                             <li class="user-body">
                               <div class="col-xs-6 text-center">
-                                  {if checkCapabilities('menu:readPassword', $my_role_id, false)}
+                                  {if checkCapabilities('user:resetPassword', $my_role_id, false)}
                                       <a href="#" onclick="formloader('password', 'edit');">Passwort ändern</a>
                                   {/if}
                               </div>
@@ -202,7 +202,7 @@
                             <!-- Menu Footer-->
                             <li class="user-footer">
                               <div class="pull-left">
-                                  {if checkCapabilities('menu:readProfile', $my_role_id, false)}
+                                  {if checkCapabilities('user:update', $my_role_id, false)}
                                       <a href="#" class="btn btn-default btn-flat" onclick="formloader('profile', 'edit');">Profil</a>
                                   {/if}
                               </div>
