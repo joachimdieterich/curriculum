@@ -115,7 +115,7 @@ class Curriculum {
         checkCapabilities('curriculum:add', $USER->role_id);
         $db = DB::prepare('INSERT INTO curriculum (curriculum, description, grade_id, subject_id, schooltype_id, state_id, icon_id, country_id, creator_id) 
                                             VALUES (?,?,?,?,?,?,?,?,?)');
-        $db->execute(array($this->curriculum, $this->description, $this->grade_id, $this->subject_id, $this->schooltype_id, $this->state_id, $this->icon_id, $this->country_id, $this->creator_id));
+        $db->execute(array($this->curriculum, $this->description, $this->grade_id, $this->subject_id, $this->schooltype_id, $this->state_id, $this->icon_id, $this->country_id, $USER->id));
         return DB::lastInsertId();
     }
     
@@ -126,11 +126,9 @@ class Curriculum {
     public function update(){
         global $USER;
         checkCapabilities('curriculum:update', $USER->role_id); 
-        $db = DB::prepare('UPDATE curriculum 
-                SET curriculum = ?, description = ?, grade_id = ?, subject_id = ?, 
-                schooltype_id = ?, state_id = ?, icon_id = ?, country_id = ?, creator_id = ?
-                WHERE id = ?');
-        return $db->execute(array($this->curriculum, $this->description, $this->grade_id, $this->subject_id, $this->schooltype_id, $this->state_id, $this->icon_id, $this->country_id, $this->creator_id ,$this->id));
+        $db = DB::prepare('UPDATE curriculum SET curriculum = ?, description = ?, grade_id = ?, subject_id = ?, schooltype_id = ?, state_id = ?, icon_id = ?, country_id = ?
+                                                WHERE id = ?');
+        return $db->execute(array($this->curriculum, $this->description, $this->grade_id, $this->subject_id, $this->schooltype_id, $this->state_id, $this->icon_id, $this->country_id, $this->id));
     }
     
     /**

@@ -44,7 +44,7 @@ $_POST = $gump->sanitize($_POST);       //sanitize $_POST
 $terminal_objective->curriculum_id      = $_POST['curriculum_id'];
 
 $terminal_objective->color              = $_POST['color'];
-$terminal_objective->creator_id         = $USER->id;
+//$terminal_objective->creator_id         = $USER->id; // now set in add function
 
 $gump->validation_rules(array(
 'terminal_objective'         => 'required'

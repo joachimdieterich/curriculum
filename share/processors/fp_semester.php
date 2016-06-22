@@ -38,7 +38,7 @@ $semester->semester         = $_POST['semester'];
 $semester->description      = $_POST['description'];
 $semester->timerange        = $_POST['timerange'];
 $semester->institution_id   = $_POST['institution_id'];
-$semester->creator_id       = $USER->id;
+//$semester->creator_id       = $USER->id; // now set in add function
 
 $gump->validation_rules(array(
 'semester'             => 'required'

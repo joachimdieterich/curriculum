@@ -72,7 +72,7 @@ class Certificate {
         global $USER;
         checkCapabilities('certificate:add', $USER->role_id);
         $db = DB::prepare('INSERT INTO certificate (certificate,description,template,creator_id,institution_id) VALUES (?,?,?,?,?)');
-        return $db->execute(array($this->certificate, $this->description, $this->template, $this->creator_id, $this->institution_id));
+        return $db->execute(array($this->certificate, $this->description, $this->template, $USER->id, $this->institution_id));
     }
     
     /**
@@ -82,8 +82,8 @@ class Certificate {
     public function update(){
         global $USER;
         checkCapabilities('certificate:update', $USER->role_id);    
-        $db = DB::prepare('UPDATE certificate SET certificate = ?, description = ?, template = ?, creator_id = ? WHERE id = ?');
-        return $db->execute(array($this->certificate, $this->description, $this->template, $this->creator_id, $this->id));
+        $db = DB::prepare('UPDATE certificate SET certificate = ?, description = ?, template = ?, WHERE id = ?');
+        return $db->execute(array($this->certificate, $this->description, $this->template, $this->id));
     }
     
     /**

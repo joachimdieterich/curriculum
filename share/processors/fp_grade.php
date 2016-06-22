@@ -37,7 +37,7 @@ $grade->id             = $_POST['grade_id'];
 $grade->grade          = $_POST['grade']; 
 $grade->description    = $_POST['description'];  
 $grade->institution_id = $_POST['institution_id']; 
-$grade->creator_id     = $USER->id;
+//$grade->creator_id     = $USER->id; // now set in add function
 
 // todo alle Regeln definieren
 $gump->validation_rules(array(

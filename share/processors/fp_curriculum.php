@@ -57,7 +57,7 @@ $curriculum->schooltype_id  = filter_input(INPUT_POST, 'schooltype_id',  FILTER_
 $curriculum->state_id       = filter_input(INPUT_POST, 'state_id',       FILTER_VALIDATE_INT);
 $curriculum->country_id     = filter_input(INPUT_POST, 'country_id',     FILTER_VALIDATE_INT);
 $curriculum->icon_id        = filter_input(INPUT_POST, 'icon_id',        FILTER_VALIDATE_INT);
-$curriculum->creator_id     = $USER->id;  
+//$curriculum->creator_id     = $USER->id;  //now set in add function
 
 $validated_data  = $gump->run($_POST);
 if (!isset($_POST['state'])){ $_POST['state'] = 1; }

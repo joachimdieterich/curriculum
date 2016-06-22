@@ -68,12 +68,12 @@ class Roles {
         $result         = $db->fetchObject();
         $this->id       = $result->max + 1; 
         $db1            = DB::prepare('INSERT INTO roles (id, role, description,creator_id) VALUES (?,?,?,?)');
-        $write_role     = $db1->execute(array($this->id, $this->role, $this->description, $this->creator_id));
+        $write_role     = $db1->execute(array($this->id, $this->role, $this->description, $USER->id));
 
         foreach($this->capabilities as $value) {
             foreach ($value as $v_key => $v_value) {
                 $db2    = DB::prepare('INSERT INTO role_capabilities (role_id, capability, permission, creator_id) VALUES (?, ?, '.$v_value.', ?)');
-                $write_role_capabilities = $db2->execute(array($this->id, $v_key, $this->creator_id));
+                $write_role_capabilities = $db2->execute(array($this->id, $v_key, $USER->id));
             }
         }
         if ($write_role == true AND $write_role_capabilities == true){
@@ -90,8 +90,8 @@ class Roles {
     public function update(){
         global $USER;
         checkCapabilities('role:update', $USER->role_id);   //Berechtigt?
-            $db             = DB::prepare('UPDATE roles SET role = ?, description = ?,creator_id = ? WHERE id = ?');
-            $update_role    = $db->execute(array($this->role, $this->description, $this->creator_id, $this->id));
+            $db             = DB::prepare('UPDATE roles SET role = ?, description = ? WHERE id = ?');
+            $update_role    = $db->execute(array($this->role, $this->description, $this->id));
             $db_reset = DB::prepare('UPDATE role_capabilities SET permission = false WHERE role_id = ? '); //Reset Role --> wichtig, da nur erlaubte Berechtigungen eingetragen werden. 
             $db_reset->execute(array($this->id));
             
@@ -101,13 +101,12 @@ class Roles {
                 $db->execute(array($this->id, $v_key));
                 $result = $db->fetchObject();            
                     if (isset($result->role_id)){                       
-                        $db = DB::prepare('UPDATE role_capabilities SET permission= '.$v_value.', creator_id = ?
-                                            WHERE role_id = ? AND capability = ?');
-                        $update_role_capabilities = $db->execute(array($this->creator_id, $this->id, $v_key));
+                        $db = DB::prepare('UPDATE role_capabilities SET permission= '.$v_value.' WHERE role_id = ? AND capability = ?');
+                        $update_role_capabilities = $db->execute(array($this->id, $v_key));
                     } else {  
                         $db = DB::prepare('INSERT INTO role_capabilities (role_id, capability, permission, creator_id) 
                                             VALUES (?, ?, ?, ?)');
-                        $update_role_capabilities = $db->execute(array($this->id, $v_key, $v_value, $this->creator_id));
+                        $update_role_capabilities = $db->execute(array($this->id, $v_key, $v_value, $USER->id));
                     }
                 }
             }

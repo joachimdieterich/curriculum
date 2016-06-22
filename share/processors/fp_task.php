@@ -43,7 +43,7 @@ $_POST = $gump->sanitize($_POST);       //sanitize $_POST
 
 $task->task          = $_POST['task']; 
 $task->timerange     = $_POST['timerange']; 
-$task->creator_id    = $USER->id;
+//$task->creator_id    = $USER->id; now set in add function
         
 $gump->validation_rules(array(
 'task'             => 'required'

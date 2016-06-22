@@ -88,7 +88,7 @@ class TerminalObjective {
         $this->order_id = $result->max+1;
         $db = DB::prepare('INSERT INTO terminalObjectives (terminal_objective,description,curriculum_id,color,order_id,creator_id) 
                     VALUES (?,?,?,?,?,?)');
-        $db->execute(array($this->terminal_objective, $this->description, $this->curriculum_id, $this->color, $this->order_id, $this->creator_id));
+        $db->execute(array($this->terminal_objective, $this->description, $this->curriculum_id, $this->color, $this->order_id, $USER->id));
 
         return DB::lastInsertId(); //returns id    
     }

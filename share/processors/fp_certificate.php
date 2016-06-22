@@ -43,7 +43,7 @@ $_POST                        = $gump->sanitize($_POST);       //sanitize $_POST
 $certificate->certificate     = $_POST['certificate']; 
 $certificate->description     = $_POST['description']; 
 $certificate->institution_id  = $_POST['institution_id']; 
-$certificate->creator_id      = $USER->id;
+//$certificate->creator_id      = $USER->id; //set in add()
         
 $gump->validation_rules(array(
 'certificate'          => 'required',

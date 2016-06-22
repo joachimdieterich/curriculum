@@ -54,7 +54,7 @@ class CourseBook {
         $this->timestart = date('Y-m-d G:i:s', strtotime($this->timestart));
         $this->timeend   = date('Y-m-d G:i:s', strtotime($this->timeend));
         $db = DB::prepare('INSERT INTO course_book (topic,description,timestart,timeend,course_id,creator_id) VALUES (?,?,?,?,?,?)');
-        return $db->execute(array($this->topic, $this->description,  $this->timestart, $this->timeend, $this->course_id, $this->creator_id));
+        return $db->execute(array($this->topic, $this->description,  $this->timestart, $this->timeend, $this->course_id, $USER->id));
     }
     
     public function update(){
@@ -63,8 +63,8 @@ class CourseBook {
         list ($this->timestart, $this->timeend) = explode(' - ',$this->timerange); // copy timestart and timeend from timerage
         $this->timestart = date('Y-m-d G:i:s', strtotime($this->timestart));
         $this->timeend   = date('Y-m-d G:i:s', strtotime($this->timeend));
-        $db = DB::prepare('UPDATE course_book SET topic = ?, description = ?, timestart = ?, timeend = ?, course_id = ?, creator_id = ? WHERE cb_id = ?');
-        return $db->execute(array($this->topic, $this->description,  $this->timestart, $this->timeend, $this->course_id, $this->creator_id, $this->id));
+        $db = DB::prepare('UPDATE course_book SET topic = ?, description = ?, timestart = ?, timeend = ?, course_id = ?, WHERE cb_id = ?');
+        return $db->execute(array($this->topic, $this->description,  $this->timestart, $this->timeend, $this->course_id,$this->id));
     }
     
     public function delete(){

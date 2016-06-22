@@ -28,7 +28,7 @@ if(isset($_FILES['datei']['name'])){                                            
     if($_FILES['datei']['size'] <  $INSTITUTION->csv_size) {                                                            //Dateigröße prüfen
         move_uploaded_file($_FILES['datei']['tmp_name'], $CFG->curriculumdata_root.'temp/'.$_FILES['datei']['name']);   //Datei auf Server kopieren
         $new_userlist               = new User();
-        $new_userlist->creator_id   = $USER->id;                                                                         
+        //$new_userlist->creator_id   = $USER->id;                                                                      // now set in add function
         $new_userlist->import(filter_input(INPUT_POST, 'institution_id', FILTER_VALIDATE_INT),$CFG->curriculumdata_root.'temp/'.$_FILES['datei']['name']); //Importieren
         unlink($CFG->curriculumdata_root.'temp/'.$_FILES['datei']['name']);                                             //TEMP-Datei löschen  
     } else {   

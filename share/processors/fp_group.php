@@ -39,7 +39,7 @@ $group->description    = $_POST['description'];
 $group->grade_id       = $_POST['grade_id'];  
 $group->semester_id    = $_POST['semester_id']; 
 $group->institution_id = $_POST['institution_id']; 
-$group->creator_id     = $USER->id;
+// $group->creator_id     = $USER->id; // now set in add function
 if (isset($_POST['assumeUsers'])){
     $assumeUsers = true;
 }

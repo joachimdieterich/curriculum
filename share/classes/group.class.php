@@ -107,7 +107,7 @@ class Group {
         } else {     
             $db = DB::prepare('INSERT INTO groups (groups,description,grade_id,semester_id,institution_id,creator_id) 
                                                 VALUES (?,?,?,?,?,?)');
-            return $db->execute(array($this->group, $this->description, $this->grade_id, $this->semester_id, $this->institution_id, $this->creator_id));
+            return $db->execute(array($this->group, $this->description, $this->grade_id, $this->semester_id, $this->institution_id, $USER->id));
         }
     }
     
@@ -118,8 +118,8 @@ class Group {
     public function update(){
         global $USER;
         checkCapabilities('groups:update', $USER->role_id);
-        $db = DB::prepare('UPDATE groups SET groups = ?, description = ?, grade_id = ?, semester_id = ?, institution_id = ?,creator_id = ? WHERE id = ?');
-        return $db->execute(array($this->group, $this->description, $this->grade_id, $this->semester_id, $this->institution_id, $this->creator_id, $this->id));
+        $db = DB::prepare('UPDATE groups SET groups = ?, description = ?, grade_id = ?, semester_id = ?, institution_id = ? WHERE id = ?');
+        return $db->execute(array($this->group, $this->description, $this->grade_id, $this->semester_id, $this->institution_id, $this->id));
     }
     
     /**

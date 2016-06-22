@@ -102,7 +102,7 @@ class Subject {
             return 'Diesen Fächernamen gibt es bereits.';
         } else {
             $db = DB::prepare('INSERT INTO subjects (subject,subject_short,description,creator_id,institution_id) VALUES (?,?,?,?,?)');
-            return $db->execute(array($this->subject, $this->subject_short, $this->description, $this->creator_id, $this->institution_id));
+            return $db->execute(array($this->subject, $this->subject_short, $this->description, $USER->id, $this->institution_id));
         }
     }
     
@@ -113,8 +113,8 @@ class Subject {
     public function update(){
         global $USER;
         checkCapabilities('subject:update', $USER->role_id);
-        $db = DB::prepare('UPDATE subjects  SET subject = ?, subject_short = ?, description = ?, institution_id = ?, creator_id = ? WHERE id = ?');
-        return $db->execute(array($this->subject, $this->subject_short, $this->description, $this->institution_id, $this->creator_id, $this->id));
+        $db = DB::prepare('UPDATE subjects  SET subject = ?, subject_short = ?, description = ?, institution_id = ? WHERE id = ?');
+        return $db->execute(array($this->subject, $this->subject_short, $this->description, $this->institution_id, $this->id));
     }
     /**
      * Delete current subject

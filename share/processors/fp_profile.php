@@ -43,7 +43,7 @@ $user->country_id     = $_POST['country_id'];
 $user->state_id       = $_POST['state_id']; 
 $user->paginator_limit  = $CFG->paginator_limit;
 $user->acc_days         = $CFG->acc_days;
-$user->creator_id       = $USER->id;
+//$user->creator_id       = $USER->id; // now set in add function
 
 if (isset($_POST['confirm'])){
     $user->confirmed= 3; //Passwortänderung wird gesetzt == 3 //Wird bei der Anmeldung überprüft

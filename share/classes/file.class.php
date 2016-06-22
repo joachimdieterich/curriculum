@@ -127,14 +127,13 @@ class File {
     public function add(){
         global $USER, $LOG;
         if (checkCapabilities('file:upload', $USER->role_id, false) OR checkCapabilities('file:uploadAvatar', $USER->role_id, false));
-        
         /* SET cur_id, ter_id and ena_id NULL if not int > 0*/
         if ($this->curriculum_id < 1)        { $this->curriculum_id         = NULL; }
         if ($this->terminal_objective_id < 1){ $this->terminal_objective_id = NULL; }
         if ($this->enabling_objective_id < 1){ $this->enabling_objective_id = NULL; }
         $db             = DB::prepare('INSERT INTO files (title, filename, description, author, license, type, path, context_id, file_context, creator_id, cur_id, ter_id, ena_id) 
                             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)');
-        if($db->execute(array($this->title, $this->filename, $this->description, $this->author, $this->license, $this->type, $this->path, $this->context_id, $this->file_context, $this->creator_id, $this->curriculum_id, $this->terminal_objective_id, $this->enabling_objective_id))){
+        if($db->execute(array($this->title, $this->filename, $this->description, $this->author, $this->license, $this->type, $this->path, $this->context_id, $this->file_context, $USER->id, $this->curriculum_id, $this->terminal_objective_id, $this->enabling_objective_id))){
             $LOG->add($USER->id, 'uploadframe.php', dirname(__FILE__), 'Context: '.$this->context_id.' Upload: '.$this->path.''.$this->filename);
             $_SESSION['PAGE']->message[] = array('message' => 'Datei erfolgreich hochgeladen', 'icon' => 'fa-file text-success');
             return DB::lastInsertId(); 
@@ -154,8 +153,8 @@ class File {
         if ($this->curriculum_id < 1)        { $this->curriculum_id         = NULL; }
         if ($this->terminal_objective_id < 1){ $this->terminal_objective_id = NULL; }
         if ($this->enabling_objective_id < 1){ $this->enabling_objective_id = NULL; }
-        $db = DB::prepare('UPDATE files SET title = ?, filename = ?, description = ?, license = ?, author = ?, type = ?, path = ?, context_id = ?, creator_id = ?, cur_id = ?, ter_id = ?, ena_id = ? WHERE id = ?');
-        return $db->execute(array($this->title, $this->filename, $this->description, $this->author, $this->license, $this->type, $this->path, $this->context_id, $this->creator_id, $this->curriculum_id, $this->terminal_objective_id, $this->enabling_objective_id, $this->id));
+        $db = DB::prepare('UPDATE files SET title = ?, filename = ?, description = ?, license = ?, author = ?, type = ?, path = ?, context_id = ?, cur_id = ?, ter_id = ?, ena_id = ? WHERE id = ?');
+        return $db->execute(array($this->title, $this->filename, $this->description, $this->author, $this->license, $this->type, $this->path, $this->context_id, $this->curriculum_id, $this->terminal_objective_id, $this->enabling_objective_id, $this->id));
     }
 
     /**

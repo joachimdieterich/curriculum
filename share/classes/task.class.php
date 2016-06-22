@@ -44,7 +44,7 @@ class Task {
         $this->timestart = date('Y-m-d G:i:s', strtotime($this->timestart));
         $this->timeend   = date('Y-m-d G:i:s', strtotime($this->timeend));
         $db = DB::prepare('INSERT INTO task (task,description,timestart,timeend,creator_id) VALUES (?,?,?,?,?)');
-        $db->execute(array($this->task, $this->description, $this->timestart, $this->timeend, $this->creator_id));
+        $db->execute(array($this->task, $this->description, $this->timestart, $this->timeend, $USER->id));
         return DB::lastInsertId(); //returns id 
     }
     
@@ -54,8 +54,8 @@ class Task {
         list ($this->timestart, $this->timeend) = explode(' - ',$this->timerange); // copy timestart and timeend from timerage
         $this->timestart = date('Y-m-d G:i:s', strtotime($this->timestart));
         $this->timeend   = date('Y-m-d G:i:s', strtotime($this->timeend));
-        $db = DB::prepare('UPDATE task SET task = ?, description = ?, timestart = ?, timeend = ?, creator_id = ? WHERE id = ?');
-        return $db->execute(array($this->task, $this->description, $this->timestart, $this->timeend, $this->creator_id, $this->id));
+        $db = DB::prepare('UPDATE task SET task = ?, description = ?, timestart = ?, timeend = ? WHERE id = ?');
+        return $db->execute(array($this->task, $this->description, $this->timestart, $this->timeend,  $this->id));
     }
     
     public function delete(){

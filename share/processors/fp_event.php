@@ -44,7 +44,7 @@ $_POST                = $gump->sanitize($_POST);       //sanitize $_POST
 $event->event         = $_POST['event']; 
 $event->timerange     = $_POST['timerange']; 
 $event->context_id    = $_POST['context_id']; 
-$event->creator_id    = $USER->id;
+//$event->creator_id    = $USER->id; // now set in add function
         
 $gump->validation_rules(array(
 'event'             => 'required'

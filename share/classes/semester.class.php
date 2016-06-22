@@ -155,7 +155,7 @@ class Semester {
         } else {
             $db = DB::prepare('INSERT INTO semester (semester,description,begin,end,creation_time,creator_id,institution_id)
                                             VALUES (?,?,?,?,NOW(),?,?)');
-            return $db->execute(array($this->semester, $this->description, $this->begin, $this->end, $this->creator_id, $this->institution_id));	
+            return $db->execute(array($this->semester, $this->description, $this->begin, $this->end, $USER->id, $this->institution_id));	
         }   
     }
     

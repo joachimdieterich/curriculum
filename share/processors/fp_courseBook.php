@@ -45,7 +45,7 @@ $_POST = $gump->sanitize($_POST);       //sanitize $_POST
 $course_book->course_id     = $_POST['course_id'];
 $course_book->timerange     = $_POST['timerange'];
 $course_book->task_id       = null;
-$course_book->creator_id    = $USER->id;
+//$course_book->creator_id    = $USER->id; // now set in add function
         
 
 $gump->validation_rules(array(

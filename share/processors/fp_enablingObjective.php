@@ -45,7 +45,7 @@ $_POST = $gump->sanitize($_POST);       //sanitize $_POST
 $enabling_objective->terminal_objective_id  = $_POST['terminal_objective_id'];
 $enabling_objective->curriculum_id          = $_POST['curriculum_id'];
 $enabling_objective->repeat_interval        = $_POST['repeat_interval'];
-$enabling_objective->creator_id             = $USER->id;
+//$enabling_objective->creator_id             = $USER->id; // now set in add funciton
 
 $gump->validation_rules(array(
 'curriculum_id'             => 'required',

@@ -56,7 +56,7 @@ if($validated_data === false) {/* validation failed */
 } else {  
     $role->role           = $_POST['role']; 
     $role->description    = $_POST['description'];  
-    $role->creator_id     = $USER->id;
+    //$role->creator_id     = $USER->id;    // now set in add function
     switch ($_POST['func']) {
         case 'new':      if ($role->add()){    
                             $_SESSION['PAGE']->message[] = array('message' => 'Rolle hinzufgefügt', 'icon' => 'fa-key text-success');

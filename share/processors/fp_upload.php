@@ -123,7 +123,7 @@ if ($my_upload->upload() OR filter_var($fileURL, FILTER_VALIDATE_URL)) {//in dat
     $file->license               = $license;
     $file->file_context          = $file_context;
     $file->context_id            = $file->getContextId($context);
-    $file->creator_id            = $USER->id;
+    //$file->creator_id            = $USER->id;
     $file->curriculum_id         = $curID;
     $file->terminal_objective_id = $terID;
     $file->enabling_objective_id = $enaID;

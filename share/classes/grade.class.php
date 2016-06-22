@@ -66,7 +66,7 @@ class Grade {
         global $USER;
         checkCapabilities('grade:add', $USER->role_id);
         $db = DB::prepare('INSERT INTO grade (grade,description,creator_id,institution_id) VALUES (?,?,?,?)');
-        return $db->execute(array($this->grade, $this->description, $this->creator_id, $this->institution_id));
+        return $db->execute(array($this->grade, $this->description, $USER->id, $this->institution_id));
     }
     
     /**
@@ -76,8 +76,8 @@ class Grade {
     public function update(){
         global $USER;
         checkCapabilities('grade:update', $USER->role_id);
-        $db = DB::prepare('UPDATE grade SET grade = ?, description = ?, creator_id = ? WHERE id = ?');
-        return $db->execute(array($this->grade, $this->description, $this->creator_id, $this->id));
+        $db = DB::prepare('UPDATE grade SET grade = ?, description = ? WHERE id = ?');
+        return $db->execute(array($this->grade, $this->description, $this->id));
     }
     
     /**
