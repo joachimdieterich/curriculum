@@ -122,7 +122,7 @@
                                             </div>
                                             <h4>
                                               {$mails[mes]->sender_username}
-                                              <small><i class="fa fa-clock-o"></i> 5 mins</small>
+                                              <small><i class="fa fa-calendar-times-o"></i> {$mails[mes]->creation_time}</small>
                                             </h4>
                                             <p>{$mails[mes]->subject}</p>
                                           </a>
