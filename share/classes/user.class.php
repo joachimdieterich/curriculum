@@ -220,7 +220,7 @@ class User {
         $db = DB::prepare('SELECT state FROM state WHERE id = ?');
         $db->execute(array($this->state_id));
         $state_result = $db->fetchObject();
-        if ($state_result->state){
+        if ($state_result){
         $this->state             = $state_result->state;
         }
         $this->country_id        = $result->country_id;
@@ -783,11 +783,12 @@ class User {
         
         checkCapabilities('user:getUsers', $USER->role_id);
         switch ($dependency) {
-            case 'course':  $db = DB::prepare('SELECT us.* FROM users AS us, groups_enrolments AS gr, curriculum_enrolments AS ce
+            case 'course':  $db = DB::prepare('SELECT us.*, ie.role_id FROM users AS us, groups_enrolments AS gr, curriculum_enrolments AS ce, institution_enrolments as ie
                                                 WHERE us.id = gr.user_id 
                                                 AND ce.curriculum_id = ?
                                                 AND ce.status = 1
                                                 AND ce.group_id = gr.group_id
+                                                AND ie.user_id = gr.user_id
                                                 AND gr.group_id = ?                                                       
                                                 AND gr.status = 1 
                                                 '.$order_param);
@@ -796,7 +797,15 @@ class User {
 
                             while($result = $db->fetchObject()) {  
                                     $this->id           = $result->id;
-                                    $this->load('id', $this->id, false, 'user');
+                                    $this->username     = $result->username;
+                                    $this->firstname    = $result->firstname; 
+                                    $this->lastname     = $result->lastname; 
+                                    $this->role_id      = $result->role_id; 
+                                    $role = new Roles(); 
+                                    $role->id           = $this->role_id;
+                                    $role->load(); 
+                                    $this->role_name    = $role->role;
+                                    //$this->load('id', $this->id, false);
                                     if (!checkCapabilities('objectives:setStatus', $this->role_id, FALSE)){ //only add to list if not able to set status == teacher
                                         $ena = new EnablingObjective();
                                         $this->completed = $ena->getPercentageOfCompletion($id, $this->id);

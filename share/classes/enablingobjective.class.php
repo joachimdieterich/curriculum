@@ -625,8 +625,7 @@ class EnablingObjective {
             case 0: $db = DB::prepare('SELECT gr.user_id FROM groups_enrolments AS gr 
 					WHERE gr.group_id = ? AND gr.status = 1 AND gr.user_id NOT IN (SELECT user_id FROM user_accomplished 
                                             WHERE enabling_objectives_id = ? AND status_id > 0)');
-                    $db->execute(array($group, $this->id));                     
-                    error_log($group.': '. $this->id);
+                    $db->execute(array($group, $this->id));
                 break;
             case 1:
             case 2:

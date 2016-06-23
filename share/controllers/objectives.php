@@ -89,7 +89,6 @@ if ($selected_curriculum != '') {
     $course_user        = new User();
     $course_user->id    = $USER->id;
     $users              = $course_user->getUsers('course', 'userPaginator', $selected_curriculum, $selected_group);
-    
     if (is_array($users)){
         foreach ($users as $value) {                         //erzeuge id Liste der user
             $list[] = $value->id;
