@@ -112,7 +112,7 @@ function outbox($mailbox){
  */
 function inbox($mailbox){
     global $USER, $TEMPLATE;
-    $mailbox->loadInbox($USER->id);
+    $mailbox->loadInbox($USER->role_id);
     $TEMPLATE->assign('inbox', $mailbox->inbox); 
     //setPaginator('inboxPaginator', $TEMPLATE, $mailbox->inbox, 'inbox', 'index.php?action=messages&function=showInbox'); //set Paginator    
 }
