@@ -28,7 +28,7 @@ global $USER;
 $USER   = $_SESSION['USER'];
 $func   = filter_input(INPUT_GET, 'func',           FILTER_SANITIZE_STRING);
 $val    = filter_input(INPUT_GET, 'val',           FILTER_SANITIZE_STRING); // kein INT --> System ID -1
-error_log($func.': '.$val);
+//error_log($func.': '.$val);
 switch ($func) {
     case "user_paginator":  $u = new User();        
                             $u->update('value', 'paginator_limit', $val);

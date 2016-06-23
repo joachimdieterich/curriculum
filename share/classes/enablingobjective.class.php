@@ -642,7 +642,6 @@ class EnablingObjective {
         
         while($result = $db->fetchObject()) {
             $users[] = $result->user_id; 
-            error_log($result->user_id);
         }
 
         if (isset($users)){
