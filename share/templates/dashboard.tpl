@@ -86,19 +86,28 @@
                     <div class="row">
                       <div class="col-sm-4 border-right">
                         <div class="description-block">
-                          <h5 class="description-header">{$ins->statistic.$institution_std_role}</h5>
+                          <h5 class="description-header">{if isset($ins->statistic.$institution_std_role)}
+                                                            {$ins->statistic.$institution_std_role}
+                                                         {else}0 
+                                                         {/if}</h5>
                           <span class="description-text">SCHÜLER</span>
                         </div><!-- /.description-block -->
                       </div><!-- /.col -->
                       <div class="col-sm-4 border-right">
                         <div class="description-block">
-                          <h5 class="description-header">{$ins->statistic.accomplished}</h5>
+                          <h5 class="description-header">{if isset($ins->statistic.accomplished)}
+                                                            {$ins->statistic.accomplished}
+                                                         {else}0 
+                                                         {/if}</h5>
                           <span class="description-text">ERREICHTE ZIELE</span>
                         </div><!-- /.description-block -->
                       </div><!-- /.col -->
                       <div class="col-sm-4">
                         <div class="description-block">
-                          <h5 class="description-header">{$ins->statistic.7}</h5>
+                          <h5 class="description-header">{if isset($ins->statistic.7)}
+                                                            {$ins->statistic.7}
+                                                         {else}0 
+                                                         {/if}</h5>
                           <span class="description-text">LEHRER</span>
                         </div><!-- /.description-block -->
                       </div><!-- /.col -->
