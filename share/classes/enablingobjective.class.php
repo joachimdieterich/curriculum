@@ -666,14 +666,6 @@ class EnablingObjective {
                             $db = DB::prepare('SELECT COUNT(id) FROM user_accomplished WHERE enabling_objectives_id = ? AND user_id = ?');
                             $db->execute(array($this->id, $user_id));
                             if($db->fetchColumn() >= 1) { 
-                                if ($status == 0){
-                                    $issuing = new Issuing();  
-                                    $email = new User();
-                                    $issuing->email = $email->getValue('email', $user_id);
-                                    /*if ($badge_slug != false){
-                                        $res = $issuing->deleteInstance($CFG->badge_system, $badge_slug); 
-                                    }*/
-                                }
                                 $db = DB::prepare('UPDATE user_accomplished SET status_id = ?, creator_id = ? WHERE enabling_objectives_id = ? AND user_id = ?');
                                 return $db->execute(array($status, $creator_id, $this->id, $user_id));
                             } else {
