@@ -211,41 +211,45 @@ class Portfolio {
         
         $mails =  new Mailbox();
         $mails->loadInbox($id);
-        foreach ($mails->inbox as $key => $value) {
-            $this->artefact_type           = 'mail_inbox'; 
-            $this->id                      = $value->id;
-            $this->title                   = $value->subject;
-            $this->description             = $value->message;
-            $this->curriculum              = '';
-            $this->creation_time           = $value->creation_time;
-            $this->creator_id              = $value->sender_id;   
-            $this->accomplished_status_id  = '';   
-            $this->accomplished_time       = '';   
-            $this->accomplished_teacher_id = $value->sender_id;   
-            $db_1 = DB::prepare('SELECT firstname, lastname FROM users WHERE id = ?');
-            $db_1->execute(array($this->accomplished_teacher_id));
-            $teacher = $db_1->fetchObject();
-            $this->accomplished_teacher   = $teacher->firstname.' '.$teacher->lastname;   
-            $artefacts[]                  =  clone $this; 
+        if (isset($mails->inbox)){
+            foreach ($mails->inbox as $key => $value) {
+                $this->artefact_type           = 'mail_inbox'; 
+                $this->id                      = $value->id;
+                $this->title                   = $value->subject;
+                $this->description             = $value->message;
+                $this->curriculum              = '';
+                $this->creation_time           = $value->creation_time;
+                $this->creator_id              = $value->sender_id;   
+                $this->accomplished_status_id  = '';   
+                $this->accomplished_time       = '';   
+                $this->accomplished_teacher_id = $value->sender_id;   
+                $db_1 = DB::prepare('SELECT firstname, lastname FROM users WHERE id = ?');
+                $db_1->execute(array($this->accomplished_teacher_id));
+                $teacher = $db_1->fetchObject();
+                $this->accomplished_teacher   = $teacher->firstname.' '.$teacher->lastname;   
+                $artefacts[]                  =  clone $this; 
+            }
         }
 
         $mails->loadOutbox($id);
-        foreach ($mails->outbox as $key => $value) {
-            $this->artefact_type           = 'mail_outbox'; 
-            $this->id                      = $value->id;
-            $this->title                   = $value->subject;
-            $this->description             = $value->message;
-            $this->curriculum              = '';
-            $this->creation_time           = $value->creation_time;
-            $this->creator_id              = $value->sender_id;   
-            $this->accomplished_status_id  = '';   
-            $this->accomplished_time       = '';   
-            $this->accomplished_teacher_id = $value->receiver_id;   
-            $db_1 = DB::prepare('SELECT firstname, lastname FROM users WHERE id = ?');
-            $db_1->execute(array($this->accomplished_teacher_id));
-            $teacher = $db_1->fetchObject();
-            $this->accomplished_teacher   = $teacher->firstname.' '.$teacher->lastname;   
-            $artefacts[]                  =  clone $this; 
+        if (isset($mails->outbox)){
+            foreach ($mails->outbox as $key => $value) {
+                $this->artefact_type           = 'mail_outbox'; 
+                $this->id                      = $value->id;
+                $this->title                   = $value->subject;
+                $this->description             = $value->message;
+                $this->curriculum              = '';
+                $this->creation_time           = $value->creation_time;
+                $this->creator_id              = $value->sender_id;   
+                $this->accomplished_status_id  = '';   
+                $this->accomplished_time       = '';   
+                $this->accomplished_teacher_id = $value->receiver_id;   
+                $db_1 = DB::prepare('SELECT firstname, lastname FROM users WHERE id = ?');
+                $db_1->execute(array($this->accomplished_teacher_id));
+                $teacher = $db_1->fetchObject();
+                $this->accomplished_teacher   = $teacher->firstname.' '.$teacher->lastname;   
+                $artefacts[]                  =  clone $this; 
+            }
         }
         if (isset($artefacts)) {    
             return $artefacts;

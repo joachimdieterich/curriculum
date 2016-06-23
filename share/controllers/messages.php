@@ -99,7 +99,7 @@ $TEMPLATE->assign('class_members', $USER->getGroupMembers()); //'class:members' 
  */
 function outbox($mailbox){
     global $USER, $TEMPLATE;
-    $mailbox->loadOutbox($USER->id);
+    $mailbox->loadOutbox($USER->role_id);
     $TEMPLATE->assign('outbox', $mailbox->outbox); 
     //setPaginator('outboxPaginator', $TEMPLATE, $mailbox->outbox, 'outbox', 'index.php?action=messages&function=showOutbox'); //set Paginator    
 }

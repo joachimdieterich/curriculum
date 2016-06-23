@@ -306,7 +306,7 @@ class Institution {
             $this->institution = $result->institution;
             $this->description = $result->description;
             $this->file_id     = $result->file_id;
-            $roles             = new Roles();
+            $roles             = new Roles();            
             foreach ($roles->get() as $r) {
                 $db1     = DB::prepare('SELECT count(id) as max FROM institution_enrolments WHERE institution_id = ? AND role_id = ?');
                 $db1->execute(array($this->id, $r->id));
