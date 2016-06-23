@@ -83,7 +83,8 @@ function route($usr){
             break;
         case 2:     //header('Location:index.php?action=password&login=first');//ab Version 0.5 BETA nicht verwendet // --> 1. Login nach erfolgreichem Registrieren
             break;
-        case 3:     $_SESSION['FORM']->id   = null;
+        case 3:     $_SESSION['FORM']       = new stdClass();
+                    $_SESSION['FORM']->id   = null;
                     $_SESSION['FORM']->form = 'password';
                     $_SESSION['FORM']->func = 'changePW';
                     header('Location:index.php?action=dashboard');
