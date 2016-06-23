@@ -42,9 +42,10 @@ $TEMPLATE->assign('selected_certificate_template',  filter_input(INPUT_GET, 'cer
 list ($selected_curriculum, $selected_group) = explode('_', $selected_curriculum); //$selected_curriculum enthält curriculumid_groupid (zb. 32_24) wenn nur '_' gesetzt ist werden beide variabeln ''
 $TEMPLATE->assign('sel_curriculum', $selected_curriculum); //only selected curriculum without group
 $TEMPLATE->assign('sel_group_id',   $selected_group); //only selected group without curriculum
+$_SESSION['PAGE']->group_id = $selected_group;
 if (isset($_POST['printCertificate'])){
     $TEMPLATE->assign('sel_curriculum',                 $_POST['sel_curriculum']);
-        $TEMPLATE->assign('selected_user_id',           explode(',',$_POST['sel_user_id']));
+    $TEMPLATE->assign('selected_user_id',               explode(',',$_POST['sel_user_id']));
     $TEMPLATE->assign('sel_group_id',                   $_POST['sel_group_id']); 
     $TEMPLATE->assign('selected_certificate_template',  $_POST['certificate_template']); 
     if ($_POST['certificate_template'] != '-1'){
