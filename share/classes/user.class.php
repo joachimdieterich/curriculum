@@ -791,16 +791,18 @@ class User {
         
         checkCapabilities('user:getUsers', $USER->role_id);
         switch ($dependency) {
-            case 'course':  $db = DB::prepare('SELECT us.*, ie.role_id FROM users AS us, groups_enrolments AS gr, curriculum_enrolments AS ce, institution_enrolments as ie
-                                                WHERE us.id = gr.user_id 
+            case 'course':  $db = DB::prepare('SELECT us.*, ie.role_id FROM users AS us, groups_enrolments AS ge, curriculum_enrolments AS ce, institution_enrolments as ie, groups as gr
+                                                WHERE us.id = ge.user_id 
                                                 AND ce.curriculum_id = ?
                                                 AND ce.status = 1
-                                                AND ce.group_id = gr.group_id
-                                                AND ie.user_id = gr.user_id
-                                                AND gr.group_id = ?                                                       
-                                                AND gr.status = 1 
+                                                AND ce.group_id = ge.group_id
+                                                AND ie.user_id = us.id
+                                                AND ie.status = 1
+                                                AND ge.group_id = ?                                                      
+                                                AND ge.status = 1 
+                                                AND gr.institution_id = ie.institution_id
+                                                AND gr.id = ge.group_id
                                                 '.$order_param);
-               
                             $db->execute(array($id, $group)); 
 
                             while($result = $db->fetchObject()) {  
