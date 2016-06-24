@@ -94,18 +94,9 @@
                       <ul class="nav navbar-nav">
                          <li> 
                          {if isset($mySemester) AND count($mySemester) > 1}
-                                <div class="dropdown top-buffer">
-                                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                          {$my_semester}
-                                          <span class="caret"></span>
-                                        </button>
-                                        <ul class="dropdown-menu " aria-labelledby="dropdownMenu1" >
-                                            {section name=res loop=$mySemester}  
-                                                <li><a {*href="index.php?action={$page_action}&mySemester={$mySemester[res]->id}"*} onclick="setSemester({$mySemester[res]->id});">{$mySemester[res]->semester} ({$mySemester[res]->institution})</a></li>
-                                                <OPTION label="{$mySemester[res]->semester} ({$mySemester[res]->institution})" {if isset($my_semester_id)}{if $mySemester[res]->id eq $my_semester_id}selected{/if}{/if} ></OPTION>
-                                            {/section} 
-                                        </ul>
-                                </div>
+                             <p>{Form::input_select('semester_id', '', $mySemester, 'semester, institution', 'id', $my_semester_id, null, "setSemester(this.value);")}</p>
+                         {else if isset($my_institutions) AND count($my_institutions) > 1}
+                             <p>{Form::input_select('institution_id', '', $my_institutions, 'institution', 'institution_id', $my_institution_id, null, "processor('config','institution_id', this.value);")}</p>
                          {/if} 
                          </li>
                         <li class="calendar-menu">   

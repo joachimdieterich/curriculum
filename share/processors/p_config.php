@@ -27,13 +27,25 @@ include(dirname(__FILE__).'/../login-check.php');  //check login status and rese
 global $USER;
 $USER   = $_SESSION['USER'];
 $func   = filter_input(INPUT_GET, 'func',           FILTER_SANITIZE_STRING);
-$val    = filter_input(INPUT_GET, 'val',           FILTER_SANITIZE_STRING); // kein INT --> System ID -1
+
 //error_log($func.': '.$val);
 switch ($func) {
-    case "user_paginator":  $u = new User();        
+    case "user_paginator":  $u      = new User();        
+                            $val    = filter_input(INPUT_GET, 'val',           FILTER_SANITIZE_STRING); // kein INT --> System ID -1
                             $u->update('value', 'paginator_limit', $val);
                             $_SESSION['USER']->paginator_limit = $val;
         break;
-    
+    case "institution_id":  $u      = new User();
+                            $val    = filter_input(INPUT_GET, 'val', FILTER_VALIDATE_INT);
+                            $u->id  = $USER->id;
+                            if ($u->checkInstitutionEnrolment($val)){
+                                $_SESSION['USER']->institution_id = $val;
+                                $u->getRole($val);
+                                $_SESSION['USER']->role_id = $u->role_id;
+                                $USER =& $_SESSION['USER'];
+                                $u->load('id',$u->id,false);
+                                assign_to_template($u,'my_');   
+                            }
+                            
     default: break;
 }

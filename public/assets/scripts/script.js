@@ -421,7 +421,7 @@ function processor(proc, func, val){
     var url = "../share/processors/p_"+ proc +".php?func="+ func +"&val="+ val;
     req = XMLobject();
     if(req) {      
-            //req.onreadystatechange = process; //Dialog mit Meldungen zeigen 
+            req.onreadystatechange = window.location.reload();
             req.open("GET", url, true);
             req.send(null);
         }

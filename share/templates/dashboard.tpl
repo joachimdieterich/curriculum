@@ -130,11 +130,13 @@
               </div>
               <div class="box-footer no-padding">
                 <ul class="nav nav-stacked">
+                    {if $my_enrolments}
                     {foreach item=cur_menu from=$my_enrolments}
                         {if $cur_menu->group_id eq $cla->id}
                             <li><a href="index.php?action=view&curriculum_id={$cur_menu->id}&group={$cur_menu->group_id}">{$cur_menu->curriculum} </a></li>
                         {/if}
                     {/foreach}
+                    {/if}
                 </ul>
               </div>
             </div><!-- /.widget-user -->

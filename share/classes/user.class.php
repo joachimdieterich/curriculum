@@ -240,40 +240,48 @@ class User {
         $this->creation_time     = $result->creation_time;
         $this->creator_id        = $result->creator_id;
           
-        if ($enrolments){    // Die folgenden Daten nicht laden, wenn in der Benutzerverwaltung --> Geschwindigkeit
+        if ($enrolments){    // Die folgenden Daten nur laden wenn benötigt --> Geschwindigkeit
             $this->enrolments    = $this->get_curriculum_enrolments();
             $this->institutions  = $this->get_instiution_enrolments();
-        }
-        if ($this->semester_id == NULL AND $this->enrolments != false){
-           $this->semester_id    = $this->enrolments[0]->semester_id;
-        }
-        $semester                = new Semester($this->semester_id);
-        $this->semester          = $semester->semester;
-        //Aktuelle Rolle laden (abhängig von der Institution --> ermittelt über das aktuelle Semester
-        $db = DB::prepare('SELECT COUNT(id) FROM institution_enrolments AS ie WHERE ie.user_id = ? AND ie.status = 1');
-        $db->execute(array($this->id));
-        if($db->fetchColumn() > 1 AND isset($this->semester_id)) {
-            $db1 = DB::prepare('SELECT ie.role_id, ie.institution_id FROM institution_enrolments AS ie, semester AS se 
-                                WHERE se.id = ? AND se.institution_id = ie.institution_id AND ie.user_id = ? AND ie.status = 1');
-            $db1->execute(array($this->semester_id, $this->id)); 
-        } else { // Benutzer noch in keiner Lerngruppe eingeschrieben bzw. nur in einer Institution eingeschrieben
-            $db1 = DB::prepare('SELECT ie.role_id, ie.institution_id FROM institution_enrolments AS ie WHERE ie.user_id = ? AND ie.status = 1');
-            $db1->execute(array($this->id)); 
-        }
-        $ie_result = $db1->fetchObject();
-        $this->role_id = $ie_result->role_id;
-        $role = new Roles(); 
-        $role->id                = $this->role_id;
-        $role->load(); 
-        $this->role_name         = $role->role;  
-        // Aktuelle institution laden (Abhängig von aktuellem Semester)
-        if (isset($this->semester_id)){
-            $se_result = new Semester($this->semester_id);
-            $this->institution_id    = $se_result->institution_id;
-        } else {
-            $this->institution_id    = $ie_result->institution_id;
+        
+            if ($this->semester_id == NULL AND $this->enrolments != false){
+               $this->semester_id    = $this->enrolments[0]->semester_id;
+               $semester             = new Semester($this->semester_id);
+               $this->semester       = $semester->semester;
+            }
+            if(isset($this->semester_id)) {
+                $db1 = DB::prepare('SELECT ie.role_id, ie.institution_id FROM institution_enrolments AS ie, semester AS se 
+                                    WHERE se.id = ? AND se.institution_id = ie.institution_id AND ie.user_id = ? AND ie.status = 1');
+                $db1->execute(array($this->semester_id, $this->id)); 
+            } else if (isset($this->institution_id)){
+                $db1 = DB::prepare('SELECT ie.role_id, ie.institution_id FROM institution_enrolments AS ie WHERE ie.user_id = ? AND ie.status = 1 AND ie.institution_id = ?'); // hack: if User is enroled to more than one institution but not enroled in any group use first institution enrolment.
+                $db1->execute(array($this->id, $this->institution_id));
+            } else { // Benutzer noch in keiner Lerngruppe eingeschrieben bzw. nur in einer Institution eingeschrieben
+                $db1 = DB::prepare('SELECT ie.role_id, ie.institution_id FROM institution_enrolments AS ie WHERE ie.user_id = ? AND ie.status = 1 LIMIT 1'); // hack: if User is enroled to more than one institution but not enroled in any group use first institution enrolment.
+                $db1->execute(array($this->id)); 
+            }
+            $ie_result          = $db1->fetchObject();
+            $this->role_id      = $ie_result->role_id;
+            $role               = new Roles(); 
+            $role->id           = $this->role_id;
+            $role->load(); 
+            $this->role_name    = $role->role; 
+            // Aktuelle institution laden (Abhängig von aktuellem Semester)
+            if (isset($this->semester_id)){
+                $se_result               = new Semester($this->semester_id);
+                $this->institution_id    = $se_result->institution_id;
+            } else {
+                $this->institution_id    = $ie_result->institution_id;
+            }
         }
         $this->token             = $result->token;   
+    }
+    
+    public function getRole($id){
+        $db = DB::prepare('SELECT ie.role_id, ie.institution_id FROM institution_enrolments AS ie WHERE ie.user_id = ? AND ie.status = 1  AND ie.institution_id = ?'); // hack: if User is enroled to more than one institution but not enroled in any group use first institution enrolment.
+        $db->execute(array($this->id, $id)); 
+        $result          = $db->fetchObject();
+        $this->role_id   = $result->role_id;
     }
     
     /**
@@ -851,6 +859,16 @@ class User {
         }
    }
    
+   public function checkInstitutionEnrolment($id){
+       $db     = DB::prepare('SELECT COUNT(id) FROM institution_enrolments WHERE institution_id = ? AND user_id = ?');
+        $db->execute(array($id, $this->id));
+        $count  = $db->fetchColumn();
+        if ($count > 0){
+            return true;
+        } else {
+            return false; 
+        }
+   }
    /**
     * set last login
     * @return boolean
@@ -923,10 +941,11 @@ class User {
      */
    public function get_curriculum_enrolments() { 
         $db = DB::prepare('SELECT cu.curriculum, cu.id, cu.grade_id, gp.id AS group_id, gp.semester_id, gp.groups, fl.filename, cn.base_curriculum_id, cn.level 
-                            FROM curriculum_enrolments AS ce, groups AS gp, files AS fl, curriculum AS cu
+                            FROM curriculum_enrolments AS ce, groups AS gp, files AS fl, institution_enrolments AS ie,curriculum AS cu 
                             LEFT JOIN curriculum_niveaus AS cn ON cn.curriculum_id = cu.id
                             WHERE cu.id = ce.curriculum_id AND ce.status = 1 AND gp.id = ce.group_id AND cu.icon_id = fl.id
-                            AND ce.group_id = ANY (SELECT group_id FROM groups_enrolments WHERE user_id = ? AND status = 1)
+                            AND ce.group_id = ANY (SELECT group_id FROM groups_enrolments AS ge WHERE ge.user_id = ? AND ge.status = 1 AND ie.user_id = ge.user_id AND ie.status = 1)
+                            AND gp.institution_id = ie.institution_id
                             ORDER BY gp.groups, cu.curriculum ASC');
         $db->execute(array($this->id));
         
