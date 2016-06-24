@@ -33,7 +33,10 @@ if (isset($_SESSION['USER'])){                                                  
     assign_to_template($_SESSION['USER'],'my_');                                // $_SESSION['USER'] im $TEMPLATE verfügbar machen
     $USER                   =  $_SESSION['USER'];
     $institution = new Institution();
-    $CFG->timeout = $institution->getTimeout($USER->institution_id);
+    $timeout = $institution->getTimeout($USER->institution_id);
+    if ($timeout){
+        $CFG->timeout = $timeout;
+    }
     $TEMPLATE->assign('global_timeout', $CFG->timeout);
 } else {                                                                        // ... anderenfalls $USER aus db laden
     $_SESSION['USER']       =  new User();  

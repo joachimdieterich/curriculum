@@ -329,7 +329,11 @@ class Institution {
         $db             = DB::prepare('SELECT timeout FROM institution WHERE id = ?');
         $db->execute(array($id));
         $result         = $db->fetchObject();
-        return $result->timeout;
+        if ($result->timeout > 0){
+            return $result->timeout;
+        } else {
+            return false;
+        }
     }
     
     public function setBulletinBoard($title, $text){ //z. Zt. kann in jeder Institution nur ein Pinnwandeintrag erstellt werden. 
