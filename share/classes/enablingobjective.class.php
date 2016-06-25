@@ -622,18 +622,22 @@ class EnablingObjective {
      */
     public function getAccomplishedUsers($group, $status = 1){
         switch ($status) {
-            case 0: $db = DB::prepare('SELECT gr.user_id FROM groups_enrolments AS gr 
-					WHERE gr.group_id = ? AND gr.status = 1 AND gr.user_id NOT IN (SELECT user_id FROM user_accomplished 
-                                            WHERE enabling_objectives_id = ? AND status_id > 0)');
-                    $db->execute(array($group, $this->id));
-                break;
+            /* red */
+            case 0:  
+            /* green */
             case 1:
-            case 2:
-            case 3: $db = DB::prepare('SELECT ua.user_id FROM user_accomplished AS ua
+            /* orange */
+            case 2: $db = DB::prepare('SELECT ua.user_id FROM user_accomplished AS ua
                               INNER JOIN groups_enrolments AS gr ON gr.user_id = ua.user_id 
                                     WHERE ua.enabling_objectives_id = ? AND gr.group_id = ?
                                     AND gr.status = 1 AND ua.status_id = ?');
-                                    $db->execute(array($this->id, $group, $status));
+                                    $db->execute(array($this->id, $group, $status));                    
+                break;
+            /* white */
+            case 3: $db = DB::prepare('SELECT gr.user_id FROM groups_enrolments AS gr 
+					WHERE gr.group_id = ? AND gr.status = 1 AND gr.user_id NOT IN (SELECT user_id FROM user_accomplished 
+                                            WHERE enabling_objectives_id = ? AND status_id <> 3)');
+                    $db->execute(array($group, $this->id));
                 break;
 
             default:

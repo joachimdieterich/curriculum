@@ -413,8 +413,14 @@ function curriculumdocs(link) {
  * called by user or $(document).ready in base.tpl (if valitation of form failed)
  * @returns {undefined}
  */
-function formloader(form, func, id){
-    getRequest("../share/request/f_"+ form +".php?func="+ func +"&id="+ id);
+function formloader(/*form, func, id, []*/){
+    
+    if (typeof(arguments[3]) !== 'undefined'){
+        alert("../share/request/f_"+ arguments[0] +".php?func="+ arguments[1] +"&id="+ arguments[2]+"&"+jQuery.param(arguments[3]));
+        getRequest("../share/request/f_"+ arguments[0] +".php?func="+ arguments[1] +"&id="+ arguments[2]+"&"+jQuery.param(arguments[3]));        
+    } else {
+        getRequest("../share/request/f_"+ arguments[0] +".php?func="+ arguments[1] +"&id="+ arguments[2]);
+    }
 }
 
 function processor(proc, func, val){

@@ -120,7 +120,7 @@
                                         {if isset($ena->accomplished_users) and isset($ena->enroled_users) and isset($ena->accomplished_percent)}
                                             {$ena->accomplished_users} von {$ena->enroled_users} ({$ena->accomplished_percent}%)<!--Ziel--> 
                                         {/if}
-                                        <a onclick="formloader('compare','group', {$ena->id});"><span class="fa  fa-bar-chart-o pull-right invert box-sm-icon"></span></a>
+                                        <a onclick='formloader("compare","group", {$ena->id},{["group_id"=>$sel_group_id]|@json_encode nofilter});'><span class="fa  fa-bar-chart-o pull-right invert box-sm-icon"></span></a>
                                     </div>
                                     <div {*id="ena_{$ena->id}"*} class="panel-body boxwrap" onclick="setAccomplishedObjectives({$my_id}, '{implode(',',$selected_user_id)}', {$userPaginator.first}, {if isset($paginatorLimit)}{$paginatorLimit}{else}10{/if}, {$ter->id}, {$ena->id}, {$sel_group_id});">
                                         <div class="boxscroll">
