@@ -64,7 +64,7 @@ class Mailbox {
     public function loadNewMessages($user_id){
         global $USER; 
         checkCapabilities('mail:loadInbox', $USER->role_id); //check capability
-        $this->loadMailbox($user_id, 'receiver_id', 'new');
+        $this->loadMailbox($user_id, 'new');
     }
     /**
      * load outbox of a user
@@ -93,26 +93,30 @@ class Mailbox {
      * @param int $user_id
      * @param string $mailbox 
      */
-    private function loadMailbox($user_id, $mailbox = 'delete', $selector = ''){ 
-        if ($mailbox != 'deleted' AND $selector != 'new'){
-            $db = DB::prepare('SELECT * FROM message WHERE '.$mailbox.' = ? ORDER BY id DESC');
-            $db->execute(array($user_id));
-        } elseif ($selector == 'new') {
-            $db = DB::prepare('SELECT msg.* FROM message AS msg WHERE msg.receiver_id = ?
-                        AND msg.receiver_status = 0 ORDER BY msg.id DESC');
-            $db->execute(array($user_id));        
-        } else { // --> sender_id
-            $db = DB::prepare('SELECT msg.* FROM message AS msg WHERE msg.sender_id = ? OR msg.receiver_id = ?
-                        AND msg.receiver_status = -1 ORDER BY msg.id DESC');
-            $db->execute(array($user_id, $user_id));        
+    private function loadMailbox($user_id, $mailbox = 'delete'){ 
+        
+        switch ($mailbox) {
+            case 'new':         $db = DB::prepare('SELECT msg.* FROM message AS msg WHERE msg.receiver_id = ?
+                                            AND msg.receiver_status = 0 ORDER BY msg.id DESC');
+                                $db->execute(array($user_id));
+                break;
+            case 'sender_id':
+            case 'receiver_id': $db = DB::prepare('SELECT * FROM message WHERE '.$mailbox.' = ? ORDER BY id DESC');
+                                $db->execute(array($user_id));
+                break;
+            case 'deleted':     $db = DB::prepare('SELECT msg.* FROM message AS msg WHERE msg.sender_id = ? OR msg.receiver_id = ?
+                                            AND msg.receiver_status = NULL ORDER BY msg.id DESC');
+                                $db->execute(array($user_id, $user_id)); 
+            default:
+                break;
         }
-       
-        while ($result = $db->fetchObject()) {
-            $getMail = new Mail();
-            $getMail->id                 = $result->id;
-            $getMail->sender_id          = $result->sender_id;
 
-            $db_01 = DB::prepare('SELECT username, firstname, lastname, avatar_id FROM users WHERE id = ?');
+        while ($result = $db->fetchObject()) {
+            $getMail                = new Mail();
+            $getMail->id            = $result->id;
+            $getMail->sender_id     = $result->sender_id;
+            
+            $db_01  = DB::prepare('SELECT username, firstname, lastname, avatar_id FROM users WHERE id = ?');
             $db_01->execute(array($getMail->sender_id));
             $sender = $db_01->fetchObject();
             if ($sender){
@@ -124,7 +128,7 @@ class Mailbox {
                 
             }
             $getMail->receiver_id        = $result->receiver_id;
-            $db_02 = DB::prepare('SELECT username, firstname, lastname, avatar_id FROM users WHERE id = ?');
+            $db_02    = DB::prepare('SELECT username, firstname, lastname, avatar_id FROM users WHERE id = ?');
             $db_02->execute(array($getMail->receiver_id)); 
             $receiver = $db_02->fetchObject();
             if ($receiver){
@@ -138,6 +142,7 @@ class Mailbox {
             $getMail->message            = $result->message;
             $getMail->creation_time      = $result->creation_time;
             
+            error_log('box: '.$mailbox.' sender_id:'.$getMail->sender_id);
             switch ($mailbox) {
                 case 'receiver_id': //inbox
                                     $this->inbox[]            = $getMail;

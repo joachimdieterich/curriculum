@@ -99,7 +99,7 @@ $TEMPLATE->assign('class_members', $USER->getGroupMembers()); //'class:members' 
  */
 function outbox($mailbox){
     global $USER, $TEMPLATE;
-    $mailbox->loadOutbox($USER->role_id);
+    $mailbox->loadOutbox($USER->id);
     $TEMPLATE->assign('outbox', $mailbox->outbox); 
     //setPaginator('outboxPaginator', $TEMPLATE, $mailbox->outbox, 'outbox', 'index.php?action=messages&function=showOutbox'); //set Paginator    
 }
@@ -112,7 +112,7 @@ function outbox($mailbox){
  */
 function inbox($mailbox){
     global $USER, $TEMPLATE;
-    $mailbox->loadInbox($USER->role_id);
+    $mailbox->loadInbox($USER->id);
     $TEMPLATE->assign('inbox', $mailbox->inbox); 
     //setPaginator('inboxPaginator', $TEMPLATE, $mailbox->inbox, 'inbox', 'index.php?action=messages&function=showInbox'); //set Paginator    
 }

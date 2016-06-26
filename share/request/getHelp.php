@@ -33,7 +33,6 @@ $enabling_objective->id = filter_input(INPUT_GET, 'enablingObjectiveID', FILTER_
 $enabling_objective->load();
 $result                 = $enabling_objective->getAccomplishedUsers(filter_input(INPUT_GET, 'group', FILTER_VALIDATE_INT));
 
-
 $html ='<div class="modal-dialog" style="overflow-y: initial !important;">
           <div class="modal-content">
             <div class="modal-header">
@@ -54,8 +53,6 @@ $users                  = new User();
                         </span>
                         <span class="description">'.$users->firstname.' '.$users->lastname.'</span>
                       </div><br>';
-      
-      //$html .= $users->username. ': <a href="index.php?action=messages&function=shownewMessage&help_request=true&receiver_id='.$users->id.'&subject='.$enabling_objective->id.'">Benutzer kontaktieren</a><br>';
     }
 } else {
     $html .= ' Leider gibt es keinen Benutzer, der dieses Lernziel erreicht hat';

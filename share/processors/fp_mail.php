@@ -30,13 +30,20 @@ if (!isset($_SESSION['PAGE']->target_url)){     //if target_url is not set -> us
     $_SESSION['PAGE']->target_url       = $_SESSION['PAGE']->url;
 }
 $mail              = new Mail();
-$gump              = new Gump();    /* Validation */
-$mail->message     = $_POST['message_text'];  
-$_POST             = $gump->sanitize($_POST);       //sanitize $_POST
 
+$purify            = HTMLPurifier_Config::createDefault();
+$purify->set('Core.Encoding', 'UTF-8'); // replace with your encoding
+$purify->set('HTML.Doctype', 'HTML 4.01 Transitional'); // replace with your doctype
+$purifier          = new HTMLPurifier($purify);
+
+$mail->message     = $purifier->purify(filter_input(INPUT_POST, 'message_text', FILTER_UNSAFE_RAW));
+
+$gump              = new Gump();    /* Validation */
+$_POST             = $gump->sanitize($_POST);       //sanitize $_POST
 
 $mail->receiver_id = $_POST['receiver_id']; 
 $group_id          = $_POST['group_id']; 
+error_log(json_encode($mail->receiver_id).' '.json_encode($group_id));
 $mail->sender_id   = $USER->id;
 $mail->subject     = $_POST['subject']; 
 
@@ -47,7 +54,7 @@ $gump->validation_rules(array(
 ));
 $validated_data = $gump->run($_POST);
 if($validated_data === false) {/* validation failed */
-    $_SESSION['FORM'] = new stdClass();
+    $_SESSION['FORM']            = new stdClass();
     $_SESSION['FORM']->form      = 'mail'; 
     foreach($mail as $key => $value){
         $_SESSION['FORM']->$key = $value;

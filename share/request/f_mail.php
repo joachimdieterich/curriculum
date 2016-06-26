@@ -90,24 +90,24 @@ $content .= '"><input type="hidden" name="mail_id" id="mail_id" value="'.$mail_i
             <input type="hidden" name="func" id="func" value="'.$func.'"/>';
 $content .= '<div class="nav-tabs-custom">';
 $content .= '<ul class="nav nav-tabs">
-          <li class="active"><a href="#persons" data-toggle="tab" aria-expanded="false" onclick="toggle([\'persons\', \'add_person\'], [\'groups\', \'add_group\']);">Personen</a></li>
-          <li class=""><a href="#groups" data-toggle="tab" aria-expanded="true" onclick="toggle([\'groups\', \'add_group\'], [\'persons\', \'add_person\']);">Gruppen</a></li>';    
+          <li class="active"><a href="#persons" data-toggle="tab" aria-expanded="false" onclick="toggle([\'persons\', \'add_person_btn\'], [\'groups\', \'add_group_btn\']);">Personen</a></li>
+          <li class=""><a href="#groups" data-toggle="tab" aria-expanded="true" onclick="toggle([\'groups\',  \'add_group_btn\'], [\'persons\', \'add_person_btn\']);">Gruppen</a></li>';    
 $content .='</ul>
           <div class="tab-content">
             <div class="tab-pane active" id="persons">
             '. Form::input_select('receiver_id', 'Empfänger', $USER->getGroupMembers(), 'firstname, lastname', 'id', $receiver_id , $error) .'
-            </div><!-- /.tab-pane -->';
+            <input id="add_person" name="add_person" type="submit" class="hidden"/></div><!-- /.tab-pane -->';
 $content .= '<div class="tab-pane" id="groups">';
 $groups = new Group();
 $content .= Form::input_select('group_id', 'Empfänger', $groups->getGroups('group', $USER->id), 'group, institution', 'id', $group_id , $error);
-$content .= '</div><!-- /.tab-pane -->';
+$content .= '<input id="add_group" name="add_group" type="submit" class="hidden"/></div><!-- /.tab-pane -->';
 $content .= Form::input_text('subject', 'Betreff', $subject, $error);
 $content .= Form::input_textarea('message_text', 'Nachricht', $message_text, $error, 'Sehr geehrter Empfänger ...');
 
 $content .= '</div></form>';
 
-$f_content = '<button id="add_person" name="add_person" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" > '.$header.'</button> 
-              <button id="add_group" name="add_group" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right hidden" > '.$header.'</button> ';
+$f_content = '<button id="add_person_btn" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="$(\'#add_person\').click();" > '.$header.'</button> 
+              <button id="add_group_btn"type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right hidden" onclick="$(\'#add_group\').click();" > '.$header.'</button> ';
               
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
