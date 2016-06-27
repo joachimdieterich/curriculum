@@ -196,7 +196,10 @@ $p_options = array('delete' => array('onclick'      => "del('user',__id__, $USER
                                      'icon'         => 'fa fa-list'),
                     'institution'  => array('href'  => 'index.php?action=user&function=showInstitution&userID=__id__',
                                      'capability'   => checkCapabilities('user:getInstitution', $USER->role_id, false),
-                                     'icon'         => 'fa fa-university'));
+                                     'icon'         => 'fa fa-university'),
+                    'profile'  => array('onclick'   => "formloader('overview','full',__id__);", 
+                                     'capability'   => checkCapabilities('user:getGroups', $USER->role_id, false),  //todo: use extra capability?
+                                     'icon'         => 'fa fa-user'));
 $p_config =   array('id'         => 'checkbox',
                     'username'   => 'Benutzername', 
                     'firstname'  => 'Vorname', 
