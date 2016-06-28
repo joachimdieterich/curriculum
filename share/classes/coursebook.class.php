@@ -33,7 +33,10 @@ class CourseBook {
     public $creator_id; 
     public $creator; 
     public $course_id;
+    public $curriculum_id;
+    public $curriculum;
     public $event_id;
+   
     //public $event;
     public $timestart;
     public $timeend;
@@ -76,7 +79,8 @@ class CourseBook {
     
     public function load($dependency = 'cb_id', $value = null){
         if (isset($value)){ $v = $value; } else { $v = $this->id; }
-        $db = DB::prepare('SELECT * FROM course_book WHERE '.$dependency.' = ?');
+        $db = DB::prepare('SELECT cb.*, cu.curriculum, ce.curriculum_id FROM course_book AS cb, curriculum_enrolments AS ce, curriculum AS cu 
+                                                         WHERE cb.'.$dependency.' = ? AND cb.course_id = ce.id AND cu.id = ce.curriculum_id');
         $db->execute(array($v));
         $result     = $db->fetchObject();
         $user       = new User();
@@ -89,19 +93,15 @@ class CourseBook {
             $this->creator_id    = $result->creator_id;
             $this->creator       = $user->resolveUserId($result->creator_id);
             $this->course_id     = $result->course_id;
-            /*$this->event_id    = $result->event_id;
-            if (isset($this->event_id)){
-                $this->event     = new Event($this->event_id);
-                $this->timerange = $this->event->timerange;
-            }*/
+            $this->curriculum_id = $result->curriculum_id;
+            $this->curriculum    = $result->curriculum;
             $this->timestart     = $result->timestart;
             $this->timeend       = $result->timeend;
             $this->timerange     = date('d.m.Y G:i', strtotime($this->timestart)) .' - '. date('d.m.Y G:i', strtotime($result->timeend));
             $this->teacher_list  = '';
             $this->present_list  = '';
-            $absent->cb_id      = $this->id;
+            $absent->cb_id       = $this->id;
             $this->absent_list   = $absent->get();
-            //$this->task_id       = $result->task_id;
             $t                   = new Task();
             $this->task          = $t->get('coursebook', $this->id);
             return true;                                                        
@@ -120,9 +120,11 @@ class CourseBook {
                                                         'description'   => 'cb')); 
         $entrys = array();                      //Array of grades
         switch ($dependency) {
-            case 'user':    $db = DB::prepare('SELECT cb.cb_id
-                                                FROM course_book AS cb
-                                                WHERE cb.creator_id = ? '.$order_param );
+            case 'user':    $db = DB::prepare('SELECT cb.cb_id FROM course_book AS cb, curriculum_enrolments AS ce, groups_enrolments AS ge
+                                                        WHERE  cb.course_id = ce.id
+                                                        AND ge.group_id = ce.group_id
+                                                        AND ge.user_id = ?
+                                                       ORDER BY cb.timestart ASC'.$order_param );
                             $db->execute(array($USER->id));
                 break;
             case 'course':  $db = DB::prepare('SELECT cb.cb_id

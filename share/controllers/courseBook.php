@@ -40,6 +40,6 @@ if (checkCapabilities('menu:readCourseBook', $USER->role_id)){
                   'duration'        => 'Dauer',
                   'timeunit_id'     => 'Zeiteinheit',
                   'creator_id'      => 'Eingetragen von');
-    setPaginator('cbP', $TEMPLATE, $coursebook->get(), 'cb_val', 'index.php?action=courseBook', $p_config);
+    //setPaginator('cbP', $TEMPLATE, $coursebook->get(), 'cb_val', 'index.php?action=courseBook', $p_config);
     $TEMPLATE->assign('coursebook', $coursebook->get()); 
 } 

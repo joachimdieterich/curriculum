@@ -454,13 +454,9 @@ class Render {
         return $r;
     }
 
-    public static function courseBook($coursebook, $cur_id = null, $id='coursebook'){
-        if (isset($cur_id)){
-            $curriculum = new Curriculum();
-            $curriculum->id = $cur_id; 
-            $curriculum->load();
-        }
-        $r       = '<div style="overflow:hidden;"><div id="'.$id.'" style="overflow:auto;">';
+    public static function courseBook($coursebook){
+        global $USER;
+        $r       = '<div style="overflow:hidden;"><div id="coursebook" style="overflow:auto;">';
         $r      .= '<ul  class="timeline" >';
         $p_date  = '';
         foreach ($coursebook as $cb) {
@@ -481,8 +477,8 @@ class Render {
                           <span class="time"><i class="fa fa-clock-o"></i> '.$cb->creation_time.'</span>
                           
                           <h3 class="timeline-header"><a href="#">';
-                          if (isset($curriculum->curriculum)){
-                          $r      .=     $curriculum->curriculum;
+                          if (isset($cb->curriculum)){
+                          $r      .=     $cb->curriculum;
                           }  
             $r      .= '                </a> '.$cb->creator.'</h3>
                           <div class="timeline-body">
@@ -493,14 +489,11 @@ class Render {
                           
                           <!--div class="timeline-footer"-->';
             $r      .=    Render::todoList($cb->task, 'coursebook', $cb->id);
-            $r      .=    Render::absentListe($cb->absent_list, 'coursebook', $cb->id);
-            /*              foreach ($cb->task as $tsk) {
-            $r      .=    '<a class="btn btn-primary btn-xs" onclick="formloader(\'task\',\'edit\', '.$tsk->id.')">'.$tsk->task.'</a>';
-                          }
-            $r      .= '   <a class="btn btn-primary btn-xs" onclick="formloader(\'task\',\'coursebook\', '.$cb->id.')"><i class="fa fa-plus"></i> Aufgabe hinzufügen</a></div>*/
+            if (checkCapabilities('absent:update', $USER->role_id, false)){
+                $r  .=    Render::absentListe($cb->absent_list, 'coursebook', $cb->id);
+            }
             $r      .= ' </div>
                       </li>';
-
         }
         $r      .= '    <li>
                             <i class="fa fa-clock-o bg-gray" onclick="formloader(\'courseBook\',\'new\');"></i>
@@ -512,6 +505,7 @@ class Render {
     }
     
     public static function todoList($task, $context, $reference_id){
+        global $USER;
         $r       = '<ul class="todo-list ui-sortable">';
                  foreach ($task as $tsk) {
         $r       .= ' <li>
@@ -522,16 +516,19 @@ class Render {
                       <input type="checkbox" value="" name=""-->
                       <span class="text">'.$tsk->task.'</span>
                       <small class="label label-primary pull-right"><i class="fa fa-clock-o"></i>'.$tsk->timeend.'</small>
-                      <br><span class="text small">'.$tsk->description.'</span>
-                      <div class="tools">
-                        <i class="fa fa-edit" onclick="formloader(\'task\',\'edit\', '.$tsk->id.')"></i>
-                        <i class="fa fa-trash-o" onclick="del(\'task\', '.$tsk->id.')"></i>
-                      </div>
-                    </li>';
+                      <br><span class="text small">'.$tsk->description.'</span>';
+                        if (checkCapabilities('task:update', $USER->role_id, false)){
+                            $r   .= '<div class="tools">
+                                        <i class="fa fa-edit" onclick="formloader(\'task\',\'edit\', '.$tsk->id.')"></i>
+                                        <i class="fa fa-trash-o" onclick="del(\'task\', '.$tsk->id.')"></i>
+                                    </div>';
+                        }
+        $r       .= '</li>';
                  }
                  
-                    
-        $r       .= '<li><a class="btn btn-primary btn-xs" onclick="formloader(\'task\',\''.$context.'\', '.$reference_id.')"><i class="fa fa-plus"></i> Aufgabe hinzufügen</a></li> </ul>';
+        if (checkCapabilities('task:add', $USER->role_id, false)){            
+            $r   .= '<li><a class="btn btn-primary btn-xs" onclick="formloader(\'task\',\''.$context.'\', '.$reference_id.')"><i class="fa fa-plus"></i> Aufgabe hinzufügen</a></li> </ul>';
+        }
         return $r;
     }
     
@@ -554,9 +551,7 @@ class Render {
                             default:
                                 break;
                         }
-                            
         $r     .= '     </a>
-                        
                         <span class="product-description">'.$ub->reason.'</span>
                         <span class="pull-right"><i class="fa fa-edit" onclick="formloader(\'absent\',\'edit\', '.$ub->id.')"></i>
                         <i class="fa fa-trash-o" onclick="del(\'absent\', '.$ub->id.')"></i></span>

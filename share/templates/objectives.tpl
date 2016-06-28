@@ -80,7 +80,7 @@
         </div>
         {if isset($userPaginator)} 
         <div class="col-lg-6 col-md-4 col-sm-12 col-xs-12">
-            {Render::courseBook($coursebook, $selected_curriculum)}    
+            {Render::courseBook($coursebook)}    
         </div>
         {/if}
     </div>
