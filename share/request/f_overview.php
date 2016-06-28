@@ -38,8 +38,8 @@ switch ($func) {
         break;
 }
 
-$content    = '';
-        
+$content    = '';  
+/* Institutions/Roles */
 $content   .= '<div class="col-md-6 ">
             <!-- Widget: user widget style 1 -->
             <div class="box box-widget widget-user">
@@ -57,6 +57,7 @@ $content   .= '<div class="col-md-6 ">
               </div>
             </div><!-- /.widget-user -->
         </div><!-- /.col -->';
+/* Curricula / groups */
 $content   .= '<div class="col-md-6 ">
             <!-- Widget: user widget style 1 -->
             <div class="box box-widget widget-user">
@@ -67,17 +68,16 @@ $content   .= '<div class="col-md-6 ">
               </div>
               <div class="box-footer no-padding">
                 <ul class="nav nav-stacked">';
-                    if (isset($u->enrolments)){
-                        foreach($u->enrolments AS $e){
-                            $content   .= '<li><a href="index.php?action=view&curriculum_id='.$e->id.'&group='.$e->group_id.'">'.$e->curriculum.' <span class="pull-right badge bg-geen">'.$e->groups.'</span></a></li>';
-                        }
+                if (isset($u->enrolments)){
+                    foreach($u->enrolments AS $e){
+                        $content   .= '<li><a href="index.php?action=view&curriculum_id='.$e->id.'&group='.$e->group_id.'">'.$e->curriculum.' <span class="pull-right badge bg-geen">'.$e->groups.'</span></a></li>';
                     }
-                    
+                }     
  $content   .= '</ul>
               </div>
             </div><!-- /.widget-user -->
-        </div><!-- /.col -->';
-$content   .= '</div>';
+        </div><!-- /.col -->
+        </div>';
 
 $html = Form::modal(array('title'   => 'Übersicht über den Benutzer <strong>'.$u->firstname.' '.$u->lastname.'</strong> ('.$u->username.')',
                           'content' => $content));

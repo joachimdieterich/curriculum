@@ -2,13 +2,13 @@
 <aside class="control-sidebar control-sidebar-dark">
   <!-- Create the tabs -->
   <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-    <li><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
+    <li class="active"><a href="#control-sidebar-home-tab" data-toggle="tab" ><i class="fa fa-home"></i></a></li>
     <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
   </ul>
   <!-- Tab panes -->
   <div class="tab-content">
     <!-- Home tab content -->
-    <div class="tab-pane" id="control-sidebar-home-tab">
+    <div class="tab-pane active" id="control-sidebar-home-tab">
       <h3 class="control-sidebar-heading">Letzte Nachrichten</h3>
       <ul class="control-sidebar-menu">
         {if isset($recent_mails)}  
@@ -23,24 +23,49 @@
               </a>
             </li>
             {/foreach}
+        {else}
+            <li><a href="#">Keine Nachrichten vorhanden</a></li>
         {/if}
       </ul><!-- /.control-sidebar-menu -->
 
       <h3 class="control-sidebar-heading">Anstehende Termine</h3>
       <ul class="control-sidebar-menu">
-        {foreach item=ue from=$upcoming_events} 
-        <li>
-          <a href="#">
-            <i class="menu-icon fa fa-calendar bg-blue"></i>
-            <div class="menu-info">
-              <h4 class="control-sidebar-subheading">{$ue->event}</h4>
-              <p>{$ue->timestart} - {$ue->timeend}</p>
-            </div>
-          </a>
-        </li>
-        {/foreach}
+        {if !empty($upcoming_events)}  
+            {foreach item=ue from=$upcoming_events} 
+            <li>
+              <a href="#">
+                <i class="menu-icon fa fa-calendar bg-blue"></i>
+                <div class="menu-info">
+                  <h4 class="control-sidebar-subheading">{$ue->event}</h4>
+                  <p>{$ue->timestart} - {$ue->timeend}</p>
+                </div>
+              </a>
+            </li>
+            {/foreach}
+        {else}
+            <li><a href="#">Keine Termine vorhanden</a></li>
+        {/if}
       </ul><!-- /.control-sidebar-menu -->
-
+      
+      <h3 class="control-sidebar-heading">Anstehende Aufgaben</h3>
+      <ul class="control-sidebar-menu">
+        {if !empty($upcoming_tasks)}
+            {foreach item=tsk from=$upcoming_tasks} 
+            <li>
+              <a href="#">
+                <i class="menu-icon fa fa-tasks bg-red"></i>
+                <div class="menu-info">
+                  <h4 class="control-sidebar-subheading">{$tsk->task}</h4>
+                  <p>{$tsk->timestart} - {$tsk->timeend}</p>
+                </div>
+              </a>
+            </li>
+            {/foreach}
+        {else}
+            <li><a href="#">Keine Aufgaben</a></li>
+        {/if}
+        
+      </ul><!-- /.control-sidebar-menu -->
     </div><!-- /.tab-pane -->
 
     <!-- Settings tab content -->

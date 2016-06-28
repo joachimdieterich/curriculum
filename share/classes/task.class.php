@@ -1,6 +1,6 @@
 <?php
 /**
-* CourseBook
+* Tasks
 * 
 * @abstract This file is part of curriculum - http://www.joachimdieterich.de
 * @package core
@@ -100,25 +100,34 @@ class Task {
      */
     public function get($dependency = 'user', $id = null, $paginator = ''){
         global $USER;
-        $order_param = orderPaginator($paginator, array('task'         => 'tsk',
-                                                        'description'   => 'tsk')); 
+        $order_param = orderPaginator($paginator, array('task'         => 'ta',
+                                                        'description'   => 'ta')); 
         $entrys = array();                      //Array of grades
         switch ($dependency) {
-            case 'user':            $db = DB::prepare('SELECT tsk.id
-                                                        FROM task AS tsk
-                                                        WHERE tsk.creator_id = ? '.$order_param );
+            case 'user':            $db = DB::prepare('SELECT ta.id
+                                                        FROM task AS ta
+                                                        WHERE ta.creator_id = ? '.$order_param );
                                     $db->execute(array($USER->id));
                 break;
 
-            case 'coursebook':      $db = DB::prepare('SELECT tsk.id
-                                                FROM task AS tsk, task_enrolments AS te, context AS ct
+            case 'coursebook':      $db = DB::prepare('SELECT ta.id
+                                                FROM task AS ta, task_enrolments AS te, context AS ct
                                                 WHERE ct.context = ? 
                                                 AND ct.context_id = te.context_id
                                                 AND te.reference_id = ?
-                                                AND te.task_id = tsk.id '.$order_param );
+                                                AND te.task_id = ta.id '.$order_param );
                                     $db->execute(array('courseBook', $id));
                 break;
-            
+            case 'upcoming':        $db = DB::prepare('SELECT ta.id FROM task AS ta, task_enrolments AS te, context AS ct, course_book AS cb, curriculum_enrolments AS ce, groups_enrolments AS ge
+                                                        WHERE ct.context = ?
+                                                        AND ct.context_id = te.context_id
+                                                        AND te.reference_id = cb.cb_id
+                                                        AND cb.course_id = ce.id
+                                                        AND ge.group_id = ce.group_id
+                                                        AND ge.user_id = ?
+                                                        AND te.task_id = ta.id  AND ta.timeend >= NOW() ORDER BY ta.timeend ASC  '.$order_param );
+                                    $db->execute(array('courseBook', $USER->id));
+                break;
             default:
                 break;
         }
