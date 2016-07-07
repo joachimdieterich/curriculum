@@ -335,7 +335,7 @@ class Form {
         if (isset($player)){
             $html .= $player.'<br>';
         }
-        $html .= '<a href="'.$url.'" onclick="'.$onclick.'">'.$title.'</a></span>
+        $html .= '<a href="'.$url.'" target="_blank" onclick="'.$onclick.'">'.$title.'</a></span>
                   <span>'.$description;
         
         $html .='</span> ';

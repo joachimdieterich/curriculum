@@ -65,7 +65,7 @@ if($validated_data === false) {/* validation failed */
             break;
         case 'edit':     $role->id = $_POST['role_id']; 
                          if ($role->update()){
-                            $_SESSION['PAGE']->message[] = array('message' => 'Klassenstufe erfolgreich aktualisiert', 'icon' => 'fa-key text-success');
+                            $_SESSION['PAGE']->message[] = array('message' => 'Rolle erfolgreich aktualisiert', 'icon' => 'fa-key text-success');
                          }
             break;
        

@@ -35,7 +35,7 @@
                 {/if}
                 {if checkCapabilities('menu:readCourseBook', $my_role_id, false)}
                 <li class="treeview {if $page_action eq 'courseBook'}active{/if}">
-                    <a href="index.php?action=coursebook&reset=true">
+                    <a href="index.php?action=courseBook&reset=true">
                         <i class="fa fa-book"></i> <span>Kursbuch</span>
                     </a>
                 </li>

@@ -518,8 +518,13 @@ class File {
                 $this->description           = $result->description;
                 $this->author                = $result->author;
                 $this->license               = $result->license;
-                $this->path                  = $result->path;
                 $this->type                  = $result->type;
+                if ($this->type != '.url'){
+                    $this->path              = $result->path;
+                } else {
+                    $this->path              = $result->filename;
+                }
+                
                 $this->context_id            = $result->context_id;
                 if (isset($result->context_path)){
                     $this->context_path      = $result->context_path;

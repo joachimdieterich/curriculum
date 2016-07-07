@@ -952,9 +952,10 @@ class User {
         $db->execute(array($this->id));
         
         while($result = $db->fetchObject()) { 
-            $c        = new Curriculum();
-            $c->id    = $result->id;
-            $data[]   = $result;         
+            $c                      = new Curriculum();
+            $c->id                  = $result->id;
+            $c->base_curriculum_id  = null; //if no niveau / level is set base_curriculum_id = null;
+            $data[]                 = $result;         
         } 
         if (isset($data)){ return $data; } 
         else             { return false; }
