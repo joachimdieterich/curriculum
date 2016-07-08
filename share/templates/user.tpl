@@ -128,58 +128,7 @@
             </div>
         </div>
     
-
         {if !isset($groups_array)}<p>Sie können noch keine Benutzer verwalten, da sie entweder nicht über die nötigen Rechte verfügen, oder keine Benutzer in ihrer Institution vorhanden sind.</p><p>&nbsp;</p>{/if}
-
-{*Groups paginator*}
-{if isset($groupsPaginator)}
-    <div class="box box-primary">
-        <div class="box-header with-border">
-          <h3 class="box-title">Lerngruppen des Benutzers</h3>
-          <div class="box-tools pull-right">
-            <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-            <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-          </div>
-        </div><!-- /.box-header -->
-        <div class="box-body">
-            {html_paginator id='groupsPaginator'}    
-        </div>
-    </div>  
-{/if}   
-        
-        
-{*Curriculum paginator*}
-{if isset($curriculumList)}
-    <div class="box box-primary">
-        <div class="box-header with-border">
-          <h3 class="box-title">Lehrpläne des Benutzers</h3>
-          <div class="box-tools pull-right">
-            <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-            <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-          </div>
-        </div><!-- /.box-header -->
-        <div class="box-body">
-            {html_paginator id='curriculumList'}
-        </div>
-    </div>  
-{/if}
-
-{*Institution paginator*}
-{if isset($institutionList)}
-    <div class="box box-primary">
-        <div class="box-header with-border">
-          <h3 class="box-title">Institutionen des Benutzers</h3>
-          <div class="box-tools pull-right">
-            <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-            <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-          </div>
-        </div><!-- /.box-header -->
-        <div class="box-body">
-            {html_paginator id='institutionList'}  
-        </div>
-    </div>  
-{/if}
-
    </div> 
 </section>
 {/block}

@@ -33,56 +33,7 @@ $TEMPLATE->assign('showFunctions', true);
 if (isset($_GET['function'])) {
     $TEMPLATE->assign('showFunctions', false);  
     $current_user = new User();
-    $current_user->id = filter_input(INPUT_GET, 'userID', FILTER_VALIDATE_INT);
-     switch ($_GET['function']) {
-        case "showCurriculum": 
-                $TEMPLATE->assign('showenroledCurriculum', true); 
-                $p_config  = array('id'         => 'checkbox',
-                                    'curriculum'   => 'Lehrplan', 
-                                    'description' => 'Beschreibung', 
-                                    'subject'     => 'Fach', 
-                                    'grade'       => 'Klasse', 
-                                    'schooltype'  => 'Schultyp', 
-                                    'state'       => 'Bundesland/Region', 
-                                    'de'          => 'Land', 
-                                    'p_options'   => array());
-                setPaginator('curriculumList', $TEMPLATE, $current_user->getCurricula('curriculumList'), 'cu_val', 'index.php?action=user&function=showCurriculum&userID='.$current_user->id, $p_config);
-                break;
-        case "showInstitution": 
-                $TEMPLATE->assign('showenroledInstitution', true); 
-                $TEMPLATE->assign('selectedUserID', $current_user->id);
-                $institution = new Institution();
-                $p_options = array('delete'         => array('onclick' => "expelFromInstituion(__id__, $current_user->id);", 
-                                 'capability'       => checkCapabilities('user:expelFromInstitution', $USER->role_id, false)));
-                $p_config =   array('id'         => 'checkbox',
-                                    'role'   => 'Rolle', 
-                                    'institution'   => 'Institution', 
-                                    'description'   => 'Beschreibung', 
-                                    'schooltype_id' => 'Schultyp', 
-                                    /*'state_id'      => 'Bundesland/Region', */
-                                    'creation_time' => 'Erstelltungsdatum', 
-                                    'creator_id'    => 'Ersteller', 
-                                    'p_options'     => $p_options);
-                setPaginator('institutionList', $TEMPLATE, $institution->getInstitutions('user', 'institutionList', $current_user->id), 'ins_val', 'index.php?action=user&function=showinstitution&userID='.$current_user->id, $p_config);
-                break;
-       case "showGroups": 
-                $TEMPLATE->assign('showenroledGroups',  true); 
-                $TEMPLATE->assign('selectedUserID',     $current_user->id);
-                $p_options = array('delete'         => array('onclick' => "expelUser(__id__, $current_user->id);", 
-                                   'capability'     => checkCapabilities('user:expelFromGroup', $USER->role_id, false)));
-                $p_config =   array('id'         => 'checkbox',
-                                    'groups'        => 'Gruppen', 
-                                    'grade'         => '(Klassen)stufe', 
-                                    'description'   => 'Beschreibung', 
-                                    'semester'      => 'Lernzeitraum', 
-                                    'institution'   => 'Institution', 
-                                    'creation_time' => 'Erstellungsdatum', 
-                                    'creator'       => 'Ersteller', 
-                                    'p_options'     => $p_options);
-                setPaginator('groupsPaginator', $TEMPLATE, $current_user->getGroups('groupsPaginator'), 'gp_val', 'index.php?action=user&function=showGroups&userID='.$current_user->id, $p_config);
-                break;
-            default: break;
-     }     
+    $current_user->id = filter_input(INPUT_GET, 'userID', FILTER_VALIDATE_INT);    
 }
         
 if (isset($_POST) ){
@@ -190,18 +141,10 @@ $p_options = array('delete' => array('onclick'      => "del('user',__id__, $USER
                                      'capability'   => checkCapabilities('user:updateUser', $USER->role_id, false),
                                      'icon'         => 'fa fa-edit',
                                      'tooltip'      => 'bearbeiten'),
-                    'group'  => array('href'        => 'index.php?action=user&function=showGroups&userID=__id__',
-                                     'capability'   => checkCapabilities('user:getGroups', $USER->role_id, false),
-                                     'icon'         => 'fa fa-group'),
-                    /*'list'  => array('href'         => 'index.php?action=user&function=showCurriculum&userID=__id__',
-                                     'capability'   => checkCapabilities('user:getCurricula', $USER->role_id, false),
-                                     'icon'         => 'fa fa-list'),
-                    'institution'  => array('href'  => 'index.php?action=user&function=showInstitution&userID=__id__',
-                                     'capability'   => checkCapabilities('user:getInstitution', $USER->role_id, false),
-                                     'icon'         => 'fa fa-university'),*/
                     'profile'  => array('onclick'   => "formloader('overview','full',__id__);", 
                                      'capability'   => checkCapabilities('user:getGroups', $USER->role_id, false),  //todo: use extra capability?
-                                     'icon'         => 'fa fa-user'));
+                                     'icon'         => 'fa fa-user',
+                                     'tooltip'      => 'Überblick'));
 $p_config =   array('id'         => 'checkbox',
                     'username'   => 'Benutzername', 
                     'firstname'  => 'Vorname', 

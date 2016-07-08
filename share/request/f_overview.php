@@ -51,7 +51,7 @@ $content   .= '<div class="col-md-6 ">
               <div class="box-footer no-padding">
                 <ul class="nav nav-stacked">';
                 foreach($u->institutions AS $i){
-                    $content   .= '<li><a href="#">'.$i->institution.' <span class="pull-right badge bg-geen">'.$i->role.'</span></a></li>';
+                    $content   .= '<li><a href="#">'.$i->institution.' <span class="pull-right badge bg-green">'.$i->role.'</span></a></li>';
                 } 
  $content   .= '</ul>
               </div>
@@ -79,7 +79,32 @@ $content   .= '<div class="col-md-6 ">
         </div><!-- /.col -->
         </div>';
 
-$html = Form::modal(array('title'   => 'Übersicht über den Benutzer <strong>'.$u->firstname.' '.$u->lastname.'</strong> ('.$u->username.')',
+$groups         = new Group(); 
+;
+/* Curricula / groups */
+$content   .= '<div class="col-md-6 ">
+            <!-- Widget: user widget style 1 -->
+            <div class="box box-widget widget-user">
+              <!-- Add the bg color to the header using any of the bg-* classes -->
+              <div class="widget-user-header bg-purple">
+                <h3 class="widget-user-username">Lerngruppe</h3>
+                <h5 class="widget-user-desc">Lerngruppe | Institution</h5>
+              </div>
+              <div class="box-footer no-padding">
+                <ul class="nav nav-stacked">';
+                $group = $groups->getGroups('user', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
+                if (isset($group)){
+                    foreach($group AS $g){
+                        $content   .= '<li><a href="">'.$g->group.' <span class="pull-right badge bg-geen">'.$g->institution_id.'</span></a></li>';
+                    }
+                }     
+ $content   .= '</ul>
+              </div>
+            </div><!-- /.widget-user -->
+        </div><!-- /.col -->
+        </div>';
+ 
+$html = Form::modal(array('title'   => 'Überblick über den Benutzer <strong>'.$u->firstname.' '.$u->lastname.'</strong> ('.$u->username.')',
                           'content' => $content));
 
 echo json_encode(array('html'=>$html));
