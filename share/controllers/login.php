@@ -38,7 +38,6 @@ if(filter_input(INPUT_POST, 'login', FILTER_UNSAFE_RAW)) {
         session_destroy();                                          // Verhindert, dass eine bestehende Session genutzt wird --> verursacht Probleme (token / uploadframe)
         session_start();
         
-        
         $_SESSION['username']   = $user->username;
         $_SESSION['timein']     = time();
         $user->load('username', $user->username, true);

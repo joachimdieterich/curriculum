@@ -26,15 +26,17 @@ global $CFG, $USER, $TEMPLATE, $INSTITUTION;
 
 $TEMPLATE->assign('page_title',  'Institutionen');
 $TEMPLATE->assign('breadcrumb',  array('Institutionen' => 'index.php?action=institution'));
-$state                         = new State;  
+$state     = new State;  
 
 $p_options = array('delete' => array('onclick'    => "del('institution',__id__, $USER->id);", 
                                      'capability' => checkCapabilities('institution:delete', $USER->role_id, false),
-                                     'icon'       => 'fa fa-minus'),
+                                     'icon'       => 'fa fa-minus',
+                                     'tooltip'    => 'löschen'),
                     'edit'  => array('onclick'    => "formloader('institution', 'edit',__id__);",
                                      'capability' => checkCapabilities('institution:update', $USER->role_id, false),
-                                     'icon'       => 'fa fa-edit'));
-$p_view =   array('id'            => 'checkbox', 
+                                     'icon'       => 'fa fa-edit',
+                                     'tooltip'    => 'bearbeiten'));
+$p_view    = array('id'           => 'checkbox', 
                   'institution'   => 'Institution', 
                   'description'   => 'Beschreibung', 
                   'schooltype_id' => 'Schultyp',

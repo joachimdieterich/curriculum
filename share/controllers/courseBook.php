@@ -30,16 +30,5 @@ $LOG->add($USER->id, 'view', $PAGE->url, 'courseBook');
     
 if (checkCapabilities('menu:readCourseBook', $USER->role_id)){
     $coursebook = new CourseBook();
-    
-    
-    $p_config =   array('id'        => 'checkbox', 
-                  'creation_time'   => 'Datum/Zeit', 
-                  'topic'           => 'Thema',
-                  'description'     => 'Erläuterungen',
-                  'date'            => 'Datum',
-                  'duration'        => 'Dauer',
-                  'timeunit_id'     => 'Zeiteinheit',
-                  'creator_id'      => 'Eingetragen von');
-    //setPaginator('cbP', $TEMPLATE, $coursebook->get(), 'cb_val', 'index.php?action=courseBook', $p_config);
     $TEMPLATE->assign('coursebook', $coursebook->get()); 
 } 

@@ -91,35 +91,36 @@ if ($selected_curriculum != '') {
     $users              = $course_user->getUsers('course', 'userPaginator', $selected_curriculum, $selected_group);
     if (is_array($users)){
         foreach ($users as $value) {                         //erzeuge id Liste der user
-            $list[] = $value->id;
+            $list[]     = $value->id;
         }
         $TEMPLATE->assign('userlist', implode(',', $list));  
         
-        $user_id_list = array_map(function($user) { return $user->id; }, $users); 
-        $p_options = array('mailnew'   => array('href'     => 'index.php?action=messages&function=shownewMessage&subject=-&receiver_id=__id__&answer=true',
-                                        'capability'    => checkCapabilities('mail:postMail', $USER->role_id, false),
-                                        'icon'         => 'fa fa-send'));
-        $t_config  = array('table_id'  => array('id'    => 'contentsmalltable'),
-                           'checkbox'  => array('onclick'  => 'checkrow(\'__id__\', \'id[]\', \'userPaginator\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&paginator=userPaginator&certificate_template=\'+document.getElementById(\'certificate_template\').value);'),
-                           'td'        => array('onclick'  => 'window.location.assign(\'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&paginator=userPaginator&userPaginator_sel_id=__id__&certificate_template=\'+document.getElementById(\'certificate_template\').value);'));
-        $p_config  = array('id'        => 'checkbox',
-                           'username'  => 'Benutzername', 
-                           'firstname' => 'Vorname', 
-                           'lastname'  => 'Nachname',
-                           'completed' => 'Fortschritt',
-                           'role_name' => 'Rolle',
-                           'p_options' => $p_options,
-                           't_config'  => $t_config);
+        $user_id_list  = array_map(function($user) { return $user->id; }, $users); 
+        $p_options     = array('mailnew'   => array('href'       => 'index.php?action=messages&function=shownewMessage&subject=-&receiver_id=__id__&answer=true',
+                                                    'capability' => checkCapabilities('mail:postMail', $USER->role_id, false),
+                                                    'icon'       => 'fa fa-envelope',
+                                                    'tooltip'    => 'Nachricht schreiben'));
+        $t_config      = array('table_id'  => array('id'         => 'contentsmalltable'),
+                               'checkbox'  => array('onclick'    => 'checkrow(\'__id__\', \'id[]\', \'userPaginator\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&paginator=userPaginator&certificate_template=\'+document.getElementById(\'certificate_template\').value);'),
+                               'td'        => array('onclick'    => 'window.location.assign(\'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&paginator=userPaginator&userPaginator_sel_id=__id__&certificate_template=\'+document.getElementById(\'certificate_template\').value);'));
+        $p_config      = array('id'        => 'checkbox',
+                               'username'  => 'Benutzername', 
+                               'firstname' => 'Vorname', 
+                               'lastname'  => 'Nachname',
+                               'completed' => 'Fortschritt',
+                               'role_name' => 'Rolle',
+                               'p_options' => $p_options,
+                               't_config'  => $t_config);
         setPaginator('userPaginator', $TEMPLATE, $users, 'results', 'index.php?action=objectives&course='.$selected_curriculumforURL, $p_config); //set Paginator    
         //User-Solutions laden
-        $files = new File(); 
+        $files      = new File(); 
         $TEMPLATE->assign('addedSolutions', $files->getSolutions('course', $user_id_list, $selected_curriculum)); 
     } else {
-        $showuser = true;
+        $showuser   = true;
     }  
     /*course book*/
-    $sel_course = $courses->getCourseId($selected_curriculum, $selected_group);
-    $coursebook = new CourseBook();
+    $sel_course     = $courses->getCourseId($selected_curriculum, $selected_group);
+    $coursebook     = new CourseBook();
     $TEMPLATE->assign('coursebook',      $coursebook->get('course', $sel_course->id) );
 }
 /*******************************************************************************

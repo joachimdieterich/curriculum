@@ -28,12 +28,14 @@ $TEMPLATE->assign('page_title', 'Benutzerrollen');
 $TEMPLATE->assign('breadcrumb',  array('Benutzerrollen' => 'index.php?action=role'));
 $role = new Roles();
 
-$p_options = array('delete' => array('onclick' => "del('role',__id__, $USER->id);", 
+$p_options = array('delete' => array('onclick'    => "del('role',__id__, $USER->id);", 
                                      'capability' => checkCapabilities('role:delete', $USER->role_id, false),
-                                     'icon'         => 'fa fa-minus'),
-                    'edit'  => array('onclick' => "formloader('role','edit',__id__);",
+                                     'icon'       => 'fa fa-minus',
+                                     'tooltip'    => 'löschen'),
+                    'edit'  => array('onclick'    => "formloader('role','edit',__id__);",
                                      'capability' => checkCapabilities('role:update', $USER->role_id, false),
-                                     'icon'         => 'fa fa-edit'));
+                                     'icon'       => 'fa fa-edit',
+                                     'tooltip'    => 'bearbeiten'));
 $p_config =   array('id'          => 'checkbox',
                     'role'        => 'Rolle', 
                   'description'   => 'Beschreibung', 

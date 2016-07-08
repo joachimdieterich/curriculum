@@ -31,10 +31,12 @@ $certificates->institution_id = $USER->institutions;
 
 $p_options = array('delete' => array('onclick'    => "del('certificate',__id__, $USER->id);", 
                                      'capability' => checkCapabilities('certificate:delete', $USER->role_id, false),
-                                     'icon'       => 'fa fa-minus'),
+                                     'icon'       => 'fa fa-minus',
+                                     'tooltip'    => 'löschen'),
                     'edit'  => array('onclick'    => "formloader('certificate','edit',__id__);",
                                      'capability' => checkCapabilities('certificate:update', $USER->role_id, false),
-                                     'icon'       => 'fa fa-edit'));
+                                     'icon'       => 'fa fa-edit',
+                                     'tooltip'    => 'bearbeiten'));
 $p_config =  array('id'           => 'checkbox',
                     'certificate' => 'Titel des Zertifikat-Vorlage', 
                   'description'   => 'Beschreibung', 

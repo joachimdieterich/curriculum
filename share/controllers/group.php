@@ -49,8 +49,10 @@ if (isset($_GET['function'])) {
                         }
                         
                         $TEMPLATE->assign('showenroledCurriculum', true); 
-                        $p_options = array('delete' => array('href'      => "index.php?action=group&function=expel&curriculumID=__id__&group_id=".$g_id, 
-                                                            'capability'   => checkCapabilities('groups:expel', $USER->role_id, false)));
+                        $p_options = array('delete' => array('icon'      => 'fa fa-minus',
+                                                             'href'      => "index.php?action=group&function=expel&curriculumID=__id__&group_id=".$g_id, 
+                                                            'capability' => checkCapabilities('groups:expel', $USER->role_id, false),
+                                                            'tooltip'    => 'ausschreiben'));
                         $p_config  = array('id'         => 'checkbox',
                                            'curriculum'  => 'Lehrplan', 
                                            'description' => 'Beschreibung', 
@@ -127,16 +129,20 @@ $TEMPLATE->assign('semester', $semesters->getSemesters());
 $groups                     = new Group(); 
 $p_options = array('delete' => array('onclick'      => "del('group',__id__, $USER->id);", 
                                      'capability'   => checkCapabilities('groups:delete', $USER->role_id, false),
-                                     'icon'         => 'fa fa-minus'),
+                                     'icon'         => 'fa fa-minus', 
+                                     'tooltip'      => 'löschen'),
                    'cal'    => array('onclick'      => 'formloader(\'group\',\'semester\',__id__)',
                                      'capability'   => checkCapabilities('groups:changeSemester', $USER->role_id, false),
-                                     'icon'         => 'fa fa-calendar'),
+                                     'icon'         => 'fa fa-calendar',
+                                     'tooltip'      => 'Lernzeitraum ändern'),
                    'edit'   => array('onclick'      => 'formloader(\'group\',\'edit\',__id__)',
                                      'capability'   => checkCapabilities('groups:update', $USER->role_id, false),
-                                     'icon'         => 'fa fa-edit'),
+                                     'icon'         => 'fa fa-edit',
+                                     'tooltip'      => 'bearbeiten'),
                    'list'    => array('href'        => "index.php?action=group&function=showCurriculum&group_id=__id__", 
                                       'capability'  => checkCapabilities('groups:showCurriculumEnrolments', $USER->role_id, false),
-                                      'icon'        => 'fa fa-list'));
+                                      'icon'        => 'fa fa-list',
+                                      'tooltip'     => 'Zugeordnete Lehrpläne'));
 $p_config =   array('id'         => 'checkbox',
                     'group'        => 'Lerngruppen',          //ändern auf groups in Object, da db Eintrag groups ist und die Suche so nicht funktioniert
                     'grade'         => '(Klassen)stufe',  

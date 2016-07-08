@@ -38,13 +38,16 @@ if(isset($_GET['reset']) OR (isset($_POST['reset'])) OR (isset($_POST['new_curri
 
 $p_options = array('delete' => array('onclick'      => "del('curriculum',__id__, $USER->id);", 
                                      'capability'   => checkCapabilities('curriculum:delete', $USER->role_id, false),
-                                     'icon'         => 'fa fa-minus'),
+                                     'icon'         => 'fa fa-minus', 
+                                     'tooltip'      => 'löschen'),
                    'add'    => array('href'         => 'index.php?action=view&function=addObjectives&curriculum_id=__id__', 
                                      'capability'   => checkCapabilities('curriculum:addObjectives', $USER->role_id, false),
-                                     'icon'         => 'fa fa-plus'),
+                                     'icon'         => 'fa fa-plus', 
+                                     'tooltip'      => 'Lehrplaninhalt bearbeiten'),
                    'edit'   => array('onclick'         => "formloader('curriculum','edit',__id__);",
                                      'capability'   => checkCapabilities('curriculum:update', $USER->role_id, false),
-                                     'icon'         => 'fa fa-edit'));
+                                     'icon'         => 'fa fa-edit',
+                                     'tooltip'      => 'bearbeiten'));
 $p_config  = array('id'         => 'checkbox',
                    'curriculum'  => 'Lehrplan', 
                    'description' => 'Beschreibung', 

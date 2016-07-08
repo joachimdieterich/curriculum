@@ -150,33 +150,6 @@ class Render {
         return $html;
     }
     
-    public static function mail_old ($mail, $box = null){
-        global $CFG;
-        
-        $sender         = new User();        
-        $sender->id     = $mail->sender_id;
-        if ($sender->exist()){                      //if User was deleted --> false + set first/lastname to "Gelöschter User
-            $sender->load('id', $mail->sender_id, false);
-        } 
-        
-        $receiver       = new User();
-        $receiver->id   = $mail->receiver_id;
-        if ($receiver->exist()){
-            $receiver->load('id', $mail->receiver_id, false);
-        } 
-        echo '<div class="border-box mail">
-              <div class="floatleft"><p class="mailheader"><strong>'.$sender->firstname.' '.$sender->lastname.' ('.$sender->username.')</strong>
-              <p class="mailheader">An: '.$receiver->firstname.' '.$receiver->lastname.' ('.$receiver->username.')</p>
-              <p class="mailheader">'.$mail->subject.'</div>
-              <div class="floatright">'.$mail->creation_time.'<img class="floatright" style="height:60px;" src="'.$CFG->access_file.$sender->avatar.'"/>';
-        if ($box != null){    
-            echo ' <a class="deletebtn floatright" type="button" name="delete" onclick="del(\'message\', '. $mail->id.', \''.$box.'\')"></a>';
-        }
-        echo '</div>'; 
-        $mail->message = Render::link($mail->message, 'message');
-        $mail->message = Render::accomplish($mail->message, $sender->id, $receiver->id);
-        echo '<div style="margin-top:70px" class="space-top mail-correction"><span class="line-top"></span>'.$mail->message.'</div></div>';
-    }
     public static function mail ($mail, $box = null){
         global $CFG;
         
@@ -199,15 +172,15 @@ class Render {
                   <div class="box-tools pull-right" >
                     <div class="btn-group">
                       
-                      <button class="btn btn-default btn-sm" data-toggle="tooltip" title="Reply" onclick="formloader(\'mail\',\'reply\','.$mail->id.')"><i class="fa fa-reply"></i> Antworten</button>
-                      <button class="btn btn-default btn-sm" data-toggle="tooltip" title="Forward" onclick="formloader(\'mail\',\'forward\','.$mail->id.')"><i class="fa fa-share"></i> Weiterleiten</button>
+                      <button class="btn btn-default btn-sm" data-toggle="tooltip" title="Antworten" onclick="formloader(\'mail\',\'reply\','.$mail->id.')"><i class="fa fa-reply"></i> Antworten</button>
+                      <button class="btn btn-default btn-sm" data-toggle="tooltip" title="Weiterleiten" onclick="formloader(\'mail\',\'forward\','.$mail->id.')"><i class="fa fa-share"></i> Weiterleiten</button>
                     </div><!-- /.btn-group -->
-                    <button class="btn btn-default btn-sm" data-toggle="tooltip" title="Print"><i class="fa fa-print"></i> Drucken</button>
+                    <button class="btn btn-default btn-sm" data-toggle="tooltip" title="Drucken"><i class="fa fa-print"></i> Drucken</button>
                     <div class="btn-group">
-                        <button class="btn btn-default btn-sm" data-toggle="tooltip" title="Previous"><i class="fa fa-chevron-left"></i></button>
-                        <button class="btn btn-default btn-sm" data-toggle="tooltip" title="Next"><i class="fa fa-chevron-right"></i></button>
+                        <button class="btn btn-default btn-sm" data-toggle="tooltip" title="zurück"><i class="fa fa-chevron-left"></i></button>
+                        <button class="btn btn-default btn-sm" data-toggle="tooltip" title="vor"><i class="fa fa-chevron-right"></i></button>
                     </div><!-- /.btn-group -->
-                    <button class="btn btn-default btn-sm" data-toggle="tooltip" title="Delete" onclick="del(\'message\', '. $mail->id.', \''.$box.'\')"><i class="fa fa-trash-o"></i> Löschen</button>
+                    <button class="btn btn-default btn-sm" data-toggle="tooltip" title="löschen" onclick="del(\'message\', '. $mail->id.', \''.$box.'\')"><i class="fa fa-trash-o"></i> Löschen</button>
                   </div>
                 </div><!-- /.box-header -->
                 <div class="box-body no-padding">

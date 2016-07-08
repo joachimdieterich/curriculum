@@ -32,10 +32,12 @@ $semesters->institution_id  = $USER->institutions;
 
 $p_options = array('delete' => array('onclick'    => "del('semester',__id__, $USER->id);", 
                                      'capability' => checkCapabilities('semester:delete', $USER->role_id, false),
-                                     'icon'       => 'fa fa-minus'),
+                                     'icon'       => 'fa fa-minus',
+                                     'tooltip'    => 'löschen'),
                     'edit'  => array('onclick'    => "formloader('semester','edit',__id__);", 
                                      'capability' => checkCapabilities('semester:update', $USER->role_id, false),
-                                     'icon'       => 'fa fa-edit'));
+                                     'icon'       => 'fa fa-edit',
+                                     'tooltip'    => 'bearbeiten'));
 $p_config = array('id'            => 'checkbox',
                   'semester'      => 'Lerzeitraum', 
                   'description'   => 'Beschreibung',
