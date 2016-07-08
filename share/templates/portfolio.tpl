@@ -43,10 +43,10 @@
                                         <h4>{$art->title}</h4> 
                                        {$art->description}
                                     </div>
-                                    <div class="timeline-footer">
+                                    {*<div class="timeline-footer">
                                       <a class="btn btn-primary btn-xs">Read more</a>
                                       <a class="btn btn-danger btn-xs">Delete</a>
-                                    </div>
+                                    </div>*}
                                   </div>
                                 </li>
                                 {/if}
@@ -66,10 +66,10 @@
                                             </ul>
                                         </div>
                                     </div>
-                                    <div class="timeline-footer">
+                                    {*<div class="timeline-footer">
                                       <a class="btn btn-primary btn-xs">Read more</a>
                                       <a class="btn btn-danger btn-xs">Delete</a>
-                                    </div>
+                                    </div>*}
                                   </div>
                                 </li>
                                 {/if}
@@ -89,10 +89,10 @@
                                             </ul>
                                         </div>
                                     </div>
-                                    <div class="timeline-footer">
+                                    {*<div class="timeline-footer">
                                       <a class="btn btn-primary btn-xs">Read more</a>
                                       <a class="btn btn-danger btn-xs">Delete</a>
-                                    </div>
+                                    </div>*}
                                   </div>
                                 </li>
                                 {/if}
@@ -112,10 +112,10 @@
                                             </ul>
                                         </div>
                                     </div>
-                                    <div class="timeline-footer">
+                                    {*<div class="timeline-footer">
                                       <a class="btn btn-primary btn-xs">Read more</a>
                                       <a class="btn btn-danger btn-xs">Delete</a>
-                                    </div>
+                                    </div>*}
                                   </div>
                                 </li>
                                 {/if}
@@ -135,10 +135,10 @@
                                             </ul>
                                         </div>
                                     </div>
-                                    <div class="timeline-footer">
+                                    {*<div class="timeline-footer">
                                       <a class="btn btn-primary btn-xs">Read more</a>
                                       <a class="btn btn-danger btn-xs">Delete</a>
-                                    </div>
+                                    </div>*}
                                   </div>
                                 </li>
                                 {/if}
@@ -158,10 +158,10 @@
                                             </ul>
                                         </div>
                                     </div>
-                                    <div class="timeline-footer">
+                                    {*<div class="timeline-footer">
                                       <a class="btn btn-primary btn-xs">Read more</a>
                                       <a class="btn btn-danger btn-xs">Delete</a>
-                                    </div>
+                                    </div>*}
                                   </div>
                                 </li>
                                 {/if}
@@ -180,10 +180,10 @@
                                             </ul>
                                         </div>
                                     </div>
-                                    <div class="timeline-footer">
+                                    {*<div class="timeline-footer">
                                       <a class="btn btn-primary btn-xs">Read more</a>
                                       <a class="btn btn-danger btn-xs">Delete</a>
-                                    </div>
+                                    </div>*}
                                   </div>
                                 </li>
                                 {/if}
@@ -202,10 +202,10 @@
                                         </ul>
                                         
                                     </div>
-                                    <div class="timeline-footer">
+                                    {*<div class="timeline-footer">
                                       <a class="btn btn-primary btn-xs">Read more</a>
                                       <a class="btn btn-danger btn-xs">Delete</a>
-                                    </div>
+                                    </div>*}
                                   </div>
                                 </li>
                                 {/if}
@@ -223,10 +223,10 @@
                                         {Render::thumb(Render::link($art->description, 'message'))}
                                         </ul>
                                     </div>
-                                    <div class="timeline-footer">
+                                    {*<div class="timeline-footer">
                                       <a class="btn btn-primary btn-xs">Read more</a>
                                       <a class="btn btn-danger btn-xs">Delete</a>
-                                    </div>
+                                    </div>*}
                                   </div>
                                 </li>
                                 {/if}

@@ -174,12 +174,14 @@ $_html_result .= '<div class="row"><div class="clearfix"><br><table class="table
                 foreach ($config['p_options'] as $o_key => $o_val){
                     $p_options_type         = '';
                     $p_options_icon         = '';
-                    if (array_key_exists('onclick', (array)$o_val)){ $p_options_type = 'onclick'; }
-                    if (array_key_exists('href',    (array)$o_val)){ $p_options_type = 'href'; }
-                    if (array_key_exists('icon',    (array)$o_val)){ $p_options_icon = $o_val['icon']; }
+                    $p_options_tooltip      = '';
+                    if (array_key_exists('onclick', (array)$o_val)){ $p_options_type    = 'onclick'; }
+                    if (array_key_exists('href',    (array)$o_val)){ $p_options_type    = 'href'; }
+                    if (array_key_exists('icon',    (array)$o_val)){ $p_options_icon    = $o_val['icon']; }
+                    if (array_key_exists('tooltip', (array)$o_val)){ $p_options_tooltip = $o_val['tooltip']; }
                     if (array_key_exists('capability',    (array)$o_val)){
                         if ($o_val['capability'] == true){ 
-                            $_html_result .= '<a name="'.$o_key.'" type="button" class="'.$p_options_icon.' pull-right" '; if ($p_options_type != ''){  $_html_result .= $p_options_type.'="'.str_replace('__id__', $_id, $o_val[$p_options_type]).'"></a>'; };
+                            $_html_result .= '<a name="'.$o_key.'" type="button" class="'.$p_options_icon.' pull-right" '; if ($p_options_tooltip != ''){ $_html_result .= "data-toggle='tooltip' title='".$p_options_tooltip."'";} if ($p_options_type != ''){  $_html_result .= $p_options_type.'="'.str_replace('__id__', $_id, $o_val[$p_options_type]).'"></a>'; };
                         }
                     }
                 }
