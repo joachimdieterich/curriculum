@@ -179,7 +179,8 @@ class Portfolio {
         $db = DB::prepare('SELECT ena.*, cur.curriculum, usa.status_id as status_id, 
                             usa.accomplished_time as accomplished_time, usa.creator_id as teacher_id, us.firstname, us.lastname
                         FROM enablingObjectives AS ena, user_accomplished AS usa, curriculum AS cur, users AS us
-                        WHERE ena.id = usa.enabling_objectives_id
+                        WHERE ena.id = usa.reference_id
+                        AND usa.context_id
                         AND us.id = usa.user_id
                         AND ena.curriculum_id = cur.id AND usa.user_id = ? AND usa.status_id = 1 
                         ');

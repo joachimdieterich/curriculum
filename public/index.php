@@ -91,6 +91,12 @@ try { // Error handling
         $TEMPLATE->assign('page_url', removeUrlParameter($PAGE->url, 'p_reset'));
     }
     
+    
+    /** highlight */
+    if (isset($_SESSION['highlight'])){
+        $TEMPLATE->assign('highlight', $_SESSION['highlight']);
+    } 
+    
     /**
      * Load new Messages
      */
@@ -103,8 +109,7 @@ try { // Error handling
                 /* Load recent Mails for Sidebar */
                 $recent_mails = new Mail();   
                 $TEMPLATE->assign('recent_mails', $recent_mails->loadCorrespondence(5, $USER->id, $USER->id, 'recent')); 
-            }
-              
+            }    
         }   
         $upcoming_events = new Event();
         $TEMPLATE->assign('upcoming_events', $upcoming_events->get('upcoming', $USER->id, '', 5));
@@ -116,7 +121,7 @@ try { // Error handling
     * load controller 
     */ 
     $PAGE->controller = $CFG->controllers_root.'/'.$PAGE->action .'.php';
-    
+   
     if (file_exists($PAGE->controller)) {   
         include($PAGE->controller);  
         $TEMPLATE->assign('page_name',  $PAGE->action );

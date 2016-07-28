@@ -24,8 +24,6 @@
 
 var req;
 
-
-
 function formatBytes(bytes,decimals) {
    if(bytes === 0) return '0 Byte';
    var k = 1000; // or 1024 for binary

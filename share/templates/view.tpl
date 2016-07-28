@@ -18,15 +18,25 @@
     <div class="row ">
         <div class="col-xs-12">
             <div class="box box-primary">
-                <div class="box-body">
+                <div class="box-header with-border">
+                    <div class="pull-right"><div class="has-feedback">
+                      <form id="view_search" method="post" action="../share/processors/fp_search.php">
+                      <input type="hidden" name="func" id="func" value="view_highlight"/>
+                      <input type="hidden" name="id" id="id" value="{$course[0]->curriculum_id}"/>
+                      <input type="text" name="search" class="form-control input-sm" placeholder="Lehrplan durchsuchen">
+                      <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                      </form>
+                    </div>
+                    </div>
                     {if isset($niveaus)}
-                        <div class="btn-group pull-right">
+                        <div class="btn-group pull-left">
                         {foreach name=foreach_niveau item=niveau from=$niveaus} 
                             <button type="button" class="btn btn-default"><a href="index.php?action=view&curriculum_id={$niveau->curriculum_id}&group={$page_group}">{$niveau->name}</a></button>
                         {/foreach}
                          </div>
                      {/if}
-                    
+                </div>
+                <div class="box-body">
                     {if isset($showaddObjectives)}
                     <p>Beschreibung: {$course[0]->description} ({$course[0]->schooltype})<br/>Bundesland: {$course[0]->state} ({$course[0]->country})</p>
                     {/if}
@@ -37,7 +47,7 @@
                          <div class="row" >
                              <div class="col-xs-12"> 
                                  {*Thema Row*}
-                                <div class="panel panel-default box-objective"> 
+                                <div class="panel panel-default box-objective {if isset($highlight)}{if in_array("ter_`$ter->id`", $highlight)} highlight {/if}{/if}"> 
                                     <div class="panel-heading boxheader" style="background: {$ter->color}">
                                          {if isset($showaddObjectives)}
                                              <a onclick="del('terminalObjectives', {$ter->id}, {$my_id});"><span class="fa fa-minus pull-right invert box-sm-icon"></span></a>
@@ -80,7 +90,7 @@
                                {if $enabledObjectives != false}
                                    {foreach key=enaid item=ena from=$enabledObjectives}
                                    {if $ena->terminal_objective_id eq $ter->id}
-                                       <div id="ena_{$ena->id}" class="panel panel-default box-objective {if $ena->accomplished_status_id eq 1} boxgreen {elseif $ena->accomplished_status_id eq 2} boxorange {elseif $ena->accomplished_status_id eq '0'} boxred {/if}"> 
+                                       <div id="ena_{$ena->id}" class="panel panel-default box-objective {if $ena->accomplished_status_id eq 1} boxgreen {elseif $ena->accomplished_status_id eq 2} boxorange {elseif $ena->accomplished_status_id eq '0'} boxred {/if}{if isset($highlight)}{if in_array("ena_`$ena->id`", $highlight)} highlight {/if}{/if}"> 
                                            <div class="panel-heading boxheader" style="background: {$ter->color}">
                                                {if checkCapabilities('groups:showAccomplished', $my_role_id, false)}
                                                    {if isset($ena->accomplished_users) and isset($ena->enroled_users) and isset($ena->accomplished_percent)}

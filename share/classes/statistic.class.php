@@ -35,12 +35,12 @@ class Statistic {
      */
     public function getAccomplishedObjectives($dependency = 'all'){
         switch ($dependency) {
-            case 'all':     $db = DB::prepare('SELECT count(id) as max FROM user_accomplished WHERE status_id = 1 OR status_id = 2');
+            case 'all':     $db = DB::prepare('SELECT count(id) as max FROM user_accomplished WHERE context_id = 12 AND (status_id = 1 OR status_id = 2)');
                             $db->execute();
                             $result = $db->fetchObject();
                             return $result->max;
                 break;
-            case 'today':   $db = DB::prepare('SELECT count(id) as max FROM user_accomplished WHERE DATE(accomplished_time) = CURDATE() AND (status_id = 1 OR status_id = 2)');
+            case 'today':   $db = DB::prepare('SELECT count(id) as max FROM user_accomplished WHERE DATE(accomplished_time) = CURDATE() AND context_id = 12 AND (status_id = 1 OR status_id = 2)');
                             $db->execute();
                             $result = $db->fetchObject();
                             return $result->max;

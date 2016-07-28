@@ -209,7 +209,7 @@
 .boxheader {
     margin: 0px 0 0 15px;
     position: absolute;
-    left: 0px;
+    left: 1px;
     padding: 4px 10px 0 0px;
     height: 75px;
     width: 40px;
@@ -251,7 +251,7 @@
 }    
     
 .boxfooter {    
-    margin: -75px 16px;
+    margin: -75px 16px ;
     padding: 4px 10px 0 10px;
     position: absolute;
     /*top: 0px; bottom:0px; */right:0px;
@@ -335,7 +335,7 @@
         margin: 0px;
         padding: 4px 10px 0 10px;
         position: absolute;
-        top: 124px;bottom:0px; left:0px; right:0px;
+        top: 123px;bottom:0px; left:0px; right:0px;
         height: 25px;
         width:100%;
         font-size: 90%;    
@@ -381,4 +381,8 @@
 
 body .modal-open {
     overflow: hidden;
+}
+.highlight {
+    border-color: red !important;
+    
 }

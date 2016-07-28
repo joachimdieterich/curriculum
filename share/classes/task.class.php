@@ -36,6 +36,8 @@ class Task {
     public $timeend;
     public $timerange;
     
+    public $accomplished;
+    
    
     public function add(){
         global $USER;
@@ -85,9 +87,9 @@ class Task {
             $this->creation_time = $result->creation_time;
             $this->creator_id    = $result->creator_id;
             $this->creator       = $user->resolveUserId($result->creator_id);
-            $this->timestart         = $result->timestart;
-            $this->timeend           = $result->timeend;
-            $this->timerange         = date('d.m.Y G:i', strtotime($this->timestart)) .' - '. date('d.m.Y G:i', strtotime($result->timeend));
+            $this->timestart     = $result->timestart;
+            $this->timeend       = $result->timeend;
+            $this->timerange     = date('d.m.Y G:i', strtotime($this->timestart)) .' - '. date('d.m.Y G:i', strtotime($result->timeend));
             return true;                                                        
         } else { 
             return false; 
@@ -136,6 +138,22 @@ class Task {
         while($result = $db->fetchObject()) { 
                 $this->id            = $result->id;
                 $this->load();
+                
+                if ($dependency == 'upcoming'){
+                    $db1 = DB::prepare('SELECT ua.* FROM user_accomplished AS ua, context AS co 
+                                                   WHERE ua.context_id = co.context_id
+                                                   AND co.context = ?
+                                                   AND ua.user_id = ?
+                                                   AND ua.reference_id = ?');
+                    $db1->execute(array('task', $USER->id, $this->id));
+                    $a = $db1->fetchObject();
+                    if (isset($a)){
+                        $this->accomplished = $a;
+                    } else {
+                        $this->accomplished = null;
+                    }
+                    
+                }
                 $entrys[]            = clone $this;        //it has to be clone, to get the object and not the reference
         } 
         
@@ -164,6 +182,35 @@ class Task {
                                 VALUES (1,?,?,?,?)');//Status 1 == eingeschrieben
             return $db->execute(array($context_id, $reference_id, $this->id, $USER->id));
         }
+    }
+    
+    
+    public function accomplish($dependency = null, $user_id = null,  $status = 2) {
+        global $USER;
+        switch ($dependency) {
+            case 'user':    $db0    = DB::prepare('SELECT * FROM user_accomplished WHERE reference_id = ? AND user_id = ? AND context_id = 13');
+                            $db0->execute(array($this->id, $user_id));
+                            $result = $db0->fetchObject();
+                            if ($result){ //if entry exists
+                                switch ($result->status_id) {
+                                    case 2 : $status = 0;
+                                        break;
+                                    case 0 : 
+                                    default: $status = 2;
+                                        break;
+                                } // else $status = 2 by default
+                                $db = DB::prepare('UPDATE user_accomplished SET status_id = ? WHERE reference_id = ? AND user_id = ? AND creator_id = ? AND context_id = 13 ');
+                                return $db->execute(array($status, $this->id, $user_id, $USER->id));
+                            } else {
+                                $db = DB::prepare('INSERT INTO user_accomplished (status_id, reference_id, user_id, creator_id, context_id) VALUES (?,?,?,?,?)');
+                                return $db->execute(array($status, $this->id, $user_id, $USER->id, 13)); //context_id 13 == task 
+                            }
+                            error_log(json_encode(array($status, $this->id, $user_id)));
+                            
+                break;
+            
+            default:        break;
+        } 
     }
     
     /**

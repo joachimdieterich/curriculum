@@ -724,7 +724,7 @@ class User {
        $db->execute(array($this->id)); 
 
        while($result = $db->fetchObject()) {  
-                    $groups[] = $result;
+               $groups[] = $result;
             } 
        if (isset($groups)) {
             return $groups;      
@@ -1110,7 +1110,7 @@ class User {
 
     private function curriculumBackup(){
         global $CFG;
-        $db = DB::prepare('SELECT DISTINCT curriculum_id FROM enablingObjectives WHERE id = ANY (SELECT DISTINCT enabling_objectives_id FROM user_accomplished WHERE user_id = ?)');
+        $db = DB::prepare('SELECT DISTINCT curriculum_id FROM enablingObjectives WHERE id = ANY (SELECT DISTINCT reference_id FROM user_accomplished WHERE user_id = ?)');
         $db->execute(array($this->id));
         while($result = $db->fetchObject()) {
             $cur[]  = $result->curriculum_id; 

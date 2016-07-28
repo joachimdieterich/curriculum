@@ -193,7 +193,7 @@ class EnablingObjective {
         switch ($dependency) {
                 case 'user':  $db = DB::prepare('SELECT en.*, ua.status_id, ua.accomplished_time, ua.creator_id AS teacher_id
                                             FROM enablingObjectives AS en 
-                                            LEFT JOIN user_accomplished AS ua ON en.id = ua.enabling_objectives_id AND ua.user_id = (SELECT id FROM users WHERE id = ?)
+                                            LEFT JOIN user_accomplished AS ua ON en.id = ua.reference_id AND ua.context_id = 12 AND ua.user_id = (SELECT id FROM users WHERE id = ?)
                                             WHERE en.curriculum_id = ?
                                             ORDER by en.terminal_objective_id, en.order_id');
                                 $db->execute(array($id, $this->curriculum_id));
@@ -262,7 +262,7 @@ class EnablingObjective {
                 break;    
              case 'enabling_objective_status': $db = DB::prepare('SELECT ua.status_id, ua.accomplished_time, ua.creator_id AS teacher_id
                                                                     FROM user_accomplished AS ua WHERE ua.user_id = ?
-                                                                    AND  ua.enabling_objectives_id = ?');
+                                                                    AND  ua.reference_id = ? AND ua.context_id = 12');
                                         $db->execute(array($id, $this->id));
                                         $result = $db->fetchObject()
                                                 ;
@@ -280,7 +280,7 @@ class EnablingObjective {
                                                         FROM enablingObjectives AS en 
                                                         INNER JOIN terminalObjectives AS te ON en.terminal_objective_id = te.id
                                                         INNER JOIN curriculum AS cu ON en.curriculum_id = cu.id 
-                                                        LEFT JOIN user_accomplished AS ua ON en.id = ua.enabling_objectives_id AND ua.user_id = ?
+                                                        LEFT JOIN user_accomplished AS ua ON en.id = ua.reference_id AND ua.context_id = 12 AND ua.user_id = ?
                                                         WHERE en.curriculum_id = ?
                                                         ORDER by en.terminal_objective_id, en.order_id');
                                 $db->execute(array($USER->id, $id));
@@ -299,7 +299,8 @@ class EnablingObjective {
                                     $db_02 = DB::prepare('SELECT COUNT(ua.user_id) AS anzAccomplished
                                                         FROM role_capabilities AS rc,institution_enrolments AS ie, groups AS gp, groups_enrolments AS gr, user_accomplished AS ua
                                                         WHERE gr.user_id = ua.user_id 
-                                                        AND ua.enabling_objectives_id = ?
+                                                        AND ua.reference_id = ?
+                                                        AND ua.context_id = 12
                                                         AND gr.group_id = ?
                                                         AND gr.group_id = gp.id
                                                         AND gr.status = 1
@@ -353,7 +354,7 @@ class EnablingObjective {
                                                         FROM enablingObjectives AS en 
                                                         INNER JOIN terminalObjectives AS te ON en.terminal_objective_id = te.id
                                                         INNER JOIN curriculum AS cu ON en.curriculum_id = cu.id 
-                                                        LEFT JOIN user_accomplished AS ua ON en.id = ua.enabling_objectives_id AND ua.user_id = ?
+                                                        LEFT JOIN user_accomplished AS ua ON en.id = ua.reference_id AND ua.context_id AND ua.user_id = ?
                                                         WHERE en.curriculum_id = ?
                                                         ORDER by en.terminal_objective_id, en.order_id');
                                 $db->execute(array($USER->id, $id));
@@ -363,7 +364,8 @@ class EnablingObjective {
                                     $db_02 = DB::prepare('SELECT COUNT(ua.user_id) AS anzAccomplished
                                                         FROM role_capabilities AS rc, groups AS gp, groups_enrolments AS ge, institution_enrolments AS ie, user_accomplished AS ua
                                                         INNER JOIN users AS us ON ua.user_id = us.id
-                                                        WHERE ua.enabling_objectives_id = ?
+                                                        WHERE ua.reference_id = ?
+                                                        AND ua.context_id = 12
                                                         AND ua.user_id IN ('.implode(",", $group).')
                                                         AND ua.status_id = 1  
                                                         AND ie.user_id = ua.user_id
@@ -379,7 +381,8 @@ class EnablingObjective {
                                     $db_03 = DB::prepare('SELECT COUNT(ua.user_id) AS anzAccomplished
                                                         FROM role_capabilities AS rc, groups AS gp, groups_enrolments AS ge, institution_enrolments AS ie, user_accomplished AS ua
                                                         INNER JOIN users AS us ON ua.user_id = us.id
-                                                        WHERE ua.enabling_objectives_id = ?
+                                                        WHERE ua.reference_id = ?
+                                                        AND ua.context_id
                                                         AND ua.user_id IN ('.implode(",", $group).')
                                                         AND ua.status_id = 2        
                                                         AND ie.user_id = ua.user_id
@@ -394,7 +397,8 @@ class EnablingObjective {
                                     $db_03 = DB::prepare('SELECT COUNT(ua.user_id) AS anzAccomplished
                                                         FROM role_capabilities AS rc,  groups AS gp, groups_enrolments AS ge, institution_enrolments AS ie, user_accomplished AS ua
                                                         INNER JOIN users AS us ON ua.user_id = us.id
-                                                        WHERE ua.enabling_objectives_id = ?
+                                                        WHERE ua.reference_id = ?
+                                                        AND ua.context_id
                                                         AND ua.user_id IN ('.implode(",", $group).')
                                                         AND ua.status_id = 0        
                                                         AND ie.user_id = ua.user_id
@@ -496,7 +500,8 @@ class EnablingObjective {
         $db = DB::prepare('SELECT ena.*, SUBSTRING(cur.curriculum, 1, 20) AS curriculum, usa.status_id as status_id, 
                             usa.accomplished_time as accomplished_time, usa.creator_id as teacher_id, us.firstname, us.lastname
                         FROM enablingObjectives AS ena, user_accomplished AS usa, curriculum AS cur, users AS us
-                        WHERE ena.id = usa.enabling_objectives_id
+                        WHERE ena.id = usa.reference_id
+                        AND usa.context_id = 12
                         AND us.id = usa.creator_id
                         AND ena.curriculum_id = cur.id AND usa.user_id = ? AND usa.status_id = 1
                         AND usa.accomplished_time > DATE_SUB(now(), INTERVAL ? DAY)');
@@ -534,7 +539,7 @@ class EnablingObjective {
      * @return object 
      */
     public function getReport($id = null){     
-        $db = DB::prepare('SELECT * FROM user_accomplished WHERE user_id = ? AND status_id = 1 ORDER BY accomplished_time');
+        $db = DB::prepare('SELECT * FROM user_accomplished WHERE user_id = ? AND status_id = 1 AND context_id = 12 ORDER BY accomplished_time');
         if ($id == null) {
             global $USER;
             $db->execute(array($USER->id));
@@ -542,7 +547,7 @@ class EnablingObjective {
             $db->execute(array($id));
         }
         while($result = $db->fetchObject()) { 
-            $this->id                      = $result->enabling_objectives_id;
+            $this->id                      = $result->reference_id;
             $this->accomplished_status_id  = $result->status_id;   
             $this->accomplished_time       = $result->accomplished_time;    
             $objectives[]                  = clone $this; 
@@ -566,7 +571,7 @@ class EnablingObjective {
     $ena_count = $db->fetchColumn();
     
     $db = DB::prepare('SELECT COUNT(en.id) FROM enablingObjectives AS en, user_accomplished AS ua 
-        WHERE en.curriculum_id = ? AND ua.user_id = ? AND ua.status_id = 1 AND ua.enabling_objectives_id = en.id');
+        WHERE en.curriculum_id = ? AND ua.user_id = ? AND ua.status_id = 1 AND ua.reference_id = en.id AND ua.context_id');
     $db->execute(array($cur,$id));
     $ena_acc_count =  $db->fetchColumn();
     return round($ena_acc_count/$ena_count*100,2); 
@@ -596,12 +601,13 @@ class EnablingObjective {
         $db = DB::prepare('SELECT ua.*, ena.repeat_interval 
                         FROM user_accomplished AS ua, enablingObjectives AS ena
                         WHERE ua.status_id <> 2
-                        AND ua.enabling_objectives_id = ena.id
+                        AND ua.reference_id = ena.id
+                        AND ua.context_id = 12
                         AND ena.repeat_interval <> -1');
         $db->execute();
 
         while($result = $db->fetchObject()) { 
-            $this->id                       = $result->enabling_objectives_id;
+            $this->id                       = $result->reference_id;
             $this->load();
             $this->repeat_interval          = $result->repeat_interval;
             $this->accomplished_users       = $result->user_id;
@@ -629,14 +635,14 @@ class EnablingObjective {
             /* orange */
             case 2: $db = DB::prepare('SELECT ua.user_id FROM user_accomplished AS ua
                               INNER JOIN groups_enrolments AS gr ON gr.user_id = ua.user_id 
-                                    WHERE ua.enabling_objectives_id = ? AND gr.group_id = ?
-                                    AND gr.status = 1 AND ua.status_id = ?');
+                                    WHERE ua.reference_id = ? AND gr.group_id = ?
+                                    AND gr.status = 1 AND ua.status_id = ? AND ua.context_id = 12');
                                     $db->execute(array($this->id, $group, $status));                    
                 break;
             /* white */
             case 3: $db = DB::prepare('SELECT gr.user_id FROM groups_enrolments AS gr 
 					WHERE gr.group_id = ? AND gr.status = 1 AND gr.user_id NOT IN (SELECT user_id FROM user_accomplished 
-                                            WHERE enabling_objectives_id = ? AND status_id <> 3)');
+                                            WHERE reference_id = ? AND context_id = 12 AND status_id <> 3)');
                     $db->execute(array($group, $this->id));
                 break;
 
@@ -666,28 +672,28 @@ class EnablingObjective {
     public function setAccomplishedStatus($dependency = null, $user_id = null, $creator_id = null, $status = 2) {
         global $USER;
         switch ($dependency) {
-            case 'cron':    $db = DB::prepare('UPDATE user_accomplished SET status_id = ? WHERE enabling_objectives_id = ?');
+            case 'cron':    $db = DB::prepare('UPDATE user_accomplished SET status_id = ? WHERE reference_id = ? AND context_id = 12');
                             return $db->execute(array($status, $this->id));
                             break;
-            case 'quiz':    $db = DB::prepare('SELECT COUNT(id) FROM user_accomplished WHERE enabling_objectives_id = ? AND user_id = ?');
+            case 'quiz':    $db = DB::prepare('SELECT COUNT(id) FROM user_accomplished WHERE reference_id = ? AND user_id = ? AND context_id = 12');
                             $db->execute(array($this->id, $user_id));
                             if($db->fetchColumn() >= 1) {
-                                $db = DB::prepare('UPDATE user_accomplished SET status_id = ?, creator_id = ? WHERE enabling_objectives_id = ? AND user_id = ?');
+                                $db = DB::prepare('UPDATE user_accomplished SET status_id = ?, creator_id = ? WHERE reference_id = ? AND user_id = ? AND context_id = 12');
                                 return $db->execute(array($status, $creator_id, $this->id, $user_id));
                             } else {
-                                $db = DB::prepare('INSERT INTO user_accomplished(enabling_objectives_id,user_id,status_id,creator_id) VALUES (?,?,?,?)');
-                                return $db->execute(array($this->id, $user_id, $status, $creator_id));
+                                $db = DB::prepare('INSERT INTO user_accomplished(reference_id,context_id,user_id,status_id,creator_id) VALUES (?,?,?,?,?)');
+                                return $db->execute(array($this->id, 12, $user_id, $status, $creator_id));
                             }
                             break;
             case 'teacher': checkCapabilities('objectives:setStatus', $USER->role_id);
-                            $db = DB::prepare('SELECT COUNT(id) FROM user_accomplished WHERE enabling_objectives_id = ? AND user_id = ?');
+                            $db = DB::prepare('SELECT COUNT(id) FROM user_accomplished WHERE reference_id = ? AND user_id = ? AND context_id = 12');
                             $db->execute(array($this->id, $user_id));
                             if($db->fetchColumn() >= 1) { 
-                                $db = DB::prepare('UPDATE user_accomplished SET status_id = ?, creator_id = ? WHERE enabling_objectives_id = ? AND user_id = ?');
+                                $db = DB::prepare('UPDATE user_accomplished SET status_id = ?, creator_id = ? WHERE reference_id = ? AND user_id = ? AND context_id = 12');
                                 return $db->execute(array($status, $creator_id, $this->id, $user_id));
                             } else {
-                                $db = DB::prepare('INSERT INTO user_accomplished(enabling_objectives_id,user_id,status_id,creator_id) VALUES (?,?,?,?)');
-                                return $db->execute(array($this->id, $user_id, $status, $creator_id));
+                                $db = DB::prepare('INSERT INTO user_accomplished(reference_id,context_id,user_id,status_id,creator_id) VALUES (?,?,?,?,?)');
+                                return $db->execute(array($this->id, 12, $user_id, $status, $creator_id));
                             }
                             
                             break;
@@ -701,7 +707,8 @@ class EnablingObjective {
         $max    = $db1->fetchColumn(); 
         $db2    = DB::prepare('SELECT count(ua.id) 
                                 FROM user_accomplished AS ua, enablingObjectives AS ena 
-                                WHERE ua.enabling_objectives_id = ena.id
+                                WHERE ua.reference_id = ena.id
+                                AND ua.context_id = 12
                                 AND ena.terminal_objective_id IN (?)
                                 AND ua.user_id = ? AND (ua.status_id = 1 OR ua.status_id = 2)');
         $db2->execute(array($ter_id, $user_id));

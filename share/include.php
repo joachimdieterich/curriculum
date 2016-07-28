@@ -62,6 +62,7 @@ include('classes/quiz_answer.class.php');
 include('classes/render.class.php');     
 include('classes/roles.class.php');     
 include('classes/schooltype.class.php'); 
+include('classes/search.class.php'); 
 include('classes/semester.class.php'); 
 include('classes/state.class.php'); 
 include('classes/statistic.class.php'); 

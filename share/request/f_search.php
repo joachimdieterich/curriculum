@@ -2,10 +2,10 @@
 /** This file is part of curriculum - http://www.joachimdieterich.de
 * 
 * @package core
-* @filename f_grade.php
+* @filename f_search.php
 * @copyright 2016 Joachim Dieterich
 * @author Joachim Dieterich
-* @date 2016.05.28 21:28
+* @date 2016.07.11 09:42
 * @license: 
 *
 * The MIT License (MIT)
@@ -26,27 +26,14 @@ $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER, $CFG;
-$USER           = $_SESSION['USER'];
-
-$grade_id       = null;
-$grade          = null;
-$description    = null;
-$institution_id = null;
-$error          = null; 
-$grade_obj      = new Grade(); 
-$func           = $_GET['func'];
-
+$USER       = $_SESSION['USER'];
+$error      = null; 
+$search     = null; 
+$id         = null; 
+$func       = $_GET['func'];
+$header     = 'Suchen';       
 switch ($func) {
-    case 'edit':    $grade_obj->id     = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);  // edit case: id == ena_id
-                    $grade_id          = $grade_obj->id;
-                    $grade_obj->load();                                 //Läd die bestehenden Daten aus der db
-                    foreach ($grade_obj as $key => $value){
-                        $$key = $value;
-                    }
-                    $header                       = 'Klassenstufe aktualisieren';           
-        break;
-    case 'new':     $header                       = 'Klassenstufe hinzufügen';
-                    
+    case 'view':    $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);  
         break;
     
     default:
@@ -61,20 +48,37 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$content = '<form id="form_grade" method="post" action="../share/processors/fp_grade.php">
+$content = '<form id="form_search" method="post" action="../share/processors/fp_search.php">
  <div class="form-horizontal">
-<input type="hidden" name="grade_id" id="grade_id" value="'.$grade_id.'"/>
-<input type="hidden" name="func" id="func" value="'.$func.'"/>'; 
-$content .= Form::input_text('grade', 'Klassenstufe', $grade, $error, 'z. B. 7. Klasse');
-$content .= Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung');
-$content .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'institution_id', $institution_id , $error);
+<input type="hidden" name="func" id="func" value="'.$func.'"/>
+<input type="hidden" name="id" id="id" value="'.$id.'"/>'; 
+$content .= Form::input_text('search', 'Suche', $search, $error, 'z. B. Medienkompetenz');
 $content .= '</div></form>';
-$f_content = '';
-if ($func == 'edit'){ 
-    $f_content .= '<button type="submit" class="btn btn-primary fa fa-check-circle-o pull-right" onclick="document.getElementById(\'form_grade\').submit();"> '.$header.'</button>';
-} else {
-    $f_content .= '<button type="submit" class="btn btn-primary fa fa-plus pull-right" onclick="document.getElementById(\'form_grade\').submit();"> '.$header.'</button>';
+
+$f_content = '<button type="submit" class="btn btn-primary fa fa-search pull-right" onclick="document.getElementById(\'form_search\').submit();"> '.$header.'</button>';
+/* get search result*/
+if (isset($search)){
+    $s          = new Search();
+    $s->id      = $id;
+    $s->search  = $search;
+    $result     = $s->$func();   
+    $content .= '<h4>Die Suche ergab folgende Treffer</h4>';
+    switch ($func) {
+        case 'view':    $highlight       = array();
+                        foreach($result AS $r){
+                            $content    .= '<strong>'.$r->enabling_objective.'</strong><hr>';
+                            $highlight[] = 'ena_'.$r->id;
+                        }
+                        $_SESSION['highlight'] = $highlight;
+                        $f_content = '<button class="btn btn-primary fa fa-search pull-right" onclick="closePopup();">Treffer im Lehrplan anzeigen</button>';
+            break;
+
+        default:    
+            break;
+    }
+    $_SESSION['FORM'] = null;                                                   // reset Session Form object 
 }
+/* end search result */
 
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 

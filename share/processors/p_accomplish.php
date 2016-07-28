@@ -2,10 +2,10 @@
 /** This file is part of curriculum - http://www.joachimdieterich.de
 * 
 * @package core
-* @filename p_config.php
+* @filename p_accomplish.php
 * @copyright 2016 Joachim Dieterich
 * @author Joachim Dieterich
-* @date 2016.06.10 11:32
+* @date 2016.07.15 20:15
 * @license: 
 *
 * The MIT License (MIT)
@@ -26,26 +26,14 @@ include(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktion
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER;
 $USER   = $_SESSION['USER'];
-$func   = filter_input(INPUT_GET, 'func',           FILTER_SANITIZE_STRING);
+$func   = filter_input(INPUT_GET, 'func', FILTER_SANITIZE_STRING);
 
 //error_log($func.': '.$val);
 switch ($func) {
-    case "user_paginator":  $u      = new User();        
-                            $val    = filter_input(INPUT_GET, 'val',           FILTER_SANITIZE_STRING); // kein INT --> System ID -1
-                            $u->update('value', 'paginator_limit', $val);
-                            $_SESSION['USER']->paginator_limit = $val;
+    case "task":    $t      = new Task();        
+                    $t->id  = filter_input(INPUT_GET, 'val', FILTER_SANITIZE_STRING); // kein INT --> System ID -1
+                    $t->accomplish('user', $USER->id); 
         break;
-    case "institution_id":  $u      = new User();
-                            $val    = filter_input(INPUT_GET, 'val', FILTER_VALIDATE_INT);
-                            $u->id  = $USER->id;
-                            if ($u->checkInstitutionEnrolment($val)){
-                                $_SESSION['USER']->institution_id = $val;
-                                $u->getRole($val);
-                                $_SESSION['USER']->role_id = $u->role_id;
-                                $USER =& $_SESSION['USER'];
-                                $u->load('id',$u->id,false);
-                                assign_to_template($u,'my_');   
-                            }
                             
     default: break;
 }

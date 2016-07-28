@@ -55,8 +55,12 @@
               <a href="#">
                 <i class="menu-icon fa fa-tasks bg-red"></i>
                 <div class="menu-info">
-                  <h4 class="control-sidebar-subheading">{$tsk->task}</h4>
-                  <p>{$tsk->timestart} - {$tsk->timeend}</p>
+                    <input type="checkbox" class="pull-right" onchange="processor('accomplish','task', {$tsk->id});" {if $tsk->accomplished->status_id eq 2}checked{/if}>
+                    <h4 class="control-sidebar-subheading">{$tsk->task}</h4>
+                    <p>{$tsk->timestart} - {$tsk->timeend}</p>
+                    {if  $tsk->accomplished->status_id eq 2}
+                        <p class="text-green">Erledigt am {$tsk->accomplished->accomplished_time}</p>
+                    {/if}
                 </div>
               </a>
             </li>
