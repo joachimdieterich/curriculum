@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit colors="true">
+  <testsuites>
+    <testsuite name="Acceptance tests">
+      <directory>./tests/acceptance/</directory>
+    </testsuite>
+  </testsuites>
+  <php>
+    <const name="BASE_URL" value="PLEASE_CHANGE_BASE_URL_IN_PHPUNIT_XML" />
+  </php>
+</phpunit>
