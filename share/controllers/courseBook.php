@@ -27,7 +27,13 @@ global $USER, $TEMPLATE, $PAGE, $LOG;
 $TEMPLATE->assign('page_title', 'Kursbuch'); 
 $TEMPLATE->assign('breadcrumb',  array('Kursbuch' => 'index.php?action=courseBook'));
 $LOG->add($USER->id, 'view', $PAGE->url, 'courseBook'); 
-    
+
+$date = '';
+if (isset($_GET['date'])){
+    $date = date('Y-m-d G:i:s', strtotime($_GET['date']));
+    error_log($date);
+}
+
 if (checkCapabilities('menu:readCourseBook', $USER->role_id)){
     $coursebook = new CourseBook();
     $cb         = $coursebook->get();

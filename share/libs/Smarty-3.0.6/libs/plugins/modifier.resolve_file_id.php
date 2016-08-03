@@ -27,10 +27,9 @@ function smarty_modifier_resolve_file_id($id, $size= false, $alt=false)
     $file->id   = $id;
     $file->load();
     if (isset($file->filename) AND isset($file->file_version[$size]['full_path'])){
-        return $file->file_version[$size]['full_path'];
+            return $file->file_version[$size]['full_path'];
     } else {
         return $alt;
     }
 } 
-
 ?>
