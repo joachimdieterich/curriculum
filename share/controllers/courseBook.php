@@ -31,12 +31,11 @@ $LOG->add($USER->id, 'view', $PAGE->url, 'courseBook');
 $date = '';
 if (isset($_GET['date'])){
     $date = date('Y-m-d G:i:s', strtotime($_GET['date']));
-    error_log($date);
 }
 
 if (checkCapabilities('menu:readCourseBook', $USER->role_id)){
     $coursebook = new CourseBook();
-    $cb         = $coursebook->get();
+    $cb         = $coursebook->get('user', null, $date);
     //$TEMPLATE->assign('coursebook', $cb); 
     $p_config =   array(
                     'topic'   => 'Thema', 

@@ -114,10 +114,15 @@ class CourseBook {
      * Get all availible Grades of current institution
      * @return array of Grade objects 
      */
-    public function get($dependency = 'user', $id = null, $paginator = ''){
+    public function get($dependency = 'user', $id = null, $date= null){
         global $USER;
-        $order_param = orderPaginator($paginator, array('topic'         => 'cb',
-                                                        'description'   => 'cb')); 
+        /*$order_param = orderPaginator($paginator, array('topic'         => 'cb',
+                                                        'description'   => 'cb')); */
+        if ($date != null){
+            $order_param = $date;
+        } else { 
+            $order_param = 0; 
+        }
         $entrys = array();                      //Array of grades
         switch ($dependency) {
             case 'user':    $db = DB::prepare('SELECT cb.cb_id FROM course_book AS cb, curriculum_enrolments AS ce, groups_enrolments AS ge
@@ -125,12 +130,13 @@ class CourseBook {
                                                         AND ge.group_id = ce.group_id
                                                         AND ge.status = 1
                                                         AND ge.user_id = ?
-                                                       ORDER BY cb.timestart ASC'.$order_param );
-                            $db->execute(array($USER->id));
+                                                        AND cb.timestart >= ? 
+                                                       ORDER BY cb.timestart ASC');
+                            $db->execute(array($USER->id, $order_param));
                 break;
             case 'course':  $db = DB::prepare('SELECT cb.cb_id
                                                 FROM course_book AS cb
-                                                WHERE cb.course_id = ? '.$order_param );
+                                                WHERE cb.course_id = ? ' );
                             $db->execute(array($id));
                 break;
 
