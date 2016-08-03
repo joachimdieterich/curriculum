@@ -26,29 +26,8 @@ function smarty_modifier_resolve_file_id($id, $size= false, $alt=false)
     $file       = new File();
     $file->id   = $id;
     $file->load();
-    if (isset($file->filename)){
-        switch ($size) {
-            case 'xt':  return $file->file_version['xt']['full_path'];
-                break;
-            case 't':   return $file->file_version['t']['full_path'];
-                break;
-            case 'qs':  return $file->file_version['qs']['full_path'];
-                break;
-            case 'xs':  return $file->file_version['xs']['full_path'];
-                break;
-            case 's':   return $file->file_version['s']['full_path'];
-                break;
-            case 'm':   return $file->file_version['m']['full_path'];
-                break;
-            case 'l':   return $file->file_version['l']['full_path'];
-                break;
-            case false: return $file->full_path;
-                break;
-
-            default:
-                break;
-        }
-
+    if (isset($file->filename) AND isset($file->file_version[$size]['full_path'])){
+        return $file->file_version[$size]['full_path'];
     } else {
         return $alt;
     }

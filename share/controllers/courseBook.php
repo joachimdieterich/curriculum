@@ -30,5 +30,13 @@ $LOG->add($USER->id, 'view', $PAGE->url, 'courseBook');
     
 if (checkCapabilities('menu:readCourseBook', $USER->role_id)){
     $coursebook = new CourseBook();
-    $TEMPLATE->assign('coursebook', $coursebook->get()); 
+    $cb         = $coursebook->get();
+    //$TEMPLATE->assign('coursebook', $cb); 
+    $p_config =   array(
+                    'topic'   => 'Thema', 
+                    'description'  => 'Beschreibung', 
+                    'creation_time'   => 'Datum', 
+                    'curriculum_id'      => 'Lehrplan_ID', 
+                    'curriculum' => 'Lehrplan');
+    setPaginator('coursebookP', $TEMPLATE, $cb, 'coursebook', 'index.php?action=courseBook', $p_config); //set Paginator   
 } 
