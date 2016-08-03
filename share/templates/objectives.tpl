@@ -106,7 +106,7 @@
                                 </div>
                             </div>
                             <div class="panel-footer boxfooter">
-                                <a onclick="showDescription('{$ter->id}');"><span class="fa fa-info pull-right box-sm-icon"></span></a>
+                                <a onclick="formloader('description', 'terminal_objective', '{$ter->id}');"><span class="fa fa-info pull-right box-sm-icon"></span></a>
                             </div>
                         </div> 
                         {*Ende Thema*}
@@ -144,7 +144,7 @@
                                             {/foreach}
                                             </select>
                                         {/if}
-                                        <a onclick="showDescription('{$ter->id}','{$ena->id}');"><span class="fa fa-info pull-right box-sm-icon"></span></a>
+                                        <a onclick="formloader('description', 'enabling_objective', '{$ena->id}');"><span class="fa fa-info pull-right box-sm-icon"></span></a>
                                     </div>
                                 </div> 
                     {/if}

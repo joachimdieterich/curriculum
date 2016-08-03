@@ -633,7 +633,7 @@ class EnablingObjective {
             /* green */
             case 1:
             /* orange */
-            case 2: $db = DB::prepare('SELECT ua.user_id FROM user_accomplished AS ua
+            case 2: $db = DB::prepare('SELECT ua.* FROM user_accomplished AS ua
                               INNER JOIN groups_enrolments AS gr ON gr.user_id = ua.user_id 
                                     WHERE ua.reference_id = ? AND gr.group_id = ?
                                     AND gr.status = 1 AND ua.status_id = ? AND ua.context_id = 12');
@@ -651,7 +651,8 @@ class EnablingObjective {
         }
         
         while($result = $db->fetchObject()) {
-            $users[] = $result->user_id; 
+            //$users[] = $result->user_id; 
+            $users[] = $result; 
         }
 
         if (isset($users)){
