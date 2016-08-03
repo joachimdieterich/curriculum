@@ -50,26 +50,26 @@ if (isset($ena->enabling_objective)){  $content .= '<div class="col-md-12 "><p>Ã
 if ($acc_1){
     $content .= '<div class="col-md-6 "><div class="box box-success box-solid">
                     <div class="box-header with-border">
-                    <div class="box-title">Ziel erreicht</div>
+                    <div class="box-title">Ziel erreicht</div><span class="pull-right badge bg-white text-green">Datum, Lehrer</span>
                     </div>
                     <div class="box-footer no-padding">
                         <ul class="nav nav-stacked">';
                         foreach($acc_1 AS $value) {
                             $user     = new User();
-                            $content .= '<li><a href="#">'.$user->resolveUserId($value->user_id).'<span class="pull-right badge bg-geen" data-toggle="tooltip" title="" data-original-title="Nachricht schreiben" onclick="formloader(\'mail\', \'gethelp\', '.$value->creator_id.');">'.$user->resolveUserId($value->creator_id, 'name').'</span></a></li>';
+                            $content .= '<li><a href="#">'.$user->resolveUserId($value->user_id).'<span class="pull-right badge bg-green" data-toggle="tooltip" title="" data-original-title="Nachricht schreiben" onclick="formloader(\'mail\', \'gethelp\', '.$value->creator_id.');">'.date('d.m.Y',strtotime($value->accomplished_time)).', '.$user->resolveUserId($value->creator_id, 'name').'</span></a></li>';
                         }   
     $content .= '</ul></div></div></div>';  
 } 
 if ($acc_2){
     $content .= '<div class="col-md-6 "><div class="box box-warning box-solid">
                     <div class="box-header with-border">
-                    <div class="box-title">Ziel mit Hilfe erreicht</div>
+                    <div class="box-title">Ziel mit Hilfe erreicht</div><span class="pull-right badge bg-white text-orange">Datum, Lehrer</span>
                     </div>
                     <div class="box-footer no-padding">
                         <ul class="nav nav-stacked">';
                         foreach($acc_2 AS $value) {
                             $user     = new User();
-                            $content .= '<li><a href="#">'.$user->resolveUserId($value->user_id).'<span class="pull-right badge bg-geen" data-toggle="tooltip" title="" data-original-title="Nachricht schreiben" onclick="formloader(\'mail\', \'gethelp\', '.$value->creator_id.');">'.$user->resolveUserId($value->creator_id, 'name').'</span></a></li>';
+                            $content .= '<li><a href="#">'.$user->resolveUserId($value->user_id).'<span class="pull-right badge bg-orange" data-toggle="tooltip" title="" data-original-title="Nachricht schreiben" onclick="formloader(\'mail\', \'gethelp\', '.$value->creator_id.');">'.date('d.m.Y',strtotime($value->accomplished_time)).', '.$user->resolveUserId($value->creator_id, 'name').'</span></a></li>';
                         }   
     $content .= '</ul></div></div></div>';  
 } 
@@ -88,13 +88,13 @@ if ($acc_3){
 if ($acc_0){
     $content .= '<div class="col-md-6 "><div class="box box-danger box-solid">
                     <div class="box-header with-border">
-                    <div class="box-title">Ziel nicht erreicht</div>
+                    <div class="box-title">Ziel nicht erreicht</div><span class="pull-right badge bg-white text-red">Datum, Lehrer</span>
                     </div>
                     <div class="box-footer no-padding">
                         <ul class="nav nav-stacked">';
                         foreach($acc_0 AS $value) {
                             $user     = new User();
-                            $content .= '<li><a href="#">'.$user->resolveUserId($value->user_id).'<span class="pull-right badge bg-geen" data-toggle="tooltip" title="" data-original-title="Nachricht schreiben" onclick="formloader(\'mail\', \'gethelp\', '.$value->creator_id.');">'.$user->resolveUserId($value->creator_id, 'name').'</span></a></li>';
+                            $content .= '<li><a href="#">'.$user->resolveUserId($value->user_id).'<span class="pull-right badge bg-red " data-toggle="tooltip" title="" data-original-title="Nachricht schreiben" onclick="formloader(\'mail\', \'gethelp\', '.$value->creator_id.');">'.date('d.m.Y',strtotime($value->accomplished_time)).', '.$user->resolveUserId($value->creator_id, 'name').'</span></a></li>';
                         }   
     $content .= '</ul></div></div></div>';  
 } 
