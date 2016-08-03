@@ -17,6 +17,7 @@
  */
 
 function smarty_function_html_timeline($params, $template) {
+    global $USER;
     require_once(SMARTY_PLUGINS_DIR . 'function.paginate_first.php');
     require_once(SMARTY_PLUGINS_DIR . 'function.paginate_order.php');
     require_once(SMARTY_PLUGINS_DIR . 'function.paginate_prev.php');
