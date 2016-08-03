@@ -41,6 +41,14 @@ if (isset($_GET['function'])){
         case 'showOutbox':      $TEMPLATE->assign('showOutbox', true); outbox($mailbox);
                                 $TEMPLATE->assign('mailbox_func', 'showOutbox');
             break;
+        /*case 'shownewMessage':  if (strpos($PAGE->previous_url, 'shownewMessage') !== false) { //prevent reloading dialog when it was opend over $_GET parameter
+                                    $_SESSION['FORM']              = new stdClass();
+                                    $_SESSION['FORM']->form        = 'mail'; 
+                                    $_SESSION['FORM']->func        = 'new'; 
+                                    $_SESSION['FORM']->subject     = filter_input(INPUT_GET, 'subject',    FILTER_SANITIZE_STRING);
+                                    $_SESSION['FORM']->receiver_id = filter_input(INPUT_GET, 'receiver_id',    FILTER_VALIDATE_INT);
+                                }  */ 
+                                
         default:  break;
     }
     if (filter_input(INPUT_GET, 'index',    FILTER_VALIDATE_INT)){
@@ -51,7 +59,9 @@ if (isset($_GET['function'])){
 if ($_POST){
     if(isset($_POST['showInbox']))      { $TEMPLATE->assign('showInbox', true);     inbox($mailbox);}
     if(isset($_POST['showOutbox']))     { $TEMPLATE->assign('showOutbox', true);    outbox($mailbox);}
-    if(isset($_POST['shownewMessage'])) { $TEMPLATE->assign('shownewMessage',       true); }
+    if(isset($_POST['shownewMessage'])) { 
+        $TEMPLATE->assign('shownewMessage',       true); 
+    }
     if(isset($_POST['sendMessage'])) {
         $newMail = new Mail();
         $newMail->receiver_id   = filter_input(INPUT_POST, 'receiver_id',           FILTER_VALIDATE_INT);

@@ -96,7 +96,7 @@ if ($selected_curriculum != '') {
         $TEMPLATE->assign('userlist', implode(',', $list));  
         
         $user_id_list  = array_map(function($user) { return $user->id; }, $users); 
-        $p_options     = array('mailnew'   => array('href'       => 'index.php?action=messages&function=shownewMessage&subject=-&receiver_id=__id__&answer=true',
+        $p_options     = array('mailnew'   => array('onclick'       => 'formloader(\'mail\', \'gethelp\', __id__);',
                                                     'capability' => checkCapabilities('mail:postMail', $USER->role_id, false),
                                                     'icon'       => 'fa fa-envelope',
                                                     'tooltip'    => 'Nachricht schreiben'));

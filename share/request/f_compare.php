@@ -56,7 +56,7 @@ if ($acc_1){
                         <ul class="nav nav-stacked">';
                         foreach($acc_1 AS $value) {
                             $user     = new User();
-                            $content .= '<li><a href="">'.$user->resolveUserId($value->user_id).'<span class="pull-right badge bg-geen">'.$user->resolveUserId($value->creator_id, 'name').'</span></a></li>';
+                            $content .= '<li><a href="#">'.$user->resolveUserId($value->user_id).'<span class="pull-right badge bg-geen" data-toggle="tooltip" title="" data-original-title="Nachricht schreiben" onclick="formloader(\'mail\', \'gethelp\', '.$value->creator_id.');">'.$user->resolveUserId($value->creator_id, 'name').'</span></a></li>';
                         }   
     $content .= '</ul></div></div></div>';  
 } 
@@ -69,7 +69,7 @@ if ($acc_2){
                         <ul class="nav nav-stacked">';
                         foreach($acc_2 AS $value) {
                             $user     = new User();
-                            $content .= '<li><a href="">'.$user->resolveUserId($value->user_id).'<span class="pull-right badge bg-geen">'.$user->resolveUserId($value->creator_id, 'name').'</span></a></li>';
+                            $content .= '<li><a href="#">'.$user->resolveUserId($value->user_id).'<span class="pull-right badge bg-geen" data-toggle="tooltip" title="" data-original-title="Nachricht schreiben" onclick="formloader(\'mail\', \'gethelp\', '.$value->creator_id.');">'.$user->resolveUserId($value->creator_id, 'name').'</span></a></li>';
                         }   
     $content .= '</ul></div></div></div>';  
 } 
@@ -81,7 +81,7 @@ if ($acc_3){
                         <ul class="nav nav-stacked">';
                         foreach($acc_3 AS $value) {
                             $user     = new User();
-                            $content .= '<li><a href="">'.$user->resolveUserId($value->user_id).'</a></li>';
+                            $content .= '<li><a href="#">'.$user->resolveUserId($value->user_id).'</a></li>';
                         }   
     $content .= '</ul></div></div></div>';  
 } 
@@ -94,7 +94,7 @@ if ($acc_0){
                         <ul class="nav nav-stacked">';
                         foreach($acc_0 AS $value) {
                             $user     = new User();
-                            $content .= '<li><a href="">'.$user->resolveUserId($value->user_id).'<span class="pull-right badge bg-geen">'.$user->resolveUserId($value->creator_id, 'name').'</span></a></li>';
+                            $content .= '<li><a href="#">'.$user->resolveUserId($value->user_id).'<span class="pull-right badge bg-geen" data-toggle="tooltip" title="" data-original-title="Nachricht schreiben" onclick="formloader(\'mail\', \'gethelp\', '.$value->creator_id.');">'.$user->resolveUserId($value->creator_id, 'name').'</span></a></li>';
                         }   
     $content .= '</ul></div></div></div>';  
 } 
