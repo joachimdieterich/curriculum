@@ -307,7 +307,7 @@ function setAccomplishedObjectives(creatorID, userID, enablingObjectiveID, group
         break;
     }
     
-    var url = "../share/request/setAccObjectives.php?userID="+ userID +"&creatorID="+ creatorID +"&paginatorfirst="+ paginatorfirst +"&enablingObjectiveID="+ enablingObjectiveID+"&statusID="+statusID;
+    var url = "../share/request/setAccObjectives.php?userID="+ userID +"&creatorID="+ creatorID +"&enablingObjectiveID="+ enablingObjectiveID+"&statusID="+statusID;
 
     req = XMLobject();
     if(req) {        
@@ -318,17 +318,33 @@ function setAccomplishedObjectives(creatorID, userID, enablingObjectiveID, group
                 switch(statusID) {
                 case 0:     $(document.getElementById("ena_"+enablingObjectiveID)).addClass("boxred");
                             document.getElementById("ena_status_"+enablingObjectiveID).innerHTML=0;
+                            document.getElementById(enablingObjectiveID+"_green").className     = 'space-left checkgreenbtn pointer_hand';
+                            document.getElementById(enablingObjectiveID+"_orange").className    = 'space-left checkorangebtn pointer_hand';
+                            document.getElementById(enablingObjectiveID+"_white").className     = 'space-left checkwhitebtn pointer_hand';
+                            document.getElementById(enablingObjectiveID+"_red").className       = 'space-left checkactiveredbtn pointer_hand';
                     break;
                 case 1:     $(document.getElementById("ena_"+enablingObjectiveID)).removeClass("boxred");
                             $(document.getElementById("ena_"+enablingObjectiveID)).addClass("boxgreen");
                             document.getElementById("ena_status_"+enablingObjectiveID).innerHTML=1;
+                            document.getElementById(enablingObjectiveID+"_green").className     = 'space-left checkactivegreenbtn pointer_hand';
+                            document.getElementById(enablingObjectiveID+"_orange").className    = 'space-left checkorangebtn pointer_hand';
+                            document.getElementById(enablingObjectiveID+"_white").className     = 'space-left checkwhitebtn pointer_hand';
+                            document.getElementById(enablingObjectiveID+"_red").className       = 'space-left checkredbtn pointer_hand'; 
                     break;
                 case 2:     $(document.getElementById("ena_"+enablingObjectiveID)).removeClass("boxgreen");
                             $(document.getElementById("ena_"+enablingObjectiveID)).addClass("boxorange");
                             document.getElementById("ena_status_"+enablingObjectiveID).innerHTML=2;
+                            document.getElementById(enablingObjectiveID+"_green").className     = 'space-left checkgreenbtn pointer_hand';
+                            document.getElementById(enablingObjectiveID+"_orange").className    = 'space-left checkactiveorangebtn pointer_hand';
+                            document.getElementById(enablingObjectiveID+"_white").className     = 'space-left checkwhitebtn pointer_hand';
+                            document.getElementById(enablingObjectiveID+"_red").className       = 'space-left checkredbtn pointer_hand'; 
                     break;
                 case 3:     $(document.getElementById("ena_"+enablingObjectiveID)).removeClass("boxorange");
-                            document.getElementById("ena_status_"+enablingObjectiveID).innerHTML=3;
+                            document.getElementById("ena_status_"+enablingObjectiveID).innerHTML=3; 
+                            document.getElementById(enablingObjectiveID+"_green").className     = 'space-left checkgreenbtn pointer_hand';
+                            document.getElementById(enablingObjectiveID+"_orange").className    = 'space-left checkorangebtn pointer_hand';
+                            document.getElementById(enablingObjectiveID+"_white").className     = 'space-left checkactivewhitebtn pointer_hand';
+                            document.getElementById(enablingObjectiveID+"_red").className       = 'space-left checkredbtn pointer_hand'; 
                     break;
                 }
                 
