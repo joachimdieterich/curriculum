@@ -29,24 +29,6 @@ global $USER;
 $USER       = $_SESSION['USER'];
 
 $state      = new State(filter_input(INPUT_GET, 'country_id', FILTER_VALIDATE_INT));
-/*$states     = $state->getStates();
-
-if (filter_input(INPUT_GET, 'name', FILTER_SANITIZE_STRING)){
-    echo '<label>Bundesland: </label><select name="'.filter_input(INPUT_GET, 'name', FILTER_SANITIZE_STRING).'">';
-} else {
-    echo '<label>Bundesland: </label><select name="state">';
-}
-for($i = 0; $i < count($states); $i++) {  
-  echo  '<option label="'.$states[$i]->state.'" value="'.$states[$i]->id.'"';
-  if (filter_input(INPUT_GET, 'name', FILTER_SANITIZE_STRING)){
-     if ($states[$i]->id == filter_input(INPUT_GET, 'state_id', FILTER_VALIDATE_INT)) {
-        echo ' selected="selected"'; 
-     }
-  }
-  echo '>'.$states[$i]->state.'</option>';
-}
-echo '</select>';*/
-
 /* bootstrap id == state_id*/
 foreach ($state->getStates() as $value) {
     echo '<option label='.$value->state.' value="'.$value->id.'"'; if (filter_input(INPUT_GET, 'state_id', FILTER_VALIDATE_INT) == $value->id) { echo ' selected="selected"';} echo '>'.$value->state.'</option>';

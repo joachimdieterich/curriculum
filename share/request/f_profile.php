@@ -123,7 +123,7 @@ $content .= Form::input_checkbox('confirm', 'Passwortänderung', $confirm, $erro
 if ($func == 'new'){
     $roles    = new Roles();
     $content .= Form::input_select('role_id', 'Rolle', $roles->get(), 'role', 'id', $role_id , $error); 
-    $content .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'institution_id', $institution_id , $error);
+    $content .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'institution_id', $institution_id , $error, 'getGroups(this.value, \'group_id\');');
     $group    = new Group();
     $content .= Form::input_select('group_id', 'Lerngruppe', $group->getGroups('institution', $USER->institution_id), 'group', 'id', $group_id , $error); 
 }

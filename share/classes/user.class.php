@@ -301,7 +301,7 @@ class User {
             if($db->execute(array($this->username,$this->firstname,$this->lastname,$this->email,$this->postalcode,$this->city,$this->state_id,$this->country_id,intval($this->avatar_id),md5($this->password),$this->confirmed,$USER->id,$this->paginator_limit,$this->acc_days))){
                 $this->id = DB::lastInsertId(); 
                 $this->enroleToInstitution($institution_id);                    // enrol to institution
-                if ($group_id != null){                                         // enrol to group if id is set
+                if (is_int($group_id)){                                         // enrol to group if id is set
                     $this->enroleToGroup($group_id, $USER->id);
                 }
                 $PAGE->message[] = array('message' => 'Der Benutzer <strong>'.$this->username.'</strong> wurde erfolgreich angelegt.', 'icon' => 'fa fa-user text-success');// Schließen und speichern

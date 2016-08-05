@@ -30,19 +30,6 @@ $USER   = $_SESSION['USER'];
 
 $group  = new Group();
 $groups = $group->getGroups('institution', filter_input(INPUT_GET, 'institution_id', FILTER_VALIDATE_INT));
-
-if (filter_input(INPUT_GET, 'name', FILTER_SANITIZE_STRING)){
-    echo '<label>Lerngruppe: </label><select name="'.filter_input(INPUT_GET, 'name', FILTER_SANITIZE_STRING).'">';
-} else {
-    echo '<label>Lerngruppe: </label><select name="group">';
+foreach ($groups as $value) {
+    echo '<option label='.$value->group.' value="'.$value->id.'"'; if (filter_input(INPUT_GET, 'group_id', FILTER_VALIDATE_INT) == $value->id) { echo ' selected="selected"';} echo '>'.$value->group.'</option>';
 }
-for($i = 0; $i < count($groups); $i++) {  
-  echo  '<option label="'.$groups[$i]->group.'" value="'.$groups[$i]->id.'"';
-  if (filter_input(INPUT_GET, 'name', FILTER_SANITIZE_STRING)){
-     if ($groups[$i]->id == filter_input(INPUT_GET, 'group_id', FILTER_VALIDATE_INT)) {
-        echo ' selected="selected"'; 
-     }
-  }
-  echo '>'.$groups[$i]->group.'</option>';
-}
-echo '</select>';

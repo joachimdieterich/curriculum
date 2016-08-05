@@ -540,7 +540,6 @@ function setStates() {
  * argument[0] = name des zu erstellenden select inputs -> wichtig für die weiterverarbeitung!
  */
 function getGroups(){  
-    
     if (arguments[1]){
         var url = "../share/request/getGroups.php?institution_id="+ arguments[0] +"&name="+ arguments[1] +"&group_id="+ arguments[2] ;
     } else {
@@ -558,8 +557,8 @@ function setGroups() {
     if (req.readyState === 4) {  
         if (req.status === 200) {
            if (req.responseText.length != 1){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen
-                      if (document.getElementById('groups')){
-                           document.getElementById('groups').innerHTML = req.responseText;
+                      if (document.getElementById('group_id')){
+                           document.getElementById('group_id').innerHTML = req.responseText;
                       } else {
                           alert(req.responseText); //unschön, aber #popup ist vom modalframe aus nicht verfügbar
                       }  

@@ -43,7 +43,7 @@
                         </div>
 
                         <div class="row col-xs-12 col-sm-12 col-md-5 col-lg-5">
-                            <p>{Form::input_select('institution_id', 'Institution', $my_institutions, 'institution', 'institution_id', $my_institution_id, null)}</p>
+                            <p>{Form::input_select('institution_id', 'Institution', $my_institutions, 'institution', 'institution_id', $my_institution_id, null, 'getGroups(this.value, \'group_id\');')}</p>
                             <p>{Form::input_select('role_id', 'Rolle', $roles, 'role', 'id', $role_id, null)}</p>
                             <p>{Form::input_select('group_id', 'Lerngruppe', $groups, 'group', 'id', null, null)}</p>
                             <p>{Form::input_text('delimiter', 'Trennzeichen', $delimiter, null)}</p>
