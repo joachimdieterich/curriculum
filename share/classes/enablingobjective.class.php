@@ -357,7 +357,7 @@ class EnablingObjective {
                                                         LEFT JOIN user_accomplished AS ua ON en.id = ua.reference_id AND ua.context_id AND ua.user_id = ?
                                                         WHERE en.curriculum_id = ?
                                                         ORDER by en.terminal_objective_id, en.order_id');
-                                $db->execute(array($USER->id, $id));
+                                $db->execute(array($group[0], $id));
                                 while($result = $db->fetchObject()) { //Prozentberechnung - Wie viele der ausgewählten Teilnehmer (in %) waren erfolgreich
                                     $cntEnroled = count($group);
                                     //Anzahl der Teilnehmer, die das Ziel erfolgreich abgeschlossen haben. Status 01
@@ -394,7 +394,7 @@ class EnablingObjective {
                                     $res_02 = $db_03->fetchObject();
                                     $anz_status_02 = $res_02->anzAccomplished;
                                     
-                                    $db_03 = DB::prepare('SELECT COUNT(ua.user_id) AS anzAccomplished
+                                    $db_04 = DB::prepare('SELECT COUNT(ua.user_id) AS anzAccomplished
                                                         FROM role_capabilities AS rc,  groups AS gp, groups_enrolments AS ge, institution_enrolments AS ie, user_accomplished AS ua
                                                         INNER JOIN users AS us ON ua.user_id = us.id
                                                         WHERE ua.reference_id = ?
@@ -406,8 +406,8 @@ class EnablingObjective {
                                                         AND ge.user_id = ua.user_id
                                                         AND gp.id = ge.group_id
                                                         AND ie.role_id = rc.role_id  AND rc.capability = ? AND rc.permission = 0'); // keine Lehrer zählen
-                                    $db_03->execute(array($result->id, 'course:setAccomplishedStatus'));
-                                    $res_03 = $db_03->fetchObject();
+                                    $db_04->execute(array($result->id, 'course:setAccomplishedStatus'));
+                                    $res_03 = $db_04->fetchObject();
                                     $anz_status_00 = $res_03->anzAccomplished;
                                     
                                     $this->id                      = $result->id;

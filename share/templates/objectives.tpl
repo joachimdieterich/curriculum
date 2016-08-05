@@ -114,15 +114,15 @@
                         {*Anfang Ziel*}
                         {foreach key=enaid item=ena from=$enabledObjectives}
                             {if $ena->terminal_objective_id eq $ter->id}
-                                <div style="display:none" id="{$ter->id}_{$ena->id}">{0+$ena->accomplished_status_id}</div><!--Container für Variable-->
-                                <div id="{$ter->id}style{$ena->id}" class="panel panel-default box-objective {if $ena->accomplished_status_id eq 1} boxgreen {elseif $ena->accomplished_status_id eq 2} boxorange {elseif $ena->accomplished_status_id eq '0'} boxred {/if}"> 
+                                <div style="display:none" id="ena_status_{$ena->id}">{0+$ena->accomplished_status_id}</div><!--Container für Variable-->
+                                <div id="ena_{$ena->id}" class="panel panel-default box-objective {if $ena->accomplished_status_id eq 1} boxgreen {elseif $ena->accomplished_status_id eq 2} boxorange {elseif $ena->accomplished_status_id eq '0'} boxred {/if}"> 
                                     <div class="panel-heading boxheader" style="background: {$ter->color}">
                                         {if isset($ena->accomplished_users) and isset($ena->enroled_users) and isset($ena->accomplished_percent)}
                                             {$ena->accomplished_users} von {$ena->enroled_users} ({$ena->accomplished_percent}%)<!--Ziel--> 
                                         {/if}
                                         <a onclick='formloader("compare","group", {$ena->id},{["group_id"=>$sel_group_id]|@json_encode nofilter});'><span class="fa  fa-bar-chart-o pull-right invert box-sm-icon"></span></a>
                                     </div>
-                                    <div {*id="ena_{$ena->id}"*} class="panel-body boxwrap" onclick="setAccomplishedObjectives({$my_id}, '{implode(',',$selected_user_id)}', {$userPaginator.first}, {if isset($paginatorLimit)}{$paginatorLimit}{else}10{/if}, {$ter->id}, {$ena->id}, {$sel_group_id});">
+                                    <div class="panel-body boxwrap" onclick="setAccomplishedObjectives({$my_id}, '{implode(',',$selected_user_id)}', {$ena->id}, {$sel_group_id});">
                                         <div class="boxscroll">
                                                 <div class="boxcontent">
                                                     {$ena->enabling_objective}
@@ -130,7 +130,9 @@
                                             </div>
                                     </div>
                                     <div class="panel-footer boxfooter">
-                                        {if $addedSolutions != false} 
+                                        <span class=" pull-left">{Render::accCheckboxes($ena->id, implode(',',$selected_user_id), $my_id, false)}</span>
+                                        
+                                        {*if $addedSolutions != false} 
                                             {assign var="firstrun" value="true"} 
                                             {foreach key=solID item=sol from=$addedSolutions}
                                                 {if $sol->enabling_objective_id eq $ena->id}
@@ -143,8 +145,8 @@
                                                 {/if}
                                             {/foreach}
                                             </select>
-                                        {/if}
-                                        <a onclick="formloader('description', 'enabling_objective', '{$ena->id}');"><span class="fa fa-info pull-right box-sm-icon"></span></a>
+                                        {/if*}
+                                        <a onclick="formloader('description', 'enabling_objective', '{$ena->id}');"><span class=" fa fa-info pull-right box-sm-icon"></span></a>
                                     </div>
                                 </div> 
                     {/if}

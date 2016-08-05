@@ -66,7 +66,7 @@ if ($selected_curriculum != '' AND $selected_user_id != '' AND $selected_user_id
         $terminal_objectives = new TerminalObjective();         //load terminal objectives
         $TEMPLATE->assign('terminalObjectives', $terminal_objectives->getObjectives('curriculum', $selected_curriculum));
         $enabling_objectives                = new EnablingObjective();         //load enabling objectives
-        $enabling_objectives->curriculum_id = $selected_curriculum;
+        //$enabling_objectives->curriculum_id = $selected_curriculum;
         $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('group', $selected_curriculum, $selected_user_id));
         $show_course = true; // setzen
     } else {
@@ -114,7 +114,7 @@ if ($selected_curriculum != '') {
         setPaginator('userPaginator', $TEMPLATE, $users, 'results', 'index.php?action=objectives&course='.$selected_curriculumforURL, $p_config); //set Paginator    
         //User-Solutions laden
         $files      = new File(); 
-        $TEMPLATE->assign('addedSolutions', $files->getSolutions('course', $user_id_list, $selected_curriculum)); 
+        //$TEMPLATE->assign('addedSolutions', $files->getSolutions('course', $user_id_list, $selected_curriculum)); //--> move to f_compare
     } else {
         $showuser   = true;
     }  

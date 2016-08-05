@@ -33,9 +33,9 @@
     background-repeat: no-repeat;
     background-size: contain;
     background-color: transparent;
-    margin-right: 5px;    
-    height: 18px;
-    width: 22px;
+    margin-right: 3px;    
+    height: 15px;
+    width: 18px;
     border: none;
     cursor: pointer;
     vertical-align: middle; 
@@ -99,9 +99,9 @@
 .editbtn        { background-image: url('../images/icons/glyphicons_151_edit.png'); }
 .checkbtn       { background-image: url('../images/icons/glyphicons_150_check.png'); 
                   margin-top: 2px;}
-.checkactivegreenbtn  { background-image: url('../images/icons/checkbox_green.png');margin-top: 2px;}
-.checkactiveredbtn    { background-image: url('../images/icons/checkbox_red.png');margin-top: 2px;}
-.checkactiveorangebtn { background-image: url('../images/icons/checkbox_orange.png');margin-top: 2px;}
+.checkactivegreenbtn  { background-image: url('../images/icons/checkbox_green.png');}
+.checkactiveredbtn    { background-image: url('../images/icons/checkbox_red.png');}
+.checkactiveorangebtn { background-image: url('../images/icons/checkbox_orange.png');}
 .checkactivewhitebtn  { background-image: url('../images/icons/checkbox_white.png'); }
 .checkgreenbtn  { background-image: url('../images/icons/glyphicons-154-unchecked-green.png');}
 .checkredbtn    { background-image: url('../images/icons/glyphicons-154-unchecked-red.png');}
