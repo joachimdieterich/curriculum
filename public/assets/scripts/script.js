@@ -321,16 +321,11 @@ function setStatusColor(ena_id, status_id){
 
 function setAccomplishedObjectives(creatorID, userID, enablingObjectiveID, groupID){        
     var statusID = Number(document.getElementById("ena_status_"+enablingObjectiveID).innerHTML); //convert html to int
-    switch(statusID) {
-    case 0:     statusID = 1;
-        break;
-    case 1:     statusID = 2;
-        break;
-    case 2:     statusID = 3;
-        break;
-    case 3:     statusID = 0;
-        break;
-    }
+    if (statusID === 3){
+        statusID = 0; // reset
+    } else {
+        statusID = statusID + 1 ; 
+    } 
     
     var url = "../share/request/setAccObjectives.php?userID="+ userID +"&creatorID="+ creatorID +"&enablingObjectiveID="+ enablingObjectiveID+"&statusID="+statusID;
 
