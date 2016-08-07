@@ -156,4 +156,4 @@ $p_config =   array('id'         => 'checkbox',
                     'country' => 'Land', */
                     ''    => 'Rolle', 
                     'p_options'    => $p_options);
-setPaginator('userP', $TEMPLATE, $users->userList('institution', 'userP'), 'us_val', 'index.php?action=user', $p_config); //set Paginator    
+setPaginator('userP', $TEMPLATE, $users->userList('institution', 'userP', filter_input(INPUT_GET, 'lost', FILTER_VALIDATE_BOOLEAN)), 'us_val', 'index.php?action=user', $p_config); //set Paginator    

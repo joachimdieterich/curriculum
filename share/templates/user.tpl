@@ -21,13 +21,20 @@
                     {if checkCapabilities('user:addUser', $my_role_id, false)}
                     <div class="btn-group" role="group" aria-label="...">
                         <button type="button" class="btn btn-default" onclick="formloader('profile', 'new');"><a  href="#">
-                                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Benutzer hinzufügen</a>
+                            <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Benutzer hinzufügen</a>
                         </button>
                         {if checkCapabilities('menu:readuserImport', $my_role_id, false)}
-                            <button type="button" class="btn btn-default" onclick="location.href='index.php?action=userImport&reset=true'"><a href="index.php?action=userImport&reset=true">
-                                    <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Benutzerliste importieren</a>
+                            <button type="button" class="btn btn-default" onclick="location.href='index.php?action=userImport&reset=true';"><a href="index.php?action=userImport&reset=true">
+                                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Benutzerliste importieren</a>
                             </button>
                         {/if}
+                    </div>
+                    {/if}
+                    {if checkCapabilities('user:userListComplete', $my_role_id, false)}
+                    <div class="btn-group pull-right" role="group" aria-label="...">
+                        <button type="button" class="btn btn-default" onclick="location.href='index.php?action=user&lost=true';"><a  href="#">
+                                <span class="fa fa-group" aria-hidden="true"></span> Nicht zugeordnete Benutzer</a>
+                        </button>
                     </div>
                     {/if}
                 </div><!-- /.box-header -->

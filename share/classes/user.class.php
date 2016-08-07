@@ -616,7 +616,7 @@ class User {
      * @param int $id
      * @return array of object 
      */
-    public function userList($dependency = 'institution', $paginator = '', $id = null){
+    public function userList($dependency = 'institution', $paginator = '', $lost = false){
         global $USER;
         $order_param = orderPaginator($paginator, array('username'  => 'us',
                                                         'firstname' => 'us',
@@ -629,8 +629,14 @@ class User {
         $users = array();                      //Array of grades
         switch ($dependency) {
             case 'institution': if(checkCapabilities('user:userListComplete', $USER->role_id,false)){ //Global Admin
-                                    $db = DB::prepare('SELECT us.* FROM users AS us WHERE us.id = us.id '.$order_param); //hack id = id to user search
-                                    $db->execute(); 
+                                    if ($lost){
+                                        $db = DB::prepare('SELECT us.* FROM users AS us, institution_enrolments AS ie 
+                                                WHERE us.id = us.id AND ie.user_id = us.id AND ie.status = 0 '.$order_param); //hack id = id to user search
+                                        $db->execute(); 
+                                    } else {
+                                        $db = DB::prepare('SELECT us.* FROM users AS us WHERE us.id = us.id '.$order_param); //hack id = id to user search
+                                        $db->execute(); 
+                                    }
                                 } else if (checkCapabilities('user:userListInstitution', $USER->role_id,false)) { //Manager
                                     $db = DB::prepare('SELECT us.* FROM users AS us WHERE us.id = ANY (SELECT user_id FROM institution_enrolments 
                                                     WHERE institution_id = ? AND status = 1 AND role_id <> 1) '.$order_param); // HACK to prevent edit of super user
@@ -644,7 +650,7 @@ class User {
                                                         AND ge.status = 1
                                                         AND ge.group_id = ANY (SELECT group_id FROM groups_enrolments 
                                                                                                WHERE user_id = ? AND status =  1) '.$order_param);
-                                    $db->execute(array($USER->institution_id, $USER->id)); 
+                                    $db->execute(array($USER->institution_id, $USER->id));  
                                 }                       
             break;
             default:  break;
