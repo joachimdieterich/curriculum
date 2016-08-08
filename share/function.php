@@ -280,10 +280,8 @@ function checkCapabilities($capability = null, $role_id = null, $thow_exception 
         return true;
     } else {
         if ($thow_exception){
-            $role       = new Roles();
-            $role->id   = $capabilities->role_id;
-            $role->load();
-            throw new CurriculumException('Als <strong>'.$role->role.'</strong> verfügen Sie nicht über die erforderliche Berechtigung ('.$capabilities->capability.').', 1);
+            global $USER;
+            throw new CurriculumException('Als <strong>'.$USER->role_name.'</strong> verfügen Sie nicht über die erforderliche Berechtigung ('.$capability.').', 1);
         }
         return false; 
     }

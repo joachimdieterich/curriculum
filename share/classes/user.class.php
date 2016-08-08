@@ -448,7 +448,7 @@ class User {
             }
             $this->creation_time     = $result->creation_time;
             $this->creator_id        = $result->creator_id;
-            $role = new Roles();                            //???bereits oben in der query ermittelt rol.role?
+            $role = new Roles();                           
             $role->id                = $this->role_id;
             $role->load(); 
             $this->role_name         = $role->role;
@@ -810,7 +810,6 @@ class User {
                                                 AND gr.id = ge.group_id
                                                 '.$order_param);
                             $db->execute(array($id, $group)); 
-
                             while($result = $db->fetchObject()) {  
                                     $this->id           = $result->id;
                                     $this->username     = $result->username;
@@ -821,7 +820,7 @@ class User {
                                     $role->id           = $this->role_id;
                                     $role->load(); 
                                     $this->role_name    = $role->role;
-                                    //$this->load('id', $this->id, false);
+                                    
                                     if (!checkCapabilities('objectives:setStatus', $this->role_id, FALSE)){ //only add to list if not able to set status == teacher
                                         $ena = new EnablingObjective();
                                         $this->completed = $ena->getPercentageOfCompletion($id, $this->id);

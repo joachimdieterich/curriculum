@@ -139,7 +139,7 @@ class Roles {
     /**
      * Load user-role with id $this->id 
      */
-    public function load(){
+    public function load($capabilities = false){
         $db     = DB::prepare('SELECT * FROM roles WHERE id = ?');
         $db->execute(array($this->id)); 
         $result = $db->fetchObject();
@@ -148,9 +148,11 @@ class Roles {
             $this->role         = $result->role;
             $this->description  = $result->description;
             $this->creation_time= $result->creation_time;
-            $this->creator_id   = $result->creator_id;   
-            $capabilities       = new Capability();
-            $this->capabilities =  $capabilities->getCapabilities($this->id);
+            $this->creator_id   = $result->creator_id;  
+            if ($capabilities){
+                $capabilities       = new Capability();
+                $this->capabilities =  $capabilities->getCapabilities($this->id);
+            }
         }
     }
     

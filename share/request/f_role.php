@@ -41,11 +41,10 @@ switch ($func) {
         break;
     case 'edit':    $edit_role        = new Roles();
                     $edit_role->id    = filter_input(INPUT_GET, 'id', FILTER_UNSAFE_RAW); // kein INT da Systemrolle -1
-                    $edit_role->load();
+                    $edit_role->load(true);                                     //load capabilities
                     $role_id          = $edit_role->id;
                     foreach ($edit_role as $key => $value){
                         $$key = $value;
-                        //error_log($key. ': '.$value);
                     }
                     $header                       = 'Benutzerrolle aktualisieren';           
         break;
