@@ -45,59 +45,51 @@ switch ($func) {
 
 $content    = '';
 if (isset($ena->enabling_objective)){  $content .= '<div class="col-md-12 "><p>Übersicht zum Lernziel:'.filter_input(INPUT_GET, 'group_id', FILTER_VALIDATE_INT).'<br><strong>'.$ena->enabling_objective.'</strong></p></div>'; } 
+$order = array('acc_0' => array('items'  => count($acc_0), 
+                            'header' => 'Ziel nicht erreicht', 
+                            'color'  => 'text-red', 
+                            'class'  => 'box-danger',
+                            'var'    => 'acc_0'),
+               'acc_1' => array('items'  => count($acc_1), 
+                            'header' => 'Ziel erreicht', 
+                            'color'  => 'text-green',
+                            'class'  => 'box-success',
+                            'var'    => 'acc_1'),
+               'acc_2' => array('items'  => count($acc_2), 
+                            'header' => 'Ziel mit Hilfe erreicht', 
+                            'color'  => 'text-orange',
+                            'class'  => 'box-warning',
+                            'var'    => 'acc_2'),
+               'acc_3' => array('items'  => count($acc_3), 
+                            'header' => 'Ziel noch nicht bearbeitet', 
+                            'color'  => false,
+                            'class'  => 'box-default',
+                            'var'    => 'acc_3'),
+    );
+    rsort($order);
 
-/* Ziel erfolgreich erreicht */
-if ($acc_1){
-    $content .= '<div class="col-md-6 "><div class="box box-success box-solid">
+foreach ($order as $key => $value) {
+    $content .= '<div class="col-md-6 "><div class="box '.$value['class'].' box-solid">
                     <div class="box-header with-border">
-                    <div class="box-title">Ziel erreicht</div><span class="pull-right badge bg-white text-green">Datum, Lehrer</span>
-                    </div>
+                    <div class="box-title">'.$value['header'].'</div>';
+                    if ($value['color']){
+                        $content .= '<span class="pull-right badge bg-white '.$value['color'].'">Datum, Lehrer</span>';
+                    }
+                    $content .= '</div>
                     <div class="box-footer no-padding">
                         <ul class="nav nav-stacked">';
-                        foreach($acc_1 AS $value) {
-                            $user     = new User();
-                            $content .= '<li><a href="#">'.$user->resolveUserId($value->user_id).'<span class="pull-right badge bg-green" data-toggle="tooltip" title="" data-original-title="Nachricht schreiben" onclick="formloader(\'mail\', \'gethelp\', '.$value->creator_id.');">'.date('d.m.Y',strtotime($value->accomplished_time)).', '.$user->resolveUserId($value->creator_id, 'name').'</span></a></li>';
-                        }   
-    $content .= '</ul></div></div></div>';  
-} 
-if ($acc_2){
-    $content .= '<div class="col-md-6 "><div class="box box-warning box-solid">
-                    <div class="box-header with-border">
-                    <div class="box-title">Ziel mit Hilfe erreicht</div><span class="pull-right badge bg-white text-orange">Datum, Lehrer</span>
-                    </div>
-                    <div class="box-footer no-padding">
-                        <ul class="nav nav-stacked">';
-                        foreach($acc_2 AS $value) {
-                            $user     = new User();
-                            $content .= '<li><a href="#">'.$user->resolveUserId($value->user_id).'<span class="pull-right badge bg-orange" data-toggle="tooltip" title="" data-original-title="Nachricht schreiben" onclick="formloader(\'mail\', \'gethelp\', '.$value->creator_id.');">'.date('d.m.Y',strtotime($value->accomplished_time)).', '.$user->resolveUserId($value->creator_id, 'name').'</span></a></li>';
-                        }   
-    $content .= '</ul></div></div></div>';  
-} 
-if ($acc_3){
-    $content .= '<div class="col-md-6 "><div class="box box-default box-solid">
-                    <div class="box-header with-border">
-                    <div class="box-title">Ziel noch nicht bearbeitet</div>
-                    </div>
-                        <ul class="nav nav-stacked">';
-                        foreach($acc_3 AS $value) {
-                            $user     = new User();
-                            $content .= '<li><a href="#">'.$user->resolveUserId($value->user_id).'</a></li>';
-                        }   
-    $content .= '</ul></div></div></div>';  
-} 
-if ($acc_0){
-    $content .= '<div class="col-md-6 "><div class="box box-danger box-solid">
-                    <div class="box-header with-border">
-                    <div class="box-title">Ziel nicht erreicht</div><span class="pull-right badge bg-white text-red">Datum, Lehrer</span>
-                    </div>
-                    <div class="box-footer no-padding">
-                        <ul class="nav nav-stacked">';
-                        foreach($acc_0 AS $value) {
-                            $user     = new User();
-                            $content .= '<li><a href="#">'.$user->resolveUserId($value->user_id).'<span class="pull-right badge bg-red " data-toggle="tooltip" title="" data-original-title="Nachricht schreiben" onclick="formloader(\'mail\', \'gethelp\', '.$value->creator_id.');">'.date('d.m.Y',strtotime($value->accomplished_time)).', '.$user->resolveUserId($value->creator_id, 'name').'</span></a></li>';
-                        }   
-    $content .= '</ul></div></div></div>';  
-} 
+                        if ($$value['var']){
+                            foreach($$value['var'] AS $v) {
+                                $user     = new User();
+                                $content .= '<li><a href="#">'.$user->resolveUserId($v->user_id);
+                                if ($value['color']){
+                                    $content .= '<span class="pull-right badge bg-'.$value['color'].'" data-toggle="tooltip" title="" data-original-title="Nachricht schreiben" onclick="formloader(\'mail\', \'gethelp\', '.$v->creator_id.');">'.date('d.m.Y',strtotime($v->accomplished_time)).', '.$user->resolveUserId($v->creator_id, 'name').'</span>';
+                                }
+                                $content .= '</a></li>';
+                            }   
+                        }
+    $content .= '</ul></div></div></div>'; 
+}
 
 $html = Form::modal(array('title'   => 'Lernstand der Gruppe',
                           'content' => $content));
