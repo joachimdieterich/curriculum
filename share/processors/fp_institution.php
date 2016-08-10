@@ -85,6 +85,7 @@ if($validated_data === false) {/* validation failed */
                         $TEMPLATE->assign('institution_id', $institution_id);
                         if (isset($institution_id)){
                             $_SESSION['PAGE']->message[] = array('message' => 'Institution hinzufgefügt', 'icon' => 'fa-university text-success');
+                            session_reload_user();
                         }               
             
             break;
