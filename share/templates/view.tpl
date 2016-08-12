@@ -69,7 +69,7 @@
                                     </div>
                                     <div class="panel-footer boxfooter">
                                         {if $ter->description neq ''}
-                                            <a onclick="formloader('description', 'terminal_objective', '{$ter->id}');"><span class="fa fa-info pull-right box-sm-icon"></span></a>
+                                            <a onclick="formloader('description', 'terminal_objective', '{$ter->id}');"><span class="fa fa-info pull-right box-sm-icon"  data-toggle="tooltip" title="Beschreibung"></span></a>
                                         {/if}
                                         {if isset($showaddObjectives)}
                                             {if checkCapabilities('file:upload', $my_role_id, false)}
@@ -78,7 +78,7 @@
                                         {/if}
 
                                         {if checkCapabilities('file:loadMaterial', $my_role_id, false) AND $ter->files neq '0'}
-                                            <a onclick="formloader('material','ter',{$ter->id})"><span class="fa fa-briefcase box-sm-icon"></span>  <span class="badge label-primary" style="margin-top: -3px;font-size: 8px;line-height: .8">{$ter->files}</span></a>
+                                            <a onclick="formloader('material','ter',{$ter->id})"><span class="fa fa-briefcase box-sm-icon"></span>  <span class="badge label-primary" style="margin-top: -3px;font-size: 8px;line-height: .8"  data-toggle="tooltip" title="Material">{$ter->files}</span></a>
                                         {else}
                                             <span class="fa fa-briefcase box-sm-icon deactivate"></span> <span class="badge label-primary deactivate" style="margin-top: -3px;font-size: 8px;line-height: .8">{$ter->files}</span>
                                         {/if}
@@ -94,14 +94,14 @@
                                            <div class="panel-heading boxheader" style="background: {$ter->color}">
                                                {if checkCapabilities('groups:showAccomplished', $my_role_id, false)}
                                                    {if isset($ena->accomplished_users) and isset($ena->enroled_users) and isset($ena->accomplished_percent)}
-                                                       <span class=" pull-left hidden-sm hidden-xs">{$ena->accomplished_users} von {$ena->enroled_users} (</span>{$ena->accomplished_percent}%<span class="hidden-sm hidden-xs">)</span><!--Ziel-->  
+                                                       <span class=" pull-left hidden-sm hidden-xs" data-toggle="tooltip" title="Stand der Lerngruppe">{$ena->accomplished_users} von {$ena->enroled_users} (</span>{$ena->accomplished_percent}%<span class="hidden-sm hidden-xs">)</span><!--Ziel-->  
                                                    {/if}
                                                {/if}
                                                {if !isset($showaddObjectives) AND checkCapabilities('user:getHelp', $my_role_id, false)}
-                                                   <a onclick="getHelp({$page_group}, {$ena->id});"><span class="fa fa-support invert pull-right box-sm-icon"></span></a>
+                                                   <a onclick="getHelp({$page_group}, {$ena->id});"><span class="fa fa-support invert pull-right box-sm-icon"  data-toggle="tooltip" title="Gruppenmitglied kontaktieren"></span></a>
                                                {/if} 
                                                {if !isset($showaddObjectives) AND checkCapabilities('file:solutionUpload', $my_role_id, false)}
-                                                   {if $solutions != false}
+                                                   {if isset($solutions[$my_id])}
                                                        {foreach key=solID item=sol from=$solutions}
                                                            {if $sol->enabling_objective_id eq $ena->id AND $sol_btn neq $ena->id}
                                                                {assign var="sol_btn" value=$ena->id}
@@ -110,7 +110,7 @@
                                                    {/if}
                                                    {if checkCapabilities('file:upload', $my_role_id, false)}
                                                        <a href="../share/request/uploadframe.php?context=solution&ref_id={$ena->id}{$tb_param}" class="nyroModal">
-                                                       <span class="{if $sol_btn eq $ena->id OR $sol_btn eq false}green{/if} fa fa-upload invert pull-right box-sm-icon"></span></a>
+                                                       <span class="fa {if $sol_btn eq $ena->id OR $sol_btn eq false}fa-check-circle-o{else}fa-upload{/if} invert pull-right box-sm-icon" data-toggle="tooltip" {if $sol_btn eq $ena->id OR $sol_btn eq false}title="Lösung eingereicht"{else}title="Lösung einreichen"{/if}></span></a>
                                                    {/if}  
                                                {/if}
                                                {if isset($showaddObjectives)}
@@ -137,7 +137,7 @@
                                            </div>
                                            <div class="panel-footer boxfooter">
                                                 {if $ter->description neq '' AND $ena->description neq ''}
-                                                    <a onclick="formloader('description', 'enabling_objective','{$ena->id}');"><span class="fa fa-info pull-right box-sm-icon"></span></a>
+                                                    <a onclick="formloader('description', 'enabling_objective','{$ena->id}');"><span class="fa fa-info pull-right box-sm-icon"  data-toggle="tooltip" title="Bechreibung"></span></a>
                                                 {/if}
                                                {if isset($showaddObjectives)}
                                                    <a onclick="formloader('addQuiz','enabling_objective','{$ena->id}');"><span class="fa fa-check-square-o pull-right box-sm-icon"></span></a>
@@ -151,7 +151,7 @@
                                                    {/if}
                                                {/if}  
                                                {if checkCapabilities('file:loadMaterial', $my_role_id, false) AND $ena->files neq '0'}
-                                               <a onclick="formloader('material','ena', {$ena->id});"><i class="fa fa-briefcase box-sm-icon"></i> <span class="badge label-primary" style="margin-top: -3px;font-size: 8px;line-height: .8">{$ena->files}</span></a>
+                                               <a onclick="formloader('material','ena', {$ena->id});"><i class="fa fa-briefcase box-sm-icon"></i> <span class="badge label-primary" style="margin-top: -3px;font-size: 8px;line-height: .8"  data-toggle="tooltip" title="Material">{$ena->files}</span></a>
                                                 {else}
                                                     <span class="fa fa-briefcase box-sm-icon deactivate"></span> <span class="badge label-primary deactivate" style="margin-top: -3px;font-size: 8px;line-height: .8">{$ena->files}</span>
                                                 {/if} 

@@ -131,21 +131,6 @@
                                     </div>
                                     <div class="panel-footer boxfooter">
                                         <span class=" pull-left">{Render::accCheckboxes($ena->id, implode(',',$selected_user_id), $my_id, false)}</span>
-                                        
-                                        {*if $addedSolutions != false} 
-                                            {assign var="firstrun" value="true"} 
-                                            {foreach key=solID item=sol from=$addedSolutions}
-                                                {if $sol->enabling_objective_id eq $ena->id}
-                                                    {if $firstrun eq "true"}
-                                                        <select class="col-xs-11" name="select_{$ena->id}" onclick="openLink(this.options[this.selectedIndex].value, '_blank');"> 
-                                                        <option value="">Abgaben...</option>
-                                                        {assign var="firstrun" value="false"}
-                                                    {/if}
-                                                    <option value="{$base_url}public/{$solutions_path}{$sol->path}{$sol->filename}">({$sol->lastname}, {$sol->firstname}) {$sol->filename}{$sol->type}</a></option>
-                                                {/if}
-                                            {/foreach}
-                                            </select>
-                                        {/if*}
                                         <a onclick="formloader('description', 'enabling_objective', '{$ena->id}');"><span class=" fa fa-info pull-right box-sm-icon"></span></a>
                                     </div>
                                 </div> 

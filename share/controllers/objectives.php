@@ -112,9 +112,6 @@ if ($selected_curriculum != '') {
                                'p_options' => $p_options,
                                't_config'  => $t_config);
         setPaginator('userPaginator', $TEMPLATE, $users, 'results', 'index.php?action=objectives&course='.$selected_curriculumforURL, $p_config); //set Paginator    
-        //User-Solutions laden
-        $files      = new File(); 
-        //$TEMPLATE->assign('addedSolutions', $files->getSolutions('course', $user_id_list, $selected_curriculum)); //--> move to f_compare
     } else {
         $showuser   = true;
     }  

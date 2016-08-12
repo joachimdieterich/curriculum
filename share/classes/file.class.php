@@ -386,7 +386,7 @@ class File {
      * @param inst $course_id
      * @param string $user_ids 
      */
-    public function getSolutions($dependency = null, $user_ids = null, $curriculum_id = null){
+    public function getSolutions($dependency = null, $user_ids = null, $reference_id = null){
         global $USER;
         checkCapabilities('file:getSolutions', $USER->role_id, false);
         switch ($dependency) {
@@ -396,8 +396,16 @@ class File {
                             $db = DB::prepare('SELECT fl.*, us.firstname, us.lastname FROM files AS fl, users AS us
                                 WHERE fl.cur_id = ? AND fl.creator_id IN ('.$user_ids.')
                                 AND fl.creator_id = us.id AND fl.context_id = 4 ORDER BY us.lastname');
-                            $db->execute(array($curriculum_id));  
-                            break;
+                            $db->execute(array($reference_id));  
+                break;
+            case 'objective':  if (is_array($user_ids)){
+                                $user_ids = implode(", ", $user_ids);
+                            }
+                            $db = DB::prepare('SELECT fl.*, us.firstname, us.lastname FROM files AS fl, users AS us
+                                WHERE fl.ena_id = ? AND fl.creator_id IN ('.$user_ids.')
+                                AND fl.creator_id = us.id AND fl.context_id = 4 ORDER BY us.lastname');
+                            $db->execute(array($reference_id));  
+                break;
 
             case 'artefacts':  if (is_array($user_ids)){
                                 $user_ids = implode(", ", $user_ids);
@@ -406,7 +414,7 @@ class File {
                                 WHERE fl.creator_id IN ('.$user_ids.')
                                 AND fl.creator_id = us.id');
                             $db->execute();  
-                            break;
+                break;
 
             default:        break;
         }
@@ -416,7 +424,7 @@ class File {
                 $this->title                 = $result->title;
                 $this->filename              = $result->filename;
                 if (empty($this->title)){
-                    $this->title             =  $result->filename;
+                    $this->title             = $result->filename;
                  }
                 $this->description           = $result->description;
                 $this->author                = $result->author;
@@ -434,7 +442,7 @@ class File {
                 if (isset($result->hits)){
                     $this->hits              = $result->hits;
                 }
-                $files[] = clone $this;        //it has to be clone, to get the object and not the reference
+                $files[$this->creator_id] = clone $this;        //it has to be clone, to get the object and not the reference
         } 
         if (isset($files)) {  
             return $files;
