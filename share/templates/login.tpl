@@ -48,13 +48,12 @@
             </div><!-- /.col -->
           </div>
         </form>
-
+        {if isset($cfg_shibboleth)}
         <div class="social-auth-links text-center">
           <p>- ODER -</p>
-          <!--a href="#" class="btn btn-block btn-social btn-openid" onclick="alert('Funktion noch nicht verfügbar');"><img src="assets/images/icons/shibboleth-web.png"></img> Über Shibboleth anmelden</a-->
           <a href="../share/plugins/auth/shibboleth/index.php" class="btn btn-block btn-social btn-openid"><img src="assets/images/icons/shibboleth-web.png"></img> Über Shibboleth anmelden</a>
-        </div><!-- /.social-auth-links -->
-
+        </div>
+        {/if}
         <a href="#" onclick="alert('Funktion noch nicht verfügbar');">Passwort vergessen</a><br>
         <a href="#" class="text-center" onclick="alert('Funktion noch nicht verfügbar');">Registrieren</a>
 

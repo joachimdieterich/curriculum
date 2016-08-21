@@ -260,16 +260,18 @@ class Form {
      * @param type $params
      */
     public static function modal($params){
+        $target = 'popup';              // default target, will be overwritten if target in $params
         foreach($params as $key => $val) {
             $$key = $val;
         }
-        $html ='<div class="modal-dialog" style="overflow-y: initial !important;">
+        
+        $html = '<div class="modal-dialog" style="overflow-y: initial !important;">
                     <div class="modal-content" ><!-- height is dynamic set by popupFunction() -->
                         <div class="modal-header">';
                         if (isset($h_content)){
                             $html .= $h_content;
                         } else {
-                            $html .= '<button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closePopup();"><span aria-hidden="true">×</span></button>';
+                            $html .= '<button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closePopup(\''.$target.'\');"><span aria-hidden="true">×</span></button>';
                         }
                         $html .= '<h4 class="modal-title">'.$title.'</h4>';
             if (isset($background)){$background = 'background:'.$background.';';} else{$background = '';}
@@ -289,6 +291,9 @@ class Form {
             $html .=   '</div>
                     </div><!-- /.modal-content -->
                 </div><!-- /.modal-dialog -->';
+            if (isset($sub_modal_id)){
+                $html .= '<div id="sub_popup" class="modal" onload="popupFunction(this.id);"><div class="modal-dialog"><div class="box"><div class="box-header"><h3 class="box-title">Loading...'.$sub_modal_id.'</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div></div></div> <!-- Sub Popup -->';
+            }
     return $html;    
     }
     

@@ -45,9 +45,6 @@
         <!--link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"-->
         <!-- jvectormap -->
         <!--link rel="stylesheet" href="{$media_url}templates/AdminLTE-2.3.0/plugins/jvectormap/jquery-jvectormap-1.2.2.css"-->
-        <!-- fullCalendar 2.2.5 -> see calendar.tpl-->
-        <!--link rel="stylesheet" href="{$media_url}templates/AdminLTE-2.3.0/plugins/fullcalendar/fullcalendar.min.css"-->
-        <!--link rel="stylesheet" href="{$media_url}templates/AdminLTE-2.3.0/plugins/fullcalendar/fullcalendar.print.css" media="print"-->
         <!-- daterangepicker -->
         <link rel="stylesheet" href="{$media_url}templates/AdminLTE-2.3.0/plugins/daterangepicker/daterangepicker.css">
         <!-- Theme style -->

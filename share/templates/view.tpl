@@ -101,13 +101,20 @@
                                                    <a onclick="getHelp({$page_group}, {$ena->id});"><span class="fa fa-support invert pull-right box-sm-icon"  data-toggle="tooltip" title="Gruppenmitglied kontaktieren"></span></a>
                                                {/if} 
                                                {if !isset($showaddObjectives) AND checkCapabilities('file:solutionUpload', $my_role_id, false)}
-                                                   {if isset($solutions[$my_id])}
+                                                    {foreach item=s from=$solutions}
+                                                         {if $my_id eq $s->creator_id AND $s->enabling_objective_id eq $ena->id AND $sol_btn neq $ena->id} 
+                                                            {assign var="sol_btn" value=$ena->id}
+                                                            {break}
+                                                         {/if}
+                                                    {/foreach}
+                                           
+                                                    {*if isset($solutions[$my_id])}
                                                        {foreach key=solID item=sol from=$solutions}
                                                            {if $sol->enabling_objective_id eq $ena->id AND $sol_btn neq $ena->id}
-                                                               {assign var="sol_btn" value=$ena->id}
+                                                               
                                                            {/if}
                                                        {/foreach}
-                                                   {/if}
+                                                   {/if*}
                                                    {if checkCapabilities('file:upload', $my_role_id, false)}
                                                        <a href="../share/request/uploadframe.php?context=solution&ref_id={$ena->id}{$tb_param}" class="nyroModal">
                                                        <span class="fa {if $sol_btn eq $ena->id OR $sol_btn eq false}fa-check-circle-o{else}fa-upload{/if} invert pull-right box-sm-icon" data-toggle="tooltip" {if $sol_btn eq $ena->id OR $sol_btn eq false}title="Lösung eingereicht"{else}title="Lösung einreichen"{/if}></span></a>

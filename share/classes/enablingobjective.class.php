@@ -256,7 +256,7 @@ class EnablingObjective {
                                     $this->repeat_interval_id      = $result->repeat_interval;
                                     $this->creation_time           = $result->creation_time;
                                     $this->creator_id              = $result->creator_id;     
-                                    $this->files                   = $files->getFiles('enabling_objective', $this->id, 'default', false); // 3. Parameter false da nicht benötigt --> viel bessere performance
+                                    $this->files                   = $files->getFiles('enabling_objective', $this->id, 'default'); 
                                     $objectives[]                  = clone $this; 
                                 }   
                 break;    

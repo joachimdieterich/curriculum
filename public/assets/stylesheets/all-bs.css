@@ -386,3 +386,8 @@ body .modal-open {
     border-color: red !important;
     
 }
+
+#sub_popup {
+    vertical-align: middle;
+    z-index: 2000;
+}

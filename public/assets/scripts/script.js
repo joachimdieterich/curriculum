@@ -206,16 +206,23 @@ function process(){
         if (req.status === 200) {   
            if (req.responseText.length !== 0){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen --> auf 0 geändert - testen!
                 response = JSON.parse(req.responseText);
-                if (document.getElementById('popup')){
-                    document.getElementById('popup').innerHTML = response.html
+                if (typeof(response.target)!=='undefined'){  // if target is defined show response in target div
+                    popup = response.target;
+                    $('#'+popup).show(); 
+                } else {
+                    popup = 'popup';
+                }
+                
+                if (document.getElementById(popup)){
+                    document.getElementById(popup).innerHTML = response.html;
                     if (typeof(response.class)!=='undefined'){
-                        $(document.getElementById('popup')).addClass(response.class);
+                        $(document.getElementById(popup)).addClass(response.class);
                     }
                     
                     if (typeof(response.script)!=='undefined'){ // loads js for popup
-                        document.getElementById('popup').innerHTML = document.getElementById('popup').innerHTML+response.script;  
+                        document.getElementById(popup).innerHTML = document.getElementById(popup).innerHTML+response.script;  
                     }
-                    raiseEvent('load', 'popup');
+                    raiseEvent('load', popup);
                 } else {
                     alert(req.responseText); //unschön, aber #popup ist vom modalframe aus nicht verfügbar
                 }    
@@ -734,10 +741,16 @@ function set_select(element, val, field, level) {
     }
 }
 
-function closePopup(){
-    processor('reset', '', '');
+function closePopup(id){
+    if (arguments[0]){
+        popup = arguments[0];
+    } else {
+        popup = 'popup';
+        processor('reset', '', '');
+    }
+    
     removeMedia();  // Important to empty audio element cache in webkit browsers. see description on function
-    $('#popup').hide();  
+    $('#'+popup).hide();  
     $("body").removeClass("modal-open"); //reactivate scrolling on body
-    document.getElementById('popup').innerHTML = '<div class="modal-dialog"><div class="box"><div class="box-header"><h3 class="box-title">Loading...</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div></div>';    
+    document.getElementById(popup).innerHTML = '<div class="modal-dialog"><div class="box"><div class="box-header"><h3 class="box-title">Loading...</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div></div>';    
 }

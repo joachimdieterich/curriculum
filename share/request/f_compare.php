@@ -72,8 +72,10 @@ if (isset($ena->enabling_objective)){
     //User-Solutions laden
     $user_id_list = array();
     foreach ($order as $key => $value) {
-        foreach($$value['var'] AS $v) {
-            $user_id_list[] = $v->user_id;
+        if (is_array($$value['var'])){
+            foreach($$value['var'] AS $v) {
+                $user_id_list[] = $v->user_id;
+            }
         }
     }
     
@@ -95,9 +97,13 @@ if (isset($ena->enabling_objective)){
                                     $user     = new User();
                                     $content .= '<li><a href="#">'.$user->resolveUserId($v->user_id);
                                     
-                                    if (isset($solutions[$v->user_id])){ // if user has uploaded solution
-                                        $content .= '<span onClick="location.href=\''.$CFG->base_url.'public/'.$CFG->solutions_path.$solutions[$v->user_id]->path.$solutions[$v->user_id]->filename.'\'">&nbsp;<i class="fa fa-paperclip"></i></span>';
+                                    foreach ( $solutions as $s ) { 
+                                        if ( $v->user_id == $s->creator_id ) {
+                                            $content .= '<span onClick=\'formloader("material", "id", '.$ena->id.', {"target":"sub_popup", "user_id": "'.$v->user_id.'"});\'>&nbsp;<i class="fa fa-paperclip"></i></span>';          
+                                            break; // if one solution is found break to save time
+                                        }
                                     }
+                                    
                                     if ($value['color']){
                                         $content .= '<span class="pull-right badge bg-'.$value['color'].'" data-toggle="tooltip" title="" data-original-title="Nachricht schreiben" onclick="formloader(\'mail\', \'gethelp\', '.$v->creator_id.');">'.date('d.m.Y',strtotime($v->accomplished_time)).', '.$user->resolveUserId($v->creator_id, 'name').'</span>';
                                     }
@@ -107,7 +113,8 @@ if (isset($ena->enabling_objective)){
         $content .= '</ul></div></div></div>'; 
     }
 }
-$html = Form::modal(array('title'   => 'Lernstand der Gruppe',
+$html = Form::modal(array('sub_modal_id' => 'preview',
+                          'title'   => 'Lernstand der Gruppe',
                           'content' => $content));
 
 echo json_encode(array('html'=>$html));

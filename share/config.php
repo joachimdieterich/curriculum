@@ -94,10 +94,12 @@ $CFG->message_timeout               = 4000; //in millisec.
 $CFG->standard_avatar               = 'user/noprofile.jpg';
 $CFG->standard_avatar_id            = 0;
 $CFG->standard_ins_logo_id          = 1;
-$CFG->mail_paginator_limit          = 10;                                       // bessere Darstellung
+$CFG->mail_paginator_limit          = 10;                                       // Limit for mail paginators
 /* Paginators - do not edit */
 $CFG->paginator_name                = '';                                       // Paginatoren die benutzt wurden
 $CFG->paginator_id                  = '';                                       // Paginator-IDs 
+
+$CFG->shibboleth                    = true;                                     // show shibboleth Button in Login.tpl
 
 /* Get php_info('post_max_size') */
 $CFG->post_max_size                 = ini_get('post_max_size');

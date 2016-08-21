@@ -442,7 +442,7 @@ class File {
                 if (isset($result->hits)){
                     $this->hits              = $result->hits;
                 }
-                $files[$this->creator_id] = clone $this;        //it has to be clone, to get the object and not the reference
+                $files[] = clone $this;        //it has to be clone, to get the object and not the reference
         } 
         if (isset($files)) {  
             return $files;
@@ -453,11 +453,16 @@ class File {
      * get files depending on dependency
      * @param string $dependency
      * @param int $id
+     * @param string $paginaor
+     * @param array $params
      * @return array of file objects|boolean 
      */
-    public function getFiles($dependency = null, $id = null, $paginator = '', $getExternalFiles = null){
+    public function getFiles($dependency = null, $id = null, $paginator = '', $params ){
         global $USER, $CFG;
-        
+        $externalFiles = null;
+        foreach($params as $key => $val) {
+            $$key = $val;
+        }
         $order_param = orderPaginator($paginator, array('title'         => 'fl', 
                                                         'description'   => 'fl',
                                                         'author'        => 'fl')); 
@@ -496,6 +501,10 @@ class File {
             case 'avatar':              $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                         WHERE fl.creator_id = ? AND fl.context_id = 3 AND fl.context_id = ct.context_id '.$order_param);
                 $db->execute(array($id));
+                break;
+            case 'id':            $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+                                                        WHERE fl.ena_id = ? AND fl.creator_id = ? AND fl.context_id = ct.context_id AND fl.file_context <> 4 '.$order_param); // file_context <> 4 --> don't show personal files
+                $db->execute(array($id, $user_id)); //$user_id from $params
                 break;
             case 'solution':            $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                         WHERE fl.cur_id = ? AND fl.context_id = 4 AND fl.context_id = ct.context_id '.$order_param);
@@ -552,7 +561,7 @@ class File {
                 $files[]                     = clone $this;       
         }
            
-        if (isset($CFG->repository) AND $getExternalFiles == true){
+        if (isset($CFG->repository) AND $externalFiles == true){
            $repo     = get_plugin('repository', $CFG->settings->repository);
            $allfiles = $repo->getFiles($dependency, $id, $files);
            return $allfiles; 

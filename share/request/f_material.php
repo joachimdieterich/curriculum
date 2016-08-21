@@ -27,20 +27,25 @@ include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER, $PAGE, $CFG;
 $USER       = $_SESSION['USER'];
+$edit       = checkCapabilities('file:editMaterial',    $USER->role_id, false); // DELETE / edit anzeigen
+$header     = 'Material';
 
 $file       = new File(); 
 switch (filter_input(INPUT_GET, 'func', FILTER_UNSAFE_RAW)) {
-    case 'ena': $files  = $file->getFiles('enabling_objective', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', true);
+    case 'ena': $files  = $file->getFiles('enabling_objective', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => true));
         break;
-    case 'ter': $files  = $file->getFiles('terminal_objective', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', true);
+    case 'ter': $files  = $file->getFiles('terminal_objective', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => true));
         break;
-
+    case 'id' : $files  = $file->getFiles('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => false, 'user_id' => filter_input(INPUT_GET, 'user_id', FILTER_VALIDATE_INT)));
+                $header = 'Lösungen / Dateien des Users';
+                $func   = 'solution';
+                $edit   = false;    //don't show delete button in solution window
+        break;
     default:
         break;
 }
 
-$edit       = checkCapabilities('file:editMaterial',    $USER->role_id, false); // DELETE / edit anzeigen
-$header     = 'Material';
+
 $f_content  = null;
 $content    = null; 
 $m_boxes    = '';
@@ -82,13 +87,13 @@ if (!$files){
                     if ($k == 'size')    {      $size = $v; }
                 }
                 if ($files[$i]->type != 'external'){
-                    $f_versions .= '<a class="pull-right" href="'.$CFG->curriculum_path.$files[$i]->path.$filename .'" target="_blank">'.translate_size($key).' ('.$size.')</a><br>'; 
+                    $f_versions .= '<a class="pull-right" href="'.$CFG->access_file.$files[$i]->context_path.$files[$i]->path.$filename .'" target="_blank">'.translate_size($key).' ('.$size.')</a><br>'; 
                 }        
                 if ($key == 't'){
                     if ($files[$i]->type == 'external'){
                         $preview =  $filename ;
                     } else {
-                        $preview =  $CFG->curriculum_path.$files[$i]->path.$filename;
+                        $preview =  $CFG->access_file.$files[$i]->context_path.$files[$i]->path.$filename;
                     }
                     $icon ++;
                 }   
@@ -107,17 +112,16 @@ if (!$files){
                 break;
             case '.mp3':    /* Player*/  
                             $m_player =  '<audio width="100%" controls preload="none">
-                                            <source src="'.$CFG->curriculum_path.$files[$i]->path. $files[$i]->filename.'" type="audio/mpeg" />
+                                            <source src="'.$CFG->access_file.$files[$i]->context_path.$files[$i]->path.$files[$i]->filename.'" type="audio/mpeg" />
                                         Your browser does not support the audio element.</audio>';
                 break;
             case '.mp4':    /* Player*/ 
-            case '.mov':    
-                            $m_player =  '<video width="100%" controls>
-                                            <source src="'.$CFG->curriculum_path.$files[$i]->path.$files[$i]->filename.'&video=true"  type="video/mp4"/>
+            case '.mov':    $m_player =  '<video width="100%" controls>
+                                            <source src="'.$CFG->access_file.$files[$i]->context_path.$files[$i]->path.$files[$i]->filename.'&video=true"  type="video/mp4"/>
                                             <!--source src="http://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" /-->
                                         Your browser does not support the video element.</video>';
                 break;
-            default:      
+            default:        $m_url = $CFG->access_file.$files[$i]->context_path.$files[$i]->path. $files[$i]->filename;
                 break;
         }
         
@@ -216,7 +220,12 @@ if (!$files){
     }
 }
 
-$html     = Form::modal(array('title' => $header, 
+
+if (filter_input(INPUT_GET, 'target', FILTER_SANITIZE_STRING)){
+    $target = filter_input(INPUT_GET, 'target', FILTER_SANITIZE_STRING);
+} else { $target = 'popup'; }
+$html     = Form::modal(array('target' => $target,
+                                'title' => $header, 
                             'content' => $content, 
                             'background' => '#ecf0f5'));  
-echo json_encode(array('html'=> $html));
+echo json_encode(array('html'=> $html, 'target' => $target));
