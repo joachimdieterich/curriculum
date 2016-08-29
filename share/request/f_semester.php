@@ -66,7 +66,7 @@ $content = '<form id="form_semester" method="post" action="../share/processors/f
  <div class="form-horizontal">
 <input type="hidden" name="semester_id" id="semester_id" value="'.$semester_id.'"/>
 <input type="hidden" name="func" id="func" value="'.$func.'"/>'; 
-$content .= Form::input_text('semester', 'Lernzeitrum', $semester, $error, 'z. B. Schuljahr 2015/16');
+$content .= Form::input_text('semester', 'Lernzeitraum', $semester, $error, 'z. B. Schuljahr 2015/16');
 $content .= Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung');
 $content .= Form::input_date(array('id'=>'timerange', 'label' => 'Dauer' , 'time' => $timerange, 'error' => $error, 'placeholder' => '', $type = 'date'));
 $content .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'institution_id', $institution_id , $error);
