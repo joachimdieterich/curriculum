@@ -134,9 +134,10 @@ class File {
         $db             = DB::prepare('INSERT INTO files (title, filename, description, author, license, type, path, context_id, file_context, creator_id, cur_id, ter_id, ena_id) 
                             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)');
         if($db->execute(array($this->title, $this->filename, $this->description, $this->author, $this->license, $this->type, $this->path, $this->context_id, $this->file_context, $USER->id, $this->curriculum_id, $this->terminal_objective_id, $this->enabling_objective_id))){
+            $lastInsertId = DB::lastInsertId();                 //get last insert id bevor using db again!
             $LOG->add($USER->id, 'uploadframe.php', dirname(__FILE__), 'Context: '.$this->context_id.' Upload: '.$this->path.''.$this->filename);
             $_SESSION['PAGE']->message[] = array('message' => 'Datei erfolgreich hochgeladen', 'icon' => 'fa-file text-success');
-            return DB::lastInsertId(); 
+            return $lastInsertId; 
         } else {
             return false; 
         } 

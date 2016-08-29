@@ -126,9 +126,8 @@ function uploadFile(form, func, fSelector, fName, fProgress, fPercent)
             document.getElementById('importFileName').value = document.getElementById(fName).innerHTML; // allgemeiner lösen
             document.getElementById('func').value = func;
         } else {
-            $.nmTop().close();                                                  // close dialog
             target = document.getElementById('target').value;
-            //alert(client.responseText);
+            $.nmTop().close();                                                  // close dialog
             if($("#"+target).get(0)){
                 document.getElementById(target).value       = client.responseText;
                 $("#"+target).trigger('change');

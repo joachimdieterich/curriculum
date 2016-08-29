@@ -245,7 +245,6 @@ function reloadPage() {
  * 
  * @param {string} URL
  * @param {string} target
- * @returns {}
  */
 function openLink(URL, target) {
     if (URL !== ''){ //Sortiert "leere" Anfragen aus.
@@ -256,21 +255,19 @@ function openLink(URL, target) {
  * 
  * @param {string} ID
  * @param {boolean} checked
- * @returns {undefined}
  */
 function unmask(ID,checked){
     if (checked){
         document.getElementById(ID).type = 'text';
     } else {
-       document.getElementById(ID).type = 'password'; 
+        document.getElementById(ID).type = 'password'; 
     }
 }
 
 
 function hideFile() { //nach dem löschen wird das thumbnail ausgeblendet
     if (req.readyState === 4) {  
-        if (req.status === 200) {
-            
+        if (req.status === 200) {    
            if (req.responseText.length !== 1){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen
                if (req.responseText !== 'OK'){alert(req.responseText);} //unschön, aber #popup ist vom modalframe aus nicht 
                if (document.getElementById('row_filelastuploadbtn'+arguments[0])) {
@@ -390,7 +387,6 @@ function getHelp(group, enablingObjectiveID) {
     getRequest("../share/request/getHelp.php?group="+ group +"&enablingObjectiveID="+ enablingObjectiveID);
 }
 
-
 function curriculumdocs(link) {
     window.open(link, '_blank', '')
 }
@@ -403,7 +399,6 @@ function curriculumdocs(link) {
  */
 function formloader(/*form, func, id, []*/){
     if (typeof(arguments[3]) !== 'undefined'){
-        //alert("../share/request/f_"+ arguments[0] +".php?func="+ arguments[1] +"&id="+ arguments[2]+"&"+jQuery.param(arguments[3]));
         getRequest("../share/request/f_"+ arguments[0] +".php?func="+ arguments[1] +"&id="+ arguments[2]+"&"+jQuery.param(arguments[3]));        
     } else {
         getRequest("../share/request/f_"+ arguments[0] +".php?func="+ arguments[1] +"&id="+ arguments[2]);
@@ -547,11 +542,11 @@ function setGroups() {
     if (req.readyState === 4) {  
         if (req.status === 200) {
            if (req.responseText.length != 1){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen
-                      if (document.getElementById('group_id')){
-                           document.getElementById('group_id').innerHTML = req.responseText;
-                      } else {
-                          alert(req.responseText); //unschön, aber #popup ist vom modalframe aus nicht verfügbar
-                      }  
+                if (document.getElementById('group_id')){
+                     document.getElementById('group_id').innerHTML = req.responseText;
+                } else {
+                    alert(req.responseText); //unschön, aber #popup ist vom modalframe aus nicht verfügbar
+                }  
            } else {
                window.location.reload();
            }
@@ -603,7 +598,6 @@ function hideUploadframe(){
        document.getElementById('uploadframe').style.display = 'none';
 }
 
-
 function confirmDialog(text) {
     if (confirm(text)){
         return true; 
@@ -620,7 +614,6 @@ function showSubjectIcon(path, icon){
 function sendForm(form_id, file){
     var form = $('#'+form_id);
     var data = form.serialize();
-    //alert('test: ');
     $.post('../share/request/'+file, data, function(response) {
         $('#'+form_id+'').html(response)            
     });
@@ -629,7 +622,7 @@ function sendForm(form_id, file){
 }
 
 function updateFileHits(){
-     var url = "../share/request/updateFileHits.php?fileID="+ arguments[0];
+    var url = "../share/request/updateFileHits.php?fileID="+ arguments[0];
 
     req = XMLobject();
     if(req) {        
@@ -645,7 +638,6 @@ function resizeModal(){
     }
 }
 
-
 /**
  * Activates scripts in modals
  * @returns {undefined}
@@ -659,7 +651,6 @@ function popupFunction(e){
     for (var i = 0, len = textareas.length; i < len; i++) {
         CKEDITOR.replace(textareas[i].id, {toolbarStartupExpanded : false});
         CKEDITOR.on('instanceReady',function(){
-            /*resize */
             resizeModal();      // if ckeditor is used, then modal has to be resized after ckeditor is ready
         }); 
     }
@@ -681,7 +672,6 @@ function removeMedia() {
   });
 }
 
-
 function setFormData() {
     var url     = "../share/processors/p_setFormData.php?file="+ arguments[0];   
     
@@ -689,7 +679,6 @@ function setFormData() {
     if(req) {        
         req.onloadend = function(){
             if (req.responseText.length > 1){
-                //alert(req.responseText);
                 c = JSON.parse(req.responseText);
                 
                 $('#curriculum', top.document).val(c.curriculum);
@@ -710,8 +699,8 @@ function setFormData() {
 function val_exist_in_select(element, val){
     for (i = 0; i < document.getElementById(element).length; ++i){
         if (document.getElementById(element).options[i].value == val){
-          return true;
-        } else {return false;}
+            return true;
+        } else { return false; }
     }
 }
 
@@ -720,7 +709,6 @@ function set_select(element, val, field, level) {
     if (typeof(level)==='undefined')            level           = 'document';
     if (level === 'top'){
         var sel = top.document.getElementById(element);
-        
     } else {
         var sel = document.getElementById(element);
     }
