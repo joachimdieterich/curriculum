@@ -34,7 +34,7 @@ $gump                  = new Gump();    /* Validation */
 $_POST                 = $gump->sanitize($_POST);       //sanitize $_POST
 
 if (isset($_POST['group_id'])){
-    $group->id             = $_POST['group_id']; 
+    $group->id         = $_POST['group_id']; 
 }
 $group->group          = $_POST['group']; 
 $group->description    = $_POST['description']; 
@@ -57,7 +57,7 @@ $gump->validation_rules(array(
 ));
 $validated_data = $gump->run($_POST);
 if($validated_data === false) {/* validation failed */
-    $_SESSION['FORM'] = new stdClass();
+    $_SESSION['FORM']            = new stdClass();
     $_SESSION['FORM']->form      = 'group'; 
     foreach($group as $key => $value){
         $_SESSION['FORM']->$key  = $value;

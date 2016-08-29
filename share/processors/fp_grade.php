@@ -29,7 +29,7 @@ $USER           = $_SESSION['USER'];
 if (!isset($_SESSION['PAGE']->target_url)){     //if target_url is not set -> use last PAGE url
     $_SESSION['PAGE']->target_url       = $_SESSION['PAGE']->url;
 }
-$grade               = new Grade();
+$grade                 = new Grade();
 $gump                  = new Gump();    /* Validation */
 $_POST                 = $gump->sanitize($_POST);       //sanitize $_POST
 
@@ -47,13 +47,14 @@ $gump->validation_rules(array(
 ));
 $validated_data = $gump->run($_POST);
 if($validated_data === false) {/* validation failed */
-    $_SESSION['FORM'] = new stdClass();
+    $_SESSION['FORM']            = new stdClass();
     $_SESSION['FORM']->form      = 'grade';
     foreach($grade as $key => $value){
         $_SESSION['FORM']->$key  = $value;
     } 
     $_SESSION['FORM']->error     = $gump->get_readable_errors();
     $_SESSION['FORM']->func      = $_POST['func'];
+    error_log($_SESSION['FORM']->form.': '.$_SESSION['FORM']->func);
 } else {
     switch ($_POST['func']) {
         case 'new':      if ($grade->add()){

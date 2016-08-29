@@ -49,7 +49,7 @@ $mail->subject     = $_POST['subject'];
 
 // todo alle Regeln definieren
 $gump->validation_rules(array(
-'subject'          => 'required',
+'subject'         => 'required',
 'message_text'    => 'required'    
 ));
 $validated_data = $gump->run($_POST);

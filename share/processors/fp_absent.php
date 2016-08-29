@@ -31,16 +31,16 @@ if (!isset($_SESSION['PAGE']->target_url)){     //if target_url is not set -> us
 }
 $absent              = new Absent();
 
-$gump = new Gump();    /* Validation */
+$gump  = new Gump();    /* Validation */
 $_POST = $gump->sanitize($_POST);       //sanitize $_POST
 
 $absent->cb_id       = $_POST['reference_id']; 
 if (isset($_POST['absent_id'])){
-    $absent->id          = $_POST['absent_id']; 
+    $absent->id      = $_POST['absent_id']; 
 }
 $absent->reason      = $_POST['reason'];
 if (isset($_POST['user_list'])){
-    $user_list           = $_POST['user_list'];
+    $user_list       = $_POST['user_list'];
 }
 if (isset($_POST['status'])){
     $absent->status  = 1;
@@ -58,7 +58,7 @@ $gump->validation_rules(array(
 ));
 $validated_data = $gump->run($_POST);
 if($validated_data === false) {/* validation failed */
-    $_SESSION['FORM'] = new stdClass();
+    $_SESSION['FORM']            = new stdClass();
     $_SESSION['FORM']->form      = 'absent';
     foreach($absent as $key => $value){
         $_SESSION['FORM']->$key  = $value;
@@ -68,7 +68,7 @@ if($validated_data === false) {/* validation failed */
     $_SESSION['FORM']->func      = $_POST['func'];
 } else {
     if ($_POST['func'] == 'edit'){
-        $absent->id         = $_POST['absent_id'];
+        $absent->id              = $_POST['absent_id'];
         $absent->update();
     }  else {
         foreach ($user_list as $value) {

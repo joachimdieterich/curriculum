@@ -29,19 +29,18 @@ $USER   = $_SESSION['USER'];
 if (!isset($_SESSION['PAGE']->target_url)){     //if target_url is not set -> use last PAGE url
     $_SESSION['PAGE']->target_url       = $_SESSION['PAGE']->url;
 }
-$backup                  = new Backup();
+$backup             = new Backup();
+$gump               = new Gump();    /* Validation */
+$_POST              = $gump->sanitize($_POST);       //sanitize $_POST
 
-$gump = new Gump();    /* Validation */
-$_POST = $gump->sanitize($_POST);       //sanitize $_POST
-
-$curriculum_id     = $_POST['curriculum_id']; 
+$curriculum_id      = $_POST['curriculum_id']; 
         
 $gump->validation_rules(array(
 'curriculum_id'          => 'required'
 ));
 $validated_data = $gump->run($_POST);
 if($validated_data === false) {/* validation failed */
-    $_SESSION['FORM'] = new stdClass();
+    $_SESSION['FORM']            = new stdClass();
     $_SESSION['FORM']->form      = 'backup';
     foreach($backup as $key => $value){
         $_SESSION['FORM']->$key  = $value;

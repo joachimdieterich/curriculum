@@ -54,12 +54,12 @@ if (isset($_POST['moodle_block'])){
     $block->configdata    = $_POST['moodle_block']; 
 }
 $gump->validation_rules(array(
-'block_id'        => 'required',
+'block_id'     => 'required',
 'name'         => 'required'
 ));
 $validated_data = $gump->run($_POST);
 if($validated_data === false) {/* validation failed */
-    $_SESSION['FORM'] = new stdClass();
+    $_SESSION['FORM']            = new stdClass();
     $_SESSION['FORM']->form      = 'block'; 
     foreach($block as $key => $value){
         $_SESSION['FORM']->$key  = $value;
