@@ -40,11 +40,11 @@ $TEMPLATE->assign('web_backup_path', $CFG->web_backup_path);
 $p_options = array('download'     => array('href'    => "../share/accessfile.php?id=__id__",
                                            'capability' => true,
                                            'icon'    => 'fa fa-download', 
-                                           'tooltip' => 'imscc herunterladen'),
+                                           'tooltip' => 'Sicherung herunterladen')/*,           // in this version backups are only made as .curriculum files (xml)
                    'xml'          => array('href'    => "../share/accessfile.php?id=__id__&type=xml",
                                            'capability' => true,
                                            'icon'    => 'fa fa-file-code-o', 
-                                           'tooltip' => 'Sicherung herunterladen')); 
+                                           'tooltip' => 'Sicherung herunterladen')*/); 
 $p_config = array('id' => 'checkbox',
                   'title'         => 'Titel', 
                   'description'   => 'Beschreibung',

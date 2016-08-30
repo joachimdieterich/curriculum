@@ -48,7 +48,7 @@
             </div><!-- /.col -->
           </div>
         </form>
-        {if isset($cfg_shibboleth)}
+        {if $cfg_shibboleth}
         <div class="social-auth-links text-center">
           <p>- ODER -</p>
           <a href="../share/plugins/auth/shibboleth/index.php" class="btn btn-block btn-social btn-openid"><img src="assets/images/icons/shibboleth-web.png"></img> Über Shibboleth anmelden</a>

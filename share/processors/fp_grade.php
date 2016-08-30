@@ -54,7 +54,6 @@ if($validated_data === false) {/* validation failed */
     } 
     $_SESSION['FORM']->error     = $gump->get_readable_errors();
     $_SESSION['FORM']->func      = $_POST['func'];
-    error_log($_SESSION['FORM']->form.': '.$_SESSION['FORM']->func);
 } else {
     switch ($_POST['func']) {
         case 'new':      if ($grade->add()){
