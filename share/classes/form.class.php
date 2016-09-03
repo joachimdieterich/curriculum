@@ -224,6 +224,58 @@ class Form {
         return $form;
     }
     
+    
+    public static function input_dropdown($id, $label, $select_data, $select_label, $select_value, $input, $error, $onclick= '', $placeholder ='---'){
+        $class          =  "notifications-menu";
+        $count_semester = count($select_data);
+        $form = '<li class="dropdown '.$class.'" >
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                      <i class="fa fa-history"></i>';
+                      //<span class="label label-warning">'.$count_semester.'</span>
+        $form .= '  </a>
+                    <ul class="dropdown-menu">
+                      <li class="header">Sie haben '.$count_semester.' Lernzeiträume</li>
+                      <li>
+                        <!-- inner menu: contains the actual data -->
+                        <ul class="menu">';
+        if (count($select_data) > 0){
+            foreach ($select_data as $value) {
+                if (strpos($select_label, ',')){ // more than one field in select_label
+                list ($field1, $field2) = explode(', ', $select_label);
+                    $label  = $value->$field1. ' '. $value->$field2;
+                } else {
+                    $label  = $value->$select_label;
+                }
+                $form .= '<li>
+                            <a href="#" data-id="'.$value->$select_value.'" onclick="'.$onclick.'">
+                              <i class="text-aqua"></i> ';
+                                if ($input == $value->$select_value){ 
+                                    $form .= '<b>'.$label.'</b>'; 
+                                } else {
+                                    $form .= $label; 
+                                }
+                                
+                $form .= '  </a>
+                          </li>';
+                          //<!--option label="'.$label.'" value="'.$value->$select_value.'"'; if ($input == $value->$select_value){ $form .= 'selected="selected"'; } $form .= '>'.$label.'</option>';
+            }
+       } else {
+                $form .= '<li>
+                            <a href="#">
+                              <i class="text-aqua"></i> '.$placeholder.'
+                            </a>
+                          </li>';
+       }
+                          
+        $form .= '      </ul>
+                      </li>
+                      <li class="footer"><!-- <a href="#">View all</a>--></li>
+                    </ul>
+                 </li>';
+        return $form;
+                
+    }
+    
     public static function upload_form($id, $label, $input, $error, $onclick='', $class_left='col-sm-3', $class_right='col-sm-9'){
         $form = '<div id="'.$id.'" class="form-group '.validate_msg($error, $id, true).'">
                     <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>

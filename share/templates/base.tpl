@@ -89,13 +89,11 @@
                     <div class="navbar-custom-menu">
                          
                       <ul class="nav navbar-nav">
-                         <li> 
                          {if isset($mySemester) AND count($mySemester) > 1}
-                             <p>{Form::input_select('semester_id', '', $mySemester, 'semester, institution', 'id', $my_semester_id, null, "setSemester(this.value);")}</p>
+                             {Form::input_dropdown('semester_id', '', $mySemester, 'semester, institution', 'id', $my_semester_id, null, "setSemester(this.getAttribute('data-id'));")}
                          {else if isset($my_institutions) AND count($my_institutions) > 1}
-                             <p>{Form::input_select('institution_id', '', $my_institutions, 'institution', 'institution_id', $my_institution_id, null, "processor('config','institution_id', this.value);")}</p>
+                             {Form::input_dropdown('institution_id', '', $my_institutions, 'institution', 'institution_id', $my_institution_id, null, "processor('config','institution_id', this.getAttribute('data-id'));")}
                          {/if} 
-                         </li>
                         <li class="calendar-menu">   
                         <a href="index.php?action=calendar" >
                             <i class="fa fa-calendar"></i>

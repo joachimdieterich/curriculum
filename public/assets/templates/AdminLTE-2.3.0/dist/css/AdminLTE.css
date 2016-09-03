@@ -3186,16 +3186,16 @@ table.text-center th {
 }
 .login-box,
 .register-box {
-  width: 360px;
+  max-width: 360px;
   margin: 7% auto;
 }
 @media (max-width: 768px) {
   .login-box,
   .register-box {
-    width: 360px;
+    max-width: 360px;
     margin: 7% auto;
-    /*width: 90%;
-    margin-top: 20px;*/
+    width: 90%;
+    margin-top: 20px;
   }
 }
 .login-box-body,

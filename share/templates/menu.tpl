@@ -89,7 +89,7 @@
                 {if checkCapabilities('menu:readSemester', $my_role_id, false)}
                     <li class="treeview {if $page_action eq 'semester'}active{/if}">
                         <a href="index.php?action=semester&reset=true">
-                            <i class="fa fa-calendar"></i><span>Lernzeiträume</span>
+                            <i class="fa fa-history"></i><span>Lernzeiträume</span>
                         </a>
                     </li>
                 {/if}
