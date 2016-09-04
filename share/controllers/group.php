@@ -139,10 +139,10 @@ $p_options = array('delete' => array('onclick'      => "del('group',__id__, $USE
                                      'capability'   => checkCapabilities('groups:update', $USER->role_id, false),
                                      'icon'         => 'fa fa-edit',
                                      'tooltip'      => 'bearbeiten'),
-                   'list'    => array('href'        => "index.php?action=group&function=showCurriculum&group_id=__id__", 
+                   'list'    => array('onclick'        => "formloader('preview_group', 'full', __id__)", 
                                       'capability'  => checkCapabilities('groups:showCurriculumEnrolments', $USER->role_id, false),
-                                      'icon'        => 'fa fa-list',
-                                      'tooltip'     => 'Zugeordnete Lehrpläne'));
+                                      'icon'        => 'fa fa-list-alt',
+                                      'tooltip'     => 'Überblick'));
 $p_config =   array('id'         => 'checkbox',
                     'group'        => 'Lerngruppen',          //ändern auf groups in Object, da db Eintrag groups ist und die Suche so nicht funktioniert
                     'grade'         => '(Klassen)stufe',  

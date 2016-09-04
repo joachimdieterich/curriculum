@@ -385,7 +385,9 @@ class User {
         global $USER; 
         checkCapabilities('user:getGroupMembers', $USER->role_id);
         switch ($dependency) {
-            case 'group':   $db = DB::prepare('SELECT user_id FROM groups_enrolments WHERE group_id = ?');
+            case 'group':   $db = DB::prepare('SELECT user_id FROM groups_enrolments 
+                                                WHERE group_id = ?
+                                                AND status = 1');
                             $db->execute(array($id)); 
                             while($result = $db->fetchObject()) { 
                                 $group_members[] =  $result->user_id;
@@ -397,10 +399,13 @@ class User {
                                 $db->execute(array()); 
                             } else {
                                 $db = DB::prepare('SELECT DISTINCT usr.id, usr.firstname, usr.lastname, usr.username
-                                    FROM users AS usr, groups_enrolments AS cle, institution_enrolments AS ie, groups AS gr 
-                                    WHERE cle.group_id IN (SELECT DISTINCT group_id FROM groups_enrolments WHERE user_id = ?)
+                                    FROM users AS usr, groups_enrolments AS ge, institution_enrolments AS ie, groups AS gr 
+                                    WHERE ge.group_id IN (SELECT DISTINCT group_id FROM groups_enrolments WHERE user_id = ?)
                                     AND ie.user_id = ?
-                                    AND usr.id = cle.user_id AND gr.id = cle.group_id and gr.institution_id = ie.institution_id');//Zeigt nur User in deren Gruppe man eingeschrieben ist. 
+                                    AND usr.id = ge.user_id 
+                                    AND gr.id = ge.group_id 
+                                    AND gr.institution_id = ie.institution_id 
+                                    AND ge.status = 1');//Zeigt nur User in deren Gruppe man eingeschrieben ist. 
                                 $db->execute(array($this->id, $this->id)); 
                             }
                             

@@ -35,8 +35,7 @@ $grade_id       = null;
 $semester_id    = null;
 $institution_id = null;
 $assumeUsers    = true;
-
-$error          =   null;
+$error          = null;
 $object         = file_get_contents("php://input");
 $data           = json_decode($object, true);
 if (is_array($data)) {
@@ -83,7 +82,7 @@ $content ='<form id="form_group"  class="form-horizontal" role="form" method="po
 if (isset($currentUrlId)){ $content .= $currentUrlId; }
 $content .= '">';
 if (isset($id)){
-    $content .= '"><input type="hidden" name="group_id" id="group_id" value="'.$id.'"/>';    
+    $content .= '<input type="hidden" name="group_id" id="group_id" value="'.$id.'"/>';    
 }
 $content .= '<input type="hidden" name="func" id="func" value="'.$func.'"/>';
 $content .= Form::input_text('group', 'Lerngruppe', $group, $error);

@@ -140,9 +140,9 @@ $p_options = array('delete' => array('onclick'      => "del('user',__id__, $USER
                                      'capability'   => checkCapabilities('user:updateUser', $USER->role_id, false),
                                      'icon'         => 'fa fa-edit',
                                      'tooltip'      => 'bearbeiten'),
-                    'profile'  => array('onclick'   => "formloader('overview','full',__id__);", 
+                    'profile'  => array('onclick'   => "formloader('preview_user','full',__id__);", 
                                      'capability'   => checkCapabilities('user:getGroups', $USER->role_id, false),  //todo: use extra capability?
-                                     'icon'         => 'fa fa-user',
+                                     'icon'         => 'fa fa-list-alt',
                                      'tooltip'      => 'Überblick'));
 $p_config =   array('id'         => 'checkbox',
                     'username'   => 'Benutzername', 

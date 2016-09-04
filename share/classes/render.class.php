@@ -614,4 +614,64 @@ class Render {
         }
     }
     
+    public static function box_widget($params){
+        /*default params*/
+        $class_left     = 'col-md-6';
+        $class_right    = 'col-md-6';
+        $widget_type    = 'user';
+        $bg_color       = 'primary';
+        $widget_title   = 'Titel';
+        $widget_desc    = 'desc';
+        $bg_badge       = 'bg-green';
+        $href           = '#';
+        // $data        == data array;
+        // more params: $label, $badge, $bg_icon 
+        
+        foreach($params as $key => $val) {
+            $$key = $val;
+        }
+        //error_log(json_encode($data));
+        $html   =  '<div class="'.$class_left.'">
+                    <!-- Widget: '.$widget_type.' widget style 1 -->
+                    <div class="box box-widget widget-'.$widget_type.'">
+                      <!-- Add the bg color to the header using any of the bg-* classes -->
+                      <div class="widget-'.$widget_type.'-header bg-'.$bg_color.'">';
+                      if (isset($bg_icon)){
+                        $html   .= '<i class="pull-right '.$bg_icon.'" style="font-size: 90px;"></i>';
+                      }
+                        $html   .= '<h3 class="widget-'.$widget_type.'-username">'.$widget_title.'</h3>
+                        <h5 class="widget-'.$widget_type.'-desc">'.$widget_desc.'</h5>
+                        
+                      </div>
+                      <div class="box-footer no-padding">
+                        <ul class="nav nav-stacked">';
+                        foreach($data AS $value){
+                            if (strpos($label, ',')){ // more than one field in label
+                            list ($field1, $field2) = explode(', ', $label);
+                                $l  = $value->$field1. ' '. $value->$field2;
+                            } else {
+                                $l  = $value->$label;
+                            }
+                            global $v;
+                            $v = $value;
+                           
+                            $href_regex = preg_replace_callback('/__([^&]*)__/', 
+                                    function($r){
+                                        global $v;
+                                        return $v->$r[1];
+                                    }, $href);
+                                
+                            $html   .= '<li><a href="'.$href_regex.'">'.$l;
+                            if (isset($badge)){
+                                $html   .= '<span class="pull-right badge '.$bg_badge.'">'.$value->$badge.'</span>';          
+                            }
+                            $html   .= '</a></li>';           
+                        } 
+        $html   .= '</ul>
+                     </div>
+                   </div><!-- /.widget-'.$widget_type.' -->
+               </div><!-- /.col -->';
+        return $html;
+    }
+    
 }
