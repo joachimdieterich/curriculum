@@ -708,7 +708,7 @@ function get_plugin($type, $plugin) {
     }
 
     // Return plugin instance.
-    require_once("{$CFG->plugins_root}/$type/$plugin/plugin.php");
+    require_once("{$CFG->plugins_root}$type/$plugin/plugin.php");
     $class = "plugin_$plugin";
     return new $class;
 }

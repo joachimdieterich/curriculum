@@ -41,9 +41,9 @@
             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
           </div>
           <div class="row">
-            <div class="col-xs-8">
+            <div class="col-xs-7">
             </div><!-- /.col -->
-            <div class="col-xs-4">
+            <div class="col-xs-5">
               <input type="submit" name="login" class="btn btn-primary btn-block btn-flat" value="Anmelden" ></input>
             </div><!-- /.col -->
           </div>
