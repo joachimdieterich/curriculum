@@ -81,13 +81,14 @@ class Form {
     
     public static function input_checkbox($id, $label, $input, $error, $type='checkbox', $onclick='', $class_left='col-sm-3', $class_right='col-sm-9'){
         $form = '<div class="form-group '.validate_msg($error, $id, true).'">
-                  <label class="control-label '.$class_left.'" for="'.$id.'"></label>
-                  <div class="'.$class_right.'">'.validate_msg($error, $id).'<input id="'.$id.'" name="'.$id.'" type="'.$type.'"';
+                  <div class="col-sm-offset-3 '.$class_right.'">
+                  <div class="checkbox"><label>
+                  <input id="'.$id.'" name="'.$id.'" type="'.$type.'"';
         if ($input == true){
             $form .= 'checked="checked';
         }    
-        $form .= ' onclick="'.$onclick.'" class="'.$type.'" ';
-        $form .= ' /> '.$label.'</div></div>';  
+        $form .= ' onclick="'.$onclick.'" ';
+        $form .= ' /> '.$label.' </label></div></div></div>';  
 
         return $form;
     }

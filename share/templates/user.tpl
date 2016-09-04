@@ -39,26 +39,19 @@
                     {/if}
                 </div><!-- /.box-header -->
                 <div class="box-body">
-                    <form id='userlist'  method='post' action="index.php?action=user&next={$currentUrlId}">
+                    <form id='userlist'   method='post' action="index.php?action=user&next={$currentUrlId}">
                         {html_paginator id='userP'} 
                         <input class="invisible" type="checkbox" name="id[]" value="none" checked /><!--Hack - nothing selected-->
                             {if isset($showFunctions)}
                             {if $showFunctions}  
                                 <div class="row">
                                 {if checkCapabilities('user:enroleToGroup', $my_role_id, false) OR checkCapabilities('user:expelFromGroup', $my_role_id, false)}
-                                    <div class="form-group col-xs-12 col-sm-12 col-md-5 col-lg-3">
+                                    <div class="form-horizontal col-xs-12 col-sm-12 col-md-5 col-lg-3">
                                     <h4>Lerngruppe</h4>
                                     <p>Markierte Benutzer in Lerngruppe ein bzw. ausschreiben</p>
                                     {if isset($groups_array)}
-                                    <label>Lerngruppe:</label>
-
-                                        <select class="form-control " name="groups">
-                                            {section name=res loop=$groups_array}  
-                                            <option label="{$groups_array[res]->group}" value={$groups_array[res]->id}> {$groups_array[res]->group} | {$groups_array[res]->semester} | {$groups_array[res]->institution}</option>
-                                            {/section}
-                                        </select> 
-
-                                        <p><div class="btn-group" role="group" aria-label="...">
+                                        {Form::input_select('groups', 'Lerngruppe', $groups_array, 'group, semester', 'id', null, null)}
+                                        <div class="btn-group pull-right" role="group" aria-label="...">
                                             {if checkCapabilities('user:enroleToGroup', $my_role_id, false)}
                                             <button type='submit' name='enroleGroups' value='' class="btn btn-default">
                                                     <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> einschreiben
@@ -69,62 +62,55 @@
                                                         <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> ausschreiben
                                                 </button>
                                             {/if}
-                                        </div></p>
-
+                                        </div>
                                     </div> 
                                     {/if}
                                 {else}<div class="form-group col-xs-12 col-sm-12 col-md-5 col-lg-3">
                                     <h4>Lerngruppe</h4><p><strong>Sie müssen zuerst eine Lerngruppe anlegen</strong></p></div>{/if}
 
-
                                 {if checkCapabilities('user:updateRole', $my_role_id, false)}
-                                    <div class="form-group col-xs-12 col-sm-12 col-md-5 col-lg-3">
+                                    <div class="form-horizontal col-xs-12 col-sm-12 col-md-5 col-lg-3">
                                         <h4>Institution / Rolle</h4>
                                         <p>Beim Zuweisen einer Rolle werden die markierten Nutzer automatisch in die aktuelle/ausgewählte Institution eingeschrieben bzw. die Daten aktualisiert.</p>
                                         {if isset($myInstitutions)}
-                                            <p><label>Institution / Schule: </label>
-                                                <select name="institution" >
-                                                    {section name=res loop=$myInstitutions}  
-                                                        <option label="{$myInstitutions[res]->institution}" value={$myInstitutions[res]->id} {if $myInstitutions[res]->id eq $my_institution_id} selected="selected"{/if}>{$myInstitutions[res]->institution}</option>
-                                                    {/section}
-                                            </select> 
+                                            {Form::input_select('institution', 'Institution', $myInstitutions, 'institution', 'id', $my_institution_id, null)}
                                         {/if}    
-                                        <p><label>Benutzer-Rolle:</label>
-                                        <SELECT  name='roles' id='roles' />
-                                        {foreach key=rolid item=rol from=$roles}
-                                            <OPTION  value="{$rol->id}" >{$rol->role}</OPTION>
-                                        {/foreach} 
-                                        </SELECT>
-                                        <p><label></label>
+                                        {Form::input_select('roles', 'Benutzer-Rolle', $roles, 'role', 'id', $institution_std_role, null)}
+                                        
+                                        <div class="btn-group pull-right" role="group" aria-label="...">
                                         {if checkCapabilities('user:enroleToInstitution', $my_role_id, false)}
-                                            <input type='submit' name='enroleInstitution' value='Rolle zuweisen / einschreiben' />
+                                            <button type='submit' name='enroleInstitution' value='' class="btn btn-default">
+                                                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Rolle zuweisen / einschreiben
+                                            </button>
                                         {/if}
                                         {if checkCapabilities('user:expelFromInstitution', $my_role_id, false)}
-                                            <input type='submit' name='expelInstitution' value='ausschreiben' />
+                                            <button type='submit' name='expelInstitution' value='' class="btn btn-default">
+                                                <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> ausschreiben
+                                            </button>
                                         {/if} 
-                                        </p>
+                                        </div>
                                     </div>    
                                 {/if}     
 
                                 {if checkCapabilities('user:resetPassword', $my_role_id, false)}
-                                    <div class="form-group col-xs-12 col-sm-12 col-md-5 col-lg-3">
+                                    <div class="form-horizontal col-xs-12 col-sm-12 col-md-5 col-lg-3">
                                         <h4>Passwort zurücksetzen</h4>
                                         <p>Neues Passwort für markierte Benutzer festlegen. Passwort muss mind. 6 Zeichen lang sein.</p>
-
-                                        <p><label>Neues Passwort:</label><input  type='password' name='password' id='password'  {if isset($password)}value='{$password}'{/if}/>
-                                        {validate_msg field='password'}
-                                        <p><label>Passwort anzeigen: </label><input type="checkbox" class="centervertical" name='showpassword'  {if isset($inputshowpassword)}checked{/if} onclick="unmask('password', this.checked);"/></p>
-                                        <p><label>Passwortänderung: </label><input type="checkbox" name='confirmed'  {if isset($inputconfirmed)}checked{/if}/></p>
-                                        <p><label></label><input type='submit' name='resetPassword' value='Passwort zurücksetzen' /></p>
+                                        {Form::input_text('password', 'Passwort', '', null, '', 'password')}
+                                        {Form::input_checkbox('showpassword', 'Passwort anzeigen', '', null, 'checkbox', 'unmask(\'password\', this.checked);')}
+                                        {Form::input_checkbox('confirm', 'Passwortänderung', '', null)}
+                                        <button type='submit' name='resetPassword' value='' class="btn btn-default pull-right">
+                                                <span class="fa fa-lock" aria-hidden="true"></span> Passwort zurücksetzen
+                                        </button>
                                     </div>
                                 {/if}
 
                                 {if checkCapabilities('user:delete', $my_role_id, false)} 
-                                    <div class="form-group col-xs-12 col-sm-12 col-md-5 col-lg-3">
+                                    <div class="form-horizontal col-xs-12 col-sm-12 col-md-5 col-lg-3">
                                         <h4>Benutzer</h4>
                                         <p>Markierte Benutzer löschen</p>
-                                        <button type='submit' name='deleteUser' value='' class="btn btn-default">
-                                                <span class="glyphicon glyphicon-delete-sign" aria-hidden="true"></span> löschen
+                                        <button type='submit' name='deleteUser' value='' class="btn btn-default pull-right">
+                                                <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> löschen
                                         </button>
                                     </div>
                                 {/if}

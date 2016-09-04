@@ -62,8 +62,7 @@ if (isset($_POST) ){
                                                 $PAGE->message[] = array('message' => 'Password konnte nicht zurückgesetzt werden.', 'icon' => 'fa-key text-warning');
                                             }  
                                     } else {
-                                        $new_subject($edit_user); 
-                                        $TEMPLATE->assign('v_error', $validated_data);     
+                                        $TEMPLATE->assign('error', $validated_data);     
                                     }        
                     break;
                 case isset($_POST['deleteUser']):
