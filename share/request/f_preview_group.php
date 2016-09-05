@@ -47,8 +47,9 @@ $content    = Render::box_widget(array('widget_title' => 'Lerngruppe',
 $users      = new User();
 $u_list     = $users->getGroupMembers('group', $g->id);
 
+
 foreach($u_list AS $ul){
-    $users->load('id', $ul);
+    $users->load('id', $ul, false);
     $list[] = clone $users;
 }
 $content   .= Render::box_widget(array('widget_title' => 'Benutzer',

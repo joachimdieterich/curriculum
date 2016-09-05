@@ -616,8 +616,7 @@ class Render {
     
     public static function box_widget($params){
         /*default params*/
-        $class_left     = 'col-md-6';
-        $class_right    = 'col-md-6';
+        $class_width     = 'col-md-6';
         $widget_type    = 'user';
         $bg_color       = 'primary';
         $widget_title   = 'Titel';
@@ -631,7 +630,7 @@ class Render {
             $$key = $val;
         }
         //error_log(json_encode($data));
-        $html   =  '<div class="'.$class_left.'">
+        $html   =  '<div class="'.$class_width.'">
                     <!-- Widget: '.$widget_type.' widget style 1 -->
                     <div class="box box-widget widget-'.$widget_type.'">
                       <!-- Add the bg color to the header using any of the bg-* classes -->
@@ -654,11 +653,10 @@ class Render {
                             }
                             global $v;
                             $v = $value;
-                           
                             $href_regex = preg_replace_callback('/__([^&]*)__/', 
                                     function($r){
                                         global $v;
-                                        return $v->$r[1];
+                                        return $v->$r[1]; 
                                     }, $href);
                                 
                             $html   .= '<li><a href="'.$href_regex.'">'.$l;
