@@ -72,7 +72,7 @@ if ($selected_curriculum != '' AND $selected_user_id != '' AND $selected_user_id
         $show_course         = true; // setzen
     } else {
         $user   = new User(); 
-        $user->load('id', $selected_user_id[0]);
+        $user->load('id', $selected_user_id[0], false);
         $TEMPLATE->assign('user', $user);
         $group  = new Group();   
         $TEMPLATE->assign('group', $group->getGroups('course', $selected_group));
