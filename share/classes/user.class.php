@@ -965,13 +965,6 @@ class User {
                             AND ie.user_id = ge.user_id
                             AND gp.institution_id = ie.institution_id
                             ORDER BY gp.groups, cu.curriculum ASC');
-        /*$db = DB::prepare('SELECT cu.curriculum, cu.id, cu.grade_id, gp.id AS group_id, gp.semester_id, gp.groups, fl.filename, cn.base_curriculum_id, cn.level 
-                            FROM curriculum_enrolments AS ce, groups AS gp, files AS fl, institution_enrolments AS ie,curriculum AS cu 
-                            LEFT JOIN curriculum_niveaus AS cn ON cn.curriculum_id = cu.id
-                            WHERE cu.id = ce.curriculum_id AND ce.status = 1 AND gp.id = ce.group_id AND cu.icon_id = fl.id
-                            AND ce.group_id = ANY (SELECT group_id FROM groups_enrolments AS ge WHERE ge.user_id = ? AND ge.status = 1 AND ie.user_id = ge.user_id AND ie.status = 1)
-                            AND gp.institution_id = ie.institution_id
-                            ORDER BY gp.groups, cu.curriculum ASC');*/
         $db->execute(array($this->id));
         
         while($result = $db->fetchObject()) { 
