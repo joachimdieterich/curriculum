@@ -160,11 +160,16 @@ class Roles {
      * get user roles from db
      * @return array of roles |boolean 
      */
-    public function get($paginator = ''){
+    public function get($paginator = '', $all = false){
         global $USER;
         $order_param = orderPaginator($paginator); 
-        $db          = DB::prepare('SELECT * FROM roles WHERE order_id >= (SELECT order_id FROM roles WHERE id = ?) '.$order_param); //man darf nur rollen vergeben die unter der eigenen sind. id = id damit suche funktioniert
-        $db->execute(array($USER->role_id));
+        if ($all){
+            $db          = DB::prepare('SELECT * FROM roles '.$order_param); // get all roles
+            $db->execute();
+        } else {
+            $db          = DB::prepare('SELECT * FROM roles WHERE order_id >= (SELECT order_id FROM roles WHERE id = ?) '.$order_param); // man darf nur rollen vergeben die unter der eigenen sind. id = id damit suche funktioniert
+            $db->execute(array($USER->role_id));
+        }
         while ($result = $db->fetchObject()) {
             $this->id           = $result->id;
             $this->role         = $result->role;
