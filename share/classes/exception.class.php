@@ -31,8 +31,8 @@ class CurriculumException extends Exception  {
      * @param int $code 
      */
     public function __construct($message, $code = 0) {
-        global $USER, $PAGE, $LOG;
-        $LOG->add($USER->id, 'CurriculumException', $PAGE->url,  'Browser: '.$PAGE->browser. ' View: '.$PAGE->action); 
+        global $USER, $_SESSION, $LOG;
+        $LOG->add($USER->id, 'CurriculumException', $_SESSION['PAGE']->url,  'Browser: '.$_SESSION['PAGE']->browser. ' View: '.$_SESSION['PAGE']->action); 
         parent::__construct($message, $code, NULL);
     }
     
