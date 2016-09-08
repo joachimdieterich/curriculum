@@ -81,8 +81,8 @@ class Certificate {
      */
     public function update(){
         global $USER;
-        checkCapabilities('certificate:update', $USER->role_id);    
-        $db = DB::prepare('UPDATE certificate SET certificate = ?, description = ?, template = ?, WHERE id = ?');
+        checkCapabilities('certificate:update', $USER->role_id);  
+        $db = DB::prepare('UPDATE certificate SET certificate = ?, description = ?, template = ? WHERE id = ?');
         return $db->execute(array($this->certificate, $this->description, $this->template, $this->id));
     }
     
