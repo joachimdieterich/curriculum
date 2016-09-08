@@ -39,11 +39,11 @@ switch ($func) {
 }
 $curriculum = new Curriculum();
 
-$content    = Render::box_widget(array('widget_title' => 'Lerngruppe',
+$content    = Render::box_widget(array('widget_title' => 'Lehrpläne',
                                        'data'         => $curriculum->getCurricula('group', $g->id),
                                        'label'        => 'curriculum', 
                                        'widget_desc'  => 'Lehrpläne der Lerngruppe',
-                                       'bg_icon'      => 'fa fa-group'));
+                                       'bg_icon'      => 'fa fa-th'));
 $users      = new User();
 $u_list     = $users->getGroupMembers('group', $g->id);
 
