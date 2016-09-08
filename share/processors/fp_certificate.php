@@ -33,7 +33,7 @@ $certificate                  = new Certificate();
 $purify                       = HTMLPurifier_Config::createDefault();
 $purify->set('Core.Encoding', 'UTF-8'); // replace with your encoding
 $purify->set('HTML.Doctype', 'HTML 4.01 Transitional'); // replace with your doctype
-$purify->set('HTML', 'Trusted', true); // enable comments, required for certificate 
+$purify->set('HTML.Trusted', true); // enable comments, required for certificate 
 $purifier                     = new HTMLPurifier($purify);
 $certificate->template        = $purifier->purify(filter_input(INPUT_POST, 'template', FILTER_UNSAFE_RAW));
 
