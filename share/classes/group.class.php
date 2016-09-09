@@ -107,7 +107,7 @@ class Group {
         } else {     
             $db = DB::prepare('INSERT INTO groups (groups,description,grade_id,semester_id,institution_id,creator_id) 
                                                 VALUES (?,?,?,?,?,?)');
-            return $db->execute(array($this->group, $this->description, $this->grade_id,  $USER->id));
+            return $db->execute(array($this->group, $this->description, $this->grade_id, $this->semester_id, $this->institution_id, $USER->id));
         }
     }
     
