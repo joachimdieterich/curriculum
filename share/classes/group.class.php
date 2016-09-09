@@ -98,8 +98,8 @@ class Group {
             case 'semester':    $db = DB::prepare('SELECT COUNT(id) FROM groups WHERE groups = ? AND semester_id = ?');
                                 $db->execute(array($this->group, $this->semester_id));
                 break;
-            default:            $db = DB::prepare('SELECT COUNT(id) FROM groups WHERE groups = ?');
-                                $db->execute(array($this->group));    
+            default:            $db = DB::prepare('SELECT COUNT(id) FROM groups WHERE groups = ? AND semester_id = ? AND institution_id = ?');
+                                $db->execute(array($this->group, $this->semester_id, $this->institution_id));    
                 break;
         }
         if($db->fetchColumn() >= 1) { 
@@ -107,7 +107,7 @@ class Group {
         } else {     
             $db = DB::prepare('INSERT INTO groups (groups,description,grade_id,semester_id,institution_id,creator_id) 
                                                 VALUES (?,?,?,?,?,?)');
-            return $db->execute(array($this->group, $this->description, $this->grade_id, $this->semester_id, $this->institution_id, $USER->id));
+            return $db->execute(array($this->group, $this->description, $this->grade_id,  $USER->id));
         }
     }
     
