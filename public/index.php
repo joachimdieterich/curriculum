@@ -146,6 +146,7 @@ try { // Error handling
 
 //object_to_array($_SESSION);
 //object_to_array($PAGE);
+//object_to_array($USER);
 //error_log(var_dump($INSTITUTION));
 //object_to_array($INSTITUTION);
 //object_to_array($CFG);

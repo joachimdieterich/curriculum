@@ -80,7 +80,18 @@ class Institution {
     public $semester_id;
     public $file_id;
     public $statistic;
-       
+    
+    /**
+     * class constructor
+     * @param int $id default = null
+     */
+    public function __construct($id = null){
+        if ($id != null){
+           $this->id = $id; 
+           $this->load();
+        }
+    }
+    
     /**
      * load  institution from db depending on id
      */
@@ -187,17 +198,6 @@ class Institution {
             $db = DB::prepare('UPDATE institution SET institution = ?, description= ?, schooltype_id= ?, country_id= ?, state_id= ?, confirmed = ?, paginator_limit = ?, std_role = ?, csv_size = ?, avatar_size = ?, material_size = ?, acc_days = ?, timeout = ?, semester_id = ? , file_id = ? 
                                     WHERE id = ?');
             return $db->execute(array($this->institution, $this->description, $this->schooltype_id, $this->country_id, $this->state_id, $this->confirmed, $this->paginator_limit, $this->std_role, $this->csv_size, $this->avatar_size, $this->material_size, $this->acc_days, $this->timeout, $this->semester_id, $this->file_id, $this->id));
-        }
-    }
-    
-    /**
-     * class constructor
-     * @param int $id default = null
-     */
-    public function __construct($id = null){
-        if ($id != null){
-           $this->id = $id; 
-           $this->load();
         }
     }
     

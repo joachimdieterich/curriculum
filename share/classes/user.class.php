@@ -153,10 +153,15 @@ class User {
      */
     public $institutions = array();
     /**
-     * current institution id (depends on current semester9
+     * current institution id (depends on current semester)
      * @var int 
      */
     public $institution_id;
+    /**
+     * current institution data (depends on current semester)
+     * @var obj 
+     */
+    public $institution;
     /**
      * array of enrolments
      * @var array
@@ -272,6 +277,9 @@ class User {
                 $this->institution_id    = $se_result->institution_id;
             } else {
                 $this->institution_id    = $ie_result->institution_id;
+            }
+            if (isset($this->institution_id)){
+                $this->institution = new Institution($this->institution_id);
             }
         }
         $this->token             = $result->token;   
