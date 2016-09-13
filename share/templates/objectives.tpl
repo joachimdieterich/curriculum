@@ -73,6 +73,7 @@
                 
                 <div class="box-body">
                 {if isset($userPaginator)}   
+                    <p> Bitte  Schüler aus der Liste auswählen um den Lernstand einzugeben.</p>
                             {html_paginator id='userPaginator'} 
                 {elseif $showuser eq true}Keine eingeschriebenen Benutzer{/if}
                 </div>
