@@ -119,6 +119,7 @@ class Course {
                                             FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp, files AS fl
                                             WHERE cu.id = ce.curriculum_id
                                             AND gp.id = ce.group_id AND cu.icon_id = fl.id 
+                                            AND ce.status = 1
                                             AND ce.group_id = ANY(SELECT group_id
                                                     FROM groups_enrolments
                                                     WHERE user_id =  ? OR creator_id = ? AND status = 1)
