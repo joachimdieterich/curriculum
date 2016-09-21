@@ -27,7 +27,6 @@ ob_start();
 include_once('setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 global $CFG, $USER;
 
-//error_log($_SERVER['REMOTE_ADDR'].' acclib: '.session_id().' file:'.filter_input(INPUT_GET, 'file').' sesusr:');
 if (null != filter_input(INPUT_GET, 'token')){                  // Zugriff über token. Externe Services. 
     $f      = new File();
     $id     = $f->getFileID(filter_input(INPUT_GET, 'token'));

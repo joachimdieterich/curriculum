@@ -205,8 +205,6 @@ class Task {
                                 $db = DB::prepare('INSERT INTO user_accomplished (status_id, reference_id, user_id, creator_id, context_id) VALUES (?,?,?,?,?)');
                                 return $db->execute(array($status, $this->id, $user_id, $USER->id, 13)); //context_id 13 == task 
                             }
-                            error_log(json_encode(array($status, $this->id, $user_id)));
-                            
                 break;
             
             default:        break;

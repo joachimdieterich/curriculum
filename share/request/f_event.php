@@ -77,7 +77,6 @@ if (isset($_GET['func'])){
                         foreach ($ev as $key => $value){
                             if (!is_object($value)){
                                 $$key = $value;
-                                //error_log($key. ': '.$value);
                             }
                         }
                         

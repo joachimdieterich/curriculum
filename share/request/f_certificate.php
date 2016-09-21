@@ -64,7 +64,6 @@ if (isset($func)){
                             foreach ($cert as $key => $value){
                                 if (!is_object($value)){
                                     $$key = $value;
-                                    //error_log($key. ': '.$value);
                                 }
                             }
                         

@@ -67,7 +67,6 @@ if (isset($_GET['func'])){
                             foreach ($abs as $key => $value){
                                 if (!is_object($value)){
                                     $$key = $value;
-                                    //error_log($key. ': '.$value);
                                 }
                             }
                             $reference_id = $cb_id; // to get reference 

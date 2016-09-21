@@ -28,7 +28,6 @@ include(dirname(__FILE__).'/../login-check.php');  //check login status and rese
 global $USER;
 $USER       = $_SESSION['USER'];
 
-//error_log('test: '.$_POST['desc']);
 if(isset($_POST['tfDesc']) || isset($_POST['mcDesc'])){
         // add Question
         if ($_POST['tfDesc'] != ''){$question       = $_POST['tfDesc']; $type = 'tf'; $type_id = 0;}

@@ -41,7 +41,6 @@ $shib_config->idp       = 'Shib-Identity-Provider';
 
 $user                   = new User();
 if ($user->exists('username', $_SERVER[$shib_config->username])){
-    //error_log('User '.$_SERVER[$shib_config->username].' existiert ');
     session_destroy();                                          // Verhindert, dass eine bestehende Session genutzt wird --> verursacht Probleme (token / uploadframe)
     session_start();
 
@@ -56,6 +55,4 @@ if ($user->exists('username', $_SERVER[$shib_config->username])){
        header('Location:../../../../share/request/getTermsofUse.php'); exit();
     }
     header('Location:../../../../public/index.php?action=dashboard');
-} else {
-    //error_log('User '.$_SERVER[$shib_config->username].' existiert nicht');
-}
+} 

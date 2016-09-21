@@ -43,7 +43,6 @@ switch ($func) {
                     $sem_obj->load();                                 //Läd die bestehenden Daten aus der db
                     foreach ($sem_obj as $key => $value){
                         $$key = $value;
-                        //error_log($key. ': '.$value);
                     }
                     $header                       = 'Lernzeitraum aktualisieren';           
         break;

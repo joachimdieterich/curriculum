@@ -43,7 +43,6 @@ switch ($func) {
                     $sub_obj->load();                                 //Läd die bestehenden Daten aus der db
                     foreach ($sub_obj as $key => $value){
                         $$key = $value;
-                        //error_log($key. ': '.$value);
                     }
                     $header                       = 'Fach aktualisieren';           
         break;

@@ -69,13 +69,12 @@ if($validated_data === false) {/* validation failed */
         case 'new':      if ($group->add()){
                             $_SESSION['PAGE']->message[] = array('message' => 'Gruppe hinzufgefügt', 'icon' => 'fa-group text-success');
                          }               
-            
             break;
         case 'edit':     if ($group->update()){
                             $_SESSION['PAGE']->message[] = array('message' => 'Gruppe erfolgreich aktualisiert', 'icon' => 'fa-group text-success');
                          }
             break;
-        case 'semester': if ($group->add('semester')){ error_log('semester grid:'.$group->id);
+        case 'semester': if ($group->add('semester')){ 
                             if ($assumeUsers){ 
                                 $group->changeSemester(); 
                             } 

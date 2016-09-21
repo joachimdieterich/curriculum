@@ -171,5 +171,4 @@ if ($my_upload->upload() OR filter_var($fileURL, FILTER_VALIDATE_URL)) {//in dat
 }
  //////////////// todo: Errorbehandlung 
 $error = $my_upload->show_error_string(); 
-error_log($file->id);
 echo $file->id;

@@ -62,9 +62,7 @@ try { // Error handling
          break;
  }
  
-    /**
-     * Sortierung der Paginatoren
-     */
+    /** Sortierung der Paginatoren */
     /* Paginator reset*/
     if (filter_input(INPUT_GET, 'order', FILTER_UNSAFE_RAW) && filter_input(INPUT_GET, 'sort', FILTER_UNSAFE_RAW) && filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW)){
         SmartyPaginate::setSort(filter_input(INPUT_GET, 'order', FILTER_UNSAFE_RAW),filter_input(INPUT_GET, 'sort', FILTER_UNSAFE_RAW), filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW));
@@ -97,9 +95,7 @@ try { // Error handling
         $TEMPLATE->assign('highlight', $_SESSION['highlight']);
     } 
     
-    /**
-     * Load new Messages
-     */
+    /**Load new Messages */
     if (isset($USER)){
         if (checkCapabilities('menu:readMessages', $USER->role_id, false)){
             $mail = new Mailbox();
@@ -116,11 +112,8 @@ try { // Error handling
         $upcoming_tasks  = new Task();
         $TEMPLATE->assign('upcoming_tasks', $upcoming_tasks->get('upcoming', $USER->id));
     }
-    
-    /**
-    * load controller 
-    */ 
-    $PAGE->controller = $CFG->controllers_root.'/'.$PAGE->action .'.php';
+
+    $PAGE->controller = $CFG->controllers_root.'/'.$PAGE->action .'.php';       //load controller 
    
     if (file_exists($PAGE->controller)) {   
         include($PAGE->controller);  
@@ -144,12 +137,6 @@ try { // Error handling
     $TEMPLATE->assign('curriculum_exception',   $e);  
 } 
 
-//object_to_array($_SESSION);
-//object_to_array($PAGE);
-//object_to_array($USER);
-//error_log(var_dump($INSTITUTION));
-//object_to_array($INSTITUTION);
-//object_to_array($CFG);
 /**
  *  load and render template
  */

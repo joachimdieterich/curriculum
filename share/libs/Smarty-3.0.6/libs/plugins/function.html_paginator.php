@@ -45,7 +45,6 @@ function smarty_function_html_paginator($params, $template) {
         $keys['p_options']     = $config['p_options'];  
         if (isset($config['t_config'])){                        // get t_config if is set
             foreach($config['t_config'] as $k => $v){
-                //error_log($k.' => '.$v);
                 $$k = $v;   
             }
         }

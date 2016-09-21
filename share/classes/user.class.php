@@ -488,18 +488,25 @@ class User {
     public function enroleToInstitution($institution_id){
         global $USER, $PAGE; 
         checkCapabilities('user:enroleToInstitution', $USER->role_id);
-        $db = DB::prepare('SELECT count(id) FROM institution_enrolments WHERE institution_id = ? AND user_id = ?');
+        $institution        = new Institution();
+        $institution->id    = $institution_id; 
+        $institution->load();
+        $db                 = DB::prepare('SELECT count(id) FROM institution_enrolments WHERE institution_id = ? AND user_id = ?');
         $db->execute(array($institution_id, $this->id));
         if($db->fetchColumn() > 0) {
             $db = DB::prepare('UPDATE institution_enrolments SET status = 1, creator_id = ?, role_id = ? WHERE user_id = ? AND institution_id = ?');
-             return $db->execute(array($USER->id, $this->role_id, $this->id, $institution_id));
+            if ($db->execute(array($USER->id, $this->role_id, $this->id, $institution_id))){
+                $_SESSION['PAGE']->message[] = array('message' => 'Benutzereinschreibung (<strong>'.$this->username.'</strong>) der Institution <strong>'.$institution->institution.'</strong> aktualisiert.', 'icon' => 'fa fa-user text-success');// Schließen und speichern
+            } else {
+                $_SESSION['PAGE']->message[] = array('message' => 'Benutzereinschreibung (<strong>'.$this->username.'</strong>) der Institution <strong>'.$institution->institution.'</strong> konnte nicht aktualisiert werden.', 'icon' => 'fa fa-user text-warning');// Schließen und speichern
+            }
         } else {
             $db = DB::prepare('INSERT INTO institution_enrolments (institution_id,user_id,role_id,creator_id,status) VALUES(?,?,?,?,1)');
             if ($db->execute(array($institution_id, $this->id, $this->role_id, $USER->id))){
-                $PAGE->message[] = array('message' => '<strong>'.$this->username.'</strong> erfolgreich in die Institution eingeschrieben.', 'icon' => 'fa fa-user text-success');// Schließen und speichern
+                $_SESSION['PAGE']->message[] = array('message' => '<strong>'.$this->username.'</strong> in die Institution <strong>'.$institution->institution.'</strong> eingeschrieben.', 'icon' => 'fa fa-user text-success');// Schließen und speichern
                 return true; 
             } else {
-                $PAGE->message[] = array('message' => '<strong>'.$this->username.'</strong> konnte nicht in die Institution eingeschrieben werden.', 'icon' => 'fa fa-user text-warning');// Schließen und speichern
+                $_SESSION['PAGE']->message[] = array('message' => '<strong>'.$this->username.'</strong> konnte nicht in die Institution <strong>'.$institution->institution.'</strong> eingeschrieben werden.', 'icon' => 'fa fa-user text-warning');// Schließen und speichern
                 return false;
             }
         } 
@@ -513,8 +520,13 @@ class User {
     public function expelFromInstitution($institution_id){
         global $USER; 
         checkCapabilities('user:expelFromInstitution', $USER->role_id);
-        $db = DB::prepare('UPDATE institution_enrolments SET status = 0, creator_id = ? WHERE user_id = ? AND institution_id = ?');
-        return $db->execute(array($USER->id, $this->id, $institution_id));
+        $institution        = new Institution();
+        $institution->id    = $institution_id; 
+        $institution->load();
+        $db                 = DB::prepare('UPDATE institution_enrolments SET status = 0, creator_id = ? WHERE user_id = ? AND institution_id = ?');
+        if ($db->execute(array($USER->id, $this->id, $institution_id))){
+            $_SESSION['PAGE']->message[] = array('message' => 'Nutzer <strong>'.$this->username.'</strong> erfolgreich aus der Institution <strong>'.$institution->institution.'</strong> ausgeschrieben.', 'icon' => 'fa-user text-success');
+        }
     }
     
     /**
@@ -710,7 +722,11 @@ class User {
         global $USER;
         checkCapabilities('user:resetPassword', $USER->role_id);
         $db = DB::prepare('UPDATE users SET password = ?, confirmed = ? WHERE id=?');
-        return $db->execute(array(md5($this->password), $this->confirmed, $this->id));       
+        if ($db->execute(array(md5($this->password), $this->confirmed, $this->id))){
+            $_SESSION['PAGE']->message[] = array('message' => 'Passwort des Nutzers '.$this->firstname.' '.$this->lastname.' ('.$this->username.') wurde zurückgesetzt.', 'icon' => 'fa-key text-success');
+        } else {
+            $_SESSION['PAGE']->message[] = array('message' => 'Password konnte nicht zurückgesetzt werden.', 'icon' => 'fa-key text-warning');
+        }
     }
     /**
      * Returns all Curricula in which the user is enroled. 

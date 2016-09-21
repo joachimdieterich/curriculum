@@ -25,14 +25,14 @@
 */
 global $USER, $PAGE, $TEMPLATE;
 
-$groups = new Group();
+$groups      = new Group();
 $institution = new Institution();
 
 $TEMPLATE->assign('showFunctions', true);
 
 if (isset($_GET['function'])) {
     $TEMPLATE->assign('showFunctions', false);  
-    $current_user = new User();
+    $current_user     = new User();
     $current_user->id = filter_input(INPUT_GET, 'userID', FILTER_VALIDATE_INT);    
 }
         
@@ -56,11 +56,7 @@ if (isset($_POST) ){
                                     $edit_user->password = $_POST['password'];
                                     $validated_data = $edit_user->validate(true);
                                     if($validated_data === true) {/* validation successful */
-                                        if ($edit_user->resetPassword()) {
-                                                $PAGE->message[] = array('message' => 'Passwort des Nutzers '.$edit_user->firstname.' '.$edit_user->lastname.' ('.$edit_user->username.') wurde zurückgesetzt.', 'icon' => 'fa-key text-success');
-                                            } else {
-                                                $PAGE->message[] = array('message' => 'Password konnte nicht zurückgesetzt werden.', 'icon' => 'fa-key text-warning');
-                                            }  
+                                        $edit_user->resetPassword();
                                     } else {
                                         $TEMPLATE->assign('error', $validated_data);     
                                     }        
@@ -78,17 +74,10 @@ if (isset($_POST) ){
                                         $institution->id = $USER->institution_id;
                                     }
                                     $edit_user->role_id = $_POST['roles'];
-                                    if ($edit_user->enroleToInstitution($institution->id)){
-                                        $institution->load();
-                                        $PAGE->message[] = array('message' => 'Nutzer <strong>'.$edit_user->username.'</strong> erfolgreich in die Institution <strong>'.$institution->institution.'</strong> eingeschrieben.', 'icon' => 'fa-user text-success');
-                                    }
+                                    $edit_user->enroleToInstitution($institution->id);
                     break; 
                 case isset($_POST['expelInstitution']):
-                                    if ($edit_user->expelFromInstitution($_POST['institution'])){
-                                        $institution->id = $_POST['institution']; 
-                                        $institution->load();
-                                        $PAGE->message[] = array('message' => 'Nutzer <strong>'.$edit_user->username.'</strong> erfolgreich aus der Institution<strong>'.$institution->institution.'</strong> ausgeschrieben.', 'icon' => 'fa-user text-success');
-                                    }
+                                    $edit_user->expelFromInstitution($_POST['institution']);    
                     break;     
                 default:
                     break;
@@ -106,16 +95,15 @@ if (isset($_POST) ){
 $TEMPLATE->assign('page_title', 'Benutzerverwaltung');
 $TEMPLATE->assign('breadcrumb',  array('Benutzerverwaltung' => 'index.php?action=user'));
 
-$roles = new Roles(); 
-$TEMPLATE->assign('roles', $roles->get());                                 //getRoles
+$roles      = new Roles(); 
+$TEMPLATE->assign('roles', $roles->get());                              //getRoles
 
-// Load groups
-$group_list = $groups->getGroups('group', $USER->id);
-$TEMPLATE->assign('groups_array', $group_list);          // Lerngruppen  Laden
+$group_list = $groups->getGroups('group', $USER->id);                   // Load groups
+$TEMPLATE->assign('groups_array', $group_list);                         
 $TEMPLATE->assign('myInstitutions', $institution->getInstitutions('user', null, $USER->id));
 
-$users = new USER();
-$p_options = array('delete' => array('onclick'      => "del('user',__id__, $USER->id);", 
+$users      = new USER();
+$p_options  = array('delete' => array('onclick'      => "del('user',__id__, $USER->id);", 
                                      'capability'   => checkCapabilities('user:delete', $USER->role_id, false),
                                      'icon'         => 'fa fa-minus',
                                      'tooltip'      => 'löschen'),
@@ -127,7 +115,7 @@ $p_options = array('delete' => array('onclick'      => "del('user',__id__, $USER
                                      'capability'   => checkCapabilities('user:getGroups', $USER->role_id, false),  //todo: use extra capability?
                                      'icon'         => 'fa fa-list-alt',
                                      'tooltip'      => 'Überblick'));
-$p_config =   array('id'         => 'checkbox',
+$p_config   = array('id'         => 'checkbox',
                     'username'   => 'Benutzername', 
                     'firstname'  => 'Vorname', 
                     'lastname'   => 'Nachname', 

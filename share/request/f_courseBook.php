@@ -58,7 +58,6 @@ $data = json_decode($object, true);
 if (is_array($data)) {
     foreach ($data as $key => $value){
         $$key = $value;
-        //error_log($key.': '.$value);
     }
 }
             

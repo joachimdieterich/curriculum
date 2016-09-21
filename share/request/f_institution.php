@@ -73,10 +73,8 @@ if (isset($_GET['func'])){
                         $ins        = new Institution();
                         $ins->id    = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
                         $ins->load();
-                        
                         foreach ($ins as $key => $value){
                              $$key = $value;
-                             //error_log($key. ': '.$value);
                          }
             break;
         default: break;

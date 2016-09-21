@@ -142,7 +142,6 @@ class Mailbox {
             $getMail->message            = $result->message;
             $getMail->creation_time      = $result->creation_time;
             
-            //error_log('box: '.$mailbox.' sender_id:'.$getMail->sender_id);
             switch ($mailbox) {
                 case 'receiver_id': //inbox
                                     $this->inbox[]            = $getMail;

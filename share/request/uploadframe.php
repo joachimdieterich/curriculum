@@ -141,8 +141,7 @@ foreach ($_POST as $key => $value) { $$key = $value; }
         
         if ($action == 'lastFiles'){ ?>
         <div class="box box-widget form-horizontal">
-          <?php error_log($USER->id);
-          RENDER::filelist('uploadframe.php', 'user',       $CFG->access_file, '_filelastuploadbtn',   $target, $format, $multiple, $USER->id);        //FileLastUpload div?>
+          <?php RENDER::filelist('uploadframe.php', 'user',       $CFG->access_file, '_filelastuploadbtn',   $target, $format, $multiple, $USER->id);        //FileLastUpload div?>
         </div>
         <?php }
         

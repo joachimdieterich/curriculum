@@ -322,9 +322,8 @@ class Curriculum {
    
    public function import($file, $preset = true){ 
         global $CFG, $USER;                                                         //--> s.    public function loadImportFormData($file) // code doppelt
-        //error_log($file);
-        $import_folder = basename($file, ".curriculum");
-        $zip = new ZipArchive;
+        $import_folder  = basename($file, ".curriculum");
+        $zip            = new ZipArchive;
         if ($zip->open($file) === TRUE) {
             $zip->extractTo($CFG->backup_root.$import_folder.'/');
             $zip->close();

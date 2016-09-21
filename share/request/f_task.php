@@ -65,7 +65,6 @@ if (isset($_GET['func'])){
                             foreach ($tsk as $key => $value){
                                 if (!is_object($value)){
                                     $$key = $value;
-                                    //error_log($key. ': '.$value);
                                 }
                             }
                         

@@ -28,7 +28,6 @@ global $USER;
 $USER   = $_SESSION['USER'];
 $func   = filter_input(INPUT_GET, 'func', FILTER_SANITIZE_STRING);
 
-//error_log($func.': '.$val);
 switch ($func) {
     case "task":    $t      = new Task();        
                     $t->id  = filter_input(INPUT_GET, 'val', FILTER_SANITIZE_STRING); // kein INT --> System ID -1

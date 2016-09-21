@@ -629,7 +629,6 @@ class Render {
         foreach($params as $key => $val) {
             $$key = $val;
         }
-        //error_log(json_encode($data));
         $html   =  '<div class="'.$class_width.'">
                     <!-- Widget: '.$widget_type.' widget style 1 -->
                     <div class="box box-widget widget-'.$widget_type.'">

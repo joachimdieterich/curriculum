@@ -198,7 +198,6 @@ class Backup {
                 }
                 /* enabling objectives */
                 if (count($ter_value->enabling_objectives) >= 1 AND $ter_value->enabling_objectives != false){
-                    //error_log(json_encode($ter_value->enabling_objectives));
                     foreach($ter_value->enabling_objectives as $ena_value){ 
                         $ena = $xml->createElement('enabling_objective');
                         $ena->setAttribute('id',                 $ena_value->id);
