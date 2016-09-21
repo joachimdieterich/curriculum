@@ -65,28 +65,11 @@ if (isset($_POST) ){
                                         $TEMPLATE->assign('error', $validated_data);     
                                     }        
                     break;
-                case isset($_POST['deleteUser']):
-                                    if ($edit_user->id != $USER->id) {
-                                        if ($edit_user->delete()){
-                                            $PAGE->message[] = array('message' => 'Benutzerkonten wurden erfolgreich gelöscht!', 'icon' => 'fa-user text-success');
-                                        }
-                                    } else {
-                                        $PAGE->message[] = array('message' => 'Man kann sich nicht selbst löschen!', 'icon' => 'fa-user text-warning');
-                                    }
+                case isset($_POST['deleteUser']):   $edit_user->delete();
                     break; 
-                case isset($_POST['enroleGroups']):
-                                    if ($edit_user->enroleToGroup($_POST['groups'], $USER->id)){
-                                        $groups->id = $_POST['groups']; 
-                                        $groups->load();
-                                        $PAGE->message[] = array('message' => 'Nutzer <strong>'.$edit_user->username.'</strong> erfolgreich in <strong>'.$groups->group.'</strong> eingeschrieben.', 'icon' => 'fa-user text-success');
-                                    }
+                case isset($_POST['enroleGroups']): $edit_user->enroleToGroup($_POST['groups'], $USER->id);
                     break; 
-                case isset($_POST['expelGroups']):
-                                    if ($edit_user->expelFromGroup($_POST['groups'])){
-                                        $groups->id = $_POST['groups']; 
-                                        $groups->load();
-                                        $PAGE->message[] = array('message' => 'Nutzer <strong>'.$edit_user->username.'</strong> erfolgreich aus <strong>'.$groups->group.'</strong> ausgeschrieben.', 'icon' => 'fa-user text-success');
-                                    }
+                case isset($_POST['expelGroups']):  $edit_user->expelFromGroup($_POST['groups']);
                     break;     
                 case isset($_POST['enroleInstitution']): 
                                     if (isset($_POST['institution'])){

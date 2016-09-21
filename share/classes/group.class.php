@@ -231,7 +231,7 @@ class Group {
         if  (count($group_members) > 0){                                    // Mitglieder in der Gruppe?
             foreach($group_members as $value) {                             // Mitglieder in die neue Lerngruppe einschreiben
                 $users->id = $value;
-                $users->enroleToGroup($this->id, $USER->id);  
+                $users->enroleToGroup(array($this->id));                    // todo: not tested yet
             } 
         }
     }

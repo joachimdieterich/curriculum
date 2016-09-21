@@ -364,14 +364,19 @@ class User {
     public function delete(){
         global $USER;
         checkCapabilities('user:delete', $USER->role_id);
-        $db = DB::prepare('DELETE FROM users WHERE id = ?');
-        if ($db->execute(array($this->id))) {
-            $db1 = DB::prepare('DELETE FROM user_accomplished WHERE user_id = ?'); 
-            $db1->execute(array($this->id));
-            /* Hier sollte alles gelöscht werden, was der Benutzer angelegt hat, evtl. auch Daten archivieren*/
-            $db2 = DB::prepare('DELETE FROM institution_enrolments WHERE user_id = ?');
-            return $db2->execute(array($this->id));
-        } else {return false;}   
+        if ($this->id != $USER->id){
+            $db = DB::prepare('DELETE FROM users WHERE id = ?');
+            if ($db->execute(array($this->id))) {
+                $db1 = DB::prepare('DELETE FROM user_accomplished WHERE user_id = ?'); 
+                $db1->execute(array($this->id));
+                /* Hier sollte alles gelöscht werden, was der Benutzer angelegt hat, evtl. auch Daten archivieren*/
+                $db2 = DB::prepare('DELETE FROM institution_enrolments WHERE user_id = ?');
+                $_SESSION['PAGE']->message[] = array('message' => 'Benutzerkonten wurden erfolgreich gelöscht!', 'icon' => 'fa-user text-success');
+                return $db2->execute(array($this->id));
+            } else {return false;}   
+        } else {
+            $_SESSION['PAGE']->message[] = array('message' => 'Man kann sich nicht selbst löschen!', 'icon' => 'fa-user text-warning');
+        }
     }
     /**
      * change password
@@ -518,18 +523,27 @@ class User {
      * @param int $creator_id
      * @return boolean 
      */
-    public function enroleToGroup($group_id){
+    public function enroleToGroup($group_id_array){
         global $USER; 
         checkCapabilities('user:enroleToGroup', $USER->role_id);
-        $db = DB::prepare('SELECT count(id) FROM groups_enrolments WHERE group_id = ? AND user_id = ?');
-        $db->execute(array($group_id, $this->id));
-        if($db->fetchColumn() > 0) {
-            $db = DB::prepare('UPDATE groups_enrolments SET status = 1 WHERE group_id = ? AND user_id = ?');//Status 1 == enroled
-            return $db->execute(array($group_id, $this->id));
-        } else { 
-            $db = DB::prepare('INSERT INTO groups_enrolments (status,group_id,user_id,creator_id) 
-                                            VALUES (1,?,?,?)');//Status 1 == enroled
-            return $db->execute(array($group_id, $this->id, $USER->id));
+        $groups = new Group();
+        foreach ($group_id_array as $group_id) {
+            $groups->id             = $group_id; 
+            $groups->load();
+            $db                     = DB::prepare('SELECT count(id) FROM groups_enrolments WHERE group_id = ? AND user_id = ?');
+            $db->execute(array($group_id, $this->id));
+            if($db->fetchColumn() > 0) {
+                $db                 = DB::prepare('UPDATE groups_enrolments SET status = 1 WHERE group_id = ? AND user_id = ?');//Status 1 == enroled
+                if ($db->execute(array($group_id, $this->id))){
+                    $_SESSION['PAGE']->message[]    = array('message' => 'Nutzereinschreibung (<strong>'.$this->username.'</strong>) in <strong>'.$groups->group.'</strong> aktualisiert.', 'icon' => 'fa-user text-success');
+                }
+            } else { 
+                $db                 = DB::prepare('INSERT INTO groups_enrolments (status,group_id,user_id,creator_id) 
+                                                VALUES (1,?,?,?)');             //Status 1 == enroled
+                if ($db->execute(array($group_id, $this->id, $USER->id))){
+                    $_SESSION['PAGE']->message[]    = array('message' => '<strong>'.$this->username.'</strong> in <strong>'.$groups->group.'</strong> eingeschrieben.', 'icon' => 'fa-user text-success');
+                }
+            }   
         }
     }
     
@@ -538,14 +552,19 @@ class User {
      * @param int $group_id
      * @return boolean 
      */
-    public function expelFromGroup($group_id){
+    public function expelFromGroup($group_id_array){
         global $USER; 
         checkCapabilities('user:expelFromGroup', $USER->role_id);
-        $db = DB::prepare('SELECT COUNT(id) FROM groups_enrolments WHERE group_id = ? AND user_id = ?');
-        $db->execute(array($group_id, $this->id));
-        if($db->fetchColumn() >= 1) {
-            $db = DB::prepare('UPDATE groups_enrolments SET status = 0, expel_time = NOW() WHERE group_id = ? AND user_id =? '); // Status 0 expelled
-            return $db->execute(array($group_id, $this->id));
+        $groups = new Group();
+        foreach ($group_id_array as $group_id) {
+            $db     = DB::prepare('SELECT COUNT(id) FROM groups_enrolments WHERE group_id = ? AND user_id = ?');
+            $db->execute(array($group_id, $this->id));
+            if($db->fetchColumn() >= 1) {
+                $db = DB::prepare('UPDATE groups_enrolments SET status = 0, expel_time = NOW() WHERE group_id = ? AND user_id =? '); // Status 0 expelled
+            if ($db->execute(array($group_id, $this->id))){
+                $_SESSION['PAGE']->message[]    = array('message' => '<strong>'.$this->username.'</strong> erfolgreich aus <strong>'.$groups->group.'</strong> ausgeschrieben.', 'icon' => 'fa-user text-success');
+            }
+            }
         }
     }
     

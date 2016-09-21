@@ -129,7 +129,7 @@ $content .= '<div class="tab-content">
     </div><!-- /.tab-content -->
   </div><!-- /.nav-tab-custom -->';
 }
-            
+
 $content .='<form id="form_curriculum"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_curriculum.php"';
 if (isset($currentUrlId)){ $content .= $currentUrlId; }
 $content .= '">
