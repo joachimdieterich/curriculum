@@ -78,7 +78,7 @@
                 <div class="box box-widget widget-user">
                   <!-- Add the bg color to the header using any of the bg-* classes -->
                     <div class="widget-user-header bg-aqua-active" style="background: url('{$access_file}{$ins->file_id|resolve_file_id:"l"}') center right;background-size: cover; background-repeat: no-repeat;">
-                  
+                    {*<i class="pull-right fa fa-institution" style="font-size: 90px;"></i>*}
                     <h3 class="widget-user-username" style="text-shadow: 1px 1px #ff0000;">{$ins->institution}</h3>
                     <h5 class="widget-user-desc" style="text-shadow: 1px 1px #ff0000;">{$ins->description}</h5>
                   </div>
@@ -125,6 +125,7 @@
             <div class="box box-widget widget-user">
               <!-- Add the bg color to the header using any of the bg-* classes -->
               <div class="widget-user-header bg-yellow">
+                <i class="pull-right fa fa-group" style="font-size: 90px;"></i>
                 <h3 class="widget-user-username">{$cla->group}</h3>
                 <h5 class="widget-user-desc">{$cla->institution_id|truncate:50}</h5>
               </div>

@@ -53,7 +53,7 @@ $content   .= Render::box_widget(array('widget_title' => 'Lehrpläne',
                                        'label'        => 'curriculum', 
                                        'badge'        => 'groups',
                                        'bg_icon'      => 'fa fa-th',
-                                       'bg_color'     => 'yellow',
+                                       'bg_color'     => 'purple',
                                        'href'         => 'index.php?action=view&curriculum_id=__id__&group=__group_id__'));
 $groups         = new Group(); 
 /* Groups / Institution */
@@ -63,7 +63,7 @@ $content   .= Render::box_widget(array('widget_title' => 'Lerngruppe',
                                        'label'        => 'group', 
                                        'badge'        => 'institution_id',
                                        'bg_icon'      => 'fa fa-group',
-                                       'bg_color'     => 'purple'));
+                                       'bg_color'     => 'yellow'));
  
 $html = Form::modal(array('title'   => 'Überblick über den Benutzer <strong>'.$u->firstname.' '.$u->lastname.'</strong> ('.$u->username.')',
                           'content' => $content));

@@ -109,6 +109,7 @@ class Course {
                                             WHERE cu.id = ce.curriculum_id
                                             AND cu.icon_id = fl.id
                                             AND gp.id = ce.group_id
+                                            AND ce.status = 1
                                             AND ce.group_id = ANY (SELECT id FROM groups 
                                                                    WHERE institution_id = ANY (SELECT institution_id FROM institution_enrolments 
                                                                                                 WHERE user_id = ? and status = 1))
