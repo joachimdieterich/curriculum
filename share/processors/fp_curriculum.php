@@ -77,6 +77,7 @@ if($validated_data === false) {/* validation failed */
             break;
         case 'edit':     if ($curriculum->update()){
                             $_SESSION['PAGE']->message[] = array('message' => 'Lehrplan erfolgreich aktualisiert', 'icon' => 'fa-th text-success');
+                            session_reload_user(); // --> get the changes immediately 
                          }
             break;
         case 'import':  if (isset($_POST['importFileName'])){

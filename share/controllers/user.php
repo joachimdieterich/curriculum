@@ -63,7 +63,7 @@ if (isset($_POST) ){
                     break;
                 case isset($_POST['deleteUser']):   $edit_user->delete();
                     break; 
-                case isset($_POST['enroleGroups']): $edit_user->enroleToGroup($_POST['groups'], $USER->id);
+                case isset($_POST['enroleGroups']): $edit_user->enroleToGroup($_POST['groups']);
                     break; 
                 case isset($_POST['expelGroups']):  $edit_user->expelFromGroup($_POST['groups']);
                     break;     

@@ -31,14 +31,14 @@
                                 <p>Die CSV-Datei muss folgendes Format haben:<br/>
                                 - Die ersten Zeile muss die Schlüsselwerte enthalten (z.B.:username, password, firstname, lastname, email, role_id, confirmed, postalcode, city, state, country)<br/>
                                 - Die Schüsselwerte <strong>username, password, firstname, lastname </strong>und <strong>email</strong> müssen gesetzt werden. <br/>
-                                - Wird keine Benutzer-Rolle festgelegt (role_id) wird die Standard-Rolle der Institution verwendet.<br/>
+                                - Zusätzlich kann das Feld <strong>group_id</strong> definiert werden. Mögliche ID-Werte für <strong>group_id</strong> und <strong>role_id</strong> finden Sie in den Tabellen.<br/>
                                 - Die maximale Dateigröße liegt bei {$filesize}MB und kann im Adminstrationsbereich festgelegt werden.<br/>
                                 - Die Datei muss im utf-8 Format gespeichert werden, sonst werden Umlaute und Sonderzeichen nicht korrekt importiert</p>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-5">
                                 <h4>CSV-Vorlagen</h4>
                                 <a class="btn btn-app" href="{$support_path}Vorlage-min.csv"><i class="fa fa-save"></i> Minimal - nur benötigte Felder</a>
-                                <a class="btn btn-app" href="{$support_path}Vorlage-max.csv"><i class="fa fa-save"></i> Maximal - nur benötigte Felder</a>
+                                <a class="btn btn-app" href="{$support_path}Vorlage-max.csv"><i class="fa fa-save"></i> Maximal - alle möglichen Felder</a>
                             </div>
                         </div>
 
@@ -51,6 +51,38 @@
                               <label for="exampleInputFile">CSV-Datei hochladen</label>
                               <input name="datei" type="file" value="">
                             </p> 
+                        </div>
+                        <div class="row col-xs-12 col-sm-6 col-md-4 col-lg-4" style="padding-left: 20px; padding-right: 20px;">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th style="width: 10px">ID</th>
+                                        <th>Lerngruppe</th>
+                                    </tr>
+                                    {foreach name=group item=g from=$groups}   
+                                    <tr>
+                                        <td>{$g->id}</td>
+                                        <td>{$g->group}</td>
+                                    </tr>
+                                    {/foreach}
+                              </tbody>
+                            </table>
+                        </div>
+                        <div class="row col-xs-12 col-sm-6 col-md-3 col-lg-3" style="padding-left: 20px; padding-right: 20px;">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th style="width: 10px">ID</th>
+                                        <th>Rollen</th>
+                                    </tr>
+                                    {foreach name=role item=r from=$roles}   
+                                    <tr>
+                                        <td>{$r->id}</td>
+                                        <td>{$r->role}</td>
+                                    </tr>
+                                    {/foreach}
+                              </tbody>
+                            </table>
                         </div>
                     </div>
                                 

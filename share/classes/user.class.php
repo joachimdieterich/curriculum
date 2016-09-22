@@ -307,10 +307,10 @@ class User {
             $db = DB::prepare('INSERT INTO users (username,firstname,lastname,email,postalcode,city,state_id,country_id,avatar_id,password,confirmed,creator_id,paginator_limit,acc_days) 
                                             VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
             if($db->execute(array($this->username,$this->firstname,$this->lastname,$this->email,$this->postalcode,$this->city,$this->state_id,$this->country_id,intval($this->avatar_id),md5($this->password),$this->confirmed,$USER->id,$this->paginator_limit,$this->acc_days))){
-                $this->id = DB::lastInsertId(); 
+                $this->id = DB::lastInsertId();                                 
                 $this->enroleToInstitution($institution_id);                    // enrol to institution
                 if (is_int($group_id)){                                         // enrol to group if id is set
-                    $this->enroleToGroup($group_id, $USER->id);
+                    $this->enroleToGroup(array($group_id));
                 }
                 $PAGE->message[] = array('message' => 'Der Benutzer <strong>'.$this->username.'</strong> wurde erfolgreich angelegt.', 'icon' => 'fa fa-user text-success');// Schließen und speichern
                 return $this->id;
@@ -368,6 +368,12 @@ class User {
             $db = DB::prepare('DELETE FROM users WHERE id = ?');
             if ($db->execute(array($this->id))) {
                 $db1 = DB::prepare('DELETE FROM user_accomplished WHERE user_id = ?'); 
+                $db1->execute(array($this->id));
+                $db1 = DB::prepare('DELETE FROM accept_terms WHERE user_id = ?'); 
+                $db1->execute(array($this->id));
+                $db1 = DB::prepare('DELETE FROM groups_enrolments WHERE user_id = ?'); 
+                $db1->execute(array($this->id));
+                $db1 = DB::prepare('DELETE FROM log WHERE user_id = ?'); //todo: maybe log should not be deleted
                 $db1->execute(array($this->id));
                 /* Hier sollte alles gelöscht werden, was der Benutzer angelegt hat, evtl. auch Daten archivieren*/
                 $db2 = DB::prepare('DELETE FROM institution_enrolments WHERE user_id = ?');
@@ -539,6 +545,7 @@ class User {
         global $USER; 
         checkCapabilities('user:enroleToGroup', $USER->role_id);
         $groups = new Group();
+        
         foreach ($group_id_array as $group_id) {
             $groups->id             = $group_id; 
             $groups->load();
@@ -602,18 +609,19 @@ class User {
                     $num = count($data);        
                 if ($row == 1) {	// Hier werden die Felder verknüpft.
                     for ($c=0; $c < $num; $c++) {
-                        if ($data[$c] == "username")        { $username_position       = $c; }
-                        if ($data[$c] == "password")        { $password_position       = $c; }
-                        if ($data[$c] == "role_id")         { $role_id_position        = $c; }
-                        if ($data[$c] == "email")           { $email_position          = $c; }
-                        if ($data[$c] == "confirmed")       { $confirmed_position      = $c; }
-                        if ($data[$c] == "firstname")       { $firstname_position      = $c; }
-                        if ($data[$c] == "lastname")        { $lastname_position       = $c; }
-                        if ($data[$c] == "postalcode")      { $postalcode_position     = $c; }
-                        if ($data[$c] == "city")            { $city_position           = $c; }
-                        if ($data[$c] == "state_id")        { $state_position          = $c; }
-                        if ($data[$c] == "country_id")      { $country_position        = $c; }
-                        if ($data[$c] == "avatar_id")       { $avatar_position         = $c; }
+                        if ($data[$c] == "username")   { $username_position       = $c; }
+                        if ($data[$c] == "password")   { $password_position       = $c; }
+                        if ($data[$c] == "role_id")    { $role_id_position        = $c; }
+                        if ($data[$c] == "email")      { $email_position          = $c; }
+                        if ($data[$c] == "confirmed")  { $confirmed_position      = $c; }
+                        if ($data[$c] == "firstname")  { $firstname_position      = $c; }
+                        if ($data[$c] == "lastname")   { $lastname_position       = $c; }
+                        if ($data[$c] == "postalcode") { $postalcode_position     = $c; }
+                        if ($data[$c] == "city")       { $city_position           = $c; }
+                        if ($data[$c] == "state_id")   { $state_position          = $c; }
+                        if ($data[$c] == "country_id") { $country_position        = $c; }
+                        if ($data[$c] == "avatar_id")  { $avatar_position         = $c; }
+                        if ($data[$c] == "group_id")   { $group_position          = $c;  }
                     }    
                 }
                 $row++; //Tielzeile überspringen
@@ -632,13 +640,20 @@ class User {
                     if (!isset($role_id_position))        { 
                         if (isset($role_id)){ $this->role_id  = $role_id; } else { $this->role_id  = $CFG->standard_role; }
                     } else { 
-                        $this->role_id    = $data[$role_id_position]; 
+                        /* ! Security ! check if role_id is permitted for $USER*/
+                        $role = new Roles();
+                        if ($role->checkRoleOrder($data[$role_id_position])) {
+                            $this->role_id    = $data[$role_id_position]; 
+                        } else {
+                            $PAGE->message[] = array('message' => 'Rolle für '.$value['username'].' wurde wegen fehlender Berechtigung auf die Standard-Rolle zurückgesetzt.', 'icon' => 'fa fa-group text-warning');// Schließen und speichern
+                        }
                     }
+                    if (!isset($group_position))          { $current_group_id = $group_id; }                  else { $current_group_id = $data[$group_position]; }
                     if (!isset($confirmed_position))      { $this->confirmed  = '3'; }                        else { $this->confirmed  = $data[$confirmed_position]; } 
 
                     $validated_data = $this->validate();
                     if ($validated_data === true) {
-                        $this->add($institution_id, $group_id);
+                        $this->add($institution_id, intval($current_group_id));
                     } else {
                         $error[] = array('username' => $this->username, 'error'    => $validated_data); 
                         foreach ($error as $value) {

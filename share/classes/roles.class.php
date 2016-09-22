@@ -182,6 +182,16 @@ class Roles {
         } else {return false;}
     }
     
+    public function checkRoleOrder($role_id){
+        global $USER;
+        $roles = $this->get();
+        foreach($roles AS $f){
+            if ($role_id == $USER->role_id){
+                return true;
+            }
+        }
+    }
+    
     /**
     * function used during the install process to set up creator id to new admin
     * @return boolean
