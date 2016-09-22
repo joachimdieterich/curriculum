@@ -56,7 +56,7 @@
                             <table class="table table-bordered">
                                 <tbody>
                                     <tr>
-                                        <th style="width: 10px">ID</th>
+                                        <th style="width: 10px">group_id</th>
                                         <th>Lerngruppe</th>
                                     </tr>
                                     {foreach name=group item=g from=$groups}   
@@ -72,7 +72,7 @@
                             <table class="table table-bordered">
                                 <tbody>
                                     <tr>
-                                        <th style="width: 10px">ID</th>
+                                        <th style="width: 10px">role_id</th>
                                         <th>Rollen</th>
                                     </tr>
                                     {foreach name=role item=r from=$roles}   
