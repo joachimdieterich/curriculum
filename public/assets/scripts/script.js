@@ -223,6 +223,10 @@ function process(){
                         document.getElementById(popup).innerHTML = document.getElementById(popup).innerHTML+response.script;  
                     }
                     raiseEvent('load', popup);
+                    /* Set focus to first editable input field */
+                    $(document).ready(function() {
+                        $("form:first *:input,select,textarea").filter(":not([readonly='readonly']):not([disabled='disabled']):not([type='hidden'])").first().focus();
+                    });
                 } else {
                     alert(req.responseText); //unschön, aber #popup ist vom modalframe aus nicht verfügbar
                 }    
