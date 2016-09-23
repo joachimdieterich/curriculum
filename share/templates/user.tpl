@@ -97,8 +97,8 @@
                                     <div class="form-horizontal col-xs-12 col-sm-12 col-md-5 col-lg-3">
                                         <h4>Passwort zurücksetzen</h4>
                                         <p>Neues Passwort für markierte Benutzer festlegen. Passwort muss mind. 6 Zeichen lang sein.</p>
-                                        {Form::input_text('password', 'Passwort', '', null, '', 'password')}
-                                        {Form::input_checkbox('showpassword', 'Passwort anzeigen', '', null, 'checkbox', 'unmask(\'password\', this.checked);')}
+                                        {Form::input_text('pwchange', 'Passwort', '', null, '', 'password')}
+                                        {Form::input_checkbox('showpassword', 'Passwort anzeigen', '', null, 'checkbox', 'unmask(\'pwchange\', this.checked);')}
                                         {Form::input_checkbox('confirm', 'Passwortänderung', '', null)}
                                         <button type='submit' name='resetPassword' value='' class="btn btn-default pull-right">
                                                 <span class="fa fa-lock" aria-hidden="true"></span> Passwort zurücksetzen

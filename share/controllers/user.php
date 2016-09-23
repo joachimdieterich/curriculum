@@ -53,7 +53,7 @@ if (isset($_POST) ){
                                     } else {
                                         $edit_user->confirmed = 1; 
                                     }
-                                    $edit_user->password = $_POST['password'];
+                                    $edit_user->password = $_POST['pwchange'];
                                     $validated_data = $edit_user->validate(true);
                                     if($validated_data === true) {/* validation successful */
                                         $edit_user->resetPassword();

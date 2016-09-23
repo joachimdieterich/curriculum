@@ -33,7 +33,7 @@ $user                 = new User();
 $gump                 = new Gump();    /* Validation */
 $_POST                = $gump->sanitize($_POST);       //sanitize $_POST
 
-$user->username       = $_POST['username']; 
+$user->username       = $_POST['usr']; 
 $user->firstname      = $_POST['firstname']; 
 $user->lastname       = $_POST['lastname']; 
 $user->email          = $_POST['email']; 
@@ -50,8 +50,8 @@ if (isset($_POST['confirm'])){
 } else {
     $user->confirmed= 1; //Nutzer wird freigegeben //Passwort kann auch über das Profil geändert werden
 }
-if (isset($_POST['password'])){
-    $user->password        = $_POST['password']; 
+if (isset($_POST['pw'])){
+    $user->password        = $_POST['pw']; 
 }
 if (isset($_POST['show_pw'])){
     $show_pw               = $_POST['show_pw'];
@@ -77,18 +77,18 @@ switch ($_POST['func']) {
 
 if ($_POST['func'] == 'edit' OR $_POST['func'] == 'editUser'){  // don't validate password
     $gump->validation_rules(array(
-        'username'          => 'required|max_len,100|min_len,3',
+        'usr'          => 'required|max_len,100|min_len,3',
         'firstname'         => 'required|max_len,100',
         'lastname'          => 'required|max_len,100',
         'email'             => 'required|valid_email'
     ));
 } else {           
     $gump->validation_rules(array(
-        'username'          => 'required|max_len,100|min_len,3',
+        'usr'          => 'required|max_len,100|min_len,3',
         'firstname'         => 'required|max_len,100',
         'lastname'          => 'required|max_len,100',
         'email'             => 'required|valid_email',
-        'password'          => 'required|max_len,100|min_len,6'
+        'pw'          => 'required|max_len,100|min_len,6'
     ));
 }
 $validated_data = $gump->run($_POST);
