@@ -156,7 +156,7 @@
                               <ul class="menu"><!-- inner menu: contains the actual data -->
                                   {section name=mes loop=$page_message}
                                   <li>
-                                      <a href="#">
+                                      <a href="#" style="white-space: normal">
                                         {if is_array($page_message[mes])}
                                             <i class="fa {if isset($page_message[mes]['icon'])}{$page_message[mes]['icon']}{else}fa-warning text-yellow{/if}"></i> {$page_message[mes]['message']}
                                         {else}

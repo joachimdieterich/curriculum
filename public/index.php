@@ -89,7 +89,6 @@ try { // Error handling
         $TEMPLATE->assign('page_url', removeUrlParameter($PAGE->url, 'p_reset'));
     }
     
-    
     /** highlight */
     if (isset($_SESSION['highlight'])){
         $TEMPLATE->assign('highlight', $_SESSION['highlight']);
