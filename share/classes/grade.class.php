@@ -121,17 +121,30 @@ class Grade {
      * Get all availible Grades of current institution
      * @return array of Grade objects 
      */
-    public function getGrades($paginator = ''){
+    public function getGrades($dependency = 'all', $id = null, $paginator = '' ){
         global $USER;
         $order_param = orderPaginator($paginator, array('grade'         => 'gr',
                                                         'description'   => 'gr',
                                                         'institution'   => 'ins')); 
         $grades = array();                      //Array of grades
-        $db = DB::prepare('SELECT gr.*, ins.institution 
-                           FROM grade AS gr, institution AS ins 
-                           WHERE gr.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE institution_id = ins.id AND user_id = ?) 
-                           AND gr.institution_id = ins.id '.$order_param );
-        $db->execute(array($USER->id));
+        switch ($dependency) {
+            case 'all': $db = DB::prepare('SELECT gr.*, ins.institution 
+                                            FROM grade AS gr, institution AS ins 
+                                            WHERE gr.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE institution_id = ins.id AND user_id = ?) 
+                                            AND gr.institution_id = ins.id '.$order_param );
+                        $db->execute(array($USER->id));
+
+
+                break;
+            case 'institution': $db = DB::prepare('SELECT gr.*, ins.institution 
+                                                    FROM grade AS gr, institution AS ins 
+                                                    WHERE gr.institution_id = ? 
+                                                    AND gr.institution_id = ins.id '.$order_param );
+                        $db->execute(array($id));
+            default:
+                break;
+        }
+        
         
         while($result = $db->fetchObject()) { 
             foreach ($result as $key => $value) {

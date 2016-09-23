@@ -140,8 +140,8 @@ function checkrow(/*rowNr,link*/) {
             if ($(this).val() !== 'none'){
                 values.push($(this).val());                             
             }
-          });
-          window.location.assign(arguments[3]+'&'+arguments[2]+'_sel_id='+values);        
+        });
+        window.location.assign(arguments[3]+'&'+arguments[2]+'_sel_id='+values);        
     }
 }
 
@@ -236,14 +236,6 @@ function process(){
         }
     }  
 }
-
-function reloadPage() {
-    if (req.readyState === 4) { 
-        if (req.status === 200) { 
-        window.location.reload();
-        }
-    } 
-}    
 
 /**
  * 
@@ -495,78 +487,49 @@ function expelFromInstituion() {
     }
 }
 
-function getStates(){  
-    if (arguments[1]){
-        var url = "../share/request/getStates.php?country_id="+ arguments[0] +"&name="+ arguments[1] +"&state_id="+ arguments[2] ;
-    } else {
-        var url = "../share/request/getStates.php?country_id="+ arguments[0];
-    }
-    req = XMLobject();
-    if(req) {        
-        req.onreadystatechange = setStates;
-        req.open("GET", url, true);
-        req.send(null);
-    }
-}
-
-function setStates() {
-    if (req.readyState === 4) {  
-        if (req.status === 200) {
-           if (req.responseText.length != 1){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen
-                      if (document.getElementById('state_id')){
-                           document.getElementById('state_id').innerHTML = req.responseText;
-                      } else {
-                          alert(req.responseText); //unschön, aber #popup ist vom modalframe aus nicht verfügbar
-                      }  
-           } else {
-               window.location.reload();
-           }
-        }
+function getMultipleValues(){
+    for(var i = 0, j = arguments.length; i < j; ++i) {
+        //alert(arguments[i][0]);
+        getValues(arguments[i][0],arguments[i][1],arguments[i][2],arguments[i][3]);
+        
     }   
 }
 /**
- * argument[0] = institution_id
- * argument[0] = name des zu erstellenden select inputs -> wichtig für die weiterverarbeitung!
+ * get values
+ * argument[0] = get_[filename]
+ * argument[1] = id of depenency
+ * argument[2] = id of target field
+ * argument[3] = id of selection
  */
-function getGroups(){  
-    if (arguments[1]){
-        var url = "../share/request/getGroups.php?institution_id="+ arguments[0] +"&name="+ arguments[1] +"&group_id="+ arguments[2] ;
+function getValues(){      
+    if (arguments[3]){
+        var url = "../share/request/get_"+ arguments[0] +".php?dependency_id="+ arguments[1] +"&name="+ arguments[2] +"&select_id="+ arguments[3];
     } else {
-        var url = "../share/request/getGroups.php?institution_id="+ arguments[0];
+        var url = "../share/request/get_"+ arguments[0] +".php?dependency_id="+ arguments[1] +"&name="+ arguments[2] ;
     }
+    target = arguments[2]; // set target --> to be able to pass value to setValues
+
     req = XMLobject();
     if(req) {        
-        req.onreadystatechange = setGroups;
-        req.open("GET", url, true);
+        req.onreadystatechange = function(){
+                    setValues(target);
+                };
+        req.open("GET", url, false); // use 
         req.send(null);
     }
 }
-
-function setGroups() {
+/* called by getValues*/
+function setValues() {
     if (req.readyState === 4) {  
-        if (req.status === 200) {
-           if (req.responseText.length != 1){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen
-                if (document.getElementById('group_id')){
-                     document.getElementById('group_id').innerHTML = req.responseText;
-                } else {
-                    alert(req.responseText); //unschön, aber #popup ist vom modalframe aus nicht verfügbar
+        if (req.status === 200) { 
+            if (req.responseText.length !== 0){ 
+                response = JSON.parse(req.responseText);
+                if (document.getElementById(arguments[0])){
+                    document.getElementById(arguments[0]).innerHTML = response.html;
                 }  
-           } else {
-               window.location.reload();
-           }
+            }
         }
     }   
-}
-
-function setSemester(){  
-    var url = "../share/request/setSemester.php?semester_id="+ arguments[0];
-    
-    req = XMLobject();
-    if(req) {        
-        req.onreadystatechange = reloadPage;
-        req.open("GET", url, true);
-        req.send(null);
-    }
 }
 
 //wenn checkbox angeklickt, dann wird element mit id angezeigt

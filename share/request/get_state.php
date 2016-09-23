@@ -2,10 +2,10 @@
 /** This file is part of curriculum - http://www.joachimdieterich.de
 * 
 * @package core
-* @filename getGroups.php
+* @filename get_states.php
 * @copyright 2015 Joachim Dieterich
 * @author Joachim Dieterich
-* @date 2015.11.24 10:12
+* @date 2015.06.03 10:12
 * @license: 
 *
 * The MIT License (MIT)
@@ -26,10 +26,16 @@ $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER;
-$USER   = $_SESSION['USER'];
+$USER       = $_SESSION['USER'];
 
-$group  = new Group();
-$groups = $group->getGroups('institution', filter_input(INPUT_GET, 'institution_id', FILTER_VALIDATE_INT));
-foreach ($groups as $value) {
-    echo '<option label='.$value->group.' value="'.$value->id.'"'; if (filter_input(INPUT_GET, 'group_id', FILTER_VALIDATE_INT) == $value->id) { echo ' selected="selected"';} echo '>'.$value->group.'</option>';
+$state      = new State(filter_input(INPUT_GET, 'dependency_id', FILTER_VALIDATE_INT));
+/* bootstrap id == state_id*/
+$html       = '';
+foreach ($state->getStates() as $value) {
+    $html  .= '<option label="'.$value->state.'" value="'.$value->id.'"'; 
+    if (filter_input(INPUT_GET, 'select_id', FILTER_VALIDATE_INT) == $value->id) { 
+        $html  .= ' selected="selected"';
+    } 
+    $html  .='>'.$value->state.'</option>';
 }
+echo json_encode(array('html'=>$html));

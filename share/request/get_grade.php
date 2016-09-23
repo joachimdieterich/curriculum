@@ -2,10 +2,10 @@
 /** This file is part of curriculum - http://www.joachimdieterich.de
 * 
 * @package core
-* @filename setSemester.php
+* @filename get_grade.php
 * @copyright 2015 Joachim Dieterich
 * @author Joachim Dieterich
-* @date 2015.06.03 10:28
+* @date 2016.09.23 11:10
 * @license: 
 *
 * The MIT License (MIT)
@@ -20,14 +20,22 @@
 * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
 * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
-* THE USE OR OTHER DEALINGS IN THE SOFTWARE.    
+* THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-include(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
+$base_url   = dirname(__FILE__).'/../';
+include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
-$_SESSION['USER']->semester_id    = filter_input(INPUT_GET, 'semester_id', FILTER_VALIDATE_INT);      // Neuer Lernzeitraum übernehmen
-/*$TEMPLATE->assign('my_semester_id', $_SESSION['USER']->semester_id); */
-$change_semester      = new Semester($_SESSION['USER']->semester_id);
-$us = new User();                                                                                     // $USER hier noch nicht verfügbar
-$us->id = $_SESSION['USER']->id;
-$us->setSemester($_SESSION['USER']->semester_id);
-$_SESSION['USER'] = NULL;                                                                             // Beim Wechsel des Lerzeitraumes muss Session neu geladen werden, damit die entsprechende Rolle geladen wird.
+global $USER;
+$USER       = $_SESSION['USER'];
+
+$grade      = new Grade();
+$grades     = $grade->getGrades('institution', filter_input(INPUT_GET, 'dependency_id', FILTER_VALIDATE_INT));
+$html       = '';
+foreach ($grades as $value) {
+    $html  .= '<option label="'.$value->grade.'" value="'.$value->id.'"'; 
+    if (filter_input(INPUT_GET, 'select_id', FILTER_VALIDATE_INT) == $value->id) { 
+        $html  .= ' selected="selected"'; 
+    } 
+    $html  .= '>'.$value->grade.'</option>';
+}
+echo json_encode(array('html'=>$html));

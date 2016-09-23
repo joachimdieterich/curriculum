@@ -47,4 +47,4 @@ $p_config = array('id'            => 'checkbox',
                   'creation_time' => 'Erstellungsdatum',
                   'username'      => 'Erstellt von',
                   'p_options'     => $p_options);
-setPaginator('semesterP', $TEMPLATE, $semesters->getSemesters('semesterP'), 'se_val', 'index.php?action=semester', $p_config); 
+setPaginator('semesterP', $TEMPLATE, $semesters->getSemesters('all',null,'semesterP'), 'se_val', 'index.php?action=semester', $p_config); 

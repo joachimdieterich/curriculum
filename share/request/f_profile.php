@@ -113,7 +113,7 @@ $content .= Form::input_text('email', 'Email', $email, $error);
 $content .= Form::input_text('postalcode', 'PLZ', $postalcode, $error);
 $content .= Form::input_text('city', 'Ort', $city, $error);
 $cs       = new State($country_id);                                                   //Load country   
-$content .= Form::input_select('country_id', 'Land', $cs->getCountries(), 'de', 'id', $country_id , $error, 'getStates(this.value, \'state_id\');');
+$content .= Form::input_select('country_id', 'Land', $cs->getCountries(), 'de', 'id', $country_id , $error, 'getValues(\'state\', this.value, \'state_id\');');
 $content .= Form::input_select('state_id', 'Bundesland/Region', $cs->getStates('profile',$country_id), 'state', 'id', $state_id , $error);
 if ($func == 'new' OR $func == 'editUser'){
 $content .= Form::input_text('pw', 'Kennwort', null, $error, '','password');
@@ -123,7 +123,7 @@ $content .= Form::input_checkbox('confirm', 'Passwortänderung', $confirm, $erro
 if ($func == 'new'){
     $roles    = new Roles();
     $content .= Form::input_select('role_id', 'Rolle', $roles->get(), 'role', 'id', $role_id , $error); 
-    $content .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'institution_id', $institution_id , $error, 'getGroups(this.value, \'group_id\');');
+    $content .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'institution_id', $institution_id , $error, 'getValues(\'group\', this.value, \'group_id\');');
     $group    = new Group();
     $content .= Form::input_select('group_id', 'Lerngruppe', $group->getGroups('institution', $USER->institution_id), 'group', 'id', $group_id , $error); 
 }

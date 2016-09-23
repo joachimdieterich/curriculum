@@ -87,13 +87,15 @@ if (isset($id)){
 $content .= '<input type="hidden" name="func" id="func" value="'.$func.'"/>';
 $content .= Form::input_text('group', 'Lerngruppe', $group, $error);
 $content .= Form::input_text('description', 'Beschreibung', $description, $error);
-$grades                     = new Grade();                                      //Load Grades
-$grades->institution_id     = $USER->institutions; 
-$content .= Form::input_select('grade_id', 'Klassenstufe', $grades->getGrades(), 'grade', 'id', $grade_id , $error);
+
 $semesters                  = new Semester();                                   //Load Semesters
 $semesters->institution_id  = $USER->institutions; 
-$content .= Form::input_select('semester_id', 'Lernzeitraum', $semesters->getSemesters(), 'semester, institution', 'id', $semester_id , $error);
-$content .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'institution_id', $institution_id , $error);
+$content .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'institution_id', $institution_id , $error, 'getMultipleValues([\'semester\', this.value, \'semester_id\'], [\'grade\', this.value, \'grade_id\']);');
+$content .= Form::input_select('semester_id', 'Lernzeitraum', $semesters->getSemesters('institution',$USER->institution_id), 'semester, institution', 'id', $semester_id , $error);
+
+$grades                     = new Grade();                                      //Load Grades
+$grades->institution_id     = $USER->institutions; 
+$content .= Form::input_select('grade_id', 'Klassenstufe', $grades->getGrades('institution',$USER->institution_id), 'grade', 'id', $grade_id , $error);
 if (isset($change_semester)){
     $content .= Form::info('p_group', ' ', 'Um eine leere Lerngruppe zu erstellen, Haken entfernen.');
     $content .= Form::input_checkbox('assumeUsers', 'Personen übernehmen', $assumeUsers , $error);

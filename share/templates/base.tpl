@@ -90,7 +90,7 @@
                          
                       <ul class="nav navbar-nav">
                          {if isset($mySemester) AND count($mySemester) > 1}
-                             {Form::input_dropdown('semester_id', '', $mySemester, 'semester, institution', 'id', $my_semester_id, null, "setSemester(this.getAttribute('data-id'));")}
+                             {Form::input_dropdown('semester_id', '', $mySemester, 'semester, institution', 'id', $my_semester_id, null, "processor('semester','set',this.getAttribute('data-id'));")}
                          {else if isset($my_institutions) AND count($my_institutions) > 1}
                              {Form::input_dropdown('institution_id', '', $my_institutions, 'institution', 'institution_id', $my_institution_id, null, "processor('config','institution_id', this.getAttribute('data-id'));")}
                          {/if} 

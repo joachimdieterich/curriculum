@@ -85,17 +85,29 @@ class Semester {
      * Get Semesterlist of current institution
      * @return \Semester 
      */
-    public function getSemesters($paginator = ''){
+    public function getSemesters($dependency = 'all', $id = null, $paginator = ''){
         global $USER;
         $order_param = orderPaginator($paginator, array('semester'      => 'se',
                                                         'description'   => 'se', 
                                                         'institution'   => 'ins')); 
         $semesters = array();
-        $db = DB::prepare('SELECT se.*, us.username, ins.institution
+        switch ($dependency) {
+            case 'all': $db = DB::prepare('SELECT se.*, us.username, ins.institution
                            FROM semester AS se, users AS us, institution AS ins
                            WHERE se.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE institution_id = ins.id AND user_id = ?) 
                            AND se.creator_id = us.id AND se.institution_id = ins.id '.$order_param);
-        $db->execute(array($USER->id));
+                        $db->execute(array($USER->id));
+                break;
+            case 'institution': $db = DB::prepare('SELECT se.*, us.username, ins.institution
+                                    FROM semester AS se, users AS us, institution AS ins
+                                    WHERE se.institution_id = ?
+                                    AND se.creator_id = us.id AND se.institution_id = ins.id '.$order_param);
+                                $db->execute(array($id));
+                break;
+            default:
+                break;
+        }
+        
         while($result = $db->fetchObject()) { 
                 $this->id                  = $result->id;
                 $this->semester            = $result->semester;
