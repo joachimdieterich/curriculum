@@ -58,14 +58,14 @@ $PAGE->group_table = array('header' => array('id'    => 'group_id',
                                              'data' => $groups,
                                              'width_class'   => 'row col-xs-12 col-sm-6 col-md-3 col-lg-3',
                                              'style'         => 'padding-left: 20px; padding-right: 20px;',
-                                             'table_class'   => 'table table-bordered');
+                                             'table_class'   => 'table table-striped');
 $TEMPLATE->assign('group_table_params', $PAGE->group_table);
 $PAGE->role_table = array(  'header' => array('id'   => 'role_id', 
                                               'role' => 'Rolle'), 
                                               'data' => $roles ,
                                               'width_class'   => 'row col-xs-12 col-sm-6 col-md-3 col-lg-3',
                                               'style'         => 'padding-left: 20px; padding-right: 20px;',
-                                              'table_class'   => 'table table-bordered');
+                                              'table_class'   => 'table table-striped');
 $TEMPLATE->assign('role_table_params', $PAGE->role_table);
 
 $new_users = new User();
