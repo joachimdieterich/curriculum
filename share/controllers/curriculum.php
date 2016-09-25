@@ -47,7 +47,11 @@ $p_options = array('delete' => array('onclick'      => "del('curriculum',__id__,
                    'edit'   => array('onclick'         => "formloader('curriculum','edit',__id__);",
                                      'capability'   => checkCapabilities('curriculum:update', $USER->role_id, false),
                                      'icon'         => 'fa fa-edit',
-                                     'tooltip'      => 'bearbeiten'));
+                                     'tooltip'      => 'bearbeiten'),
+                   'profile'  => array('onclick'   => "formloader('preview_curriculum','full',__id__);", 
+                                     'capability'   => checkCapabilities('curriculum:addObjectives', $USER->role_id, false),  //todo: use extra capability?
+                                     'icon'         => 'fa fa-list-alt',
+                                     'tooltip'      => 'Überblick'));
 $p_config  = array('id'         => 'checkbox',
                    'curriculum'  => 'Lehrplan', 
                    'description' => 'Beschreibung', 

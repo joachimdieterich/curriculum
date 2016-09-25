@@ -446,6 +446,22 @@ class Curriculum {
         unlink($file);
    }
    
+   public function checkEnrolment($status = '1'){
+        $db = DB::prepare('SELECT ce.*, gp.groups, ins.institution FROM curriculum_enrolments AS ce, 
+							groups AS gp,
+							institution AS ins 
+						WHERE ce.curriculum_id = ? 
+						AND ce.status = ? 
+						AND ce.group_id = gp.id
+						AND gp.institution_id = ins.id');
+        $db->execute(array($this->id, $status));
+        
+        while($result = $db->fetchObject()) { 
+            $ce[] = $result; 
+        } 
+        return $ce; 
+    } 
+   
    /**
     * function used during the install process to set up creator id to new admin
     * @return boolean
