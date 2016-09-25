@@ -492,13 +492,21 @@ class User {
      * @return boolean 
      */
     public function enroleToInstitution($institution_id){
-        global $USER, $PAGE; 
+        global $USER, $PAGE, $CFG; 
         checkCapabilities('user:enroleToInstitution', $USER->role_id);
         $institution        = new Institution();
         $institution->id    = $institution_id; 
         $institution->load();
         $db                 = DB::prepare('SELECT count(id) FROM institution_enrolments WHERE institution_id = ? AND user_id = ?');
         $db->execute(array($institution_id, $this->id));
+        /* ! Security ! check if role_id is permitted for $USER*/
+        $role = new Roles();
+        error_log('rolle:'.json_encode($role->checkRoleOrder($this->role_id)));
+        if (!$role->checkRoleOrder($this->role_id)) {
+            $PAGE->message[] = array('message' => 'Rolle für '.$this->username.' wurde wegen fehlender Berechtigung auf die Standard-Rolle zurückgesetzt.', 'icon' => 'fa fa-group text-warning');// Schließen und speichern
+            $this->role_id    = $CFG->standard_role; 
+        } 
+        
         if($db->fetchColumn() > 0) {
             $db = DB::prepare('UPDATE institution_enrolments SET status = 1, creator_id = ?, role_id = ? WHERE user_id = ? AND institution_id = ?');
             if ($db->execute(array($USER->id, $this->role_id, $this->id, $institution_id))){
@@ -640,13 +648,7 @@ class User {
                     if (!isset($role_id_position))        { 
                         if (isset($role_id)){ $this->role_id  = $role_id; } else { $this->role_id  = $CFG->standard_role; }
                     } else { 
-                        /* ! Security ! check if role_id is permitted for $USER*/
-                        $role = new Roles();
-                        if ($role->checkRoleOrder($data[$role_id_position])) {
-                            $this->role_id    = $data[$role_id_position]; 
-                        } else {
-                            $PAGE->message[] = array('message' => 'Rolle für '.$value['username'].' wurde wegen fehlender Berechtigung auf die Standard-Rolle zurückgesetzt.', 'icon' => 'fa fa-group text-warning');// Schließen und speichern
-                        }
+                        $this->role_id    = $data[$role_id_position]; // security check moved to institution enrolmenT                        
                     }
                     if (!isset($group_position))          { $current_group_id = $group_id; }                  else { $current_group_id = $data[$group_position]; }
                     if (!isset($confirmed_position))      { $this->confirmed  = '3'; }                        else { $this->confirmed  = $data[$confirmed_position]; } 

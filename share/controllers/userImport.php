@@ -45,12 +45,28 @@ $TEMPLATE->assign('page_title', 'Benutzerkonten importieren');
 $TEMPLATE->assign('breadcrumb',  array('Benutzerverwaltung' => 'index.php?action=user', 
                                        'Benutzerkonten importieren' => 'index.php?action=userImport'));
 $TEMPLATE->assign('filesize',   round(convertByteToMb($INSTITUTION->csv_size),2));
-$roles     = new Roles();
-$TEMPLATE->assign('roles',      $roles->get());
+$role      = new Roles();
+$roles     = $role->get();
+$TEMPLATE->assign('roles',      $roles);
 $group     = new Group();
-$TEMPLATE->assign('groups',     $group->getGroups('institution', $USER->institution_id));
+$groups    = $group->getGroups('institution', $USER->institution_id);
+$TEMPLATE->assign('groups',     $groups   );
 $TEMPLATE->assign('role_id',    $CFG->standard_role);
 $TEMPLATE->assign('delimiter',  ';');
+$PAGE->group_table = array('header' => array('id'    => 'group_id', 
+                                             'group' => 'Lerngruppe'), 
+                                             'data' => $groups,
+                                             'width_class'   => 'row col-xs-12 col-sm-6 col-md-3 col-lg-3',
+                                             'style'         => 'padding-left: 20px; padding-right: 20px;',
+                                             'table_class'   => 'table table-bordered');
+$TEMPLATE->assign('group_table_params', $PAGE->group_table);
+$PAGE->role_table = array(  'header' => array('id'   => 'role_id', 
+                                              'role' => 'Rolle'), 
+                                              'data' => $roles ,
+                                              'width_class'   => 'row col-xs-12 col-sm-6 col-md-3 col-lg-3',
+                                              'style'         => 'padding-left: 20px; padding-right: 20px;',
+                                              'table_class'   => 'table table-bordered');
+$TEMPLATE->assign('role_table_params', $PAGE->role_table);
 
 $new_users = new User();
 $p_options =    $p_config =   array('id'         => 'checkbox',

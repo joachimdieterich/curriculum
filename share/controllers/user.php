@@ -73,6 +73,7 @@ if (isset($_POST) ){
                                     } else {
                                         $institution->id = $USER->institution_id;
                                     }
+                                    
                                     $edit_user->role_id = $_POST['roles'];
                                     $edit_user->enroleToInstitution($institution->id);
                     break; 

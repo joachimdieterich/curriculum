@@ -41,49 +41,20 @@
                                 <a class="btn btn-app" href="{$support_path}Vorlage-max.csv"><i class="fa fa-save"></i> Maximal - alle möglichen Felder</a>
                             </div>
                         </div>
-
-                        <div class="row col-xs-12 col-sm-12 col-md-5 col-lg-5">
-                            <p>{Form::input_select('institution_id', 'Institution', $my_institutions, 'institution', 'institution_id', $my_institution_id, null, 'getValues(\'group\', this.value, \'group_id\');')}</p>
-                            <p>{Form::input_select('role_id', 'Rolle', $roles, 'role', 'id', $role_id, null)}</p>
-                            <p>{Form::input_select('group_id', 'Lerngruppe', $groups, 'group', 'id', null, null)}</p>
-                            <p>{Form::input_text('delimiter', 'Trennzeichen', $delimiter, null)}</p>
-                            <p>
-                              <label for="exampleInputFile">CSV-Datei hochladen</label>
-                              <input name="datei" type="file" value="">
-                            </p> 
-                        </div>
-                        <div class="row col-xs-12 col-sm-6 col-md-4 col-lg-4" style="padding-left: 20px; padding-right: 20px;">
-                            <table class="table table-bordered">
-                                <tbody>
-                                    <tr>
-                                        <th style="width: 10px">group_id</th>
-                                        <th>Lerngruppe</th>
-                                    </tr>
-                                    {foreach name=group item=g from=$groups}   
-                                    <tr>
-                                        <td>{$g->id}</td>
-                                        <td>{$g->group}</td>
-                                    </tr>
-                                    {/foreach}
-                              </tbody>
-                            </table>
-                        </div>
-                        <div class="row col-xs-12 col-sm-6 col-md-3 col-lg-3" style="padding-left: 20px; padding-right: 20px;">
-                            <table class="table table-bordered">
-                                <tbody>
-                                    <tr>
-                                        <th style="width: 10px">role_id</th>
-                                        <th>Rollen</th>
-                                    </tr>
-                                    {foreach name=role item=r from=$roles}   
-                                    <tr>
-                                        <td>{$r->id}</td>
-                                        <td>{$r->role}</td>
-                                    </tr>
-                                    {/foreach}
-                              </tbody>
-                            </table>
-                        </div>
+                        <div class="row">
+                            <div class=" col-xs-12 col-sm-12 col-md-5 col-lg-5">
+                                <p>{Form::input_select('institution_id', 'Institution', $my_institutions, 'institution', 'institution_id', $my_institution_id, null, 'getMultipleValues([\'group\', this.value, \'group_id\'], [\'group\', this.value, \'group_table\', \'table\']); ')}</p>
+                                <p>{Form::input_select('role_id', 'Rolle', $roles, 'role', 'id', $role_id, null)}</p>
+                                <p>{Form::input_select('group_id', 'Lerngruppe', $groups, 'group', 'id', null, null)}</p>
+                                <p>{Form::input_text('delimiter', 'Trennzeichen', $delimiter, null)}</p>
+                                <p>
+                                  <label for="exampleInputFile">CSV-Datei hochladen</label>
+                                  <input name="datei" type="file" value="">
+                                </p> 
+                            </div>
+                            <span id='group_table'>{Render::table($group_table_params)}</span> 
+                            <span id='role_talbe'>{Render::table($role_table_params)}</span>
+                        </div> 
                     </div>
                                 
                     <div class="box-footer">
@@ -111,7 +82,6 @@
         {/if}        
     </div>
 </section>
-
 {/block}
 
 {block name=sidebar}{$smarty.block.parent}{/block}

@@ -38,7 +38,7 @@ function smarty_function_html_paginator($params, $template) {
     $url        = SmartyPaginate::getUrl($id);                    // get url
     $values     = SmartyPaginate::_getData($id);                  // get values
     $keys       = get_object_vars((object)$values[0]);
-    $width      = SmartyPaginate::getWidth($id);                    // get width;
+    $width      = SmartyPaginate::getWidth($id);                  // get width;
     
     $config     = SmartyPaginate::_getConfig($id);               // get config
     if (isset($config['p_options'])){
@@ -209,11 +209,6 @@ $_html_result .= '<div class="row"><div class="clearfix"><br><table class="table
         .smarty_function_paginate_next(array('id' => $id), $template, true). ' '
         .smarty_function_paginate_last(array('id' => $id), $template, true). '
       </div>';
-    
-    
-    
-    //$_html_result .= '<p class="pull-right space-right space-bottom" >'.smarty_function_paginate_prev(array('id' => $id), $template).' '.smarty_function_paginate_middle(array('id' => $id), $template).' '.smarty_function_paginate_next(array('id' => $id), $template).'</p> ';
-    /**/
    
     $_html_result .= '<span class="pull-left">Zeile '.SmartyPaginate::getCurrentItem($id).'-'.SmartyPaginate::getLastItem($id).' von '.SmartyPaginate::getTotal($id).' ';
         if (isset($url)){

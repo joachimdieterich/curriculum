@@ -489,9 +489,7 @@ function expelFromInstituion() {
 
 function getMultipleValues(){
     for(var i = 0, j = arguments.length; i < j; ++i) {
-        //alert(arguments[i][0]);
-        getValues(arguments[i][0],arguments[i][1],arguments[i][2],arguments[i][3]);
-        
+        getValues(arguments[i][0],arguments[i][1],arguments[i][2],arguments[i][3],arguments[i][4]);    
     }   
 }
 /**
@@ -499,17 +497,18 @@ function getMultipleValues(){
  * argument[0] = get_[filename]
  * argument[1] = id of depenency
  * argument[2] = id of target field
- * argument[3] = id of selection
+ * argument[3] = format
+ * argument[4] = id of selection
  */
 function getValues(){      
     if (arguments[3]){
-        var url = "../share/request/get_"+ arguments[0] +".php?dependency_id="+ arguments[1] +"&name="+ arguments[2] +"&select_id="+ arguments[3];
+        var url = "../share/request/get_"+ arguments[0] +".php?dependency_id="+ arguments[1] +"&name="+ arguments[2] +"&format="+ arguments[3] +"&select_id="+ arguments[4];
     } else {
-        var url = "../share/request/get_"+ arguments[0] +".php?dependency_id="+ arguments[1] +"&name="+ arguments[2] ;
+        var url = "../share/request/get_"+ arguments[0] +".php?dependency_id="+ arguments[1] +"&name="+ arguments[2] +"&format="+ arguments[3] ;
     }
     target = arguments[2]; // set target --> to be able to pass value to setValues
-
-    req = XMLobject();
+    
+    req    = XMLobject();
     if(req) {        
         req.onreadystatechange = function(){
                     setValues(target);

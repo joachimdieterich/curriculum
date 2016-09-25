@@ -25,7 +25,11 @@
 
 global $USER; 
 
-if (filter_input(INPUT_GET, 'timout', FILTER_VALIDATE_BOOLEAN)){ session_start(); }              // für automatisches Ausloggen (timeout) nötig, da session sonst nicht initialisiert ist --> wirf Fehler aus.                 
+if (filter_input(INPUT_GET, 'timout', FILTER_VALIDATE_BOOLEAN)){ 
+    if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+    }
+}
 session_destroy();
 $USER->userLogout(); 
 header('Location:index.php?action=login');

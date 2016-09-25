@@ -106,7 +106,6 @@ class Render {
         $file     = new File();
         $html     = '';
         foreach ($file_list as $f) {
-            //var_dump($f);
             $file->id = $f;
             $file->load();
             /* check if img*/ 
@@ -553,9 +552,11 @@ class Render {
                     <div class="box box-primary '.$status.'">
                         <div class="box-header with-border">
                               <h3 class="box-title">'.$name.'</h3>
-                              <div class="box-tools pull-right">
-                              <button class="btn btn-box-tool" data-widget="edit" onclick="formloader(\'block\',\'edit\','.$id.');"><i class="fa fa-edit"></i></button>
-                                <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                              <div class="box-tools pull-right">';
+                                if (checkCapabilities('block:add', $USER->role_id, false)){
+                                    $html  .= '<button class="btn btn-box-tool" data-widget="edit" onclick="formloader(\'block\',\'edit\','.$id.');"><i class="fa fa-edit"></i></button>';
+                                }
+                                $html  .= '<button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                                 <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
                               </div>
                         </div><!-- /.box-header -->
@@ -596,9 +597,11 @@ class Render {
                         <div class="box box-primary '.$status.'">
                             <div class="box-header with-border">
                                   <h3 class="box-title">'.$name.'</h3>
-                                  <div class="box-tools pull-right">
-                                    <button class="btn btn-box-tool" data-widget="edit" onclick="formloader(\'block\',\'edit\','.$id.');"><i class="fa fa-edit"></i></button>
-                                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                  <div class="box-tools pull-right">';
+                                    if (checkCapabilities('block:add', $USER->role_id, false)){
+                                        $html  .= '<button class="btn btn-box-tool" data-widget="edit" onclick="formloader(\'block\',\'edit\','.$id.');"><i class="fa fa-edit"></i></button>';
+                                    }
+                                    $html  .= '<button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                                     <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
                                   </div>
                             </div><!-- /.box-header -->
@@ -612,6 +615,37 @@ class Render {
                 return $html; 
             }
         }
+    }
+    /*Simple table - example see userImport.tpl*/
+    public static function table($params){
+        $width_class     = 'col-md-6';
+        $style           = '';
+        $table_class     = 'table table-bordered';
+                
+        foreach($params as $key => $val) {
+            $$key = $val;
+        }
+        
+        $html = '<div class="'.$width_class.'" style="'.$style.'">
+                    <table class="'.$table_class.'">
+                        <tbody>
+                            <tr>';
+                            foreach($header as $v) {
+                                $html .= '<th>'.$v.'</th>';
+                            }   
+                            $html .='</tr>';
+                            foreach($data as $d) {
+                                $html .='<tr>';
+                                foreach($header as $k => $v) {
+                                    $html .= '<td>'.$d->$k.'</td>';
+                                } 
+                                $html .='</tr>';
+                            }
+                    $html .='</tbody>
+                    </table>
+                </div>';
+        return $html;
+        
     }
     
     public static function box_widget($params){

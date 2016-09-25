@@ -25,17 +25,27 @@
 $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
-global $USER;
+global $USER, $PAGE;
 $USER   = $_SESSION['USER'];
+$PAGE   = $_SESSION['PAGE'];
 
 $group  = new Group();
 $groups = $group->getGroups('institution', filter_input(INPUT_GET, 'dependency_id', FILTER_VALIDATE_INT));
-$html       = '';
-foreach ($groups as $value) {
-    $html  .= '<option label="'.$value->group.'" value="'.$value->id.'"'; 
-    if (filter_input(INPUT_GET, 'select_id', FILTER_VALIDATE_INT) == $value->id) { 
-        $html  .= ' selected="selected"';
-    } 
-    $html  .= '>'.$value->group.'</option>';
+$html   = '';
+switch (filter_input(INPUT_GET, 'format', FILTER_UNSAFE_RAW)) {
+    case 'table':   $PAGE->group_table['data'] = $groups;
+                    $html .= RENDER::table($PAGE->group_table);
+        break;
+
+    default:        foreach ($groups as $value) {
+                        $html  .= '<option label="'.$value->group.'" value="'.$value->id.'"'; 
+                        if (filter_input(INPUT_GET, 'select_id', FILTER_VALIDATE_INT) == $value->id) { 
+                            $html  .= ' selected="selected"';
+                        } 
+                        $html  .= '>'.$value->group.'</option>';
+
+                    }
+        break;
 }
+
 echo json_encode(array('html'=>$html));

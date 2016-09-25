@@ -184,12 +184,13 @@ class Roles {
     
     public function checkRoleOrder($role_id){
         global $USER;
-        $roles = $this->get();
+        $roles = $this->get('',false);
         foreach($roles AS $f){
-            if ($role_id == $USER->role_id){
+            if ($role_id == $f->id AND $f->id == $USER->role_id){ 
                 return true;
             }
         }
+        return false; //if check wasn't true
     }
     
     /**

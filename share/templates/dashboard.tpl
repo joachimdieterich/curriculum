@@ -187,7 +187,7 @@
             {html_block blockdata=$block}
         {/foreach}  
         <!-- Add Block -->
-        {if checkCapabilities('user:userListComplete', $my_role_id, false)}
+        {if checkCapabilities('block:add', $my_role_id, false)}
         <div class="col-md-4 col-sm-12 col-xs-12">
             <div class="box box-primary">
                 <div class="box-header with-border">
