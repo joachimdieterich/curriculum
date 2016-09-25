@@ -319,7 +319,7 @@ class Form {
             $$key = $val;
         }
 
-        $html = '<div class="modal-dialog" style="overflow-y: initial !important; ">
+        $html = '<div class="modal-dialog" style="overflow-y: initial !important; " >
                     <div class="modal-content" ><!-- height is dynamic set by popupFunction() -->
                         <div class="modal-header">';
                         if (isset($h_content)){

@@ -293,7 +293,7 @@
             if (idleTime === idleMax) { 
                 window.location="index.php?action=logout&timout=true";
             }
-        }
+        }     
     </script>
     {/if}
     <!-- end Logout - Timer  -->
