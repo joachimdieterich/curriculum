@@ -90,6 +90,15 @@
     <div class="row ">
         <div class="col-xs-12">
             <div class="box box-primary">
+                <div class="box-header ">
+                    
+                    <p class="pull-right">Farb-Legende:
+                    <button class="btn btn-success btn-flat" style="cursor:default">selbständig erreicht</button>
+                    <button class="btn btn-warning btn-flat" style="cursor:default">mit Hilfe erreicht</button>
+                    <button class="btn btn-default disabled btn-flat" style="cursor:default">nicht bearbeitet</button>
+                    <button class="btn btn-danger btn-flat" style="cursor:default">nicht erreicht</button>
+                    </p>
+                </div>
                 <div class="box-body">
         
         {if $show_course != '' and $terminalObjectives != false or !isset($selected_user_id)} 
