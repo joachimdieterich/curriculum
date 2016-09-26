@@ -110,6 +110,13 @@ try { // Error handling
         $TEMPLATE->assign('upcoming_events', $upcoming_events->get('upcoming', $USER->id, '', 5));
         $upcoming_tasks  = new Task();
         $TEMPLATE->assign('upcoming_tasks', $upcoming_tasks->get('upcoming', $USER->id));
+        
+        if (isset($_SESSION['PAGE']->print)){
+            $pdf = new Pdf();
+            $pdf->generate($_SESSION['PAGE']->print->content); 
+            unset($_SESSION['PAGE']->print);
+         }
+        
     }
 
     $PAGE->controller = $CFG->controllers_root.'/'.$PAGE->action .'.php';       //load controller 

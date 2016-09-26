@@ -406,7 +406,7 @@ function processor(proc, func, val){
     req = XMLobject();
     if(req) {      
             req.onreadystatechange = window.location.reload();
-            req.open("GET", url, true);
+            req.open("GET", url, false); //false --> important for print function
             req.send(null);
         }
 }

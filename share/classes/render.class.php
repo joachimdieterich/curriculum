@@ -438,7 +438,6 @@ class Render {
             if ($p_date != date("d.m.Y", strtotime($cb->creation_time))){ //only print time label if last artefact timestamp neq this timestamp
                 $r      .= '<li class="time-label">
                                 <span class="bg-red">
-                                
                                     '.date("d.m.Y", strtotime($cb->creation_time)).'
                                 </span>
                             </li>';

@@ -501,8 +501,8 @@ class User {
         $db->execute(array($institution_id, $this->id));
         /* ! Security ! check if role_id is permitted for $USER*/
         $role = new Roles();
-        error_log('rolle:'.json_encode($role->checkRoleOrder($this->role_id)));
-        if (!$role->checkRoleOrder($this->role_id)) {
+        //error_log('rolle:'.json_encode($role->checkRoleOrder($this->role_id)));
+        if ($role->checkRoleOrder($this->role_id) === null) {
             $PAGE->message[] = array('message' => 'Rolle für '.$this->username.' wurde wegen fehlender Berechtigung auf die Standard-Rolle zurückgesetzt.', 'icon' => 'fa fa-group text-warning');// Schließen und speichern
             $this->role_id    = $CFG->standard_role; 
         } 

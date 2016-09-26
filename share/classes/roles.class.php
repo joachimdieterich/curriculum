@@ -186,11 +186,10 @@ class Roles {
         global $USER;
         $roles = $this->get('',false);
         foreach($roles AS $f){
-            if ($role_id == $f->id AND $f->id == $USER->role_id){ 
+            if ($role_id == $f->id){    // check if role_id is in users permitted roles
                 return true;
             }
         }
-        return false; //if check wasn't true
     }
     
     /**

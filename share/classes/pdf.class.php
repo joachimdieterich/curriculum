@@ -182,4 +182,16 @@ class Pdf {
         header("Location: ".$CFG->access_file_url."user/".$USER->id."/Zertifikate.zip");
         die(); //important
     } 
+    
+    public function generate($html){
+        global $USER, $CFG;
+        include(dirname(__FILE__).'/../libs/MPDF57/mpdf.php');
+        $mpdf           = new mPDF($this->font_encoding, 'A4', $this->font_size, $this->font_name);
+        $stylesheet     = file_get_contents(dirname(__FILE__).'/../../public/assets/stylesheets/certificate.css');
+        $mpdf->WriteHTML($stylesheet,1);
+        $mpdf->WriteHTML($html, 2);
+        $mpdf->Output($CFG->curriculumdata_root.'user/'.$USER->id.'/print.pdf', 'F');
+        set_time_limit(30);
+        header("Location: ".$CFG->access_file_url."user/".$USER->id."/print.pdf");
+    }
 }

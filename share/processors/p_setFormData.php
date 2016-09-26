@@ -28,6 +28,6 @@ global $USER;
 $USER   = $_SESSION['USER'];
 $file   = filter_input(INPUT_GET, 'file',           FILTER_UNSAFE_RAW);
 
-$c = new Curriculum();
+$c      = new Curriculum();
 $c->loadImportFormData($file);
 echo json_encode($c);
