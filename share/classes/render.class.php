@@ -177,7 +177,7 @@ class Render {
                       <button class="btn btn-default btn-sm" data-toggle="tooltip" title="Antworten" onclick="formloader(\'mail\',\'reply\','.$mail->id.')"><i class="fa fa-reply"></i> Antworten</button>
                       <button class="btn btn-default btn-sm" data-toggle="tooltip" title="Weiterleiten" onclick="formloader(\'mail\',\'forward\','.$mail->id.')"><i class="fa fa-share"></i> Weiterleiten</button>
                     </div><!-- /.btn-group -->
-                    <button class="btn btn-default btn-sm" data-toggle="tooltip" title="Drucken"><i class="fa fa-print"></i> Drucken</button>
+                    <button class="btn btn-default btn-sm" data-toggle="tooltip" title="Drucken" onclick="processor(\'print\',\'mail\','.$mail->id.')"><i class="fa fa-print"></i> Drucken</button>
                     <div class="btn-group">
                         <button class="btn btn-default btn-sm" data-toggle="tooltip" title="zurück"><i class="fa fa-chevron-left"></i></button>
                         <button class="btn btn-default btn-sm" data-toggle="tooltip" title="vor"><i class="fa fa-chevron-right"></i></button>

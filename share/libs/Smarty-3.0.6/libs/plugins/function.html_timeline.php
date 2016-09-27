@@ -106,6 +106,7 @@ $_html_result .= '<div class="row"><div class="clearfix"><br><ul class="timeline
                 <i class="fa fa-check bg-green"></i>
                 <div class="timeline-item">
                   <span class="time" onclick="del(\'courseBook\','.$_val->id.');"><i class="fa fa-trash-o"></i></span>
+                      <span class="time" onclick="processor(\'print\',\'courseBook\','.$_val->id.');"><i class="fa fa-print"></i></span>
                   <span class="time" onclick="formloader(\'courseBook\',\'edit\','.$_val->id.');"><i class="fa fa-edit"></i></span>
                   <span class="time"><i class="fa fa-clock-o"></i> '.$_val->creation_time.'</span>
                   <h3 class="timeline-header"><a href="#">';

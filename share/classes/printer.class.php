@@ -81,4 +81,42 @@ class Printer {
         return $content;
     }
     
+    public static function mail($params){
+        global $CFG;
+        foreach($params as $key => $val) {
+            $$key = $val;
+        }
+        
+        $content = '';
+        foreach ($mail as $m) {
+            $sender         = new User();        
+            $sender->id     = $m->sender_id;
+            if ($sender->exist()){                      //if User was deleted --> false + set first/lastname to "Gelöschter User
+                $sender->load('id', $m->sender_id, false);
+            } 
+
+            $receiver       = new User();
+            $receiver->id   = $m->receiver_id;
+            if ($receiver->exist()){
+                $receiver->load('id', $m->receiver_id, false);
+            } 
+            $thumbs = Render::link($m->message, 'message');
+            $content .= '<div class="mailbox-read-info">
+                    <div class="pull-left image" style="margin-right:10px;">
+                        <img src="'.$CFG->access_file.$sender->avatar.'" style="height:40px;" class="img-circle" alt="User Image">
+                    </div>
+                    <h3>'.$m->subject.'</h3>
+                    <h5>Von: '.$sender->firstname.' '.$sender->lastname.' ('.$sender->username.')<span class="mailbox-read-time pull-right">'.$m->creation_time.'</span></h5>
+                  </div><!-- /.mailbox-read-info -->
+                  
+                  <div class="mailbox-read-message">
+                    <p>'.$m->message.'</p>
+                  </div><!-- /.mailbox-read-message -->
+                
+                  <ul class="mailbox-attachments clearfix">';
+                    $content .= Render::thumb($thumbs).' </ul>';
+        }
+        return $content; 
+    }
+    
 }

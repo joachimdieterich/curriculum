@@ -54,7 +54,11 @@ switch ($func) {
     case "subject":             $t = new Subject();             break;
     case "user":                $t = new User();                break;
     case "institution":         $t = new Institution();         break;
-    case "message":             $t = new Mail();                break;
+    case "mail":                $t = new Mail();                
+                                $t->id = intval($id);
+                                $t->loadMail($id);
+                                $content = Printer::mail(array('mail' => array($t)));
+                                break;
     case "enablingObjectives":  $t = new EnablingObjective();   break;
     case "terminalObjectives":  $t = new TerminalObjective();   break;
     case "task":                $t = new Task();                break;
