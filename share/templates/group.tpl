@@ -31,15 +31,10 @@
                                     <h4>Lerngruppe</h4>
                                     <p>Markierte Lerngruppe(n)in Lehrplan ein- und ausschreiben</p>     
                         {Form::input_select_multiple('curriculum', 'Lehrplan', $curriculum_list, 'curriculum, description', 'id', null, null )}
-                        {*<select class='floatleft' name="curriculum">
-                                {section name=res loop=$curriculum_list}  
-                                    <option label="{$curriculum_list[res]->curriculum} | {$curriculum_list[res]->grade} | {$curriculum_list[res]->description}" value="{$curriculum_list[res]->id}">{$curriculum_list[res]->curriculum} | {$curriculum_list[res]->grade} | {$curriculum_list[res]->description}</option>
-                                {/section}
-                            </select> *}
                         <div class="btn-group" role="group" aria-label="...">
                             {if checkCapabilities('groups:enrol', $my_role_id, false)}
                                 <button type="submit" class="btn btn-default" onclick="document.getElementById('enrol').click();"><a href="#">
-                                    <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> einschreibenn</a>
+                                    <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> einschreiben</a>
                                 </button>
                                 <input class="invisible" type='submit' id='enrol' name='enrol' value='einschreiben' />
                             {/if}
