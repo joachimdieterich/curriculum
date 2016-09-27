@@ -113,7 +113,9 @@ try { // Error handling
         
         if (isset($_SESSION['PAGE']->print)){
             $pdf = new Pdf();
-            $pdf->generate($_SESSION['PAGE']->print->content); 
+            $pdf->content = $_SESSION['PAGE']->print->content;
+            $pdf->filename = 'print.pdf';
+            $pdf->generate(); 
             unset($_SESSION['PAGE']->print);
          }
         

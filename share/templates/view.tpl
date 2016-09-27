@@ -144,7 +144,7 @@
                                            </div>
                                            <div class="panel-footer boxfooter">
                                                 {if $ter->description neq '' AND $ena->description neq ''}
-                                                    <a onclick="formloader('description', 'enabling_objective','{$ena->id}');"><span class="fa fa-info pull-right box-sm-icon"  data-toggle="tooltip" title="Bechreibung"></span></a>
+                                                    <a onclick="formloader('description', 'enabling_objective','{$ena->id}');"><span class="fa fa-info pull-right box-sm-icon"  data-toggle="tooltip" title="Beschreibung"></span></a>
                                                 {/if}
                                                {if isset($showaddObjectives)}
                                                    <a onclick="formloader('addQuiz','enabling_objective','{$ena->id}');"><span class="fa fa-check-square-o pull-right box-sm-icon"></span></a>

@@ -32,7 +32,23 @@ switch ($func) {
     case "certificate":         $t = new Certificate();         break;
     case "curriculum":          $t = new Curriculum();          break;
     case "grade":               $t = new Grade();               break;
-    case "group":               $t = new Group();               break;
+    case "group":               $t = new Group();               
+                                /*$t->id   = intval($id);
+                                $t->load();
+                                */
+                                $content = Render::table(array(  'header' => array('id'   => 'id', 
+                                                'group' => 'Gruppe', 
+                                                'description' => 'Beschreibung', 
+                                                'grade'         => '(Klassen)stufe',  
+                                                'semester'      => 'Lernzeitraum',
+                                                'institution'   => 'Institution / Schule',
+                                                'creation_time' => 'Erstellungsdatum',
+                                                'username'      => 'Erstellt von'), 
+                                              'data' => $t->getGroups('group', $USER->id,'groupP'),
+                                              'width_class'   => 'row col-xs-12 col-sm-6 col-md-3 col-lg-3',
+                                              'style'         => 'padding-left: 20px; padding-right: 20px;',
+                                              'table_class'   => 'table table-bordered'));
+        break;
     case "role":                $t = new Roles();               break;      
     case "semester":            $t = new Semester();            break;
     case "subject":             $t = new Subject();             break;
@@ -45,12 +61,12 @@ switch ($func) {
     case "courseBook":          $t       = new CourseBook();       
                                 $t->id   = intval($id);
                                 $t->load();
-                                $content = Render::courseBook(array($t));
+                                $content = Printer::coursebook(array('coursebook' => array($t)));
         break;
     default: break;
 }
 
 
-
+//error_log($content);
 $_SESSION['PAGE']->print          = new stdClass();
 $_SESSION['PAGE']->print->content = $content;

@@ -80,7 +80,7 @@ class Absent {
                 $this->$key = $value; 
             }
             $user        = new User();
-            $user->load('id', $result->user_id);
+            $user->load('id', $result->user_id, false);
             $this->user  = $user;
             $entrys[]    = clone $this;        //it has to be clone, to get the object and not the reference
         } 

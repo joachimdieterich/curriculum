@@ -57,6 +57,7 @@ include('classes/mailbox.class.php');
 include('classes/pdf.class.php'); 
 include('classes/plugin.class.php');     
 include('classes/portfolio.class.php'); 
+include('classes/printer.class.php'); 
 include('classes/quiz_question.class.php'); 
 include('classes/quiz_answer.class.php'); 
 include('classes/render.class.php');     

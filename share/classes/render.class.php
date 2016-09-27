@@ -447,6 +447,7 @@ class Render {
                         <i class="fa fa-check bg-green"></i>
                         <div class="timeline-item">
                           <span class="time" onclick="del(\'courseBook\','.$cb->id.');"><i class="fa fa-trash-o"></i></span>
+                          <span class="time" onclick="processor(\'print\',\'courseBook\','.$cb->id.');"><i class="fa fa-print"></i></span>
                           <span class="time" onclick="formloader(\'courseBook\',\'edit\','.$cb->id.');"><i class="fa fa-edit"></i></span>
                           <span class="time"><i class="fa fa-clock-o"></i> '.$cb->creation_time.'</span>
                           
@@ -456,7 +457,6 @@ class Render {
                           }  
             $r      .= '                </a> '.$cb->creator.'</h3>
                           <div class="timeline-body">
-                              Eintrag
                               <h4>'.$cb->topic.'</h4> 
                              '.$cb->description.'
                           </div>
@@ -703,5 +703,4 @@ class Render {
                </div><!-- /.col -->';
         return $html;
     }
-    
 }
