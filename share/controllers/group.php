@@ -31,7 +31,7 @@ $selectedCurriculum = (isset($_GET['curriculum']) && $_GET['curriculum'] != '' ?
 $TEMPLATE->assign('selectedCurriculum', $selectedCurriculum);
 $curriculum = new Curriculum();
 
-if (isset($_GET['function'])) {
+/*if (isset($_GET['function'])) {
      switch ($_GET['function']) {       
         case "expel": 
         case "showCurriculum": 
@@ -69,7 +69,7 @@ if (isset($_GET['function'])) {
 
         default: break;
      }
-}
+}*/
 
 if($_POST ){ 
     $group = new Group();
@@ -81,23 +81,26 @@ if($_POST ){
                                                     $PAGE->message[] = array('message' => 'Es muss mindestens eine Lerngruppe ausgewählt werden!', 'icon' => 'fa-group text-warning');
                                                 }
                                             } else {
-                                                $curriculum->id         = filter_input(INPUT_POST, 'curriculum', FILTER_VALIDATE_INT);
-                                                $curriculum->load();
-                                                $group->id = $check;
-                                                $group->load();
-                                                if (isset($_POST['enrol'])){
-                                                    if($group->checkEnrolment($curriculum->id ) > 0) { 
-                                                        $PAGE->message[] = array('message' => 'Die Lerngruppe <strong>'.$group->group.'</strong> ist bereits in <strong>'.$curriculum->curriculum.'</strong> eingeschrieben.', 'icon' => 'fa-group text-warning');
-                                                    } else {
-                                                        $group->enrol($USER->id, $curriculum->id );
-                                                        $PAGE->message[] = array('message' => 'Die Lerngruppe <strong>'.$group->group.'</strong> wurde erfolgreich in <strong>'.$curriculum->curriculum.'</strong> eingeschrieben.', 'icon' => 'fa-group text-success');  
-                                                    }   
-                                                }
-                                                if (isset($_POST['expel'])){
-                                                    if ($group->expel($USER->id, $curriculum->id )) {
-                                                        $PAGE->message[] = array('message' => 'Lerngruppe <strong>'.$group->group.'</strong> wurde erfolgreich aus <strong>'.$curriculum->curriculum.'</strong> ausgeschrieben.', 'icon' => 'fa-group text-success');
-                                                    } else {
-                                                        $PAGE->message[] = array('message' => 'Lerngruppe <strong>'.$group->group.'</strong> war nicht in <strong>'.$curriculum->curriculum.'</strong> eingeschrieben.', 'icon' => 'fa-group text-warning');
+                                                $cur_array = $_POST['curriculum'];
+                                                foreach($cur_array as $c) {
+                                                    $curriculum->id         = $c;
+                                                    $curriculum->load();
+                                                    $group->id = $check;
+                                                    $group->load();
+                                                    if (isset($_POST['enrol'])){
+                                                        if($group->checkEnrolment($curriculum->id ) > 0) { 
+                                                            $PAGE->message[] = array('message' => 'Die Lerngruppe <strong>'.$group->group.'</strong> ist bereits in <strong>'.$curriculum->curriculum.'</strong> eingeschrieben.', 'icon' => 'fa-group text-warning');
+                                                        } else {
+                                                            $group->enrol($USER->id, $curriculum->id );
+                                                            $PAGE->message[] = array('message' => 'Die Lerngruppe <strong>'.$group->group.'</strong> wurde erfolgreich in <strong>'.$curriculum->curriculum.'</strong> eingeschrieben.', 'icon' => 'fa-group text-success');  
+                                                        }   
+                                                    }
+                                                    if (isset($_POST['expel'])){
+                                                        if ($group->expel($USER->id, $curriculum->id )) {
+                                                            $PAGE->message[] = array('message' => 'Lerngruppe <strong>'.$group->group.'</strong> wurde erfolgreich aus <strong>'.$curriculum->curriculum.'</strong> ausgeschrieben.', 'icon' => 'fa-group text-success');
+                                                        } else {
+                                                            $PAGE->message[] = array('message' => 'Lerngruppe <strong>'.$group->group.'</strong> war nicht in <strong>'.$curriculum->curriculum.'</strong> eingeschrieben.', 'icon' => 'fa-group text-warning');
+                                                        }
                                                     }
                                                 }
                                             }        

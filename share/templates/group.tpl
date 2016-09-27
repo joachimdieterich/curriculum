@@ -27,12 +27,15 @@
                 {html_paginator id='groupP'}
                     {if checkCapabilities('groups:enrol', $my_role_id, false) OR checkCapabilities('groups:expel', $my_role_id, false)}
                         {if isset($curriculum_list)}
-                        <p><h4>Markierte Lerngruppe(n)in Lehrplan ein- und ausschreiben:</h4>
-                        <select class='floatleft' name="curriculum">
+                        <div class="form-horizontal col-xs-12 col-sm-12 col-md-5 col-lg-5">
+                                    <h4>Lerngruppe</h4>
+                                    <p>Markierte Lerngruppe(n)in Lehrplan ein- und ausschreiben</p>     
+                        {Form::input_select_multiple('curriculum', 'Lehrplan', $curriculum_list, 'curriculum, description', 'id', null, null )}
+                        {*<select class='floatleft' name="curriculum">
                                 {section name=res loop=$curriculum_list}  
                                     <option label="{$curriculum_list[res]->curriculum} | {$curriculum_list[res]->grade} | {$curriculum_list[res]->description}" value="{$curriculum_list[res]->id}">{$curriculum_list[res]->curriculum} | {$curriculum_list[res]->grade} | {$curriculum_list[res]->description}</option>
                                 {/section}
-                            </select> 
+                            </select> *}
                         <div class="btn-group" role="group" aria-label="...">
                             {if checkCapabilities('groups:enrol', $my_role_id, false)}
                                 <button type="submit" class="btn btn-default" onclick="document.getElementById('enrol').click();"><a href="#">
@@ -50,9 +53,6 @@
                         {/if}
                      {/if}   
                 </form> 
-                {if isset($cu_val)}
-                    {html_paginator id='curriculumP' action="index.php?action=groups&next={$currentUrlId}"}
-                {/if}
                 </div>
             </div>
         </div>

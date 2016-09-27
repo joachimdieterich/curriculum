@@ -62,7 +62,7 @@
                         <select class='hidden pull-left space-left' id='certificate_template' name='certificate_template' onchange=""> {*hack, damit bei checkrow die Auswahl erhalten bleibt bzw. keine Fehler entstehen*}
                             <option value="-1" data-skip="1">Zertifikatvorlage wählen...</option>
                         </select>
-                    {/if}{*To show "Datensätze x von y..." properly*}
+                    {/if}
                 {else}<strong>Sie haben noch keine Lehrpläne angelegt bzw. noch keine Klassen eingeschrieben.</strong>
                 {/if}
 
