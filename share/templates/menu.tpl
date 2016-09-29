@@ -16,18 +16,18 @@
                                 <i class="fa fa-dashboard"></i><span>{$cur_menu->curriculum}</span><small class="label pull-right bg-green">{$cur_menu->groups}</small>
                             </a>
                         </li>
-                        {if {$smarty.foreach.enrolments.index} eq 6} 
+                        {if {$smarty.foreach.enrolments.index} eq 4} 
                             <li class=" treeview"><a><span>Weitere Einträge</span><i class="fa fa-angle-left pull-right"></i></a> 
                             <ul class="treeview-menu" style="display: none;">
                         {/if}
-                        {if {$smarty.foreach.enrolments.index} > 6} 
+                        {if {$smarty.foreach.enrolments.index} > 4} 
                             <li {if isset($page_curriculum )}{if ($page_curriculum eq $cur_menu->id) && ($page_group eq $cur_menu->group_id)} {/if}{/if}>
                                 <a href="index.php?action=view&curriculum_id={$cur_menu->id}&group={$cur_menu->group_id}">
                                     <i class="fa fa-dashboard"></i><span>{$cur_menu->curriculum}</span><small class="label pull-right bg-green">{$cur_menu->groups}</small>
                                 </a>
                             </li>
                         {/if}
-                        {if ({$smarty.foreach.enrolments.index} > 6) AND {$smarty.foreach.enrolments.last}}
+                        {if ({$smarty.foreach.enrolments.index} > 4) AND {$smarty.foreach.enrolments.last}}
                             </li></ul>
                         {/if}
                         {/if}
