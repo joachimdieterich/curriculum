@@ -5,16 +5,31 @@
           <!-- sidebar menu: : style can be found in sidebar.less -->
           <ul class="sidebar-menu">
             <li class="header">Lehrpläne</li>
-            <li class="treeview">
+            
             {if $my_enrolments != ''}
-                {foreach item=cur_menu from=$my_enrolments}
+                {foreach item=cur_menu from=$my_enrolments name=enrolments}
                     {if $cur_menu->semester_id eq $my_semester_id}
                         {if  $cur_menu->id eq $cur_menu->base_curriculum_id || $cur_menu->base_curriculum_id eq null}
-                        <li {if isset($page_curriculum )}{if ($page_curriculum eq $cur_menu->id) && ($page_group eq $cur_menu->group_id)} class="active"{/if}{/if}>
+                        <li {if isset($page_curriculum )}{if ($page_curriculum eq $cur_menu->id) && ($page_group eq $cur_menu->group_id)} class="active treeview"{/if}{/if}>
+                            
                             <a href="index.php?action=view&curriculum_id={$cur_menu->id}&group={$cur_menu->group_id}">
                                 <i class="fa fa-dashboard"></i><span>{$cur_menu->curriculum}</span><small class="label pull-right bg-green">{$cur_menu->groups}</small>
                             </a>
                         </li>
+                        {if {$smarty.foreach.enrolments.index} eq 6} 
+                            <li class=" treeview"><a><span>Weitere Einträge</span><i class="fa fa-angle-left pull-right"></i></a> 
+                            <ul class="treeview-menu" style="display: none;">
+                        {/if}
+                        {if {$smarty.foreach.enrolments.index} > 6} 
+                            <li {if isset($page_curriculum )}{if ($page_curriculum eq $cur_menu->id) && ($page_group eq $cur_menu->group_id)} {/if}{/if}>
+                                <a href="index.php?action=view&curriculum_id={$cur_menu->id}&group={$cur_menu->group_id}">
+                                    <i class="fa fa-dashboard"></i><span>{$cur_menu->curriculum}</span><small class="label pull-right bg-green">{$cur_menu->groups}</small>
+                                </a>
+                            </li>
+                        {/if}
+                        {if ({$smarty.foreach.enrolments.index} > 6) AND {$smarty.foreach.enrolments.last}}
+                            </li></ul>
+                        {/if}
                         {/if}
                     {/if}
                 {/foreach}
