@@ -143,6 +143,7 @@ class Mailbox {
             $getMail->creation_time      = $result->creation_time;
             
             switch ($mailbox) {
+                case 'new': 
                 case 'receiver_id': //inbox
                                     $this->inbox[]            = $getMail;
                                     break;
