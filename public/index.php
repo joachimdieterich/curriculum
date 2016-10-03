@@ -28,9 +28,8 @@ global $CFG, $PAGE, $TEMPLATE, $USER;
 try { // Error handling
     $PAGE           = new stdClass();
     $PAGE->action   = filter_input(INPUT_GET, 'action', FILTER_UNSAFE_RAW);
-    if (!$PAGE->action) {$PAGE->action = 'login'; }
-   
- switch ($PAGE->action) {
+    if (!$PAGE->action) { $PAGE->action = 'login'; $_SESSION['lock'] = false;}
+ switch ($PAGE->action) {                                  
      case 'login':  $TEMPLATE->assign('page_action',      'login');                                      
      //case 'install':  
          break;
