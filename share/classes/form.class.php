@@ -314,12 +314,11 @@ class Form {
      */
     public static function modal($params){
         $target         = 'popup';              // default target, will be overwritten if target in $params
-        
         foreach($params as $key => $val) {
             $$key = $val;
         }
 
-        $html = '<div class="modal-dialog" style="overflow-y: initial !important; " >
+        $html = '<div id="'.$target.'" class="modal-dialog" style="overflow-y: initial !important;" >
                     <div class="modal-content" ><!-- height is dynamic set by popupFunction() -->
                         <div class="modal-header">';
                         if (isset($h_content)){

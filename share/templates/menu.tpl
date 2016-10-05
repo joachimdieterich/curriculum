@@ -5,7 +5,6 @@
           <!-- sidebar menu: : style can be found in sidebar.less -->
           <ul class="sidebar-menu">
             <li class="header">Lehrpläne</li>
-            
             {if $my_enrolments != ''}
                 {foreach item=cur_menu from=$my_enrolments name=enrolments}
                     {if $cur_menu->semester_id eq $my_semester_id}

@@ -33,13 +33,12 @@ class Printer {
         }
         $content = '';
         foreach ($coursebook as $cb) {
-            $content .= '<p><strong>'.$cb->curriculum.'</strong><div> Eintrag von '.$cb->creator.' am '.$cb->creation_time.'<br><h4>'.$cb->topic.'</h4> 
-                                 '.$cb->description.'</div></p>'.Printer::task(array('task' => $cb->task));
+            $content .= element('print_coursebook', $cb);
+            $content .= Printer::task(array('task' => $cb->task));
             if (checkCapabilities('absent:update', $USER->role_id, false)){
-                     $content .= Printer::absent(array('absent' => $cb->absent_list)).'<hr>';
+                $content .= Printer::absent(array('absent' => $cb->absent_list)).'<hr>';
             }
         }
-        
         return $content;
         
     }
@@ -50,9 +49,7 @@ class Printer {
         }
         $content = '<br><strong>Aufgaben</strong><ul>';
         foreach ($task as $tsk) {
-            $content .= '<li><span class="text"><strong> '.$tsk->task.'</strong></span><br>
-                      <small class="text small">Abgabe am '.$tsk->timeend.'</small>
-                      <br><span class="text small">'.$tsk->description.'</span></li>';
+            $content .= '<li>'.element('print_task', $tsk).'</li>';
         }
         $content .= '</ul>';
         return $content; 
@@ -65,17 +62,7 @@ class Printer {
         
         $content = '<br><strong>Abwesend</strong><ul>';
         foreach ($absent as $ub) {
-            $content .= '<li><span class="text"><strong> '.$ub->user->firstname.' '.$ub->user->lastname.' ('.$ub->user->username.')</strong></span><br>';
-                switch ($ub->status) {
-                            case 0:  $content .= '<small class="text small">unentschuldigt</small>';
-                                break;
-                            case 1:  $content .= '<small class="text small">entschuldigt am '.$ub->done.'</small>';      
-                                break;
-
-                            default:
-                                break;
-                        }
-             $content .= '<br><span class="text small">'.$ub->reason.'</span></li>';
+            $content   .= '<li>'.element('print_absent',$ub).'</li>';
         }
         $content .= '</ul>';
         return $content;

@@ -34,8 +34,10 @@ class Absent {
     public $user;
     public $reason;
     public $status;
+    public $status_text;
     public $done;
     public $creator_id;
+    public $creator;
 
 
     public function add(){
@@ -63,10 +65,24 @@ class Absent {
             }
             $user           = new User(); 
             $this->user     = $user->resolveUserId($result->user_id);
+            $this->creator  = $user->resolveUserId($result->creator_id);
+            $this->resolveStatus();
             return true;                                                        
         } else { 
             return false; 
         }
+    }
+    
+    public function resolveStatus(){
+        switch ($this->status) {
+                case 0:      $this->status_text = 'unenschuldigt'; //todo: resolve status over id (extra table?)
+                    break;
+                case 1:      $this->status_text = 'entschuldigt'; //todo: resolve status over id (extra table?)
+                    break;
+
+                default:
+                    break;
+            }
     }
     
     public function get($paginator = ''){
@@ -79,10 +95,13 @@ class Absent {
             foreach ($result as $key => $value) {
                 $this->$key = $value; 
             }
-            $user        = new User();
+            $user           = new User();
+            
             $user->load('id', $result->user_id, false);
-            $this->user  = $user;
-            $entrys[]    = clone $this;        //it has to be clone, to get the object and not the reference
+            $this->user     = $user;
+            $this->creator  = $user->resolveUserId($result->creator_id);
+            $this->resolveStatus();
+            $entrys[]       = clone $this;        //it has to be clone, to get the object and not the reference
         } 
         if (isset($entrys)){
             return $entrys;                    

@@ -63,7 +63,14 @@ if (isset($_SESSION['PAGE'])){
     }
     if ($PAGE->action          != filter_input(INPUT_GET, 'action')){           //previous action represents the action parameter of the last url
         $PAGE->previous_action  = $PAGE->action;
-        $PAGE->action           = filter_input(INPUT_GET, 'action');
+        if (isset($_SESSION['lock'])){
+            if ($_SESSION['lock']  != true){                                    // check if session is locked
+                $PAGE->action       = filter_input(INPUT_GET, 'action'); 
+            }                    
+        } else {
+            $PAGE->action       = filter_input(INPUT_GET, 'action');
+        }
+        
     }
     $PAGE->target_url           = null;   //reset target_url  
     if (!isset($_SESSION['PAGE']->message)){                                    // to get messages from popups

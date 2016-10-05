@@ -46,6 +46,7 @@ include('classes/form.class.php');                  // Form
 include('classes/grade.class.php');     
 include('classes/group.class.php');  
 include('classes/gump.class.php');                  //validator class
+include('classes/help.class.php'); 
 include('classes/institution.class.php'); 
 include('classes/interval.class.php'); 
 include('classes/license.class.php'); 

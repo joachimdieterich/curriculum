@@ -214,14 +214,23 @@ function process(){
                 }
                 
                 if (document.getElementById(popup)){
+                    
                     document.getElementById(popup).innerHTML = response.html;
                     if (typeof(response.class)!=='undefined'){
                         $(document.getElementById(popup)).addClass(response.class);
                     }
+                    if (typeof(response.zindex)!=='undefined'){
+                        document.getElementById(popup).style.zIndex = response.zindex;
+                    }
+                    
+                    /*if (typeof(response.script_file)!=='undefined'){  //todo load script on request
+                        //$.getScript(response.script_file);
+                    }*/
                     
                     if (typeof(response.script)!=='undefined'){ // loads js for popup
-                        document.getElementById(popup).innerHTML = document.getElementById(popup).innerHTML+response.script;  
+                        document.getElementById(popup).innerHTML = document.getElementById(popup).innerHTML+response.script;
                     }
+                    
                     raiseEvent('load', popup);
                     /* Set focus to first editable input field */
                     $(document).ready(function() {
@@ -231,6 +240,7 @@ function process(){
                     alert(req.responseText); //unschön, aber #popup ist vom modalframe aus nicht verfügbar
                 }    
            } else {
+               //alert('reload:'+req.responseText.length);
                window.location.reload();
            }
         }
@@ -265,8 +275,11 @@ function hideFile() { //nach dem löschen wird das thumbnail ausgeblendet
     if (req.readyState === 4) {  
         if (req.status === 200) {    
            if (req.responseText.length !== 1){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen
-               if (req.responseText !== 'OK'){alert(req.responseText);} //unschön, aber #popup ist vom modalframe aus nicht 
-               if (document.getElementById('row_filelastuploadbtn'+arguments[0])) {
+                //if (req.responseText !== 'OK'){alert(req.responseText);} //unschön, aber #popup ist vom modalframe aus nicht 
+                if (document.getElementById('thumb_'+arguments[0])) {
+                    document.getElementById('thumb_'+arguments[0]).style.display='none'; 
+                }
+               /*if (document.getElementById('row_filelastuploadbtn'+arguments[0])) {
                    document.getElementById('row_filelastuploadbtn'+arguments[0]).style.visibility='hidden'; 
                }
                if (document.getElementById('row_curriculumfilesbtn'+arguments[0])) {          
@@ -286,7 +299,7 @@ function hideFile() { //nach dem löschen wird das thumbnail ausgeblendet
                }
                if (document.getElementById('material_'+arguments[0])) {          
                    document.getElementById('material_'+arguments[0]).style.visibility='hidden';           
-               }
+               }*/
            } else {
                window.location.reload();
            }
@@ -404,8 +417,8 @@ function formloader(/*form, func, id, []*/){
 function processor(proc, func, val){
     var url = "../share/processors/p_"+ proc +".php?func="+ func +"&val="+ val;
     req = XMLobject();
-    if(req) {      
-            req.onreadystatechange = window.location.reload();
+    if(req) {  
+                req.onreadystatechange = window.location.reload();
             req.open("GET", url, false); //false --> important for print function
             req.send(null);
         }
@@ -433,6 +446,11 @@ function del() {
             if (arguments[0] === 'message'){                                                    // Mail aus Liste entfernen und gelöschte Mail ausblenden
               document.getElementById(arguments[2]+'_'+arguments[1]).style.display='none';
               document.getElementById('mailbox').style.display='none';
+            } else if (arguments[0] === 'file'){
+                var id = arguments[1];
+                req.onreadystatechange = function(){
+                    hideFile(id);
+                };
             } else {
                req.onreadystatechange = process; //Dialog mit Meldungen zeigen 
                //Reload erfolgt über Submit des Popups req.onreadystatechange = reloadPage; //window.location.reload() wichtig, damit Änderungen angezeigt werden
@@ -602,6 +620,11 @@ function resizeModal(){
         $('.modal-content').height(window.innerHeight - 50);
         $('.modal-body').height(($('.modal-content').height()) - ($('.modal-header').height()) - ($('.modal-footer').height()) - 50 -31); // calc modal-body height for scrolling, -50 for margins - 31 (header padding
     }
+    
+    if (document.getElementById('modal-preview') !== 'undefined'){
+     document.getElementById('modal-preview').style.width  = "100%";
+     document.getElementById('modal-preview').style.height = "100%";
+    }
 }
 
 /**
@@ -701,9 +724,39 @@ function closePopup(id){
     } else {
         popup = 'popup';
     }
-    processor('reset', '', '');
+    if (popup != 'null'){       // only reload if target not 'null'
+        processor('reset', '', '');
+    } else {
+        popup = 'popup';        
+    }
     removeMedia();  // Important to empty audio element cache in webkit browsers. see description on function
     $('#'+popup).hide();  
     $("body").removeClass("modal-open"); //reactivate scrolling on body
     document.getElementById(popup).innerHTML = '<div class="modal-dialog"><div class="box"><div class="box-header"><h3 class="box-title">Loading...</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div></div>';    
+}
+/**
+ * 
+ * @param {string} id
+ * @returns {Boolean}
+ */
+function printById(id) {
+    var contents = document.getElementById(id).innerHTML;
+    var frame1 = document.createElement('iframe');
+    frame1.name = "frame1";
+    frame1.style.position = "absolute";
+    frame1.style.top = "-1000000px";
+    document.body.appendChild(frame1);
+    var frameDoc = frame1.contentWindow ? frame1.contentWindow : frame1.contentDocument.document ? frame1.contentDocument.document : frame1.contentDocument;
+    frameDoc.document.open();
+    frameDoc.document.write('<html><head><title>DIV Contents</title>');
+    frameDoc.document.write('</head><body>');
+    frameDoc.document.write(contents);
+    frameDoc.document.write('</body></html>');
+    frameDoc.document.close();
+    setTimeout(function () {
+        window.frames["frame1"].focus();
+        window.frames["frame1"].print();
+        document.body.removeChild(frame1);
+    }, 500);
+    return false;
 }

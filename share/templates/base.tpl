@@ -61,8 +61,8 @@
         {block name=additional_stylesheets}{/block}
     </head>
     
-    {if $page_action eq 'login'}
-    <body class="hold-transition login-page" style="background-image: url('{$request_url}assets/images/backgrounds/CC-BY-SA-miniBLOCKHELDEN20131221_bouldern0004.jpg'); background-size: cover;" >
+    {if $page_action eq 'login' OR  $page_action eq 'lock'}
+    <body class="hold-transition {if $page_action eq 'login'}login-page{/if} {if $page_action eq 'lock'}lockscreen{/if}" style="background-image: url('{$request_url}assets/images/backgrounds/CC-BY-SA-miniBLOCKHELDEN20131221_bouldern0004.jpg'); background-size: cover;" >
         {block name=content} {/block}
     </body>
     {else}
@@ -85,10 +85,17 @@
                     <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
                       <span class="sr-only">Navigation wechseln</span>
                     </a>
+                    
+                        
                     <!-- Navbar Right Menu -->
                     <div class="navbar-custom-menu">
                          
                       <ul class="nav navbar-nav">
+                        <li>   
+                        <a href="index.php?action=help" >
+                            <i class="fa fa-graduation-cap"></i>
+                          </a>
+                        </li>  
                          {if isset($mySemester) AND count($mySemester) > 1}
                              {Form::input_dropdown('semester_id', '', $mySemester, 'semester, institution', 'id', $my_semester_id, null, "processor('semester','set',this.getAttribute('data-id'));")}
                          {else if isset($my_institutions) AND count($my_institutions) > 1}
@@ -211,6 +218,9 @@
                               <div class="pull-right">
                                 <a href="index.php?action=logout" class="btn btn-default btn-flat">Abmelden</a>
                               </div>
+                              <div class="pull-right">
+                                  <a href="index.php?action=lock" class="btn btn-default btn-flat"><i class="fa fa-lock"></i></a>
+                              </div>
                             </li>
                           </ul>
                         </li>
@@ -275,6 +285,7 @@
     <script src="{$media_url}jquery.nyroModal/js/jquery.nyroModal.custom.js"></script> 
     
     <script src="{$media_url}scripts/script.js"></script> 
+    <script src="{$media_url}scripts/PDFObject-master/pdfobject.min.js"></script> 
     <script src="{$media_url}scripts/file.js"></script>
     <script src="{$media_url}scripts/dragndrop.js"></script>     
     
@@ -301,9 +312,20 @@
     <!-- Nyromodal  -->
     <script type="text/javascript">
     $(function() {
-        $('.nyroModal').nyroModal();
+        $('.nyroModal').nyroModal({
+            callbacks: {
+                beforeShowBg: function(){
+                    $('body').css('overflow', 'hidden');
+                },
+                afterHideBg: function(){
+                    $('body').css('overflow', '');
+                }
+            }
+        });
         $('#popup_generate').nyroModal();
+        
     });
+    
     </script>
     {if isset($smarty.session.FORM->form)}
         <script type="text/javascript">

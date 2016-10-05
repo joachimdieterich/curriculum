@@ -117,13 +117,15 @@ class Render {
                 case '.svg':    
                 case '.jpeg':    
                 case '.jpg':    if ($file->getThumb() == false){ $url = $file->getFileUrl(); } else { $url = $file->getThumb();}
-                                $html .= '<li style="width:'.$width.'px !important; height:'.$height.'px !important;">
-                                    <span class="mailbox-attachment-icon has-img" style="height:'.$width.'px"><img src="'.$url.'" style="max-width:80%; height:auto;" alt="Attachment"></span>
+                                $html .= '<li id="thumb_'.$file->id.'" style="width:'.$width.'px !important; height:'.$height.'px !important;">
+                                    <span class="mailbox-attachment-icon has-img" style="height:'.$width.'px"><div id="modal-preview" style="height:100%;width:100%;background: url(\''.$url.'\') center right;background-size: cover; background-repeat: no-repeat;"></div></span>
                                     <div class="mailbox-attachment-info">
                                       <a href="#" class="mailbox-attachment-name" style="word-wrap: break-word;"><!--i class="fa fa-paperclip"></i--> <small>'.truncate($file->filename, $truncate).'</small></a>
                                       <span class="mailbox-attachment-size">
                                         '.$file->getHumanFileSize().'
+                                        <a href="#" class="btn btn-default btn-xs pull-right" onclick="del(\'file\','.$file->id.');"><i class="fa fa-trash"></i></a>
                                         <a href="'.$file->getFileUrl().'" class="btn btn-default btn-xs pull-right"><i class="fa fa-cloud-download"></i></a>
+                                        <a href="#" class="btn btn-default btn-xs pull-right" onclick="formloader(\'preview\',\'file\','.$file->id.');"><i class="fa fa-eye"></i></a>
                                       </span>
                                     </div>
                                 </li>';
@@ -132,6 +134,12 @@ class Render {
                                     <span class="mailbox-attachment-icon" style="height:'.$width.'px"><i class="'.resolveFileType($file->type).'"></i></span>
                                     <div class="mailbox-attachment-info">
                                       <a href="'.$file->filename.'" class="mailbox-attachment-name" style="word-wrap: break-word;"><small>'.truncate($file->filename, $truncate).'</small></a>
+                                      <span class="mailbox-attachment-size">
+                                       &nbsp;
+                                       <a href="#" class="btn btn-default btn-xs pull-right" onclick="del(\'file\','.$file->id.');"><i class="fa fa-trash"></i></a>
+                                       <a href="#" class="btn btn-default btn-xs pull-right" onclick="formloader(\'preview\',\'file\','.$file->id.');"><i class="fa fa-eye"></i></a>
+                                           
+                                     </span>
                                     </div>
                                 </li>';
                     break;
@@ -141,7 +149,9 @@ class Render {
                                       <a href="#" class="mailbox-attachment-name" style="word-wrap: break-word;"><!--i class="fa fa-paperclip"></i--> <small>'.truncate($file->filename, $truncate).'</small></a>
                                       <span class="mailbox-attachment-size">'
                                         .$file->getHumanFileSize().
-                                        '<a href="'.$file->getFileUrl().'" class="btn btn-default btn-xs pull-right"><i class="fa fa-cloud-download"></i></a>
+                                        '<a href="#" class="btn btn-default btn-xs pull-right" onclick="del(\'file\','.$file->id.');"><i class="fa fa-trash"></i></a>
+                                        <a href="'.$file->getFileUrl().'" class="btn btn-default btn-xs pull-right row-border"><i class="fa fa-cloud-download"></i></a>
+                                        <a href="#" class="btn btn-default btn-xs pull-right" onclick="formloader(\'preview\',\'file\','.$file->id.');"><i class="fa fa-eye"></i></a>
                                       </span>
                                     </div>
                                 </li>';
@@ -432,7 +442,7 @@ class Render {
     public static function courseBook($coursebook){
         global $USER;
         $r       = '<div style="overflow:hidden;"><div id="coursebook" style="overflow:auto;">';
-        $r      .= '<ul  class="timeline" >';
+        $r      .= '<ul class="timeline" >';
         $p_date  = '';
         foreach ($coursebook as $cb) {
             if ($p_date != date("d.m.Y", strtotime($cb->creation_time))){ //only print time label if last artefact timestamp neq this timestamp
@@ -444,8 +454,10 @@ class Render {
                 $p_date = date("d.m.Y", strtotime($cb->creation_time));
             }
             $r      .= '<li>
-                        <i class="fa fa-check bg-green"></i>
-                        <div class="timeline-item">
+                        <i class="fa fa-check bg-green"></i>';
+            //$r      .= element('coursebook', $cb);
+            
+            $r      .= '<div class="timeline-item">
                           <span class="time" onclick="del(\'courseBook\','.$cb->id.');"><i class="fa fa-trash-o"></i></span>
                           <span class="time" onclick="processor(\'print\',\'courseBook\','.$cb->id.');"><i class="fa fa-print"></i></span>
                           <span class="time" onclick="formloader(\'courseBook\',\'edit\','.$cb->id.');"><i class="fa fa-edit"></i></span>
@@ -466,8 +478,7 @@ class Render {
             if (checkCapabilities('absent:update', $USER->role_id, false)){
                 $r  .=    Render::absentListe($cb->absent_list, 'coursebook', $cb->id);
             }
-            $r      .= ' </div>
-                      </li>';
+            $r      .= ' </div></li>';
         }
         $r      .= '    <li>
                             <i class="fa fa-clock-o bg-gray" onclick="formloader(\'courseBook\',\'new\');"></i>

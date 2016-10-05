@@ -56,6 +56,7 @@ $CFG->badges_root                   = $CFG->curriculumdata_root.'badges/';
 $CFG->institutions_root             = $CFG->curriculumdata_root.'institution/'; 
 $CFG->backup_root                   = $CFG->curriculumdata_root.'backups/';//URL for backups 
 $CFG->sql_backup_root               = $CFG->curriculumdata_root.'backups/sql/';
+$CFG->lib_root                      = dirname(__FILE__).'/libs/';
 $CFG->demo_root                     = $CFG->curriculumdata_root.'support/demo/';//URL for backups 
 //$CFG->salt                          = md5('loYfaz5r4w/ChAR1sJUw09sYkMaALLsOlKKpYb28LAcmFclAM3upsgwjDZ2tNsX2aVB6ZDJkIK6aO0DursPrqg==');
 //$CFG->access_file                   = '../share/accessfile.php?file='.$CFG->salt.'|';

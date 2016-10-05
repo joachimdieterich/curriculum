@@ -230,9 +230,10 @@ class File {
     /**
      * Load file with id $this->id 
      */
-    public function load(){
+    public function load($id = null){
+        if ($id == null) { $id = $this->id; }
         $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct WHERE fl.context_id = ct.context_id AND fl.id = ?');
-        $db->execute(array($this->id));
+        $db->execute(array($id));
         $result = $db->fetchObject();
         if (isset($result->id)){
             $this->id                    = $result->id;
@@ -268,7 +269,7 @@ class File {
         if ($id != false){ $this->id = $id; }
         $this->load();
         if (checkCapabilities('plugin:useEmbeddableGoogleDocumentViewer', $USER->role_id, false) AND !is_array(getimagesize($CFG->curriculumdata_root.$this->full_path))){
-            $r = '<iframe src="http://docs.google.com/gview?url='.$CFG->access_token_url .$this->addFileToken($this->id).'&embedded=true" style="width:100%; height:500px;" frameborder="0"></iframe><div class="space-left">'.Render::filenail($this, 'mail', false, false, false, true).'</div>';
+            $r = '<iframe src="http://docs.google.com/gview?url='.$CFG->access_token_url .$this->addFileToken($this->id).'" style="width:100%; height:500px;" frameborder="0"></iframe><div class="space-left">'.Render::filenail($this, 'mail', false, false, false, true).'</div>';
         } else if (is_array(getimagesize($CFG->curriculumdata_root.$this->full_path)) OR $this->type == '.pdf') {
             $r = '<img src="'.$CFG->access_file_url.$this->full_path.'"><br><div class="space-left" >'.Render::filenail($this, 'mail', false, false, false, true).'</div>';
         } else {

@@ -66,6 +66,7 @@ switch ($func) {
                                 $t->id   = intval($id);
                                 $t->load();
                                 $content = Printer::coursebook(array('coursebook' => array($t)));
+                               
         break;
     default: break;
 }

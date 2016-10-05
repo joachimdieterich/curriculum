@@ -452,7 +452,7 @@ function generateThumbnail($upload_dir, $filename, $context){
 }
 
 
-function human_filesize($bytes, $decimals = 2) {
+function human_filesize($bytes, $decimals = 1) {
   $sz = 'BKMGTP';
   $factor = floor((strlen($bytes) - 1) / 3);
   return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$sz[$factor];
@@ -745,3 +745,66 @@ function session_reload_user(){
     $CFG->timeout = $institution->getTimeout($USER->institution_id);            // Set timeout based on Institution
     $TEMPLATE->assign('global_timeout', $CFG->timeout);
 }
+
+/**
+ * Generates HTML element based on element template
+ * @global type $CFG
+ * @param type $element
+ * @param type $object
+ * @return type
+ */
+function element($element, $object, $string = NULL, $prefix = NULL){
+    global $CFG;
+    if ($string == NULL){
+        $string = file_get_contents(dirname(__FILE__).'/elements/e_'.$element.'.html');
+    }
+
+    foreach($object as $key => $value){
+        if (!is_array($value) AND !is_object($value)){
+            $string  = str_replace('{{'.$prefix.$key.'}}', $value, $string);
+        } else {
+            $string  = element(null, $value, $string, $key.'->' ); //call element again to replace next level
+        }
+    }
+    
+   /* replace elements*/
+   /* if ($prefix != NULL){
+        $string = element_functions($string, $prefix, $object);
+    }
+    $string = element_functions($string, 'this', $object);*/
+    return $string;
+}
+
+/*
+function element_functions($string, $prefix, $object){
+    global $$prefix;        //defines object with dynamic obj name
+    global $temp_prefix;    
+    $$prefix     = $object;
+    $temp_prefix = $prefix;
+    $string      = preg_replace_callback('/{{2}\b'.$prefix.'->\b([a-zA-Z:_]+\((([a-zA-Z0-9\$\'\_\:]+,?\s*)+)\))}{2}/', 
+                        function($r){ 
+                            global $temp_prefix;
+                            global $$temp_prefix;
+                            global $USER;
+                            $content = '';
+                            foreach($$temp_prefix AS $v){
+                                $func       = str_replace("'", '', $r[2]);
+                                $parameter  = explode(',', $func);
+                                //error_log(json_encode($parameter[2]));
+                                if (trim($parameter[1]) == '$this'){
+                                    $content   .= element($parameter[0],$v,null, 'this'); //yet only function element() can be called|  $r[1] returns every function found by preg_replace_callback
+                                }
+                                if (isset($parameter[2])){  //check permissen 
+                                    if (checkCapabilities(json_encode($parameter[2], $USER->role_id, false))){ 
+                                        $content   .= element($parameter[0],$v); //yet only function element() can be called|  $r[1] returns every function found by preg_replace_callback
+                                    }
+                                } else { 
+                                    $content   .= element($parameter[0],$v); //yet only function element() can be called|  $r[1] returns every function found by preg_replace_callback
+                                }
+                            }
+                            return $content;
+                        }, $string);
+    unset($$prefix);
+    unset($temp_prefix);
+    return $string;
+}*/

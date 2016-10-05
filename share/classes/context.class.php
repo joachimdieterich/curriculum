@@ -63,7 +63,6 @@ class Context {
         $db = DB::prepare('SELECT * FROM context WHERE '.$dependency.' = ?');
         $db->execute(array($id));
         $result = $db->fetchObject();
-        
         if ($result){
             $this->id            = $result->id;
             $this->context       = $result->context;
