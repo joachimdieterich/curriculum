@@ -37,7 +37,7 @@ switch ($_POST['func']) {
                                 $s->search  = $search;
                                 $result     = $s->view();  
                             
-                                $highlight       = array();
+                                $highlight  = array();
                                 foreach($result AS $r){
                                     if (isset($r->enabling_objective)){
                                         $highlight[] = 'ena_'.$r->id;

@@ -24,7 +24,13 @@
 */
 global $PAGE, $USER, $TEMPLATE;
 $TEMPLATE->assign('breadcrumb',  array('Hilfe' => 'index.php?action=help'));
-$TEMPLATE->assign('page_title', 'Hilfe');   
-
+$TEMPLATE->assign('page_title', 'Hilfe');  
+$search = false;
+if (isset($_POST) ){
+    if (isset($_POST['search'])){
+        $search = filter_input(INPUT_POST, 'search', FILTER_SANITIZE_STRING);
+        $TEMPLATE->assign('help_reset', true); 
+    }
+}
 $help = new Help();
-$TEMPLATE->assign('help', $help->get());   
+$TEMPLATE->assign('help', $help->get($search));   

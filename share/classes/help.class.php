@@ -48,10 +48,17 @@ class Help {
         
     }
     
-    public function get(){
+    public function get($search = false){
         global $USER;
-        $db = DB::prepare('SELECT he.id FROM help AS he ORDER BY he.title');
-        $db->execute();
+        if ($search){
+            $db = DB::prepare('SELECT he.id FROM help AS he 
+                                            WHERE he.title LIKE ? OR he.description LIKE ? OR he.category LIKE ?
+                                            ORDER BY he.title');
+            $db->execute(array('%'.$search.'%', '%'.$search.'%', '%'.$search.'%'));
+        } else {
+            $db = DB::prepare('SELECT he.id FROM help AS he ORDER BY he.title');
+            $db->execute();
+        }
         
         $r  = array();
         while($result = $db->fetchObject()) { 
