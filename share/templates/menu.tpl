@@ -26,7 +26,7 @@
                                     </a>
                                 </li>
                             {/if}
-                            {if ({$smarty.foreach.enrolments.index} > 4) AND {$smarty.foreach.enrolments.last}}
+                            {if {$smarty.foreach.enrolments.last}}
                             </li>
                             </ul>
                         {/if}
