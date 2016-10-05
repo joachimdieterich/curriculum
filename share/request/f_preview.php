@@ -40,6 +40,9 @@ switch ($func) {
                     $file->load($help->file_id);
                     $title      = $help->title;
                     $category   = $help->category;
+                    if ($file->type != '.url'){
+                        $options    = '<a href="'.$file->getFileUrl().'" class="btn btn-default btn-xs pull-right" style="margin-right:20px;"><i class="fa fa-cloud-download"></i></a>';
+                    }
         break;
 
     case 'file':    $file->load(filter_input(INPUT_GET, 'id',   FILTER_SANITIZE_STRING));
