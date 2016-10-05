@@ -42,7 +42,10 @@ switch ($func) {
                     $category   = $help->category;
                     if ($file->type != '.url'){
                         $options    = '<a href="'.$file->getFileUrl().'" class="btn btn-default btn-xs pull-right" style="margin-right:20px;"><i class="fa fa-cloud-download"></i></a>';
+                    } else {
+                        $options    = '<a href="'.$file->filename.'" target="_blank" class="btn btn-default btn-xs pull-right" style="margin-right:20px;"><i class="fa fa-link"></i></a>';
                     }
+                    $z_index    = 3001;
         break;
 
     case 'file':    $file->load(filter_input(INPUT_GET, 'id',   FILTER_SANITIZE_STRING));
@@ -53,6 +56,8 @@ switch ($func) {
                     $padding    = 'padding:0px;';
                     if ($file->type != '.url'){
                         $options    = '<a href="'.$file->getFileUrl().'" class="btn btn-default btn-xs pull-right" style="margin-right:20px;"><i class="fa fa-cloud-download"></i></a>';
+                    } else {
+                        $options    = '<a href="'.$file->filename.'" target="_blank" class="btn btn-default btn-xs pull-right" style="margin-right:20px;"><i class="fa fa-link"></i></a>';
                     }
                     $z_index    = 3001;
                             
