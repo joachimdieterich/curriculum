@@ -621,7 +621,7 @@ function resizeModal(){
         $('.modal-body').height(($('.modal-content').height()) - ($('.modal-header').height()) - ($('.modal-footer').height()) - 50 -31); // calc modal-body height for scrolling, -50 for margins - 31 (header padding
     }
     
-    if (document.getElementById('modal-preview') !=== null){
+    if (document.getElementById('modal-preview') !== null){
      document.getElementById('modal-preview').style.width  = "100%";
      document.getElementById('modal-preview').style.height = "100%";
     }
