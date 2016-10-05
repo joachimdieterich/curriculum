@@ -75,7 +75,7 @@ switch ($file->type) {
         break;
     case '.pdf':    $content     = '<div id="pdf_'.$file->id.'" style="width:100%; height: 600px;"></div>';
                     //$script_file = '<script_file>'.$CFG->base_url.'public/assets/scripts/PDFObject-master/pdfobject.js</script_file>';
-                    $script      = '<script>PDFObject.embed("'.$CFG->access_file.$file->context_path.$file->path.$file->filename.'", "#pdf_'.$file_id.'");</script>';
+                    $script      = '<script>PDFObject.embed("'.$CFG->access_file.$file->context_path.$file->path.$file->filename.'", "#pdf_'.$file->id.'");</script>';
                     break;
     
     case '.rtf':    include_once $CFG->lib_root.'rtf-html-php-master/rtf-html-php.php';
