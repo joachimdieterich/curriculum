@@ -29,8 +29,8 @@
                             {if {$smarty.foreach.enrolments.last}}
                             </li>
                             </ul>
-                        {/if}
-                        
+                            {/if}
+                            
                         {/if}
                     {/if}
                 {/foreach}
