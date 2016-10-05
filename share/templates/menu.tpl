@@ -31,8 +31,10 @@
                         {/if}
                     {/if}
                 {/foreach}
-                {if $submenu eq true}
-                    </li></ul>
+                {if isset($submenu)}
+                    {if $submenu eq true}
+                        </li></ul>
+                    {/if}
                 {/if}
             {else}<li><a href="">
                                 <i class="fa fa-dashboard"></i><span>Sie sind in keinen Lehrplan <br>eingeschrieben</span>
