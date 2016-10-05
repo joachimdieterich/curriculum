@@ -17,7 +17,7 @@
         <div class="col-md-3 col-sm-6 col-xs-12">
             <a href="#" onclick="formloader('preview','help','{$h->id}')">
               <div class="info-box">
-                <span class="info-box-icon bg-aqua" style="background: url('../share/accessfile.php?file=institution//CC-BY-SA_3.0_PL_RLP_l.png') center right;background-size: cover; background-repeat: no-repeat;"><i class="ion ion-ios-gear-outline"> </i></span>
+                <span class="info-box-icon bg-aqua" style="background: url('../share/accessfile.php?id={$h->file_id}') center right;background-size: cover; background-repeat: no-repeat;"><i class="ion ion-ios-gear-outline"> </i></span>
                 <div class="info-box-content">
                   <span class="info-box-text text-black">{$h->category}</span>
                   <span class="info-box-number text-black">{$h->title}</span>
