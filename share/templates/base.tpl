@@ -89,7 +89,7 @@
                         
                     <!-- Navbar Right Menu -->
                     <div class="navbar-custom-menu">
-                         
+                      
                       <ul class="nav navbar-nav">
                         {if checkCapabilities('menu:readLog', $my_role_id, false)}  
                         <li>   
@@ -253,7 +253,7 @@
                 </div>
                 {$app_footer} {block name=footer} {/block}
             </footer>    
-            
+              
             {block name=sidebar_right}{include file='sidebar_right.tpl'}{/block}
         </div><!-- ./wrapper -->
         

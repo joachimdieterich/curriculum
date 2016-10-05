@@ -560,7 +560,11 @@ function getImmediateChildrenByTagName(DOMElement $element, $tagName)
     }
     return $result;
 }
-
+function resolveFileTypeById($id){
+    $f = new File();
+    $f->load($id);
+    return resolveFileType($f->id);
+}
 
 function resolveFileType($type){
     switch ($type) {

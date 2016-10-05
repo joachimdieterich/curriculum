@@ -50,7 +50,7 @@ class Help {
     
     public function get(){
         global $USER;
-        $db = DB::prepare('SELECT he.id FROM help AS he');
+        $db = DB::prepare('SELECT he.id FROM help AS he ORDER BY he.title');
         $db->execute();
         
         $r  = array();
