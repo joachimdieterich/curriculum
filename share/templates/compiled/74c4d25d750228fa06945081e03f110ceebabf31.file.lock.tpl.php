@@ -1,4 +1,4 @@
-<?php /* Smarty version Smarty-3.0.6, created on 2016-10-04 08:36:53
+<?php /* Smarty version Smarty-3.0.6, created on 2016-10-06 11:45:22
          compiled from "/Applications/MAMP/htdocs/curriculum/share/templates/lock.tpl" */ ?>
 <?php /*%%SmartyHeaderCode:138928323757f34e058659b7-72237463%%*/if(!defined('SMARTY_DIR')) exit('no direct access allowed');
 $_smarty_tpl->decodeProperties(array (
@@ -7,19 +7,19 @@ $_smarty_tpl->decodeProperties(array (
     '74c4d25d750228fa06945081e03f110ceebabf31' => 
     array (
       0 => '/Applications/MAMP/htdocs/curriculum/share/templates/lock.tpl',
-      1 => 1475424337,
+      1 => 1475586661,
       2 => 'file',
     ),
     'e9d941a08708e3e9080a36e68e883c7c15367c0d' => 
     array (
       0 => '/Applications/MAMP/htdocs/curriculum/share/templates/base.tpl',
-      1 => 1475483428,
+      1 => 1475686388,
       2 => 'file',
     ),
     '8c7bf3ef5fb3e1db5785d70d14743e45c0444d09' => 
     array (
       0 => '/Applications/MAMP/htdocs/curriculum/share/templates/menu.tpl',
-      1 => 1475147147,
+      1 => 1475682970,
       2 => 'file',
     ),
     'a235b4fdd0e1722b2076299289a74aa96ff2f11a' => 
@@ -218,13 +218,15 @@ assets/images/logo.png"/><b><?php echo $_smarty_tpl->getVariable('app_title')->v
                         
                     <!-- Navbar Right Menu -->
                     <div class="navbar-custom-menu">
-                         
+                      
                       <ul class="nav navbar-nav">
+                        <?php if (checkCapabilities('menu:readLog',$_smarty_tpl->getVariable('my_role_id')->value,false)){?>  
                         <li>   
                         <a href="index.php?action=help" >
                             <i class="fa fa-graduation-cap"></i>
                           </a>
                         </li>  
+                        <?php }?>
                          <?php if (isset($_smarty_tpl->getVariable('mySemester',null,true,false)->value)&&count($_smarty_tpl->getVariable('mySemester')->value)>1){?>
                              <?php echo Form::input_dropdown('semester_id','',$_smarty_tpl->getVariable('mySemester')->value,'semester, institution','id',$_smarty_tpl->getVariable('my_semester_id')->value,null,"processor('semester','set',this.getAttribute('data-id'));");?>
 
@@ -440,7 +442,7 @@ $_smarty_tpl->tpl_vars['smarty']->value['section']['mes']['last']       = ($_sma
                 <?php $_template = new Smarty_Internal_Template('menu.tpl', $_smarty_tpl->smarty, $_smarty_tpl, $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, null, null);
 $_template->properties['nocache_hash']  = '138928323757f34e058659b7-72237463';
 $_tpl_stack[] = $_smarty_tpl; $_smarty_tpl = $_template;?>
-<?php /* Smarty version Smarty-3.0.6, created on 2016-10-04 08:36:53
+<?php /* Smarty version Smarty-3.0.6, created on 2016-10-06 11:45:23
          compiled from "/Applications/MAMP/htdocs/curriculum/share/templates/menu.tpl" */ ?>
 <!-- Left side column. contains the logo and sidebar -->
       <aside class="main-sidebar">
@@ -452,36 +454,15 @@ $_tpl_stack[] = $_smarty_tpl; $_smarty_tpl = $_template;?>
             <?php if ($_smarty_tpl->getVariable('my_enrolments')->value!=''){?>
                 <?php  $_smarty_tpl->tpl_vars['cur_menu'] = new Smarty_Variable;
  $_from = $_smarty_tpl->getVariable('my_enrolments')->value; if (!is_array($_from) && !is_object($_from)) { settype($_from, 'array');}
- $_smarty_tpl->tpl_vars['cur_menu']->total= $_smarty_tpl->_count($_from);
- $_smarty_tpl->tpl_vars['cur_menu']->iteration=0;
  $_smarty_tpl->tpl_vars['smarty']->value['foreach']['enrolments']['index']=-1;
-if ($_smarty_tpl->tpl_vars['cur_menu']->total > 0){
+if ($_smarty_tpl->_count($_from) > 0){
     foreach ($_from as $_smarty_tpl->tpl_vars['cur_menu']->key => $_smarty_tpl->tpl_vars['cur_menu']->value){
- $_smarty_tpl->tpl_vars['cur_menu']->iteration++;
- $_smarty_tpl->tpl_vars['cur_menu']->last = $_smarty_tpl->tpl_vars['cur_menu']->iteration === $_smarty_tpl->tpl_vars['cur_menu']->total;
  $_smarty_tpl->tpl_vars['smarty']->value['foreach']['enrolments']['index']++;
- $_smarty_tpl->tpl_vars['smarty']->value['foreach']['enrolments']['last'] = $_smarty_tpl->tpl_vars['cur_menu']->last;
 ?>
                     <?php if ($_smarty_tpl->getVariable('cur_menu')->value->semester_id==$_smarty_tpl->getVariable('my_semester_id')->value){?>
                         <?php if ($_smarty_tpl->getVariable('cur_menu')->value->id==$_smarty_tpl->getVariable('cur_menu')->value->base_curriculum_id||$_smarty_tpl->getVariable('cur_menu')->value->base_curriculum_id==null){?>
-                        <li <?php if (isset($_smarty_tpl->getVariable('page_curriculum',null,true,false)->value)){?><?php if (($_smarty_tpl->getVariable('page_curriculum')->value==$_smarty_tpl->getVariable('cur_menu')->value->id)&&($_smarty_tpl->getVariable('page_group')->value==$_smarty_tpl->getVariable('cur_menu')->value->group_id)){?> class="active treeview"<?php }?><?php }?>>
-                            
-                            <a href="index.php?action=view&curriculum_id=<?php echo $_smarty_tpl->getVariable('cur_menu')->value->id;?>
-&group=<?php echo $_smarty_tpl->getVariable('cur_menu')->value->group_id;?>
-">
-                                <i class="fa fa-dashboard"></i><span><?php echo $_smarty_tpl->getVariable('cur_menu')->value->curriculum;?>
-</span><small class="label pull-right bg-green"><?php echo $_smarty_tpl->getVariable('cur_menu')->value->groups;?>
-</small>
-                            </a>
-                        </li>
-                        <?php ob_start();?><?php echo $_smarty_tpl->getVariable('smarty')->value['foreach']['enrolments']['index'];?>
-<?php $_tmp1=ob_get_clean();?><?php if ($_tmp1==4){?> 
-                            <li class=" treeview"><a><span>Weitere Einträge</span><i class="fa fa-angle-left pull-right"></i></a> 
-                            <ul class="treeview-menu" style="display: none;">
-                        <?php }?>
-                        <?php ob_start();?><?php echo $_smarty_tpl->getVariable('smarty')->value['foreach']['enrolments']['index'];?>
-<?php $_tmp2=ob_get_clean();?><?php if ($_tmp2>4){?> 
-                            <li <?php if (isset($_smarty_tpl->getVariable('page_curriculum',null,true,false)->value)){?><?php if (($_smarty_tpl->getVariable('page_curriculum')->value==$_smarty_tpl->getVariable('cur_menu')->value->id)&&($_smarty_tpl->getVariable('page_group')->value==$_smarty_tpl->getVariable('cur_menu')->value->group_id)){?> <?php }?><?php }?>>
+                            <li <?php if (isset($_smarty_tpl->getVariable('page_curriculum',null,true,false)->value)){?><?php if (($_smarty_tpl->getVariable('page_curriculum')->value==$_smarty_tpl->getVariable('cur_menu')->value->id)&&($_smarty_tpl->getVariable('page_group')->value==$_smarty_tpl->getVariable('cur_menu')->value->group_id)){?> class="active treeview"<?php }?><?php }?>>
+
                                 <a href="index.php?action=view&curriculum_id=<?php echo $_smarty_tpl->getVariable('cur_menu')->value->id;?>
 &group=<?php echo $_smarty_tpl->getVariable('cur_menu')->value->group_id;?>
 ">
@@ -490,15 +471,33 @@ if ($_smarty_tpl->tpl_vars['cur_menu']->total > 0){
 </small>
                                 </a>
                             </li>
-                        <?php }?>
-                        <?php ob_start();?><?php echo $_smarty_tpl->getVariable('smarty')->value['foreach']['enrolments']['index'];?>
-<?php $_tmp3=ob_get_clean();?><?php ob_start();?><?php echo $_smarty_tpl->getVariable('smarty')->value['foreach']['enrolments']['last'];?>
-<?php $_tmp4=ob_get_clean();?><?php if (($_tmp3>4)&&$_tmp4){?>
-                            </li></ul>
-                        <?php }?>
+                            <?php ob_start();?><?php echo $_smarty_tpl->getVariable('smarty')->value['foreach']['enrolments']['index'];?>
+<?php $_tmp1=ob_get_clean();?><?php if ($_tmp1==4){?> 
+                                <li class=" treeview"><a><span>Weitere Einträge</span><i class="fa fa-angle-left pull-right"></i></a> 
+                                <ul class="treeview-menu" style="display: none;">
+                                <?php $_smarty_tpl->tpl_vars["submenu"] = new Smarty_variable(true, null, null);?> 
+                                <?php ob_start();?><?php echo $_smarty_tpl->getVariable('smarty')->value['foreach']['enrolments']['index'];?>
+<?php $_tmp2=ob_get_clean();?><?php if ($_tmp2>4){?> 
+                                    <li <?php if (isset($_smarty_tpl->getVariable('page_curriculum',null,true,false)->value)){?><?php if (($_smarty_tpl->getVariable('page_curriculum')->value==$_smarty_tpl->getVariable('cur_menu')->value->id)&&($_smarty_tpl->getVariable('page_group')->value==$_smarty_tpl->getVariable('cur_menu')->value->group_id)){?> <?php }?><?php }?>>
+                                        <a href="index.php?action=view&curriculum_id=<?php echo $_smarty_tpl->getVariable('cur_menu')->value->id;?>
+&group=<?php echo $_smarty_tpl->getVariable('cur_menu')->value->group_id;?>
+">
+                                            <i class="fa fa-dashboard"></i><span><?php echo $_smarty_tpl->getVariable('cur_menu')->value->curriculum;?>
+</span><small class="label pull-right bg-green"><?php echo $_smarty_tpl->getVariable('cur_menu')->value->groups;?>
+</small>
+                                        </a>
+                                    </li>
+                                <?php }?>
+                                
+                            <?php }?>    
                         <?php }?>
                     <?php }?>
                 <?php }} ?>
+                <?php if (isset($_smarty_tpl->getVariable('submenu',null,true,false)->value)){?>
+                    <?php if ($_smarty_tpl->getVariable('submenu')->value==true){?>
+                        </li></ul>
+                    <?php }?>
+                <?php }?>
             <?php }else{ ?><li><a href="">
                                 <i class="fa fa-dashboard"></i><span>Sie sind in keinen Lehrplan <br>eingeschrieben</span>
                       </a></li>
@@ -607,7 +606,7 @@ if ($_smarty_tpl->tpl_vars['cur_menu']->total > 0){
                 </a>
             </li>
             <?php }?>
-            
+          </ul>
         </section>
         <!-- /.sidebar -->
       </aside>
@@ -683,11 +682,11 @@ if ($_smarty_tpl->tpl_vars['cur_menu']->total > 0){
                 <?php echo $_smarty_tpl->getVariable('app_footer')->value;?>
   
             </footer>    
-            
+              
             <?php $_template = new Smarty_Internal_Template('sidebar_right.tpl', $_smarty_tpl->smarty, $_smarty_tpl, $_smarty_tpl->cache_id, $_smarty_tpl->compile_id, null, null);
 $_template->properties['nocache_hash']  = '138928323757f34e058659b7-72237463';
 $_tpl_stack[] = $_smarty_tpl; $_smarty_tpl = $_template;?>
-<?php /* Smarty version Smarty-3.0.6, created on 2016-10-04 08:36:54
+<?php /* Smarty version Smarty-3.0.6, created on 2016-10-06 11:45:23
          compiled from "/Applications/MAMP/htdocs/curriculum/share/templates/sidebar_right.tpl" */ ?>
 <!-- Control Sidebar -->
 <aside class="control-sidebar control-sidebar-dark">

@@ -31,12 +31,15 @@
       </div><!-- /.login-logo -->
       <div class="login-box-body">
         <p class="login-box-msg"></p>
+        {if isset($page_message)}
+            <strong>{FORM::info('error', '',$page_message[0]['message'], '','col-sm-12 text-red')}</strong>
+        {/if}
         <form action="index.php?action=login" method="post">
-          <div class="form-group has-feedback">
+          <div class="form-group has-feedback {if isset($page_message)}has-error{/if}">
             <input type="text" class="form-control" id="username" name="username" {if isset($username)}value="{$username}"{/if} placeholder="Benutzername">
             <span class="glyphicon glyphicon-user form-control-feedback"></span>
           </div>
-          <div class="form-group has-feedback">
+          <div class="form-group has-feedback {if isset($page_message)}has-error{/if}">
             <input type="password" class="form-control" name="password" placeholder="Passwort">
             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
           </div>

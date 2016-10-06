@@ -23,11 +23,9 @@
                     <span class="glyphicon glyphicon-search form-control-feedback"></span>
                 </form>
             </div>
-            
         </div>
     </div>
     <div class="row">
-        
         {foreach key=helpid item=h from=$help}
         <div class="col-md-3 col-sm-6 col-xs-12">
             <a href="#" onclick="formloader('preview','help','{$h->id}')">
