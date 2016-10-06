@@ -125,11 +125,13 @@ try { // Error handling
     if (file_exists($PAGE->controller)) {   
         include($PAGE->controller);  
         $TEMPLATE->assign('page_name',  $PAGE->action );
-        if (isset($PAGE->message) AND $PAGE->action != 'login'){/* Systemnachrichten */
+        if (isset($PAGE->message)){/* Systemnachrichten */
             $TEMPLATE->assign('page_message_count', count($PAGE->message));
             $TEMPLATE->assign('page_message',       $PAGE->message);
-            
-            $_SESSION['PAGE']->message = null;  //reset to prevent multiple notifications
+            if ($PAGE->action == 'login'){
+                $_SESSION['PAGE'] = new stdClass();
+                $_SESSION['PAGE']->message = null;  //reset to prevent multiple notifications
+            }
         } 
     } else {  
         $TEMPLATE->assign('page_name',         $PAGE->action);  
