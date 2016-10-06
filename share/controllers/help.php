@@ -32,5 +32,5 @@ if (isset($_POST) ){
         $TEMPLATE->assign('help_reset', true); 
     }
 }
-$help = new Help();
+$help   = new Help();
 $TEMPLATE->assign('help', $help->get($search));   
