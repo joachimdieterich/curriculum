@@ -18,12 +18,12 @@
 
 function smarty_function_html_timeline($params, $template) {
     global $USER;
-    require_once(SMARTY_PLUGINS_DIR . 'function.paginate_first.php');
-    require_once(SMARTY_PLUGINS_DIR . 'function.paginate_order.php');
-    require_once(SMARTY_PLUGINS_DIR . 'function.paginate_prev.php');
-    require_once(SMARTY_PLUGINS_DIR . 'function.paginate_middle.php');
-    require_once(SMARTY_PLUGINS_DIR . 'function.paginate_next.php');
-    require_once(SMARTY_PLUGINS_DIR . 'function.paginate_last.php');
+    require_once(dirname(__FILE__) . '/function.paginate_first.php');
+    require_once(dirname(__FILE__) . '/function.paginate_order.php');
+    require_once(dirname(__FILE__) . '/function.paginate_prev.php');
+    require_once(dirname(__FILE__) . '/function.paginate_middle.php');
+    require_once(dirname(__FILE__) . '/function.paginate_next.php');
+    require_once(dirname(__FILE__) . '/function.paginate_last.php');
     foreach($params as $_key => $_val) {
         switch ($_key) {
             case 'id':          $id                 = $_val;

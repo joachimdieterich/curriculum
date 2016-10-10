@@ -254,7 +254,7 @@
               
             {block name=sidebar_right}{include file='sidebar_right.tpl'}{/block}
         </div><!-- ./wrapper -->
-        
+    {/if}    
 <!-- SCRIPTS-->  
     <!-- CK Editor -->
     <script src="{$lib_url}ckeditor/ckeditor.js"></script>
@@ -342,5 +342,5 @@
 
     {/block}  
     </body>
-    {/if}
+    
 </html>

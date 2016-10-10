@@ -188,7 +188,12 @@ class Mail {
      * @return boolean 
      */
     public function postMail($dependency = 'person', $id = null){
-        checkCapabilities('mail:postMail', $_SESSION['USER']->role_id); // User kann per cronjob festgelegt sein, daher $_SESSION
+        if ($dependency != 'reset'){
+            checkCapabilities('mail:postMail', $_SESSION['USER']->role_id); // User kann per cronjob festgelegt sein, daher $_SESSION 
+        } else {
+            $dependency = 'person';
+        }
+        
         
         switch ($dependency) {
             case 'person': $db = DB::prepare('INSERT INTO message (sender_id,receiver_id,subject,message,sender_status,receiver_status) VALUES (?,?,?,?,1,0)');

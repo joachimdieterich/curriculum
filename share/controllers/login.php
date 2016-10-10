@@ -25,8 +25,21 @@ global $TEMPLATE, $PAGE;
 
 $user       = new User();
 $message    = '';
-
-if(filter_input(INPUT_POST, 'login', FILTER_UNSAFE_RAW)) {
+if(filter_input(INPUT_POST, 'reset', FILTER_UNSAFE_RAW)) {
+    $user->username = (filter_input(INPUT_POST,     'username', FILTER_UNSAFE_RAW));     
+    $user->load('username', $user->username, true);
+    /* write creator of this user to reset password. todo: write acutal teacher/admin*/
+    $mail   = new Mail();
+    $mail->sender_id    = $user->id;
+    $mail->receiver_id  = $user->creator_id; //current Teacher
+    $mail->subject      = 'Passwort vergessen';
+    $mail->message     .= '<p><strong>'.$user->resolveUserId($user->id, 'full').'</strong> hat das Passwort vergessen. Über den folgenden Link können Sie es zurücksetzen.';
+    $mail->message     .= '<br><a onclick="formloader(\'password\',\'reset\','.$user->id.');">Passwort zurücksetzen</a></p>';
+    $mail->postMail('reset');
+    $PAGE->message[] = array('message' => 'Ihr Passwort wird durch den Administrator zurückgesetzt.', 'icon' => 'fa-key text-success'); 
+    
+    
+} else if(filter_input(INPUT_POST, 'login', FILTER_UNSAFE_RAW)) {
     $user->username = (filter_input(INPUT_POST,     'username', FILTER_UNSAFE_RAW));     
     $user->password = (md5(filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW)));
     $TEMPLATE->assign('username', $user->username);                 // Benutzername bei falschem Passwort automatisch einsetzen.

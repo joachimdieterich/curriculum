@@ -45,6 +45,12 @@ if (isset($func)){
                             $edit       = true; 
                             $username   = $USER->username;      
             break;
+        case "reset":       checkCapabilities('user:resetPassword', $USER->role_id);
+                            $header     = 'Kennwort zurücksetzen';
+                            $user       = new User();
+                            $user->load('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
+                            $username   = $user->username;    
+            break;
         default: break;
     }
 }
@@ -67,12 +73,19 @@ if (isset($info)){
 }
 $content .= Form::input_text('username', 'Benutzername', $username, $error,'','text',null, null, 'col-sm-3','col-sm-9', true);
 $content .= Form::info('p_rule', ' ', 'Das Kennwort muss ...<br>- mind. 8 Zeichen lang sein<br>- mind. 1 Großbuchstaben <br>- mind. 1 Kleinbuchstaben<br>- mind. 1 Zahl<br>- mind. 1 Sonderzeichen <br> enthalten. ');
-$content .= Form::input_text('oldpassword', 'Altes Kennwort', null, $error, '','password');
+if ($func != 'reset'){
+    $content .= Form::input_text('oldpassword', 'Altes Kennwort', null, $error, '','password');
+}
 $content .= Form::input_text('password', 'Kennwort', null, $error, '','password');
-$content .= Form::input_text('confirm', 'Kennwort bestätigen', null, $error, '','password');
+if ($func != 'reset'){
+    $content .= Form::input_text('confirm', 'Kennwort bestätigen', null, $error, '','password');
+}
 $content .= '</div></form>';
 
 $f_content = '';
+if ($func == 'reset'){
+    $f_content .= '<button name="reset" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_password\').submit();"> '.$header.'</button>'; 
+} 
 if (isset($edit)){
     $f_content .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_password\').submit();"> '.$header.'</button>'; 
 } 

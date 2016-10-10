@@ -30,43 +30,57 @@ if (!isset($_SESSION['PAGE']->target_url)){     //if target_url is not set -> us
     $_SESSION['PAGE']->target_url       = $_SESSION['PAGE']->url;
 }
 $user           = new USER();
-$gump           = new Gump();    /* Validation */
-$_POST          = $gump->sanitize($_POST);       //sanitize $_POST
+$gump           = new Gump();                                                   /* Validation */
+$_POST          = $gump->sanitize($_POST);                                      //sanitize $_POST
 
 $user->username = $_POST['username']; 
-$user->password = md5($_POST['oldpassword']); 
 $password       = $_POST['password']; 
-$confirm        = $_POST['confirm']; 
 
-if (!$user->checkLoginData()){
-    $_SESSION['FORM']->id      = null;
-    $_SESSION['FORM']->form    = 'password';
-    $_SESSION['FORM']->error   = array('oldpassword' => array('message' => array(0 => 'Das alte Kennwort ist falsch.')));
-    $_SESSION['FORM']->func    = $_POST['func'];
-} else if ($password != $confirm){
-    $_SESSION['FORM']->id      = null;
-    $_SESSION['FORM']->form    = 'password';
-    $_SESSION['FORM']->error   = array('password' => array('message' => array(0 => 'Kennwörter stimmen nicht überein.')),
-                                       'confirm' => array('message' => array(0 => 'Kennwörter stimmen nicht überein.')));
-    $_SESSION['FORM']->func    = $_POST['func'];
-} else {
-    // todo alle Regeln definieren
-    $gump->validation_rules(array(
-    'password'          => 'required|min_len,8',
-    'confirm'           => 'required|min_len,8'
-    ));
-    $validated_data = $gump->run($_POST);
-    if($validated_data === false) {/* validation failed */
-        $_SESSION['FORM']            = new stdClass();
-        $_SESSION['FORM']->form      = 'password'; 
-        $_SESSION['FORM']->error     = $gump->get_readable_errors();
-        $_SESSION['FORM']->func      = $_POST['func'];
-    } else {
-        if ($user->changePassword(md5($password))){
-            $_SESSION['PAGE']->message[] = array('message' => 'Passwort erfolgreich geändert', 'icon' => 'fa-key text-success');
-        }
-        $_SESSION['FORM']            = null;                     // reset Session Form object 
-    }
+switch ($_POST['func']) {
+    case 'reset':   if ($user->changePassword(md5($password))){
+                        $_SESSION['PAGE']->message[] = array('message' => 'Vergessenes Passwort erfolgreich geändert', 'icon' => 'fa-key text-success');
+                    }
+                    $_SESSION['FORM']            = new stdClass();
+                    $_SESSION['FORM']            = null;
+                    header('Location:'.$_SESSION['PAGE']->url);
+        break;
+    case 'edit':
+    case 'changePW':$user->password = md5($_POST['oldpassword']);    
+                    $confirm        = $_POST['confirm'];
+
+                     if (!$user->checkLoginData()){
+                         $_SESSION['FORM']->id      = null;
+                         $_SESSION['FORM']->form    = 'password';
+                         $_SESSION['FORM']->error   = array('oldpassword' => array('message' => array(0 => 'Das alte Kennwort ist falsch.')));
+                         $_SESSION['FORM']->func    = $_POST['func'];
+                     } else if ($password != $confirm){
+                         $_SESSION['FORM']->id      = null;
+                         $_SESSION['FORM']->form    = 'password';
+                         $_SESSION['FORM']->error   = array('password' => array('message' => array(0 => 'Kennwörter stimmen nicht überein.')),
+                                                            'confirm' => array('message' => array(0 => 'Kennwörter stimmen nicht überein.')));
+                         $_SESSION['FORM']->func    = $_POST['func'];
+                     } else {
+                         // todo alle Regeln definieren
+                         $gump->validation_rules(array(
+                         'password'          => 'required|min_len,8',
+                         'confirm'           => 'required|min_len,8'
+                         ));
+                         $validated_data = $gump->run($_POST);
+                         if($validated_data === false) {/* validation failed */
+                             $_SESSION['FORM']            = new stdClass();
+                             $_SESSION['FORM']->form      = 'password'; 
+                             $_SESSION['FORM']->error     = $gump->get_readable_errors();
+                             $_SESSION['FORM']->func      = $_POST['func'];
+                         } else {
+                             if ($user->changePassword(md5($password))){
+                                 $_SESSION['PAGE']->message[] = array('message' => 'Passwort erfolgreich geändert', 'icon' => 'fa-key text-success');
+                             }
+                             $_SESSION['FORM']            = null;                     // reset Session Form object 
+                         }
+                     }
+
+                     header('Location:'.$_SESSION['PAGE']->target_url);
+        break;
+    default:
+        break;
 }
-
-header('Location:'.$_SESSION['PAGE']->target_url);

@@ -133,8 +133,6 @@ class Grade {
                                             WHERE gr.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE institution_id = ins.id AND user_id = ?) 
                                             AND gr.institution_id = ins.id '.$order_param );
                         $db->execute(array($USER->id));
-
-
                 break;
             case 'institution': $db = DB::prepare('SELECT gr.*, ins.institution 
                                                     FROM grade AS gr, institution AS ins 
@@ -143,8 +141,7 @@ class Grade {
                         $db->execute(array($id));
             default:
                 break;
-        }
-        
+        }      
         
         while($result = $db->fetchObject()) { 
             foreach ($result as $key => $value) {

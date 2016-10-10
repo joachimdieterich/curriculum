@@ -42,6 +42,7 @@ $TEMPLATE = new Smarty();
 $TEMPLATE->template_dir           = $CFG->smarty_template_dir; 
 $TEMPLATE->compile_dir            = $CFG->smarty_template_compile_dir;
 $TEMPLATE->cache_dir              = $CFG->smarty_template_cache_dir;
+$TEMPLATE->addPluginsDir($CFG->smarty_template_dir.'/plugins/');        //enable individual template smarty plugins
 $TEMPLATE->assign('tb_param',       $CFG->tb_param);
 $TEMPLATE->assign('global_timeout', $CFG->timeout);
 $TEMPLATE->assign('message_timeout',$CFG->message_timeout);
