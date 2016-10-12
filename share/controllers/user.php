@@ -104,7 +104,7 @@ $TEMPLATE->assign('groups_array', $group_list);
 $TEMPLATE->assign('myInstitutions', $institution->getInstitutions('user', null, $USER->id));
 
 $users      = new USER();
-$p_options  = array('delete' => array('onclick'      => "del('user',__id__, $USER->id);", 
+$p_options  = array('delete' => array('onclick'      => "del('user',__id__);", 
                                      'capability'   => checkCapabilities('user:delete', $USER->role_id, false),
                                      'icon'         => 'fa fa-minus',
                                      'tooltip'      => 'löschen'),

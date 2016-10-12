@@ -50,7 +50,7 @@
                                 <div class="panel panel-default box-objective {if isset($highlight)}{if in_array("ter_`$ter->id`", $highlight)} highlight {/if}{/if}"> 
                                     <div class="panel-heading boxheader" style="background: {$ter->color}">
                                          {if isset($showaddObjectives)}
-                                             <a onclick="del('terminalObjectives', {$ter->id}, {$my_id});"><span class="fa fa-minus pull-right invert box-sm-icon"></span></a>
+                                             <a onclick="del('terminalObjectives', {$ter->id});"><span class="fa fa-minus pull-right invert box-sm-icon"></span></a>
                                              <a onclick="formloader('terminalObjective','edit', {$ter->id});"><span class="fa fa-edit pull-right invert box-sm-icon"></span></a>
                                              {if $ter->order_id neq '1'}
                                                  <a onclick="order('down', 'terminal_objective','{$ter->id}');"><span class="fa fa-arrow-up pull-left box-sm-icon"></span></a>
@@ -126,7 +126,7 @@
                                                             <a  onclick="order('up', 'enabling_objective', '{$ena->id}');"><span class="fa fa-arrow-right pull-right box-sm-icon"></span></a>
                                                         {/if}
                                                     {/if}
-                                                    <a  onclick="del('enablingObjectives', {$ena->id}, {$my_id});"><span class="fa fa-minus pull-right box-sm-icon"</a>
+                                                    <a  onclick="del('enablingObjectives', {$ena->id});"><span class="fa fa-minus pull-right box-sm-icon"</a>
                                                     <a  onclick="formloader('enablingObjective','edit', {$ena->id});"><span class="fa fa-edit pull-right box-sm-icon"></span></a>
                                                     {*<a  onclick="editObjective({$course[0]->curriculum_id},{$ter->id},{$ena->id});"><span class="fa fa-edit pull-right"></span></a>*}
                                                    {if $ena->order_id neq '1'}

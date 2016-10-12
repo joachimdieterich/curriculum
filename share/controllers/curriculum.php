@@ -36,7 +36,7 @@ if(isset($_GET['reset']) OR (isset($_POST['reset'])) OR (isset($_POST['new_curri
  */
 
 
-$p_options = array('delete' => array('onclick'      => "del('curriculum',__id__, $USER->id);", 
+$p_options = array('delete' => array('onclick'      => "del('curriculum',__id__);", 
                                      'capability'   => checkCapabilities('curriculum:delete', $USER->role_id, false),
                                      'icon'         => 'fa fa-minus', 
                                      'tooltip'      => 'löschen'),

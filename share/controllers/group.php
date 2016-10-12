@@ -130,7 +130,7 @@ $semesters->institution_id  = $USER->institutions;
 $TEMPLATE->assign('semester', $semesters->getSemesters());
 
 $groups                     = new Group(); 
-$p_options = array('delete' => array('onclick'      => "del('group',__id__, $USER->id);", 
+$p_options = array('delete' => array('onclick'      => "del('group',__id__);", 
                                      'capability'   => checkCapabilities('groups:delete', $USER->role_id, false),
                                      'icon'         => 'fa fa-minus', 
                                      'tooltip'      => 'löschen'),

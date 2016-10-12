@@ -29,7 +29,7 @@ $TEMPLATE->assign('page_title', 'Zertifikat einrichten');
 $certificates = new Certificate();
 $certificates->institution_id = $USER->institutions;
 
-$p_options = array('delete' => array('onclick'    => "del('certificate',__id__, $USER->id);", 
+$p_options = array('delete' => array('onclick'    => "del('certificate',__id__);", 
                                      'capability' => checkCapabilities('certificate:delete', $USER->role_id, false),
                                      'icon'       => 'fa fa-minus',
                                      'tooltip'    => 'löschen'),

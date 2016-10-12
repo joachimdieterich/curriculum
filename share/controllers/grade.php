@@ -29,7 +29,7 @@ $TEMPLATE->assign('page_title', 'Klassenstufen');
 $grade                  = new Grade();
 $grade->institution_id  = $USER->institutions;
 
-$p_options = array('delete' => array('onclick'    => "del('grade',__id__, $USER->id);", 
+$p_options = array('delete' => array('onclick'    => "del('grade',__id__);", 
                                      'capability' => checkCapabilities('grade:delete', $USER->role_id, false),
                                      'icon'       => 'fa fa-minus',
                                      'tooltip'    => 'löschen'),

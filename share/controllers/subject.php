@@ -28,7 +28,7 @@ $TEMPLATE->assign('page_title', 'Fächer');
 $TEMPLATE->assign('breadcrumb',  array('Fächer' => 'index.php?action=subject'));
 $subject                    = new Subject();
 $subject->institution_id    = $USER->institutions;
-$p_options = array('delete' => array('onclick'    => "del('subject',__id__, $USER->id);", 
+$p_options = array('delete' => array('onclick'    => "del('subject',__id__);", 
                                      'capability' => checkCapabilities('subject:delete', $USER->role_id, false),
                                      'icon'       => 'fa fa-minus',
                                      'tooltip'    => 'löschen',),

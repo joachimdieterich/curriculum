@@ -30,7 +30,7 @@ $TEMPLATE->assign('breadcrumb',  array('Lernzeiträume' => 'index.php?action=sem
 $semesters                  = new Semester();
 $semesters->institution_id  = $USER->institutions; 
 
-$p_options = array('delete' => array('onclick'    => "del('semester',__id__, $USER->id);", 
+$p_options = array('delete' => array('onclick'    => "del('semester',__id__);", 
                                      'capability' => checkCapabilities('semester:delete', $USER->role_id, false),
                                      'icon'       => 'fa fa-minus',
                                      'tooltip'    => 'löschen'),
