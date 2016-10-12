@@ -132,8 +132,10 @@ class Form {
                        if (count($select_data) > 0){
                             foreach ($select_data as $value) {
                                 if (strpos($select_label, ',')){ // more than one field in select_label
-                                list ($field1, $field2) = explode(', ', $select_label);
-                                    $label  = $value->$field1. ' '. $value->$field2;
+                                    foreach (explode(', ', $select_label) as $f) {
+                                        $fields[]  = $value->$f;
+                                    }
+                                    $label = implode(" | ", $fields);
                                 } else {
                                     $label  = $value->$select_label;
                                 }
@@ -148,25 +150,27 @@ class Form {
         return $form;
     }
     public static function input_select_multiple($id, $label, $select_data, $select_label, $select_value, $input, $error, $onchange= '', $placeholder ='---', $class_left='col-sm-3', $class_right='col-sm-9'){
-        $class_left='col-sm-3'; 
-        $class_right='col-sm-9';
+        $class_left     ='col-sm-3'; 
+        $class_right    ='col-sm-9';
         $form = '<div class="form-group '.validate_msg($error, $id, true).'">
-                  <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
-                  <div class="'.$class_right.'">
-                      <select multiple id="'.$id.'[]" name="'.$id.'[]" class="form-control" onchange="'.$onchange.'">';
-                       if (count($select_data) > 0){
+                    <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
+                    <div class="'.$class_right.'">
+                        <select multiple id="'.$id.'[]" name="'.$id.'[]" class="form-control" onchange="'.$onchange.'">';
+                        if (count($select_data) > 0){
                             foreach ($select_data as $value) {
-                                if (strpos($select_label, ',')){ // more than one field in select_label
-                                list ($field1, $field2) = explode(', ', $select_label);
-                                    $label  = $value->$field1. ' '. $value->$field2;
+                                if (strpos($select_label, ',')){ // more than one field in select_label                   
+                                    foreach (explode(', ', $select_label) as $f) {
+                                        $fields[]  = $value->$f;
+                                    }
+                                    $label = implode(" | ", $fields);
                                 } else {
                                     $label  = $value->$select_label;
                                 }
                                 $form .= '<option label="'.$label.'" value="'.$value->$select_value.'"'; if ($input == $value->$select_value){ $form .= 'selected="selected"'; } $form .= '>'.$label.'</option>';
                             }
-                       } else {
+                        } else {
                            $form .= '<option label="'.$placeholder.'">'.$placeholder.'</option>';
-                       }
+                        }
         $form .= '</select> ';
         $form .= '</div></div>';
         
@@ -174,10 +178,10 @@ class Form {
     }
     
     public static function input_color($params){
-        $label = 'Farbe';
-        $rgb = '#3cc95b';
-        $class_left='col-sm-3'; 
-        $class_right='col-sm-9';
+        $label          = 'Farbe';
+        $rgb            = '#3cc95b';
+        $class_left     ='col-sm-3'; 
+        $class_right    ='col-sm-9';
         foreach($params as $key => $val) {
             $$key = $val;
         }
@@ -196,9 +200,9 @@ class Form {
     }
     
     public static function input_date($params){
-        $type = 'date';
-        $class_left='col-sm-3'; 
-        $class_right='col-sm-9';
+        $type           = 'date';
+        $class_left     ='col-sm-3'; 
+        $class_right    ='col-sm-9';
         foreach($params as $key => $val) {
             $$key = $val;
         }
