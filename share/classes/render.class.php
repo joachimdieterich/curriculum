@@ -98,7 +98,7 @@ class Render {
         return $list;
     }
     
-    public static function thumb($file_list){
+    public static function thumb($file_list, $tag = 'li'){
         global $CFG;
         $height   = 192;
         $width    = 133;
@@ -117,20 +117,25 @@ class Render {
                 case '.svg':    
                 case '.jpeg':    
                 case '.jpg':    if ($file->getThumb() == false){ $url = $file->getFileUrl(); } else { $url = $file->getThumb();}
-                                $html .= '<li id="thumb_'.$file->id.'" style="width:'.$width.'px !important; height:'.$height.'px !important;">
-                                    <span class="mailbox-attachment-icon has-img" style="height:'.$width.'px"><div id="modal-preview" style="height:100%;width:100%;background: url(\''.$url.'\') center right;background-size: cover; background-repeat: no-repeat;"></div></span>
+                                $html .= '<'.$tag.' id="thumb_'.$file->id.'" style="width:'.$width.'px !important; height:'.$height.'px !important;">
+                                    <span class="mailbox-attachment-icon has-img" style="height:'.$width.'px">
+                                        <div id="modal-preview" style="height:100%;width:100%;background: url(\''.$url.'\') center right;background-size: cover; background-repeat: no-repeat;">
+                                            <h6 class="pull-right" style="padding-right:10px;">'.$file->getHumanFileSize().'</h6>
+                                        </div>
+                                    </span>
                                     <div class="mailbox-attachment-info">
                                       <a href="#" class="mailbox-attachment-name" style="word-wrap: break-word;"><!--i class="fa fa-paperclip"></i--> <small>'.truncate($file->filename, $truncate).'</small></a>
                                       <span class="mailbox-attachment-size">
-                                        '.$file->getHumanFileSize().'
                                         <a href="#" class="btn btn-default btn-xs pull-right" onclick="del(\'file\','.$file->id.');"><i class="fa fa-trash"></i></a>
                                         <a href="'.$file->getFileUrl().'" class="btn btn-default btn-xs pull-right"><i class="fa fa-cloud-download"></i></a>
                                         <a href="#" class="btn btn-default btn-xs pull-right" onclick="formloader(\'preview\',\'file\','.$file->id.');"><i class="fa fa-eye"></i></a>
+                                        <a href="#" class="btn btn-default btn-xs pull-right" onclick="formloader(\'file\',\'edit\','.$file->id.');"><i class="fa fa-edit"></i></a>
+                                            <br>
                                       </span>
                                     </div>
-                                </li>';
+                                </'.$tag.'>';
                     break;
-                case '.url':    $html .= '<li  style="height:'.$height.'px !important; width:'.$width.'px !important;">
+                case '.url':    $html .= '<'.$tag.' style="height:'.$height.'px !important; width:'.$width.'px !important;">
                                     <span class="mailbox-attachment-icon" style="height:'.$width.'px"><i class="'.resolveFileType($file->type).'"></i></span>
                                     <div class="mailbox-attachment-info">
                                       <a href="'.$file->filename.'" class="mailbox-attachment-name" style="word-wrap: break-word;"><small>'.truncate($file->filename, $truncate).'</small></a>
@@ -141,9 +146,9 @@ class Render {
                                            
                                      </span>
                                     </div>
-                                </li>';
+                                </'.$tag.'>';
                     break;
-                default:        $html .= '<li  style="height:'.$height.'px !important; width:'.$width.'px !important;">
+                default:        $html .= '<'.$tag.' style="height:'.$height.'px !important; width:'.$width.'px !important;">
                                     <span class="mailbox-attachment-icon" style="height:'.$width.'px"><i class="'.resolveFileType($file->type).'"></i></span>
                                     <div class="mailbox-attachment-info">
                                       <a href="#" class="mailbox-attachment-name" style="word-wrap: break-word;"><!--i class="fa fa-paperclip"></i--> <small>'.truncate($file->filename, $truncate).'</small></a>
@@ -154,7 +159,7 @@ class Render {
                                         <a href="#" class="btn btn-default btn-xs pull-right" onclick="formloader(\'preview\',\'file\','.$file->id.');"><i class="fa fa-eye"></i></a>
                                       </span>
                                     </div>
-                                </li>';
+                                </'.$tag.'>';
                     break;
             }
         }
@@ -409,7 +414,7 @@ class Render {
             $r = '<div class="filesingle filenail" id="row'.$ID_Postfix.''.$file->id.'" onclick="javascript:location.href=\''.$CFG->access_file_url.''.$file->context_path.''.$file->path.''.rawurlencode($file->filename).'\'" ';
         } else {
             $r = '<div class="filelist filenail" id="row'.$ID_Postfix.''.$file->id.'" onclick="checkfile(\''.$ID_Postfix.''.$file->id.'\')" ';
-        }
+        }   
         if ($preview == true){            
             $r .= 'onmouseover="previewFile(\''.$CFG->access_file_url.$file->context_path.''.$file->path.'\', ';
             $r .= '\''.rawurlencode($file->filename).'\', ';

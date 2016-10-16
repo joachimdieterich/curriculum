@@ -150,12 +150,8 @@ class File {
     public function update(){
         global $USER;
         checkCapabilities('file:update', $USER->role_id);
-        /* SET cur_id, ter_id and ena_id NULL if not int > 0*/
-        if ($this->curriculum_id < 1)        { $this->curriculum_id         = NULL; }
-        if ($this->terminal_objective_id < 1){ $this->terminal_objective_id = NULL; }
-        if ($this->enabling_objective_id < 1){ $this->enabling_objective_id = NULL; }
-        $db = DB::prepare('UPDATE files SET title = ?, filename = ?, description = ?, license = ?, author = ?, type = ?, path = ?, context_id = ?, cur_id = ?, ter_id = ?, ena_id = ? WHERE id = ?');
-        return $db->execute(array($this->title, $this->filename, $this->description, $this->author, $this->license, $this->type, $this->path, $this->context_id, $this->curriculum_id, $this->terminal_objective_id, $this->enabling_objective_id, $this->id));
+        $db = DB::prepare('UPDATE files SET title = ?,  description = ?, license = ?, author = ?, file_context = ?, context_id = ? WHERE id = ?');
+        return $db->execute(array($this->title,  $this->description, $this->license, $this->author, $this->file_context, $this->context_id, $this->id));
     }
 
     /**
@@ -248,6 +244,7 @@ class File {
             $this->path                  = $result->path;
             $this->type                  = $result->type;
             $this->context_id            = $result->context_id;
+            $this->file_context          = $result->file_context;
             if (isset($result->context_path)){
                 $this->context_path      = $result->context_path;
             }
