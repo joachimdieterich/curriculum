@@ -340,8 +340,7 @@ class file_upload {
 
             if ($this->create_directory) {
                 umask(0);
-                mkdir($directory, $this->dirperm, $this->create_recursive_directories); 
-                return true;
+                return mkdir($directory, $this->dirperm, $this->create_recursive_directories); 
             } 
             return false;
     }
