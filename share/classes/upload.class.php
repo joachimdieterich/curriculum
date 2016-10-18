@@ -334,17 +334,15 @@ class file_upload {
      * @param string $directory      directory name
      */
     function check_dir($directory) {
-            if (!is_dir($directory)) {
-                    if ($this->create_directory) {
-                            umask(0);
-                            mkdir($directory, $this->dirperm, $this->create_recursive_directories); //Option: Verschachelte Verzeichnisse implementiert 
-                            return true;
-                    } else {
-                            return false;
-                    }
-            } else {
-                    return true;
-            }
+	    if (is_dir($directory)){
+		return true;
+	    }
+
+            if ($this->create_directory) {
+                umask(0);
+                return mkdir($directory, $this->dirperm, $this->create_recursive_directories); 
+            } 
+            return false;
     }
     /**
      * check for existing file 
