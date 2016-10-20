@@ -459,7 +459,7 @@ class Render {
     public static function filelist($form, $dependency, $view, $postfix, $target, $format, $multiple, $id){
         $file    = new File();
         $files   = $file->getFiles($dependency, $id);
-        $content = '<form name="'.$form.'" action="'.$form.'" method="post" enctype="multipart/form-data">';
+        $content = '<form name="'.$form.'" action="'.$form.'" method="post" enctype="multipart/form-data" > ';
         switch ($view) {
                     case 'thumbs': $content .= RENDER::thumblist($files);
                         break;
@@ -471,7 +471,7 @@ class Render {
                         break;
         }
         $content .= '</form>';
-        if ($target != 'NULL'){ // verhindert, dass der Button angezeigt wird wenn das Target NULL ist 
+        if ($target != 'NULL'){ // verhindert, dass der Button angezeigt wird wenn das Target NULL ist  //todo: use box-footerclass to show button
             $content .= '<div id="uploadframe_footer" class="uploadframe_footer" >
                     <input type="submit" value="Datei(en) verwenden" onclick="iterateListControl(\'div'.$postfix.'\','.$postfix.','.$target.','.$format.','.$multiple.');"/>
             </div>';

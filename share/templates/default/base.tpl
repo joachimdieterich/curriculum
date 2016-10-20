@@ -316,10 +316,15 @@
             callbacks: {
                 beforeShowBg: function(){
                     $('body').css('overflow', 'hidden');
+                       
                 },
                 afterHideBg: function(){
                     $('body').css('overflow', '');
-                }
+                 
+                },
+                afterShowCont: function(nm) {
+                    $('.scroll_list').height($('.modal').height()-150);
+                }   
             }
         });
         $('#popup_generate').nyroModal();
