@@ -67,40 +67,14 @@ switch ($func) {
 }
 
 
-
+$content    = RENDER::file($file);
 switch ($file->type) {
-    case '.mp4':
-    case '.mov':    $content     = '<video width="100%" controls>
-                                   <source src="'.$CFG->access_file.$file->context_path.$file->path.$file->filename.'&video=true"  type="video/mp4"/>
-                                   Your browser does not support the video element.</video>';
+    case '.pdf':    $script      = '<script>PDFObject.embed("'.$file->getFileUrl().'", "#pdf_'.$file->id.'");</script>';
         break;
-    case '.bmp':    
-    case '.gif':       
-    case '.png':    
-    case '.svg':    
-    case '.jpeg':    
-    case '.jpg':    $content     = '<img src="'.$CFG->access_file.$file->context_path.$file->path.$file->filename.'" style="width:100%;"/>';
+    case '.rtf':    $padding     = 'padding:10px;';     
+    case '.txt':    $padding     = 'padding:10px;';
         break;
-    case '.pdf':    $content     = '<div id="pdf_'.$file->id.'" style="width:100%; height: 600px;"></div>';
-                    //$script_file = '<script_file>'.$CFG->base_url.'public/assets/scripts/PDFObject-master/pdfobject.js</script_file>';
-                    $script      = '<script>PDFObject.embed("'.$file->getFileUrl().'", "#pdf_'.$file->id.'");</script>';
-                    break;
-    
-    case '.rtf':    include_once $CFG->lib_root.'rtf-html-php-master/rtf-html-php.php';
-                    $reader      = new RtfReader();
-                    $reader->Parse(file_get_contents($CFG->curriculumdata_root.$file->context_path.$file->path.$file->filename));
-                    $formatter   = new RtfHtml();
-                    $content     = utf8_encode('<div padding>'.$formatter->Format($reader->root).'</div>');
-                    $padding     = 'padding:10px;';
-                    
-        break;
-    case '.txt':
-                    $content     = '<p style="width:100%;">'.nl2br(htmlspecialchars(file_get_contents($CFG->curriculumdata_root.$file->context_path.$file->path.$file->filename))).'</p>';
-                    $padding     = 'padding:10px;';
-        break;
-    case '.url':    $content     ='<iframe src="'.$file->filename.'" style="width:100%; height: 600px;"></iframe>';
-        break;
-    default:        $content     = $file->renderFile();
+    default:        
         break;
 }
 

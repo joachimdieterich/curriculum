@@ -76,17 +76,6 @@ class Render {
         }
     }
     
-    public static function link_old($string, $context){
-        global $c;
-        $c = $context;
-        return preg_replace_callback('/<link id="(\d+)"><\/link>/i', 
-            function($r){
-                global $c;
-                $file = new File(); 
-                
-                return $file->renderFile($r[1],$c);
-            }, $string);
-    }
     public static function link($string, $context){
         global $c, $thumb_list;
         $c      = $context;
@@ -98,13 +87,56 @@ class Render {
         return $list;
     }
     
-    public static function thumb($file_list, $tag = 'li'){
-        global $CFG;
+    public static function file($file/*, $context = false*/){
+        global $CFG, $USER;
+        
+        switch ($file->type) {
+            case '.mp4':
+            case '.mov':    $content    = '<video width="100%" controls>
+                                           <source src="'.$CFG->access_file.$file->context_path.$file->path.$file->filename.'&video=true"  type="video/mp4"/>
+                                           Your browser does not support the video element.</video>';
+                break;
+            case '.bmp':    
+            case '.gif':       
+            case '.png':    
+            case '.svg':    
+            case '.jpeg':    
+            case '.jpg':    $content     = '<img src="'.$CFG->access_file.$file->context_path.$file->path.$file->filename.'" style="width:100%;"/>';
+                break;
+            case '.pdf':    $content     = '<div id="pdf_'.$file->id.'" style="width:100%; height: 600px;"></div>';
+                            $script      = '<script>PDFObject.embed("'.$file->getFileUrl().'", "#pdf_'.$file->id.'");</script>';
+                break;
+            case '.rtf':    include_once $CFG->lib_root.'rtf-html-php-master/rtf-html-php.php';
+                            $reader      = new RtfReader();
+                            $reader->Parse(file_get_contents($CFG->curriculumdata_root.$file->context_path.$file->path.$file->filename));
+                            $formatter   = new RtfHtml();
+                            $content     = utf8_encode('<div padding>'.$formatter->Format($reader->root).'</div>');
+                            $padding     = 'padding:10px;';     
+                break;
+            case '.txt':
+                            $content     = '<p style="width:100%;">'.nl2br(htmlspecialchars(file_get_contents($CFG->curriculumdata_root.$file->context_path.$file->path.$file->filename))).'</p>';
+                            $padding     = 'padding:10px;';
+                break;
+            case '.url':    $content     ='<iframe src="'.$file->filename.'" style="width:100%; height: 600px;"></iframe>';
+                break;
+            default:        if (checkCapabilities('plugin:useEmbeddableGoogleDocumentViewer', $USER->role_id, false) AND !is_array(getimagesize($CFG->curriculumdata_root.$file->full_path))){
+                                $content = '<iframe src="http://docs.google.com/gview?url='.$CFG->access_token_url .$file->addFileToken($file->id).'" style="width:100%; height:500px;" frameborder="0"></iframe>';
+                            } else {
+                                $content = RENDER::thumb(array($file->id), 'div');//$file->renderFile();
+                            }
+                break;
+        }
+        
+        return $content;
+    }
+    
+    public static function thumb($file_list, $tag = 'li', $format='normal'){
         $height   = 192;
         $width    = 133;
         $truncate = 15;
         $file     = new File();
         $html     = '';
+        $icon     = false;
         foreach ($file_list as $f) {
             $file->id = $f;
             $file->load();
@@ -116,58 +148,76 @@ class Render {
                 case '.png':    
                 case '.svg':    
                 case '.jpeg':    
-                case '.jpg':    if ($file->getThumb() == false){ $url = $file->getFileUrl(); } else { $url = $file->getThumb();}
-                                $html .= '<'.$tag.' id="thumb_'.$file->id.'" style="width:'.$width.'px !important; height:'.$height.'px !important;">
-                                    <span class="mailbox-attachment-icon has-img" style="height:'.$width.'px">
-                                        <div id="modal-preview" style="height:100%;width:100%;background: url(\''.$url.'\') center right;background-size: cover; background-repeat: no-repeat;">
-                                            <h6 class="pull-right" style="padding-right:10px;">'.$file->getHumanFileSize().'</h6>
-                                        </div>
-                                    </span>
-                                    <div class="mailbox-attachment-info">
-                                      <a href="#" class="mailbox-attachment-name" style="word-wrap: break-word;"><!--i class="fa fa-paperclip"></i--> <small>'.truncate($file->filename, $truncate).'</small></a>
-                                      <span class="mailbox-attachment-size">
-                                        <a href="#" class="btn btn-default btn-xs pull-right" onclick="del(\'file\','.$file->id.');"><i class="fa fa-trash"></i></a>
-                                        <a href="'.$file->getFileUrl().'" class="btn btn-default btn-xs pull-right"><i class="fa fa-cloud-download"></i></a>
-                                        <a href="#" class="btn btn-default btn-xs pull-right" onclick="formloader(\'preview\',\'file\','.$file->id.');"><i class="fa fa-eye"></i></a>
-                                        <a href="#" class="btn btn-default btn-xs pull-right" onclick="formloader(\'file\',\'edit\','.$file->id.');"><i class="fa fa-edit"></i></a>
-                                            <br>
-                                      </span>
-                                    </div>
-                                </'.$tag.'>';
+                case '.jpg':    if ($file->getThumb() == false){ $url = $file->getFileUrl(); } else { $url = $file->getThumb(); }
                     break;
-                case '.url':    $html .= '<'.$tag.' style="height:'.$height.'px !important; width:'.$width.'px !important;">
-                                    <span class="mailbox-attachment-icon" style="height:'.$width.'px"><i class="'.resolveFileType($file->type).'"></i></span>
-                                    <div class="mailbox-attachment-info">
-                                      <a href="'.$file->filename.'" class="mailbox-attachment-name" style="word-wrap: break-word;"><small>'.truncate($file->filename, $truncate).'</small></a>
-                                      <span class="mailbox-attachment-size">
-                                       &nbsp;
-                                       <a href="#" class="btn btn-default btn-xs pull-right" onclick="del(\'file\','.$file->id.');"><i class="fa fa-trash"></i></a>
-                                       <a href="#" class="btn btn-default btn-xs pull-right" onclick="formloader(\'preview\',\'file\','.$file->id.');"><i class="fa fa-eye"></i></a>
-                                           
-                                     </span>
-                                    </div>
-                                </'.$tag.'>';
-                    break;
-                default:        $html .= '<'.$tag.' style="height:'.$height.'px !important; width:'.$width.'px !important;">
-                                    <span class="mailbox-attachment-icon" style="height:'.$width.'px"><i class="'.resolveFileType($file->type).'"></i></span>
-                                    <div class="mailbox-attachment-info">
-                                      <a href="#" class="mailbox-attachment-name" style="word-wrap: break-word;"><!--i class="fa fa-paperclip"></i--> <small>'.truncate($file->filename, $truncate).'</small></a>
-                                      <span class="mailbox-attachment-size">'
-                                        .$file->getHumanFileSize().
-                                        '<a href="#" class="btn btn-default btn-xs pull-right" onclick="del(\'file\','.$file->id.');"><i class="fa fa-trash"></i></a>
-                                        <a href="'.$file->getFileUrl().'" class="btn btn-default btn-xs pull-right row-border"><i class="fa fa-cloud-download"></i></a>
-                                        <a href="#" class="btn btn-default btn-xs pull-right" onclick="formloader(\'preview\',\'file\','.$file->id.');"><i class="fa fa-eye"></i></a>
-                                      </span>
-                                    </div>
-                                </'.$tag.'>';
+                case '.url':    
+                default:        $icon = true;
                     break;
             }
+            
+            switch ($format) {
+                case 'normal': $html .= '<'.$tag.' id="thumb_'.$file->id.'" style="width:'.$width.'px !important; height:'.$height.'px !important;">';
+                                if ($icon == true){
+                                    $html .= '<h6 class="pull-right" style="padding: 0 10px 0 5px; background-color:#f4f4f4">'.$file->getHumanFileSize().'</h6>';
+                                    $html .= '<span class="mailbox-attachment-icon" style="height:'.$width.'px"><i class="'.resolveFileType($file->type).'"></i></span>';
+                                } else {
+                                    $html .= '<span class="mailbox-attachment-icon has-img" style="height:'.$width.'px">
+                                                    <div id="modal-preview" style="height:100%;width:100%;background: url(\''.$url.'\') ';
+                                                    if ($file->type != '.pdf'){
+                                                        $html .= 'center';
+                                                    }
+                                                     $html .= ';background-size: cover; background-repeat: no-repeat;">
+                                                        <h6 class="pull-right" style="padding: 0 10px 0 5px; background-color:#f4f4f4">'.$file->getHumanFileSize().'</h6>
+                                              </div></span>';
+                                }
+                                $html .= '<div class="mailbox-attachment-info">
+                                                <a href="#" class="mailbox-attachment-name" style="word-wrap: break-word;"><small>'.truncate($file->filename, $truncate).'</small></a>
+                                                <span class="mailbox-attachment-size">
+                                                <a href="#" class="btn btn-default btn-xs pull-right" onclick="del(\'file\','.$file->id.');"><i class="fa fa-trash"></i></a>';
+                                if ($file->type != '.url'){
+                                    $html .= '  <a href="'.$file->getFileUrl().'" class="btn btn-default btn-xs pull-right"><i class="fa fa-cloud-download"></i></a>';
+                                }
+                                $html .=       '<a href="#" class="btn btn-default btn-xs pull-right" onclick="formloader(\'preview\',\'file\','.$file->id.');"><i class="fa fa-eye"></i></a>
+                                                <a href="#" class="btn btn-default btn-xs pull-right" onclick="formloader(\'file\',\'edit\','.$file->id.');"><i class="fa fa-edit"></i></a>
+                                                <br></span></div></'.$tag.'>'; 
+
+
+                    break;
+                case 'xs':      $html .=   '<div class="btn-group" style="padding-right:5px;">
+                                            <button type="button" class="btn btn-xs btn-default btn-flat" style="width:'.$width.'px !important; text-align:left;">';
+                                            if ($icon == true){
+                                                $html .=   '<span class="pull-left"><i class="'.resolveFileType($file->type).'" style="padding-right:5px; margin-right:5px;"></i></span>';
+                                            } else {
+                                                $html .=   '<div class="pull-left" id="modal-preview" style="height:15px;width:15px;background: url(\''.$url.'\'); background-size: cover; background-repeat: no-repeat; margin-top:2px; margin-right:5px;" ></div>';
+                                            }
+                                            $html .=   truncate($file->filename, $truncate);
+                                            $html .=  '</button>
+                                            <button type="button" class="btn btn-xs btn-flat dropdown-toggle" data-toggle="dropdown">';
+                                $html .=   '  <span class="caret"></span>
+                                              <span class="sr-only">Toggle Dropdown</span>
+                                            </button>
+                                            <ul class="dropdown-menu" role="menu">
+                                              <li><a href="#" onclick="formloader(\'file\',\'edit\','.$file->id.');"><i class="fa fa-edit"></i>bearbeiten</a></li>
+                                              <li><a href="#" onclick="formloader(\'preview\',\'file\','.$file->id.');"><i class="fa fa-eye"></i>Vorschau</a></li>';
+                                              if ($file->type != '.url'){
+                                                  $html .=   '<li><a href="'.$file->getFileUrl().'"><i class="fa fa-cloud-download"></i>herunterladen</a></li>';
+                                              }               
+                                $html .=   '  <li class="divider"></li>
+                                              <li><a href="#" onclick="del(\'file\','.$file->id.');"><i class="fa fa-trash"></i>löschen</a></li>
+                                            </ul></div>';
+                    break;
+
+                default:
+                    break;
+            }
+                                
         }
         
         return $html;
     }
     
-    public static function mail ($mail, $box = null){
+    
+    public static function mail($mail, $box = null){
         global $CFG;
         
         $sender         = new User();        
@@ -215,7 +265,19 @@ class Render {
                 </div><!-- /.box-body -->
                 <div class="box-footer">
                   <ul class="mailbox-attachments clearfix">';
-                    echo Render::thumb($thumbs);      
+                  if (count($thumbs) > 0){
+                  echo '<i class="fa fa-paperclip"></i><strong> Anhang: </strong>';
+                  }
+                    foreach ($thumbs as $t) {
+                        $file     = new File();
+                        $file->id = $t;
+                        if ($file->load()){
+                            echo $file->filename;
+                            echo Render::file($file);
+                        } else {
+                            echo 'Datei wurde gelöscht.';
+                        }
+                    }   
           echo '  </ul>
                 </div><!-- /.box-footer -->
                 <!--div class="box-footer">
@@ -382,68 +444,90 @@ class Render {
         } 
         return $html;
     }
-    
-    public static function filelist($form, $dependency, $dir, $postfix, $target, $format, $multiple, $id){
-        global $CFG;
-        $file = new File();
-        $files = $file->getFiles($dependency, $id);?>
-        <form name="<?php echo $form ?>" action="<?php echo $form ?>" method="post" enctype="multipart/form-data">
-            <ul class="mailbox-attachments clearfix">
-            <?php  
-            foreach ($files as $f) {
-                echo RENDER::thumb(array('id' => $f->id)); 
-            }
-            ?>
-            </ul>
-        </form>
-        <?php if ($target != 'NULL'){ // verhindert, dass der Button angezeigt wird wenn das Target NULL ist ?>
-            <div id="uploadframe_footer" class="uploadframe_footer" >
-                <input type="submit"  value="Datei(en) verwenden" onclick="iterateListControl('<?php echo 'div'.$postfix ?>','<?php echo $postfix ?>','<?php echo $target;?>','<?php echo $format;?>','<?php echo $multiple;?>');"/>
-            </div>
-        <?php } 
-    }
-    
-    public static function filenail($files, $ID_Postfix, $i = false, $preview = false, $delete = false, $link = false){
-        global $CFG;
-        if(is_array($files)){
-            $file = $files[$i];
-        } else {
-            $file = $files;
+    /**
+     * Render filelist
+     * @param string $form
+     * @param string $dependency
+     * @param string $view
+     * @param string $postfix
+     * @param string $target
+     * @param boolean $format
+     * @param string $multiple
+     * @param int $id
+     * @return string
+     */
+    public static function filelist($form, $dependency, $view, $postfix, $target, $format, $multiple, $id){
+        $file    = new File();
+        $files   = $file->getFiles($dependency, $id);
+        $content = '<form name="'.$form.'" action="'.$form.'" method="post" enctype="multipart/form-data">';
+        switch ($view) {
+                    case 'thumbs': $content .= RENDER::thumblist($files);
+                        break;
+                    case 'detail': $content .= RENDER::detaillist($files);
+                        break;
+                    case 'list':   $content .= RENDER::flist($files);
+                        break;
+                    default:
+                        break;
         }
-        if ($link == true){
-            $r = '<div class="filesingle filenail" id="row'.$ID_Postfix.''.$file->id.'" onclick="javascript:location.href=\''.$CFG->access_file_url.''.$file->context_path.''.$file->path.''.rawurlencode($file->filename).'\'" ';
-        } else {
-            $r = '<div class="filelist filenail" id="row'.$ID_Postfix.''.$file->id.'" onclick="checkfile(\''.$ID_Postfix.''.$file->id.'\')" ';
-        }   
-        if ($preview == true){            
-            $r .= 'onmouseover="previewFile(\''.$CFG->access_file_url.$file->context_path.''.$file->path.'\', ';
-            $r .= '\''.rawurlencode($file->filename).'\', ';
-            $r .= '\''.$ID_Postfix.'\', \'';
-            if  ($file->title != '')        { $r .= $file->title;        }  $r .= '\', \'';
-            if  ($file->description != '')  { $r .= $file->description;  }  $r .= '\', \'';  
-            if  ($file->author != '')       { $r .= $file->author;       }  $r .= '\', \''; 
-            $license = new License();
-            $lic = $license->get($file->license);
-            $r .= $lic[0]->license.'\')" onmouseout="exitpreviewFile(\''.$ID_Postfix.'\')">';
-        }
-        
-        $r .= '<a id="href_a_'.$file->id.'" href="'.$CFG->access_file_url.''.$file->context_path.''.$file->path.''.rawurlencode($file->filename).'"  target="_blank">';
-        if ($link == false){               
-            $r .= '<div class="downloadbtn floatleft"></div>';
-            
+        $content .= '</form>';
+        if ($target != 'NULL'){ // verhindert, dass der Button angezeigt wird wenn das Target NULL ist 
+            $content .= '<div id="uploadframe_footer" class="uploadframe_footer" >
+                    <input type="submit" value="Datei(en) verwenden" onclick="iterateListControl(\'div'.$postfix.'\','.$postfix.','.$target.','.$format.','.$multiple.');"/>
+            </div>';
         } 
-        $r .= '</a>';
-        if ($delete == true){
-            $r .= '<div class="deletebtn floatright" style="margin-right: -4px !important; " onclick="deleteFile(\''.$file->id.'\')"></div>';
-        }
-        
-        $r .=   '<div class="'.ltrim ($file->type, '.').'_btn filelisticon" ></div>
-                 <div id="href_'.$file->id.'" class="filelink">'.$file->filename.'</div>
-                 <input class="invisible" type="checkbox" id="'.$ID_Postfix.''.$file->id.'" name="id'.$ID_Postfix.'[]" value='.$file->id.' />
-                 </div>';
-        return $r;
+        return $content;
     }
-
+    /**
+     * Render all files as thumbs
+     * @param array $files
+     * @return html
+     */
+    public static function thumblist($files){
+        $content = '<ul class="mailbox-attachments clearfix">';
+        foreach ($files as $f) {
+            $content .= RENDER::thumb(array('id' => $f->id)); 
+        }
+        $content .= '</ul>';
+        return $content;
+    }
+    
+    public static function detaillist($files){
+        $content  = '<table class="table table-striped" style="width: 100%;word-break:break-all;"><tbody>';
+        $content .= '<tr>
+                        <th style="width:30%;">Dateiname</th>
+                        <th >Titel</th>
+                        <th style="width:140px;">Datum</th>
+                        <th style="width:60px;">Größe</th>
+                        <th style="width:50px;">Typ</th>
+                    </tr>';
+        foreach ($files as $f) {
+            $content .= '<tr>';
+            $content .= '<td>'.$f->filename.'</td>';
+            $content .= '<td>'.$f->title.'</td>';
+            //$content .= '<td>'.$f->description.'</td>';
+            $content .= '<td>'.$f->creation_time.'</td>';
+            if ($f->type == '.url'){
+                $content .= '<td>-</td>';
+            } else {
+                $content .= '<td>'.$f->getHumanFileSize().'</td>';
+            }
+            $content .= '<td>'.$f->type.'</td>';
+            $content .= '</tr>';
+        }
+        $content .= '</tbody></table>';
+        return $content;
+    }
+    
+    public static function flist($files){
+        $content = '';
+        foreach ($files as $f) {
+            $content .= RENDER::thumb(array('id' => $f->id),'div','xs'); 
+        }
+        //$content .= '</div>';
+        return $content;
+    }
+    
     public static function courseBook($coursebook){
         global $USER;
         $r       = '<div style="overflow:hidden;"><div id="coursebook" style="overflow:auto;">';

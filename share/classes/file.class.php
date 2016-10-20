@@ -258,25 +258,9 @@ class File {
             if (isset($result->hits)){
                 $this->hits              = $result->hits;
             }
-        }
-    }
-    
-    public function renderFile($id = false, $context = false){
-        global $USER, $CFG;
-        if ($id != false){ $this->id = $id; }
-        $this->load();
-        if (checkCapabilities('plugin:useEmbeddableGoogleDocumentViewer', $USER->role_id, false) AND !is_array(getimagesize($CFG->curriculumdata_root.$this->full_path))){
-            $r = '<iframe src="http://docs.google.com/gview?url='.$CFG->access_token_url .$this->addFileToken($this->id).'" style="width:100%; height:500px;" frameborder="0"></iframe><div class="space-left">'.Render::filenail($this, 'mail', false, false, false, true).'</div>';
-        } else if (is_array(getimagesize($CFG->curriculumdata_root.$this->full_path)) OR $this->type == '.pdf') {
-            $r = '<img src="'.$CFG->access_file_url.$this->full_path.'"><br><div class="space-left" >'.Render::filenail($this, 'mail', false, false, false, true).'</div>';
+            return true;
         } else {
-            $r = '<div class="space-left">'.Render::filenail($this, 'mail', false, false, false, true).'</div>';
-        }
-        
-        if ($context == 'message'){
-            return '<p>'.$r.'</p>';
-        } else {
-            return $r;
+            return false;
         }
     }
     
@@ -289,6 +273,9 @@ class File {
     }
     public function getFileUrl(){
         global $CFG;
+        if ($this->type == '.url'){
+            return false;
+        }
         return $CFG->access_file_url.''.$this->context_path.''.$this->path.''.rawurlencode($this->filename);
     }
     
@@ -369,7 +356,8 @@ class File {
      */
     public function getHumanFileSize($path = null){
         global $CFG;
-        if (isset($path)){
+        
+        if (isset($path) AND $this->type != '.url'){
             if (file_exists($path)){
                 return human_filesize(filesize($path));
             }
@@ -456,7 +444,7 @@ class File {
      * @param array $params
      * @return array of file objects|boolean 
      */
-    public function getFiles($dependency = null, $id = null, $paginator = '', $params ){
+    public function getFiles($dependency = null, $id = null, $paginator = '', $params = array() ){
         global $USER, $CFG;
         $externalFiles = null;
         foreach($params as $key => $val) {

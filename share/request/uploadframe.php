@@ -42,7 +42,7 @@ $author     = $USER->firstname.' '.$USER->lastname;
 $license    = 2;
 $fileURL    = null; 
 $action     = 'upload';
-
+$list_format= 'thumbs';
 $error      = '';
 $image      = '';
 $copy_link  = '';
@@ -138,36 +138,48 @@ foreach ($_POST as $key => $value) { $$key = $value; }
         </div><!-- /.tab-pane -->
         <?php 
         } 
-        
-        if ($action == 'lastFiles'){ ?>
-        <div class="box box-widget form-horizontal">
-          <?php RENDER::filelist('uploadframe.php', 'user',       $CFG->access_file, '_filelastuploadbtn',   $target, $format, $multiple, $USER->id);        //FileLastUpload div?>
-        </div>
-        <?php }
-        
-        if ($action == 'curriculumFiles'){ ?>
+        ?>
+                   
         <div class="box box-widget">
-          <?php RENDER::filelist('uploadframe.php', 'curriculum', $CFG->access_file, '_curriculumfilesbtn',  $target, $format, $multiple, $ref_id);   //curriculumfiles?>
-        </div>
-        <?php }
-        
-        if ($action == 'mySolutions'){ ?>
-        <div class="box box-widget">
-          <?php  RENDER::filelist('uploadframe.php', 'solution',   $CFG->access_file, '_solutionfilesbtn',   $target, $format, $multiple, $ref_id);       //solutionfiles div?>
-        </div>
-        <?php }
-        
-        if ($action == 'myFiles'){ ?>
-        <div class="box box-widget">
-          <?php RENDER::filelist('uploadframe.php', 'userfiles',  $CFG->access_file, '_myfilesbtn',          $target, $format, $multiple, $USER->id);          //myfiles div?>
-        </div>
-        <?php }
-        
-        if ($action == 'myAvatars'){ ?>
-        <div class="box box-widget">
-          <?php RENDER::filelist('uploadframe.php', 'avatar',     $CFG->access_file, '_avatarfilesbtn',      $target, $format, $multiple, $USER->id);         //avatarfiles div?>
-        </div>
-        <?php } ?>
-        </div><!--. content-wrapper -->          
+            <div class="box-header">
+                <div class="btn-group-xs pull-right">
+                    <button type="button" class="btn btn-default">
+                        <a href="../share/request/uploadframe.php?action=<?php 
+                          echo $action.'&context='.$context.'&list_format=thumbs&ref_id='.$ref_id.'&target='.$target.'&format='.$format.'&multiple='.$multiple;?>" class="nyroModal">
+                          <i class="fa fa-th"></i>
+                        </a>
+                    </button>
+                    <button type="button" class="btn btn-default">
+                        <a href="../share/request/uploadframe.php?action=<?php 
+                              echo $action.'&context='.$context.'&list_format=list&ref_id='.$ref_id.'&target='.$target.'&format='.$format.'&multiple='.$multiple;?>" class="nyroModal">
+                          <i class="fa fa-th-list"></i>
+                        </a>
+                    </button>
+                    <button type="button" class="btn btn-default">
+                        <a href="../share/request/uploadframe.php?action=<?php 
+                          echo $action.'&context='.$context.'&list_format=detail&ref_id='.$ref_id.'&target='.$target.'&format='.$format.'&multiple='.$multiple;?>" class="nyroModal">
+                          <i class="fa fa-list"></i>
+                        </a>
+                    </button>
+                </div> 
+            </div>
+        <?php
+        switch ($action) {
+            case 'lastFiles':       echo RENDER::filelist('uploadframe.php', 'user',       $list_format, '_filelastuploadbtn',  $target, $format, $multiple, $USER->id);  //FileLastUpload div
+                break;
+            case 'curriculumFiles': echo RENDER::filelist('uploadframe.php', 'curriculum', $list_format, '_curriculumfilesbtn', $target, $format, $multiple, $ref_id);    //curriculumfiles
+                break;
+            case 'mySolutions':     echo RENDER::filelist('uploadframe.php', 'solution',   $list_format, '_solutionfilesbtn',   $target, $format, $multiple, $ref_id);    //solutionfiles div
+                break;
+            case 'myFiles':         echo RENDER::filelist('uploadframe.php', 'userfiles',  $list_format, '_myfilesbtn',         $target, $format, $multiple, $USER->id);  //myfiles div
+                break;
+            case 'myAvatars':       echo RENDER::filelist('uploadframe.php', 'avatar',     $list_format, '_avatarfilesbtn',     $target, $format, $multiple, $USER->id);  //avatarfiles div
+                    break;
+
+            default:
+                break;
+        }
+        ?>
+        </div></div><!--. content-wrapper -->          
     </div> <!-- .modal-body -->
 </div>
