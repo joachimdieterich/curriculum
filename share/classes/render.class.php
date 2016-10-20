@@ -500,6 +500,7 @@ class Render {
                         <th style="width:140px;">Datum</th>
                         <th style="width:60px;">Größe</th>
                         <th style="width:50px;">Typ</th>
+                        <th><i class="fa fa-bars"></i></th>
                     </tr>';
         foreach ($files as $f) {
             $content .= '<tr>';
@@ -513,6 +514,18 @@ class Render {
                 $content .= '<td>'.$f->getHumanFileSize().'</td>';
             }
             $content .= '<td>'.$f->type.'</td>';
+            $content .= '<td><div class="btn-group"><button type="button" class="btn btn-xs btn-flat dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                              </button><ul class="dropdown-menu" role="menu">
+                                <li><a href="#" onclick="formloader(\'file\',\'edit\','.$f->id.');"><i class="fa fa-edit"></i>bearbeiten</a></li>
+                                <li><a href="#" onclick="formloader(\'preview\',\'file\','.$f->id.');"><i class="fa fa-eye"></i>Vorschau</a></li>';
+                                if ($f->type != '.url'){
+                                    $content .=   '<li><a href="'.$f->getFileUrl().'"><i class="fa fa-cloud-download"></i>herunterladen</a></li>';
+                                }               
+                  $content .=   '  <li class="divider"></li>
+                                <li><a href="#" onclick="del(\'file\','.$f->id.');"><i class="fa fa-trash"></i>löschen</a></li>
+                              </ul></div></td>';
             $content .= '</tr>';
         }
         $content .= '</tbody></table>';
