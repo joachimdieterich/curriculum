@@ -21,26 +21,6 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-$(document).ready(function() { 
-    $("#uploadbtn").click(function() {document.getElementById('TB_progressBar').style.display = 'block';});
-        
-    $(".unav").click(function() {
-        elements = new Array("div_fileuplbtn","div_fileURLbtn","div_filelastuploadbtn","div_myfilesbtn","div_curriculumfilesbtn","div_solutionfilesbtn","div_avatarfilesbtn");
-        for (var i=0; i<elements.length; i++) {
-            if (elements[i] === 'div_'+this.id){
-                if (this.id === 'fileuplbtn' || this.id === 'fileURLbtn'){              //fileupl und fileURL nutzen das gleiche Formular
-                    document.getElementById('div_file_url').style.display   = 'block';
-                } else {
-                    document.getElementById('div_file_url').style.display   = 'none';
-                }
-                document.getElementById('div_'+this.id).style.display       = 'block';
-            } else {
-                document.getElementById(elements[i]).style.display          = 'none';
-            }
-        }
-    });
-        
-});   
 
 //Funktion zum auslesen von Checkboxes
 function iterateListControl(containerId,checkboxnameroot,targetID,returnFormat,multipleFiles){
@@ -119,4 +99,3 @@ function iterateListControl(containerId,checkboxnameroot,targetID,returnFormat,m
         }
     self.parent.tb_remove();
 }
-
