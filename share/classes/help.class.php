@@ -46,6 +46,7 @@ class Help {
     }
     
     public function update(){
+        global $USER;
         checkCapabilities('help:update', $USER->role_id);
         $db = DB::prepare('UPDATE help SET title = ?,description = ?,category = ?,file_id = ? WHERE id = ?');
         return $db->execute(array($this->title, $this->description, $this->category, $this->file_id, $this->id));
@@ -74,8 +75,6 @@ class Help {
         }
         
     }
-    
-    
     
     public function get($search = false){
         global $USER;

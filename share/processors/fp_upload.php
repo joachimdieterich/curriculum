@@ -82,13 +82,7 @@ case "terminal_objective":  $to      = new EnablingObjective();
                             $context = 'curriculum';                        // ! set context to curriculum to get right context_id, terminal_objective is used to load curID
                             break;                 
 case "curriculum":          // see case enabling_objective and terminal_objective
-                            /*if ($enaID != NULL){
-                                $folders = $curID.'/'.$terID.'/'.$enaID.'/'; // Dateien die zu einem Ziel gehören
-                            } else {
-                                $folders = $curID.'/'.$terID.'/';            // Dateien die zum Thema gehören
-                                $enaID   = NULL; 
-                            }
-                            break;*/
+                            //break;
 
 case "badge":               $folders = '/';                                  // siehe unten                        
     break;  

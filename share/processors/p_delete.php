@@ -34,6 +34,7 @@ switch ($db) {
     case "file":                $t = new File();                break;
     case "grade":               $t = new Grade();               break;
     case "group":               $t = new Group();               break;
+    case "help":                $t = new Help();               break;
     case "role":                $t = new Roles();               break;      
     case "semester":            $t = new Semester();            break;
     case "subject":             $t = new Subject();             break;

@@ -202,7 +202,7 @@
                               </div>
                               <div class="col-xs-6 text-center">
                                   {if checkCapabilities('menu:readMessages', $my_role_id, false)}
-                                      <a href="../share/request/uploadframe.php?context=userFiles&target=NULL{$tb_param}" class="nyroModal">
+                                      <a href="../share/request/uploadframe.php?context=userFiles{$tb_param}" class="nyroModal">
                                           Meine Dateien
                                       </a>
                                   {/if}
@@ -287,6 +287,7 @@
     <script src="{$media_url}scripts/script.js"></script> 
     <script src="{$media_url}scripts/PDFObject-master/pdfobject.min.js"></script> 
     <script src="{$media_url}scripts/file.js"></script>
+    
     <script src="{$media_url}scripts/dragndrop.js"></script>     
     
     {block name=additional_scripts} 

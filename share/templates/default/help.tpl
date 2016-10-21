@@ -24,21 +24,15 @@
                 </form>
             </div>
         </div>
+        {if checkCapabilities('help:add', $my_role_id, false)}    
+            <div class="pull-left" style="padding: 0 0 10px 15px;">
+                <button type="button" class="btn btn-default " onclick="formloader('help','new')" ><i class="fa fa-plus"></i> Datei hinzufügen</button>
+            </div>
+        {/if}
     </div>
     <div class="row">
         {foreach key=helpid item=h from=$help}
-        <div class="col-md-3 col-sm-6 col-xs-12">
-            <a href="#" onclick="formloader('preview','help','{$h->id}')">
-              <div class="info-box">
-                <span class="info-box-icon bg-aqua" style="background: url('../share/accessfile.php?id={$h->file_id}');background-size: cover; background-repeat: no-repeat;">{*<i class="{resolveFileTypeById({$h->file_id})}"> </i>*}</span>
-                <div class="info-box-content">
-                  <span class="info-box-text text-black">{$h->category}</span>
-                  <span class="info-box-number text-black">{$h->title}</span>
-                  <span class="info-box-more text-primary">{$h->description}</span>
-                </div><!-- /.info-box-content -->
-              </div><!-- /.info-box -->
-            </a>
-        </div>
+            {RENDER::helpcard($h)}
         {/foreach}
     </div>
 </section>

@@ -28,7 +28,11 @@ function smarty_modifier_resolve_file_id($id, $size= false, $alt=false)
     $file->load();
     if (isset($file->filename) AND isset($file->file_version[$size]['full_path'])){
             return $file->file_version[$size]['full_path'];
-    } else {
+    } else if (isset($file->filename) AND is_array($file->file_version)){   // fallback if size is not available
+        foreach (array_reverse($file->file_version) as $fv){                // array_reverse to have less traffic
+                return $fv['full_path'];
+        }
+    } else {  
         return $alt;
     }
 } 

@@ -74,11 +74,12 @@ if (isset($_SESSION['PAGE'])){
     }
     $PAGE->target_url           = null;   //reset target_url  
     if (!isset($_SESSION['PAGE']->message)){                                    // to get messages from popups
-        $PAGE->message          = null;                                     //reset page messages
+        $PAGE->message          = null;                                         //reset page messages
     } 
     $_SESSION['PAGE']           = new stdClass();
     $_SESSION['PAGE']           =& $PAGE;
     assign_to_template($_SESSION['PAGE'],'page_');                              // assign $_SESSION['PAGE'] to $TEMPLATE 
+    $_SESSION['PAGE']->message  = null;
 } else {
     $PAGE->previous_url         = 'null'; 
     $PAGE->url                  = curPageURL();

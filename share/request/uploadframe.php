@@ -54,8 +54,6 @@ foreach ($_POST as $key => $value) { $$key = $value; }
 ?>
 
 <!-- HTML -->
-<script type="text/javascript" src="../../public/assets/scripts/uploadframe.js"></script>
-
 <div class="uploadframeClose" onclick="self.parent.tb_remove();"></div>    
 <div class="modal-content">
     <div class="modal-header">
@@ -139,32 +137,37 @@ foreach ($_POST as $key => $value) { $$key = $value; }
         <?php 
         } 
         ?>
-                   
+                
         <div class="box box-widget" >
+            <input id="target" name="target" type="hidden" value="<?php  echo $target; ?>" />
+            <input id="context" name="context" type="hidden" value="<?php echo $context; ?>" />
+            <?php
+            if (in_array($action, array('lastFiles','curriculumFiles','myFiles','myAvatars'))){ 
+            ?>
             <div class="box-header">
                 <div class="btn-group-xs pull-right">
                     <button type="button" class="btn btn-default">
                         <a href="../share/request/uploadframe.php?action=<?php 
-                          echo $action.'&context='.$context.'&list_format=thumbs&ref_id='.$ref_id.'&target='.$target.'&format='.$format.'&multiple='.$multiple;?>" class="nyroModal">
-                          <i class="fa fa-th"></i>
+                            echo $action.'&context='.$context.'&list_format=thumbs&ref_id='.$ref_id.'&target='.$target.'&format='.$format.'&multiple='.$multiple;?>" class="nyroModal">
+                            <i class="fa fa-th"></i>
                         </a>
                     </button>
                     <button type="button" class="btn btn-default">
                         <a href="../share/request/uploadframe.php?action=<?php 
-                              echo $action.'&context='.$context.'&list_format=list&ref_id='.$ref_id.'&target='.$target.'&format='.$format.'&multiple='.$multiple;?>" class="nyroModal">
-                          <i class="fa fa-th-list"></i>
+                            echo $action.'&context='.$context.'&list_format=list&ref_id='.$ref_id.'&target='.$target.'&format='.$format.'&multiple='.$multiple;?>" class="nyroModal">
+                            <i class="fa fa-th-list"></i>
                         </a>
                     </button>
                     <button type="button" class="btn btn-default">
                         <a href="../share/request/uploadframe.php?action=<?php 
-                          echo $action.'&context='.$context.'&list_format=detail&ref_id='.$ref_id.'&target='.$target.'&format='.$format.'&multiple='.$multiple;?>" class="nyroModal">
-                          <i class="fa fa-list"></i>
+                            echo $action.'&context='.$context.'&list_format=detail&ref_id='.$ref_id.'&target='.$target.'&format='.$format.'&multiple='.$multiple;?>" class="nyroModal">
+                            <i class="fa fa-list"></i>
                         </a>
                     </button>
                 </div> 
             </div>
-           <div class="box-body scroll_list" style="overflow:auto;"> 
             <?php
+            }
             switch ($action) {
                 case 'lastFiles':       echo RENDER::filelist('uploadframe.php', 'user',       $list_format, '_filelastuploadbtn',  $target, $format, $multiple, $USER->id);  //FileLastUpload div
                     break;
@@ -181,7 +184,7 @@ foreach ($_POST as $key => $value) { $$key = $value; }
                     break;
             }
             ?>
-           </div>
+                 
         </div></div><!--. content-wrapper -->          
     </div> <!-- .modal-body -->
 </div>

@@ -130,13 +130,16 @@ class Render {
         return $content;
     }
     
-    public static function thumb($file_list, $tag = 'li', $format='normal'){
-        $height   = 192;
+    public static function thumb($file_list, $target = null, $tag = 'li', $format='normal'){
+        $height   = 187;
         $width    = 133;
         $truncate = 15;
         $file     = new File();
         $html     = '';
         $icon     = false;
+        if (!is_array($file_list)){
+            $file_list = array($file_list);
+        }
         foreach ($file_list as $f) {
             $file->id = $f;
             $file->load();
@@ -158,8 +161,9 @@ class Render {
             switch ($format) {
                 case 'normal': $html .= '<'.$tag.' id="thumb_'.$file->id.'" style="width:'.$width.'px !important; height:'.$height.'px !important;">';
                                 if ($icon == true){
-                                    $html .= '<h6 class="pull-right" style="padding: 0 10px 0 5px; background-color:#f4f4f4">'.$file->getHumanFileSize().'</h6>';
-                                    $html .= '<span class="mailbox-attachment-icon" style="height:'.$width.'px"><i class="'.resolveFileType($file->type).'"></i></span>';
+                                    $html .= '<h6 class="pull-right" style="padding: 0 10px 0 5px; background-color:rgba(244, 244, 244, 0.8)">'.$file->getHumanFileSize().'</h6>
+                                              <h6 class="pull-left" style="padding: 0px 10px 0 5px; background-color:rgba(244, 244, 244, 0.8)">'.$file->hits.'</h6>
+                                              <span class="mailbox-attachment-icon" style="height:'.$width.'px"><i class="'.resolveFileType($file->type).'"></i></span>';
                                 } else {
                                     $html .= '<span class="mailbox-attachment-icon has-img" style="height:'.$width.'px">
                                                     <div id="modal-preview" style="height:100%;width:100%;background: url(\''.$url.'\') ';
@@ -167,24 +171,31 @@ class Render {
                                                         $html .= 'center';
                                                     }
                                                      $html .= ';background-size: cover; background-repeat: no-repeat;">
-                                                        <h6 class="pull-right" style="padding: 0 10px 0 5px; background-color:#f4f4f4">'.$file->getHumanFileSize().'</h6>
+                                                        <h6 class="pull-right" style="padding: 0 10px 0 5px;  background-color:rgba(244, 244, 244, 0.8)">'.$file->getHumanFileSize().'</h6>
+                                                        <h6 class="pull-left" style="padding: 0px 10px 0 5px; background-color:rgba(244, 244, 244, 0.8)">'.$file->hits.'</h6>
                                               </div></span>';
                                 }
-                                $html .= '<div class="mailbox-attachment-info">
+                                $html .= '<div class="mailbox-attachment-info" style="padding:5px 5px 5px 5px;">
                                                 <a href="#" class="mailbox-attachment-name" style="word-wrap: break-word;"><small>'.truncate($file->filename, $truncate).'</small></a>
-                                                <span class="mailbox-attachment-size">
-                                                <a href="#" class="btn btn-default btn-xs pull-right" onclick="del(\'file\','.$file->id.');"><i class="fa fa-trash"></i></a>';
-                                if ($file->type != '.url'){
-                                    $html .= '  <a href="'.$file->getFileUrl().'" class="btn btn-default btn-xs pull-right"><i class="fa fa-cloud-download"></i></a>';
-                                }
-                                $html .=       '<a href="#" class="btn btn-default btn-xs pull-right" onclick="formloader(\'preview\',\'file\','.$file->id.');"><i class="fa fa-eye"></i></a>
-                                                <a href="#" class="btn btn-default btn-xs pull-right" onclick="formloader(\'file\',\'edit\','.$file->id.');"><i class="fa fa-edit"></i></a>
-                                                <br></span></div></'.$tag.'>'; 
+                                                <span class="mailbox-attachment-size">';
+                                                if ($target != null){
+                                                    $html .= '  <a href="#" class="btn btn-default btn-xs" onclick="setTarget('.$file->id.');"><i class="fa fa-check-circle"></i></a>';
+                                                }
+                                                $html .=       '<a href="#" class="btn btn-default btn-xs" onclick="formloader(\'preview\',\'file\','.$file->id.');"><i class="fa fa-eye"></i></a>';
+                                                if ($file->type != '.url'){
+                                                    $html .= '<a href="'.$file->getFileUrl().'" class="btn btn-default btn-xs"><i class="fa fa-cloud-download"></i></a>';
+                                                }
+                                                $html .= '<a href="#" class="btn btn-default btn-xs" onclick="formloader(\'file\',\'edit\','.$file->id.');"><i class="fa fa-edit"></i></a>
+                                                          <a href="#" class="btn btn-default btn-xs" onclick="del(\'file\','.$file->id.');"><i class="fa fa-trash"></i></a>';
+                                
+                                
+                               
+                                $html .= '</span></div></'.$tag.'>'; 
 
 
                     break;
-                case 'xs':      $html .=   '<div class="btn-group" style="padding-right:5px;">
-                                            <button type="button" class="btn btn-xs btn-default btn-flat" style="width:'.$width.'px !important; text-align:left;">';
+                case 'xs':      $html .=   '<div class="btn-group" style="padding-right:10px;">
+                                            <button type="button" class="btn btn-xs btn-default btn-flat" style="width:'.($width-25).'px !important; text-align:left;">';
                                             if ($icon == true){
                                                 $html .=   '<span class="pull-left"><i class="'.resolveFileType($file->type).'" style="padding-right:5px; margin-right:5px;"></i></span>';
                                             } else {
@@ -196,17 +207,25 @@ class Render {
                                 $html .=   '  <span class="caret"></span>
                                               <span class="sr-only">Toggle Dropdown</span>
                                             </button>
-                                            <ul class="dropdown-menu" role="menu">
-                                              <li><a href="#" onclick="formloader(\'file\',\'edit\','.$file->id.');"><i class="fa fa-edit"></i>bearbeiten</a></li>
-                                              <li><a href="#" onclick="formloader(\'preview\',\'file\','.$file->id.');"><i class="fa fa-eye"></i>Vorschau</a></li>';
-                                              if ($file->type != '.url'){
-                                                  $html .=   '<li><a href="'.$file->getFileUrl().'"><i class="fa fa-cloud-download"></i>herunterladen</a></li>';
-                                              }               
+                                            <ul class="dropdown-menu" role="menu">';
+                                            if ($target != null){
+                                                $html .=   '<li><a href="#" onclick="setTarget('.$file->id.');"><i class="fa fa-check-circle"></i>Verwenden</a></li>';
+                                            } 
+                                            $html .=   '<li><a href="#" onclick="formloader(\'preview\',\'file\','.$file->id.');"><i class="fa fa-eye"></i>Vorschau</a></li>';
+                                            if ($file->type != '.url'){
+                                                $html .=   '<li><a href="'.$file->getFileUrl().'"><i class="fa fa-cloud-download"></i>herunterladen</a></li>';
+                                            } 
+                                            $html .=   '<li><a href="#" onclick="formloader(\'file\',\'edit\','.$file->id.');"><i class="fa fa-edit"></i>bearbeiten</a></li>';             
                                 $html .=   '  <li class="divider"></li>
                                               <li><a href="#" onclick="del(\'file\','.$file->id.');"><i class="fa fa-trash"></i>löschen</a></li>
                                             </ul></div>';
                     break;
-
+                case 'thumb':   if ($icon == true){
+                                    $html .=   '<i class="'.resolveFileType($file->type).' info-box-icon"></i>';
+                                } else {
+                                    $html .=   '<div class="info-box-icon" style="background: url(\''.$url.'\'); background-size: cover; background-repeat: no-repeat;"></div>';
+                                }
+                    break;
                 default:
                     break;
             }
@@ -216,6 +235,29 @@ class Render {
         return $html;
     }
     
+    public static function helpcard($help){
+        global $USER;
+        $html =   '<div class="col-md-3 col-sm-6 col-xs-12">';
+                    if (checkCapabilities('help:update', $USER->role_id, false)){
+                        $html .='<a><span class="pull-right" onclick="formloader(\'help\',\'edit\','.$help->id.');"><i class="fa fa-edit margin"></i></span></a>';
+                    }
+                    if (checkCapabilities('help:add', $USER->role_id, false)){
+                        $html .='<a><span class="pull-right" onclick="del(\'help\','.$help->id.');"><i class="fa fa-trash top-buffer"></i></span></a>';
+                    }
+                    $html .= '<a href="#" onclick="formloader(\'preview\',\'help\','.$help->id.')">
+                              <div class="info-box">';
+                    $html .= RENDER::thumb($help->file_id, null, null, $format='thumb');      
+                            //<span class="info-box-icon bg-aqua" style="background: url(\'../share/accessfile.php?id='.$help->file_id.');background-size: cover; background-repeat: no-repeat;"></span>
+                    $html .= '<div class="info-box-content">
+                              <span class="info-box-text text-black">'.$help->category.'</span>
+                              <span class="info-box-number text-black">'.$help->title.'</span>
+                              <span class="info-box-more text-primary">'.$help->description.'</span>
+                            </div><!-- /.info-box-content -->
+                          </div><!-- /.info-box -->
+                        </a>
+                    </div>';
+        return $html;                                    
+    }
     
     public static function mail($mail, $box = null){
         global $CFG;
@@ -459,23 +501,19 @@ class Render {
     public static function filelist($form, $dependency, $view, $postfix, $target, $format, $multiple, $id){
         $file    = new File();
         $files   = $file->getFiles($dependency, $id);
-        $content = '<form name="'.$form.'" action="'.$form.'" method="post" enctype="multipart/form-data" > ';
+        $content = '<div class="box-body scroll_list" style="overflow:auto;"><form name="'.$form.'" action="'.$form.'" method="post" enctype="multipart/form-data" > ';
         switch ($view) {
-                    case 'thumbs': $content .= RENDER::thumblist($files);
+                    case 'thumbs': $content .= RENDER::thumblist($files,$postfix, $target, $format, $multiple);
                         break;
-                    case 'detail': $content .= RENDER::detaillist($files);
+                    case 'detail': $content .= RENDER::detaillist($files,$postfix, $target, $format, $multiple);
                         break;
-                    case 'list':   $content .= RENDER::flist($files);
+                    case 'list':   $content .= RENDER::flist($files,$postfix, $target, $format, $multiple);
                         break;
                     default:
                         break;
         }
-        $content .= '</form>';
-        if ($target != 'NULL'){ // verhindert, dass der Button angezeigt wird wenn das Target NULL ist  //todo: use box-footerclass to show button
-            $content .= '<div id="uploadframe_footer" class="uploadframe_footer" >
-                    <input type="submit" value="Datei(en) verwenden" onclick="iterateListControl(\'div'.$postfix.'\','.$postfix.','.$target.','.$format.','.$multiple.');"/>
-            </div>';
-        } 
+        $content .= '</form></div>';
+       
         return $content;
     }
     /**
@@ -483,27 +521,40 @@ class Render {
      * @param array $files
      * @return html
      */
-    public static function thumblist($files){
+    public static function thumblist($files,$postfix, $target, $format, $multiple){
         $content = '<ul class="mailbox-attachments clearfix">';
         foreach ($files as $f) {
-            $content .= RENDER::thumb(array('id' => $f->id)); 
+            $content .= RENDER::thumb(array('id' => $f->id), $target); 
         }
         $content .= '</ul>';
         return $content;
     }
     
-    public static function detaillist($files){
+    public static function detaillist($files,$postfix, $target, $format, $multiple){
         $content  = '<table class="table table-striped" style="width: 100%;word-break:break-all;"><tbody>';
         $content .= '<tr>
+                        <th><i class="fa fa-bars"></i></th>
                         <th style="width:30%;">Dateiname</th>
                         <th >Titel</th>
                         <th style="width:140px;">Datum</th>
                         <th style="width:60px;">Größe</th>
                         <th style="width:50px;">Typ</th>
-                        <th><i class="fa fa-bars"></i></th>
                     </tr>';
         foreach ($files as $f) {
             $content .= '<tr>';
+             $content .= '<td><div class="btn-group"><button type="button" class="btn btn-xs btn-flat dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                              </button><ul class="dropdown-menu" role="menu">
+                                <li><a href="#" onclick="setTarget('.$f->id.');"><i class="fa fa-check-circle"></i>Benutzen</a></li>
+                                <li><a href="#" onclick="formloader(\'preview\',\'file\','.$f->id.');"><i class="fa fa-eye"></i>Vorschau</a></li>
+                                <li><a href="#" onclick="formloader(\'file\',\'edit\','.$f->id.');"><i class="fa fa-edit"></i>bearbeiten</a></li>';
+                                if ($f->type != '.url'){
+                                    $content .=   '<li><a href="'.$f->getFileUrl().'"><i class="fa fa-cloud-download"></i>herunterladen</a></li>';
+                                }               
+                  $content .=   '  <li class="divider"></li>
+                                <li><a href="#" onclick="del(\'file\','.$f->id.');"><i class="fa fa-trash"></i>löschen</a></li>
+                              </ul></div></td>';
             $content .= '<td>'.$f->filename.'</td>';
             $content .= '<td>'.$f->title.'</td>';
             //$content .= '<td>'.$f->description.'</td>';
@@ -514,28 +565,17 @@ class Render {
                 $content .= '<td>'.$f->getHumanFileSize().'</td>';
             }
             $content .= '<td>'.$f->type.'</td>';
-            $content .= '<td><div class="btn-group"><button type="button" class="btn btn-xs btn-flat dropdown-toggle" data-toggle="dropdown">
-                                <span class="caret"></span>
-                                <span class="sr-only">Toggle Dropdown</span>
-                              </button><ul class="dropdown-menu" role="menu">
-                                <li><a href="#" onclick="formloader(\'file\',\'edit\','.$f->id.');"><i class="fa fa-edit"></i>bearbeiten</a></li>
-                                <li><a href="#" onclick="formloader(\'preview\',\'file\','.$f->id.');"><i class="fa fa-eye"></i>Vorschau</a></li>';
-                                if ($f->type != '.url'){
-                                    $content .=   '<li><a href="'.$f->getFileUrl().'"><i class="fa fa-cloud-download"></i>herunterladen</a></li>';
-                                }               
-                  $content .=   '  <li class="divider"></li>
-                                <li><a href="#" onclick="del(\'file\','.$f->id.');"><i class="fa fa-trash"></i>löschen</a></li>
-                              </ul></div></td>';
+           
             $content .= '</tr>';
         }
         $content .= '</tbody></table>';
         return $content;
     }
     
-    public static function flist($files){
+    public static function flist($files,$postfix, $target, $format, $multiple){
         $content = '';
         foreach ($files as $f) {
-            $content .= RENDER::thumb(array('id' => $f->id),'div','xs'); 
+            $content .= RENDER::thumb(array('id' => $f->id),$target,'div','xs'); 
         }
         //$content .= '</div>';
         return $content;

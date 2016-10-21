@@ -84,7 +84,7 @@ $c        = new Context();
 $content .= Form::input_select('file_context', 'Freigabe-Level', $c->get(), 'description', 'id', $file_context , $error);
 $content .= '</form></div>';
 $content .= '<div class="col-sm-3">';
-$content .= RENDER::thumb(array('id' => $id),'div');
+$content .= RENDER::thumb(array('id' => $id),null,'div');
 $content .= '</div>';
 
 $f_content = '';

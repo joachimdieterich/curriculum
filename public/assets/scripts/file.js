@@ -70,7 +70,7 @@ function uploadFile(form, func, fSelector, fName, fProgress, fPercent)
     $(document.getElementById(form+'_fAbort')).removeClass("hidden");
 
     var file        = document.getElementById(fSelector).files[0];              //Wieder unser File Objekt
-    var formData    = new FormData();                                 //FormData Objekt erzeugen
+    var formData    = new FormData();                                           //FormData Objekt erzeugen
     
     client = new XMLHttpRequest();                                              //XMLHttpRequest Objekt erzeugen
     var prog = document.getElementById(fProgress);
@@ -166,23 +166,103 @@ function uploadURL()
     client.onerror = function(e) { alert("onError"); };
     
     client.onloadend = function (e){
-        $.nmTop().close();          // close dialog
-        target = document.getElementById('target').value;
-        if($("#"+target).get(0)){
-           document.getElementById(target).value       = client.responseText;
-           $("#"+target).trigger('change');
-        }
-        if (document.getElementById('context').value === 'terminal_objective' || document.getElementById('context').value === 'enabling_objective'){
-            parent.window.location.reload();
-        }
+        setTarget(client.responseText);
     };
  
     client.open("POST", "../share/processors/fp_upload.php");
     client.send(formData);
 }
 
-
 function uploadAbort() {
 	if(client instanceof XMLHttpRequest)
 		client.abort();                                                 //Bricht die aktuelle Übertragung ab
 }
+
+function setTarget(file_id){
+    $.nmTop().close(); // close dialog
+    target = document.getElementById('target').value;
+    if($("#"+target).get(0)){
+       document.getElementById(target).value    = file_id;
+       $("#"+target).trigger('change');
+    }
+    if (document.getElementById('context').value === 'terminal_objective' || document.getElementById('context').value === 'enabling_objective'){
+        parent.window.location.reload();
+    }
+}
+//Funktion zum auslesen von Checkboxes // not used any more part of former uploadframe.js
+/*function iterateListControl(containerId,checkboxnameroot,targetID,returnFormat,multipleFiles){
+ var containerRef = document.getElementById(containerId);
+ var inputRefArray = containerRef.getElementsByTagName('input');
+ var returnList = '';
+ 
+ for (var i=0; i<inputRefArray.length; i++){
+  var inputRef = inputRefArray[i];
+
+  if ( inputRef.type.substr(0, 8) === 'checkbox' && inputRef.checked === true ){
+    if (returnList === '') {
+        returnList = inputRef.id.substr(checkboxnameroot.length);
+    } else {   
+        returnList = returnList + ',' + inputRef.id.substr(checkboxnameroot.length);   //Kommagetrennte Liste mit den ausgewählten Dateien (Referenz ist die ID aus der files DB)
+    }
+  }
+ }
+    // Aufbereiten der Rückgabedaten 
+   switch (returnFormat) {
+        case "0": var returnListArray = returnList.split(","); // case 0 = returns FILE ID
+                  var processedreturnListArray = '';
+                  for (var i=0; i<returnListArray.length; i++) {
+                      if (processedreturnListArray === '') {
+                          processedreturnListArray = returnListArray[i]; //File ID
+                      } else {
+                          processedreturnListArray = processedreturnListArray + ',' + returnListArray[i];  //Gibt nur den Dateinamen aus                       
+                      }
+                  }
+                  returnList = processedreturnListArray;
+                  break; // FILE ID 
+        case "1": var returnListArray = returnList.split(","); // case 1 = returns FILE NAME
+                  var processedreturnListArray = '';
+                  for (var i=0; i<returnListArray.length; i++) {
+                      if (processedreturnListArray === '') {
+                          processedreturnListArray = document.getElementById('href_' + returnListArray[i]).innerHTML; //Gibt nur den Dateinamen aus
+                      } else {
+                          processedreturnListArray = processedreturnListArray + ',' + document.getElementById('href_' + returnListArray[i]).innerHTML;  //Gibt nur den Dateinamen aus
+                      }
+                  }
+                  returnList = processedreturnListArray;
+                  break; //Es wird der Dateinamen zurückgegeben
+                  
+        case "2": var returnListArray = returnList.split(","); // case 2 = returns FILE PATH AND NAME
+                  var processedreturnListArray = '';
+                  for (var i=0; i<returnListArray.length; i++) {
+                      if (processedreturnListArray === '') {
+                          processedreturnListArray = document.getElementById('href_a_' + returnListArray[i]).href; //Gibt kompletten Link aus  
+                      } else {
+                          processedreturnListArray = processedreturnListArray + ',' + document.getElementById('href_a_' + returnListArray[i]).href;  //Gibt Kompletten Link aus
+                      }
+                  }    
+                  returnList = processedreturnListArray;
+                  break; //Es wird die URL zurückgegeben        
+                  
+        default: break;
+   }
+   switch (multipleFiles) {
+        case "false": if (returnList.indexOf(',') !== -1){ //returns first file only
+                      var index = returnList.indexOf(','); 
+                      var processedreturnList = returnList.slice(0,index);
+                    } else {
+                          processedreturnList = returnList;
+                    }
+                    break; 
+        case "true" : var processedreturnList = returnList; //returns filelist
+                    break; 
+        default: break;
+   }
+   
+   // Auswahl an top.document weitergeben lassen, wenn bestehende datei gewählt wird
+    if (((typeof top.tinyMCE.activeEditor === 'object') && top.tinyMCE.activeEditor !== null) && '<?php echo $context; ?>' === 'editor'){ //if tinyMCE is available
+            top.tinyMCE.activeEditor.insertContent('<img src="'+processedreturnList+'">');
+        } else {
+            $('#'+targetID, top.document).val(processedreturnList);    //
+        }
+    self.parent.tb_remove();
+}*/

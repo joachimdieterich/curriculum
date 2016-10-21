@@ -93,7 +93,7 @@ if (isset($_SESSION['FORM'])){
 $content ='<form id="form_institution" class="form-horizontal" role="form" method="post" action="../share/processors/fp_institution.php"';
 
 if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content .= '"><h4>Institution</h4>
+$content .= '"><h4>'.$header.'</h4>
 <input type="hidden" name="func" id="func" value="'.$func.'"/>';
 if (isset($id)) {                                                               // only set id input field if set! prevents error on validation form reload
      $content .= '<input id="id" name="id" type="text" class="invisible" value="'.$id.'">';
@@ -124,7 +124,7 @@ $content .= Form::input_select('country_id', 'Land', $countries->getCountries(),
 $content .= '<input type="hidden" name="file_id" id="file_id" value="'.$file_id.'"/>';
 if (isset($id)) { // id have to be set to add image
 $content .= '<div class="col-xs-3"></div><div class="col-xs-9">'
-            . '<a href="'.$CFG->request_url .'uploadframe.php?&context=institution&target=file_id&ref_id='.$id.'&format=0&multiple=false" class="nyroModal">'
+            . '<a href="'.$CFG->request_url .'uploadframe.php?context=institution&target=file_id&ref_id='.$id.'&format=0&multiple=false&modal=true" class="nyroModal">'
             . '<img id="icon" style="height:100px; margin-left: -5px; padding-bottom:10px;" src="'.$CFG->access_id_url.$file_id.'" alt="Foto der Institution">'
             . '</a></div>';
 } 
@@ -156,7 +156,21 @@ $html     = Form::modal(array('title'     => $header,
 
 $script = '<script id=\'modal_script\'>
         $(function() {
-            $(\'.nyroModal\').nyroModal();
+            $(\'.nyroModal\').nyroModal({
+            callbacks: {
+                beforeShowBg: function(){
+                    $(\'body\').css(\'overflow\', \'hidden\');
+                       
+                },
+                afterHideBg: function(){
+                    $(\'body\').css(\'overflow\', \'\');
+                 
+                },
+                afterShowCont: function(nm) {
+                    $(\'.scroll_list\').height($(\'.modal\').height()-150);
+                }   
+            }
+        });
             $(\'#popup_generate\').nyroModal();
         });
         $(\'#file_id\').change(\'input\', function() {
