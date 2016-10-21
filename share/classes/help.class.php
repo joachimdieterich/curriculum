@@ -31,6 +31,33 @@ class Help {
     public $category;
     public $file_id;
     
+    public function __construct($id = null) {
+        if ($id != null){ 
+            $this->id = $id; 
+            $this->load();
+        }
+    }
+    
+    public function add(){
+        global $USER;
+        checkCapabilities('help:add', $USER->role_id);
+        $db = DB::prepare('INSERT INTO help (title,description,category,file_id) VALUES (?,?,?,?)');
+        return $db->execute(array($this->title, $this->description, $this->category, $this->file_id));
+    }
+    
+    public function update(){
+        checkCapabilities('help:update', $USER->role_id);
+        $db = DB::prepare('UPDATE help SET title = ?,description = ?,category = ?,file_id = ? WHERE id = ?');
+        return $db->execute(array($this->title, $this->description, $this->category, $this->file_id, $this->id));
+    }
+    
+    public function delete(){
+        global $USER;
+        checkCapabilities('help:delete', $USER->role_id);
+        $db = DB::prepare('DELETE FROM help WHERE id = ?');
+        return $db->execute(array($this->id));
+    }
+    
     public function load($id = null){
         if ($id == null){ $id = $this->id; }
         $db     = DB::prepare('SELECT he.* FROM help AS he 
@@ -47,6 +74,8 @@ class Help {
         }
         
     }
+    
+    
     
     public function get($search = false){
         global $USER;
