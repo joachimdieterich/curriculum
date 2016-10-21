@@ -14,6 +14,11 @@
                                 <a href="index.php?action=view&curriculum_id={$cur_menu->id}&group={$cur_menu->group_id}">
                                     <i class="fa fa-dashboard"></i><span>{$cur_menu->curriculum}</span><small class="label pull-right bg-green">{$cur_menu->groups}</small>
                                 </a>
+                                <div class="progress xxs margin-bottom-none">
+                                            <div class="progress-bar progress-bar-primary" style="width: {$cur_menu->completed}%" role="progressbar" aria-valuenow="{$cur_menu->completed}" aria-valuemin="0" aria-valuemax="100">
+                                              <span class="sr-only">{$cur_menu->completed}% Complete</span>
+                                            </div>
+                                        </div>
                             </li>
                             {if {$smarty.foreach.enrolments.index} eq 4} 
                                 <li class=" treeview"><a><span>Weitere Einträge</span><i class="fa fa-angle-left pull-right"></i></a> 
@@ -24,6 +29,7 @@
                                         <a href="index.php?action=view&curriculum_id={$cur_menu->id}&group={$cur_menu->group_id}">
                                             <i class="fa fa-dashboard"></i><span>{$cur_menu->curriculum}</span><small class="label pull-right bg-green">{$cur_menu->groups}</small>
                                         </a>
+                                        
                                     </li>
                                 {/if}
                                 

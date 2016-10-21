@@ -1031,6 +1031,8 @@ class User {
             $c                      = new Curriculum();
             $c->id                  = $result->id;
             $c->base_curriculum_id  = null; //if no niveau / level is set base_curriculum_id = null;
+            $e                      = new EnablingObjective();
+            $result->completed      = $e->getPercentageOfCompletion($result->id, $this->id);
             $data[]                 = $result;         
         } 
         if (isset($data)){ return $data; } 
