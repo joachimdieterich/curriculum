@@ -85,7 +85,7 @@ if (isset($_SESSION['FORM'])){
     }
 }
    
-$content .='<form id="form_absent"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_absent.php"';
+$content ='<form id="form_absent"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_absent.php"';
 
 if (isset($currentUrlId)){ $content .= $currentUrlId; }
 $content .= '"><input type="hidden" name="reference_id" id="reference_id" value="'.$reference_id.'"/>
@@ -97,7 +97,8 @@ $content .= Form::input_text('username', 'Benutzername', $user, $error,'','text'
 }
 $content .= Form::input_text('reason', 'Fehlgrund', $reason, $error, 'z. B. Krankmeldung');
 if (!isset($absent_id)){
-$content .= Form::input_select_multiple('user_list', 'Kursmitglieder', $members, 'firstname, lastname', 'id', $user_list, $error );
+    error_log(json_encode($members));
+$content .= Form::input_select_multiple(array('id' => 'user_list', 'label' => 'Kursmitglieder', 'select_data' => $members, 'select_label' => 'firstname, lastname', 'select_value' => 'id', 'input' => $user_list, 'error' => $error));
 }
 $content .= Form::input_checkbox('status', 'Entschuldigt', $status, $error);
 $content .= '</div></form>';

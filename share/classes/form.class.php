@@ -149,9 +149,16 @@ class Form {
         
         return $form;
     }
-    public static function input_select_multiple($id, $label, $select_data, $select_label, $select_value, $input, $error, $onchange= '', $placeholder ='---', $class_left='col-sm-3', $class_right='col-sm-9'){
-        $class_left     ='col-sm-3'; 
+    public static function input_select_multiple($params){
+        /*$id, $label, $select_data, $select_label, $select_value, $input*/
+        $error          = null;
+        $onchange       = '';
+        $placeholder    ='---';
+        $class_left     ='col-sm-3';
         $class_right    ='col-sm-9';
+        $limiter        = ' ';
+        foreach($params as $key => $val) { $$key = $val; }
+        
         $form = '<div class="form-group '.validate_msg($error, $id, true).'">
                     <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
                     <div class="'.$class_right.'">
@@ -162,7 +169,8 @@ class Form {
                                     foreach (explode(', ', $select_label) as $f) {
                                         $fields[]  = $value->$f;
                                     }
-                                    $label = implode(" | ", $fields);
+                                    $label = implode($limiter, $fields);
+                                    unset($fields);
                                 } else {
                                     $label  = $value->$select_label;
                                 }

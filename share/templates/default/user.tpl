@@ -50,7 +50,7 @@
                                     <h4>Lerngruppe</h4>
                                     <p>Markierte Benutzer in Lerngruppe ein bzw. ausschreiben</p>
                                     {if isset($groups_array)}
-                                        {Form::input_select_multiple('groups', 'Lerngruppe', $groups_array, 'group, semester', 'id', null, null )}
+                                        {Form::input_select_multiple(['id' => 'groups', 'label' => 'Lerngruppe', 'select_data' => $groups_array, 'select_label' =>'group, semester', 'select_value' => 'id', 'input' => null, 'error' => null, 'limiter' => ', ' ])}
                                         {*Form::input_select('groups', 'Lerngruppe', $groups_array, 'group, semester', 'id', null, null)*}
                                         <div class="btn-group pull-right" role="group" aria-label="...">
                                             {if checkCapabilities('user:enroleToGroup', $my_role_id, false)}

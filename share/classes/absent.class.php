@@ -54,7 +54,7 @@ class Absent {
         return $db->execute(array($this->cb_id, $this->user_id, $this->reason, $this->done,$this->status,$USER->id, $this->id));
     }
     
-    public function load($dependency = 'id', $value = null){
+    public function load($dependency = 'id', $value = null, $usr_obj = false){
         if (isset($value)){ $v = $value; } else { $v = $this->id; }
         $db         = DB::prepare('SELECT * FROM user_absent WHERE '.$dependency.' = ?');
         $db->execute(array($v));
@@ -64,9 +64,15 @@ class Absent {
                 $this->$key = $value; 
             }
             $user           = new User(); 
-            $this->user     = $user->resolveUserId($result->user_id);
+            if ($usr_obj == true){
+                $user->load('id', $result->user_id, false);
+                $this->user     = $user;
+            } else {
+                $this->user     = $user->resolveUserId($result->user_id);
+            }
             $this->creator  = $user->resolveUserId($result->creator_id);
             $this->resolveStatus();
+            
             return true;                                                        
         } else { 
             return false; 
@@ -79,7 +85,6 @@ class Absent {
                     break;
                 case 1:      $this->status_text = 'entschuldigt'; //todo: resolve status over id (extra table?)
                     break;
-
                 default:
                     break;
             }
@@ -87,20 +92,12 @@ class Absent {
     
     public function get($paginator = ''){
         $order_param = orderPaginator($paginator, array()); 
-        $db = DB::prepare('SELECT ub.* FROM user_absent AS ub
+        $db = DB::prepare('SELECT ub.id FROM user_absent AS ub
                                                 WHERE ub.cb_id = ? '.$order_param );
                             $db->execute(array($this->cb_id));
-        
+       
         while($result = $db->fetchObject()) { 
-            foreach ($result as $key => $value) {
-                $this->$key = $value; 
-            }
-            $user           = new User();
-            
-            $user->load('id', $result->user_id, false);
-            $this->user     = $user;
-            $this->creator  = $user->resolveUserId($result->creator_id);
-            $this->resolveStatus();
+            $this->load('id', $result->id, true);
             $entrys[]       = clone $this;        //it has to be clone, to get the object and not the reference
         } 
         if (isset($entrys)){
