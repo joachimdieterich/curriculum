@@ -50,11 +50,7 @@ switch ($func) {
     case "paginator_col":   $paginator    = new SmartyPaginate();
                             $paginator_id = filter_input(INPUT_GET, 'val', FILTER_SANITIZE_STRING);
                             $column       = filter_input(INPUT_GET, 'column', FILTER_SANITIZE_STRING);
-                            if ($paginator->getColumnVisibility($column, $paginator_id) == true){
-                                $paginator->setColumnVisibility($column, $paginator_id, false);
-                            } else {
-                                $paginator->setColumnVisibility($column, $paginator_id, true);
-                            }
+                            $paginator->setColumnVisibility($column, $paginator_id, !boolval($paginator->getColumnVisibility($column, $paginator_id)));      //invert column visibility                     
         break;
                             
     default: break;
