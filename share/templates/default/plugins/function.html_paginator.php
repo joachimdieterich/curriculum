@@ -76,7 +76,11 @@ function smarty_function_html_paginator($params, $template) {
                                     case is_array($config[$_key]):   
                                         break;
 
-                                    default: $html .= '  <li class="row" onclick="toggle_column(\''.$id.'_col_'.$_key.'\');"><label class="col-md-12 col-xs-offset-1"><input class="col-xs-1 " type="checkbox" id="cb_'.$id.'_col_'.$_key.'" checked><span class="col-xs-10" style="font-weight:400;">'.$config[$_key].'</span></label></li>';
+                                    default: $html .= '  <li class="row" onclick="processor(\'config\',\'paginator_col\',\''.$id.'\',{\'column\':\''.$_key.'\'});"><label class="col-md-12 col-xs-offset-1"><input class="col-xs-1 " type="checkbox" id="cb_'.$id.'_col_'.$_key.'" ';
+                                        if (SmartyPaginate::getColumnVisibility($_key,$id)){
+                                            $html .='checked';
+                                        }
+                                        $html .= '><span class="col-xs-10" style="font-weight:400;">'.$config[$_key].'</span></label></li>';
                                         break;
                                 }
                             } 
@@ -119,7 +123,7 @@ $html .= '<div class="row"><div class="clearfix"><br><table class="table table-b
         } else if ($_key == 'p_options'){
             $html .= '<td class="pull-right"><i class="fa fa-bars"></></td>';
         } else {
-            if (array_key_exists($_key, $config)){
+            if (array_key_exists($_key, $config) AND SmartyPaginate::getColumnVisibility($_key,$id)){
                 $html .= '<td name="'.$id.'_col_'.$_key.'">'.smarty_function_paginate_order(array('id' => $id, 'key' => $_key, 'text' => $config[$_key]), $template);
                 if ($_key == 'username' OR $_key == 'firstname' OR $_key == 'lastname'  OR $_key == 'email' OR $_key == 'city' OR $_key == 'curriculum' OR $_key == 'description'){ // hack: muss dynamisch gemacht werden
                     $html .=  '<input class="pull-right" id="'.$id.'_col_'.$_key.'_search" name="p_search" style="width:25px;" type="text" value="" onclick="toggle_input_size(\''.$id.'_col_'.$_key.'_search\');"  onblur="toggle_input_size(\''.$id.'_col_'.$_key.'_search\', false);" onkeydown="if (event.keyCode == 13) {event.preventDefault(); window.location.href = \''.removeUrlParameter($url, array ( 0 => 'paginator', 1 => 'paginator_search', 2 => 'order')).'&paginator='.$id.'&order='.$_key.'&paginator_search=\'+this.value;}">'; //event.preventDefault() importent to use paginator in <form>
@@ -179,7 +183,7 @@ $html .= '<div class="row"><div class="clearfix"><br><table class="table table-b
                 }
                 $html .= '</td>'; 
             } else { // other columns
-                if (array_key_exists($k_key, $config)){
+                if (array_key_exists($k_key, $config) AND SmartyPaginate::getColumnVisibility($k_key,$id)){
                     $html .= '<td style=" word-break: break-all;" name="'.$id.'_col_'.$k_key.'" ';
                         if (isset($td['onclick'])){
                             $html .= 'onclick="'.str_replace('__id__', $_id, $td['onclick']).'"';

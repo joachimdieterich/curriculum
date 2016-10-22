@@ -27,6 +27,7 @@ include(dirname(__FILE__).'/../login-check.php');  //check login status and rese
 global $USER;
 $USER   = $_SESSION['USER'];
 $func   = filter_input(INPUT_GET, 'func',           FILTER_SANITIZE_STRING);
+$object = file_get_contents("php://input");
 
 switch ($func) {
     case "user_paginator":  $u      = new User();        
@@ -45,6 +46,16 @@ switch ($func) {
                                 $u->load('id',$u->id,false);
                                 assign_to_template($u,'my_');   
                             }
+        break;
+    case "paginator_col":   $paginator    = new SmartyPaginate();
+                            $paginator_id = filter_input(INPUT_GET, 'val', FILTER_SANITIZE_STRING);
+                            $column       = filter_input(INPUT_GET, 'column', FILTER_SANITIZE_STRING);
+                            if ($paginator->getColumnVisibility($column, $paginator_id) == true){
+                                $paginator->setColumnVisibility($column, $paginator_id, false);
+                            } else {
+                                $paginator->setColumnVisibility($column, $paginator_id, true);
+                            }
+        break;
                             
     default: break;
 }

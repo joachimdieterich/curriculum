@@ -414,11 +414,15 @@ function formloader(/*form, func, id, []*/){
     }
 }
 
-function processor(proc, func, val){
-    var url = "../share/processors/p_"+ proc +".php?func="+ func +"&val="+ val;
+function processor(/*proc, func, val, []*/){
+    if (typeof(arguments[3]) !== 'undefined'){
+        var url = "../share/processors/p_"+ arguments[0] +".php?func="+ arguments[1] +"&val="+ arguments[2]+"&"+jQuery.param(arguments[3]);
+    } else {
+        var url = "../share/processors/p_"+ arguments[0] +".php?func="+ arguments[1] +"&val="+ arguments[2];
+    }
     req = XMLobject();
     if(req) {  
-                req.onreadystatechange = window.location.reload();
+            req.onreadystatechange = window.location.reload();
             req.open("GET", url, false); //false --> important for print function
             req.send(null);
         }

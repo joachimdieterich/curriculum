@@ -229,16 +229,42 @@ class SmartyPaginate {
     }    
     /**
      * set width of paginator e.g. col-sm-12
-     * @param type $width
-     * @param type $id
+     * @param int $width
+     * @param int $id
      */
     static function setWidth($width, $id = 'default') {
         $_SESSION['SmartyPaginate'][$id]['width'] = $width;
     }
-    
+    /**
+     * get width of paginator
+     * @param int $id
+     * @return int
+     */
     static function getWidth($id = 'default') {
         return $_SESSION['SmartyPaginate'][$id]['width'];
-    }    
+    }   
+    /**
+     * 
+     * @param string $col name of column
+     * @param string $id the pagination id
+     * @param boolean $status
+     */
+    static function setColumnVisibility($col, $id = 'default', $status = true){
+        $_SESSION['SmartyPaginate'][$id][$col] = $status;
+    }
+    /**
+     * 
+     * @param string $col name of column
+     * @param string $id the pagination id
+     * @return boolean
+     */
+    static function getColumnVisibility($col, $id = 'default'){
+        if (isset($_SESSION['SmartyPaginate'][$id][$col])){
+            return $_SESSION['SmartyPaginate'][$id][$col];
+        } else {
+            return true; //if visibility is not set for this col return default == true
+        }
+    }
     
     /**
      * set the url variable ie. ?next=10
