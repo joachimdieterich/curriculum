@@ -24,7 +24,7 @@
 */
 include(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
-global $USER;
+global $USER,$CFG;
 $USER   = $_SESSION['USER'];
 $func   = filter_input(INPUT_GET, 'func',           FILTER_SANITIZE_STRING);
 $object = file_get_contents("php://input");
@@ -51,6 +51,9 @@ switch ($func) {
                             $paginator_id = filter_input(INPUT_GET, 'val', FILTER_SANITIZE_STRING);
                             $column       = filter_input(INPUT_GET, 'column', FILTER_SANITIZE_STRING);
                             $paginator->setColumnVisibility($column, $paginator_id, !boolval($paginator->getColumnVisibility($column, $paginator_id)));      //invert column visibility                     
+        break;
+                        
+    case "paginator_order": SmartyPaginate::setSort(filter_input(INPUT_GET, 'order', FILTER_SANITIZE_STRING),filter_input(INPUT_GET, 'sort', FILTER_SANITIZE_STRING), filter_input(INPUT_GET, 'paginator', FILTER_SANITIZE_STRING));
         break;
                             
     default: break;

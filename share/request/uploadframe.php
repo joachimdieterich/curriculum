@@ -34,7 +34,6 @@ $file       = new File();
 $ref_id     = null;         //todo: only use ref_id
 $target     = null;         // id of target field
 $format     = null;         // return format 0 == file_id; 1 == file_name; 2 == filePath / URL
-$multiple   = null;         // upload multiple files // not used yet  false == returns one file, true = returns array of files_id/file_name/file_path (depends on $format)
 $context    = null; 
 $title      = null; 
 $description= null; 
@@ -51,6 +50,7 @@ $copy_link  = '';
 foreach ($_GET  as $key => $value) { $$key = $value; } 
 /* get form data */
 foreach ($_POST as $key => $value) { $$key = $value; }
+
 ?>
 
 <!-- HTML -->
@@ -58,133 +58,155 @@ foreach ($_POST as $key => $value) { $$key = $value; }
 <div class="modal-content">
     <div class="modal-header">
         <button type="button" class="close nyroModalClose" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">×</span></button>
-        <h4 class="modal-title">Dateiauswahl</h4>
+        <h4 class="modal-title"><i class="fa fa-bars" onclick="toggle_sidebar('modal_sidebar')"></i> Dateiauswahl</h4>
     </div>
-    <div class="modal-body" style="min-height: 450px !important;"> <!-- to do recalc nyroModal on changes--> 
-        <!-- Left side column. contains the logo and sidebar -->
-      <aside class="main-sidebar" style="padding-top:0px !important;">
-        <!-- sidebar: style can be found in sidebar.less -->
-        <section class="sidebar">
-          <!-- sidebar menu: : style can be found in sidebar.less -->
-          <ul class="sidebar-menu">
-              <!--<li class="header">Menü</li>-->
-                <?php 
-                $values = array (0 => array('capabilities' =>  'file:upload',           'id' =>  'fileuplbtn',          'name' => 'Datei hochladen',      'class' => 'fa  fa-upload',    'action' => 'upload'), 
-                                 1 => array('capabilities' =>  'file:uploadURL',        'id' =>  'fileURLbtn',          'name' => 'Datei-URL verknüpfen', 'class' => 'fa  fa-link',      'action' => 'url'), 
-                                 2 => array('capabilities' =>  'file:lastFiles',        'id' =>  'filelastuploadbtn',   'name' => 'Letzte Dateien',       'class' => 'fa  fa-files-o',   'action' => 'lastFiles'), 
-                                 3 => array('capabilities' =>  'file:curriculumFiles',  'id' =>  'curriculumfilesbtn',  'name' => 'Aktueller Lehrplan',   'class' => 'fa  fa fa-th',     'action' => 'curriculumFiles'), 
-                                 4 => array('capabilities' =>  'file:solution',         'id' =>  'solutionfilesbtn',    'name' => 'Meine Abgaben',        'class' => 'fa  fa-clipboard', 'action' => 'mySolutions'), 
-                                 5 => array('capabilities' =>  'file:myFiles',          'id' =>  'myfilesbtn',          'name' => 'Meine Dateien',        'class' => 'fa  fa-user',      'action' => 'myFiles'), 
-                                 6 => array('capabilities' =>  'file:myAvatars',        'id' =>  'avatarfilesbtn',      'name' => 'Meine Profilbilder',   'class' => 'fa  fa-user',      'action' => 'myAvatars')
-                );
-                foreach($values as $value){
-                    if (checkCapabilities($value['capabilities'], $USER->role_id, false)){ //don't throw exeption!
-                        if (($value['action'] == 'curriculumFiles' AND ($context != 'terminal_objective' AND $context != 'enabling_objective')) OR ($value['action'] == 'mySolutions' AND $context != 'solution'))  { 
-                            // do nothing
-                        } else { ?>
-                            <li class="treeview <?php if ($action == $value['action']){echo 'active';}?>" >
-                                <a id="<?php echo $value['id']?>" href="../share/request/uploadframe.php?action=<?php 
-                                        echo $value['action'].'&context='.$context.'&ref_id='.$ref_id.'&target='.$target.'&format='.$format.'&multiple='.$multiple;
-                                         ?>" class="nyroModal">
-                                    <i class="<?php echo $value['class']?>"></i> <span><?php echo $value['name']?></span>
-                                </a>
-                            </li> <?php 
-                        }
-                    }
-                } ?>
-            
-            <div id="div_FilePreview" style="display:none;">
-                <img id="img_FilePreview" src="" alt="Vorschau">
-            </div>
-          </ul>
-        </section>
-      </aside>
+    <div id="modal_sidebar" class="modal-body sidebar-mini" style="min-height: 450px !important;padding-left: 0px; padding-top: 0px;"> <!-- to do recalc nyroModal on changes--> 
+        <aside class="main-sidebar" style="padding-top:0px !important;">
+          <!-- sidebar: style can be found in sidebar.less -->
+          <section class="sidebar">
+            <!-- sidebar menu: : style can be found in sidebar.less -->
+            <ul class="sidebar-menu">
+                  <?php 
+                  $values = array (0 => array('capabilities' =>  'file:upload',           'id' =>  'fileuplbtn',          'name' => 'Datei hochladen',      'class' => 'fa  fa-upload',    'action' => 'upload'), 
+                                   1 => array('capabilities' =>  'file:uploadURL',        'id' =>  'fileURLbtn',          'name' => 'Datei-URL verknüpfen', 'class' => 'fa  fa-link',      'action' => 'url'), 
+                                   2 => array('capabilities' =>  'file:lastFiles',        'id' =>  'filelastuploadbtn',   'name' => 'Letzte Dateien',       'class' => 'fa  fa-files-o',   'action' => 'user'), 
+                                   3 => array('capabilities' =>  'file:curriculumFiles',  'id' =>  'curriculumfilesbtn',  'name' => 'Aktueller Lehrplan',   'class' => 'fa  fa fa-th',     'action' => 'curriculum'), 
+                                   4 => array('capabilities' =>  'file:solution',         'id' =>  'solutionfilesbtn',    'name' => 'Meine Abgaben',        'class' => 'fa  fa-clipboard', 'action' => 'solution'), 
+                                   5 => array('capabilities' =>  'file:myFiles',          'id' =>  'myfilesbtn',          'name' => 'Meine Dateien',        'class' => 'fa  fa-user',      'action' => 'userfiles'), 
+                                   6 => array('capabilities' =>  'file:myAvatars',        'id' =>  'avatarfilesbtn',      'name' => 'Meine Profilbilder',   'class' => 'fa  fa-user',      'action' => 'avatar')
+                  );
+                  foreach($values as $value){
+                      if (checkCapabilities($value['capabilities'], $USER->role_id, false)){ //don't throw exeption!
+                          if (($value['action'] == 'curriculum' AND ($context != 'terminal_objective' AND $context != 'enabling_objective')) OR ($value['action'] == 'solution' AND $context != 'solution'))  { 
+                              // do nothing
+                          } else { ?>
+                              <li class="treeview <?php if ($action == $value['action']){echo 'active';}?>" >
+                                  <a id="<?php echo $value['id']?>" 
+                                     href="<?php echo '../share/request/uploadframe.php?action='.$value['action'].'&context='.$context.'&ref_id='.$ref_id.'&target='.$target.'&format='.$format;?>" 
+                                     class="nyroModal">
+                                      <i class="<?php echo $value['class']?>"></i> <span><?php echo $value['name']?></span>
+                                  </a>
+                              </li> <?php 
+                          }
+                      }
+                  } ?>
+            </ul>
+          </section>
+        </aside>
       
-      <div class="content-wrapper" >
-        <?php if ($action == 'upload' OR $action == 'url'){ ?>
-        <div class="box box-widget">
-          <!--?php echo $action;  echo var_dump($action); ?-->
-          <form id="uploadform" class="form-horizontal" role="form" method="post" enctype="multipart/form-data">
-            <p><input id="context" name="context" type="hidden" value="<?php echo $context; ?>" /></p> <!-- context = von wo wird das Uploadfenster aufgerufen-->
-            <p><input id="action" name="action" type="hidden" value="<?php   echo $action; ?>" /></p>
-            <p><input id="ref_id" name="ref_id" type="hidden" value="<?php   echo $ref_id; ?>" /></p><?php
-            echo Form::input_text('title', 'Titel', $title, $error, 'z. B. Diagramm eLearning'); 
-            echo Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung'); 
-            echo Form::input_text('author', 'Autor', $author, $error, 'Max Mustermann'); 
-            $l = new License();
-            echo Form::input_select('license', 'Lizenz', $l->get(), 'license', 'id', $license , $error);
-            $c = new Context();
-            echo Form::input_select('file_context', 'Freigabe-Level', $c->get(), 'description', 'id', $context , $error);?>
-            <p><input id="target" name="target" type="hidden" value="<?php  echo $target; ?>" /></p>
-            <p><input id="format" name="format" type="hidden" value="<?php  echo $format; ?>" /></p>
-            <p><input id="multiple" name="multiple" type="hidden" value="<?php echo $multiple; ?>" /></p>
-            <?php 
-            if ($action == 'upload') { ?> 
-            <span id="div_fileuplbtn">    <!-- Fileupload-->
-                <?php echo Form::upload_form('uploadbtn', 'Datei hochladen', '', $error); ?>
-            </span><?php } 
-            if ($action == 'url') { ?> 
-            <span id="div_fileURLbtn" >     <!-- URLupload--><?php
-                echo Form::input_text('fileURL', 'URL', $fileURL, $error, 'http://www.curriculumonline.de'); 
-                echo '<button name="update" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="uploadURL();"> URL hinzufügen</button><br>';
-                ?>
-            </span>
-            <?php } ?>
-            </form>    
-            <p class="text ">&nbsp;<?php echo $error; ?></p>
-            <div class="uploadframe_footer"><?php echo $copy_link; ?></div>
-        </div><!-- /.tab-pane -->
-        <?php 
-        } 
-        ?>
-                
-        <div class="box box-widget" >
-            <input id="target" name="target" type="hidden" value="<?php  echo $target; ?>" />
-            <input id="context" name="context" type="hidden" value="<?php echo $context; ?>" />
-            <?php
-            if (in_array($action, array('lastFiles','curriculumFiles','myFiles','myAvatars'))){ 
-            ?>
-            <div class="box-header">
-                <div class="btn-group-xs pull-right">
-                    <button type="button" class="btn btn-default">
-                        <a href="../share/request/uploadframe.php?action=<?php 
-                            echo $action.'&context='.$context.'&list_format=thumbs&ref_id='.$ref_id.'&target='.$target.'&format='.$format.'&multiple='.$multiple;?>" class="nyroModal">
-                            <i class="fa fa-th"></i>
-                        </a>
-                    </button>
-                    <button type="button" class="btn btn-default">
-                        <a href="../share/request/uploadframe.php?action=<?php 
-                            echo $action.'&context='.$context.'&list_format=list&ref_id='.$ref_id.'&target='.$target.'&format='.$format.'&multiple='.$multiple;?>" class="nyroModal">
-                            <i class="fa fa-th-list"></i>
-                        </a>
-                    </button>
-                    <button type="button" class="btn btn-default">
-                        <a href="../share/request/uploadframe.php?action=<?php 
-                            echo $action.'&context='.$context.'&list_format=detail&ref_id='.$ref_id.'&target='.$target.'&format='.$format.'&multiple='.$multiple;?>" class="nyroModal">
-                            <i class="fa fa-list"></i>
-                        </a>
-                    </button>
-                </div> 
-            </div>
-            <?php
-            }
-            switch ($action) {
-                case 'lastFiles':       echo RENDER::filelist('uploadframe.php', 'user',       $list_format, '_filelastuploadbtn',  $target, $format, $multiple, $USER->id);  //FileLastUpload div
-                    break;
-                case 'curriculumFiles': echo RENDER::filelist('uploadframe.php', 'curriculum', $list_format, '_curriculumfilesbtn', $target, $format, $multiple, $ref_id);    //curriculumfiles
-                    break;
-                case 'mySolutions':     echo RENDER::filelist('uploadframe.php', 'solution',   $list_format, '_solutionfilesbtn',   $target, $format, $multiple, $ref_id);    //solutionfiles div
-                    break;
-                case 'myFiles':         echo RENDER::filelist('uploadframe.php', 'userfiles',  $list_format, '_myfilesbtn',         $target, $format, $multiple, $USER->id);  //myfiles div
-                    break;
-                case 'myAvatars':       echo RENDER::filelist('uploadframe.php', 'avatar',     $list_format, '_avatarfilesbtn',     $target, $format, $multiple, $USER->id);  //avatarfiles div
-                        break;
+        <div class="content-wrapper">
+            <div class="bg-white">
+          <?php if ($action == 'upload' OR $action == 'url'){ ?>
+            <form id="uploadform" class="form-horizontal" style="padding-top:10px;padding-left: 10px;" role="form" method="post" enctype="multipart/form-data">
+              <input id="context" name="context" type="hidden" value="<?php echo $context; ?>" /> <!-- context = von wo wird das Uploadfenster aufgerufen-->
+              <input id="action"  name="action"  type="hidden" value="<?php echo $action; ?>" />
+              <input id="ref_id"  name="ref_id"  type="hidden" value="<?php echo $ref_id; ?>" /><?php
+              echo Form::input_text('title', 'Titel', $title, $error, 'z. B. Diagramm eLearning'); 
+              echo Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung'); 
+              echo Form::input_text('author', 'Autor', $author, $error, 'Max Mustermann'); 
+              $l = new License();
+              echo Form::input_select('license', 'Lizenz', $l->get(), 'license', 'id', $license , $error);
+              $c = new Context();
+              echo Form::input_select('file_context', 'Freigabe-Level', $c->get(), 'description', 'id', $context , $error);?>
+              <p><input id="target" name="target" type="hidden" value="<?php  echo $target; ?>" /></p>
+              <p><input id="format" name="format" type="hidden" value="<?php  echo $format; ?>" /></p>
+              <?php 
+              if ($action == 'upload') { ?> 
+              <span id="div_fileuplbtn">    <!-- Fileupload-->
+                  <?php echo Form::upload_form('uploadbtn', 'Datei hochladen', '', $error); ?>
+              </span><?php } 
+              if ($action == 'url') { ?> 
+              <span id="div_fileURLbtn" >     <!-- URLupload--><?php
+                  echo Form::input_text('fileURL', 'URL', $fileURL, $error, 'http://www.curriculumonline.de'); 
+                  echo '<button name="update" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="uploadURL();"> URL hinzufügen</button><br>';
+                  ?>
+              </span>
+              <?php } ?>
+              </form>    
+              <p class="text ">&nbsp;<?php echo $error; ?></p>
+              <div class="uploadframe_footer"><?php echo $copy_link; ?></div>
 
-                default:
-                    break;
-            }
-            ?>
-                 
-        </div></div><!--. content-wrapper -->          
+          <?php 
+          } 
+          ?>
+              <input id="target" name="target" type="hidden" value="<?php  echo $target; ?>" />
+              <input id="context" name="context" type="hidden" value="<?php echo $context; ?>" />
+              <?php
+              if (in_array($action, array('user','curriculum','userfiles','avatar'))){ 
+              ?>
+              <div class="box-header">
+                  
+                  <div class="btn-group">
+                      <button type="button" class="btn btn-default">
+                          <a href="../share/request/uploadframe.php?action=<?php 
+                              echo $action.'&context='.$context.'&list_format=thumbs&ref_id='.$ref_id.'&target='.$target.'&format='.$format;?>" class="nyroModal">
+                              <i class="fa fa-th"></i>
+                          </a>
+                      </button>
+                      <button type="button" class="btn btn-default">
+                          <a href="../share/request/uploadframe.php?action=<?php 
+                              echo $action.'&context='.$context.'&list_format=list&ref_id='.$ref_id.'&target='.$target.'&format='.$format;?>" class="nyroModal">
+                              <i class="fa fa-th-list"></i>
+                          </a>
+                      </button>
+                      <button type="button" class="btn btn-default">
+                          <a href="../share/request/uploadframe.php?action=<?php 
+                              echo $action.'&context='.$context.'&list_format=detail&ref_id='.$ref_id.'&target='.$target.'&format='.$format;?>" class="nyroModal">
+                              <i class="fa fa-list"></i>
+                          </a>
+                      </button>
+                  </div>
+                  <div class="btn-group ">
+                      <button type="button" class="btn btn-default"><?php 
+                          $sort    = SmartyPaginate::getSort('sort', 'filelist_'.$action);
+                          if ($sort == 'ASC'){
+                              $sort = 'DESC';
+                          } else {
+                              $sort = 'ASC';
+                          }
+                          echo '<a href="../share/request/'.removeUrlParameter('uploadframe.php?action='.$action.'&context='.$context, array ( 0 => 'paginator', 1 => 'paginator_search', 2 => 'order', 3 => 'sort')).'&paginator=filelist_'.$action.'&order=filename&sort='.$sort.'&list_format='.$list_format.'&target='.$target.'&format='.$format.'" class="nyroModal"><i class="fa  fa-sort-alpha-'.strtolower($sort).'"></i></a>';
+                          ?>
+                      </button>
+                  </div>
+                  <?php 
+                  if (SmartyPaginate::_getSearch('filelist_'.$action) != null){
+                      echo '<div class="btn-group pull-right"><button type="button" class="btn btn-default pull-right">
+                          <a href="../share/request/'.removeUrlParameter('uploadframe.php?action='.$action.'&context='.$context, array ( 0 => 'paginator', 1 => 'paginator_search', 2 => 'order', 3 => 'sort')).'&paginator=filelist_'.$action.'&order=filename&sort='.$sort.'&list_format='.$list_format.'&target='.$target.'&format='.$format.'&paginator_search=%" class="nyroModal">
+                              <i class="fa fa-close"></i>
+                          </a>
+                      </button></div>';
+                  } 
+                  ?>
+                  <div class="has-feedback pull-right" style="padding-top: 2px;padding-right: 2px;width:150px;">
+                      <form id="file_search" method="get" action="<?php echo '../share/request/'.removeUrlParameter('uploadframe.php?action='.$action.'&context='.$context, array ( 0 => 'paginator', 1 => 'paginator_search', 2 => 'order', 3 => 'sort')).'&paginator=filelist_'.$action.'&order=filename&sort='.$sort.'&list_format='.$list_format.'&target='.$target.'&format='.$format.'" class="nyroModal"'; ?>">
+                          <input type="text" name="paginator_search" class="form-control input-sm" placeholder="Suchen" onkeydown="if (event.keyCode === 13) {document.getElementById(\'file_search\').submit();} " 
+                              <?php 
+                              if (SmartyPaginate::_getSearch('filelist_'.$action) == null){
+                                  echo '><span class="fa fa-search form-control-feedback"></span>';
+                              } else {
+                                  echo 'value="'.SmartyPaginate::_getSearch('filelist_'.$action).'"><span class="fa fa-search form-control-feedback"></span>';
+                              }
+                              ?>  
+                      </form>
+                  </div>
+              </div>
+              <?php
+              }
+
+              switch ($action) {
+                  case 'user':
+                  case 'userfiles':
+                  case 'avatar':      echo RENDER::filelist('uploadframe.php?action='.$action.'&context='.$context, $action, $list_format, $target, $USER->id);
+                      break;
+                  case 'curriculum':
+                  case 'solution':    echo RENDER::filelist('uploadframe.php?action='.$action.'&context='.$context, $action, $list_format, $target, $ref_id);
+                      break;
+                  default:
+                      break;       
+              }
+              ?>
+
+            </div>
+        </div><!--. content-wrapper -->          
     </div> <!-- .modal-body -->
 </div>

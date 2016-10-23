@@ -53,8 +53,16 @@ function toggle(){
             $(document.getElementById(arguments[1][i])).removeClass("visible");
         }
         $(document.getElementById(arguments[1][i])).addClass("hidden");
-
     }	
+}
+function toggle_sidebar(){
+    if ($(document.getElementById(arguments[0])).hasClass("sidebar-collapse")){
+        $(document.getElementById(arguments[0])).removeClass("sidebar-collapse");
+        $(document.getElementById(arguments[0])).removeClass("sidebar-open");
+        $(document.getElementById(arguments[0])).removeClass("sidebar-mini");
+    } else {
+        $(document.getElementById(arguments[0])).addClass("sidebar-mini sidebar-collapse sidebar-open");
+    }
 }
 /**
  * Get element height of element argument[0] 
@@ -223,10 +231,6 @@ function process(){
                         document.getElementById(popup).style.zIndex = response.zindex;
                     }
                     
-                    /*if (typeof(response.script_file)!=='undefined'){  //todo load script on request
-                        //$.getScript(response.script_file);
-                    }*/
-                    
                     if (typeof(response.script)!=='undefined'){ // loads js for popup
                         document.getElementById(popup).innerHTML = document.getElementById(popup).innerHTML+response.script;
                     }
@@ -240,7 +244,6 @@ function process(){
                     alert(req.responseText); //unschön, aber #popup ist vom modalframe aus nicht verfügbar
                 }    
            } else {
-               //alert('reload:'+req.responseText.length);
                window.location.reload();
            }
         }
@@ -366,9 +369,9 @@ function setAccomplishedObjectivesBySolution(creatorID, userID, enablingObjectiv
                 setStatusColor(enablingObjectiveID, statusID);
             }
         };
-            req.open("GET", url, true);
-            req.send(null);
-        }
+        req.open("GET", url, true);
+        req.send(null);
+    }
 }
 /**
  * 
@@ -422,10 +425,10 @@ function processor(/*proc, func, val, []*/){
     }
     req = XMLobject();
     if(req) {  
-            req.onreadystatechange = window.location.reload();
-            req.open("GET", url, false); //false --> important for print function
-            req.send(null);
-        }
+        req.onreadystatechange =  window.location.reload();
+        req.open("GET", url, false); //false --> important for print function
+        req.send(null);
+    }
 }
 
 function order() {

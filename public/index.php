@@ -61,32 +61,7 @@ try { // Error handling
          break;
  }
  
-    /** Sortierung der Paginatoren */
-    /* Paginator reset*/
-    if (filter_input(INPUT_GET, 'order', FILTER_UNSAFE_RAW) && filter_input(INPUT_GET, 'sort', FILTER_UNSAFE_RAW) && filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW)){
-        SmartyPaginate::setSort(filter_input(INPUT_GET, 'order', FILTER_UNSAFE_RAW),filter_input(INPUT_GET, 'sort', FILTER_UNSAFE_RAW), filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW));
-    }
-    /* Paginator limit*/
-    if (filter_input(INPUT_GET, 'paginator_limit', FILTER_UNSAFE_RAW) && filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW)){
-        SmartyPaginate::setLimit(filter_input(INPUT_GET, 'paginator_limit', FILTER_UNSAFE_RAW), filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW));
-    }
-    /* Paginator search*/
-    if (filter_input(INPUT_GET, 'order', FILTER_UNSAFE_RAW) && filter_input(INPUT_GET, 'paginator_search', FILTER_UNSAFE_RAW) && filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW)){
-        SmartyPaginate::setSearch(filter_input(INPUT_GET, 'order', FILTER_UNSAFE_RAW),filter_input(INPUT_GET, 'paginator_search', FILTER_UNSAFE_RAW), filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW));
-    }
-    if (filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW)){
-        $selection = filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW).'_sel_id';
-        if (null != filter_input(INPUT_GET, $selection , FILTER_UNSAFE_RAW)){
-            SmartyPaginate::setSelection(explode(",",filter_input(INPUT_GET, $selection , FILTER_UNSAFE_RAW)), filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW));
-        } else {
-            SmartyPaginate::setSelection('',filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW));
-        }
-    }
     
-    if (filter_input(INPUT_GET, 'p_reset', FILTER_UNSAFE_RAW) && filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW)){
-        resetPaginator(filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW));   
-        $TEMPLATE->assign('page_url', removeUrlParameter($PAGE->url, 'p_reset'));
-    }
     
     /** highlight */
     if (isset($_SESSION['highlight'])){

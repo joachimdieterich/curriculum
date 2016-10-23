@@ -88,7 +88,11 @@ if (filter_input(INPUT_GET, 'paginator_limit', FILTER_UNSAFE_RAW) && filter_inpu
 }
 /* Paginator search*/
 if (filter_input(INPUT_GET, 'order', FILTER_UNSAFE_RAW) && filter_input(INPUT_GET, 'paginator_search', FILTER_UNSAFE_RAW) && filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW)){
-    SmartyPaginate::setSearch(filter_input(INPUT_GET, 'order', FILTER_UNSAFE_RAW),filter_input(INPUT_GET, 'paginator_search', FILTER_UNSAFE_RAW), filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW));
+    if (filter_input(INPUT_GET, 'paginator_search', FILTER_UNSAFE_RAW) == '%'){
+        unset ($_SESSION['SmartyPaginate'][filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW)]['pagi_search']);
+    } else {
+        SmartyPaginate::setSearch(filter_input(INPUT_GET, 'order', FILTER_UNSAFE_RAW),filter_input(INPUT_GET, 'paginator_search', FILTER_UNSAFE_RAW), filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW));
+    }
 }
 if (filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW)){
     $selection = filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW).'_sel_id';

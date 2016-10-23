@@ -92,7 +92,7 @@
                       
                       <ul class="nav navbar-nav">
                         <li>   
-                        <a href="index.php?action=help" >
+                        <a href="index.php?action=help" style="padding: 15px 8px 15px 8px;">
                             <i class="fa fa-graduation-cap"></i>
                           </a>
                         </li>  
@@ -101,20 +101,20 @@
                          {else if isset($my_institutions) AND count($my_institutions) > 1}
                              {Form::input_dropdown('institution_id', '', $my_institutions, 'institution', 'institution_id', $my_institution_id, null, "processor('config','institution_id', this.getAttribute('data-id'));")}
                          {/if} 
-                        <li class="calendar-menu">   
-                        <a href="index.php?action=calendar" >
+                         <li class="calendar-menu">   
+                        <a href="index.php?action=calendar" style="padding: 15px 8px 15px 8px;">
                             <i class="fa fa-calendar"></i>
                           </a>
                         </li>  
                         <li class="timeline-menu">   
-                        <a href="index.php?action=portfolio" >
+                        <a href="index.php?action=portfolio" style="padding: 15px 8px 15px 8px;">
                             <i class="fa fa-cubes"></i>
                           </a>
                         </li>  
                         {if isset($mails)}  
                         <!-- Messages: style can be found in dropdown.less-->
                         <li class="dropdown messages-menu">
-                          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 15px 8px 15px 8px;">
                             <i class="fa fa-envelope-o"></i>
                             <span class="label label-success">{count($mails)}</span>
                           </a>
@@ -146,14 +146,14 @@
                         </li>
                         {else}
                         <li class=" messages-menu">   
-                            <a href="index.php?action=messages&function=showInbox" ><i class="fa fa-envelope-o"></i></a>
+                            <a href="index.php?action=messages&function=showInbox" style="padding: 15px 8px 15px 8px;"><i class="fa fa-envelope-o"></i></a>
                         </li>
                         {/if} 
 
                         {if isset($page_message)}
                         <!-- Notifications: style can be found in dropdown.less -->
                         <li class="dropdown notifications-menu open">
-                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" >
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 15px 8px 15px 8px;">
                             <i class="fa fa-bell-o"></i>
                             <span class="label label-warning">{count($page_message)}</span>
                           </a>
@@ -180,7 +180,7 @@
 
                         <!-- User Account: style can be found in dropdown.less -->
                         <li class="dropdown user user-menu">
-                          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 15px 8px 15px 8px;">
                             <img src="{$access_file}{$my_avatar}" class="user-image" alt="User Image">
                             <span class="hidden-xs">{$my_firstname} {$my_lastname}</span>
                           </a>

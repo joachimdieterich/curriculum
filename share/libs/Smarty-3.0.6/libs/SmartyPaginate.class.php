@@ -142,7 +142,7 @@ class SmartyPaginate {
                     trigger_error('SmartyPaginate setSort: You must set a entity-type from your database.');
                     return false;
             }
-            if ($porder /*&& !isset($_SESSION['SmartyPaginate'][$id]['pagi_orderby'])*/) {
+            if ($porder) {
                 if (isset($_SESSION['SmartyPaginate'][$id]['pagi_orderby'])){
                         if ($_SESSION['SmartyPaginate'][$id]['pagi_orderby'] != $porder) { //if new orderby, sort ASC
                             $so = "ASC";
@@ -150,7 +150,7 @@ class SmartyPaginate {
                 }
                 $_SESSION['SmartyPaginate'][$id]['pagi_orderby'] = $porder;
             }
-            if (isset($_SESSION['SmartyPaginate'][$id]['pagi_orderby'])  /*&& !isset($_SESSION['SmartyPaginate'][$id]['pagi_updown'])*/) {
+            if (isset($_SESSION['SmartyPaginate'][$id]['pagi_orderby'])) {
                     $_SESSION['SmartyPaginate'][$id]['pagi_updown'] = $so;
                     
             }

@@ -41,13 +41,6 @@ if (isset($_GET['function'])){
         case 'showOutbox':      $TEMPLATE->assign('showOutbox', true); outbox($mailbox);
                                 $TEMPLATE->assign('mailbox_func', 'showOutbox');
             break;
-        /*case 'shownewMessage':  if (strpos($PAGE->previous_url, 'shownewMessage') !== false) { //prevent reloading dialog when it was opend over $_GET parameter
-                                    $_SESSION['FORM']              = new stdClass();
-                                    $_SESSION['FORM']->form        = 'mail'; 
-                                    $_SESSION['FORM']->func        = 'new'; 
-                                    $_SESSION['FORM']->subject     = filter_input(INPUT_GET, 'subject',    FILTER_SANITIZE_STRING);
-                                    $_SESSION['FORM']->receiver_id = filter_input(INPUT_GET, 'receiver_id',    FILTER_VALIDATE_INT);
-                                }  */ 
                                 
         default:  break;
     }
@@ -111,7 +104,6 @@ function outbox($mailbox){
     global $USER, $TEMPLATE;
     $mailbox->loadOutbox($USER->id);
     $TEMPLATE->assign('outbox', $mailbox->outbox); 
-    //setPaginator('outboxPaginator', $TEMPLATE, $mailbox->outbox, 'outbox', 'index.php?action=messages&function=showOutbox'); //set Paginator    
 }
 
 /**
@@ -124,7 +116,6 @@ function inbox($mailbox){
     global $USER, $TEMPLATE;
     $mailbox->loadInbox($USER->id);
     $TEMPLATE->assign('inbox', $mailbox->inbox); 
-    //setPaginator('inboxPaginator', $TEMPLATE, $mailbox->inbox, 'inbox', 'index.php?action=messages&function=showInbox'); //set Paginator    
 }
 
 /**

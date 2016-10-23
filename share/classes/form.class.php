@@ -242,7 +242,7 @@ class Form {
         $class          =  "notifications-menu";
         $count_semester = count($select_data);
         $form = '<li class="dropdown '.$class.'" >
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 15px 8px 15px 8px;">
                       <i class="fa fa-history"></i>';
                       //<span class="label label-warning">'.$count_semester.'</span>
         $form .= '  </a>

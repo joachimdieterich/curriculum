@@ -87,7 +87,6 @@ function uploadFile(form, func, fSelector, fName, fProgress, fPercent)
         formData.append("ref_id",       document.getElementById('ref_id').value); 
         formData.append("target",       document.getElementById('target').value); 
         formData.append("format",       document.getElementById('format').value); 
-        formData.append("multiple",     document.getElementById('multiple').value); 
         formData.append("context",      document.getElementById('context').value); 
         formData.append("title",        document.getElementById('title').value); 
         formData.append("description",  document.getElementById('description').value);
@@ -155,7 +154,6 @@ function uploadURL()
         formData.append("ref_id",       document.getElementById('ref_id').value); 
         formData.append("target",       document.getElementById('target').value); 
         formData.append("format",       document.getElementById('format').value); 
-        formData.append("multiple",     document.getElementById('multiple').value); 
         formData.append("context",      document.getElementById('context').value); 
         formData.append("title",        document.getElementById('title').value); 
         formData.append("description",  document.getElementById('description').value);

@@ -102,7 +102,7 @@ if ($func == 'new'){
     $content .= Form::input_text('usr', 'Benutzername', $username, $error);
 } else {
     $content .= '<div class="col-xs-3"></div><div class="col-xs-9">'
-            . '<a href="'.$CFG->request_url .'uploadframe.php?&context=avatar&target=avatar_id&format=0&multiple=false" class="nyroModal">'
+            . '<a href="'.$CFG->request_url .'uploadframe.php?&context=avatar&target=avatar_id&format=0" class="nyroModal">'
             . '<img id="avatar" style="height:100px; margin-left: -5px; padding-bottom:10px;" src="'.$CFG->access_id_url.$avatar_id.'" alt="Profilfoto">'
             . '</a></div>';
     $content .= Form::input_text('usr', 'Benutzername', $username, $error,'','text',null, null, 'col-sm-3','col-sm-9', true);

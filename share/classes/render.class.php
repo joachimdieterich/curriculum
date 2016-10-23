@@ -186,7 +186,7 @@ class Render {
                                                     $html .= '<a href="'.$file->getFileUrl().'" class="btn btn-default btn-xs"><i class="fa fa-cloud-download"></i></a>';
                                                 }
                                                 $html .= '<a href="#" class="btn btn-default btn-xs" onclick="formloader(\'file\',\'edit\','.$file->id.');"><i class="fa fa-edit"></i></a>
-                                                          <a href="#" class="btn btn-default btn-xs" onclick="del(\'file\','.$file->id.');"><i class="fa fa-trash"></i></a>';
+                                                          <a href="#" class="btn btn-default btn-xs pull-right" onclick="del(\'file\','.$file->id.');"><i class="fa fa-trash"></i></a>';
                                 
                                 
                                
@@ -498,16 +498,19 @@ class Render {
      * @param int $id
      * @return string
      */
-    public static function filelist($form, $dependency, $view, $postfix, $target, $format, $multiple, $id){
+    public static function filelist($url, $dependency, $view, $target, $id){
+        global $TEMPLATE;
         $file    = new File();
-        $files   = $file->getFiles($dependency, $id);
-        $content = '<div class="box-body scroll_list" style="overflow:auto;"><form name="'.$form.'" action="'.$form.'" method="post" enctype="multipart/form-data" > ';
+        $files   = $file->getFiles($dependency, $id, 'filelist_'.$dependency);
+        setPaginator('filelist_'.$dependency, $TEMPLATE, $files, 'fi_val', $url); //set Paginator for filelist
+        $content = '<div class="box-body scroll_list" style="overflow:auto;"><form name="'.$url.'" action="'.$url.'" method="post" enctype="multipart/form-data" >';
+                    
         switch ($view) {
-                    case 'thumbs': $content .= RENDER::thumblist($files,$postfix, $target, $format, $multiple);
+                    case 'thumbs': $content .= RENDER::thumblist($files, $target);
                         break;
-                    case 'detail': $content .= RENDER::detaillist($files,$postfix, $target, $format, $multiple);
+                    case 'detail': $content .= RENDER::detaillist($files, $target);
                         break;
-                    case 'list':   $content .= RENDER::flist($files,$postfix, $target, $format, $multiple);
+                    case 'list':   $content .= RENDER::flist($files, $target);
                         break;
                     default:
                         break;
@@ -521,8 +524,8 @@ class Render {
      * @param array $files
      * @return html
      */
-    public static function thumblist($files,$postfix, $target, $format, $multiple){
-        $content = '<ul class="mailbox-attachments clearfix">';
+    public static function thumblist($files, $target){
+        $content = '<ul class="mailbox-attachments clearfix">'; //<!--onclick="processor(\'config\',\'paginator_order\',\'null\',{\'order\':\'filename\',\'sort\':\'DESC\',\'paginator\':\''.$postfix.'\'});" -->
         foreach ($files as $f) {
             $content .= RENDER::thumb(array('id' => $f->id), $target); 
         }
@@ -530,7 +533,7 @@ class Render {
         return $content;
     }
     
-    public static function detaillist($files,$postfix, $target, $format, $multiple){
+    public static function detaillist($files, $target ){
         $content  = '<table class="table table-striped" style="width: 100%;word-break:break-all;"><tbody>';
         $content .= '<tr>
                         <th><i class="fa fa-bars"></i></th>
@@ -572,7 +575,7 @@ class Render {
         return $content;
     }
     
-    public static function flist($files,$postfix, $target, $format, $multiple){
+    public static function flist($files, $target ){
         $content = '';
         foreach ($files as $f) {
             $content .= RENDER::thumb(array('id' => $f->id),$target,'div','xs'); 

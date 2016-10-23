@@ -450,7 +450,8 @@ class File {
         foreach($params as $key => $val) {
             $$key = $val;
         }
-        $order_param = orderPaginator($paginator, array('title'         => 'fl', 
+        $order_param = orderPaginator($paginator, array('filename'      => 'fl',
+                                                        'title'         => 'fl', 
                                                         'description'   => 'fl',
                                                         'author'        => 'fl')); 
         switch ($dependency) {
