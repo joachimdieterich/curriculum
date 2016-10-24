@@ -90,9 +90,9 @@ class Roles {
     public function update(){
         global $USER;
         checkCapabilities('role:update', $USER->role_id);   //Berechtigt?
-            $db             = DB::prepare('UPDATE roles SET role = ?, description = ? WHERE id = ?');
-            $update_role    = $db->execute(array($this->role, $this->description, $this->id));
-            $db_reset = DB::prepare('UPDATE role_capabilities SET permission = false WHERE role_id = ? '); //Reset Role --> wichtig, da nur erlaubte Berechtigungen eingetragen werden. 
+            $db          = DB::prepare('UPDATE roles SET role = ?, description = ? WHERE id = ?');
+            $update_role = $db->execute(array($this->role, $this->description, $this->id));
+            $db_reset    = DB::prepare('UPDATE role_capabilities SET permission = false WHERE role_id = ? '); //Reset Role --> wichtig, da nur erlaubte Berechtigungen eingetragen werden. 
             $db_reset->execute(array($this->id));
             
             foreach($this->capabilities as $value) {
@@ -100,7 +100,7 @@ class Roles {
                 $db     = DB::prepare('SELECT role_id FROM role_capabilities WHERE role_id = ? AND capability = ?');
                 $db->execute(array($this->id, $v_key));
                 $result = $db->fetchObject();            
-                    if (isset($result->role_id)){                       
+                    if (isset($result->role_id)){        
                         $db = DB::prepare('UPDATE role_capabilities SET permission= '.$v_value.' WHERE role_id = ? AND capability = ?');
                         $update_role_capabilities = $db->execute(array($this->id, $v_key));
                     } else {  

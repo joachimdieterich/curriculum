@@ -122,7 +122,7 @@ class Render {
             default:        if (checkCapabilities('plugin:useEmbeddableGoogleDocumentViewer', $USER->role_id, false) AND !is_array(getimagesize($CFG->curriculumdata_root.$file->full_path))){
                                 $content = '<iframe src="http://docs.google.com/gview?url='.$CFG->access_token_url .$file->addFileToken($file->id).'" style="width:100%; height:500px;" frameborder="0"></iframe>';
                             } else {
-                                $content = RENDER::thumb(array($file->id), 'div');//$file->renderFile();
+                                $content = RENDER::thumb(array($file->id), null, 'div');//$file->renderFile();
                             }
                 break;
         }
@@ -131,6 +131,7 @@ class Render {
     }
     
     public static function thumb($file_list, $target = null, $tag = 'li', $format='normal'){
+        global $USER;
         $height   = 187;
         $width    = 133;
         $truncate = 15;
@@ -185,11 +186,12 @@ class Render {
                                                 if ($file->type != '.url'){
                                                     $html .= '<a href="'.$file->getFileUrl().'" class="btn btn-default btn-xs"><i class="fa fa-cloud-download"></i></a>';
                                                 }
-                                                $html .= '<a href="#" class="btn btn-default btn-xs" onclick="formloader(\'file\',\'edit\','.$file->id.');"><i class="fa fa-edit"></i></a>
-                                                          <a href="#" class="btn btn-default btn-xs pull-right" onclick="del(\'file\','.$file->id.');"><i class="fa fa-trash"></i></a>';
-                                
-                                
-                               
+                                                if (checkCapabilities('file:update', $USER->role_id, false)){
+                                                    $html .= '<a href="#" class="btn btn-default btn-xs" onclick="formloader(\'file\',\'edit\','.$file->id.');"><i class="fa fa-edit"></i></a>';
+                                                }
+                                                if (checkCapabilities('file:delete', $USER->role_id, false)){
+                                                    $html .= '<a href="#" class="btn btn-default btn-xs pull-right" onclick="del(\'file\','.$file->id.');"><i class="fa fa-trash"></i></a>';
+                                                }
                                 $html .= '</span></div></'.$tag.'>'; 
 
 
@@ -215,10 +217,14 @@ class Render {
                                             if ($file->type != '.url'){
                                                 $html .=   '<li><a href="'.$file->getFileUrl().'"><i class="fa fa-cloud-download"></i>herunterladen</a></li>';
                                             } 
-                                            $html .=   '<li><a href="#" onclick="formloader(\'file\',\'edit\','.$file->id.');"><i class="fa fa-edit"></i>bearbeiten</a></li>';             
-                                $html .=   '  <li class="divider"></li>
-                                              <li><a href="#" onclick="del(\'file\','.$file->id.');"><i class="fa fa-trash"></i>löschen</a></li>
-                                            </ul></div>';
+                                if (checkCapabilities('file:update', $USER->role_id, false)){
+                                     $html .=   '<li><a href="#" onclick="formloader(\'file\',\'edit\','.$file->id.');"><i class="fa fa-edit"></i>bearbeiten</a></li>';             
+                                }
+                                if (checkCapabilities('file:delete', $USER->role_id, false)){            
+                                    $html .=   '  <li class="divider"></li>
+                                              <li><a href="#" onclick="del(\'file\','.$file->id.');"><i class="fa fa-trash"></i>löschen</a></li>';
+                                }
+                                $html .=   '</ul></div>';
                     break;
                 case 'thumb':   if ($icon == true){
                                     $html .=   '<i class="'.resolveFileType($file->type).' info-box-icon"></i>';
@@ -534,6 +540,7 @@ class Render {
     }
     
     public static function detaillist($files, $target ){
+        global $USER;
         $content  = '<table class="table table-striped" style="width: 100%;word-break:break-all;"><tbody>';
         $content .= '<tr>
                         <th><i class="fa fa-bars"></i></th>
@@ -550,14 +557,18 @@ class Render {
                                 <span class="sr-only">Toggle Dropdown</span>
                               </button><ul class="dropdown-menu" role="menu">
                                 <li><a href="#" onclick="setTarget('.$f->id.');"><i class="fa fa-check-circle"></i>Benutzen</a></li>
-                                <li><a href="#" onclick="formloader(\'preview\',\'file\','.$f->id.');"><i class="fa fa-eye"></i>Vorschau</a></li>
-                                <li><a href="#" onclick="formloader(\'file\',\'edit\','.$f->id.');"><i class="fa fa-edit"></i>bearbeiten</a></li>';
-                                if ($f->type != '.url'){
-                                    $content .=   '<li><a href="'.$f->getFileUrl().'"><i class="fa fa-cloud-download"></i>herunterladen</a></li>';
-                                }               
-                  $content .=   '  <li class="divider"></li>
-                                <li><a href="#" onclick="del(\'file\','.$f->id.');"><i class="fa fa-trash"></i>löschen</a></li>
-                              </ul></div></td>';
+                                <li><a href="#" onclick="formloader(\'preview\',\'file\','.$f->id.');"><i class="fa fa-eye"></i>Vorschau</a></li>';
+            if (checkCapabilities('file:update', $USER->role_id, false)){
+                $content .=   '<li><a href="#" onclick="formloader(\'file\',\'edit\','.$f->id.');"><i class="fa fa-edit"></i>bearbeiten</a></li>';
+            }
+            if ($f->type != '.url'){
+                $content .= '<li><a href="'.$f->getFileUrl().'"><i class="fa fa-cloud-download"></i>herunterladen</a></li>';
+            }    
+            if (checkCapabilities('file:delete', $USER->role_id, false)){
+                $content .=   '  <li class="divider"></li>
+                          <li><a href="#" onclick="del(\'file\','.$f->id.');"><i class="fa fa-trash"></i>löschen</a></li>';
+            }
+            $content .=  '</ul></div></td>';
             $content .= '<td>'.$f->filename.'</td>';
             $content .= '<td>'.$f->title.'</td>';
             //$content .= '<td>'.$f->description.'</td>';
