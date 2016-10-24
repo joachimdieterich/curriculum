@@ -162,8 +162,8 @@ class Render {
             switch ($format) {
                 case 'normal': $html .= '<'.$tag.' id="thumb_'.$file->id.'" style="width:'.$width.'px !important; height:'.$height.'px !important;">';
                                 if ($icon == true){
-                                    $html .= '<h6 class="pull-right" style="padding: 0 10px 0 5px; background-color:rgba(244, 244, 244, 0.8)">'.$file->getHumanFileSize().'</h6>
-                                              <h6 class="pull-left" style="padding: 0px 10px 0 5px; background-color:rgba(244, 244, 244, 0.8)">'.$file->hits.'</h6>
+                                    $html .= '<h6 class="pull-right" style="padding: 0 10px 0 5px; background-color:rgba(244, 244, 244, 0.8)" ><a href="#" data-toggle="tooltip" title="Dateigröße">'.$file->getHumanFileSize().'</a></h6>
+                                              <h6 class="pull-left" style="padding: 0px 10px 0 5px; background-color:rgba(244, 244, 244, 0.8)"><a href="#" data-toggle="tooltip" title="Dateiaufrufe (Aus einem Lehrhplan)">'.$file->hits.'</a></h6>
                                               <span class="mailbox-attachment-icon" style="height:'.$width.'px"><i class="'.resolveFileType($file->type).'"></i></span>';
                                 } else {
                                     $html .= '<span class="mailbox-attachment-icon has-img" style="height:'.$width.'px">
@@ -172,27 +172,27 @@ class Render {
                                                         $html .= 'center';
                                                     }
                                                      $html .= ';background-size: cover; background-repeat: no-repeat;">
-                                                        <h6 class="pull-right" style="padding: 0 10px 0 5px;  background-color:rgba(244, 244, 244, 0.8)">'.$file->getHumanFileSize().'</h6>
-                                                        <h6 class="pull-left" style="padding: 0px 10px 0 5px; background-color:rgba(244, 244, 244, 0.8)">'.$file->hits.'</h6>
+                                                        <h6 class="pull-right" style="padding: 0 10px 0 5px;  background-color:rgba(244, 244, 244, 0.8)"><a href="#" data-toggle="tooltip" title="Dateigröße">'.$file->getHumanFileSize().'</a></h6>
+                                                        <h6 class="pull-left" style="padding: 0px 10px 0 5px; background-color:rgba(244, 244, 244, 0.8)"><a href="#" data-toggle="tooltip" title="Dateiaufrufe (Aus einem Lehrhplan)">'.$file->hits.'</a></h6>
                                               </div></span>';
                                 }
                                 $html .= '<div class="mailbox-attachment-info" style="padding:5px 5px 5px 5px;">
                                                 <a href="#" class="mailbox-attachment-name" style="word-wrap: break-word;"><small>'.truncate($file->filename, $truncate).'</small></a>
                                                 <span class="mailbox-attachment-size">';
                                                 if ($target != null){
-                                                    $html .= '  <a href="#" class="btn btn-default btn-xs" onclick="setTarget('.$file->id.');"><i class="fa fa-check-circle"></i></a>';
+                                                    $html .= '  <a href="#" class="btn btn-default btn-xs" data-toggle="tooltip" title="Verwenden" onclick="setTarget('.$file->id.');"><i class="fa fa-check-circle"></i></a>';
                                                 }
                                                 if ($icon != true){
-                                                    $html .=       '<a href="#" class="btn btn-default btn-xs" onclick="formloader(\'preview\',\'file\','.$file->id.');"><i class="fa fa-eye"></i></a>';
+                                                    $html .=       '<a href="#" class="btn btn-default btn-xs" data-toggle="tooltip" title="Vorschau" onclick="formloader(\'preview\',\'file\','.$file->id.');"><i class="fa fa-eye"></i></a>';
                                                 }
                                                 if ($file->type != '.url'){
-                                                    $html .= '<a href="'.$file->getFileUrl().'" class="btn btn-default btn-xs"><i class="fa fa-cloud-download"></i></a>';
+                                                    $html .= '<a href="'.$file->getFileUrl().'" data-toggle="tooltip" title="herunterladen" class="btn btn-default btn-xs"><i class="fa fa-cloud-download"></i></a>';
                                                 }
                                                 if (checkCapabilities('file:update', $USER->role_id, false)){
-                                                    $html .= '<a href="#" class="btn btn-default btn-xs" onclick="formloader(\'file\',\'edit\','.$file->id.');"><i class="fa fa-edit"></i></a>';
+                                                    $html .= '<a href="#" class="btn btn-default btn-xs" data-toggle="tooltip" title="bearbeiten" onclick="formloader(\'file\',\'edit\','.$file->id.');"><i class="fa fa-edit"></i></a>';
                                                 }
                                                 if (checkCapabilities('file:delete', $USER->role_id, false)){
-                                                    $html .= '<a href="#" class="btn btn-default btn-xs pull-right" onclick="del(\'file\','.$file->id.');"><i class="fa fa-trash"></i></a>';
+                                                    $html .= '<a href="#" class="btn btn-default btn-xs pull-right" data-toggle="tooltip" title="löschen" onclick="del(\'file\','.$file->id.');"><i class="fa fa-trash"></i></a>';
                                                 }
                                 $html .= '</span></div></'.$tag.'>'; 
 
