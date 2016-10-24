@@ -194,32 +194,25 @@
                               </p>
                             </li>
                             <!-- Menu Body -->
-                            <li class="user-body">
-                              <div class="col-xs-6 text-center">
-                                  {if checkCapabilities('user:resetPassword', $my_role_id, false)}
-                                      <a href="#" onclick="formloader('password', 'edit');">Passwort ändern</a>
-                                  {/if}
-                              </div>
-                              <div class="col-xs-6 text-center">
-                                  {if checkCapabilities('menu:readMessages', $my_role_id, false)}
-                                      <a href="../share/request/uploadframe.php?context=userFiles{$tb_param}" class="nyroModal">
-                                          Meine Dateien
-                                      </a>
-                                  {/if}
-                              </div>
-                            </li>
+                            <!--li class="user-body"></li-->
                             <!-- Menu Footer-->
                             <li class="user-footer">
                               <div class="pull-left">
-                                  {if checkCapabilities('user:update', $my_role_id, false)}
-                                      <a href="#" class="btn btn-default btn-flat" onclick="formloader('profile', 'edit');">Profil</a>
+                                  {if checkCapabilities('user:resetPassword', $my_role_id, false)}
+                                      <a href="#" class="btn btn-default btn-flat pull-left" onclick="formloader('password', 'edit');" data-toggle="tooltip" title="Passwort ändern"><i class="fa fa-user-secret"></i></a>
                                   {/if}
+                                  {if checkCapabilities('user:update', $my_role_id, false)}
+                                      <a href="#" class="btn btn-default btn-flat  pull-left" onclick="formloader('profile', 'edit');" data-toggle="tooltip" title="Profil bearbeiten"><i class="fa fa-user"></i></a>
+                                  {/if}
+                                  {if checkCapabilities('file:upload', $my_role_id, false)}
+                                      <a href="../share/request/uploadframe.php?context=userFiles{$tb_param}" data-toggle="tooltip" title="Meine Dateien" class="btn btn-default btn-flat  nyroModal">
+                                          <i class="fa fa-folder-open"></i>
+                                      </a>
+                                  {/if} 
                               </div>
                               <div class="pull-right">
-                                <a href="index.php?action=logout" class="btn btn-default btn-flat">Abmelden</a>
-                              </div>
-                              <div class="pull-right">
-                                  <a href="index.php?action=lock" class="btn btn-default btn-flat"><i class="fa fa-lock"></i></a>
+                                <a href="index.php?action=logout" data-toggle="tooltip" title="Abmelden" class="btn btn-default btn-flat pull-right">Abmelden</a>
+                                <a href="index.php?action=lock" data-toggle="tooltip" title="Fenster sperren" class="btn btn-default btn-flat pull-right"><i class="fa fa-lock"></i></a>
                               </div>
                             </li>
                           </ul>
