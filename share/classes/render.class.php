@@ -182,7 +182,9 @@ class Render {
                                                 if ($target != null){
                                                     $html .= '  <a href="#" class="btn btn-default btn-xs" onclick="setTarget('.$file->id.');"><i class="fa fa-check-circle"></i></a>';
                                                 }
-                                                $html .=       '<a href="#" class="btn btn-default btn-xs" onclick="formloader(\'preview\',\'file\','.$file->id.');"><i class="fa fa-eye"></i></a>';
+                                                if ($icon != true){
+                                                    $html .=       '<a href="#" class="btn btn-default btn-xs" onclick="formloader(\'preview\',\'file\','.$file->id.');"><i class="fa fa-eye"></i></a>';
+                                                }
                                                 if ($file->type != '.url'){
                                                     $html .= '<a href="'.$file->getFileUrl().'" class="btn btn-default btn-xs"><i class="fa fa-cloud-download"></i></a>';
                                                 }
@@ -213,7 +215,9 @@ class Render {
                                             if ($target != null){
                                                 $html .=   '<li><a href="#" onclick="setTarget('.$file->id.');"><i class="fa fa-check-circle"></i>Verwenden</a></li>';
                                             } 
-                                            $html .=   '<li><a href="#" onclick="formloader(\'preview\',\'file\','.$file->id.');"><i class="fa fa-eye"></i>Vorschau</a></li>';
+                                            if ($icon != true){
+                                                $html .=   '<li><a href="#" onclick="formloader(\'preview\',\'file\','.$file->id.');"><i class="fa fa-eye"></i>Vorschau</a></li>';
+                                            }
                                             if ($file->type != '.url'){
                                                 $html .=   '<li><a href="'.$file->getFileUrl().'"><i class="fa fa-cloud-download"></i>herunterladen</a></li>';
                                             } 
@@ -552,12 +556,14 @@ class Render {
                     </tr>';
         foreach ($files as $f) {
             $content .= '<tr>';
-             $content .= '<td><div class="btn-group"><button type="button" class="btn btn-xs btn-flat dropdown-toggle" data-toggle="dropdown">
+            $content .= '<td><div class="btn-group"><button type="button" class="btn btn-xs btn-flat dropdown-toggle" data-toggle="dropdown">
                                 <span class="caret"></span>
                                 <span class="sr-only">Toggle Dropdown</span>
-                              </button><ul class="dropdown-menu" role="menu">
-                                <li><a href="#" onclick="setTarget('.$f->id.');"><i class="fa fa-check-circle"></i>Benutzen</a></li>
-                                <li><a href="#" onclick="formloader(\'preview\',\'file\','.$f->id.');"><i class="fa fa-eye"></i>Vorschau</a></li>';
+                              </button><ul class="dropdown-menu" role="menu">';
+                            if ($target != null){
+                                $content .= '<li><a href="#" onclick="setTarget('.$f->id.');"><i class="fa fa-check-circle"></i>Benutzen</a></li>';
+                            }
+                            $content .= '<li><a href="#" onclick="formloader(\'preview\',\'file\','.$f->id.');"><i class="fa fa-eye"></i>Vorschau</a></li>';
             if (checkCapabilities('file:update', $USER->role_id, false)){
                 $content .=   '<li><a href="#" onclick="formloader(\'file\',\'edit\','.$f->id.');"><i class="fa fa-edit"></i>bearbeiten</a></li>';
             }
