@@ -74,10 +74,20 @@ class Grade {
      * @return boolean 
      */
     public function update(){
-        global $USER;
+        global $USER,$PAGE;
         checkCapabilities('grade:update', $USER->role_id);
-        $db = DB::prepare('UPDATE grade SET grade = ?, description = ? WHERE id = ?');
-        return $db->execute(array($this->grade, $this->description, $this->id));
+        $db     = DB::prepare('SELECT institution_id FROM grade WHERE id = ?');
+        $db->execute(array($this->id));
+        $result = $db->fetchObject();
+        if ($result->institution_id == 0){
+            $_SESSION['PAGE']->message[] = array('message' => 'Globale Klassenstufen können nicht bearbeitet werden.', 'icon' => 'fa fa-signal text-warning');// Schließen und speichern
+            return false;
+        } else {
+            $db2 = DB::prepare('UPDATE grade SET grade = ?, description = ? WHERE id = ? AND institution_id <> 0');
+            if ($db2->execute(array($this->grade, $this->description, $this->id))){
+                return true;
+            }
+        }
     }
     
     /**
@@ -87,15 +97,21 @@ class Grade {
      * @return boolean 
      */
     public function delete(){
-        global $USER;
+        global $USER,$PAGE;
         checkCapabilities('grade:delete', $USER->role_id);
         $db = DB::prepare('SELECT id FROM curriculum WHERE grade_id = ?');
         $db->execute(array($this->id));
         if ($db->fetchObject()){ //endroled !
             return false;
         } else {
-            $db = DB::prepare('DELETE FROM grade WHERE id = ?');
-            return $db->execute(array($this->id));
+            $db = DB::prepare('DELETE FROM grade WHERE id = ? AND institution_id <> 0');
+            if ($db->execute(array($this->id))){
+                $_SESSION['PAGE']->message[] = array('message' => 'Klassenstufen wurde erfolgreich gelöscht.', 'icon' => 'fa fa-signal text-success');// Schließen und speichern
+                return true;
+            } else {
+                $_SESSION['PAGE']->message[] = array('message' => 'Sie dürfen keine globalen Klassenstufen löschen.', 'icon' => 'fa fa-signal text-warning');// Schließen und speichern
+                return false;
+            }
         } 
     } 
     
@@ -130,13 +146,13 @@ class Grade {
         switch ($dependency) {
             case 'all': $db = DB::prepare('SELECT gr.*, ins.institution 
                                             FROM grade AS gr, institution AS ins 
-                                            WHERE gr.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE institution_id = ins.id AND user_id = ?) 
+                                            WHERE (gr.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE institution_id = ins.id AND user_id = ?) OR gr.institution_id = 0)
                                             AND gr.institution_id = ins.id '.$order_param );
                         $db->execute(array($USER->id));
                 break;
             case 'institution': $db = DB::prepare('SELECT gr.*, ins.institution 
                                                     FROM grade AS gr, institution AS ins 
-                                                    WHERE gr.institution_id = ? 
+                                                    WHERE (gr.institution_id = ? OR gr.institution_id = 0)
                                                     AND gr.institution_id = ins.id '.$order_param );
                         $db->execute(array($id));
             default:
