@@ -84,9 +84,7 @@ class Grade {
             return false;
         } else {
             $db2 = DB::prepare('UPDATE grade SET grade = ?, description = ? WHERE id = ? AND institution_id <> 0');
-            if ($db2->execute(array($this->grade, $this->description, $this->id))){
-                return true;
-            }
+            return $db2->execute(array($this->grade, $this->description, $this->id));
         }
     }
     

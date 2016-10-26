@@ -136,6 +136,7 @@ class Form {
                                         $fields[]  = $value->$f;
                                     }
                                     $label = implode(" | ", $fields);
+                                    unset($fields);
                                 } else {
                                     $label  = $value->$select_label;
                                 }

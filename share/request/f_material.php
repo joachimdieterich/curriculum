@@ -139,7 +139,6 @@ if (!$files){
             }
         } /* . Lizenzform */
     
-    
         /* Materialbox */
         $m_id = $files[$i]->id;
         if (isset($preview)){

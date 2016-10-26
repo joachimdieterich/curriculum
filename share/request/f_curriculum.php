@@ -144,7 +144,7 @@ $content .= Form::input_text('description', 'Beschreibung', $description, $error
 /* Fächer */ 
 $subjects                   = new Subject();                                                      
 $subjects->institution_id   = $USER->institutions;
-$content .= Form::input_select('subject_id', 'Fach', $subjects->getSubjects(), 'subject', 'id', $subject_id , $error);
+$content .= Form::input_select('subject_id', 'Fach', $subjects->getSubjects(), 'subject, institution', 'id', $subject_id , $error);
 /* Fach-Bild */ 
 $icons = new File();                                                            
 $content .= Form::input_select('icon_id', 'Fach-Icon', $icons->getFiles('context', 5), 'title', 'id', $icon_id , $error, 'showSubjectIcon(\''.$CFG->access_id_url .'\', this.options[this.selectedIndex].value);');
@@ -157,7 +157,7 @@ if ($icon_id){
 $content .= '></div></div></div>';
 
 $grades = new Grade();                                                          // Load grades
-$grades->institution_id             = $USER->institutions;
+$grades->institution_id = $USER->institutions;
 $content       .= Form::input_select('grade_id', 'Klassenstufe', $grades->getGrades(), 'grade', 'id', $grade_id , $error);
 
 

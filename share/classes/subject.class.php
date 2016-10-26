@@ -70,7 +70,7 @@ class Subject {
         $subjects       = array();
         $db             = DB::prepare('SELECT sub.*, ins.institution 
                                        FROM subjects AS sub, institution AS ins 
-                                       WHERE sub.institution_id  = ANY (SELECT institution_id FROM institution_enrolments WHERE institution_id = ins.id AND user_id = ?) 
+                                       WHERE (sub.institution_id  = ANY (SELECT institution_id FROM institution_enrolments WHERE institution_id = ins.id AND user_id = ?) OR sub.institution_id = 0)
                                        AND sub.institution_id= ins.id '.$order_param);
         $db->execute(array($USER->id));
         while($result = $db->fetchObject()) { 
@@ -113,8 +113,16 @@ class Subject {
     public function update(){
         global $USER;
         checkCapabilities('subject:update', $USER->role_id);
-        $db = DB::prepare('UPDATE subjects  SET subject = ?, subject_short = ?, description = ?, institution_id = ? WHERE id = ?');
-        return $db->execute(array($this->subject, $this->subject_short, $this->description, $this->institution_id, $this->id));
+        $db     = DB::prepare('SELECT institution_id FROM subjects WHERE id = ?');
+        $db->execute(array($this->id));
+        $result = $db->fetchObject();
+        if ($result->institution_id == 0){
+            $_SESSION['PAGE']->message[] = array('message' => 'Globale Fächer können nicht bearbeitet werden.', 'icon' => 'fa fa-language text-warning');
+            return false;
+        } else {
+            $db = DB::prepare('UPDATE subjects  SET subject = ?, subject_short = ?, description = ?, institution_id = ? WHERE id = ?');
+            return $db->execute(array($this->subject, $this->subject_short, $this->description, $this->institution_id, $this->id));
+        }
     }
     /**
      * Delete current subject
@@ -127,9 +135,15 @@ class Subject {
         $db->execute(array($this->id));
         if ($db->fetchObject()){
             return false;
-        } else { //delete only, if no enrolments exists
-            $db = DB::prepare('DELETE FROM subjects WHERE id = ?');
-            return $db->execute(array($this->id));
+        } else { //delete only, if no curriculum with subject exists
+            $db = DB::prepare('DELETE FROM subjects WHERE id = ? AND id <> 0');
+            if ($db->execute(array($this->id))){
+                $_SESSION['PAGE']->message[] = array('message' => 'Fach wurde erfolgreich gelöscht.', 'icon' => 'fa fa-language text-success');
+                return true;
+            } else {
+                $_SESSION['PAGE']->message[] = array('message' => 'Sie dürfen keine globalen Fächer löschen.', 'icon' => 'fa fa-language text-warning');
+                return false;
+            }
         }
     }
 
