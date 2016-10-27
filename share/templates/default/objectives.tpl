@@ -91,7 +91,11 @@
         <div class="col-xs-12">
             <div class="box box-primary">
                 <div class="box-header ">
-                    
+                    {if isset($user->avatar)}
+                        {*if $user->avatar_id neq 0*}
+                        <img src="{$access_file}{$user->avatar}" style="height:40px;"class="user-image pull-left" alt="User Image">
+                        {*/if*}
+                    {/if}
                     <p class="pull-right">Farb-Legende:
                     <button class="btn btn-success btn-flat" style="cursor:default">selbständig erreicht</button>
                     <button class="btn btn-warning btn-flat" style="cursor:default">mit Hilfe erreicht</button>

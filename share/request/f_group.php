@@ -95,7 +95,7 @@ $content .= Form::input_select('semester_id', 'Lernzeitraum', $semesters->getSem
 
 $grades                     = new Grade();                                      //Load Grades
 $grades->institution_id     = $USER->institutions; 
-$content .= Form::input_select('grade_id', 'Klassenstufe', $grades->getGrades('institution',$USER->institution_id), 'grade', 'id', $grade_id , $error);
+$content .= Form::input_select('grade_id', 'Klassenstufe', $grades->getGrades('institution',$USER->institution_id), 'grade, institution', 'id', $grade_id , $error);
 if (isset($change_semester)){
     $content .= Form::info('p_group', ' ', 'Um eine leere Lerngruppe zu erstellen, Haken entfernen.');
     $content .= Form::input_checkbox('assumeUsers', 'Personen übernehmen', $assumeUsers , $error);
