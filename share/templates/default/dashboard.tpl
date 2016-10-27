@@ -81,37 +81,24 @@
                     {*<i class="pull-right fa fa-institution" style="font-size: 90px;"></i>*}
                     <h3 class="widget-user-username" style="text-shadow: 1px 1px #ff0000;">{$ins->institution}</h3>
                     <h5 class="widget-user-desc" style="text-shadow: 1px 1px #ff0000;">{$ins->description}</h5>
-                  </div>
-                  <div class="box-body">
                     <div class="row">
-                      <div class="col-sm-4 border-right">
-                        <div class="description-block">
-                          <h5 class="description-header">{if isset($ins->statistic.$institution_std_role)}
+                        <div class="col-sm-4">
+                            <i class="fa fa-user">{if isset($ins->statistic.$institution_std_role)}
                                                             {$ins->statistic.$institution_std_role}
-                                                         {else}0 
-                                                         {/if}</h5>
-                          <span class="description-text">SCHÜLER</span>
-                        </div><!-- /.description-block -->
-                      </div><!-- /.col -->
-                      <div class="col-sm-4 border-right">
-                        <div class="description-block">
-                          <h5 class="description-header">{if isset($ins->statistic.accomplished)}
+                                                    {else}0 
+                                                    {/if}</i>
+                        </div>
+                        <div class="col-sm-4"><i class="fa fa-check-circle-o">{if isset($ins->statistic.accomplished)}
                                                             {$ins->statistic.accomplished}
                                                          {else}0 
-                                                         {/if}</h5>
-                          <span class="description-text">ERREICHTE ZIELE</span>
-                        </div><!-- /.description-block -->
-                      </div><!-- /.col -->
-                      <div class="col-sm-4">
-                        <div class="description-block">
-                          <h5 class="description-header">{if isset($ins->statistic.7)}
+                                                         {/if}</i>
+                        </div>
+                        <div class="col-sm-4"><i class="fa fa-graduation-cap">{if isset($ins->statistic.7)}
                                                             {$ins->statistic.7}
                                                          {else}0 
-                                                         {/if}</h5>
-                          <span class="description-text">LEHRER</span>
-                        </div><!-- /.description-block -->
-                      </div><!-- /.col -->
-                    </div><!-- /.row -->
+                                                         {/if}</i>
+                        </div>
+                    </div>
                   </div>
                 </div><!-- /.widget-user -->
            </div><!-- /.col -->
