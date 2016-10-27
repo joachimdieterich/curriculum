@@ -83,17 +83,17 @@
                     <h5 class="widget-user-desc" style="text-shadow: 1px 1px #ff0000;">{$ins->description}</h5>
                     <div class="row">
                         <div class="col-sm-4">
-                            <i class="fa fa-user">{if isset($ins->statistic.$institution_std_role)}
+                            <i class="fa fa-user" data-toggle="tooltip" title="Schüler">{if isset($ins->statistic.$institution_std_role)}
                                                             {$ins->statistic.$institution_std_role}
                                                     {else}0 
                                                     {/if}</i>
                         </div>
-                        <div class="col-sm-4"><i class="fa fa-check-circle-o">{if isset($ins->statistic.accomplished)}
+                        <div class="col-sm-4"><i class="fa fa-check-circle-o" data-toggle="tooltip" title="Erreichte Ziele">{if isset($ins->statistic.accomplished)}
                                                             {$ins->statistic.accomplished}
                                                          {else}0 
                                                          {/if}</i>
                         </div>
-                        <div class="col-sm-4"><i class="fa fa-graduation-cap">{if isset($ins->statistic.7)}
+                        <div class="col-sm-4"><i class="fa fa-graduation-cap" data-toggle="tooltip" title="Lehrer">{if isset($ins->statistic.7)}
                                                             {$ins->statistic.7}
                                                          {else}0 
                                                          {/if}</i>
