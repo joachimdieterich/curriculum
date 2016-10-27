@@ -81,7 +81,7 @@
                     {*<i class="pull-right fa fa-institution" style="font-size: 90px;"></i>*}
                     <h3 class="widget-user-username" style="text-shadow: 1px 1px #ff0000;">{$ins->institution}</h3>
                     <h5 class="widget-user-desc" style="text-shadow: 1px 1px #ff0000;">{$ins->description}</h5>
-                    <div class="row">
+                    <div class="row " style="padding-top:10px;padding-left: 5px;">
                         <div class="col-sm-4">
                             <i class="fa fa-user" data-toggle="tooltip" title="Schüler">{if isset($ins->statistic.$institution_std_role)}
                                                             {$ins->statistic.$institution_std_role}
