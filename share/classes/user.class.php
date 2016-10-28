@@ -177,6 +177,7 @@ class User {
      * @var int 
      */
     public $completed; 
+    public $online; 
     
     /**
      * User class constructor
@@ -857,7 +858,7 @@ class User {
      * @return array of object|boolean 
      */
     public function getUsers($dependency = null, $paginator = '', $id = null, $group = null){
-        global $USER;
+        global $USER, $CFG;
         $order_param = orderPaginator($paginator);
         
         checkCapabilities('user:getUsers', $USER->role_id);
@@ -890,6 +891,12 @@ class User {
                                         $ena = new EnablingObjective();
                                         $this->completed = $ena->getPercentageOfCompletion($id, $this->id);
                                         $users[] = clone $this; 
+                                    }
+                                    // get online status 
+                                    if ((time()-strtotime($result->last_action)) < ($CFG->timeout)*60){
+                                        $this->online       = 'online';
+                                    } else {
+                                        $this->online       = 'offline';
                                     }
                             }
                             break;

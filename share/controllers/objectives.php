@@ -109,6 +109,7 @@ if ($selected_curriculum != '') {
                                'lastname'  => 'Nachname',
                                'completed' => 'Fortschritt',
                                'role_name' => 'Rolle',
+                               'online'     => 'Status', /* status test */
                                'p_options' => $p_options,
                                't_config'  => $t_config);
         setPaginator('userPaginator', $TEMPLATE, $users, 'results', 'index.php?action=objectives&course='.$selected_curriculumforURL, $p_config); //set Paginator    
