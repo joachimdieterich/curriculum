@@ -893,10 +893,12 @@ class User {
                                         $users[] = clone $this; 
                                     }
                                     // get online status 
-                                    if ((time()-strtotime($result->last_action)) < ($CFG->timeout)*60){
-                                        $this->online       = 'online';
-                                    } else {
-                                        $this->online       = 'offline';
+                                    if (checkCapabilities('dashboard:globalAdmin', $USER->role_id, FALSE)){ //todo add capability for online status
+                                        if ((time()-strtotime($result->last_action)) <= ($CFG->timeout)*60){
+                                            $this->online       = 'online';
+                                        } else {
+                                            $this->online       = 'offline';
+                                        }
                                     }
                             }
                             break;
