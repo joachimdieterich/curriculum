@@ -46,7 +46,7 @@ $html .= 'Folgende Benutzer haben das Lernziel: <strong>'.$enabling_objective->e
 $users                  = new User();
     if (count($result)> 10){$max = 10;} else {$max = count($result);}
     for($i = 0; $i < $max; $i++) {
-      $users->load('id', $result[$i],false);
+      $users->load('id', $result[$i]->id,false);
       $html .= '<div class="user-block hover">
                         <img class="img-circle img-bordered-sm" src="'.$CFG->access_file.$users->avatar.'" alt="user image"><a href="#" class="pull-right btn-box-tool" onclick="formloader(\'mail\',\'gethelp\','.$users->id.');"><i class="fa fa-envelope"></i></a>
                         <span class="username">'.$users->username.'
