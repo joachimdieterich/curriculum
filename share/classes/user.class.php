@@ -894,7 +894,7 @@ class User {
                                     }
                                     // get online status 
                                     if (checkCapabilities('dashboard:globalAdmin', $USER->role_id, FALSE)){ //todo add capability for online status
-                                        if ((time()-strtotime($result->last_action)) <= ($CFG->timeout)*60){
+                                        if ((time()-strtotime($result->last_action)) <= ($CFG->timeout)*60 AND $result->last_action != NULL){
                                             $this->online       = 'online';
                                         } else {
                                             $this->online       = 'offline';
