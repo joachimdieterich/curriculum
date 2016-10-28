@@ -886,20 +886,22 @@ class User {
                                     $role->id           = $this->role_id;
                                     $role->load(); 
                                     $this->role_name    = $role->role;
-                                    
-                                    if (!checkCapabilities('objectives:setStatus', $this->role_id, FALSE)){ //only add to list if not able to set status == teacher
-                                        $ena = new EnablingObjective();
-                                        $this->completed = $ena->getPercentageOfCompletion($id, $this->id);
-                                        $users[] = clone $this; 
-                                    }
                                     // get online status 
                                     if (checkCapabilities('dashboard:globalAdmin', $USER->role_id, FALSE)){ //todo add capability for online status
-                                        if ((time()-strtotime($result->last_action)) <= ($CFG->timeout)*60 AND $result->last_action != NULL){
+                                        $timestamp = (time()-strtotime($result->last_action));
+                                        $timeout   = ($CFG->timeout)*60;
+                                        if (intval($timestamp) <= intval($timeout)){
                                             $this->online       = 'online';
                                         } else {
                                             $this->online       = 'offline';
                                         }
                                     }
+                                    if (!checkCapabilities('objectives:setStatus', $this->role_id, FALSE)){ //only add to list if not able to set status == teacher
+                                        $ena = new EnablingObjective();
+                                        $this->completed = $ena->getPercentageOfCompletion($id, $this->id);
+                                        $users[] = clone $this; 
+                                    }
+                                    
                             }
                             break;
             case 'institution':  $db = DB::prepare('SELECT DISTINCT us.* FROM users AS us
