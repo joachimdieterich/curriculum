@@ -79,3 +79,6 @@ include('classes/video_stream.class.php');
 
 /*HTML Purifier*/
 require 'libs/htmlpurifier-4.7.0-standalone/HTMLPurifier.standalone.php';     
+
+
+require 'libs/rtf-html-php-master/rtf-html-php.php';

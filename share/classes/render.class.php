@@ -106,7 +106,7 @@ class Render {
             case '.pdf':    $content     = '<div id="pdf_'.$file->id.'" style="width:100%; height: 600px;"></div>';
                             $script      = '<script>PDFObject.embed("'.$file->getFileUrl().'", "#pdf_'.$file->id.'");</script>';
                 break;
-            case '.rtf':    include_once $CFG->lib_root.'rtf-html-php-master/rtf-html-php.php';
+            case '.rtf':    //include_once $CFG->lib_root.'rtf-html-php-master/rtf-html-php.php';
                             $reader      = new RtfReader();
                             $reader->Parse(file_get_contents($CFG->curriculumdata_root.$file->context_path.$file->path.$file->filename));
                             $formatter   = new RtfHtml();
