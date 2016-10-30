@@ -61,16 +61,21 @@
                     <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                   </div>
                 </div>
-                <div class="box-body no-padding">
+                <div class="box-body no-padding" style="height: 600px;overflow:auto">
                   <ul class="nav nav-pills nav-stacked">
                     {if isset($messages[0])}  
                         {section name=mail loop=$messages start=$index max=$my_paginator_limit}
                         <li name='{$box}_{$messages[mail]->id}' id='{$box}_{$messages[mail]->id}'><a onclick="loadmail({$messages[mail]->id}, '{$box}')"><i class="fa fa-circle-o text-light-blue"></i> 
                                 {if isset($showInbox)}
+                                    {if $messages[mail]->receiver_status == 0}<strong>{/if}
                                     {$messages[mail]->sender_firstname} {$messages[mail]->sender_lastname}&nbsp;({$messages[mail]->sender_username})
+                                    {if $messages[mail]->receiver_status == 0}</strong>{/if}
                                 {else}
+                                    {if $messages[mail]->sender_status == 0}<strong>{/if}
                                     {$messages[mail]->receiver_firstname} {$messages[mail]->receiver_lastname}&nbsp;({$messages[mail]->receiver_username})
+                                    {if $messages[mail]->sender_status == 0}</strong>{/if}
                                 {/if}
+                                
                                 <br><small>{$messages[mail]->subject|truncate:25:"...":true}</small>
                                 <br><small>{strip_tags($messages[mail]->message|truncate:60:"...":true)}</small>
                             </a>
