@@ -394,10 +394,12 @@ class Form {
             $$key = $val;
         }
         $html  = ' <div id="material_'.$id.'" class="info-box">';
+        //$html .= RENDER::thumb($id, null, null, 'thumb');
         if (isset($preview)){
             $html .= '<span class="info-box-icon bg-white"><img class="pull-left" src="'.$preview.'" ></img></span>'; //pull-left --> overrides align: center to top
         } else {
-            $html .= '<span class="info-box-icon bg-aqua"><i class="'.$icon_class.'"></i></span>';
+           $html .= RENDER::thumb($id, null, null, 'thumb');
+           $html .= '<span class="info-box-icon bg-aqua"><i class="'.$icon_class.'"></i></span>';
         }
         /* Box content */
         $html .= '<div class="info-box-content">';
