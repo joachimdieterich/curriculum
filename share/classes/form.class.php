@@ -399,7 +399,7 @@ class Form {
             $html .= '<span class="info-box-icon bg-white"><img class="pull-left" src="'.$preview.'" ></img></span>'; //pull-left --> overrides align: center to top
         } else {
            $html .= RENDER::thumb($id, null, null, 'thumb');
-           $html .= '<span class="info-box-icon bg-aqua"><i class="'.$icon_class.'"></i></span>';
+           //$html .= '<span class="info-box-icon bg-aqua"><i class="'.$icon_class.'"></i></span>';
         }
         /* Box content */
         $html .= '<div class="info-box-content">';
