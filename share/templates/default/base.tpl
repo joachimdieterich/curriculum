@@ -91,11 +91,18 @@
                     <div class="navbar-custom-menu">
                       
                       <ul class="nav navbar-nav">
+                        {if checkCapabilities('dashboard:globalAdmin', $my_role_id, false)}  
+                        <li>   
+                        <a href="index.php?action=statistic" style="padding: 15px 8px 15px 8px;">
+                            <i class="fa fa-pie-chart"></i>
+                          </a>
+                        </li>  
+                        {/if}
                         <li>   
                         <a href="index.php?action=help" style="padding: 15px 8px 15px 8px;">
                             <i class="fa fa-graduation-cap"></i>
                           </a>
-                        </li>  
+                        </li>
                          {if isset($mySemester) AND count($mySemester) > 1}
                              {Form::input_dropdown('semester_id', '', $mySemester, 'semester, institution', 'id', $my_semester_id, null, "processor('semester','set',this.getAttribute('data-id'));")}
                          {else if isset($my_institutions) AND count($my_institutions) > 1}

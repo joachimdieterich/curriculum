@@ -103,6 +103,7 @@ if ($selected_curriculum != '') {
         $t_config      = array('table_id'  => array('id'         => 'contentsmalltable'),
                                'checkbox'  => array('onclick'    => 'checkrow(\'__id__\', \'id[]\', \'userPaginator\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&paginator=userPaginator&certificate_template=\'+document.getElementById(\'certificate_template\').value);'),
                                'td'        => array('onclick'    => 'window.location.assign(\'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&paginator=userPaginator&userPaginator_sel_id=__id__&certificate_template=\'+document.getElementById(\'certificate_template\').value);'));
+        if(checkCapabilities('dashboard:globalAdmin', $USER->role_id, false)){
         $p_config      = array('id'        => 'checkbox',
                                'username'  => 'Benutzername', 
                                'firstname' => 'Vorname', 
@@ -112,6 +113,16 @@ if ($selected_curriculum != '') {
                                'online'     => 'Status', /* status test */
                                'p_options' => $p_options,
                                't_config'  => $t_config);
+        } else {
+           $p_config      = array('id'        => 'checkbox',
+                               'username'  => 'Benutzername', 
+                               'firstname' => 'Vorname', 
+                               'lastname'  => 'Nachname',
+                               'completed' => 'Fortschritt',
+                               'role_name' => 'Rolle',
+                               'p_options' => $p_options,
+                               't_config'  => $t_config); 
+        }
         setPaginator('userPaginator', $TEMPLATE, $users, 'results', 'index.php?action=objectives&course='.$selected_curriculumforURL, $p_config); //set Paginator    
     } else {
         $showuser   = true;

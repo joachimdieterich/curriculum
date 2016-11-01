@@ -412,7 +412,9 @@ class User {
                             while($result = $db->fetchObject()) { 
                                 $group_members[] =  $result->user_id;
                             }
-                            return $group_members;
+                            if (isset($group_members)){
+                                return $group_members;
+                            } else { return false;}
                 break;
             default:        if (checkCapabilities('user:userListComplete', $USER->role_id,false)){
                                 $db = DB::prepare('SELECT DISTINCT us.id, us.firstname, us.lastname, us.username FROM users AS us ORDER BY us.lastname');//Zeige alle User --> nur für globale Admin Rolle !. 

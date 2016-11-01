@@ -55,6 +55,7 @@ global $LOG;
 $LOG = new Log();                                   // Funktion ist so  innerhalb des uploadframes sowie der einzelnen requests nutzbar
 include('classes/mail.class.php');
 include('classes/mailbox.class.php');               
+include('classes/node.class.php');               
 include('classes/pdf.class.php'); 
 include('classes/plugin.class.php');     
 include('classes/portfolio.class.php'); 

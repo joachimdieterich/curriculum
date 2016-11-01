@@ -66,5 +66,61 @@ class Statistic {
                 break;
         }
     }
+    
+    public function map($modus = 'institutions'){
+        global $CFG;
+        switch ($modus){
+            case 'institutions': $ins          = new Institution();
+                                 $institutions = $ins->getInstitutions('all');
+                                 $data = array();
+                                 $node_l0 = new Node();
+                                 $node_l1 = new Node();
+                                 
+                                 $size_l0 = 100000;
+                                 $size_l1 = 20000;
+                                 $size_l2 = 5000;
+                                 //topLevel
+                                 $node_l0->name        = $CFG->app_title;
+                                 $node_l0->parentName  = 'A';
+                                 $node_l0->size        = $size_l0;
+                                 $node_l0->link        = ''; 
+                                 
+                                 foreach ($institutions as $value) {
+                                     $node_l1->name       = $value->institution;
+                                     $node_l1->parentName = $value->id; // colerfuler than right value 'A'
+                                     $node_l1->size       = 50000;
+                                     $s1                  = $size_l1;
+                                     $n1                  = $value->institution;
+                                     $gr                  = new Group();
+                                     $group = $gr->getGroups('institution', $value->id);
+                                     $groups = array();
+                                     foreach ($group as $value) {
+                                        $node_l2             = new Node(); 
+                                        $node_l2->name       = $value->group;
+                                        $node_l2->parentName = $n1;
+                                        $users      = new User();
+                                        $u_list     = $users->getGroupMembers('group', $value->id);
+                                        if ($u_list != false){
+                                               $node_l2->size    = $size_l2+(200*count($u_list));
+                                        } else {
+                                            $node_l2->size       = $size_l2;
+                                        }
+                                        $s1                  = $s1 + 5000;
+                                        $groups[]            = $node_l2;
+                                     }
+                                     $node_l1->children = $groups;
+                                     $node_l1->size       = $s1;
+                                     $size_l0             = $size_l0 + 10000;
+                                     $node_l0->children[] = clone $node_l1;
+                                 }
+                                $node_l0->size = $size_l0;
+                                
+                                return json_encode($node_l0);   
+                break;
+            default:
+                break;
+        }
+        
+    }
  
 }
