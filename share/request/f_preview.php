@@ -66,8 +66,10 @@ switch ($func) {
         break;
 }
 
-
-$content    = RENDER::file($file);
+$l          = new License();
+$l->get($file->license);
+$content    = '<div class="col-sm-12">'.$file->description.'<br>'.$l->license.'</div>';
+$content   .= RENDER::file($file);
 switch ($file->type) {
     case '.pdf':    $script      = '<script>PDFObject.embed("'.$file->getFileUrl().'", "#pdf_'.$file->id.'");</script>';
         break;

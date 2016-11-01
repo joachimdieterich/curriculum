@@ -367,28 +367,6 @@ class Form {
     return $html;    
     }
     
-    public static function box($params){
-        foreach($params as $key => $val) {
-            $$key = $val;
-        }
-        if (!isset($footer)){
-            $footer =    '';
-        } else {
-            $footer = '<div class="box-footer" >'.$footer.'</div>';
-        }
-        $html =    '<div class="box box-primary" >
-                        <div class="box-header with-border">
-                            <h3 class="box-title">'.$header.'</h3>
-                            <div class="box-tools pull-right">
-                                <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                            </div><!-- /.box-tools -->
-                        </div><!-- /.box-header -->
-                        <div class="box-body" style="display: block;">'.$content.'
-                        </div>'.$footer.'
-                    </div>';
-        return $html;     
-    }
-    
     public static function info_box($params){
         foreach($params as $key => $val) {
             $$key = $val;
@@ -396,7 +374,8 @@ class Form {
         $html  = ' <div id="material_'.$id.'" class="info-box">';
         //$html .= RENDER::thumb($id, null, null, 'thumb');
         if (isset($preview)){
-            $html .= '<span class="info-box-icon bg-white"><img class="pull-left" src="'.$preview.'" ></img></span>'; //pull-left --> overrides align: center to top
+            $html .= '<span class="info-box-icon bg-aqua"><div id="modal-preview" style="height:100%;width:100%;background: url(\''.$preview.'\') center ;background-size: cover; background-repeat: no-repeat;"></div></span>'; //pull-left --> overrides align: center to top
+            //$html .= '<span class="info-box-icon bg-white"><img class="pull-left" src="'.$preview.'" ></img></span>'; //pull-left --> overrides align: center to top
         } else {
            $html .= RENDER::thumb($id, null, null, 'thumb');
            //$html .= '<span class="info-box-icon bg-aqua"><i class="'.$icon_class.'"></i></span>';
@@ -412,7 +391,7 @@ class Form {
         if (isset($player)){
             $html .= $player.'<br>';
         }
-        $html .= '<a href="'.$url.'" target="_blank" onclick="'.$onclick.'">'.$title.'</a></span>
+        $html .= '<a href="" onclick="formloader(\'preview\',\'file\','.$id.');'.$onclick.';">'.$title.'</a></span>
                   <span>'.$description;
         
         $html .='</span> ';

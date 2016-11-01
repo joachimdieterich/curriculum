@@ -53,6 +53,17 @@ $m_boxes    = '';
 if (!$files){
     $content .= 'Es gibt leider kein Material zum gewählten Lernziel.';
 } else {
+    /* Tab header */
+    $content .= '<div class="nav-tabs-custom">';
+    $content .= '<ul class="nav nav-tabs">
+                 <li class="active"><a href="#f_context_1" data-toggle="tab" aria-expanded="false" >Global</a></li>
+                 <li class=""><a href="#f_context_2" data-toggle="tab" aria-expanded="false" >Institution</a></li>
+                 <li class=""><a href="#f_context_3" data-toggle="tab" aria-expanded="false" >Gruppe</a></li>
+                 <li class=""><a href="#f_context_4" data-toggle="tab" aria-expanded="false" >Persönlich</a></li>';
+    $content .='</ul>';
+    /* tab content*/
+    $content .='<div class="tab-content">';
+    
     $file_context = 1;
     for($i = 0; $i < count($files); $i++) {
         /* reset vars */
@@ -203,6 +214,7 @@ if (!$files){
         unset($m_id, $preview, $m_preview, $m_icon_class, $m_delete, $m_url, $m_onclick, $m_title, $m_description, $m_player, $m_content, $m_footer, $m_hits, $f_versions, $license);
         
         /* context box */   
+        /* generate tabs for each file context*/
         $close = false;
         if (count($files) == ($i+1)){ 
             $close = true;
@@ -210,13 +222,18 @@ if (!$files){
             if ($files[$i+1]->file_context >= $file_context){ $close = true; }  
         }
         if ($close == true){ //close file_context box
-            $content   .= Form::box(array('header' => $level_header,
-                                         'content' => $m_boxes));  
+            $content   .='<div class="tab-pane';
+            if (($file_context-1) == 1){
+                $content   .=' active';
+            }
+            $content   .='" id="f_context_'.($file_context-1).'">'.$m_boxes.'</div><!-- /.tab-pane -->';
             unset($m_boxes);
             $m_boxes = '';
         }
 
     }
+    $content   .='</div><!-- /.tab-content -->
+                        </div><!-- /.nav-tab-custom -->';
 }
 
 
