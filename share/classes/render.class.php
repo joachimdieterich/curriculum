@@ -70,7 +70,7 @@ class Render {
                         . '<input id="'.$id.'_white" class="space-left '.$white.' pointer_hand" type="button" name="setAccStatus3" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', 3)">'
                         . '<input id="'.$id.'_red" class="space-left '.$red.' pointer_hand" type="button" name="setAccStatus0" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', 0)">';
             if ($link){
-                $html  .= '<button class="btn btn-default btn-sm"><a href="index.php?action=objectives&course='.$ena->curriculum_id.'_'.$group_id.'&paginator=userPaginator&userPaginator_sel_id='.$student.'&certificate_template=-1"><i class="fa fa-th"></i> Zum Lehrplan</a></button>'     ;
+                $html  .= '<button class="btn btn-default btn-sm"><a href="index.php?action=objectives&course='.$ena->curriculum_id.'_'.$group_id.'&paginator=userPaginator&userPaginator_sel_id='.$student.'&certificate_template=-1&reset"><i class="fa fa-th"></i> Zum Lehrplan</a></button>'     ;
             }
             return $html;
         }
