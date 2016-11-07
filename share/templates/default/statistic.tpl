@@ -206,8 +206,21 @@
 <section class="content">
     <div class="row">
         <div class="col-md-12">
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#f_context_1" data-toggle="tab" aria-expanded="true" >Institutionen</a></li>
+                    <li class=""><a href="#f_context_2" data-toggle="tab" aria-expanded="false" >Lehrpläne</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="f_context_1">
+                        <div id="chart"></div>
+                    </div>
+                    <div class="tab-pane " id="f_context_2">
+                        
+                    </div>
+                </div>
+            </div>
             
-            <div id="chart"></div>
         </div>
     </div>
 </section>
