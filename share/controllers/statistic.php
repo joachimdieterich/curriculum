@@ -26,5 +26,11 @@ global $PAGE, $USER, $TEMPLATE;
 checkCapabilities('dashboard:globalAdmin', $USER->role_id);
 $TEMPLATE->assign('breadcrumb',  array('Statistik' => 'index.php?action=statistic'));
 $TEMPLATE->assign('page_title', 'Statistik');  
-$map    = new Statistic();
-$TEMPLATE->assign('map', $map->map('institutions'));  
+
+$chart      = 'institutions';
+if (isset($_GET['chart'])){
+    $chart  = $_GET['chart'];
+}
+$map        = new Statistic();
+$TEMPLATE->assign('chart', $chart);  
+$TEMPLATE->assign('map', $map->map($chart));  

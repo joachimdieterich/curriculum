@@ -69,16 +69,18 @@ class Statistic {
     
     public function map($modus = 'institutions'){
         global $CFG;
+        $data = array();
+        $node_l0 = new Node();
+        $node_l1 = new Node();
+
+        $size_l0 = 10000;
+        $size_l1 = 20000;
+        $size_l2 = 5000;
+        
         switch ($modus){
             case 'institutions': $ins          = new Institution();
                                  $institutions = $ins->getInstitutions('all');
-                                 $data = array();
-                                 $node_l0 = new Node();
-                                 $node_l1 = new Node();
                                  
-                                 $size_l0 = 10000;
-                                 $size_l1 = 20000;
-                                 $size_l2 = 5000;
                                  //topLevel
                                  $node_l0->name        = $CFG->app_title;
                                  $node_l0->parentName  = 'A';
@@ -116,6 +118,67 @@ class Statistic {
                                 $node_l0->size = $size_l0;
                                 
                                 return json_encode($node_l0);   
+                break;
+            case 'curriculum':  $node_l3 = new Node();
+                                $size_l3 = 1000;
+                                $cur = new Curriculum();
+                                $curriculum = $cur->getCurricula('user');
+                                //topLevel
+                                $node_l0->name        = $CFG->app_title;
+                                $node_l0->parentName  = 'A';
+                                $node_l0->size        = $size_l0;
+                                $node_l0->link        = ''; 
+                               
+                                foreach ($curriculum as $value) {
+                                    $node_l1->name          = $value->curriculum;
+                                    $node_l1->parentName    = 'A';//$value->id; // colerfuler than right value 'A'
+                                    $node_l1->size          = 50000;
+                                    $s1                     = $size_l1;
+                                    $current_curriculum     = new Curriculum;
+                                    $current_curriculum->id = $value->id;
+                                    $ins                    = $current_curriculum->checkEnrolment();
+                                    if ($ins){
+                                        $n1             = $ins[0]->institution;
+                                        $current_institution = '';
+                                        $institutions   = array();
+                                        for($i = 0; $i < count($ins); $i++) {
+                                            if ($ins[$i]->institution != $current_institution){ 
+                                                $node_l2             = new Node(); 
+                                                $node_l2->name       = $ins[$i]->institution;
+                                                $node_l2->parentName = $n1;
+                                                for($j = $i; $j < count($ins); $j++) {                                                    
+                                                    if ($ins[$j]->institution == $ins[$i]->institution){ 
+                                                        $node_l3             = new Node(); 
+                                                        $node_l3->name       = $ins[$j]->groups;
+                                                        $node_l3->parentName = $node_l2->name;
+                                                        $s1                  = $s1 + 200;
+                                                        $node_l3->size       = $size_l2;
+                                                        $groups[]            = $node_l3; 
+                                                        $count_j = $j;
+                                                    } else {
+                                                        $node_l2->children   = $groups;
+                                                        unset($groups);
+                                                        $s2                  = $s1 + 500;
+                                                        $node_l2->size       = $s2;
+                                                        $institutions[]      = $node_l2;
+                                                        break;
+                                                    }
+                                                }
+                                                $i = $count_j; 
+                                            } 
+                                            $current_institution = $ins[$i]->institution;
+                                            
+                                        }
+                                    }
+                                    if (isset($institutions)){
+                                        $node_l1->children   = $institutions;
+                                    }
+                                    $node_l1->size       = $s1;
+                                    $size_l0             = $size_l0 + 1000;
+                                    $node_l0->children[] = clone $node_l1;
+                                }
+                                $node_l0->size = $size_l0;
+                                return json_encode($node_l0);
                 break;
             default:
                 break;

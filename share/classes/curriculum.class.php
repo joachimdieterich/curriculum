@@ -453,13 +453,17 @@ class Curriculum {
 						WHERE ce.curriculum_id = ? 
 						AND ce.status = ? 
 						AND ce.group_id = gp.id
-						AND gp.institution_id = ins.id');
+						AND gp.institution_id = ins.id ORDER BY ins.institution'); //ORDER BY institution for statistic chart
         $db->execute(array($this->id, $status));
         
         while($result = $db->fetchObject()) { 
             $ce[] = $result; 
         } 
-        return $ce; 
+        if (isset($ce)){
+            return $ce; 
+        } else {
+            return false;
+        }
     } 
    
    /**
