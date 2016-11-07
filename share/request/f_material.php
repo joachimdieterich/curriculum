@@ -53,18 +53,11 @@ $m_boxes    = '';
 if (!$files){
     $content .= 'Es gibt leider kein Material zum gewählten Lernziel.';
 } else {
-    /* Tab header */
-    $content .= '<div class="nav-tabs-custom">';
-    $content .= '<ul class="nav nav-tabs">
-                 <li class="active"><a href="#f_context_1" data-toggle="tab" aria-expanded="false" >Global</a></li>
-                 <li class=""><a href="#f_context_2" data-toggle="tab" aria-expanded="false" >Institution</a></li>
-                 <li class=""><a href="#f_context_3" data-toggle="tab" aria-expanded="false" >Gruppe</a></li>
-                 <li class=""><a href="#f_context_4" data-toggle="tab" aria-expanded="false" >Persönlich</a></li>';
-    $content .='</ul>';
-    /* tab content*/
-    $content .='<div class="tab-content">';
+    
+    
     
     $file_context = 1;
+    
     for($i = 0; $i < count($files); $i++) {
         /* reset vars */
         $m_footer       = '';
@@ -74,13 +67,28 @@ if (!$files){
         $m_delete       = null;
         
         $m_content    = ''; 
+        $file_context_count[1] = 0; // counter for file_context 1
+        $file_context_count[2] = 0; // counter for file_context 2
+        $file_context_count[3] = 0; // counter for file_context 3
+        $file_context_count[4] = 0; // counter for file_context 4
+        $file_context_count[5] = 0; // counter for file_context 5
         if ($files[$i]->file_context >= $file_context){ 
             switch ($files[$i]->file_context) {
-                case 1: $level_header = 'Globale Dateien'; break;
-                case 2: $level_header = 'Dateien meiner Instution(en)'; break;
-                case 3: $level_header = 'Dateien meiner Gruppe(n)';break;
-                case 4: $level_header = 'Meine Dateien'; break;
-                case 5: $level_header = 'Externe Medien'; break;
+                case 1: $level_header = 'Globale Dateien'; 
+                        $file_context_count[1]++; 
+                   break;
+                case 2: $level_header = 'Dateien meiner Instution(en)'; 
+                        $file_context_count[2]++;
+                   break;
+                case 3: $level_header = 'Dateien meiner Gruppe(n)';
+                        $file_context_count[3]++;
+                    break;
+                case 4: $level_header = 'Meine Dateien'; 
+                        $file_context_count[4]++;
+                    break;
+                case 5: $level_header = 'Externe Medien'; 
+                        $file_context_count[5]++;
+                    break;
                 default: break;
             } $file_context       = $files[$i]->file_context+1; //file_context auf nächstes Level setzen
         }
@@ -213,6 +221,19 @@ if (!$files){
                                          'footer'      => $m_footer));
         unset($m_id, $preview, $m_preview, $m_icon_class, $m_delete, $m_url, $m_onclick, $m_title, $m_description, $m_player, $m_content, $m_footer, $m_hits, $f_versions, $license);
         
+        
+        /* Tab header */
+    $content .= '<div class="nav-tabs-custom">';
+    $content .= '<ul class="nav nav-tabs">
+                 <li class="active"><a href="#f_context_1" data-toggle="tab" aria-expanded="false" >Global <span class="label label-primary">'.$file_context_count[1].'</span></a></li>
+                 <li class=""><a href="#f_context_2" data-toggle="tab" aria-expanded="false" >Institution <span class="label label-primary">'.$file_context_count[2].'</span></a></li>
+                 <li class=""><a href="#f_context_3" data-toggle="tab" aria-expanded="false" >Gruppe <span class="label label-primary">'.$file_context_count[3].'</span></a></li>
+                 <li class=""><a href="#f_context_4" data-toggle="tab" aria-expanded="false" >Persönlich <span class="label label-primary">'.$file_context_count[4].'</span></a></li>
+                 <li class=""><a href="#f_context_5" data-toggle="tab" aria-expanded="false" >Externe Medien <span class="label label-primary">'.$file_context_count[5].'</span></a></li>';
+    $content .='</ul>';
+    /* tab content*/
+    $content .='<div class="tab-content">';
+        
         /* context box */   
         /* generate tabs for each file context*/
         $close = false;
@@ -221,7 +242,8 @@ if (!$files){
         } else {
             if ($files[$i+1]->file_context >= $file_context){ $close = true; }  
         }
-        if ($close == true){ //close file_context box
+        
+        if ($close == true AND $m_boxes != ''){ //close file_context box // only generate tab-pane when there are files (m_boxes)
             $content   .='<div class="tab-pane';
             if (($file_context-1) == 1){
                 $content   .=' active';
