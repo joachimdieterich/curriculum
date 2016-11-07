@@ -240,7 +240,7 @@
             {/if}
             
             <!-- Content Wrapper. Contains page content -->
-            <div class="content-wrapper">
+            <div id="content-wrapper" class="content-wrapper">
                 <div id="popup" class="modal" onload="popupFunction(this.id);"><div class="modal-dialog"><div class="box"><div class="box-header"><h3 class="box-title">Loading...</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div></div></div> <!-- Popup -->    
                 {block name=content} {/block}
             </div> 
@@ -275,19 +275,13 @@
     <!--script src="{$media_url}templates/AdminLTE-2.3.0/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script-->
     <!-- SlimScroll 1.3.0 -->
     <script src="{$media_url}templates/AdminLTE-2.3.0/plugins/slimScroll/jquery.slimscroll.min.js"></script>
-    <!-- ChartJS 1.0.1 -->
-    <!--script src="{$media_url}templates/AdminLTE-2.3.0/plugins/chartjs/Chart.min.js"></script-->
-    
     <!-- curriculum settings (sidebar) -->
     <script src="{$media_url}scripts/curriculum.js"></script>
-    
     <!-- jquery.nyroModal -->
     <script src="{$media_url}jquery.nyroModal/js/jquery.nyroModal.custom.js"></script> 
-    
     <script src="{$media_url}scripts/script.js"></script> 
     <script src="{$media_url}scripts/PDFObject-master/pdfobject.min.js"></script> 
     <script src="{$media_url}scripts/file.js"></script>
-    
     <script src="{$media_url}scripts/dragndrop.js"></script>     
     
     {block name=additional_scripts} 

@@ -27,14 +27,15 @@ $TEMPLATE->assign('page_title',  'Lernstand eintragen');
 $TEMPLATE->assign('breadcrumb',  array('Lernstand eintragen' => 'index.php?action=objectives'));
 $courses = new Course();
 if(isset($_GET['reset']) OR (isset($_POST['reset']))){
-    resetPaginator('userPaginator');            
+    resetPaginator('userPaginator');            //used to reset / set userPaginator when calling from mail
 }
 
-$showuser                   = false;  //zurücksetzen
-$show_course                = false; // zurücksetzen
+$showuser                   = false;            //zurücksetzen
+$show_course                = false;            // zurücksetzen
 $selected_curriculum        = (isset($_GET['course']) && trim($_GET['course'] != '') ? $_GET['course'] : '_'); //'_' ist das Trennungszeichen 
 $selected_curriculumforURL  = $selected_curriculum;
 $selected_user_id           = explode(',',(isset($_GET['userPaginator_sel_id']) && trim($_GET['userPaginator_sel_id'] != '') ? $_GET['userPaginator_sel_id'] : '')); //generates array
+
 $TEMPLATE->assign('selected_curriculum',            $selected_curriculum); 
 $TEMPLATE->assign('selected_user_id',               $selected_user_id);
 $TEMPLATE->assign('selected_certificate_template',  filter_input(INPUT_GET, 'certificate_template', FILTER_VALIDATE_INT));
@@ -85,7 +86,7 @@ if ($selected_curriculum != '' AND $selected_user_id != '' AND $selected_user_id
     }       
 }    
 // load user list
-if ($selected_curriculum != '') {    
+if ($selected_curriculum != '') {  
     $course_user        = new User();
     $course_user->id    = $USER->id;
     $users              = $course_user->getUsers('course', 'userPaginator', $selected_curriculum, $selected_group);
@@ -95,7 +96,7 @@ if ($selected_curriculum != '') {
         }
         $TEMPLATE->assign('userlist', implode(',', $list));  
         
-        $user_id_list  = array_map(function($user) { return $user->id; }, $users); 
+        //$user_id_list  = array_map(function($user) { return $user->id; }, $users); 
         $p_options     = array('mailnew'   => array('onclick'       => 'formloader(\'mail\', \'gethelp\', __id__);',
                                                     'capability' => checkCapabilities('mail:postMail', $USER->role_id, false),
                                                     'icon'       => 'fa fa-envelope',

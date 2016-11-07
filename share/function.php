@@ -132,7 +132,7 @@ function setPaginator($instance, $template, $data, $returnVar, $currentURL, $con
     $SmartyPaginate->setPrevText('zurück',$instance);
     $SmartyPaginate->setNextText('vor',$instance);
     $SmartyPaginate->setFirstText('Anfang',$instance);
-    $SmartyPaginate->setLastText('Ende',$instance);       
+    $SmartyPaginate->setLastText('Ende',$instance);    
     if ($data){
         $SmartyPaginate->setTotal(count($data), $instance);
         if ($SmartyPaginate->getCurrentIndex($instance) >= count($data)){ //resets paginators current index (if data was deleted)

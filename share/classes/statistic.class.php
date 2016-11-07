@@ -76,7 +76,7 @@ class Statistic {
                                  $node_l0 = new Node();
                                  $node_l1 = new Node();
                                  
-                                 $size_l0 = 100000;
+                                 $size_l0 = 10000;
                                  $size_l1 = 20000;
                                  $size_l2 = 5000;
                                  //topLevel
@@ -87,7 +87,7 @@ class Statistic {
                                  
                                  foreach ($institutions as $value) {
                                      $node_l1->name       = $value->institution;
-                                     $node_l1->parentName = $value->id; // colerfuler than right value 'A'
+                                     $node_l1->parentName = 'A';//$value->id; // colerfuler than right value 'A'
                                      $node_l1->size       = 50000;
                                      $s1                  = $size_l1;
                                      $n1                  = $value->institution;
@@ -110,7 +110,7 @@ class Statistic {
                                      }
                                      $node_l1->children = $groups;
                                      $node_l1->size       = $s1;
-                                     $size_l0             = $size_l0 + 10000;
+                                     $size_l0             = $size_l0 + 1000;
                                      $node_l0->children[] = clone $node_l1;
                                  }
                                 $node_l0->size = $size_l0;
