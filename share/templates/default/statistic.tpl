@@ -10,8 +10,8 @@
     {literal}
     <script>
     var nodes2 = [];
-    var width = 1500,
-        height = 1200,
+    var width = $('#content-wrapper').width(),
+        height = window.innerHeight,
         root;
         
     var leafColor = d3.scale.category20();
