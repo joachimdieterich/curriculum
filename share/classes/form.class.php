@@ -391,7 +391,7 @@ class Form {
         if (!isset($url)){
             $url = '';
         }
-        $html .= '<a href="'.$url.'" onclick="formloader(\'preview\',\'file\','.$id.');'.$onclick.';">'.$title.'</a></span>
+        $html .= '<a href="'.$url.'" target="_blank" onclick="formloader(\'preview\',\'file\','.$id.');'.$onclick.';">'.$title.'</a></span>
                   <span>'.$description;
         
         $html .='</span> ';
