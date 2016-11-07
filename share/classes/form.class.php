@@ -372,13 +372,10 @@ class Form {
             $$key = $val;
         }
         $html  = ' <div id="material_'.$id.'" class="info-box">';
-        //$html .= RENDER::thumb($id, null, null, 'thumb');
         if (isset($preview)){
             $html .= '<span class="info-box-icon bg-aqua"><div id="modal-preview" style="height:100%;width:100%;background: url(\''.$preview.'\') center ;background-size: cover; background-repeat: no-repeat;"></div></span>'; //pull-left --> overrides align: center to top
-            //$html .= '<span class="info-box-icon bg-white"><img class="pull-left" src="'.$preview.'" ></img></span>'; //pull-left --> overrides align: center to top
         } else {
            $html .= RENDER::thumb($id, null, null, 'thumb');
-           //$html .= '<span class="info-box-icon bg-aqua"><i class="'.$icon_class.'"></i></span>';
         }
         /* Box content */
         $html .= '<div class="info-box-content">';
@@ -391,7 +388,10 @@ class Form {
         if (isset($player)){
             $html .= $player.'<br>';
         }
-        $html .= '<a href="" onclick="formloader(\'preview\',\'file\','.$id.');'.$onclick.';">'.$title.'</a></span>
+        if (!isset($url)){
+            $url = '';
+        }
+        $html .= '<a href="'.$url.'" onclick="formloader(\'preview\',\'file\','.$id.');'.$onclick.';">'.$title.'</a></span>
                   <span>'.$description;
         
         $html .='</span> ';
