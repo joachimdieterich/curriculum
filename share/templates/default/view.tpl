@@ -29,7 +29,7 @@
                       </form>
                     </div>
                     </div>
-                      <div class="btn-group pull-left"><button type="button" class="btn btn-default" onclick="formloader('description','curriculum',{$course[0]->curriculum_id});"><a><i class="fa fa-info"></i> </a></button></div>
+                      <div class="btn-group pull-left margin-r-5"><button type="button" class="btn btn-default" onclick="formloader('description','curriculum',{$course[0]->curriculum_id});"><a><i class="fa fa-info"></i> </a></button></div>
                     {if isset($niveaus)}
                         <div class="btn-group pull-left">
                         {foreach name=foreach_niveau item=niveau from=$niveaus} 
