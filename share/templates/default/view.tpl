@@ -19,6 +19,7 @@
         <div class="col-xs-12">
             <div class="box box-primary">
                 <div class="box-header with-border">
+                    <div class="pull-left"><i class="fa fa-info" onclick="formloader('description','curriculum',{$course[0]->curriculum_id});"></i></div>
                     <div class="pull-right"><div class="has-feedback">
                       <form id="view_search" method="post" action="../share/processors/fp_search.php">
                       <input type="hidden" name="func" id="func" value="view_highlight"/>
