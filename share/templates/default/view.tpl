@@ -39,9 +39,9 @@
                      {/if}
                 </div>
                 <div class="box-body">
-                    {if isset($showaddObjectives)}
+                    {*if isset($showaddObjectives)}
                     <p>Beschreibung: {$course[0]->description} ({$course[0]->schooltype})<br/>Bundesland: {$course[0]->state} ({$course[0]->country})</p>
-                    {/if}
+                    {/if*}
                     {if $terminal_objectives != false}
                         {assign var="sol_btn" value="false"}  
                         {*Thema Row*}
