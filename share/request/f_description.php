@@ -29,9 +29,14 @@ global $USER;
 $USER       = $_SESSION['USER'];
 $func       = $_GET['func'];
 
-$ter        = new TerminalObjective();
+
 switch ($func) {
-    case 'terminal_objective':  $ter->id    = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+    case 'curriculum':          $cur        = new Curriculum();
+                                $cur->id    = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+                                $cur->load(false);
+        break;
+    case 'terminal_objective':  $ter        = new TerminalObjective();
+                                $ter->id    = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
         break;
     case 'enabling_objective':  $ena        = new EnablingObjective();
                                 $ena->id    = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
@@ -43,13 +48,20 @@ switch ($func) {
         break;
 }
 
-$ter->load();
 $content    = '';
-if ($ter->description){         $content .= $ter->description; } 
-if (isset($ena->description)){  $content .= '<br>'.$ena->description; } 
-if (!isset($ena->description) && !isset($ter->description)){    
-  $content .= 'Keine Beschreibung vorhanden';
+switch ($func) {
+    case 'curriculum':          $content .= $cur->description;
+        break;
+    case 'terminal_objective':
+    case 'enabling_objective':  $ter->load();
+                                if ($ter->description){         $content .= $ter->description; } 
+                                if (isset($ena->description)){  $content .= '<br>'.$ena->description; } 
+                                if (!isset($ena->description) && !isset($ter->description)){    
+                                  $content .= 'Keine Beschreibung vorhanden';
+                                }
+        break;
 }
+
 
 $html = Form::modal(array('title'   => 'Beschreibung',
                           'content' => $content));

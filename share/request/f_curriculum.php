@@ -139,8 +139,8 @@ $content .= '">
 if (isset($id)) { $content .= 'value="'.$id.'"';} $content .= '>';
 
 $content .= Form::input_text('curriculum', 'Titel des Lehrplans', $curriculum, $error, 'z. B. Deutsch');
-$content .= Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung');
-
+//$content .= Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung');
+$content .= Form::input_textarea('description', 'Beschreibung', $description, $error, 'Beschreibung');
 /* Fächer */ 
 $subjects                   = new Subject();                                                      
 $subjects->institution_id   = $USER->institutions;

@@ -51,10 +51,14 @@ $p_options = array('delete' => array('onclick'      => "del('curriculum',__id__)
                    'profile'  => array('onclick'   => "formloader('preview_curriculum','full',__id__);", 
                                      'capability'   => checkCapabilities('curriculum:addObjectives', $USER->role_id, false),  //todo: use extra capability?
                                      'icon'         => 'fa fa-list-alt',
-                                     'tooltip'      => 'Überblick'));
+                                     'tooltip'      => 'Überblick'),
+                    'info'  => array('onclick'   => "formloader('description','curriculum',__id__);", 
+                                     'capability'   => true,  //free for all
+                                     'icon'         => 'fa fa-info',
+                                     'tooltip'      => 'Beschreibung'));
 $p_config  = array('id'         => 'checkbox',
                    'curriculum'  => 'Lehrplan', 
-                   'description' => 'Beschreibung', 
+                   /*'description' => 'Beschreibung', */
                    'subject'     => 'Fach',
                    'grade'       => 'Klassenstufe',
                    'schooltype'  => 'Schultyp',

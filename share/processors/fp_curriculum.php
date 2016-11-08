@@ -29,6 +29,12 @@ $USER            = $_SESSION['USER'];
 if (!isset($_SESSION['PAGE']->target_url)){     //if target_url is not set -> use last PAGE url
     $_SESSION['PAGE']->target_url       = $_SESSION['PAGE']->url;
 }
+$curriculum = new Curriculum();
+$purify                                 = HTMLPurifier_Config::createDefault();
+$purify->set('Core.Encoding', 'UTF-8'); // replace with your encoding
+$purify->set('HTML.Doctype', 'HTML 4.01 Transitional'); // replace with your doctype
+$purifier                               = new HTMLPurifier($purify);
+$curriculum->description                = $purifier->purify(filter_input(INPUT_POST, 'description', FILTER_UNSAFE_RAW));
 
 $gump            = new Gump();    /* Validation */
 $_POST           = $gump->sanitize($_POST);       //sanitize $_POST
@@ -45,19 +51,18 @@ $gump->validation_rules(array(
 'icon_id'        => 'required'   
 ));
 
-$curriculum = new Curriculum();
+
 if (isset($_POST['id'])){
     $curriculum->id         = filter_input(INPUT_POST, 'id',          FILTER_VALIDATE_INT);
 }
 $curriculum->curriculum     = filter_input(INPUT_POST, 'curriculum',  FILTER_SANITIZE_STRING);
-$curriculum->description    = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);  
+//$curriculum->description    = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);  
 $curriculum->subject_id     = filter_input(INPUT_POST, 'subject_id',     FILTER_VALIDATE_INT);
 $curriculum->grade_id       = filter_input(INPUT_POST, 'grade_id',       FILTER_VALIDATE_INT);
 $curriculum->schooltype_id  = filter_input(INPUT_POST, 'schooltype_id',  FILTER_VALIDATE_INT);
 $curriculum->state_id       = filter_input(INPUT_POST, 'state_id',       FILTER_VALIDATE_INT);
 $curriculum->country_id     = filter_input(INPUT_POST, 'country_id',     FILTER_VALIDATE_INT);
 $curriculum->icon_id        = filter_input(INPUT_POST, 'icon_id',        FILTER_VALIDATE_INT);
-//$curriculum->creator_id     = $USER->id;  //now set in add function
 
 $validated_data  = $gump->run($_POST);
 if (!isset($_POST['state'])){ $_POST['state'] = 1; }
