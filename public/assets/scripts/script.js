@@ -278,31 +278,9 @@ function hideFile() { //nach dem löschen wird das thumbnail ausgeblendet
     if (req.readyState === 4) {  
         if (req.status === 200) {    
            if (req.responseText.length !== 1){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen
-                //if (req.responseText !== 'OK'){alert(req.responseText);} //unschön, aber #popup ist vom modalframe aus nicht 
                 if (document.getElementById('thumb_'+arguments[0])) {
                     document.getElementById('thumb_'+arguments[0]).style.display='none'; 
                 }
-               /*if (document.getElementById('row_filelastuploadbtn'+arguments[0])) {
-                   document.getElementById('row_filelastuploadbtn'+arguments[0]).style.visibility='hidden'; 
-               }
-               if (document.getElementById('row_curriculumfilesbtn'+arguments[0])) {          
-                   document.getElementById('row_curriculumfilesbtn'+arguments[0]).style.visibility='hidden';
-               }
-               if (document.getElementById('row_solutionfilesbtn'+arguments[0])) {          
-                   document.getElementById('row_solutionfilesbtn'+arguments[0]).style.visibility='hidden';
-               }
-               if (document.getElementById('row_avatarfilesbtn'+arguments[0])) {          
-                   document.getElementById('row_avatarfilesbtn'+arguments[0]).style.visibility='hidden';           
-               }
-               if (document.getElementById('row_myfilesbtn'+arguments[0])) {          
-                   document.getElementById('row_myfilesbtn'+arguments[0]).style.visibility='hidden';           
-               }
-               if (document.getElementById('material_btn'+arguments[0])) {          
-                   document.getElementById('material_btn'+arguments[0]).style.visibility='hidden';           
-               }
-               if (document.getElementById('material_'+arguments[0])) {          
-                   document.getElementById('material_'+arguments[0]).style.visibility='hidden';           
-               }*/
            } else {
                window.location.reload();
            }
