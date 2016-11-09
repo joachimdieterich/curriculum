@@ -37,8 +37,7 @@
                             {if $courses[res]->semester_id eq $my_semester_id}
                               <option value="{$courses[res]->id}" 
                               {if $courses[res]->id eq $selected_curriculum} selected {/if} 
-                              data-icon="{$subjects_path}/{$courses[res]->icon}" data-html-text="{$courses[res]->group} - {$courses[res]->curriculum}&lt;i&gt;
-                              {$courses[res]->description}&lt;/i&gt;">{$courses[res]->group} - {$courses[res]->curriculum}</option>  
+                              data-icon="{$subjects_path}/{$courses[res]->icon}" data-html-text="{$courses[res]->group} - {$courses[res]->curriculum}">{$courses[res]->group} - {$courses[res]->curriculum}</option>  
                             {/if}
                         {/section} 
                     </select> 
