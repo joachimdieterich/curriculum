@@ -19,7 +19,6 @@
         <div class="col-xs-12">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    
                     <div class="pull-right"><div class="has-feedback">
                       <form id="view_search" method="post" action="../share/processors/fp_search.php">
                       <input type="hidden" name="func" id="func" value="view_highlight"/>
@@ -39,9 +38,6 @@
                      {/if}
                 </div>
                 <div class="box-body">
-                    {*if isset($showaddObjectives)}
-                    <p>Beschreibung: {$course[0]->description} ({$course[0]->schooltype})<br/>Bundesland: {$course[0]->state} ({$course[0]->country})</p>
-                    {/if*}
                     {if $terminal_objectives != false}
                         {assign var="sol_btn" value="false"}  
                         {*Thema Row*}
@@ -92,7 +88,9 @@
                                {if $enabledObjectives != false}
                                    {foreach key=enaid item=ena from=$enabledObjectives}
                                    {if $ena->terminal_objective_id eq $ter->id}
-                                       <div id="ena_{$ena->id}" class="panel panel-default box-objective {if $ena->accomplished_status_id eq 1} boxgreen {elseif $ena->accomplished_status_id eq 2} boxorange {elseif $ena->accomplished_status_id eq '0'} boxred {/if}{if isset($highlight)}{if in_array("ena_`$ena->id`", $highlight)} highlight {/if}{/if}"> 
+                                       <div style="display:none" id="ena_status_{$ena->id}">{0+$ena->accomplished_status_id}</div><!--Container für Variable-->
+                                       <div id="ena_{$ena->id}" class="panel panel-default box-objective {$box_bg[$ena->accomplished_status_id]} {if isset($highlight)}{if in_array("ena_`$ena->id`", $highlight)} highlight {/if}{/if}"> 
+                                       {*<div id="ena_{$ena->id}" class="panel panel-default box-objective {if $ena->accomplished_status_id eq 1} boxgreen {elseif $ena->accomplished_status_id eq 2} boxorange {elseif $ena->accomplished_status_id eq '0'} boxred {/if}{if isset($highlight)}{if in_array("ena_`$ena->id`", $highlight)} highlight {/if}{/if}"> *}
                                            <div class="panel-heading boxheader" style="background: {$ter->color}">
                                                {if checkCapabilities('groups:showAccomplished', $my_role_id, false)}
                                                    {if isset($ena->accomplished_users) and isset($ena->enroled_users) and isset($ena->accomplished_percent)}
@@ -158,6 +156,7 @@
                                                    {if checkCapabilities('quiz:showQuiz', $my_role_id, false) AND $ena->quiz neq '0'}
                                                        <a onclick="formloader('quiz','enabling_objective','{$ena->id}');"><span class="fa fa-check-square-o pull-right box-sm-icon"></span></a>
                                                    {/if}
+                                                    <span class=" pull-right">{Render::accCheckboxes($ena->id, $my_id, $my_id, false)}</span>
                                                {/if}  
                                                {if checkCapabilities('file:loadMaterial', $my_role_id, false) AND $ena->files neq '0'}
                                                <a onclick="formloader('material','ena', {$ena->id});"><i class="fa fa-briefcase box-sm-icon"></i> <span class="badge label-primary" style="margin-top: -3px;font-size: 8px;line-height: .8"  data-toggle="tooltip" title="Material">{$ena->files}</span></a>

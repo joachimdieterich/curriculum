@@ -128,7 +128,7 @@
                         {foreach key=enaid item=ena from=$enabledObjectives}
                             {if $ena->terminal_objective_id eq $ter->id}
                                 <div style="display:none" id="ena_status_{$ena->id}">{0+$ena->accomplished_status_id}</div><!--Container für Variable-->
-                                <div id="ena_{$ena->id}" class="panel panel-default box-objective {if $ena->accomplished_status_id eq 1} boxgreen {elseif $ena->accomplished_status_id eq 2} boxorange {elseif $ena->accomplished_status_id eq '0'} boxred {/if}"> 
+                                <div id="ena_{$ena->id}" class="panel panel-default box-objective {$box_bg[$ena->accomplished_status_id]}"> 
                                     <div class="panel-heading boxheader" style="background: {$ter->color}">
                                         {if isset($ena->accomplished_users) and isset($ena->enroled_users) and isset($ena->accomplished_percent)}
                                             {$ena->accomplished_users} von {$ena->enroled_users} ({$ena->accomplished_percent}%)<!--Ziel--> 

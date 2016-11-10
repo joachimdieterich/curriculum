@@ -81,7 +81,7 @@ class EnablingObjective {
     public $order_id; 
     /**
      * id of current accomplish status
-     * @var int
+     * @var string
      */
     public $accomplished_status_id; 
     /**
@@ -503,7 +503,7 @@ class EnablingObjective {
                         WHERE ena.id = usa.reference_id
                         AND usa.context_id = 12
                         AND us.id = usa.creator_id
-                        AND ena.curriculum_id = cur.id AND usa.user_id = ? AND usa.status_id = 1
+                        AND ena.curriculum_id = cur.id AND usa.user_id = ? AND (usa.status_id = 1 OR usa.status_id = 11 OR usa.status_id = 21 OR usa.status_id = 31)
                         AND usa.accomplished_time > DATE_SUB(now(), INTERVAL ? DAY)');
         $db->execute(array($USER->id, $USER->acc_days));
         while($result = $db->fetchObject()) { 
@@ -626,23 +626,38 @@ class EnablingObjective {
      * @param int $group
      * @return array 
      */
-    public function getAccomplishedUsers($group, $status = 1){
+    public function getAccomplishedUsers($group, $status = '1'){
+        
         switch ($status) {
-            /* red */
-            case 0:  
-            /* green */
-            case 1:
-            /* orange */
-            case 2: $db = DB::prepare('SELECT ua.* FROM user_accomplished AS ua
+            case '0': /* red */
+                        $db = DB::prepare('SELECT ua.* FROM user_accomplished AS ua
                               INNER JOIN groups_enrolments AS gr ON gr.user_id = ua.user_id 
                                     WHERE ua.reference_id = ? AND gr.group_id = ?
-                                    AND gr.status = 1 AND ua.status_id = ? AND ua.context_id = 12');
-                                    $db->execute(array($this->id, $group, $status));                    
+                                    AND gr.status = 1 AND ua.status_id IN ("00","0","x0","10","20","30") AND ua.context_id = 12');
+                                    $db->execute(array($this->id, $group));  
+                break;
+            case '1': /* green */
+                        $db = DB::prepare('SELECT ua.* FROM user_accomplished AS ua
+                              INNER JOIN groups_enrolments AS gr ON gr.user_id = ua.user_id 
+                                    WHERE ua.reference_id = ? AND gr.group_id = ?
+                                    AND gr.status = 1 AND ua.status_id IN ("01","1","x1","11","21","31") AND ua.context_id = 12');
+                                    $db->execute(array($this->id, $group));  
+                break;
+            case '2': /* orange */
+                        $db = DB::prepare('SELECT ua.* FROM user_accomplished AS ua
+                              INNER JOIN groups_enrolments AS gr ON gr.user_id = ua.user_id 
+                                    WHERE ua.reference_id = ? AND gr.group_id = ?
+                                    AND gr.status = 1 AND ua.status_id IN ("02","2","x2","12","22","32") AND ua.context_id = 12');
+                                    $db->execute(array($this->id, $group));                    
                 break;
             /* white */
-            case 3: $db = DB::prepare('SELECT gr.user_id FROM groups_enrolments AS gr 
+            case 'x3':
+            case '13':
+            case '23':
+            case '33':
+            case '3': $db = DB::prepare('SELECT gr.user_id FROM groups_enrolments AS gr 
 					WHERE gr.group_id = ? AND gr.status = 1 AND gr.user_id NOT IN (SELECT user_id FROM user_accomplished 
-                                            WHERE reference_id = ? AND context_id = 12 AND status_id <> 3)');
+                                            WHERE reference_id = ? AND (status_id <> "x3" OR status_id <> "3" OR status_id <> "03" OR status_id <> "13" OR status_id <> "23" OR status_id <> "33") AND context_id = 12)');
                     $db->execute(array($group, $this->id));
                 break;
 
@@ -696,7 +711,18 @@ class EnablingObjective {
                                 $db = DB::prepare('INSERT INTO user_accomplished(reference_id,context_id,user_id,status_id,creator_id) VALUES (?,?,?,?,?)');
                                 return $db->execute(array($this->id, 12, $user_id, $status, $creator_id));
                             }
-                            
+                            break;
+            case 'student': $db = DB::prepare('SELECT COUNT(id) FROM user_accomplished WHERE reference_id = ? AND user_id = ? AND context_id = 12');
+                            $db->execute(array($this->id, $user_id));
+                            if($db->fetchColumn() >= 1) { 
+                                $db = DB::prepare('UPDATE user_accomplished SET status_id = ? WHERE reference_id = ? AND user_id = ? AND context_id = 12');
+                                return $db->execute(array($status, $this->id, $user_id));
+                            } else {
+                                $db = DB::prepare('INSERT INTO user_accomplished(reference_id,context_id,user_id,status_id,creator_id) VALUES (?,?,?,?,?)');
+                                return $db->execute(array($this->id, 12, $user_id, $status, $user_id));
+                            }
+                            break;
+                
                             break;
             default:        break;
         } 
@@ -711,7 +737,7 @@ class EnablingObjective {
                                 WHERE ua.reference_id = ena.id
                                 AND ua.context_id = 12
                                 AND ena.terminal_objective_id IN (?)
-                                AND ua.user_id = ? AND (ua.status_id = 1 OR ua.status_id = 2)');
+                                AND ua.user_id = ? AND (ua.status_id = 1 OR ua.status_id = 11 OR ua.status_id = 21 OR ua.status_id = 31)');
         $db2->execute(array($ter_id, $user_id));
         $accomplished    = $db2->fetchColumn(); 
         if ($max > 0){

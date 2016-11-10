@@ -31,7 +31,7 @@
         <link rel="icon" type="image/png" href="{$media_url}images/favicon/favicon-16x16.png" sizes="16x16" />
         <meta name="msapplication-TileColor" content="#FFFFFF" />
         <meta name="msapplication-TileImage" content="{$media_url}images/favicon/mstile-144x144.png" />
-
+        
         
         <!-- AdminLTE -->
         <!-- Tell the browser to be responsive to screen width -->
@@ -39,7 +39,7 @@
         <!-- Bootstrap 3.3.5 -->
         <link rel="stylesheet" href="{$media_url}templates/AdminLTE-2.3.0/bootstrap/css/bootstrap.min.css">
         <!-- Font Awesome -->
-        <link rel="stylesheet" href="{$lib_url}/font-awesome-4.6.1/css/font-awesome.min.css">
+        <link rel="stylesheet" href="{$lib_url}/font-awesome/css/font-awesome.min.css">
         <link rel="stylesheet" href="{$media_url}stylesheets/google-fonts.css" >
         <!-- Ionicons --><!-- not used yet -->
         <!--link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"-->

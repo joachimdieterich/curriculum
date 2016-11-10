@@ -25,5 +25,5 @@ CKEDITOR.editorConfig = function( config ) {
   CKEDITOR.dtd.$removeEmpty['i'] = false;
   CKEDITOR.dtd.$removeEmpty.i = 0;
   CKEDITOR.dtd.$removeEmpty['span'] = false;
-  config.contentsCss = ['../share/libs/font-awesome-4.6.1/css/font-awesome.min.css'];
+  config.contentsCss = ['../share/libs/font-awesome/css/font-awesome.min.css'];
 };

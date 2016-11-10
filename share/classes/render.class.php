@@ -44,32 +44,121 @@ class Render {
             $ena       = new EnablingObjective();
             $ena->id   = $id;
             $ena->getObjectives('enabling_objective_status', $student); // get status of objective
-            $red       = 'checkredbtn';
-            $green     = 'checkgreenbtn';
-            $orange    = 'checkorangebtn';
-            $white     = 'checkwhitebtn';
-            switch ($ena->accomplished_status_id) {
-                case 0: $red    = 'checkactiveredbtn';
+            
+            $red       = 'fa fa-circle-o';
+            $green     = 'fa fa-circle-o';
+            $orange    = 'fa fa-circle-o';
+            $white     = 'fa fa-circle-o';
+            //error_log($ena->accomplished_status_id);
+            switch (true) {
+                case $ena->accomplished_status_id === 'x0': $red    = 'fa fa-check-circle-o';
+                           $bg     = 'bg-red';
                     break;
-                case 1: $green  = 'checkactivegreenbtn';
+                case $ena->accomplished_status_id === '0x': $red    = 'fa fa-circle';
+                           $bg     = 'bg-red';
                     break;
-                case 2: $orange = 'checkactiveorangebtn';
+                case $ena->accomplished_status_id === '00': $red    = 'fa fa-check-circle';
+                           $bg     = 'bg-red';
                     break;
-                case 3: $white  = 'checkactivewhitebtn';
+                case $ena->accomplished_status_id === '01': $red    = 'fa fa-circle';
+                           $green  = 'fa fa-check-circle-o';
+                           $bg     = 'bg-green';
+                    break;
+                case $ena->accomplished_status_id === '02': $red    = 'fa fa-circle';
+                           $orange  = 'fa fa-check-circle-o';
+                           $bg     = 'bg-orange';
+                    break;
+                case $ena->accomplished_status_id === '03': $red    = 'fa fa-circle';
+                           $white  = 'fa fa-check-circle-o';
+                           $bg     = 'bg-white';
+                    break;
+                case $ena->accomplished_status_id === 'x1': $green  = 'fa fa-check-circle-o';
+                    break;
+                case $ena->accomplished_status_id === '1x': $green  = 'fa fa-circle';
+                    break;
+                case $ena->accomplished_status_id === '10': $red    = 'fa fa-check-circle-o';
+                         $green  = 'fa fa-circle';
+                    break;
+                case $ena->accomplished_status_id === '11': $green  = 'fa fa-check-circle';
+                    break;
+                case $ena->accomplished_status_id === '12': $green  = 'fa fa-circle';
+                         $orange = 'fa fa-check-circle-o';
+                    break;
+                case $ena->accomplished_status_id === '13': $green  = 'fa fa-circle';
+                         $white  = 'fa fa-check-circle-o';
+                    break;
+                case $ena->accomplished_status_id === 'x2': $orange = 'fa fa-check-circle-o';
+                    break;
+                case $ena->accomplished_status_id === '2x': $orange = 'fa fa-circle';
+                    break;
+                case $ena->accomplished_status_id === '20': $orange = 'fa fa-circle';
+                         $red    = 'fa fa-check-circle-o';
+                    break;
+                case $ena->accomplished_status_id === '21': $orange = 'fa fa-circle';
+                         $green  = 'fa fa-check-circle-o';
+                    break;
+                case $ena->accomplished_status_id === '22': $orange = 'fa fa-check-circle';
+                    break;
+                case $ena->accomplished_status_id === '23': $orange = 'fa fa-circle';
+                                                            $white  = 'fa fa-check-circle-o';
+                    break;
+                case $ena->accomplished_status_id === 'x3': $white  = 'fa fa-check-circle-o';
+                    break;
+                case $ena->accomplished_status_id === '3x': $white  = 'fa fa-circle';
+                    break;
+                case $ena->accomplished_status_id === '30': $white  = 'fa fa-circle';
+                           $red    = 'fa fa-check-circle-o';
+                    break;
+                case $ena->accomplished_status_id === '31': $white  = 'fa fa-circle';
+                         $green  = 'fa fa-check-circle-o';
+                    break;
+                case $ena->accomplished_status_id === '32': $white  = 'fa fa-circle';
+                         $orange = 'fa fa-check-circle-o';
+                    break;
+                case $ena->accomplished_status_id === '33': $white  = 'fa fa-check-circle';
                     break;
 
                 default:
                     break;
             }
-            
+        
             $course     = new Course();
             $ena->load();
-            $group_id   = $course->getGroupID($ena->curriculum_id, $teacher, $student);
-            $html       = '<input id="'.$id.'_green" class="space-left '.$green.' pointer_hand" type="button" name="setAccStatus1" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', 1)">'
-                        . '<input id="'.$id.'_orange" class="space-left '.$orange.' pointer_hand" type="button" name="setAccStatus2" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', 2)">'
+            
+            if (!checkCapabilities('objectives:setStatus', $USER->role_id, false)){
+               $status = $ena->accomplished_status_id;
+                if (strlen($status) > 1){
+                    $teacher_status = substr($status, 1,1);
+                } else {
+                    $teacher_status = 'x';
+                }
+                $teacher = $student;
+                $html   = '<a class="pointer_hand"><i id="'.$id.'_green" style="font-size:18px;" class="'.$green.' margin-r-5 text-green pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \'1'.$teacher_status.'\')"></i></a>'
+                    . '<a class="pointer_hand"><i id="'.$id.'_orange" style="font-size:18px;" class="'.$orange.' margin-r-5 text-orange pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \'2'.$teacher_status.'\')"></i></a>'
+                    . '<a class="pointer_hand"><i id="'.$id.'_white" style="font-size:18px;" class="'.$white.' margin-r-5 text-white pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \'3'.$teacher_status.'\')"></i></a>'
+                    . '<a class="pointer_hand"><i id="'.$id.'_red" style="font-size:18px;" class="'.$red.' margin-r-5 text-red pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \'0'.$teacher_status.'\')"></i></a>';
+            } else {
+                $status = $ena->accomplished_status_id;
+                if (strlen($status) > 1){
+                    $student_status = substr($status, 0,1);
+                } else {
+                    $student_status = 'x';
+                }
+                
+                $html   = '<a class="pointer_hand"><i id="'.$id.'_green" style="font-size:18px;" class="'.$green.' margin-r-5 text-green pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'1\')"></i></a>'
+                    . '<a class="pointer_hand"><i id="'.$id.'_orange" style="font-size:18px;" class="'.$orange.' margin-r-5 text-orange pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'2\')"></i></a>'
+                    . '<a class="pointer_hand"><i id="'.$id.'_white" style="font-size:18px;" class="'.$white.' margin-r-5 text-white pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'3\')"></i></a>'
+                    . '<a class="pointer_hand"><i id="'.$id.'_red" style="font-size:18px;" class="'.$red.' margin-r-5 text-red pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'0\')"></i></a>';
+            
+            }
+            
+            /*$html1       .= '<a href="#" class="pointer_hand"><i class="fa fa-dot-circle-o text-green pointer_hand"></i></a> <i class="fa fa-circle-o text-green pointer_hand"></i> <i class="fa fa-circle text-green pointer_hand"></i>'
+                    . '<input id="'.$id.'_green" class="space-left '.$green.' pointer_hand" type="button" name="setAccStatus1" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', 1)">'
+                        . '<input id="'.$id.'_orange"  class="space-left '.$orange.' pointer_hand" type="button" name="setAccStatus2" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', 2)">'
                         . '<input id="'.$id.'_white" class="space-left '.$white.' pointer_hand" type="button" name="setAccStatus3" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', 3)">'
-                        . '<input id="'.$id.'_red" class="space-left '.$red.' pointer_hand" type="button" name="setAccStatus0" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', 0)">';
+                        . '<input id="'.$id.'_red" class="space-left '.$red.' pointer_hand" type="button" name="setAccStatus0" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', 0)">';*/
             if ($link){
+                $group_id   = $course->getGroupID($ena->curriculum_id, $teacher, $student);
                 $html  .= '<button class="btn btn-default btn-sm"><a href="index.php?action=objectives&course='.$ena->curriculum_id.'_'.$group_id.'&paginator=userPaginator&userPaginator_sel_id='.$student.'&certificate_template=-1&reset"><i class="fa fa-th"></i> Zum Lehrplan</a></button>'     ;
             }
             return $html;

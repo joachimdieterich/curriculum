@@ -189,16 +189,10 @@ class Pdf {
         include(dirname(__FILE__).'/../libs/MPDF57/mpdf.php');
         $mpdf           = new mPDF($this->font_encoding, 'A4', $this->font_size, $this->font_name);
         //$stylesheet   = file_get_contents(dirname(__FILE__).'/../../public/assets/stylesheets/certificate.css');
-        
         $stylesheet     = file_get_contents(dirname(__FILE__).'/../../public/assets/templates/AdminLTE-2.3.0/bootstrap/css/bootstrap.css');
-        //$stylesheet     .= file_get_contents(dirname(__FILE__).'/../libs/font-awesome-4.6.1/css/font-awesome.min.css');
-        //$stylesheet     .= file_get_contents(dirname(__FILE__).'/../../public/assets/stylesheets/google-fonts.css');
         $stylesheet     .= file_get_contents(dirname(__FILE__).'/../../public/assets/templates/AdminLTE-2.3.0/dist/css/AdminLTE.min.css');
         $stylesheet     .= file_get_contents(dirname(__FILE__).'/../../public/assets/templates/AdminLTE-2.3.0/dist/css/skins/_all-skins.min.css');
-        //$stylesheet     .= file_get_contents(dirname(__FILE__).'/../../public/assets/templates/AdminLTE-2.3.0/plugins/colorpicker/bootstrap-colorpicker.min.css');
         $stylesheet     .= file_get_contents(dirname(__FILE__).'/../../public/assets/stylesheets/all-bs.css');
-        //$stylesheet     .= file_get_contents(dirname(__FILE__).'/../../public/assets/stylesheets/buttons.css');
-        //$stylesheet     .= file_get_contents(dirname(__FILE__).'/../../public/assets/jquery.nyroModal/styles/nyroModal.css');
         $mpdf->WriteHTML($stylesheet,1);
         $mpdf->WriteHTML($this->content, 2);
          if (file_exists($CFG->curriculumdata_root.'user/'.$USER->id.'/'.$this->filename)){

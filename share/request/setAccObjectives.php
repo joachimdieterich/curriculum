@@ -31,6 +31,12 @@ $enabling_objectives        = new EnablingObjective();
 $enabling_objectives->id    = filter_input(INPUT_GET, 'enablingObjectiveID', FILTER_VALIDATE_INT); 
 $enabling_objectives->load();
 $users = explode(",", filter_input(INPUT_GET, 'userID'));
+
 foreach ($users as $value) {
-    $enabling_objectives->setAccomplishedStatus('teacher', $value, filter_input(INPUT_GET, 'creatorID', FILTER_VALIDATE_INT), filter_input(INPUT_GET, 'statusID', FILTER_VALIDATE_INT));         
+    if (filter_input(INPUT_GET, 'creatorID', FILTER_VALIDATE_INT) == $value){
+        //error_log(filter_input(INPUT_GET, 'statusID', FILTER_SANITIZE_STRING));
+        $enabling_objectives->setAccomplishedStatus('student', $value, filter_input(INPUT_GET, 'creatorID', FILTER_VALIDATE_INT), filter_input(INPUT_GET, 'statusID', FILTER_SANITIZE_STRING));         
+    } else {
+        $enabling_objectives->setAccomplishedStatus('teacher', $value, filter_input(INPUT_GET, 'creatorID', FILTER_VALIDATE_INT), filter_input(INPUT_GET, 'statusID', FILTER_SANITIZE_STRING));         
+    }
 }  

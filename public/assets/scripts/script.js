@@ -288,38 +288,129 @@ function hideFile() { //nach dem löschen wird das thumbnail ausgeblendet
     }   
 }
 
-function setStatusColor(ena_id, status_id){
-    colors = ["red", "green", "orange", "white"];
-    // set box color
-    for (i = 0; i < colors.length; i++){
-        if (status_id === i){
-            btn = 'checkactive'+colors[i]+'btn';
-        } else {
-            btn = 'check'+colors[i]+'btn';
-        }
-        document.getElementById(ena_id+"_"+colors[i]).className = 'space-left '+btn+' pointer_hand';
+function setStatusColor(ena_id, status){
+    red    = 'fa fa-circle-o';
+    green  = 'fa fa-circle-o';
+    orange = 'fa fa-circle-o';
+    white  = 'fa fa-circle-o';
+    bg     = 'bg-white';
+    
+    switch (true) {
+        case (status === 'x0'): red    = 'fa fa-check-circle-o';
+                                bg     = 'bg-red';
+            break;
+        case (status === '0x'): red  = 'fa fa-circle';
+            break;
+        case (status === '00'): red    = 'fa fa-check-circle';
+                                bg     = 'bg-red';
+            break;
+        case (status === '01'): red    = 'fa fa-circle';
+                                green  = 'fa fa-check-circle-o';
+                                bg     = 'bg-green';
+            break;
+        case (status === '02'): red    = 'fa fa-circle';
+                                orange  = 'fa fa-check-circle-o';
+                                bg     = 'bg-orange';
+            break;
+        case (status === '03'): red    = 'fa fa-circle';
+                                white  = 'fa fa-check-circle-o';
+                                bg     = 'bg-white';
+            break;
+        case  (status === 'x1'): green  = 'fa fa-check-circle-o';
+                                bg     = 'bg-green';
+            break;
+        case (status === '1x'): green  = 'fa fa-circle';
+            break;
+        case (status === '10'): red    = 'fa fa-check-circle-o';
+                                green  = 'fa fa-circle';
+                                bg     = 'bg-red';
+            break;
+        case (status === '11'): green  = 'fa fa-check-circle';
+                                bg     = 'bg-green';
+            break;
+        case (status === '12'): green  = 'fa fa-circle';
+                                orange = 'fa fa-check-circle-o';
+                                bg     = 'bg-orange';
+            break;
+        case (status === '13'): green  = 'fa fa-circle';
+                                white  = 'fa fa-check-circle-o';
+                                bg     = 'bg-white';
+            break;
+        case  (status === 'x2'): orange = 'fa fa-check-circle-o';
+                                bg     = 'bg-orange';
+            break;
+        case  (status === '2x'): orange = 'fa fa-circle';
+            break;
+        case (status === '20'): orange = 'fa fa-circle';
+                                red    = 'fa fa-check-circle-o';
+                                bg     = 'bg-red';
+            break;
+        case (status === '21'): orange = 'fa fa-circle';
+                                green  = 'fa fa-check-circle-o';
+                                bg     = 'bg-green';
+            break;
+        case (status === '22'): orange = 'fa fa-check-circle';
+                                bg     = 'bg-orange';
+            break;
+        case (status === '23'): orange = 'fa fa-circle';
+                                white  = 'fa fa-check-circle-o';
+                                bg     = 'bg-white';
+            break;
+        case (status ===  '3'): white  = 'fa fa-check-circle-o';
+            break;
+        case (status === '3x'): white  = 'fa fa-circle';
+            break;
+        case (status === 'x3'): white  = 'fa fa-check-circle-o';
+            break;
+        case (status === '30'): white  = 'fa fa-circle';
+                                red    = 'fa fa-check-circle-o';
+                                bg     = 'bg-red';
+            break;
+        case (status === '31'): white  = 'fa fa-circle';
+                                green  = 'fa fa-check-circle-o';
+                                bg     = 'bg-green';
+            break;
+        case (status === '32'): white  = 'fa fa-circle';
+                                orange = 'fa fa-check-circle-o';
+                                bg     = 'bg-orange';
+            break;
+        case (status === '33'): white  = 'fa fa-check-circle';
+                                bg     = 'bg-white';
+            break;
+
+        default:
+            break;
     }
-    // set chechbox if exists
-    if (document.getElementById("ena_"+ena_id) !== null){
-        for (i = 0; i < colors.length; i++){
-            if (status_id === i){
-                $(document.getElementById("ena_"+ena_id)).addClass("box"+colors[i]);
-                document.getElementById("ena_status_"+ena_id).innerHTML = status_id;
-            } else {
-                $(document.getElementById("ena_"+ena_id)).removeClass("box"+colors[i]);
-            }
-            
-        }
-    } 
+
+    document.getElementById(ena_id+"_green").className  = 'margin-r-5 '+green+' text-green pointer_hand';
+    document.getElementById(ena_id+"_orange").className = 'margin-r-5 '+orange+' text-orange pointer_hand';
+    document.getElementById(ena_id+"_white").className  = 'margin-r-5 '+white+' text-white pointer_hand';
+    document.getElementById(ena_id+"_red").className    = 'margin-r-5 '+red+' text-red pointer_hand';
+    $(document.getElementById("ena_"+ena_id)).removeClass("bg-white");
+    $(document.getElementById("ena_"+ena_id)).removeClass("bg-green");
+    $(document.getElementById("ena_"+ena_id)).removeClass("bg-orange");
+    $(document.getElementById("ena_"+ena_id)).removeClass("bg-red");
+    $(document.getElementById("ena_"+ena_id)).addClass(bg);
+    document.getElementById("ena_status_"+ena_id).innerHTML = status;
 }
 
 function setAccomplishedObjectives(creatorID, userID, enablingObjectiveID, groupID){        
-    var statusID = Number(document.getElementById("ena_status_"+enablingObjectiveID).innerHTML); //convert html to int
-    if (statusID === 3){
-        statusID = 0; // reset
+    var statusID = document.getElementById("ena_status_"+enablingObjectiveID).innerHTML; //convert html to int
+    
+    if (statusID.length == 2){
+      var student_status_id = statusID.toString()[0];
+      var teacher_status_id = statusID.toString()[1];
     } else {
-        statusID = statusID + 1 ; 
+        var student_status_id = 'x';
+        var teacher_status_id = statusID;
+    }
+    
+    if (teacher_status_id == '3' || teacher_status_id === 'x'){
+        teacher_status_id = '0'; // reset
+    } else {
+        teacher_status_id = parseInt(teacher_status_id) + 1 ; 
     } 
+    statusID = student_status_id+''+teacher_status_id;
     
     var url = "../share/request/setAccObjectives.php?userID="+ userID +"&creatorID="+ creatorID +"&enablingObjectiveID="+ enablingObjectiveID+"&statusID="+statusID;
 
@@ -327,8 +418,6 @@ function setAccomplishedObjectives(creatorID, userID, enablingObjectiveID, group
     if(req) {        
         req.onreadystatechange = function (){
             if (req.readyState===4 && req.status===200){
-                if (req.responseText.length !== 1){
-                }
                 setStatusColor(enablingObjectiveID, statusID);
             }
         };
@@ -623,7 +712,8 @@ function popupFunction(e){
     
     textareas = document.getElementsByTagName("textarea");                      // Replace the <textarea id="editor1"> with a CKEditor instance, using default configuration
     for (var i = 0, len = textareas.length; i < len; i++) {
-        CKEDITOR.replace(textareas[i].id, {toolbarStartupExpanded : false});
+        CKEDITOR.dtd.$removeEmpty['i'] = false;
+        CKEDITOR.replace(textareas[i].id, { toolbarStartupExpanded : false});
         CKEDITOR.on('instanceReady',function(){
             resizeModal();      // if ckeditor is used, then modal has to be resized after ckeditor is ready
         }); 

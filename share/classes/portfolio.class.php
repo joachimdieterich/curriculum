@@ -182,7 +182,7 @@ class Portfolio {
                         WHERE ena.id = usa.reference_id
                         AND usa.context_id
                         AND us.id = usa.user_id
-                        AND ena.curriculum_id = cur.id AND usa.user_id = ? AND usa.status_id = 1 
+                        AND ena.curriculum_id = cur.id AND usa.user_id = ? AND (usa.status_id = 1 OR usa.status_id = 11 OR usa.status_id = 21 OR usa.status_id = 31) 
                         ');
         $db->execute(array($user->id));
         while($result = $db->fetchObject()) { 

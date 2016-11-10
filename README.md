@@ -2,12 +2,13 @@ curriculum BETA Version 0.9.3
 
 Version 0.9.3
 =================
+- Self Assessment for students
 - Bootstrap Layout (AdminLTE 2)
 - Input-Forms von Views abgekoppelt (Input Forms werden jetzt immer in Modals aufgerufen)
 - Modals können jetzt per JS von jedem Punkt aus aufgerufen werden.
 - Neu: Form Processors unter /share/processors
 - Progressbar beim Upload
-- Font Awesome 4.6.1
+- Font Awesome 4.7.0
 - div. Bugfixes
     
 Version 0.9.2
