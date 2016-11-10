@@ -27,7 +27,8 @@ CKEDITOR.editorConfig = function( config ) {
 	{ name: 'document',    groups: [ 'mode', 'document', 'doctools' ], items: [ 'Source', /*'Save', 'NewPage', 'DocProps',*/ 'Preview', 'Print', /*'Templates',*/ 'document' ] },
     { name: 'about', items: [ 'About' ] }
   ];
-
+  
+  config.protectedSource.push(/<i[^>]*><\/i>/g);   // ALLOW <i></i>
   config.toolbar = "Full";
   config.toolbarCanCollapse = true;
 };
