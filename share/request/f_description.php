@@ -29,13 +29,13 @@ global $USER;
 $USER       = $_SESSION['USER'];
 $func       = $_GET['func'];
 
-
+$ter        = new TerminalObjective();
 switch ($func) {
     case 'curriculum':          $cur        = new Curriculum();
                                 $cur->id    = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
                                 $cur->load(false);
         break;
-    case 'terminal_objective':  $ter        = new TerminalObjective();
+    case 'terminal_objective':  
                                 $ter->id    = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
         break;
     case 'enabling_objective':  $ena        = new EnablingObjective();
@@ -54,7 +54,7 @@ switch ($func) {
         break;
     case 'terminal_objective':
     case 'enabling_objective':  $ter->load();
-                                if ($ter->description){         $content .= $ter->description; } 
+                                if ($ter->description AND $ter->description != ''){         $content .= $ter->description; } 
                                 if (isset($ena->description)){  $content .= '<br>'.$ena->description; } 
                                 if (!isset($ena->description) && !isset($ter->description)){    
                                   $content .= 'Keine Beschreibung vorhanden';
