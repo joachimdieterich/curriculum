@@ -152,11 +152,6 @@ class Render {
             
             }
             
-            /*$html1       .= '<a href="#" class="pointer_hand"><i class="fa fa-dot-circle-o text-green pointer_hand"></i></a> <i class="fa fa-circle-o text-green pointer_hand"></i> <i class="fa fa-circle text-green pointer_hand"></i>'
-                    . '<input id="'.$id.'_green" class="space-left '.$green.' pointer_hand" type="button" name="setAccStatus1" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', 1)">'
-                        . '<input id="'.$id.'_orange"  class="space-left '.$orange.' pointer_hand" type="button" name="setAccStatus2" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', 2)">'
-                        . '<input id="'.$id.'_white" class="space-left '.$white.' pointer_hand" type="button" name="setAccStatus3" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', 3)">'
-                        . '<input id="'.$id.'_red" class="space-left '.$red.' pointer_hand" type="button" name="setAccStatus0" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', 0)">';*/
             if ($link){
                 $group_id   = $course->getGroupID($ena->curriculum_id, $teacher, $student);
                 $html  .= '<button class="btn btn-default btn-sm"><a href="index.php?action=objectives&course='.$ena->curriculum_id.'_'.$group_id.'&paginator=userPaginator&userPaginator_sel_id='.$student.'&certificate_template=-1&reset"><i class="fa fa-th"></i> Zum Lehrplan</a></button>'     ;
