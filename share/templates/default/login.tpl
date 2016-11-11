@@ -35,7 +35,7 @@
         {if isset($page_message)}
             <strong>{FORM::info('error', '',$page_message[0]['message'], '','col-sm-12 text-red')}</strong>
         {/if}
-        <form action="index.php?action=login" method="post">
+        <form id="form_login" action="index.php?action=login" method="post">
           <div class="form-group has-feedback {if isset($page_message)}has-error{/if}">
             <input type="text" class="form-control" id="username" name="username" {if isset($username)}value="{$username}"{/if} placeholder="Benutzername">
             <span class="glyphicon glyphicon-user form-control-feedback"></span>
@@ -45,11 +45,13 @@
             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
           </div>
           <div class="row">
-            <div class="col-xs-5">
-            </div><!-- /.col -->
-            <div class="col-xs-7">
+            
+            <div class="col-xs-7 pull-right">
               <input id="login" type="submit" name="login" class="btn btn-primary btn-block btn-flat visible" value="Anmelden" ></input>
               <input id="reset" type="submit" name="reset" class="btn btn-primary btn-block btn-flat hidden" value="Passwort vergessen" ></input>
+            </div><!-- /.col -->
+            <div class="col-xs-5 pull-left">{*!pull-left to not submit guest login on return, when entering regular user accounts*}
+                <input id="guest" type="submit" name="guest" class="btn btn-primary btn-block btn-flat visible" value="Gastzugang" ></input>
             </div><!-- /.col -->
           </div>
         </form>

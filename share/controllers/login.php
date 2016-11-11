@@ -21,11 +21,17 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-global $TEMPLATE, $PAGE; 
+global $CFG, $TEMPLATE, $PAGE; 
 
 $user       = new User();
 $message    = '';
-if(filter_input(INPUT_POST, 'reset', FILTER_UNSAFE_RAW)) {
+if(filter_input(INPUT_POST, 'guest', FILTER_UNSAFE_RAW) AND $CFG->guest_login == true) {
+    $user->username = $CFG->guest_usr;
+    $user->password = md5($CFG->guest_pwd);
+    if($user->checkLoginData()) {
+        login($user);
+    }
+} else if(filter_input(INPUT_POST, 'reset', FILTER_UNSAFE_RAW)) {
     $user->username = (filter_input(INPUT_POST,     'username', FILTER_UNSAFE_RAW));     
     $user->load('username', $user->username, true);
     /* write creator of this user to reset password. todo: write acutal teacher/admin*/
@@ -45,23 +51,7 @@ if(filter_input(INPUT_POST, 'reset', FILTER_UNSAFE_RAW)) {
     $TEMPLATE->assign('username', $user->username);                 // Benutzername bei falschem Passwort automatisch einsetzen.
     
     if($user->checkLoginData()) { 
-        if (isset($_SESSION['wantsurl'])){  
-            $PAGE->wantsurl = $_SESSION['wantsurl'];                // save wantsurl in $PAGE, session gets destroyed!
-        }
-        session_destroy();                                          // Verhindert, dass eine bestehende Session genutzt wird --> verursacht Probleme (token / uploadframe)
-        session_start();
-        
-        $_SESSION['username']   = $user->username;
-        $_SESSION['timein']     = time();
-        $user->load('username', $user->username, true);
-        
-        $user->setLastLogin();
-        
-        //Nutzungsbedingungen akzeptiert?
-        if ($user->checkTermsOfUse() == false){
-           header('Location:../share/request/getTermsofUse.php'); exit();
-        }
-        route($user); 
+         login($user);
     } else { 
         $PAGE->message[] = array('message' => 'Benutzername bzw. Passwort falsch.', 'icon' => 'fa-key text-warning');     
     }  
@@ -82,6 +72,27 @@ if(filter_input(INPUT_POST, 'reset', FILTER_UNSAFE_RAW)) {
 $TEMPLATE->assign('page_title',  'Login');
 $TEMPLATE->assign('breadcrumb',  array('Login' => 'index.php?action=login'));
 $TEMPLATE->assign('message',     $message);
+
+function login($user){
+    global $CFG, $PAGE;
+    if (isset($_SESSION['wantsurl'])){  
+            $PAGE->wantsurl = $_SESSION['wantsurl'];                // save wantsurl in $PAGE, session gets destroyed!
+    }
+    session_destroy();                                          // Verhindert, dass eine bestehende Session genutzt wird --> verursacht Probleme (token / uploadframe)
+    session_start();
+
+    $_SESSION['username']   = $user->username;
+    $_SESSION['timein']     = time();
+    $user->load('username', $user->username, true);
+
+    $user->setLastLogin();
+
+    //Nutzungsbedingungen akzeptiert?
+    if (($user->checkTermsOfUse() == false) OR ($user->username == $CFG->guest_usr)){
+       header('Location:../share/request/getTermsofUse.php'); exit();
+    }
+    route($user);
+}
 
 function route($usr){
     global $PAGE;
