@@ -203,7 +203,7 @@
             targetNode = getTargetElement(targetSelector),
             fallbackHTML = "",
             pdfOpenFragment = "",
-            fallbackHTML_default = "<p>This browser does not support inline PDFs. Please download the PDF to view it: <a href='[url]'>Download PDF</a></p>";
+            fallbackHTML_default = "<p>Ihr Browser kann keine PDFs anzeigen. Bitte laden Sie die PDF zum anschauen herunter: <a href='[url]' target='_blank'>PDF laden</a></p>";
 
         //If target element is specified but is not valid, exit without doing anything
         if(!targetNode){ return embedError("Target element cannot be determined"); }

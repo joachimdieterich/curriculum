@@ -24,21 +24,44 @@
 */
 $base_url               = dirname(__FILE__).'/../';
 include($base_url.'config.php');  //Läd Klassen, DB Zugriff und Funktio
-//include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
-
-echo '<head>
+echo'<html lang="de" class="no-js">
+     <head>
         <title>Zustimmungserklärung | '.$CFG->app_title.'</title>
         <meta charset="utf-8"> 
-       
-    </head>';
-
-echo '<link rel="stylesheet" href="'.$CFG->base_url.'/public/assets/stylesheets/all.css" media="all">
-      <div class="contentheader">Zustimmungserklärung</div>
-      <div id="popupcontent">';
-echo '<iframe src="'.$CFG->base_url.'public/assets/docs/curriculum_Terms_Of_Use_2015.pdf" style="width: 100%; height: 100%;">
-      <a href="'.$CFG->base_url.'public/assets/docs/curriculum_Terms_Of_Use_2015.pdf"</a>;
-      </iframe>';
-echo '<br><br><p class="center">Lesen Sie diese Zustimmungserklärung sorgfältig. Sie müssen erst zustimmen, um diese Webseite zutzen zu können. Stimmen Sie zu?</p><br>';
-echo '<form action="../../public/index.php?action=login" method="post"><input name="terms" type="hidden" value="terms" />'
-   . '<p class="center"><input type="submit" name="Submit" value="Nein"/> <input type="submit" name="Submit" value="Ja"/></p>'
-   . '</form></div></div>';
+        <link rel="stylesheet" href="../../public/assets/templates/AdminLTE-2.3.0/bootstrap/css/bootstrap.min.css"> 
+        <link rel="stylesheet" href="../../share/libs/font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="../../public/assets/stylesheets/google-fonts.css" >
+        <link rel="stylesheet" href="../../public/assets/templates/AdminLTE-2.3.0/dist/css/AdminLTE.min.css">
+        <link rel="stylesheet" href="../../public/assets/templates/AdminLTE-2.3.0/dist/css/skins/_all-skins.min.css">
+     </head>
+     <body class="hold-transition skin-blue sidebar-mini sidebar-collapse" data-spy="scroll" data-target=".modal-body">
+        <div class="wrapper">
+        <header class="main-header"></header> 
+            <div id="content-wrapper" class="content-wrapper">
+            <section class="content">
+            <section class="content-header"><h1>Zustimmungserklärung</h1></section>
+                <div class="row ">
+                    <div class="col-xs-12">
+                        <h4 >Lesen Sie diese Zustimmungserklärung sorgfältig. Sie müssen erst zustimmen, um diese Webseite nutzen zu können. Stimmen Sie zu?</h4>
+                        <form action="../../public/index.php?action=login" method="post"><input name="terms" type="hidden" value="terms" />
+                        <div class="btn-group" role="group" aria-label="...">
+                            <button type="submit" class="btn btn-default" name="Submit" value="Ja" >
+                                 <span class="fa fa-thumbs-o-up text-green"></span> Ja, ich stimme zu.
+                            </button>
+                            <button type="submit" class="btn btn-default" name="Submit" value="Nein" >
+                                <span class="fa fa-thumbs-o-down text-red"></span> Nein, ich stimme nicht zu.
+                            </button>
+                        </div><br><br>
+                        <div id="pdf_Terms" style="width:100%; height: 600px;"></div>
+                        <script src="../../public/assets/scripts/PDFObject-master/pdfobject.min.js"></script> 
+                        <script>PDFObject.embed("../../public/assets/docs/curriculum_Terms_Of_Use_2015.pdf", "#pdf_Terms");</script>
+                        </form>
+                        
+                    </div>
+                </div>
+             </div>
+           </section>
+           </div>
+        </div>
+     </body>
+     </html>';
