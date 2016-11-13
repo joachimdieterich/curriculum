@@ -2,6 +2,7 @@ curriculum BETA Version 0.9.3
 
 Version 0.9.3
 =================
+- Guest User
 - Self Assessment for students
 - Bootstrap Layout (AdminLTE 2)
 - Input-Forms von Views abgekoppelt (Input Forms werden jetzt immer in Modals aufgerufen)

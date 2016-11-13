@@ -236,7 +236,7 @@ if (!$files){
             if (($file_context-1) == 1){
                 $content   .=' active';
             }
-            $content   .='" id="f_context_'.($file_context-1).'">'.$m_boxes.'</div><!-- /.tab-pane -->';
+            $content   .='" id="f_context_'.($file_context-1).'">'.$m_boxes.'</div>';
             unset($m_boxes);
             $m_boxes = '';
         }

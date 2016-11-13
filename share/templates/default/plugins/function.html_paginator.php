@@ -58,7 +58,7 @@ function smarty_function_html_paginator($params, $template) {
     }
     
     if (!isset($values) AND !strpos($url, 'paginator_search')){ return 'Keine Datensätze vorhanden.'; } 
-    $html  = '<div class="'.$width.'">';
+    $html  = '<div class="row"><div class="'.$width.'">';
     if (null !== SmartyPaginate::_getSearch($id)){
         $html .= '<span class="pull-left"><a class="fa fa-close" href="'.removeUrlParameter($url, array ( 0 => 'paginator', 1 => 'p_reset')).'&paginator='.$id.'&p_reset=true"></a> Suche "'.SmartyPaginate::_getSearch($id).'"</span>';
     }
@@ -86,10 +86,10 @@ function smarty_function_html_paginator($params, $template) {
                             } 
                         }     
     $html .= '</ul>
-                      </div><br>'; 
+              </div><br>'; 
 
 /* Table */
-$html .= '<div class="row"><div class="clearfix"><br><table class="table table-bordered table-striped dataTable" role="grid" ';
+$html .= '<div class="clearfix"><br><table class="table table-bordered table-striped dataTable" role="grid" ';
     if (isset($table_id['id'])){        
         $html .= 'id="'.$table_id['id'].'"';
     } 
@@ -198,7 +198,7 @@ $html .= '<div class="row"><div class="clearfix"><br><table class="table table-b
         $html .= '</tr>';
     }       
     
-    $html .= '</table></div></div>';
+    $html .= '</table></div>';
     $html .= '<div class="btn-group pull-right" role="group" aria-label="...">'
         .smarty_function_paginate_first(array('id' => $id), $template, true).' '
         .smarty_function_paginate_prev(array('id' => $id), $template, true).' '
@@ -231,7 +231,6 @@ $html .= '<div class="row"><div class="clearfix"><br><table class="table table-b
     }
     $html .= '</span>';
     /* Hack: es soll user*/
-    $html .=  '<input class="invisible" type="checkbox" name="id[]" value="none" checked /></div>';
-            //. '<!--/div-->';        // scheint zu viel zu sein
+    $html .=  '<input class="invisible" type="checkbox" name="id[]" value="none" checked /></div></div>';
     return $html;
 }
