@@ -128,7 +128,7 @@ $_html_result .= '<div class="row"><div class="clearfix"><br><ul class="timeline
                                 </li>';
     }       
     
-    $_html_result .= '<li><i class="fa fa-clock-o bg-gray" onclick="formloader(\'courseBook\',\'new\');"></i></li>'
+    $_html_result .= '<li><i class="fa fa-calendar-plus-o bg-gray" onclick="formloader(\'courseBook\',\'new\');"></i></li>'
                   .  '</ul><!-- ./timeline --></div></div>';
     $_html_result .= '<div class="btn-group pull-right" role="group" aria-label="...">'
         .smarty_function_paginate_first(array('id' => $id), $template, true).' '
