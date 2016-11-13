@@ -30,7 +30,7 @@
                         <div class="form-horizontal col-xs-12 col-sm-12 col-md-5 col-lg-5">
                                     <h4>Lerngruppe</h4>
                                     <p>Markierte Lerngruppe(n)in Lehrplan ein- und ausschreiben</p>     
-                        {Form::input_select_multiple(['id' => 'curriculum', 'label' => 'Lehrplan', 'select_data' => $curriculum_list, 'select_label' => 'curriculum, description', 'select_value' => 'id', 'input' => null, 'error' => null, 'limiter' => ' | ' ])}
+                        {Form::input_select_multiple(['id' => 'curriculum', 'label' => 'Lehrplan', 'select_data' => $curriculum_list, 'select_label' => 'curriculum', 'select_value' => 'id', 'input' => null, 'error' => null, 'limiter' => ' | ' ])}
                         <div class="btn-group" role="group" aria-label="...">
                             {if checkCapabilities('groups:enrol', $my_role_id, false)}
                                 <button type="submit" class="btn btn-default" onclick="document.getElementById('enrol').click();"><a href="#">
