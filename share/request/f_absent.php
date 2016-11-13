@@ -55,7 +55,7 @@ if (isset($_GET['func'])){
                             if (isset($reference_id)){
                                 $cb       = new CourseBook();
                                 $cb->load('cb_id', $reference_id);
-                                $members  = $course->members($cb->course_id);
+                                $members  = $course->members('id',$cb->course_id);
                             }
             break;
         case "edit":        checkCapabilities('absent:update', $USER->role_id);
@@ -97,7 +97,6 @@ $content .= Form::input_text('username', 'Benutzername', $user, $error,'','text'
 }
 $content .= Form::input_text('reason', 'Fehlgrund', $reason, $error, 'z. B. Krankmeldung');
 if (!isset($absent_id)){
-    error_log(json_encode($members));
 $content .= Form::input_select_multiple(array('id' => 'user_list', 'label' => 'Kursmitglieder', 'select_data' => $members, 'select_label' => 'firstname, lastname', 'select_value' => 'id', 'input' => $user_list, 'error' => $error));
 }
 $content .= Form::input_checkbox('status', 'Entschuldigt', $status, $error);

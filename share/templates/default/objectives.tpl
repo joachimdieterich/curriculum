@@ -71,7 +71,9 @@
                         {elseif $showuser eq true}Keine eingeschriebenen Benutzer{/if}
                     </div>
                     <div class="tab-pane" id="f_coursebook">
-                        {Render::courseBook($coursebook)}
+                        {if isset($coursebook)} 
+                            {Render::courseBook($coursebook)}
+                        {/if}
                     </div>
                 </div>
             </div>
@@ -127,6 +129,7 @@
                                                     {$ena->accomplished_users} von {$ena->enroled_users} ({$ena->accomplished_percent}%)
                                                 {/if}
                                                 <span class="fa fa-bar-chart-o pull-right invert box-sm-icon text-primary" onclick='formloader("compare","group", {$ena->id},{["group_id"=>$sel_group_id]|@json_encode nofilter});'></span>
+                                                <span class="fa fa-files-o pull-right invert box-sm-icon text-primary margin-r-5" onclick='formloader("material","solution", {$ena->id},{["group_id"=>$sel_group_id,"curriculum_id" => $sel_curriculum]|@json_encode nofilter});'></span>
                                             </div>
                                             <div class="panel-body boxwrap" onclick="setAccomplishedObjectives({$my_id}, '{implode(',',$selected_user_id)}', {$ena->id}, {$sel_group_id});">
                                                 <div class="boxscroll">

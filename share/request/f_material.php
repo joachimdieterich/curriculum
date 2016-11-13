@@ -30,16 +30,24 @@ $USER       = $_SESSION['USER'];
 $edit       = checkCapabilities('file:editMaterial',    $USER->role_id, false); // DELETE / edit anzeigen
 $header     = 'Material';
 
-$file       = new File(); 
-switch (filter_input(INPUT_GET, 'func', FILTER_UNSAFE_RAW)) {
-    case 'ena': $files  = $file->getFiles('enabling_objective', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => true));
+$file       = new File();
+$func       = filter_input(INPUT_GET, 'func', FILTER_UNSAFE_RAW);
+switch ($func) {
+    case 'ena':         $files  = $file->getFiles('enabling_objective', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => true));
         break;
-    case 'ter': $files  = $file->getFiles('terminal_objective', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => true));
+    case 'ter':         $files  = $file->getFiles('terminal_objective', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => true));
         break;
-    case 'id' : $files  = $file->getFiles('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => false, 'user_id' => filter_input(INPUT_GET, 'user_id', FILTER_VALIDATE_INT)));
-                $header = 'Lösungen / Dateien des Users';
-                $func   = 'solution';
-                $edit   = false;    //don't show delete button in solution window
+    case 'id' :         $files  = $file->getFiles('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => false, 'user_id' => filter_input(INPUT_GET, 'user_id', FILTER_VALIDATE_INT)));
+                        $header = 'Lösungen / Dateien des Users';
+                        $edit   = false;    //don't show delete button in solution window
+        break;
+    case 'solution':    $header  = 'Eingereichte Lösungen';
+                        $course  = new Course();
+                        $course->curriculum_id = filter_input(INPUT_GET, 'curriculum_id', FILTER_VALIDATE_INT);
+                        $members = $course->members('group_id', filter_input(INPUT_GET, 'group_id', FILTER_VALIDATE_INT));
+                        $user_ids = implode(", ", array_column($members, 'id')); //require php 5.5
+                        $files   = $file->getSolutions('objective', $user_ids, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));  // load solutions
+                        $edit    = false;    //don't show delete button in solution window
         break;
     default:
         break;
@@ -53,7 +61,6 @@ $m_boxes    = '';
 if (!$files){
     $content .= 'Es gibt leider kein Material zum gewählten Lernziel.';
 } else {
-    
     /* Tab header */
     $file_context_count[1] = 0; // counter for file_context 1
     $file_context_count[2] = 0; // counter for file_context 2
@@ -64,12 +71,21 @@ if (!$files){
         $file_context_count[$files[$i]->file_context]++;
     }
     $content .= '<div class="nav-tabs-custom">';
+    $active   = array( '1' => '', '2' => '', '3' => '','4' => '','5' => '');
+    foreach ($file_context_count as $key => $value) { // mark first tab with files as "active"
+        if ($value > 0){
+            $active[$key] = 'active';
+            break;
+        } else {
+            $active[$key] = '';
+        }
+    }
     $content .= '<ul class="nav nav-tabs">
-                 <li class="active"><a href="#f_context_1" data-toggle="tab" aria-expanded="false" >Global <span class="label label-primary">'.$file_context_count[1].'</span></a></li>
-                 <li class=""><a href="#f_context_2" data-toggle="tab" aria-expanded="false" >Institution <span class="label label-primary">'.$file_context_count[2].'</span></a></li>
-                 <li class=""><a href="#f_context_3" data-toggle="tab" aria-expanded="false" >Gruppe <span class="label label-primary">'.$file_context_count[3].'</span></a></li>
-                 <li class=""><a href="#f_context_4" data-toggle="tab" aria-expanded="false" >Persönlich <span class="label label-primary">'.$file_context_count[4].'</span></a></li>
-                 <li class=""><a href="#f_context_5" data-toggle="tab" aria-expanded="false" >Externe Medien <span class="label label-primary">'.$file_context_count[5].'</span></a></li>';
+                 <li class="'.$active[1].'"><a href="#f_context_1" data-toggle="tab" >Global <span class="label label-primary">'.$file_context_count[1].'</span></a></li>
+                 <li class="'.$active[2].'"><a href="#f_context_2" data-toggle="tab" >Institution <span class="label label-primary">'.$file_context_count[2].'</span></a></li>
+                 <li class="'.$active[3].'"><a href="#f_context_3" data-toggle="tab" >Gruppe <span class="label label-primary">'.$file_context_count[3].'</span></a></li>
+                 <li class="'.$active[4].'"><a href="#f_context_4" data-toggle="tab" >Persönlich <span class="label label-primary">'.$file_context_count[4].'</span></a></li>
+                 <li class="'.$active[5].'"><a href="#f_context_5" data-toggle="tab" >Externe Medien <span class="label label-primary">'.$file_context_count[5].'</span></a></li>';
     $content .='</ul>';
     /* tab content*/
     $content .='<div class="tab-content">';
@@ -123,7 +139,12 @@ if (!$files){
         /* . Icon */
 
         if ($files[$i]->type != 'external'){ $m_onclick      = 'updateFileHits('.$files[$i]->id.')'; }
-        $m_title        = $files[$i]->title;
+        
+        if ($func == 'solution'){
+            $m_title = $files[$i]->author.': '.$m_title;
+        } else {
+            $m_title        = $files[$i]->title;
+        }
         $m_description  = $files[$i]->description;
         
         switch ($files[$i]->type) {
@@ -233,7 +254,7 @@ if (!$files){
         
         if ($close == true AND $m_boxes != ''){ //close file_context box // only generate tab-pane when there are files (m_boxes)
             $content   .='<div class="tab-pane';
-            if (($file_context-1) == 1){
+            if ($active[$file_context-1] == 'active' ){
                 $content   .=' active';
             }
             $content   .='" id="f_context_'.($file_context-1).'">'.$m_boxes.'</div>';

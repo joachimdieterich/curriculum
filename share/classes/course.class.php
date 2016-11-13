@@ -205,15 +205,32 @@ class Course {
         }
    }
    
-   public function members($course_id){
+   public function members($dependency = 'id', $id){
         $user = new User();
-        $db = DB::prepare('SELECT ge.user_id FROM groups_enrolments AS ge, curriculum_enrolments AS ce
-                        WHERE ce.id = ? AND ce.group_id = ge.group_id'); 
-        $db->execute(array($course_id));    
-        while($result = $db->fetchObject()) {
-            $user->load('id', $result->user_id);
-            $users[] = clone $user;
+        switch ($dependency) {
+            case 'id':          $db = DB::prepare('SELECT ge.user_id FROM groups_enrolments AS ge, curriculum_enrolments AS ce
+                                            WHERE ce.id = ? AND ce.group_id = ge.group_id'); 
+                                $db->execute(array($id));  
+                                while($result = $db->fetchObject()) {
+                                    $user->load('id', $result->user_id);
+                                    $users[] = clone $user;
+                                }
+                break;
+            case 'group_id':  $db = DB::prepare('SELECT ge.user_id FROM groups_enrolments AS ge, curriculum_enrolments AS ce
+                                            WHERE ce.group_id = ge.group_id 
+                                            AND ce.group_id = ?
+                                            AND ce.curriculum_id = ?'); 
+                                $db->execute(array($id, $this->curriculum_id));  
+                                while($result = $db->fetchObject()) {
+                                    $users[]['id'] = $result->user_id;
+                                }
+                break;
+
+            default:
+                break;
         }
+          
+        
        return $users;
    }
    

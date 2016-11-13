@@ -377,30 +377,31 @@ class File {
         global $USER;
         checkCapabilities('file:getSolutions', $USER->role_id, false);
         switch ($dependency) {
-            case 'course':  if (is_array($user_ids)){
-                                $user_ids = implode(", ", $user_ids);
-                            }
-                            $db = DB::prepare('SELECT fl.*, us.firstname, us.lastname FROM files AS fl, users AS us
-                                WHERE fl.cur_id = ? AND fl.creator_id IN ('.$user_ids.')
-                                AND fl.creator_id = us.id AND fl.context_id = 4 ORDER BY us.lastname');
-                            $db->execute(array($reference_id));  
-                break;
-            case 'objective':  if (is_array($user_ids)){
-                                $user_ids = implode(", ", $user_ids);
-                            }
-                            $db = DB::prepare('SELECT fl.*, us.firstname, us.lastname FROM files AS fl, users AS us
-                                WHERE fl.ena_id = ? AND fl.creator_id IN ('.$user_ids.')
-                                AND fl.creator_id = us.id AND fl.context_id = 4 ORDER BY us.lastname');
-                            $db->execute(array($reference_id));  
-                break;
+            case 'course':      if (is_array($user_ids)){
+                                    $user_ids = implode(", ", $user_ids);
+                                }
 
-            case 'artefacts':  if (is_array($user_ids)){
-                                $user_ids = implode(", ", $user_ids);
-                            }
-                            $db = DB::prepare('SELECT fl.*, us.firstname, us.lastname FROM files AS fl, users AS us
-                                WHERE fl.creator_id IN ('.$user_ids.')
-                                AND fl.creator_id = us.id');
-                            $db->execute();  
+                                $db = DB::prepare('SELECT fl.*, us.firstname, us.lastname FROM files AS fl, users AS us
+                                    WHERE fl.cur_id = ? AND fl.creator_id IN ('.$user_ids.')
+                                    AND fl.creator_id = us.id AND fl.context_id = 4 ORDER BY us.lastname');
+                                $db->execute(array($reference_id));  
+                break;
+            case 'objective':   if (is_array($user_ids)){
+                                   $user_ids = implode(", ", $user_ids);
+                                }
+                                $db = DB::prepare('SELECT fl.*, us.firstname, us.lastname FROM files AS fl, users AS us
+                                    WHERE fl.ena_id = ? AND fl.creator_id IN ('.$user_ids.')
+                                    AND fl.creator_id = us.id AND fl.context_id = 4 ORDER BY us.lastname');
+                                $db->execute(array($reference_id));  
+                    break;
+
+            case 'artefacts':   if (is_array($user_ids)){
+                                    $user_ids = implode(", ", $user_ids);
+                                }
+                                $db = DB::prepare('SELECT fl.*, us.firstname, us.lastname FROM files AS fl, users AS us
+                                    WHERE fl.creator_id IN ('.$user_ids.')
+                                    AND fl.creator_id = us.id');
+                                $db->execute();  
                 break;
 
             default:        break;
@@ -419,6 +420,7 @@ class File {
                 $this->path                  = $result->path;
                 $this->type                  = $result->type;
                 $this->context_id            = $result->context_id;
+                $this->file_context          = $result->file_context;
                 $this->curriculum_id         = $result->cur_id;
                 $this->terminal_objective_id = $result->ter_id;
                 $this->enabling_objective_id = $result->ena_id;
