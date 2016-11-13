@@ -703,7 +703,7 @@ class Render {
                         <i class="fa fa-check bg-green"></i>';
             //$r      .= element('coursebook', $cb);
             
-            $r      .= '<div class="timeline-item">
+            $r      .= '<div class="timeline-item " style="border-color: #f4f4f4;border-style: solid;border-width: 1px;">
                           <span class="time" onclick="del(\'courseBook\','.$cb->id.');"><i class="fa fa-trash-o"></i></span>
                           <span class="time" onclick="processor(\'print\',\'courseBook\','.$cb->id.');"><i class="fa fa-print"></i></span>
                           <span class="time" onclick="formloader(\'courseBook\',\'edit\','.$cb->id.');"><i class="fa fa-edit"></i></span>
@@ -727,7 +727,7 @@ class Render {
             $r      .= ' </div></li>';
         }
         $r      .= '    <li>
-                            <i class="fa fa-clock-o bg-gray" onclick="formloader(\'courseBook\',\'new\');"></i>
+                            <i class="fa fa-calendar-plus-o bg-gray" onclick="formloader(\'courseBook\',\'new\');"></i>
                         </li>
                     </ul><!-- timleline -->
                     </div></div>';
