@@ -63,7 +63,8 @@ switch ($func) {
 }
 
 
-$html = Form::modal(array('title'   => 'Beschreibung',
+$html = Form::modal(array('target' => 'null',
+                          'title'   => 'Beschreibung',
                           'content' => $content));
 
 echo json_encode(array('html'=>$html));

@@ -87,7 +87,8 @@
                 <div class="box-header ">
                     {if isset($user->avatar)}
                         {*if $user->avatar_id neq 0*}
-                        <img src="{$access_file}{$user->avatar}" style="height:40px;"class="user-image pull-left" alt="User Image">
+                        {Render::split_button($cur_content)}
+                        <img src="{$access_file}{$user->avatar}" style="height:40px;"class="user-image pull-left margin-r-5" alt="User Image">
                         {*/if*}
                     {/if}
                     <p class="pull-right">Farb-Legende:

@@ -36,7 +36,7 @@ $result                 = $enabling_objective->getAccomplishedUsers(filter_input
 $html ='<div class="modal-dialog" style="overflow-y: initial !important;">
           <div class="modal-content">
             <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closePopup()"><span aria-hidden="true">×</span></button>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closePopup(\'null\')"><span aria-hidden="true">×</span></button>
               <h4 class="modal-title">Hilfe </h4>
             </div>
             <div class="modal-body" style="max-height: 500px; overflow-y: auto;">';

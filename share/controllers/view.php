@@ -107,3 +107,6 @@ $box_bg = array('0' => 'bg-white',
                 '33' => 'bg-white',
                 );
 $TEMPLATE->assign('box_bg',$box_bg);
+
+$content = new Content();
+$TEMPLATE->assign('cur_content', array('label'=>'Hinweise zum Lehrplan', 'entrys'=> $content->get('curriculum', $enabling_objectives->curriculum_id )));

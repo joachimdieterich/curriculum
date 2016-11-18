@@ -901,7 +901,25 @@ class Render {
                     </table>
                 </div>';
         return $html;
+    }
+    
+    public static function split_button($params){
+        $label  = 'Auswahl';
         
+        foreach($params as $key => $val) {
+            $$key = $val;
+        }
+        if (count($entrys) > 0){ // only show if entrys exists
+            $html   =  '<div class="btn-group">
+                            <button type="button" class="btn btn-default btn-flat dropdown-toggle" data-toggle="dropdown">'.$label.' </button>
+                            <ul class="dropdown-menu" role="menu">';
+                            foreach($entrys as $key => $val) {
+                                $html .= '<li><a onclick="formloader(\'content\', \'show\','.$val->id.');">'.$val->title.'</span></a></li>';
+                            }
+            $html  .=      '</ul>
+                        </div>';
+            return $html;
+        }
     }
     
     public static function box_widget($params){

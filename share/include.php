@@ -31,6 +31,7 @@ include('classes/block.class.php');
 include('classes/capability.class.php');
 include('classes/certificate.class.php');
 include('classes/config.class.php');
+include('classes/content.class.php');
 include('classes/context.class.php');
 include('classes/country.class.php');
 include('classes/course.class.php'); 

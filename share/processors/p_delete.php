@@ -45,6 +45,7 @@ switch ($db) {
     case "terminalObjectives":  $t = new TerminalObjective();   break;
     case "task":                $t = new Task();                break;
     case "courseBook":          $t = new CourseBook();          break;
+    case "content":             $t = new Content();          break;
     default: break;
 }
 

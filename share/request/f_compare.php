@@ -113,7 +113,8 @@ if (isset($ena->enabling_objective)){
         $content .= '</ul></div></div></div>'; 
     }
 }
-$html = Form::modal(array('sub_modal_id' => 'preview',
+$html = Form::modal(array('target' => 'null',
+                          'sub_modal_id' => 'preview',
                           'title'   => 'Lernstand der Gruppe',
                           'content' => $content));
 

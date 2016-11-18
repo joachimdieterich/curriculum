@@ -33,6 +33,12 @@
                         <button type="button" class="btn btn-default" onclick="formloader('description','curriculum',{$course[0]->curriculum_id});">
                             <i class="fa fa-info"></i>
                         </button>
+                        {Render::split_button($cur_content)}
+                        {if isset($showaddObjectives)}
+                            <button type="button" class="btn btn-default" onclick='formloader("content", "new", null,{["context_id"=>"2", "reference_id"=>$course[0]->curriculum_id]|@json_encode nofilter});'>
+                                <i class="fa fa-plus"></i>
+                            </button>
+                        {/if}
                     </div>
                     {if isset($niveaus)}
                         <div class="btn-group pull-left">
@@ -81,7 +87,7 @@
                                         {/if}
 
                                         {if checkCapabilities('file:loadMaterial', $my_role_id, false) AND $ter->files neq '0'}
-                                            <span class="fa fa-briefcase box-sm-icon text-primary" data-toggle="tooltip" title="{$ter->files} Materialien verfügbar" onclick="formloader('material','ter',{$ter->id})"></span> {*<span class="badge label-primary" style="margin-top: -3px;font-size: 8px;line-height: .8"  data-toggle="tooltip" title="Material">{$ter->files}</span>*}
+                                            <span class="fa fa-briefcase box-sm-icon text-primary" style="cursor:pointer;" data-toggle="tooltip" title="{$ter->files} Materialien verfügbar" onclick="formloader('material','ter',{$ter->id})"></span> {*<span class="badge label-primary" style="margin-top: -3px;font-size: 8px;line-height: .8"  data-toggle="tooltip" title="Material">{$ter->files}</span>*}
                                         {else}
                                             <span class="fa fa-briefcase box-sm-icon deactivate"></span>
                                         {/if}
@@ -162,7 +168,7 @@
                                             {/if}  
                                             <span class="pull-left" style="margin-right:10px;">
                                             {if checkCapabilities('file:loadMaterial', $my_role_id, false) AND $ena->files neq '0'}
-                                                <i class="fa fa-briefcase box-sm-icon text-primary" data-toggle="tooltip" title="{$ena->files} Materialien verfügbar" onclick="formloader('material','ena', {$ena->id});"></i> {*<span class="badge label-primary" style="margin-top: -3px;font-size: 8px;line-height: .8"  data-toggle="tooltip" title="Material">{$ena->files}</span>*}
+                                                <i class="fa fa-briefcase box-sm-icon text-primary " style="cursor:pointer;" data-toggle="tooltip" title="{$ena->files} Materialien verfügbar" onclick="formloader('material','ena', {$ena->id});"></i> {*<span class="badge label-primary" style="margin-top: -3px;font-size: 8px;line-height: .8"  data-toggle="tooltip" title="Material">{$ena->files}</span>*}
                                             {else}
                                                 <span class="fa fa-briefcase box-sm-icon deactivate"></span>
                                             {/if} 

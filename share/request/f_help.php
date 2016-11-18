@@ -121,4 +121,4 @@ $script = '<script id=\'modal_script\'>
             document.getElementById("icon").src = "'.$CFG->access_id_url.'"+document.getElementById("file_id").value;
         });
         </script>';
-echo json_encode(array('html'=>$html, 'script' => $script));
+echo json_encode(array('target' => 'null', 'html'=>$html, 'script' => $script));

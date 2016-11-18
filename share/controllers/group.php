@@ -31,46 +31,6 @@ $selectedCurriculum = (isset($_GET['curriculum']) && $_GET['curriculum'] != '' ?
 $TEMPLATE->assign('selectedCurriculum', $selectedCurriculum);
 $curriculum = new Curriculum();
 
-/*if (isset($_GET['function'])) {
-     switch ($_GET['function']) {       
-        case "expel": 
-        case "showCurriculum": 
-                        $g_id                 = filter_input(INPUT_GET, 'group_id',     FILTER_VALIDATE_INT);
-                        if ($_GET['function'] == "expel"){ // expel group with button
-                            $group            = new Group();
-                            $group->id        = $g_id;
-                            $group->load();
-                            $curriculum->id   = filter_input(INPUT_GET, 'curriculumID', FILTER_VALIDATE_INT);
-                            if ($group->expel($USER->id, $curriculum->id)) {
-                                $curriculum->load();
-                                $PAGE->message[] = array('message' => 'Lerngruppe <strong>'.$group->group.'</strong> wurde erfolgreich aus <strong>'.$curriculum->curriculum.'</strong> ausgeschrieben.', 'icon' => 'fa-group text-success');
-                                
-                            }
-                        }
-                        
-                        $TEMPLATE->assign('showenroledCurriculum', true); 
-                        $p_options = array('delete' => array('icon'      => 'fa fa-minus',
-                                                             'href'      => "index.php?action=group&function=expel&curriculumID=__id__&group_id=".$g_id, 
-                                                            'capability' => checkCapabilities('groups:expel', $USER->role_id, false),
-                                                            'tooltip'    => 'ausschreiben'));
-                        $p_config  = array('id'         => 'checkbox',
-                                           'curriculum'  => 'Lehrplan', 
-                                           'description' => 'Beschreibung', 
-                                           'subject'     => 'Fach',
-                                           'grade'       => 'Klassenstufe',
-                                           'schooltype'  => 'Schultyp',
-                                           'state'       => 'Bundesland/Region',
-                                           'de'          => 'Land',
-                                           'p_options'   => $p_options);
-                        setPaginator('curriculumP', $TEMPLATE, $curriculum->getCurricula('group', $g_id), 'cu_val', 'index.php?action=group&function=showCurriculum&group_id='.$g_id, $p_config); //set Paginator    
-                        
-                        $TEMPLATE->assign('selected_group_id', $g_id);
-            break;        
-
-        default: break;
-     }
-}*/
-
 if($_POST ){ 
     $group = new Group();
     switch ($_POST) {
