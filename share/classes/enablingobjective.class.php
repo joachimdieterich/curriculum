@@ -304,7 +304,7 @@ class EnablingObjective {
                                                         AND gr.group_id = ?
                                                         AND gr.group_id = gp.id
                                                         AND gr.status = 1
-                                                        AND ua.status_id IN (1,2)
+                                                        AND ua.status_id IN ("1","01","x1","11","21","31","2","01","x2","22","32")
                                                         AND gp.institution_id = ie.institution_id
                                                         AND ie.role_id = rc.role_id
                                                         AND ie.status = 1
