@@ -571,7 +571,7 @@ class EnablingObjective {
     $ena_count = $db->fetchColumn();
     
     $db = DB::prepare('SELECT COUNT(en.id) FROM enablingObjectives AS en, user_accomplished AS ua 
-        WHERE en.curriculum_id = ? AND ua.user_id = ? AND ua.status_id IN (1, 2) AND ua.reference_id = en.id AND ua.context_id'); //objective counts if status = 1 or 2
+        WHERE en.curriculum_id = ? AND ua.user_id = ? AND ua.status_id IN ("1","01","x1","11","21","31","2","01","x2","22","32") AND ua.reference_id = en.id AND ua.context_id'); //objective counts if status = 1 or 2
     $db->execute(array($cur,$id));
     $ena_acc_count =  $db->fetchColumn();
     return round($ena_acc_count/$ena_count*100,2); 
