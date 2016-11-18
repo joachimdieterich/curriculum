@@ -34,7 +34,6 @@ $users = explode(",", filter_input(INPUT_GET, 'userID'));
 
 foreach ($users as $value) {
     if (filter_input(INPUT_GET, 'creatorID', FILTER_VALIDATE_INT) == $value){
-        //error_log(filter_input(INPUT_GET, 'statusID', FILTER_SANITIZE_STRING));
         $enabling_objectives->setAccomplishedStatus('student', $value, filter_input(INPUT_GET, 'creatorID', FILTER_VALIDATE_INT), filter_input(INPUT_GET, 'statusID', FILTER_SANITIZE_STRING));         
     } else {
         $enabling_objectives->setAccomplishedStatus('teacher', $value, filter_input(INPUT_GET, 'creatorID', FILTER_VALIDATE_INT), filter_input(INPUT_GET, 'statusID', FILTER_SANITIZE_STRING));         
