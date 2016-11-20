@@ -85,7 +85,6 @@ $content .= Form::input_select('repeat_interval', 'Ziel wiederholen?',$intervals
 $content .= '</form>';
 $footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_enabling_objective\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';
 
-
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
                               'f_content' => $footer));  
