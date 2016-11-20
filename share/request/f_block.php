@@ -89,7 +89,7 @@ if (isset($id)){
 $content .= Form::input_select('block_id', 'Blocktyp', $types, 'block', 'id', $block_id , $error, 'formloader(\'block\',\'new\', this.value);');
 
 $content .= Form::input_text('name', 'Titel', $name, $error,'z.B. Links');
-//get current type to render correct form elements
+/*get current type to render correct form elements*/
 foreach($types as $typ) {
     if ($block_id == $typ->id) {
         $t = $typ;
@@ -105,28 +105,20 @@ if ($t->block == 'html'){
 $c            = new stdClass();
 $c->id        = 11;
 $c->context   = 'Dashboard';
-$content .= Form::input_select('context_id', 'Bereich', array($c), 'context', 'id', $context_id , $error);
+$content     .= Form::input_select('context_id', 'Bereich', array($c), 'context', 'id', $context_id , $error);
 $r            = new stdClass();
 $r->id        = null;
-$r->region   = 'Übersicht';
-$content .= Form::input_select('region', 'Position', array($r), 'region', 'id', $region , $error);
-// sortierung neues input element generiern
+$r->region    = 'Übersicht';
+$content     .= Form::input_select('region', 'Position', array($r), 'region', 'id', $region , $error);
+// Sortierung neues input element generiern
 
+$roles        = new Roles();
+$content     .= Form::input_select('role_id', 'Anzeigen für:', $roles->get(), 'role', 'id', $block_id , $error);
+$content     .= '</div></form>';
+$f_content    = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_block\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button> ';
 
-$roles    = new Roles();
-$content .= Form::input_select('role_id', 'Anzeigen für:', $roles->get(), 'role', 'id', $block_id , $error);
-
-
-$content .= '</div></form>';
-$f_content = '';
-if (isset($edit)){
-    $f_content .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_block\').submit();"> '.$header.'</button>'; 
-} 
-if (isset($add)){
-    $f_content .= '<button id="add" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_block\').submit();"> '.$header.'</button> ';
-}    
-$html     = Form::modal(array('title'     => $header,
-                              'content'   => $content, 
-                              'f_content' => $f_content));
+$html         = Form::modal(array('title'     => $header,
+                                  'content'   => $content, 
+                                  'f_content' => $f_content));
 
 echo json_encode(array('html'=>$html));
