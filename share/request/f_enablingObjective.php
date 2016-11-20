@@ -48,7 +48,7 @@ switch ($func) {
                     if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
                         $reference                = $CFG->repository->getReference('enabling_objective', $ena_objective->id);
                     }
-                    $header                       = 'Ziel bearbeiten';           
+                    $header                       = 'Ziel aktualisieren';           
         break;
     case 'new':     $ter_objective                = new TerminalObjective();
                     $ter_objective->id            = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT); // new case: id == ter_id
@@ -72,7 +72,6 @@ if (isset($_SESSION['FORM'])){
 }
 
 $content = '<form id="form_enabling_objective" method="post" action="../share/processors/fp_enablingObjective.php">
- <div class="form-horizontal">
 <input type="hidden" name="curriculum_id" id="curriculum_id" value="'.$curriculum_id.'"/>
 <input type="hidden" name="terminal_objective_id" id="terminal_objective_id" value="'.$terminal_objective_id.'"/> 
 <input type="hidden" name="enabling_objective_id" id="enabling_objective_id" value="'.$enabling_objective_id.'"/> 
@@ -83,16 +82,11 @@ $content .= Form::input_text('reference', 'Externe Referenz', $reference, $error
 
 $intervals = new Interval();
 $content .= Form::input_select('repeat_interval', 'Ziel wiederholen?',$intervals->getIntervals(), 'description', 'repeat_interval', $repeat_interval, $error );
-$content .= '</div></form>';
+$content .= '</form>';
+$footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_enabling_objective\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';
 
-$f_content = '';
-if ($func == 'edit'){ 
-    $f_content .= '<button type="submit" class="btn btn-primary fa fa-check-circle-o pull-right" onclick="document.getElementById(\'form_enabling_objective\').submit();"> Ziel aktualisieren</button>';
-} else {
-    $f_content .= '<button type="submit" class="btn btn-primary fa fa-plus pull-right" onclick="document.getElementById(\'form_enabling_objective\').submit();"> Ziel hinzufügen</button>';
-}
 
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
-                              'f_content' => $f_content));  
+                              'f_content' => $footer));  
 echo json_encode(array('html'=> $html));
