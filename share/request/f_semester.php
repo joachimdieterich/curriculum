@@ -62,23 +62,17 @@ if (isset($_SESSION['FORM'])){
 }
 
 $content = '<form id="form_semester" method="post" action="../share/processors/fp_semester.php">
- <div class="form-horizontal">
 <input type="hidden" name="semester_id" id="semester_id" value="'.$semester_id.'"/>
 <input type="hidden" name="func" id="func" value="'.$func.'"/>'; 
 $content .= Form::input_text('semester', 'Lernzeitraum', $semester, $error, 'z. B. Schuljahr 2015/16');
 $content .= Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung');
 $content .= Form::input_date(array('id'=>'timerange', 'label' => 'Dauer' , 'time' => $timerange, 'error' => $error, 'placeholder' => '', $type = 'date'));
 $content .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'institution_id', $institution_id , $error);
-$f_content = '';
-if ($func == 'edit'){ 
-    $f_content .= '<button type="submit" class="btn btn-primary fa fa-check-circle-o pull-right" onclick="document.getElementById(\'form_semester\').submit();"> '.$header.'</button>';
-} else {
-    $f_content .= '<button type="submit" class="btn btn-primary fa fa-plus pull-right" onclick="document.getElementById(\'form_semester\').submit();"> '.$header.'</button>';
-}
-$content .= '</div></form>';
+$content .= '</form>';
+$footer   = '<button type="submit" class="btn btn-primary fa fa-plus pull-right" onclick="document.getElementById(\'form_semester\').submit();"> '.$header.'</button>';
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
-                              'f_content' => $f_content));  
+                              'f_content' => $footer));  
 
 $script = "<!-- daterangepicker -->
         <script id='modal_script'>

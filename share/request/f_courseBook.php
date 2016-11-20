@@ -26,35 +26,35 @@ $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $CFG, $USER, $COURSE;
-$USER           = $_SESSION['USER'];
-$COURSE         = $_SESSION['COURSE'];
+$USER          = $_SESSION['USER'];
+$COURSE        = $_SESSION['COURSE'];
 
-$cur               = new Curriculum();
+$cur           = new Curriculum();
 /*Variablen anlegen -> vermeidet unnötige if-Abfragen im Formular*/
-$id                = null;
-$topic             = null; 
-$description       = null;
-$creation_time     = null;
-$creator_id        = null;
+$id            = null;
+$topic         = null; 
+$description   = null;
+$creation_time = null;
+$creator_id    = null;
 if (isset($COURSE->id)){
-$course_id         = $COURSE->id;
+    $course_id = $COURSE->id;
 }
-$timerange          = null;
+$timerange     = null;
 
 /* user_list */
-$teacher_list      = null;
-$present_list      = null;
-$absent_list       = null;
+$teacher_list  = null;
+$present_list  = null;
+$absent_list   = null;
 
 /* task */
-$task_id           = null; 
-$task              = null; 
+$task_id       = null; 
+$task          = null; 
 
-$func                   = $_GET['func'];
+$func          = $_GET['func'];
 
-$error                  =   null;
-$object = file_get_contents("php://input");
-$data = json_decode($object, true);
+$error         =   null;
+$object        = file_get_contents("php://input");
+$data          = json_decode($object, true);
 if (is_array($data)) {
     foreach ($data as $key => $value){
         $$key = $value;
@@ -64,13 +64,10 @@ if (is_array($data)) {
 if (isset($_GET['func'])){
     switch ($_GET['func']) {
         case "new":     checkCapabilities('coursebook:add',    $USER->role_id);
-                        $header = 'Kursbucheintrag hinzufügen';
-                        
-                        $add = true;              
+                        $header = 'Kursbucheintrag hinzufügen';          
             break;
         case "edit":    checkCapabilities('coursebook:update', $USER->role_id);
                         $header = 'Kursbucheintrag aktualisieren';
-                        $edit = true; 
                         $course_book = new CourseBook();
                         $course_book->load('cb_id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
                         foreach ($course_book as $key => $value){
@@ -92,7 +89,7 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$content .='<form id="form_courseBook"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_courseBook.php"';
+$content  ='<form id="form_courseBook"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_courseBook.php"';
 if (isset($currentUrlId)){ $content .= $currentUrlId; }
 $content .= '">
 <input type="hidden" name="func" id="func" value="'.$func.'"/>
@@ -109,18 +106,12 @@ if(checkCapabilities('user:userListComplete', $USER->role_id, false)){
 }                                               // Load schooltype 
 $content .= Form::input_select('course_id', 'Kurs / Klasse', $courses, 'course', 'course_id', $course_id , $error);
 $content .= Form::input_date(array('id'=>'timerange', 'label' => 'Dauer' , 'time' => $timerange, 'error' => $error, 'placeholder' => '', $type = 'date'));
-$content .= '</div></form>';
-$f_content = '';
-
-if (isset($edit)){
-    $f_content .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_courseBook\').submit();"> '.$header.'</button>'; 
-} 
-if (isset($add)){
-    $f_content .= '<button id="add" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_courseBook\').submit();"> '.$header.'</button> ';
-}    
+$content .= '</form>';
+$footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_courseBook\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button> ';
+   
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
-                              'f_content' => $f_content));
+                              'f_content' => $footer));
 
 $script = "<!-- daterangepicker -->
         <script id='modal_script'>

@@ -48,7 +48,6 @@ if (isset($func)){
     switch ($func) {
         case 'new':      checkCapabilities('groups:add',         $USER->role_id);
                          $header            = 'Lerngruppe hinzufügen';
-                         $add               = true;
         break;
         case 'semester': checkCapabilities('groups:changeSemester',         $USER->role_id);
                          $header            = 'Lernzeitraum ändern';
@@ -57,7 +56,6 @@ if (isset($func)){
             break;
         case "edit":     checkCapabilities('groups:update', $USER->role_id);
                          $header            = 'Lerngruppe bearbeiten';
-                         $edit              = true;  
                          $gr_obj            = new Group();
                          $gr_obj->id        = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);  // edit case: id == ena_id
                          $gr_obj->load();                                 //Läd die bestehenden Daten aus der db
@@ -100,19 +98,10 @@ if (isset($change_semester)){
     $content .= Form::info('p_group', ' ', 'Um eine leere Lerngruppe zu erstellen, Haken entfernen.');
     $content .= Form::input_checkbox('assumeUsers', 'Personen übernehmen', $assumeUsers , $error);
 }
-$content .= '</div></form>';
-$f_content = '';
-if (isset($edit)){
-    $f_content .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_group\').submit();"> '.$header.'</button>'; 
-} 
-if (isset($change_semester)){
-    $f_content .= '<button id="change" name="change" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_group\').submit();"> '.$header.'</button> ';
-}    
-if (isset($add)){
-    $f_content .= '<button id="add" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_group\').submit();"> '.$header.'</button> ';
-}    
+$content .= '</form>';
+$footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_group\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button> ';  
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
-                              'f_content' => $f_content));
+                              'f_content' => $footer));
 
 echo json_encode(array('html'=>$html));

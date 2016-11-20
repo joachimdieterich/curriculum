@@ -79,8 +79,7 @@ switch ($file->type) {
     default:        
         break;
 }
-
-        
+      
 $html       = Form::modal(array('title'   => $title.'<small>  |  '.$category.'</small>'.$options,
                                 'content' => $content, 
                                 'c_color' => '#ecf0f5',

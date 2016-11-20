@@ -35,7 +35,7 @@ $role_obj       = new Roles();
 $func           = $_GET['func'];
 
 switch ($func) {
-    case 'new':     $header                       = 'Benutzerrolle hinzufügen';
+    case 'new':     $header           = 'Benutzerrolle hinzufügen';
                     $role_obj         = new Capability();
                     $capabilities     = $role_obj->getCapabilities($CFG->standard_role);     
         break;
@@ -46,7 +46,7 @@ switch ($func) {
                     foreach ($edit_role as $key => $value){
                         $$key = $value;
                     }
-                    $header                       = 'Benutzerrolle aktualisieren';           
+                    $header           = 'Benutzerrolle aktualisieren';           
         break;
     
     
@@ -62,8 +62,7 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$content = '<form id="form_role" method="post" action="../share/processors/fp_role.php">
-            <div class="form-horizontal">';
+$content = '<form id="form_role" method="post" action="../share/processors/fp_role.php">';
 if (isset($role_id)){
     $content .= '<input type="hidden" name="role_id" id="role_id" value="'.$role_id.'"/>';
 }
@@ -83,16 +82,11 @@ foreach ($capabilities as $key => $value) {
     $content .= Form::input_switch($value->capability, $value->name, $value, $error, 'col-sm-6', 'col-sm-6');
     $section = substr($value->capability, 0, $pos);
 }
-$content .= '</div></form>';
-$f_content = '';
-if ($func == 'edit'){ 
-    $f_content .= '<button type="submit" class="btn btn-primary fa fa-check-circle-o pull-right" onclick="document.getElementById(\'form_role\').submit();"> '.$header.'</button>';
-} else {
-    $f_content .= '<button type="submit" class="btn btn-primary fa fa-plus pull-right" onclick="document.getElementById(\'form_role\').submit();"> '.$header.'</button>';
-}
+$content .= '</form>';
+$footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_role\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';
 
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
-                              'f_content' => $f_content));  
+                              'f_content' => $footer));  
 
 echo json_encode(array('html'=>$html));

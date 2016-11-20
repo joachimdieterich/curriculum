@@ -42,7 +42,6 @@ if (isset($func)){
         case "changePW":    $info = true;
         case "edit":        checkCapabilities('user:resetPassword', $USER->role_id);
                             $header     = 'Kennwort ändern';
-                            $edit       = true; 
                             $username   = $USER->username;      
             break;
         case "reset":       checkCapabilities('user:resetPassword', $USER->role_id);
@@ -80,21 +79,11 @@ $content .= Form::input_text('password', 'Kennwort', null, $error, '','password'
 if ($func != 'reset'){
     $content .= Form::input_text('confirm', 'Kennwort bestätigen', null, $error, '','password');
 }
-$content .= '</div></form>';
-
-$f_content = '';
-if ($func == 'reset'){
-    $f_content .= '<button name="reset" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_password\').submit();"> '.$header.'</button>'; 
-} 
-if (isset($edit)){
-    $f_content .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_password\').submit();"> '.$header.'</button>'; 
-} 
-if (isset($add)){
-    $f_content .= '<button id="add" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_password\').submit();"> '.$header.'</button> ';
-}   
-
-$html     = Form::modal(array('title'     => $header,
+$content.= '</form>';
+$footer  = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_password\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button> ';
+   
+$html    = Form::modal(array('title'     => $header,
                               'content'   => $content, 
-                              'f_content' => $f_content)); 
+                              'f_content' => $footer)); 
 
 echo json_encode(array('html'=>$html));

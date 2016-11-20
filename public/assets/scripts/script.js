@@ -222,7 +222,6 @@ function process(){
                 }
                 
                 if (document.getElementById(popup)){
-                    
                     document.getElementById(popup).innerHTML = response.html;
                     if (typeof(response.class)!=='undefined'){
                         $(document.getElementById(popup)).addClass(response.class);

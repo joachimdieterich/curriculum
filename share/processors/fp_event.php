@@ -35,7 +35,6 @@ $purify               = HTMLPurifier_Config::createDefault();
 $purify->set('Core.Encoding', 'UTF-8'); // replace with your encoding
 $purify->set('HTML.Doctype', 'HTML 4.01 Transitional'); // replace with your doctype
 $purifier             = new HTMLPurifier($purify);
-
 $event->description   = $purifier->purify(filter_input(INPUT_POST, 'description', FILTER_UNSAFE_RAW));
 
 $gump                 = new Gump();    /* Validation */

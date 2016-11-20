@@ -62,22 +62,16 @@ if (isset($_SESSION['FORM'])){
 }
 
 $content = '<form id="form_grade" method="post" action="../share/processors/fp_grade.php">
- <div class="form-horizontal">
 <input type="hidden" name="grade_id" id="grade_id" value="'.$grade_id.'"/>
 <input type="hidden" name="func" id="func" value="'.$func.'"/>'; 
 $content .= Form::input_text('grade', 'Klassenstufe', $grade, $error, 'z. B. 7. Klasse');
 $content .= Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung');
 $content .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'institution_id', $institution_id , $error);
-$content .= '</div></form>';
-$f_content = '';
-if ($func == 'edit'){ 
-    $f_content .= '<button type="submit" class="btn btn-primary fa fa-check-circle-o pull-right" onclick="document.getElementById(\'form_grade\').submit();"> '.$header.'</button>';
-} else {
-    $f_content .= '<button type="submit" class="btn btn-primary fa fa-plus pull-right" onclick="document.getElementById(\'form_grade\').submit();"> '.$header.'</button>';
-}
+$content .= '</form>';
+$footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_grade\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';
 
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
-                              'f_content' => $f_content));  
+                              'f_content' => $footer));  
 
 echo json_encode(array('html'=>$html));

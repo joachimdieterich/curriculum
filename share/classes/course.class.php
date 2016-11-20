@@ -150,7 +150,7 @@ class Course {
                 $this->course_id     = $result->course_id;
                 $this->id            = $result->id.'_'.$result->gpid;
                 $this->semester_id   = $result->semester_id;
-                $this->course        = $result->groups.' | '.$result->curriculum.' | '.$result->description; 
+                $this->course        = $result->groups.' | '.$result->curriculum; //.' | '.$result->description; 
                 $this->group         = $result->groups;
                 $this->icon          = $result->filename;
             }
@@ -212,7 +212,7 @@ class Course {
                                             WHERE ce.id = ? AND ce.group_id = ge.group_id'); 
                                 $db->execute(array($id));  
                                 while($result = $db->fetchObject()) {
-                                    $user->load('id', $result->user_id);
+                                    $user->load('id', $result->user_id, false);
                                     $users[] = clone $user;
                                 }
                 break;

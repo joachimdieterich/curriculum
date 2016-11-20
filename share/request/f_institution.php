@@ -64,12 +64,10 @@ if (isset($_GET['func'])){
                         if (!isset($country_id)){ 
                             $country_id = $INSTITUTION->country_id;
                             $state_id   = $INSTITUTION->state_id;         
-                        }
-                        $add = true;              
+                        }              
             break;
         case "edit":    checkCapabilities('institution:update',    $USER->role_id);
-                        $header     = 'Institution bearbeiten';
-                        $edit       = true; 
+                        $header     = 'Institution aktualisieren';
                         $ins        = new Institution();
                         $ins->id    = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
                         $ins->load();
@@ -91,7 +89,6 @@ if (isset($_SESSION['FORM'])){
 }
 
 $content ='<form id="form_institution" class="form-horizontal" role="form" method="post" action="../share/processors/fp_institution.php"';
-
 if (isset($currentUrlId)){ $content .= $currentUrlId; }
 $content .= '"><h4>'.$header.'</h4>
 <input type="hidden" name="func" id="func" value="'.$func.'"/>';
@@ -141,18 +138,13 @@ $content .= Form::input_text('timeout', 'Timeout (Minuten)', $acc_days, $error, 
 $content .= Form::input_text('csv_size', 'CSV-Dateien (byte)', $csv_size, $error, '30','number',5000,1048576);
 $content .= Form::input_text('avatar_size', 'Profilfotos (byte)', $csv_size, $error, '30','number',5000,1048576);
 $content .= Form::input_text('material_size', 'Dateien (byte)', $csv_size, $error, '30','number',5000,1048576);
-$content .= '</div></form>';
-$f_content = '';
-if (isset($edit)){
-    $f_content .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_institution\').submit();"> Institution aktualisieren</button>'; 
-} 
-if (isset($add)){
-    $f_content .= '<button id="add" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_institution\').submit();"> Institution hinzufügen</button> ';
-}    
+$content .= '</form>';
+$footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_institution\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button> ';
+  
 
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
-                              'f_content' => $f_content));
+                              'f_content' => $footer));
 
 $script = '<script id=\'modal_script\'>
         $(function() {

@@ -40,17 +40,16 @@ if (is_array($data)) {
             
 if (isset($func)){
     switch ($func) {
-        case "edit":        checkCapabilities('dashboard:editBulletinBoard', $USER->role_id);
-                            $header            = 'Pinnwand ändern';
-                            $edit              = true;   
-                            $bulletinBoard     = new Institution();
-                            $bulletinBoard->id = $USER->institution_id;
-                            $bb                = $bulletinBoard->getBulletinBoard();
-                            foreach ($bb as $key => $value){
-                                if (!is_object($value)){
-                                    $$key = $value;
-                                }
+        case "edit":    checkCapabilities('dashboard:editBulletinBoard', $USER->role_id);
+                        $header            = 'Pinnwand ändern';
+                        $bulletinBoard     = new Institution();
+                        $bulletinBoard->id = $USER->institution_id;
+                        $bb                = $bulletinBoard->getBulletinBoard();
+                        foreach ($bb as $key => $value){
+                            if (!is_object($value)){
+                                $$key = $value;
                             }
+                        }
             break;
         default: break;
     }
@@ -65,24 +64,19 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$content  ='<form id="form_bulletinBoard"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_bulletinBoard.php"';
+$content ='<form id="form_bulletinBoard"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_bulletinBoard.php"';
 
 if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
+$content.= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
 /* Only edit bulletinboard of current institution todo, load bulletinboard on input_select*/
 //$html .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'institution_id', $institution_id , $error);
-$content .= Form::input_text('title', 'Überschrift', $title, $error,'z.B. Ankündigung');
-$content .= Form::input_textarea('text', 'Pinnwand-Text', $text, $error);
-$content .= '</div></form>';
-$f_content = '';
-if (isset($edit)){
-    $f_content .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_bulletinBoard\').submit();"> '.$header.'</button>'; 
-} 
-if (isset($add)){
-    $f_content .= '<button id="add" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_bulletinBoard\').submit();"> '.$header.'</button> ';
-}    
-$html     = Form::modal(array('title'     => $header,
+$content.= Form::input_text('title', 'Überschrift', $title, $error,'z.B. Ankündigung');
+$content.= Form::input_textarea('text', 'Pinnwand-Text', $text, $error);
+$content.= '</form>';
+$footer  = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_bulletinBoard\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button> ';
+  
+$html    = Form::modal(array('title'     => $header,
                               'content'   => $content, 
-                              'f_content' => $f_content));
+                              'f_content' => $footer));
 
 echo json_encode(array('html'=>$html));

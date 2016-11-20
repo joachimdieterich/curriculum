@@ -46,18 +46,15 @@ if (is_array($data)) {
 if (isset($_GET['func'])){
     switch ($_GET['func']) {
         case "new":     checkCapabilities('help:add',    $USER->role_id);
-                        $header = 'Hilfe-Datei hinzufügen';
-                        $add = true;              
+                        $header = 'Hilfe-Datei hinzufügen';            
             break;
         case "edit":    checkCapabilities('help:update',    $USER->role_id);
                         $header   = 'Hilfe-Datei bearbeiten';
                         $edit     = true; 
                         $h        = new Help(filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
-                        
                         foreach ($h as $key => $value){
                              $$key = $value;
                          }
-        
             break;
         default: break;
     }
@@ -91,12 +88,12 @@ $content .= '<div class="col-xs-3"></div><div class="col-xs-9">'
             } else {
                 $content .= '<i class="fa fa-plus"></i> Datei hinzufügen';
             }
-$content .= '</a></div></div></form>';
-$f_content = '<button type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_help\').submit();"> '.$header.'</button>'; 
+$content .= '</a></div></form>';
+$footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_help\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>'; 
 
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
-                              'f_content' => $f_content));
+                              'f_content' => $footer));
 
 $script = '<script id=\'modal_script\'>
         $(function() {
@@ -121,4 +118,4 @@ $script = '<script id=\'modal_script\'>
             document.getElementById("icon").src = "'.$CFG->access_id_url.'"+document.getElementById("file_id").value;
         });
         </script>';
-echo json_encode(array('target' => 'null', 'html'=>$html, 'script' => $script));
+echo json_encode(array('html'   => $html, 'script' => $script));

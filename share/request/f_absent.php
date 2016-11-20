@@ -27,13 +27,16 @@ include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $CFG, $USER, $COURSE;
 $USER           = $_SESSION['USER'];
-$COURSE         = $_SESSION['COURSE'];
+if (isset($_SESSION['COURSE'])){
+    $COURSE     = $_SESSION['COURSE'];
+}
 
 /*Variablen anlegen -> vermeidet unnötige if-Abfragen im Formular*/
 $absent_id      = null;
 $reason         = null;
 $user_list      = null;
 $done           = null;
+$status         = null;
 $func           = $_GET['func'];
 
 $error          =   null;
@@ -50,7 +53,6 @@ if (isset($_GET['func'])){
         case "coursebook":  $reference_id =  filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
         case "new":         checkCapabilities('absent:add',    $USER->role_id);
                             $header       = 'Fehlende Person(en) erfassen ';
-                            $add          = true;           
                             $course       = new Course();
                             if (isset($reference_id)){
                                 $cb       = new CourseBook();
@@ -60,7 +62,6 @@ if (isset($_GET['func'])){
             break;
         case "edit":        checkCapabilities('absent:update', $USER->role_id);
                             $header     = 'Anwesenheitsliste aktualisieren';
-                            $edit       = true; 
                             $abs         = new Absent();
                             $abs->load('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
                             $absent_id   = $abs->id;
@@ -100,17 +101,12 @@ if (!isset($absent_id)){
 $content .= Form::input_select_multiple(array('id' => 'user_list', 'label' => 'Kursmitglieder', 'select_data' => $members, 'select_label' => 'firstname, lastname', 'select_value' => 'id', 'input' => $user_list, 'error' => $error));
 }
 $content .= Form::input_checkbox('status', 'Entschuldigt', $status, $error);
-$content .= '</div></form>';
-$f_content = '';
-if (isset($edit)){
-    $f_content .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_absent\').submit();"> '.$header.'</button>'; 
-} 
-if (isset($add)){
-    $f_content .= '<button id="add" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_absent\').submit();"> '.$header.'</button> ';
-}    
+$content .= '</form>';
+$footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_absent\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>'; 
+
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
-                              'f_content' => $f_content));
+                              'f_content' => $footer));
 
 $script = "<!-- daterangepicker -->
         <script id='modal_script'>

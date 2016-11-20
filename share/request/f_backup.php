@@ -48,16 +48,15 @@ if (is_array($data)) {
             
 if (isset($func)){
     switch ($func) {
-        case "new":         checkCapabilities('backup:add',    $USER->role_id);
-                            $header             = 'Backup erstellen';
-                            $add                = true;              
-                            /* load backups and courses */
-                            $courses            = new Course(); //load Courses
-                            if (checkCapabilities('backup:getAllBackups', $USER->role_id, false)) {                          // Administrators
-                                $options        = $courses->getCourse('admin',  $USER->id);
-                            } else if (checkCapabilities('backup:getMyBackups', $USER->role_id, false)) {                    // Teacher and Tutor
-                                $options        = $courses->getCourse('teacher', $USER->id);
-                            } 
+        case "new": checkCapabilities('backup:add',    $USER->role_id);
+                    $header             = 'Backup erstellen';
+                    /* load backups and courses */
+                    $courses            = new Course(); //load Courses
+                    if (checkCapabilities('backup:getAllBackups', $USER->role_id, false)) {                          // Administrators
+                        $options        = $courses->getCourse('admin',  $USER->id);
+                    } else if (checkCapabilities('backup:getMyBackups', $USER->role_id, false)) {                    // Teacher and Tutor
+                        $options        = $courses->getCourse('teacher', $USER->id);
+                    } 
             break;
         default: break;
     }
@@ -72,21 +71,14 @@ if (isset($_SESSION['FORM'])){
     }
 }
    
-$content  ='<form id="form_backup"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_backup.php"';
-
+$content  = '<form id="form_backup"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_backup.php"';
 if (isset($currentUrlId)){ $content .= $currentUrlId; }
 $content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
 $content .= Form::input_select('curriculum_id', 'Lehrplan', $options, 'course', 'curriculum_id', null , $error);
-$content .= '</div></form>';
-$f_content = '';
-if (isset($edit)){
-    $f_content .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_backup\').submit();"> '.$header.'</button>'; 
-} 
-if (isset($add)){
-    $f_content .= '<button id="add" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_backup\').submit();"> '.$header.'</button> ';
-}    
+$content .= '</form>';
+$footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_backup\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';  
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
-                              'f_content' => $f_content));
+                              'f_content' => $footer));
 
 echo json_encode(array('html'=>$html));

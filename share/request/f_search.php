@@ -70,7 +70,7 @@ if (isset($search)){
                             $highlight[] = 'ena_'.$r->id;
                         }
                         $_SESSION['highlight'] = $highlight;
-                        $f_content = '<button class="btn btn-primary fa fa-search pull-right" onclick="closePopup();">Treffer im Lehrplan anzeigen</button>';
+                        $footer = '<button class="btn btn-primary fa fa-search pull-right" onclick="closePopup();">Treffer im Lehrplan anzeigen</button>';
             break;
 
         default:    
@@ -82,6 +82,6 @@ if (isset($search)){
 
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
-                              'f_content' => $f_content));  
+                              'f_content' => $footer));  
 
 echo json_encode(array('html'=>$html));
