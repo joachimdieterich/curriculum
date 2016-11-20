@@ -40,14 +40,11 @@ if (is_array($data)) {
 if (isset($_GET['func'])){
     switch ($_GET['func']) {
         case "new":     checkCapabilities('file:add',    $USER->role_id);
-                        $header = 'Datei hochladen';
-                        $add    = true;              
+                        $header = 'Datei hochladen';        
             break;
         case "edit":    checkCapabilities('file:update', $USER->role_id);
                         $header = 'Datei aktualisieren';
-                        $edit   = true; 
                         $f      = new File();
-                        
                         $f->load(filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
                         
                         foreach ($f as $key => $value){
@@ -86,16 +83,10 @@ $content .= '</form></div>';
 $content .= '<div class="col-sm-3">';
 $content .= RENDER::thumb(array('id' => $id),null,'div');
 $content .= '</div>';
-
-$f_content = '';
-if (isset($edit)){
-    $f_content .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_file\').submit();">'.$header.'</button>'; 
-} 
-if (isset($add)){
-    $f_content .= '<button id="add" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_file\').submit();">'.$header.'</button> ';
-}    
+$footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_file\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button> ';
+  
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
-                              'f_content' => $f_content));
+                              'f_content' => $footer));
 
 echo json_encode(array('html'=>$html, 'zindex' => 3001));

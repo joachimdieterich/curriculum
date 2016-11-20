@@ -114,11 +114,11 @@ $content     .= Form::input_select('region', 'Position', array($r), 'region', 'i
 
 $roles        = new Roles();
 $content     .= Form::input_select('role_id', 'Anzeigen für:', $roles->get(), 'role', 'id', $block_id , $error);
-$content     .= '</div></form>';
-$f_content    = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_block\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button> ';
+$content     .= '</form>';
+$footer       = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_block\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button> ';
 
 $html         = Form::modal(array('title'     => $header,
                                   'content'   => $content, 
-                                  'f_content' => $f_content));
+                                  'f_content' => $footer));
 
 echo json_encode(array('html'=>$html));

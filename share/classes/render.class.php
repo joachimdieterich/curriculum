@@ -787,7 +787,6 @@ class Render {
                         <span class="pull-right"><i class="fa fa-edit" onclick="formloader(\'absent\',\'edit\', '.$ub->id.')"></i>
                         <i class="fa fa-trash-o" onclick="del(\'absent\', '.$ub->id.')"></i></span>
                       </div>
-                     
                     </li><!-- /.item -->';
                   }
                     

@@ -30,19 +30,19 @@ $USER           = $_SESSION['USER'];
 $COURSE         = $_SESSION['COURSE'];
 
 /*Variablen anlegen -> vermeidet unnötige if-Abfragen im Formular*/
-$task_id           = null;
-$task              = null; 
-$description       = null;
-$creation_time     = null;
-$creator_id        = null;
-$timestart         = null;
-$timeend           = null;
-$timerange         = null;
+$task_id        = null;
+$task           = null; 
+$description    = null;
+$creation_time  = null;
+$creator_id     = null;
+$timestart      = null;
+$timeend        = null;
+$timerange      = null;
 
-$func              = $_GET['func'];
-$error             =   null;
-$object            = file_get_contents("php://input");
-$data              = json_decode($object, true);
+$func           = $_GET['func'];
+$error          =   null;
+$object         = file_get_contents("php://input");
+$data           = json_decode($object, true);
 if (is_array($data)) {
     foreach ($data as $key => $value){
         $$key = $value;
@@ -53,15 +53,13 @@ if (isset($_GET['func'])){
     switch ($_GET['func']) {
         case "coursebook":  $reference_id =  filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
         case "new":         checkCapabilities('task:add',    $USER->role_id);
-                            $header     = 'Aufgabe hinzufügen';
-                            $add        = true;              
+                            $header     = 'Aufgabe hinzufügen';             
             break;
         case "edit":        checkCapabilities('task:update', $USER->role_id);
                             $header     = 'Aufgabe aktualisieren';
-                            $edit       = true; 
-                            $tsk         = new Task();
+                            $tsk        = new Task();
                             $tsk->load('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
-                            $task_id   = $tsk->id;
+                            $task_id    = $tsk->id;
                             foreach ($tsk as $key => $value){
                                 if (!is_object($value)){
                                     $$key = $value;
@@ -82,7 +80,7 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$content .='<form id="form_task"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_task.php"';
+$content  ='<form id="form_task"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_task.php"';
 if (isset($currentUrlId)){ $content .= $currentUrlId; }
 $content .= '">
 <input type="hidden" name="func" id="func" value="'.$func.'"/>';
@@ -95,15 +93,8 @@ $content .= '<input type="hidden" name="reference_id" id="reference_id" value="'
 $content .= Form::input_text('task', 'Aufgabe', $task, $error, 'z. B. Erstellen einer Mindmap zum Thema Pressefreiheit');
 $content .= Form::input_textarea('description', 'Beschreibung', $description, $error, 'Beschreibung');
 $content .= Form::input_date(array('id'=>'timerange', 'label' => 'Zeitraum zum Erledigen' , 'time' => $timerange, 'error' => $error, 'placeholder' => '', $type = 'date'));
-$content .= '</div></form>';
-
-$f_content = '';
-if (isset($edit)){
-    $f_content .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_task\').submit();"> '.$header.'</button>'; 
-} 
-if (isset($add)){
-    $f_content .= '<button id="add" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_task\').submit();"> '.$header.'</button> ';
-}    
+$content .= '</form>';
+$footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_task\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button> ';
 
 $script = "<!-- daterangepicker -->
         <script id='modal_script'>
@@ -114,6 +105,6 @@ $script = "<!-- daterangepicker -->
 
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
-                              'f_content' => $f_content));  
+                              'f_content' => $footer));  
 
 echo json_encode(array('html'=>$html, 'script'=> $script));

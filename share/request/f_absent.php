@@ -101,12 +101,12 @@ if (!isset($absent_id)){
 $content .= Form::input_select_multiple(array('id' => 'user_list', 'label' => 'Kursmitglieder', 'select_data' => $members, 'select_label' => 'firstname, lastname', 'select_value' => 'id', 'input' => $user_list, 'error' => $error));
 }
 $content .= Form::input_checkbox('status', 'Entschuldigt', $status, $error);
-$content .= '</div></form>';
-$f_content = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_absent\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>'; 
+$content .= '</form>';
+$footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_absent\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>'; 
 
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
-                              'f_content' => $f_content));
+                              'f_content' => $footer));
 
 $script = "<!-- daterangepicker -->
         <script id='modal_script'>

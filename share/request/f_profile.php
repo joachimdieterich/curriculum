@@ -59,11 +59,9 @@ if (isset($func)){
     switch ($func) {
         case 'new':      checkCapabilities('user:addUser',    $USER->role_id);
                          $header            = 'Benutzer anlegen';
-                         $add               = true;
         break;
         case 'editUser': checkCapabilities('user:updateUser',    $USER->role_id);
                          $header            = 'Profil bearbeiten';
-                         $edituser          = true;
                          $user->load('id', filter_input(INPUT_GET,  'id', FILTER_VALIDATE_INT));
                          $user_id           = filter_input(INPUT_GET,  'id', FILTER_VALIDATE_INT);
                          foreach ($user as $key => $value){
@@ -73,7 +71,6 @@ if (isset($func)){
         
         case "edit":     checkCapabilities('user:update',    $USER->role_id);
                          $header            = 'Mein Profil aktualisieren';
-                         $edit              = true;  
                          $user->load('id',    $USER->id);
                          $user_id           = $USER->id;//Läd die bestehenden Daten aus der db
                          foreach ($user as $key => $value){
@@ -127,11 +124,10 @@ if ($func == 'new'){
     $group    = new Group();
     $content .= Form::input_select('group_id', 'Lerngruppe', $group->getGroups('institution', $USER->institution_id), 'group', 'id', $group_id , $error); 
 }
-$content .= '</div></form>';
+$content .= '</form>';
+$footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_profile\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';    
 
-$f_content = '<button name="submit" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_profile\').submit();"> '.$header.'</button>';    
-
-$script = '<script id=\'modal_script\'>
+$script   = '<script id=\'modal_script\'>
         $(function() {
             $(\'.nyroModal\').nyroModal();
             $(\'#popup_generate\').nyroModal();
@@ -143,5 +139,5 @@ $script = '<script id=\'modal_script\'>
 
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
-                              'f_content' => $f_content));  
+                              'f_content' => $footer));  
 echo json_encode(array('html'=>$html, 'script' => $script));

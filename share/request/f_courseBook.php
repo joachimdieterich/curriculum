@@ -106,7 +106,7 @@ if(checkCapabilities('user:userListComplete', $USER->role_id, false)){
 }                                               // Load schooltype 
 $content .= Form::input_select('course_id', 'Kurs / Klasse', $courses, 'course', 'course_id', $course_id , $error);
 $content .= Form::input_date(array('id'=>'timerange', 'label' => 'Dauer' , 'time' => $timerange, 'error' => $error, 'placeholder' => '', $type = 'date'));
-$content .= '</div></form>';
+$content .= '</form>';
 $footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_courseBook\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button> ';
    
 $html     = Form::modal(array('title'     => $header,

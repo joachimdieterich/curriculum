@@ -43,7 +43,7 @@
                     {if isset($niveaus)}
                         <div class="btn-group pull-left">
                         {foreach name=foreach_niveau item=niveau from=$niveaus} 
-                            <button type="button" class="btn btn-default"><a href="index.php?action=view&curriculum_id={$niveau->curriculum_id}&group={$page_group}">{$niveau->name}</a></button>
+                            <button type="button" class="btn btn-default"><a href="index.php?action=view&curriculum_id={$niveau->curriculum_id}{if !isset($showaddObjectives)}&group={$page_group}{/if}">{$niveau->name}</a></button>
                         {/foreach}
                         </div>
                      {/if}

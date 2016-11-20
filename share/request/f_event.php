@@ -65,12 +65,10 @@ if (is_array($data)) {
 if (isset($_GET['func'])){
     switch ($_GET['func']) {
         case "new":     checkCapabilities('event:add',    $USER->role_id);
-                        $header     = 'Termin hinzufügen';
-                        $add        = true;              
+                        $header     = 'Termin hinzufügen';        
             break;
         case "edit":    checkCapabilities('event:update', $USER->role_id);
                         $header     = 'Termin aktualisieren';
-                        $edit       = true; 
                         $ev         = new Event();
                         $ev->load('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
                         $event_id   = $ev->id;
@@ -78,8 +76,7 @@ if (isset($_GET['func'])){
                             if (!is_object($value)){
                                 $$key = $value;
                             }
-                        }
-                        
+                        }                        
             break;
         default: break;
     }
@@ -104,18 +101,11 @@ if (isset($event_id)){
 $content .= Form::input_text('event', 'Termin', $event, $error, 'z. B. Treffen in der Aula');
 $content .= Form::input_textarea('description', 'Beschreibung', $description, $error, 'Beschreibung');
 $content .= Form::input_date(array('id'=>'timerange', 'label' => 'Dauer' , 'time' => $timerange, 'error' => $error, 'placeholder' => '', $type = 'date'));
-$content .= '</div></form>';
-
-$f_content = '';
-if (isset($edit)){
-    $f_content .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_event\').submit();">'.$header.'</button>'; 
-} 
-if (isset($add)){
-    $f_content .= '<button id="add" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_event\').submit();">'.$header.'</button> ';
-}    
+$content .= '</form>';
+$footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_event\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';   
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
-                              'f_content' => $f_content));
+                              'f_content' => $footer));
 
 $script = "<!-- daterangepicker -->
         <script id='modal_script'>

@@ -77,7 +77,6 @@ if (isset($_SESSION['FORM'])){
 }
 
 $content  .='<form id="form_certificate"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_certificate.php"';
-
 if (isset($currentUrlId)){ $content .= $currentUrlId; }
 $content  .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
 if (isset($cert_id)){
@@ -97,11 +96,11 @@ $content  .= Form::info('info', 'Felder:', '*&lt;!--Vorname--&gt;, *&lt;!--Nachn
                                              &lt;!--Ziel_mit_Hilfe_erreicht--&gt;,  &lt;!--Ziel_erreicht--&gt;, &lt;!--Ziel_offen--&gt;</br>
                                              &lt;ziel status="[1]" class="[objective_green row]" &gt;&lt;/ziel&gt;</br>
                                              &lt;!--Bereich{terminal_objective_id,...}--&gt;HTML&lt;!--/Bereich--&gt;');
-$content  .= '</div></form>';
-$f_content = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_certificate\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>'; 
+$content  .= '</form>';
+$footer    = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_certificate\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>'; 
    
 $html      = Form::modal(array('title'     => $header,
                               'content'   => $content, 
-                              'f_content' => $f_content));
+                              'f_content' => $footer));
 
 echo json_encode(array('html'=>$html));

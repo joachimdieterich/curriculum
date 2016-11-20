@@ -75,7 +75,7 @@ $content  = '<form id="form_backup"  class="form-horizontal" role="form" method=
 if (isset($currentUrlId)){ $content .= $currentUrlId; }
 $content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
 $content .= Form::input_select('curriculum_id', 'Lehrplan', $options, 'course', 'curriculum_id', null , $error);
-$content .= '</div></form>';
+$content .= '</form>';
 $footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_backup\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';  
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 

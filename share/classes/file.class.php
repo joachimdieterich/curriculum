@@ -266,11 +266,12 @@ class File {
     
     public function addFileToken(){
         $fileToken = getToken();
-        $db = DB::prepare('INSERT INTO file_token (file_id, token) VALUES (?,?)');
+        $db        = DB::prepare('INSERT INTO file_token (file_id, token) VALUES (?,?)');
         $db->execute(array($this->id, $fileToken));
          
         return $fileToken;
     }
+    
     public function getFileUrl(){
         global $CFG;
         if ($this->type == '.url'){
@@ -280,7 +281,7 @@ class File {
     }
     
     public function getFileID($fileToken){
-        $db = DB::prepare('SELECT file_id FROM file_token WHERE token = ?');
+        $db     = DB::prepare('SELECT file_id FROM file_token WHERE token = ?');
         $db->execute(array($fileToken));
         $result = $db->fetchObject();
         if ($result){
@@ -498,7 +499,6 @@ class File {
                                                         AND ce.group_id = ANY (SELECT gr.group_id FROM groups_enrolments AS gr WHERE gr.user_id =  ?) '.$order_param);  
                 $db->execute(array($id));
                 break;
-
 
             default : break; 
         }                      

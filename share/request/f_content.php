@@ -105,7 +105,7 @@ if ($_GET['func'] != "show"){
     $html   .= Form::input_textarea('content', 'Inhalt', $content, $error, 'Seiteninhalt');
     $c       = new Context();
     $html   .=  Form::input_select('file_context', 'Freigabe-Level', $c->get(), 'description', 'id', $context , $error);
-    $html   .= '</div></form>';
+    $html   .= '</form>';
     $footer .= '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_content\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';
 }
 

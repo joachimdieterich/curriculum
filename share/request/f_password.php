@@ -79,10 +79,10 @@ $content .= Form::input_text('password', 'Kennwort', null, $error, '','password'
 if ($func != 'reset'){
     $content .= Form::input_text('confirm', 'Kennwort bestätigen', null, $error, '','password');
 }
-$content .= '</form>';
-$footer  .= '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_password\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button> ';
+$content.= '</form>';
+$footer  = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_password\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button> ';
    
-$html     = Form::modal(array('title'     => $header,
+$html    = Form::modal(array('title'     => $header,
                               'content'   => $content, 
                               'f_content' => $footer)); 
 

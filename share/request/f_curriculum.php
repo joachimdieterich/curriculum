@@ -172,11 +172,11 @@ $content  .= '</div></form>';
 $f_content = '';   
 
 if (isset($edit)){
-    $f_content .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_curriculum\').submit();"> Lehrplan aktualisieren</button>'; 
+    $f_content .= '<button name="update" type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_curriculum\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>Lehrplan aktualisieren</button>'; 
 } 
-$f_content .= '<button id="bImport" name="import" type="submit" class="btn btn-primary glyphicon glyphicon-import pull-right hidden" onclick="document.getElementById(\'form_curriculum\').submit();"> Lehrplan importieren</button>'; 
+$f_content .= '<button id="bImport" name="import" type="submit" class="btn btn-primary pull-right hidden" onclick="document.getElementById(\'form_curriculum\').submit();"><i class="fa fa-floppy-o margin-r-5">Lehrplan importieren</button>'; 
 if (isset($add)){
-    $f_content .= '<button id="bAdd" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_curriculum\').submit();"> Lehrplan hinzufügen</button> ';
+    $f_content .= '<button id="bAdd" name="add" type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_curriculum\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>Lehrplan hinzufügen</button> ';
 }    
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 

@@ -150,7 +150,7 @@ class Course {
                 $this->course_id     = $result->course_id;
                 $this->id            = $result->id.'_'.$result->gpid;
                 $this->semester_id   = $result->semester_id;
-                $this->course        = $result->groups.' | '.$result->curriculum.' | '.$result->description; 
+                $this->course        = $result->groups.' | '.$result->curriculum; //.' | '.$result->description; 
                 $this->group         = $result->groups;
                 $this->icon          = $result->filename;
             }
