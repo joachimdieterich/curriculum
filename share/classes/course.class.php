@@ -212,7 +212,7 @@ class Course {
                                             WHERE ce.id = ? AND ce.group_id = ge.group_id'); 
                                 $db->execute(array($id));  
                                 while($result = $db->fetchObject()) {
-                                    $user->load('id', $result->user_id);
+                                    $user->load('id', $result->user_id, false);
                                     $users[] = clone $user;
                                 }
                 break;
