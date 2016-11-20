@@ -33,7 +33,6 @@ $receiver_id    = null;
 $group_id       = null;
 $subject        = null;
 $message_text   = null;
-
 $error          = null;
 $object         = file_get_contents("php://input");
 $data           = json_decode($object, true);
@@ -45,29 +44,24 @@ if (is_array($data)) {
             
 if (isset($func)){
     switch ($func) {
-        case 'new':      checkCapabilities('mail:postMail', $USER->role_id);
-                         $header            = 'Nachricht schreiben';
-                         $add               = true;
-        break;
-        case 'gethelp':  checkCapabilities('mail:postMail', $USER->role_id);
-                         $header            = 'Nachricht schreiben';
-                         $subject           = $USER->firstname.' '.$USER->lastname.' braucht Deine Hilfe.';
-                         $receiver_id       = filter_input(INPUT_GET, 'id',    FILTER_UNSAFE_RAW);
-                         $add               = true;
+        
+        case 'gethelp': $subject           = $USER->firstname.' '.$USER->lastname.' braucht Deine Hilfe.';
+                        $receiver_id       = filter_input(INPUT_GET, 'id',    FILTER_UNSAFE_RAW);
+        case 'new':     checkCapabilities('mail:postMail', $USER->role_id);
+                        $header            = 'Nachricht schreiben';
         break;
         case 'reply':
-        case 'forward':  checkCapabilities('mail:postMail', $USER->role_id);
-                         $header            = 'Nachricht beantworten';
-                         $mail_obj          = new Mail();
-                         $mail_obj->id      = filter_input(INPUT_GET, 'id',    FILTER_UNSAFE_RAW);
-                         $mail_obj->loadMail($mail_obj->id, false);
-                         $mail_id           = $mail_obj->id;
-                         if ($func == 'reply'){
-                            $receiver_id       = $mail_obj->sender_id;
-                         }
-                         $subject           = 'Re: '.$mail_obj->subject;
-                         $message_text      = '<br><blockquote>Am '.$mail_obj->creation_time.' schrieb '.$USER->resolveUserId($mail_obj->sender_id).':'.$mail_obj->message;
-                         $add               = true;
+        case 'forward': checkCapabilities('mail:postMail', $USER->role_id);
+                        $header            = 'Nachricht beantworten';
+                        $mail_obj          = new Mail();
+                        $mail_obj->id      = filter_input(INPUT_GET, 'id',    FILTER_UNSAFE_RAW);
+                        $mail_obj->loadMail($mail_obj->id, false);
+                        $mail_id           = $mail_obj->id;
+                        if ($func == 'reply'){
+                           $receiver_id       = $mail_obj->sender_id;
+                        }
+                        $subject           = 'Re: '.$mail_obj->subject;
+                        $message_text      = '<br><blockquote>Am '.$mail_obj->creation_time.' schrieb '.$USER->resolveUserId($mail_obj->sender_id).':'.$mail_obj->message;
         break;
         
         default: break;
@@ -84,7 +78,6 @@ if (isset($_SESSION['FORM'])){
 }
 
 $content = '<form id="form_mail"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_mail.php"';
-
 if (isset($currentUrlId)){ $content .= $currentUrlId; }
 $content .= '"><input type="hidden" name="mail_id" id="mail_id" value="'.$mail_id.'"/>
             <input type="hidden" name="func" id="func" value="'.$func.'"/>';
@@ -103,14 +96,12 @@ $content .= Form::input_select('group_id', 'Empfänger', $groups->getGroups('gro
 $content .= '<input id="add_group" name="add_group" type="submit" class="hidden"/></div><!-- /.tab-pane -->';
 $content .= Form::input_text('subject', 'Betreff', $subject, $error);
 $content .= Form::input_textarea('message_text', 'Nachricht', $message_text, $error, 'Sehr geehrter Empfänger ...');
-
-$content .= '</div></form>';
-
-$f_content = '<button id="add_person_btn" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="$(\'#add_person\').click();" > '.$header.'</button> 
-              <button id="add_group_btn"type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right hidden" onclick="$(\'#add_group\').click();" > '.$header.'</button> ';
+$content .= '</div></div></form>';
+$footer   = '<button id="add_person_btn" type="submit" class="btn btn-primary pull-right" onclick="$(\'#add_person\').click();" ><i class="fa fa-paper-plane margin-r-5"></i>'.$header.'</button> 
+             <button id="add_group_btn"type="submit" class="btn btn-primary pull-right hidden" onclick="$(\'#add_group\').click();" ><i class="fa fa-paper-plane margin-r-5"></i>'.$header.'</button> ';
               
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
-                              'f_content' => $f_content));  
+                              'f_content' => $footer));  
 
 echo json_encode(array('html'=>$html));
