@@ -26,23 +26,22 @@ $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $CFG, $USER, $COURSE;
-$USER           = $_SESSION['USER'];
+$USER        = $_SESSION['USER'];
 
-$ct               = new Content();
+$ct          = new Content();
 /*Variablen anlegen -> vermeidet unnötige if-Abfragen im Formular*/
-$id                = null;
-$title             = null; 
-$content           = null;
-$context           = null;
-$timecreated       = null;
-$creator_id        = null;
-$f_content         = '';
-$options           = '';
-$func              = $_GET['func'];
-
-$error             =   null;
-$object = file_get_contents("php://input");
-$data = json_decode($object, true);
+$id          = null;
+$title       = null; 
+$content     = null;
+$context     = null;
+$timecreated = null;
+$creator_id  = null;
+$footer      = '';
+$options     = '';
+$func        = $_GET['func'];
+$error       =   null;
+$object      = file_get_contents("php://input");
+$data        = json_decode($object, true);
 if (is_array($data)) {
     foreach ($data as $key => $value){
         $$key = $value;
@@ -94,31 +93,25 @@ if ($_GET['func'] != "show"){
         }
     }
 
-    $html  ='<form id="form_content"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_content.php"';
+    $html    ='<form id="form_content"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_content.php"';
     if (isset($currentUrlId)){ $html .= $currentUrlId; }
-    $html .= '">
+    $html   .= '">
     <input id="func" name="func" type="hidden" value="'.$func.'"/>
     <input id="context_id" type="hidden" name="context_id" value="'.$context_id.'"/>
     <input id="reference_id" type="hidden" name="reference_id" value="'.$reference_id.'"/>
     <input id="id" name="id" type="text" class="invisible" ';
     if (isset($id)) { $html .= 'value="'.$id.'"';} $html .= '>';
-    $html .= Form::input_text('title', 'Titel', $title, $error, 'Überschrift');
-    $html .= Form::input_textarea('content', 'Inhalt', $content, $error, 'Seiteninhalt');
-    $c = new Context();
-    $html .=  Form::input_select('file_context', 'Freigabe-Level', $c->get(), 'description', 'id', $context , $error);
-    $html .= '</div></form>';
-
-    if (isset($edit)){
-        $f_content .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_content\').submit();"> '.$header.'</button>'; 
-    } 
-    if (isset($add)){
-        $f_content .= '<button id="add" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_content\').submit();"> '.$header.'</button> ';
-    }    
+    $html   .= Form::input_text('title', 'Titel', $title, $error, 'Überschrift');
+    $html   .= Form::input_textarea('content', 'Inhalt', $content, $error, 'Seiteninhalt');
+    $c       = new Context();
+    $html   .=  Form::input_select('file_context', 'Freigabe-Level', $c->get(), 'description', 'id', $context , $error);
+    $html   .= '</div></form>';
+    $footer .= '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_content\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';
 }
 
-$html_form     = Form::modal(array('target'    => 'null',
+$html_form   = Form::modal(array('target'    => 'null',
                                    'title'     => $header.$options,
                                    'content'   => $html, 
-                                   'f_content' => $f_content));
+                                   'f_content' => $footer));
 
 echo json_encode(array('html'=>$html_form));
