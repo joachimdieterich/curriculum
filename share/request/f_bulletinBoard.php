@@ -64,18 +64,18 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$content  ='<form id="form_bulletinBoard"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_bulletinBoard.php"';
+$content   ='<form id="form_bulletinBoard"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_bulletinBoard.php"';
 
 if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
+$content  .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
 /* Only edit bulletinboard of current institution todo, load bulletinboard on input_select*/
 //$html .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'institution_id', $institution_id , $error);
-$content .= Form::input_text('title', 'Überschrift', $title, $error,'z.B. Ankündigung');
-$content .= Form::input_textarea('text', 'Pinnwand-Text', $text, $error);
-$content .= '</div></form>';
+$content  .= Form::input_text('title', 'Überschrift', $title, $error,'z.B. Ankündigung');
+$content  .= Form::input_textarea('text', 'Pinnwand-Text', $text, $error);
+$content  .= '</div></form>';
 $f_content = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_bulletinBoard\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button> ';
   
-$html     = Form::modal(array('title'     => $header,
+$html      = Form::modal(array('title'     => $header,
                               'content'   => $content, 
                               'f_content' => $f_content));
 
