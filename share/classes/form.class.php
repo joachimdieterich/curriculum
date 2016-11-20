@@ -348,7 +348,7 @@ class Form {
                        }
             $html .=   '"><div class="form-horizontal">
                             '.$content.'
-                        </div><!-- /.modal-body -->';
+                        </div></div><!-- /.modal-body -->';
                         if (isset($f_content)){
             $html .=    '<div class="modal-footer">';
                             if ($f_content == 'close'){
@@ -358,13 +358,12 @@ class Form {
                             }
             $html .=   '</div>';
                         }
-            $html .=   '</div>
-                    </div><!-- /.modal-content -->
+            $html .=   '</div><!-- /.modal-content -->
                 </div><!-- /.modal-dialog -->';
             if (isset($sub_modal_id)){
                 $html .= '<div id="sub_popup" class="modal" onload="popupFunction(this.id);"><div class="modal-dialog"><div class="box"><div class="box-header"><h3 class="box-title">Loading...'.$sub_modal_id.'</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div></div></div> <!-- Sub Popup -->';
             }
-    return $html;    
+        return $html;    
     }
     
     public static function info_box($params){
