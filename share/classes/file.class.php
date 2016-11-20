@@ -462,7 +462,7 @@ class File {
                 $db->execute(array($id));
                 break;
             case 'userfiles':           $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
-                                                        WHERE fl.creator_id = ? AND fl.context_id = 1 AND fl.context_id = ct.context_id '.$order_param);
+                                                        WHERE fl.creator_id = ? AND fl.context_id = ct.context_id '.$order_param);
                 $db->execute(array($id));
                 break;
             case 'curriculum':          $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
