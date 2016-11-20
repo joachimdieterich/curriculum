@@ -302,34 +302,23 @@ class File {
      */
     public function getFileVersions(){
         global $CFG;
-        $extension_pos = strrpos($this->filename, '.'); // find position of the last dot, so where the extension starts
-
-        $thumb_xt = substr($this->filename, 0, $extension_pos) . '_xt.png';
-        $thumb_t  = substr($this->filename, 0, $extension_pos) . '_t.png';
-        $thumb_qs = substr($this->filename, 0, $extension_pos) . '_qs.png';
-        $thumb_xs = substr($this->filename, 0, $extension_pos) . '_xs.png';
-        $thumb_s  = substr($this->filename, 0, $extension_pos) . '_s.png';
-        $thumb_m  = substr($this->filename, 0, $extension_pos) . '_m.png';
-        $thumb_l  = substr($this->filename, 0, $extension_pos) . '_l.png';
-        
-        if (file_exists($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_xt)){ 
-            $result['xt'] = array("filename" => $thumb_xt, "full_path" => $this->context_path.$this->path.$thumb_xt, "size" => $this->getHumanFileSize($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_xt)); }
-        if (file_exists($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_t)) { 
-            $result['t'] = array("filename" => $thumb_t, "full_path" => $this->context_path.$this->path.$thumb_t, "size" => $this->getHumanFileSize($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_t)); }
-        if (file_exists($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_qs)){ 
-            $result['qs'] = array("filename" => $thumb_qs, "full_path" => $this->context_path.$this->path.$thumb_qs, "size" => $this->getHumanFileSize($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_qs)); }
-        if (file_exists($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_xs)){ 
-            $result['xs'] = array("filename" => $thumb_xs, "full_path" => $this->context_path.$this->path.$thumb_xs, "size" => $this->getHumanFileSize($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_xs)); }
-        if (file_exists($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_s)) { 
-            $result['s'] = array("filename" => $thumb_s, "full_path" => $this->context_path.$this->path.$thumb_s, "size" => $this->getHumanFileSize($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_s)); }
-        if (file_exists($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_m)) { 
-            $result['m'] = array("filename" => $thumb_m, "full_path" => $this->context_path.$this->path.$thumb_m, "size" => $this->getHumanFileSize($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_m)); }
-        if (file_exists($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_l)) { 
-            $result['l'] = array("filename" => $thumb_l, "full_path" => $this->context_path.$this->path.$thumb_l, "size" => $this->getHumanFileSize($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb_l)); }
+        $extension_pos = strrpos($this->filename, '.'); // find position of the last dot -> file extention
+        $size = array("xt","t","qs","xs","s","m","l");
+        foreach ($size as $value) {
+           $thumb = substr($this->filename, 0, $extension_pos) . '_'.$value.'.png'; 
+            if (file_exists($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb)){ 
+                $result[$value] = array("filename"  => $thumb, 
+                                        "full_path" => $this->context_path.$this->path.$thumb, 
+                                        "size"      => $this->getHumanFileSize($CFG->curriculumdata_root.$this->context_path.$this->path.$thumb)
+                                       ); 
+            }
+        }
         
         if (isset($result)) {
             return $result; 
-        } else {return false;}
+        } else {
+            return false;
+        }
     }
     
     /**
