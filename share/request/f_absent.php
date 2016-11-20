@@ -53,7 +53,6 @@ if (isset($_GET['func'])){
         case "coursebook":  $reference_id =  filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
         case "new":         checkCapabilities('absent:add',    $USER->role_id);
                             $header       = 'Fehlende Person(en) erfassen ';
-                            $add          = true;           
                             $course       = new Course();
                             if (isset($reference_id)){
                                 $cb       = new CourseBook();
@@ -63,7 +62,6 @@ if (isset($_GET['func'])){
             break;
         case "edit":        checkCapabilities('absent:update', $USER->role_id);
                             $header     = 'Anwesenheitsliste aktualisieren';
-                            $edit       = true; 
                             $abs         = new Absent();
                             $abs->load('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
                             $absent_id   = $abs->id;
@@ -104,7 +102,7 @@ $content .= Form::input_select_multiple(array('id' => 'user_list', 'label' => 'K
 }
 $content .= Form::input_checkbox('status', 'Entschuldigt', $status, $error);
 $content .= '</div></form>';
-$f_content = '<button name="submit" type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_absent\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>'; 
+$f_content = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_absent\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>'; 
 
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
