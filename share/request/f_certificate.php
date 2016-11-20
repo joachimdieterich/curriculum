@@ -35,9 +35,8 @@ $certificate       = null;
 $description       = null;
 $institution_id    = null;
 $template          = null;
-
 $func              = $_GET['func'];
-$error             =   null;
+$error             = null;
 $object            = file_get_contents("php://input");
 $data              = json_decode($object, true);
 if (is_array($data)) {
@@ -51,12 +50,9 @@ if (isset($func)){
         case "coursebook":  $reference_id =  filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
         case "new":         checkCapabilities('certificate:add',    $USER->role_id);
                             $header     = 'Zertifikat hinzufügen';
-                            $add        = true;              
             break;
         case "edit":        checkCapabilities('certificate:update', $USER->role_id);
                             $header     = 'Zertifikat aktualisieren';
-                            $edit       = true; 
-                            
                             $cert       = new Certificate();
                             $cert->id   = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
                             $cert->load(); 
@@ -65,8 +61,7 @@ if (isset($func)){
                                 if (!is_object($value)){
                                     $$key = $value;
                                 }
-                            }
-                        
+                            }        
             break;
         default: break;
     }
@@ -81,36 +76,31 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$content .='<form id="form_certificate"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_certificate.php"';
+$content  .='<form id="form_certificate"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_certificate.php"';
 
 if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
+$content  .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
 if (isset($cert_id)){
-$content .= '<input type="hidden" name="cert_id" id="cert_id" value="'.$cert_id.'"/> ';
+$content  .= '<input type="hidden" name="cert_id" id="cert_id" value="'.$cert_id.'"/> ';
 }
 if (isset($reference_id)){
-$content .= '<input type="hidden" name="reference_id" id="reference_id" value="'.$reference_id.'"/> ';
+$content  .= '<input type="hidden" name="reference_id" id="reference_id" value="'.$reference_id.'"/> ';
 }
-$content .= Form::input_text('certificate', 'Zertifikat', $certificate, $error, 'z. B. MedienkomP@ss Zertifikat');
-$content .= Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung');
-$content .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'institution_id', $institution_id , $error);
-$content .= Form::input_textarea('template', 'Zertifikat-Vorlage', $template, $error);
-$content .= Form::info('info', 'Felder:', '*&lt;!--Vorname--&gt;, *&lt;!--Nachname--&gt;</br> 
+$content  .= Form::input_text('certificate', 'Zertifikat', $certificate, $error, 'z. B. MedienkomP@ss Zertifikat');
+$content  .= Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung');
+$content  .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'institution_id', $institution_id , $error);
+$content  .= Form::input_textarea('template', 'Zertifikat-Vorlage', $template, $error);
+$content  .= Form::info('info', 'Felder:', '*&lt;!--Vorname--&gt;, *&lt;!--Nachname--&gt;</br> 
                                             *&lt;!--Start--&gt;, *&lt;!--Ende--&gt</br>
                                              &lt;!--Ort--&gt;, &lt;!--Datum--&gt;, &lt;!--Unterschrift--&gt;</br>
                                              &lt;!--Thema--&gt;, &lt;!--Ziel--&gt;</br>
                                              &lt;!--Ziel_mit_Hilfe_erreicht--&gt;,  &lt;!--Ziel_erreicht--&gt;, &lt;!--Ziel_offen--&gt;</br>
                                              &lt;ziel status="[1]" class="[objective_green row]" &gt;&lt;/ziel&gt;</br>
                                              &lt;!--Bereich{terminal_objective_id,...}--&gt;HTML&lt;!--/Bereich--&gt;');
-$content .= '</div></form>';
-$f_content = '';
-if (isset($edit)){
-    $f_content .= '<button name="update" type="submit" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="document.getElementById(\'form_certificate\').submit();"> '.$header.'</button>'; 
-} 
-if (isset($add)){
-    $f_content .= '<button id="add" name="add" type="submit" class="btn btn-primary glyphicon glyphicon-ok pull-right" onclick="document.getElementById(\'form_certificate\').submit();"> '.$header.'</button> ';
-}    
-$html     = Form::modal(array('title'     => $header,
+$content  .= '</div></form>';
+$f_content = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_certificate\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>'; 
+   
+$html      = Form::modal(array('title'     => $header,
                               'content'   => $content, 
                               'f_content' => $f_content));
 
