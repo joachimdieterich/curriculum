@@ -32,7 +32,7 @@ $enabling_objective     = new EnablingObjective();
 $enabling_objective->id = filter_input(INPUT_GET, 'enablingObjectiveID', FILTER_VALIDATE_INT);
 $enabling_objective->load();
 $result                 = $enabling_objective->getAccomplishedUsers(filter_input(INPUT_GET, 'group', FILTER_VALIDATE_INT));
-
+error_log('enaid: '.filter_input(INPUT_GET, 'enablingObjectiveID', FILTER_VALIDATE_INT).' group: '.filter_input(INPUT_GET, 'group', FILTER_VALIDATE_INT));
 $html ='<div class="modal-dialog" style="overflow-y: initial !important;">
           <div class="modal-content">
             <div class="modal-header">
@@ -43,10 +43,10 @@ $html ='<div class="modal-dialog" style="overflow-y: initial !important;">
 if ($result){
 $html .= 'Folgende Benutzer haben das Lernziel: <strong>'.$enabling_objective->enabling_objective.'</strong> bereits erreicht und können dir helfen:<br>';
 
-$users                  = new User();
-    if (count($result)> 10){$max = 10;} else {$max = count($result);}
+$users = new User();
+    if (count($result) > 10){$max = 10;} else {$max = count($result);}
     for($i = 0; $i < $max; $i++) {
-      $users->load('id', $result[$i]->id,false);
+      $users->load('id', $result[$i]->user_id,false);
       $html .= '<div class="user-block hover">
                         <img class="img-circle img-bordered-sm" src="'.$CFG->access_file.$users->avatar.'" alt="user image"><a href="#" class="pull-right btn-box-tool" onclick="formloader(\'mail\',\'gethelp\','.$users->id.');"><i class="fa fa-envelope"></i></a>
                         <span class="username">'.$users->username.'
