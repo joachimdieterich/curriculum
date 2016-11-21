@@ -455,16 +455,6 @@ function getRequest(url){
     }   
 }
 
-/**
- * show Learner who have complete this objective
- * @param {int} group
- * @param {int} enablingObjectiveID
- * @returns {html}
- */
-function getHelp(group, enablingObjectiveID) {
-    getRequest("../share/request/getHelp.php?group="+ group +"&enablingObjectiveID="+ enablingObjectiveID);
-}
-
 function curriculumdocs(link) {
     window.open(link, '_blank', '')
 }

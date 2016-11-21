@@ -22,11 +22,11 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-$base_url   = dirname(__FILE__).'/../';
+$base_url        = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER, $CFG;
-$USER                   = $_SESSION['USER'];
+$USER            = $_SESSION['USER'];
 
 $subject_id      = '';
 $subject         = '';

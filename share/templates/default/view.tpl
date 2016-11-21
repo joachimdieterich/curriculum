@@ -109,7 +109,7 @@
                                                 {/if}
                                             {/if}
                                             {if !isset($showaddObjectives) AND checkCapabilities('user:getHelp', $my_role_id, false)}
-                                                <span class="fa fa-support invert pull-right box-sm-icon text-primary"  data-toggle="tooltip" title="Gruppenmitglied kontaktieren" onclick="getHelp({$page_group}, {$ena->id});"></span>
+                                                <span class="fa fa-support invert pull-right box-sm-icon text-primary"  data-toggle="tooltip" title="Gruppenmitglied kontaktieren" onclick='formloader("support","random", {$ena->id},{["group_id"=>$page_group]|@json_encode nofilter});'></span>
                                             {/if} 
                                             {if !isset($showaddObjectives) AND checkCapabilities('file:solutionUpload', $my_role_id, false)}
                                                 {foreach item=s from=$solutions}

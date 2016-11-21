@@ -22,42 +22,44 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-$base_url               = dirname(__FILE__).'/../';
+$base_url = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER, $CFG;
-$USER                   = $_SESSION['USER'];
+$USER     = $_SESSION['USER'];
+$func     = $_GET['func']; //not used yet
+switch ($func) {
+    case 'random':  $enabling_objective     = new EnablingObjective();
+                    $enabling_objective->id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);//filter_input(INPUT_GET, 'enablingObjectiveID', FILTER_VALIDATE_INT);
+                    $enabling_objective->load();
+                    $result                 = $enabling_objective->getAccomplishedUsers(filter_input(INPUT_GET, 'group_id', FILTER_VALIDATE_INT));
+        break;
+    default:
+        break;
+}
+$header = "Unterstützung anfordern";
 
-$enabling_objective     = new EnablingObjective();
-$enabling_objective->id = filter_input(INPUT_GET, 'enablingObjectiveID', FILTER_VALIDATE_INT);
-$enabling_objective->load();
-$result                 = $enabling_objective->getAccomplishedUsers(filter_input(INPUT_GET, 'group', FILTER_VALIDATE_INT));
-error_log('enaid: '.filter_input(INPUT_GET, 'enablingObjectiveID', FILTER_VALIDATE_INT).' group: '.filter_input(INPUT_GET, 'group', FILTER_VALIDATE_INT));
-$html ='<div class="modal-dialog" style="overflow-y: initial !important;">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closePopup(\'null\')"><span aria-hidden="true">×</span></button>
-              <h4 class="modal-title">Hilfe </h4>
-            </div>
-            <div class="modal-body" style="max-height: 500px; overflow-y: auto;">';
 if ($result){
-$html .= 'Folgende Benutzer haben das Lernziel: <strong>'.$enabling_objective->enabling_objective.'</strong> bereits erreicht und können dir helfen:<br>';
+    $content = 'Folgende Benutzer haben das Lernziel: <strong>'.$enabling_objective->enabling_objective.'</strong> bereits erreicht und können dir helfen:<br>';
 
-$users = new User();
+    $users   = new User();
     if (count($result) > 10){$max = 10;} else {$max = count($result);}
     for($i = 0; $i < $max; $i++) {
       $users->load('id', $result[$i]->user_id,false);
-      $html .= '<div class="user-block hover">
-                        <img class="img-circle img-bordered-sm" src="'.$CFG->access_file.$users->avatar.'" alt="user image"><a href="#" class="pull-right btn-box-tool" onclick="formloader(\'mail\',\'gethelp\','.$users->id.');"><i class="fa fa-envelope"></i></a>
-                        <span class="username">'.$users->username.'
-                        </span>
+      $content .= '<div class="user-block hover">
+                        <img class="img-circle img-bordered-sm" src="'.$CFG->access_file.$users->avatar.'" alt="user image">
+                            <a href="#" class="pull-right btn-box-tool" onclick="formloader(\'mail\',\'gethelp\','.$users->id.');"><i class="fa fa-envelope"></i></a>
+                        <span class="username">'.$users->username.'</span>
                         <span class="description">'.$users->firstname.' '.$users->lastname.'</span>
                       </div><br>';
     }
 } else {
-    $html .= ' Leider gibt es keinen Benutzer, der dieses Lernziel erreicht hat';
+    $content .= ' Leider gibt es keinen Benutzer, der dieses Lernziel erreicht hat';
 }
-$html .= '</div></div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->';
+$footer = '';
+
+$html     = Form::modal(array('title'     => $header,
+                              'content'   => $content, 
+                              'f_content' => $footer));  
 
 echo json_encode(array('html'=>$html));
