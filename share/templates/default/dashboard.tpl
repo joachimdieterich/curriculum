@@ -30,18 +30,14 @@
                     </div><!-- /.box-header -->
                 <div class="box-body">
                 {if isset($enabledObjectives)} 
-                  Hier siehst du, welche Ziele du in den letzten <strong>{$my_acc_days}</strong> Tagen erreicht hast.
-                      {foreach key=enaid item=ena from=$enabledObjectives}
-                          <div class="panel panel-success">
-                              <div class="panel-heading">
-                                <h3 class="panel-title"> {$ena->curriculum}<span class="pull-right">{$ena->accomplished_teacher}</span></h3>
-                              </div>
-                              <div class="panel-body">
-                                  {$ena->enabling_objective|truncate:100}<!--{$ena->description}-->
-                              </div> 
-                          </div>
-                      {/foreach}
-                  {else}<p>In den letzten <strong>{$my_acc_days}</strong> Tagen hast du keine Ziele abgeschlossen.</p>{/if}
+                Ziele die in den vergangenen <strong>{$my_acc_days}</strong> Tagen den Status geändert haben.
+                    {foreach key=enaid item=ena from=$enabledObjectives}
+                        <div class="callout {$box_bg[$ena->accomplished_status_id]}">
+                            <p><strong>{$ena->curriculum}</strong><span class="badge pull-right" data-toggle="tooltip" title="Lernstand gesetzt von ...">{$ena->accomplished_teacher}</span></p>
+                            {$ena->enabling_objective|truncate:100}
+                        </div>
+                    {/foreach}
+                {else}<p>In den letzten <strong>{$my_acc_days}</strong> Tagen hast du keine Ziele abgeschlossen.</p>{/if}
                 </div>
             </div>  
         </div>

@@ -495,17 +495,32 @@ class EnablingObjective {
      * @global int $USER
      * @return mixed 
      */
-    public function getLastEnablingObjectives(){
+    public function getObjectiveStatusChanges($status = 'all'){
         global $USER;
-        $db = DB::prepare('SELECT ena.*, SUBSTRING(cur.curriculum, 1, 20) AS curriculum, usa.status_id as status_id, 
-                            usa.accomplished_time as accomplished_time, usa.creator_id as teacher_id, us.firstname, us.lastname
-                        FROM enablingObjectives AS ena, user_accomplished AS usa, curriculum AS cur, users AS us
-                        WHERE ena.id = usa.reference_id
-                        AND usa.context_id = 12
-                        AND us.id = usa.creator_id
-                        AND ena.curriculum_id = cur.id AND usa.user_id = ? AND (usa.status_id = 1 OR usa.status_id = 11 OR usa.status_id = 21 OR usa.status_id = 31)
-                        AND usa.accomplished_time > DATE_SUB(now(), INTERVAL ? DAY)');
-        $db->execute(array($USER->id, $USER->acc_days));
+        switch ($status) {
+            case 'success': $db = DB::prepare('SELECT ena.*, SUBSTRING(cur.curriculum, 1, 20) AS curriculum, usa.status_id as status_id, 
+                                usa.accomplished_time as accomplished_time, usa.creator_id as teacher_id, us.firstname, us.lastname
+                            FROM enablingObjectives AS ena, user_accomplished AS usa, curriculum AS cur, users AS us
+                            WHERE ena.id = usa.reference_id
+                            AND usa.context_id = 12
+                            AND us.id = usa.creator_id
+                            AND ena.curriculum_id = cur.id AND usa.user_id = ? AND usa.status_id IN ("1","01","x1","11","21","31","2","01","x2","22","32")
+                            AND usa.accomplished_time > DATE_SUB(now(), INTERVAL ? DAY)');
+                            $db->execute(array($USER->id, $USER->acc_days));
+                break;
+            case 'all':     $db = DB::prepare('SELECT ena.*, SUBSTRING(cur.curriculum, 1, 20) AS curriculum, usa.status_id as status_id, 
+                                usa.accomplished_time as accomplished_time, usa.creator_id as teacher_id, us.firstname, us.lastname
+                            FROM enablingObjectives AS ena, user_accomplished AS usa, curriculum AS cur, users AS us
+                            WHERE ena.id = usa.reference_id
+                            AND usa.context_id = 12
+                            AND us.id = usa.creator_id
+                            AND ena.curriculum_id = cur.id AND usa.user_id = ? 
+                            AND usa.accomplished_time > DATE_SUB(now(), INTERVAL ? DAY)');
+                            $db->execute(array($USER->id, $USER->acc_days));
+            default:
+                break;
+        }
+        
         while($result = $db->fetchObject()) { 
             $this->id                      = $result->id;
             $this->enabling_objective      = $result->enabling_objective;
@@ -528,9 +543,7 @@ class EnablingObjective {
         $objectives = NULL;
         }
     return $objectives;
-    }
-    
-    
+    } 
     
     /**
      * get data for user report
