@@ -568,8 +568,7 @@ class User {
                     $_SESSION['PAGE']->message[]    = array('message' => 'Nutzereinschreibung (<strong>'.$this->username.'</strong>) in <strong>'.$groups->group.'</strong> aktualisiert.', 'icon' => 'fa-user text-success');
                 }
             } else { 
-                $db                 = DB::prepare('INSERT INTO groups_enrolments (status,group_id,user_id,creator_id) 
-                                                VALUES (1,?,?,?)');             //Status 1 == enroled
+                $db                 = DB::prepare('INSERT INTO groups_enrolments (status,group_id,user_id,creator_id) VALUES (1,?,?,?)');  //Status 1 == enroled
                 if ($db->execute(array($group_id, $this->id, $USER->id))){
                     $_SESSION['PAGE']->message[]    = array('message' => '<strong>'.$this->username.'</strong> in <strong>'.$groups->group.'</strong> eingeschrieben.', 'icon' => 'fa-user text-success');
                 }
