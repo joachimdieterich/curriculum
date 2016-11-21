@@ -29,40 +29,27 @@ try { // Error handling
     $PAGE           = new stdClass();
     $PAGE->action   = filter_input(INPUT_GET, 'action', FILTER_UNSAFE_RAW);
     if (!$PAGE->action) { $PAGE->action = 'login'; $_SESSION['lock'] = false;}
- switch ($PAGE->action) {                                  
-     case 'login':  $TEMPLATE->assign('page_action',      'login');                                      
-     //case 'install':  
-         break;
-     
-     default:   if(filter_input(INPUT_GET, 'mySemester', FILTER_VALIDATE_INT)){                                          // Lernzeitraum wurde gewechselt --> vor session.php damit Änderungen übernommen werden
-                    $_SESSION['USER']->semester_id    = filter_input(INPUT_GET, 'mySemester', FILTER_VALIDATE_INT);      // Neuer Lernzeitraum übernehmen
-                    $TEMPLATE->assign('my_semester_id', $_SESSION['USER']->semester_id); 
-                    $change_semester      = new Semester($_SESSION['USER']->semester_id);
-                    $us = new User();                                                                                     // $USER hier noch nicht verfügbar
-                    $us->id = $_SESSION['USER']->id;
-                    $us->setSemester($_SESSION['USER']->semester_id);
-                    $_SESSION['USER'] = NULL;                                                                             // Beim Wechsel des Lerzeitraumes muss Session neu geladen werden, damit die entsprechende Rolle geladen wird.
-                }   
+    switch ($PAGE->action) {                                  
+        case 'login':  $TEMPLATE->assign('page_action',      'login');                                      
+        //case 'install':  
+            break;
 
-                require ('../share/session.php');                                                           // Erst Session aufbauen damit $USER verfügbar ist, dann login-check!
-                require ('../share/login-check.php');                                                       // Check ob Session abgelaufen ist
+        default:   require ('../share/session.php');                                                           // Erst Session aufbauen damit $USER verfügbar ist, dann login-check!
+                   require ('../share/login-check.php');                                                       // Check ob Session abgelaufen ist
 
-                $TEMPLATE->assign('mySemester',         $_SESSION['SEMESTER']);                                     // ARRAY mit Lernzeiträumen in die der USER eingeschrieben ist.
-                if (isset($_SESSION['username'])){
-                    $TEMPLATE->assign('loginname',      $_SESSION['username']);                                      
-                }
-                $TEMPLATE->assign('stat_users_online',  $USER->usersOnline($USER->institutions));  
-                $statistics = new Statistic();
-                $TEMPLATE->assign('stat_acc_all',       $statistics->getAccomplishedObjectives('all'));  
-                $TEMPLATE->assign('stat_acc_today',     $statistics->getAccomplishedObjectives('today'));  
-                $TEMPLATE->assign('stat_users_today',   $statistics->getUsersOnline('today'));  
-                detect_reload();   
-                    
-         break;
- }
- 
-    
-    
+                   $TEMPLATE->assign('mySemester',         $_SESSION['SEMESTER']);                                     // ARRAY mit Lernzeiträumen in die der USER eingeschrieben ist.
+                   if (isset($_SESSION['username'])){
+                       $TEMPLATE->assign('loginname',      $_SESSION['username']);                                      
+                   }
+                   $TEMPLATE->assign('stat_users_online',  $USER->usersOnline($USER->institutions));  
+                   $statistics = new Statistic();
+                   $TEMPLATE->assign('stat_acc_all',       $statistics->getAccomplishedObjectives('all'));  
+                   $TEMPLATE->assign('stat_acc_today',     $statistics->getAccomplishedObjectives('today'));  
+                   $TEMPLATE->assign('stat_users_today',   $statistics->getUsersOnline('today'));  
+                   detect_reload();   
+            break;
+    }
+
     /** highlight */
     if (isset($_SESSION['highlight'])){
         $TEMPLATE->assign('highlight', $_SESSION['highlight']);
@@ -133,5 +120,4 @@ try {
     $TEMPLATE->display($CFG->smarty_template_dir.'error-404.tpl');
 } catch (Exception $e) {
     $TEMPLATE->display($CFG->smarty_template_dir.'error-500.tpl');
-} 
-  
+}  
