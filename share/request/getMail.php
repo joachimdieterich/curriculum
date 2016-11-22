@@ -27,15 +27,14 @@ $base_url = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen 
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER;
-$USER           = $_SESSION['USER'];
-
-$mail           = new Mail();
-$mail->id       = filter_input(INPUT_GET, 'mailID', FILTER_VALIDATE_INT);
+$USER      = $_SESSION['USER'];
+$mail      = new Mail();
+$mail->id  = filter_input(INPUT_GET, 'mailID', FILTER_VALIDATE_INT);
 
 $mail->loadMail($mail->id, true);                                                               // Mail laden uns status setzen -> gelesen
-Render::mail($mail, filter_input(INPUT_GET, 'box', FILTER_SANITIZE_STRING));                    // Render mail
+echo  Render::mail($mail, filter_input(INPUT_GET, 'box', FILTER_SANITIZE_STRING));              // Render mail
 
 $correspondence = $mail->loadCorrespondence($mail->id, $mail->sender_id, $mail->receiver_id);   // Render correspondence
 for($i = 1; $i < count($correspondence); $i++) {
-    Render::mail($correspondence[$i]); 
+    echo  Render::mail($correspondence[$i]); 
 }
