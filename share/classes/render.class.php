@@ -188,25 +188,20 @@ class Render {
             case '.jpg':    $content     = '<img src="'.$CFG->access_file.$file->context_path.$file->path.$file->filename.'" style="width:100%;"/>';
                 break;
             case '.pdf':    $content     = '<div id="pdf_'.$file->id.'" style="width:100%; height: 600px;"></div>';
-                            $script      = '<script>PDFObject.embed("'.$file->getFileUrl().'", "#pdf_'.$file->id.'");</script>';
                 break;
-            case '.rtf':    //include_once $CFG->lib_root.'rtf-html-php-master/rtf-html-php.php';
-                            $reader      = new RtfReader();
+            case '.rtf':    $reader      = new RtfReader();
                             $reader->Parse(file_get_contents($CFG->curriculumdata_root.$file->context_path.$file->path.$file->filename));
                             $formatter   = new RtfHtml();
                             $content     = utf8_encode('<div padding>'.$formatter->Format($reader->root).'</div>');
-                            $padding     = 'padding:10px;';     
                 break;
-            case '.txt':
-                            $content     = '<p style="width:100%;">'.nl2br(htmlspecialchars(file_get_contents($CFG->curriculumdata_root.$file->context_path.$file->path.$file->filename))).'</p>';
-                            $padding     = 'padding:10px;';
+            case '.txt':    $content     = '<p style="width:100%;">'.nl2br(htmlspecialchars(file_get_contents($CFG->curriculumdata_root.$file->context_path.$file->path.$file->filename))).'</p>';
                 break;
             case '.url':    $content     ='<iframe src="'.$file->filename.'" style="width:100%; height: 600px;"></iframe>';
                 break;
             default:        if (checkCapabilities('plugin:useEmbeddableGoogleDocumentViewer', $USER->role_id, false) AND !is_array(getimagesize($CFG->curriculumdata_root.$file->full_path))){
                                 $content = '<iframe src="http://docs.google.com/gview?url='.$CFG->access_token_url .$file->addFileToken($file->id).'" style="width:100%; height:500px;" frameborder="0"></iframe>';
                             } else {
-                                $content = RENDER::thumb(array($file->id), null, 'div');//$file->renderFile();
+                                $content = RENDER::thumb(array($file->id), null, 'div');
                             }
                 break;
         }
@@ -369,7 +364,7 @@ class Render {
         } 
         $thumbs = Render::link($mail->message, 'message');
         $mail->message = Render::accomplish($mail->message, $sender->id, $receiver->id);
-        echo '<div class="box box-primary">
+        $content = '<div class="box box-primary">
                 <div class="box-header with-border">
                   <h3 class="box-title">Nachricht</h3>
                   <div class="box-tools pull-right" >
@@ -402,19 +397,24 @@ class Render {
                 <div class="box-footer">
                   <ul class="mailbox-attachments clearfix">';
                   if (count($thumbs) > 0){
-                  echo '<i class="fa fa-paperclip"></i><strong> Anhang: </strong>';
+                  $content .= '<i class="fa fa-paperclip"></i><strong> Anhang: </strong>';
                   }
                     foreach ($thumbs as $t) {
                         $file     = new File();
                         $file->id = $t;
                         if ($file->load()){
-                            echo $file->filename;
-                            echo Render::file($file);
+                            $content .= $file->filename;
+                            switch ($file->type) {
+                                case '.pdf':    $content .= ' <a href="#" class="btn btn-default btn-xs" data-toggle="tooltip" title="Vorschau" onclick="formloader(\'preview\',\'file\','.$file->id.');"><i class="fa fa-eye"></i></a>';
+                                    break;
+                                default:      $content .= Render::file($file);
+                                    break;
+                            }
                         } else {
-                            echo 'Datei wurde gelöscht.';
+                            $content .= 'Datei wurde gelöscht.';
                         }
                     }   
-          echo '  </ul>
+          $content .= '  </ul>
                 </div><!-- /.box-footer -->
                 <!--div class="box-footer">
                   <div class="pull-right">
@@ -425,7 +425,7 @@ class Render {
                   <button class="btn btn-default"><i class="fa fa-print"></i> Print</button>
                 </div--><!-- /.box-footer -->
               </div><!-- /. box -->';
-        
+        return $content;
     }
     
     public static function popup($titel, $content, $url = false, $btn = 'OK') {
