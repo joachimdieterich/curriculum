@@ -115,11 +115,11 @@ class Pdf {
                         if ($ter_value->id == $ena_value->terminal_objective_id){
                             $e = $o_2;
                             $e = str_replace("<!--Ziel-->", strip_tags($ena_value->enabling_objective), $e);
-                            if ($ena_value->accomplished_status_id == 1){
+                            if (in_array($ena_value->accomplished_status_id, array("01","1","x1","11","21","31")) ){
                                 $e = str_replace("<!--Ziel_erreicht-->", '<span style="font-family: Arial Unicode MS, Lucida Grande">&#10004;</span>', $e);
                                 $e = str_replace("<!--Ziel_mit_Hilfe_erreicht-->", '', $e);
                                 $e = str_replace("<!--Ziel_offen-->", '', $e);
-                           } else if ($ena_value->accomplished_status_id == 2){
+                           } else if (in_array($ena_value->accomplished_status_id, array("02","2","x2","12","22","32"))){
                                 $e = str_replace("<!--Ziel_mit_Hilfe_erreicht-->", '<span style="font-family: Arial Unicode MS, Lucida Grande">&#10004;</span>', $e);
                                 $e = str_replace("<!--Ziel_offen-->", '', $e);
                            } else {
@@ -129,7 +129,7 @@ class Pdf {
                            } 
                            
                             /* <ziel></ziel> auflösen */        
-                            global $egl;
+                           /* global $egl; //TODO: doesn't work with new status ids yet
                             $egl = $ena_value;   
                             $e   =  preg_replace_callback('/<ziel status="(\d+)+" (class="[\w ]+")? *(style="[\!;\-:\w ]+")?><\/ziel>/',      
                                 function($r){ 
@@ -142,7 +142,7 @@ class Pdf {
                                 } else {
                                     return '';
                                 }
-                            }, $e); 
+                            }, $e); */
                             /* <ziel></ziel> auflösen */ 
                            $mpdf->WriteHTML($e, 2);
                         }
