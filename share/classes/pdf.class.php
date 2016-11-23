@@ -108,13 +108,13 @@ class Pdf {
            if ($end != 0){ 
                 foreach ($ter as $ter_value) {
                     $t  = $o_1;
-                    $t  = str_replace("<!--Thema-->", $ter_value->terminal_objective, $t);
+                    $t  = str_replace("<!--Thema-->", convert_html_to_text($ter_value->terminal_objective), $t);
                     $mpdf->WriteHTML($t, 2);
 
                     foreach ($ena as $ena_value) {
                         if ($ter_value->id == $ena_value->terminal_objective_id){
                             $e = $o_2;
-                            $e = str_replace("<!--Ziel-->", $ena_value->enabling_objective, $e);
+                            $e = str_replace("<!--Ziel-->", convert_html_to_text($ena_value->enabling_objective), $e);
                             if ($ena_value->accomplished_status_id == 1){
                                 $e = str_replace("<!--Ziel_erreicht-->", '<span style="font-family: Arial Unicode MS, Lucida Grande">&#10004;</span>', $e);
                                 $e = str_replace("<!--Ziel_mit_Hilfe_erreicht-->", '', $e);
