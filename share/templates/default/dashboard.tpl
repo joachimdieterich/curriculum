@@ -34,7 +34,7 @@
                     {foreach key=enaid item=ena from=$enabledObjectives}
                         <div class="callout {$box_bg[$ena->accomplished_status_id]}">
                             <p><strong>{$ena->curriculum}</strong><span class="badge pull-right" data-toggle="tooltip" title="Lernstand gesetzt von ...">{$ena->accomplished_teacher}</span></p>
-                            {$ena->enabling_objective|truncate:100}
+                            {strip_tags($ena->enabling_objective|truncate:100)}
                         </div>
                     {/foreach}
                 {else}<p>In den letzten <strong>{$my_acc_days}</strong> Tagen hast du keine Ziele abgeschlossen.</p>{/if}
