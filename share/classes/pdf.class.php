@@ -129,20 +129,23 @@ class Pdf {
                            } 
                            
                             /* <ziel></ziel> auflösen */        
-                           /* global $egl; //TODO: doesn't work with new status ids yet
+                           global $egl; 
                             $egl = $ena_value;   
                             $e   =  preg_replace_callback('/<ziel status="(\d+)+" (class="[\w ]+")? *(style="[\!;\-:\w ]+")?><\/ziel>/',      
                                 function($r){ 
                                 global $egl;
+                                error_log(strip_tags($egl->enabling_objective).': status_id'.$egl->accomplished_status_id);
                                 if ($egl->accomplished_status_id == '') {$egl->accomplished_status_id = 3;} // wenn Status noch nicht gesetzt wurde
-                                if ($egl->accomplished_status_id == $r[1] ){
-                                    return '<div '.$r[2].'>- '.$egl->enabling_objective.'</div>';
-                                } else if ($egl->accomplished_status_id == '') {
-                                    return '<div>- '.$egl->enabling_objective.'</div>';
+                                if (in_array($egl->accomplished_status_id, array("01","1","x1","11","21","31")) AND in_array($r[1] , array("01","1","x1","11","21","31"))){
+                                    return '<div '.$r[2].'>- '.strip_tags($egl->enabling_objective).'</div>';
+                                } else if (in_array($egl->accomplished_status_id, array("02","2","x2","12","22","32")) AND in_array($r[1] , array("02","2","x2","12","22","32"))){
+                                    return '<div '.$r[2].'>- '.strip_tags($egl->enabling_objective).'</div>';
+                                } else if (in_array($egl->accomplished_status_id, array("03","3","x3","13","23","33")) AND in_array($r[1] , array("03","3","x3","13","23","33"))){
+                                    return '<div '.$r[2].'>- '.strip_tags($egl->enabling_objective).'</div>';
                                 } else {
                                     return '';
                                 }
-                            }, $e); */
+                            }, $e); 
                             /* <ziel></ziel> auflösen */ 
                            $mpdf->WriteHTML($e, 2);
                         }
