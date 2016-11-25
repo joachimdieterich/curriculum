@@ -27,14 +27,6 @@ global $USER, $PAGE, $TEMPLATE;
 
 $groups      = new Group();
 $institution = new Institution();
-
-/*$TEMPLATE->assign('showFunctions', true);
-
-if (isset($_GET['function'])) {
-    $TEMPLATE->assign('showFunctions', false);  
-    $current_user     = new User();
-    $current_user->id = filter_input(INPUT_GET, 'userID', FILTER_VALIDATE_INT);    
-}*/
         
 if (isset($_POST) ){
     $edit_user = new User(); 

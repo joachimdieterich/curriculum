@@ -57,7 +57,7 @@ function smarty_function_html_paginator($params, $template) {
         }
     }
     
-    if (!isset($values) AND !strpos($url, 'paginator_search')){ return 'Keine Datensätze vorhanden.'; } 
+    if (!isset($values) AND !SmartyPaginate::_getSearch($id)){ return 'Keine Datensätze vorhanden.'; } 
     $html  = '<div class="row"><div class="'.$width.'">';
     if (null !== SmartyPaginate::_getSearch($id)){
         $html .= '<span class="pull-left"><a class="fa fa-close" href="'.removeUrlParameter($url, array ( 0 => 'paginator', 1 => 'p_reset')).'&paginator='.$id.'&p_reset=true"></a> Suche "'.SmartyPaginate::_getSearch($id).'"</span>';
@@ -89,6 +89,7 @@ function smarty_function_html_paginator($params, $template) {
               </div><br>'; 
 
 /* Table */
+if (isset($values)){
 $html .= '<div class="clearfix"><br><table class="table table-bordered table-striped dataTable" role="grid" ';
     if (isset($table_id['id'])){        
         $html .= 'id="'.$table_id['id'].'"';
@@ -230,6 +231,7 @@ $html .= '<div class="clearfix"><br><table class="table table-bordered table-str
         $html .= ' | '.count($selected_id).' Datensätze markiert';
     }
     $html .= '</span>';
+} //end if (isset($values))
     /* Hack: es soll user*/
     $html .=  '<input class="invisible" type="checkbox" name="id[]" value="none" checked /></div></div>';
     return $html;

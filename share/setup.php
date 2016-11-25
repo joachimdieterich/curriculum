@@ -104,6 +104,8 @@ if (filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW)){
 }
 
 if (filter_input(INPUT_GET, 'p_reset', FILTER_UNSAFE_RAW) && filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW)){
-    resetPaginator(filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW));   
-    $TEMPLATE->assign('page_url', removeUrlParameter($PAGE->url, 'p_reset'));
+    resetPaginator(filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW)); 
+    if (isset($PAGE->url)){
+        $TEMPLATE->assign('page_url', removeUrlParameter($PAGE->url, 'p_reset'));
+    }
 }
