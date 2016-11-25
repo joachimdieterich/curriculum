@@ -47,7 +47,6 @@ $TEMPLATE->assign('tb_param',       $CFG->tb_param);
 $TEMPLATE->assign('global_timeout', $CFG->timeout);
 $TEMPLATE->assign('message_timeout',$CFG->message_timeout);
 $TEMPLATE->assign('post_max_size',  $CFG->post_max_size);
-
 $TEMPLATE->assign('base_url',       $CFG->base_url);
 $TEMPLATE->assign('request_url',    $CFG->request_url);
 $TEMPLATE->assign('media_url',      $CFG->media_url);
@@ -59,7 +58,6 @@ $TEMPLATE->assign('support_path',   $CFG->support_path);
 $TEMPLATE->assign('subjects_path',  $CFG->subjects_path);
 $TEMPLATE->assign('solutions_path', $CFG->solutions_path);
 $TEMPLATE->assign('template_url',   $CFG->smarty_template_dir);
-
 $TEMPLATE->assign('app_title',      $CFG->app_title);
 $TEMPLATE->assign('app_version',    $CFG->version);
 $TEMPLATE->assign('app_footer',     $CFG->app_footer);
@@ -92,14 +90,6 @@ if (filter_input(INPUT_GET, 'order', FILTER_UNSAFE_RAW) && filter_input(INPUT_GE
         unset ($_SESSION['SmartyPaginate'][filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW)]['pagi_search']);
     } else {
         SmartyPaginate::setSearch(filter_input(INPUT_GET, 'order', FILTER_UNSAFE_RAW),filter_input(INPUT_GET, 'paginator_search', FILTER_UNSAFE_RAW), filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW));
-    }
-}
-if (filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW)){
-    $selection = filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW).'_sel_id';
-    if (null != filter_input(INPUT_GET, $selection , FILTER_UNSAFE_RAW)){
-        SmartyPaginate::setSelection(explode(",",filter_input(INPUT_GET, $selection , FILTER_UNSAFE_RAW)), filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW));
-    } else {
-        SmartyPaginate::setSelection('',filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW));
     }
 }
 

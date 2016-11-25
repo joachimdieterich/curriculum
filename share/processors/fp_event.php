@@ -59,10 +59,12 @@ if($validated_data === false) {/* validation failed */
     $_SESSION['FORM']->func      = $_POST['func'];
 } else {
     if ($_POST['func'] == 'edit'){
-        $event->id         = $_POST['event_id'];
+        $event->id               = $_POST['event_id'];
         $event->update();
+        $_SESSION['PAGE']->message[] = array('message' => 'Lerngruppe aktualisiert', 'icon' => 'fa-group text-success');
     }  else {
         $event->add(); 
+        $_SESSION['PAGE']->message[] = array('message' => 'Lerngruppe hinzugefügt', 'icon' => 'fa-group text-success');
     }
     $_SESSION['FORM']            = null;                     // reset Session Form object 
 }

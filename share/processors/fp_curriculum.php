@@ -53,10 +53,9 @@ $gump->validation_rules(array(
 
 
 if (isset($_POST['id'])){
-    $curriculum->id         = filter_input(INPUT_POST, 'id',          FILTER_VALIDATE_INT);
+    $curriculum->id         = filter_input(INPUT_POST, 'id',             FILTER_VALIDATE_INT);
 }
-$curriculum->curriculum     = filter_input(INPUT_POST, 'curriculum',  FILTER_SANITIZE_STRING);
-//$curriculum->description    = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);  
+$curriculum->curriculum     = filter_input(INPUT_POST, 'curriculum',     FILTER_SANITIZE_STRING);
 $curriculum->subject_id     = filter_input(INPUT_POST, 'subject_id',     FILTER_VALIDATE_INT);
 $curriculum->grade_id       = filter_input(INPUT_POST, 'grade_id',       FILTER_VALIDATE_INT);
 $curriculum->schooltype_id  = filter_input(INPUT_POST, 'schooltype_id',  FILTER_VALIDATE_INT);

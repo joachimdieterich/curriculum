@@ -123,33 +123,53 @@ function mail(mail_id, mailbox) {
         }
     }   
 }
+
+function update_paginator(paginator){
+    if (req.readyState === 4) {  
+        if (req.status === 200) {
+            if (req.responseText.length !== 0){
+                $("[id^=row]").removeClass("bg-aqua");
+                $("[id^="+paginator+"_]").prop("checked", false);
+                response = JSON.parse(req.responseText);
+                if (typeof(response.length) === 'undefined'){
+                    document.getElementById('count_selection').innerHTML = 0; 
+                    $("[id^="+paginator+"_]").prop("checked", false);
+                    $("#p_unselect").prop("checked", false);
+                    $(document.getElementById("span_unselect")).removeClass("visible");
+                    $(document.getElementById("span_unselect")).addClass("hidden");
+                } else {
+                    document.getElementById('count_selection').innerHTML = response.length; 
+                    for (i = 0; i < response.length; i++) { 
+                        $("#"+paginator+"_"+response[i]).prop("checked", true);  
+                        $("#row"+response[i]).addClass("bg-aqua");
+                    }
+                    $(document.getElementById("span_unselect")).removeClass("hidden");
+                    $(document.getElementById("span_unselect")).addClass("visible");
+                }
+            }
+        }
+    }  
+}
 /**
  * 
  * @param {int} rowNr
  * @returns {undefined}
  */
 function checkrow(/*rowNr,link*/) {
-    if (arguments.length === 1) { // Auswahl eines Benutzers
-        var ch = document.getElementById(arguments[0]);
-        
-        if(ch) {
-            if (ch.checked === false){
-                ch.checked = true; 
-                document.getElementById('row'+arguments[0]).className = 'activecontenttablerow';
-            } else {
-                ch.checked = false;
-                document.getElementById('row'+arguments[0]).className = 'contenttablerow';
-            }  
-        }
+    paginator = arguments[1];
+    var url = "../share/processors/p_config.php?func=paginator_checkrow&val="+ arguments[0] +"&paginator="+paginator;
+
+    req = XMLobject();
+    if(req) {  
+        req.onreadystatechange = function(){
+            update_paginator(paginator);
+        };
+        req.open("GET", url, false); //false --> important for print function
+        req.send(null);
     }
-    if (arguments.length === 4) { //multiple Auswahl über die Checkboxen (Lernstand)
-        var values = new Array();           //Array of all checked values
-        $.each($('[name="'+arguments[1]+'"]:checked'), function() {
-            if ($(this).val() !== 'none'){
-                values.push($(this).val());                             
-            }
-        });
-        window.location.assign(arguments[3]+'&'+arguments[2]+'_sel_id='+values);        
+    
+    if (arguments.length === 3) { //reload with given url
+        window.location.assign(arguments[2]);        
     }
 }
 

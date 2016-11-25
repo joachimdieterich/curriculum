@@ -55,6 +55,8 @@ switch ($func) {
                         
     case "paginator_order": SmartyPaginate::setSort(filter_input(INPUT_GET, 'order', FILTER_SANITIZE_STRING),filter_input(INPUT_GET, 'sort', FILTER_SANITIZE_STRING), filter_input(INPUT_GET, 'paginator', FILTER_SANITIZE_STRING));
         break;
+    case "paginator_checkrow": echo json_encode(SmartyPaginate::setSelection(filter_input(INPUT_GET, 'val', FILTER_SANITIZE_STRING), filter_input(INPUT_GET, 'paginator', FILTER_SANITIZE_STRING)));
+        break;
                             
     default: break;
 }

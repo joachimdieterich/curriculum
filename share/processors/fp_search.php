@@ -35,8 +35,7 @@ switch ($_POST['func']) {
                                 $s          = new Search();
                                 $s->id      = $id;
                                 $s->search  = $search;
-                                $result     = $s->view();  
-                            
+                                $result     = $s->view();                 
                                 $highlight  = array();
                                 foreach($result AS $r){
                                     if (isset($r->enabling_objective)){
@@ -47,7 +46,6 @@ switch ($_POST['func']) {
                                 }
                                 $_SESSION['highlight'] = $highlight;
                             }
-
         break;
     case 'view':            $_SESSION['FORM']            = new stdClass();
                             $_SESSION['FORM']->form      = 'search';

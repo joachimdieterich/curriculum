@@ -367,7 +367,7 @@ class EnablingObjective {
                                                         WHERE ua.reference_id = ?
                                                         AND ua.context_id = 12
                                                         AND ua.user_id IN ('.implode(",", $group).')
-                                                        AND ua.status_id = 1  
+                                                        AND ua.status_id IN ("1","01","x1","11","21","31")  
                                                         AND ie.user_id = ua.user_id
                                                         AND ie.institution_id = gp.institution_id
                                                         AND ge.user_id = ua.user_id
@@ -384,7 +384,7 @@ class EnablingObjective {
                                                         WHERE ua.reference_id = ?
                                                         AND ua.context_id
                                                         AND ua.user_id IN ('.implode(",", $group).')
-                                                        AND ua.status_id = 2        
+                                                        AND ua.status_id IN ("2","01","x2","22","32")          
                                                         AND ie.user_id = ua.user_id
                                                         AND ie.institution_id = gp.institution_id
                                                         AND ge.user_id = ua.user_id
@@ -400,7 +400,7 @@ class EnablingObjective {
                                                         WHERE ua.reference_id = ?
                                                         AND ua.context_id
                                                         AND ua.user_id IN ('.implode(",", $group).')
-                                                        AND ua.status_id = 0        
+                                                        AND ua.status_id IN ("0","00","x0","10","20","30")        
                                                         AND ie.user_id = ua.user_id
                                                         AND ie.institution_id = gp.institution_id
                                                         AND ge.user_id = ua.user_id

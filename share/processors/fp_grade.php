@@ -32,12 +32,10 @@ if (!isset($_SESSION['PAGE']->target_url)){     //if target_url is not set -> us
 $grade                 = new Grade();
 $gump                  = new Gump();    /* Validation */
 $_POST                 = $gump->sanitize($_POST);       //sanitize $_POST
-
 $grade->id             = $_POST['grade_id']; 
 $grade->grade          = $_POST['grade']; 
 $grade->description    = $_POST['description'];  
 $grade->institution_id = $_POST['institution_id']; 
-//$grade->creator_id     = $USER->id; // now set in add function
 
 // todo alle Regeln definieren
 $gump->validation_rules(array(
