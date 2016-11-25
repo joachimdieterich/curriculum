@@ -62,8 +62,10 @@ if($validated_data === false) {/* validation failed */
     if ($_POST['func'] == 'edit'){
         $certificate->id         = $_POST['cert_id'];
         $certificate->update();
+        $_SESSION['PAGE']->message[] = array('message' => 'Zertifikat aktualisiert', 'icon' => 'fa-files-o text-success');
     }  else {
         $certificate->id = $certificate->add(); 
+        $_SESSION['PAGE']->message[] = array('message' => 'Zertifikat hinzugefügt', 'icon' => 'fa-files-o text-success');
     }
     $_SESSION['FORM']            = null;                     // reset Session Form object 
 }

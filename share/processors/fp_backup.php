@@ -50,6 +50,7 @@ if($validated_data === false) {/* validation failed */
 } else {
     if ($_POST['func'] == 'new'){
         $backup->add($curriculum_id, true, false);           // 2. arg = generate  xml backup //todo: 3. parameter =generate imscc
+        $_SESSION['PAGE']->message[] = array('message' => 'Backup hinzufgefügt', 'icon' => 'fa-cloud-download text-success');
     }
     $_SESSION['FORM']            = null;                     // reset Session Form object 
 }

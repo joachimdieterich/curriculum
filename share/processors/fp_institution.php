@@ -57,7 +57,6 @@ if($validated_data === false) {/* validation failed */
     $new_institution->schooltype_id     = filter_input(INPUT_POST, 'schooltype_id',     FILTER_VALIDATE_INT);
     $new_institution->country_id        = filter_input(INPUT_POST, 'country_id',        FILTER_VALIDATE_INT);
     $new_institution->state_id          = filter_input(INPUT_POST, 'state_id',          FILTER_VALIDATE_INT);
-    //$new_institution->creator_id        = $USER->id; // system user // now set in add function
     $new_institution->confirmed         = 1;  // institution is confirmed
     $new_institution->paginator_limit   = filter_input(INPUT_POST, 'paginator_limit',   FILTER_VALIDATE_INT);
     $new_institution->std_role          = filter_input(INPUT_POST, 'std_role',          FILTER_VALIDATE_INT);
@@ -75,11 +74,9 @@ if($validated_data === false) {/* validation failed */
                             $new_schooltype->description= filter_input(INPUT_POST, 'schooltype_description',FILTER_SANITIZE_STRING);
                             $new_schooltype->country_id = filter_input(INPUT_POST, 'country',           FILTER_VALIDATE_INT);
                             $new_schooltype->state_id   = filter_input(INPUT_POST, 'state',             FILTER_VALIDATE_INT);
-                            //$new_schooltype->creator_id =  $USER->id;  // now set in add function
                             $_POST['schooltype_id']     = $new_schooltype->add(); 
                         }
                         $new_institution->schooltype_id = filter_input(INPUT_POST, 'schooltype_id',    FILTER_VALIDATE_INT);
-
                         $institution_id                 = $new_institution->add();
                         $USER->enroleToInstitution($institution_id); 
                         $TEMPLATE->assign('institution_id', $institution_id);

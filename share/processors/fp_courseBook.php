@@ -44,9 +44,7 @@ $_POST = $gump->sanitize($_POST);       //sanitize $_POST
 //$course_book->event_id      = null;
 $course_book->course_id     = $_POST['course_id'];
 $course_book->timerange     = $_POST['timerange'];
-$course_book->task_id       = null;
-//$course_book->creator_id    = $USER->id; // now set in add function
-        
+$course_book->task_id       = null; 
 
 $gump->validation_rules(array(
 'topic' => 'required'
@@ -64,8 +62,10 @@ if($validated_data === false) {/* validation failed */
     if ($_POST['func'] == 'edit'){
         $course_book->id         = $_POST['id'];
         $course_book->update();
+        $_SESSION['PAGE']->message[] = array('message' => 'Kursbuch aktualisiert', 'icon' => 'fa-book text-success');
     }  else {
         $course_book->add(); 
+        $_SESSION['PAGE']->message[] = array('message' => 'Kursbuch hinzufügen', 'icon' => 'fa-book text-success');
     }
     $_SESSION['FORM']            = null;                     // reset Session Form object 
 }

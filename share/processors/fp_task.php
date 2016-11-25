@@ -29,7 +29,7 @@ $USER   = $_SESSION['USER'];
 if (!isset($_SESSION['PAGE']->target_url)){     //if target_url is not set -> use last PAGE url
     $_SESSION['PAGE']->target_url       = $_SESSION['PAGE']->url;
 }
-$task                = new Task();
+$task  = new Task();
 
 $purify = HTMLPurifier_Config::createDefault();
 $purify->set('Core.Encoding', 'UTF-8'); // replace with your encoding
@@ -38,12 +38,11 @@ $purifier = new HTMLPurifier($purify);
 
 $task->description = $purifier->purify(filter_input(INPUT_POST, 'description', FILTER_UNSAFE_RAW));                  
 
-$gump = new Gump();    /* Validation */
+$gump  = new Gump();    /* Validation */
 $_POST = $gump->sanitize($_POST);       //sanitize $_POST
 
 $task->task          = $_POST['task']; 
 $task->timerange     = $_POST['timerange']; 
-//$task->creator_id    = $USER->id; now set in add function
         
 $gump->validation_rules(array(
 'task'             => 'required'

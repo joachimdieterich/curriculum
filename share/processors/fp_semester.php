@@ -56,8 +56,10 @@ if($validated_data === false) {/* validation failed */
     if ($_POST['func'] == 'edit'){
         $semester->id  = $_POST['semester_id'];
         $semester->update();
+        $_SESSION['PAGE']->message[] = array('message' => 'Semester aktualisiert', 'icon' => 'fa-history text-success');
     } else {
         $semester->add(); 
+        $_SESSION['PAGE']->message[] = array('message' => 'Semester hinzufgefügt', 'icon' => 'fa-history text-success');
     }
     $_SESSION['FORM']            = null;                     // reset Session Form object
 }

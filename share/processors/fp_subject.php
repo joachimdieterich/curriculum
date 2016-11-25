@@ -56,8 +56,10 @@ if($validated_data === false) {/* validation failed */
     if ($_POST['func'] == 'edit'){
         $subject->id  = $_POST['subject_id'];
         $subject->update();
+        $_SESSION['PAGE']->message[] = array('message' => 'Fach aktualisiert', 'icon' => 'fa-language text-success');
     } else {
         $subject->add(); 
+        $_SESSION['PAGE']->message[] = array('message' => 'Fach hinzugefügt', 'icon' => 'fa-language text-success');
     }
     $_SESSION['FORM']            = null;                     // reset Session Form object
 }
