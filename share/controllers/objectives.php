@@ -34,7 +34,11 @@ $showuser                   = false;            //zurücksetzen
 $show_course                = false;            // zurücksetzen
 $selected_curriculum        = (isset($_GET['course']) && trim($_GET['course'] != '') ? $_GET['course'] : '_'); //'_' ist das Trennungszeichen 
 $selected_curriculumforURL  = $selected_curriculum;
-$selected_user_id           = explode(',',(isset($_GET['userPaginator_sel_id']) && trim($_GET['userPaginator_sel_id'] != '') ? $_GET['userPaginator_sel_id'] : '')); //generates array
+if (isset($_GET['p_select'])){
+    unset($_SESSION['SmartyPaginate']['userPaginator']['pagi_selection']);
+    SmartyPaginate::setSelection($_GET['p_select'], 'userPaginator');
+}
+$selected_user_id           = SmartyPaginate::_getSelection('userPaginator'); 
 
 $TEMPLATE->assign('selected_curriculum',            $selected_curriculum); 
 $TEMPLATE->assign('selected_user_id',               $selected_user_id);
@@ -95,19 +99,18 @@ if ($selected_curriculum != '') {
             $list[]     = $value->id;
         }
         $TEMPLATE->assign('userlist', implode(',', $list));  
-        
-        //$user_id_list  = array_map(function($user) { return $user->id; }, $users); 
-        
     } else {
-        $showuser   = true;
+        $showuser  = true;
     }  
     $p_options     = array('mailnew'   => array('onclick'       => 'formloader(\'mail\', \'gethelp\', __id__);',
                                                    'capability' => checkCapabilities('mail:postMail', $USER->role_id, false),
                                                    'icon'       => 'fa fa-envelope',
                                                    'tooltip'    => 'Nachricht schreiben'));
     $t_config      = array('table_id'  => array('id'         => 'contentsmalltable'),
-                           'checkbox'  => array('onclick'    => 'checkrow(\'__id__\', \'id[]\', \'userPaginator\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&paginator=userPaginator&certificate_template=\'+document.getElementById(\'certificate_template\').value);'),
-                           'td'        => array('onclick'    => 'window.location.assign(\'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&paginator=userPaginator&userPaginator_sel_id=__id__&certificate_template=\'+document.getElementById(\'certificate_template\').value);'));
+                           'page'      => array('onclick'    => 'checkrow(\'page\', \'userPaginator\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&paginator=userPaginator&certificate_template=\'+document.getElementById(\'certificate_template\').value);'),
+                           'all'       => array('onclick'    => 'checkrow(\'all\', \'userPaginator\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&paginator=userPaginator&certificate_template=\'+document.getElementById(\'certificate_template\').value);'),
+                           'checkbox'  => array('onclick'    => 'checkrow(\'__id__\', \'userPaginator\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&paginator=userPaginator&certificate_template=\'+document.getElementById(\'certificate_template\').value);'),
+                           'td'        => array('onclick'    => 'checkrow(\'__id__\', \'userPaginator\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&p_select=__id__&paginator=userPaginator&certificate_template=\'+document.getElementById(\'certificate_template\').value);'));
     if(checkCapabilities('dashboard:globalAdmin', $USER->role_id, false)){
     $p_config      = array('id'        => 'checkbox',
                            'username'  => 'Benutzername', 

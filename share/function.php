@@ -141,7 +141,8 @@ function setPaginator($instance, $template, $data, $returnVar, $currentURL, $con
         /* get all ids*/
         $all = array();
         foreach($data as $d){ $all[] = $d->id; }
-        SmartyPaginate::setSelectAll(implode(",", $all), $instance);    //set all ids of data to paginator selectall
+        SmartyPaginate::setSelectAll($all, $instance);    //set all ids of data to paginator selectall
+        //SmartyPaginate::setSelectAll(implode(",", $all), $instance);    //set all ids of data to paginator selectall
         
         $template->assign($returnVar, array_slice($data, $SmartyPaginate->getCurrentIndex($instance), $SmartyPaginate->getLimit($instance)), $instance); //hack for message paginator
         SmartyPaginate::setData(array_slice($data, $SmartyPaginate->getCurrentIndex($instance), $SmartyPaginate->getLimit($instance)), $instance);

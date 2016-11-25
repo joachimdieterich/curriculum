@@ -27,16 +27,12 @@ global $USER, $PAGE, $TEMPLATE;
 
 $groups      = new Group();
 $institution = new Institution();
-        
+//error_log(json_encode(SmartyPaginate::_getSelection('userP')));
 if (isset($_POST) ){
     $edit_user = new User(); 
-    if (isset($_POST['id'])){
-    foreach ($_POST['id'] as $edit_user->id ) { //Array per schleife abarbeiten
-        if($edit_user->id  == "none") {
-            if (count($_POST['id']) == 1){
-                $PAGE->message[] = array('message' => 'Es muss mindestens ein Nutzer ausgewählt werden!', 'icon' => 'fa-user text-warning');
-            }	
-        } else { 	
+    $sel_id    = SmartyPaginate::_getSelection('userP');
+    if (is_array($sel_id)){
+        foreach ($sel_id as $edit_user->id ) { //Array per schleife abarbeiten	
             $edit_user->load('id',$edit_user->id);      // load current user 
             switch ($_POST) {
                 case isset($_POST['resetPassword']):
@@ -77,10 +73,11 @@ if (isset($_POST) ){
             }      
         session_reload_user(); // --> get the changes immediately 
         }
+    } else {
+        $PAGE->message[] = array('message' => 'Es muss mindestens ein Nutzer ausgewählt werden!', 'icon' => 'fa-user text-warning');
     }
 }
 
-}
 /*******************************************************************************
  * END POST / GET
  */

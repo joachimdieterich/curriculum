@@ -42,16 +42,14 @@ class SmartyPaginate {
      static function connect($id = 'default', $formvar = null) {
         if(!isset($_SESSION['SmartyPaginate'][$id])) {
             SmartyPaginate::reset($id);
+            $_SESSION['SmartyPaginate'][$id]['pagi_selection'] = array();
         }
         
-        // use $_GET by default unless otherwise specified
-        $_formvar = isset($formvar) ? $formvar : $_GET;
-        
-		// set sort
-		if(isset($_formvar['p_ord']) && isset($_formvar['updown'])) {
-			$_SESSION['SmartyPaginate'][$id]['pagi_orderby'] = $_formvar['p_ord'];
-			$_SESSION['SmartyPaginate'][$id]['pagi_updown'] = $_formvar['updown'];
-		}
+        $_formvar = isset($formvar) ? $formvar : $_GET;                         // use $_GET by default unless otherwise specified
+        if(isset($_formvar['p_ord']) && isset($_formvar['updown'])) {           // set sort
+                $_SESSION['SmartyPaginate'][$id]['pagi_orderby'] = $_formvar['p_ord'];
+                $_SESSION['SmartyPaginate'][$id]['pagi_updown'] = $_formvar['updown'];
+        }
 		
         // set the current page
         $_total = SmartyPaginate::getTotal($id);
@@ -61,7 +59,6 @@ class SmartyPaginate {
 
     /**
      * see if session has been initialized
-     *
      * @param string $id the pagination id
      */
     static function isConnected($id = 'default') {
@@ -70,7 +67,6 @@ class SmartyPaginate {
         
     /**
      * reset/init the session data
-     *
      * @param string $id the pagination id
      */
     static function reset($id = 'default') {
@@ -104,7 +100,6 @@ class SmartyPaginate {
 
     /**
      * set maximum number of items per page
-     *
      * @param string $id the pagination id
      */
     static function setLimit($limit, $id = 'default') {
@@ -122,7 +117,6 @@ class SmartyPaginate {
 
     /**
      * get maximum number of items per page
-     *
      * @param string $id the pagination id
      */
     static function getLimit($id = 'default') {
@@ -131,11 +125,8 @@ class SmartyPaginate {
         } else {return false;}
     }    
             
-	/**
+    /**
      * setSort
-     *
-     * 
-     * 
      */
     static function setSort($porder, $so = "DESC", $id = 'default') {
             if(!$porder) {
@@ -151,8 +142,7 @@ class SmartyPaginate {
                 $_SESSION['SmartyPaginate'][$id]['pagi_orderby'] = $porder;
             }
             if (isset($_SESSION['SmartyPaginate'][$id]['pagi_orderby'])) {
-                    $_SESSION['SmartyPaginate'][$id]['pagi_updown'] = $so;
-                    
+                $_SESSION['SmartyPaginate'][$id]['pagi_updown'] = $so;
             }
             
     }
@@ -165,7 +155,53 @@ class SmartyPaginate {
     }
     
     static function setSelection($selection, $id = 'default'){
-        $_SESSION['SmartyPaginate'][$id]['pagi_selection'] = $selection;
+        switch ($selection) {
+            case 'page':    $data = SmartyPaginate::_getData($id);
+                            if (SmartyPaginate::getLimit($id) == count($_SESSION['SmartyPaginate'][$id]['pagi_selection'])){
+                                unset($_SESSION['SmartyPaginate'][$id]['pagi_selection']);
+                            } else {
+                                if (SmartyPaginate::getLimit($id) > SmartyPaginate::getTotal($id)){
+                                    $limit = SmartyPaginate::getTotal($id);
+                                } else {
+                                    $limit = SmartyPaginate::getLimit($id);
+                                }
+                                unset($_SESSION['SmartyPaginate'][$id]['pagi_selection']);
+                                for ($index = 0; $index <= $limit-1; $index++) {
+                                    $_SESSION['SmartyPaginate'][$id]['pagi_selection'][] = $data[$index]->id;
+                                }
+                            }
+                break;
+            case 'all':     if (SmartyPaginate::getTotal($id) == count($_SESSION['SmartyPaginate'][$id]['pagi_selection'])){
+                                unset($_SESSION['SmartyPaginate'][$id]['pagi_selection']);
+                            } else {
+                                $_SESSION['SmartyPaginate'][$id]['pagi_selection'] = SmartyPaginate::_getSelectAll($id);
+                            }
+                break;
+            case 'none':    if (isset($_SESSION['SmartyPaginate'][$id]['pagi_selection'])){ //if selection > unselect all
+                                unset($_SESSION['SmartyPaginate'][$id]['pagi_selection']);
+                            } 
+                break;    
+
+            default:   if (isset($_SESSION['SmartyPaginate'][$id]['pagi_selection'])){
+                            if (is_array($_SESSION['SmartyPaginate'][$id]['pagi_selection'])){
+                                $match = array_search($selection, $_SESSION['SmartyPaginate'][$id]['pagi_selection']);      
+                                if ($match === false){ // not in selection -> add id to selection
+                                    $_SESSION['SmartyPaginate'][$id]['pagi_selection'][] = $selection;
+                                } else { // in selection -> remove id from selection                
+                                    unset($_SESSION['SmartyPaginate'][$id]['pagi_selection'][array_search($selection, $_SESSION['SmartyPaginate'][$id]['pagi_selection'])]);
+                                    $_SESSION['SmartyPaginate'][$id]['pagi_selection'] = array_values($_SESSION['SmartyPaginate'][$id]['pagi_selection']);
+                                }
+                            } 
+                        } else { 
+                            $_SESSION['SmartyPaginate'][$id]['pagi_selection'] = array($selection);
+                        }
+                break;
+        }
+        if (isset($_SESSION['SmartyPaginate'][$id]['pagi_selection'])){
+            return $_SESSION['SmartyPaginate'][$id]['pagi_selection'];
+        } else {
+            return 0;
+        }   
     }
     
     static function setSelectAll($selection, $id = 'default'){
@@ -179,7 +215,6 @@ class SmartyPaginate {
     static function setData($data, $id = 'default'){
         $_SESSION['SmartyPaginate'][$id]['pagi_data'] = $data;
     }
-
 
     /**
      * set the total number of items
@@ -560,7 +595,6 @@ class SmartyPaginate {
                 return null;
             }
       }
-      
     
       static function _getConfig($id = 'default'){
           if (isset($_SESSION['SmartyPaginate'][$id]['pagi_cfg'])){
@@ -575,7 +609,6 @@ class SmartyPaginate {
             } else {
                 return null;
             }
-      }
-            
+      }        
 }
 ?>

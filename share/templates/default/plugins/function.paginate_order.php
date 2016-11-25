@@ -79,7 +79,7 @@ function smarty_function_paginate_order($params, &$smarty) {
     if ($params['key'] == 'role_name' OR $params['key'] == 'completed'){         //Hack to get group sorting working
         $params['key'] = '';
     } 
-    return '<a href="' . str_replace('&','&amp;', $_url) . '&paginator='.$_id.'&order='.$params['key'].'&sort='.$sort.'"' . $_attrs . '>' . $_text . '</a>';
+    return '<strong><a href="' . str_replace('&','&amp;', $_url) . '&paginator='.$_id.'&order='.$params['key'].'&sort='.$sort.'"' . $_attrs . '>' . $_text . '</a></strong>';
 }
 
 ?>
