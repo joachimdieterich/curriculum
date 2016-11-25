@@ -147,7 +147,7 @@ function setPaginator($instance, $template, $data, $returnVar, $currentURL, $con
         SmartyPaginate::setData(array_slice($data, $SmartyPaginate->getCurrentIndex($instance), $SmartyPaginate->getLimit($instance)), $instance);
         SmartyPaginate::setConfig($config, $instance); // set config
     } else {
-        $template->assign($returnVar. NULL);
+        SmartyPaginate::setData(null,$instance);
     }
     
     $template->assign('currentUrlId', $SmartyPaginate->getCurrentIndex($instance)+1); 
@@ -175,7 +175,7 @@ function orderPaginator($instance, $table=null){
     $search = SmartyPaginate::getSort('search', $instance);
     
     if ($table){
-       if (strpos(strtoupper($search), 'LIKE')){
+        if (strpos(strtoupper($search), 'LIKE')){
             $t      = $table[SmartyPaginate::_getOrder($instance)]; //get proper table shortcut
             $search = substr_replace($search, $t.'.', 5, 0);        //add "table." to query
         } 
