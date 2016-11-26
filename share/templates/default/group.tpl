@@ -24,7 +24,7 @@
                     </div>	
                 {/if}
                 <form id='classlist' method='post' action='index.php?action=group&next={$currentUrlId}'>
-                {html_paginator id='groupP'}
+                {html_paginator id='groupP' title='Lerngruppen'}
                     {if checkCapabilities('groups:enrol', $my_role_id, false) OR checkCapabilities('groups:expel', $my_role_id, false)}
                         {if isset($curriculum_list)}
                         <div class="form-horizontal col-xs-12 col-sm-12 col-md-5 col-lg-5">

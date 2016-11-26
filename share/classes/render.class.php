@@ -876,6 +876,7 @@ class Render {
         $width_class     = 'col-md-6';
         $style           = '';
         $table_class     = 'table table-bordered';
+        $cell_style      = '';
                 
         foreach($params as $key => $val) {
             $$key = $val;
@@ -886,13 +887,13 @@ class Render {
                         <tbody>
                             <tr>';
                             foreach($header as $v) {
-                                $html .= '<th>'.$v.'</th>';
+                                $html .= '<th style='.$cell_style.'>'.$v.'</th>';
                             }   
                             $html .='</tr>';
                             foreach($data as $d) {
                                 $html .='<tr>';
                                 foreach($header as $k => $v) {
-                                    $html .= '<td>'.$d->$k.'</td>';
+                                    $html .= '<td style='.$cell_style.'>'.$d->$k.'</td>';
                                 } 
                                 $html .='</tr>';
                             }

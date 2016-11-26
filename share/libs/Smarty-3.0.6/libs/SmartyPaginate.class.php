@@ -300,6 +300,38 @@ class SmartyPaginate {
             return true; //if visibility is not set for this col return default == true
         }
     }
+    /**
+     * get all visible colums as array
+     * @param type $id
+     * @return type
+     */
+    static function getVisibleColumns($id = 'default'){
+        $config  = SmartyPaginate::_getConfig($id);                // get config
+        $visible = array();
+        foreach($config AS $k => $v){
+            if (SmartyPaginate::getColumnVisibility($k, $id) == true AND $k != '' AND $k !='p_options' AND $k != 'id'){
+                $visible[$k] = $config[$k];
+            }
+        }
+        return $visible;
+    }
+    
+    /**
+     * title of paginator (e.g. for printing
+     * @param string $title
+     * @param string $id
+     */
+    static function setTitle($title, $id = 'default'){
+        $_SESSION['SmartyPaginate'][$id]['title'] = $title;
+    }
+    
+    static function getTitle($id = 'default'){
+        if (isset($_SESSION['SmartyPaginate'][$id]['title'])){
+            return $_SESSION['SmartyPaginate'][$id]['title'];
+        } else {
+            return '';
+        }
+    }
     
     /**
      * set the url variable ie. ?next=10

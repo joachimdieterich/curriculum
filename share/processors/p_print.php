@@ -24,7 +24,7 @@
 */
 include(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
-global $USER;
+global $USER, $CFG;
 $USER   = $_SESSION['USER'];
 $func   = filter_input(INPUT_GET, 'func',  FILTER_SANITIZE_STRING);
 $id     = filter_input(INPUT_GET, 'val',   FILTER_SANITIZE_STRING); // kein INT --> System ID -1
@@ -68,10 +68,16 @@ switch ($func) {
                                 $content = Printer::coursebook(array('coursebook' => array($t)));
                                
         break;
+    case "paginator":           $content  = '<p style="text-align:right; padding-right:15px; font-size:50%;"><img style="float:right; margin-left:5px; width:12px;" alt="" src="../public/assets/images/logo_white_bg.png"  />'.$CFG->app_title.' ('.$CFG->version.') auf '.$CFG->base_url.' </p>';
+                                $content .= '<h4 style="padding-left: 15px;">'.SmartyPaginate::getTitle($id).'</h4>';
+                                $content .= RENDER::table(array('width_class'   => 'col-md-12',
+                                                                'cell_style'    => 'padding:8px',
+                                                                'data'          => SmartyPaginate::_getData($id),
+                                                                'header'        => SmartyPaginate::getVisibleColumns($id)
+                                                                ));
+        break;
     default: break;
 }
 
-
-//error_log($content);
 $_SESSION['PAGE']->print          = new stdClass();
 $_SESSION['PAGE']->print->content = $content;

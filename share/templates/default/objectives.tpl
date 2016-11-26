@@ -67,7 +67,7 @@
                         {/if}
                         {if isset($userPaginator)}   
                             <p> Bitte  Schüler aus der Liste auswählen um den Lernstand einzugeben.</p>
-                                    {html_paginator id='userPaginator'} 
+                                    {html_paginator id='userPaginator' title='Kurs'} 
                         {elseif $showuser eq true}Keine eingeschriebenen Benutzer{/if}
                     </div>
                     <div class="tab-pane" id="f_coursebook">

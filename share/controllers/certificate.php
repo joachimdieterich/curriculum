@@ -42,6 +42,6 @@ $p_config =  array('id'           => 'checkbox',
                   'description'   => 'Beschreibung', 
                   'institution'   => 'Institution', 
                   'creation_time' => 'Erstellungs-Datum',
-                  'username'      => 'Erstellt von',
+                  /*'username'      => 'Erstellt von',*/
                   'p_options'     => $p_options);
 setPaginator('certificateP', $TEMPLATE, $certificates->getCertificates('certificateP'), 'ct_val', 'index.php?action=certificate', $p_config); //set Paginator

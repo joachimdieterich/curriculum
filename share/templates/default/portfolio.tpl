@@ -230,44 +230,7 @@
                                   </div>
                                 </li>
                                 {/if}
-                                
                                 <!-- END timeline item -->    
-                                {*<div class="cd-timeline-block">
-                                    {if $art->artefact_type eq 1}
-                                        <div class="cd-timeline-img cd-picture"> <img class="okbtn" > </div>
-                                            <!-- cd-timeline-img -->
-
-                                            <div class="cd-timeline-content">
-                                            <h2>Lehrplan: {$art->curriculum}</h2>
-                                            <p>Ziel erfolgreich abgeschlossen: <br>{$art->title}</p>
-                                            <p>{$art->description}</p>
-                                            <p><br>Kontrolliert von <strong>{$art->accomplished_teacher}</strong></p>
-                                            <a href="#0" class="cd-read-more">Kommentar</a> <span class="cd-date">{$art->creation_time}</span> 
-                                        </div>
-                                    {/if}
-                                    {if $art->artefact_type eq 2}
-                                        <div class="cd-timeline-img cd-movie"> <img class="filebtn"> </div>
-                                            <!-- cd-timeline-img -->
-
-                                            <div class="cd-timeline-content">
-
-                                                {*<img style="min-height:100px;float: right;" src="{$art->path}{$art->thumb_filename}" alt="">*}
-                                                {*<img style="min-height:100px;float: right;" src="{$art->path}{$art->filename}" alt="">
-
-                                            <h2>{$art->curriculum}</h2>
-                                            <p>{$art->title}</p>
-
-
-                                            <p>Autor: {$art->author}</p>
-                                            <p>Lizenz: {$art->license}</p>
-                                            <p>Beschreibung: {$art->description}</p>
-                                            <a href="#0" class="cd-read-more">Kommentar</a> <span class="cd-date">{$art->creation_time}</span> 
-                                        </div>
-                                    {/if}
-                                <!-- cd-timeline-content --> 
-                                </div>*}
-                                <!-- cd-timeline-block -->    
-                                
                                 
                                 {/foreach}
                                 <li>

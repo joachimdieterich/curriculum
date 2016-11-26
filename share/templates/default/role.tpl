@@ -23,7 +23,7 @@
                         </button>
                     </div>
                 {/if}
-                {html_paginator id='roleP'}
+                {html_paginator id='roleP' title='Rollen'}
                 </div>
             </div>
         </div>
