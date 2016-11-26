@@ -23,7 +23,7 @@
                     </button>
                 </div>
                 {/if}
-                {html_paginator id='semesterP'}         
+                {html_paginator id='semesterP' title='Lernzeiträume'}         
                 </div> 
             </div>
         </div>

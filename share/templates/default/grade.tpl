@@ -24,7 +24,7 @@
                     </button>
                 </div>
                 {/if}
-                {html_paginator id='gradeP'}
+                {html_paginator id='gradeP' title='Klassenstufen'}
                 </div>
             </div>
         </div>

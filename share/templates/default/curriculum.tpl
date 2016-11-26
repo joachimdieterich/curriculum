@@ -25,7 +25,7 @@
                         </div>
                     {/if}
                     <span class="clearfix"></span>
-                    {html_paginator id='curriculumP'}
+                    {html_paginator id='curriculumP' title='Lehrpläne'}
                 </div>
             </div>
         </div>

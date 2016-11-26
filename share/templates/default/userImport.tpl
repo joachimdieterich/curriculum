@@ -75,7 +75,7 @@
                   </div>
                 </div><!-- /.box-header -->
                 <div class="box-body">
-                    {html_paginator id='newUsersPaginator'}     
+                    {html_paginator id='newUsersPaginator' title='Importiert'}     
                 </div>
             </div>  
         </div> 

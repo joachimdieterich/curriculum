@@ -23,7 +23,7 @@
                         </button>
                     </div>
                 {/if}    
-                {html_paginator id='certificateP'}
+                {html_paginator id='certificateP' title='Zertifikate'}
                 </div>
             </div>
         </div>

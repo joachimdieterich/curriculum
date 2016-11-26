@@ -101,7 +101,6 @@
                                 {if $ena->terminal_objective_id eq $ter->id}
                                     <div style="display:none" id="ena_status_{$ena->id}">{0+$ena->accomplished_status_id}</div><!--Container für Variable-->
                                     <div id="ena_{$ena->id}" class="panel panel-default box-objective {$box_bg[$ena->accomplished_status_id]} {if isset($highlight)}{if in_array("ena_`$ena->id`", $highlight)} highlight {/if}{/if}"> 
-                                    {*<div id="ena_{$ena->id}" class="panel panel-default box-objective {if $ena->accomplished_status_id eq 1} boxgreen {elseif $ena->accomplished_status_id eq 2} boxorange {elseif $ena->accomplished_status_id eq '0'} boxred {/if}{if isset($highlight)}{if in_array("ena_`$ena->id`", $highlight)} highlight {/if}{/if}"> *}
                                         <div class="panel-heading boxheader" style="background: {$ter->color}">
                                             {if checkCapabilities('groups:showAccomplished', $my_role_id, false)}
                                                 {if isset($ena->accomplished_users) and isset($ena->enroled_users) and isset($ena->accomplished_percent)}

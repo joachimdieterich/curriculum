@@ -25,11 +25,14 @@ function smarty_function_html_paginator($params, $template) {
     require_once(dirname(__FILE__) . '/function.paginate_last.php');
     foreach($params as $_key => $_val) {
         switch ($_key) {
-            case 'id':          $id                 = $_val;
+            case 'id':          $id    = $_val;
+                break;
+            case 'title':       $p_title = $_val; 
                 break;
             default: break;
         } 
     } 
+    SmartyPaginate::setTitle($p_title, $id);
     $url        = SmartyPaginate::getUrl($id);                    // get url
     $values     = SmartyPaginate::_getData($id);                  // get values
     $keys       = get_object_vars((object)$values[0]);
@@ -114,7 +117,7 @@ function smarty_function_html_paginator($params, $template) {
                 }
                 $html .= '></td>';
             } else if ($_key == 'p_options'){
-                $html .= '<td><i class="fa fa-bars pull-right" style="padding-top:5px"></></td>';
+                $html .= '<td><i class="fa fa-bars pull-right" style="padding-top:5px"></i><i class="fa fa-print pull-right margin-r-5" style="padding-top:5px" onclick="processor(\'print\',\'paginator\',\''.$id.'\')"></i></td>';
             } else {
                 if (array_key_exists($_key, $config) AND SmartyPaginate::getColumnVisibility($_key,$id)){
                     $html .= '<td name="'.$id.'_col_'.$_key.'">'.smarty_function_paginate_order(array('id' => $id, 'key' => $_key, 'text' => $config[$_key]), $template);

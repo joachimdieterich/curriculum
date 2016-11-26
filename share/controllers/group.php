@@ -113,6 +113,6 @@ $p_config =   array('id'            => 'checkbox',
                     'semester'      => 'Lernzeitraum',
                     'institution'   => 'Institution / Schule',
                     'creation_time' => 'Erstellungsdatum',
-                    'username'      => 'Erstellt von',
+                    /*'username'      => 'Erstellt von',*/
                     'p_options'     => $p_options);
 setPaginator('groupP', $TEMPLATE, $groups->getGroups('group', $USER->id,'groupP'), 'gp_val', 'index.php?action=group', $p_config); //set Paginator

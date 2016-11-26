@@ -40,7 +40,7 @@
                 </div><!-- /.box-header -->
                 <div class="box-body">
                     <form id='userlist'   method='post' action="index.php?action=user&next={$currentUrlId}">
-                        {html_paginator id='userP'} 
+                        {html_paginator id='userP' title='Benutzerliste'} 
                         <input class="invisible" type="checkbox" name="id[]" value="none" checked /><!--Hack - nothing selected-->  
                             <div class="row">
                             {if checkCapabilities('user:enroleToGroup', $my_role_id, false) OR checkCapabilities('user:expelFromGroup', $my_role_id, false)}

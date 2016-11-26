@@ -26,11 +26,11 @@
 
                 {if isset($zipURL)}
                     <p>Folgende Backups können heruntergeladen werden.</p>
-                    <p><a class="url_btn floatleft" href={$zipURL} ></a></p>
+                    <p><a class="fa fa-link pull-left" href={$zipURL} ></a></p>
                     <p>Aktuelle Sicherungsdatei herunterladen.</p></br></br>
                 {/if} 
 
-                {html_paginator id='fileBackupPaginator'}
+                {html_paginator id='fileBackupPaginator' title='Sicherungen'}
                 </div>
             </div>
         </div>
