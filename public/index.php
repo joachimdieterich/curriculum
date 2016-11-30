@@ -67,10 +67,6 @@ try { // Error handling
                 $TEMPLATE->assign('recent_mails', $recent_mails->loadCorrespondence(5, $USER->id, $USER->id, 'recent')); 
             }    
         }   
-        $upcoming_events = new Event();
-        $TEMPLATE->assign('upcoming_events', $upcoming_events->get('upcoming', $USER->id, '', 5));
-        $upcoming_tasks  = new Task();
-        $TEMPLATE->assign('upcoming_tasks', $upcoming_tasks->get('upcoming', $USER->id));
         
         if (isset($_SESSION['PAGE']->print)){
             $pdf = new Pdf();
@@ -78,7 +74,7 @@ try { // Error handling
             $pdf->filename = 'print.pdf';
             $pdf->generate(); 
             unset($_SESSION['PAGE']->print);
-         }
+        }
         
     }
 

@@ -43,7 +43,6 @@ $_POST                = $gump->sanitize($_POST);       //sanitize $_POST
 $event->event         = $_POST['event']; 
 $event->timerange     = $_POST['timerange']; 
 $event->context_id    = $_POST['context_id']; 
-//$event->creator_id    = $USER->id; // now set in add function
         
 $gump->validation_rules(array(
 'event'             => 'required'
@@ -61,10 +60,11 @@ if($validated_data === false) {/* validation failed */
     if ($_POST['func'] == 'edit'){
         $event->id               = $_POST['event_id'];
         $event->update();
-        $_SESSION['PAGE']->message[] = array('message' => 'Lerngruppe aktualisiert', 'icon' => 'fa-group text-success');
+        $_SESSION['PAGE']->message[] = array('message' => 'Termin aktualisiert', 'icon' => 'fa-calendar text-success');
     }  else {
+        
         $event->add(); 
-        $_SESSION['PAGE']->message[] = array('message' => 'Lerngruppe hinzugefügt', 'icon' => 'fa-group text-success');
+        $_SESSION['PAGE']->message[] = array('message' => 'Termin hinzugefügt', 'icon' => 'fa-calendar text-success');
     }
     $_SESSION['FORM']            = null;                     // reset Session Form object 
 }

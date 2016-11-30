@@ -12,13 +12,12 @@
 {block name=content}
     
 <!-- Content Header (Page header) -->
-{content_header p_title=$page_title pages=$breadcrumb help='http://docs.joachimdieterich.de/index.php?title=Startseite'}    
- 
+{content_header p_title=$page_title pages=$breadcrumb help='http://docs.joachimdieterich.de/index.php?title=Startseite'}
+
 <!-- Main content -->
 <section class="content">
     <!-- Info boxes -->
     <div class="row" >
-        
          <div class="col-md-4 ">
             <div class="box box-primary">
                 <div class="box-header with-border">
@@ -41,7 +40,17 @@
                 </div>
             </div>  
         </div>
-        
+        {if isset($upcoming_events)}
+        <div class="col-md-8 col-sm-12 col-xs-12">
+            {foreach item=ue from=$upcoming_events} 
+            <div class="alert alert-warning alert-dismissible" ><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <h4><i class="fa fa-calendar"></i> {$ue->event}</h4>
+                    <p>{$ue->timestart} - {$ue->timeend}</p>
+                    <p>{$ue->description}</p><br>    
+            </div>
+            {/foreach}
+        </div>
+        {/if}
         {if checkCapabilities('dashboard:editBulletinBoard', $my_role_id, false) || $bulletinBoard} 
         <div class="col-md-8 col-sm-12 col-xs-12">
             <div class="box box-primary">

@@ -38,11 +38,13 @@ $event             = null;
 $description       = null;
 $creation_time     = null;
 $creator_id        = null;
-/*if (isset($COURSE->id)){
+if (isset($COURSE->id)){
 $course_id         = $COURSE->id;
-}*/
-$group_id          = null;
-$user_id           = null;
+} else {
+  $course_id       = 0;  
+}
+$group_id          = 0;
+$user_id           = $USER->id;
 $context_id        = 1;
 $repeat_id         = null;
 $sequence          = null;
@@ -98,6 +100,7 @@ $content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>
 if (isset($event_id)){
     $content .= '<input type="hidden" name="event_id" id="event_id" value="'.$event_id.'"/> ';
 }
+
 $content .= Form::input_text('event', 'Termin', $event, $error, 'z. B. Treffen in der Aula');
 $content .= Form::input_textarea('description', 'Beschreibung', $description, $error, 'Beschreibung');
 $content .= Form::input_date(array('id'=>'timerange', 'label' => 'Dauer' , 'time' => $timerange, 'error' => $error, 'placeholder' => '', $type = 'date'));

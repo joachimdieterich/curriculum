@@ -36,6 +36,12 @@ $TEMPLATE->assign('bulletinBoard', $institution->getBulletinBoard());
 $groups         = new Group(); 
 $TEMPLATE->assign('myClasses', $groups->getGroups('user', $USER->id));
 
+/*get upcoming events*/
+$upcoming_events = new Event();
+$TEMPLATE->assign('upcoming_events', $upcoming_events->get('upcoming', $USER->id, '', 5));
+$upcoming_tasks  = new Task();
+$TEMPLATE->assign('upcoming_tasks', $upcoming_tasks->get('upcoming', $USER->id));
+
 /* Load blocks*/
 $blocks         = new Block();
 $blocks->context_id = 11; //== dashboard todo get value from context table

@@ -28,7 +28,7 @@
         {/if}
       </ul><!-- /.control-sidebar-menu -->
 
-      <h3 class="control-sidebar-heading">Anstehende Termine</h3>
+      {*<h3 class="control-sidebar-heading">Anstehende Termine</h3>
       <ul class="control-sidebar-menu">
         {if !empty($upcoming_events)}  
             {foreach item=ue from=$upcoming_events} 
@@ -45,7 +45,7 @@
         {else}
             <li><a href="#">Keine Termine vorhanden</a></li>
         {/if}
-      </ul><!-- /.control-sidebar-menu -->
+      </ul><!-- /.control-sidebar-menu -->*}
       
       <h3 class="control-sidebar-heading">Anstehende Aufgaben</h3>
       <ul class="control-sidebar-menu">
