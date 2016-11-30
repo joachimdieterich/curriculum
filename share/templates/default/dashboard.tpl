@@ -75,7 +75,30 @@
             </div>  
         </div>  
         {/if}
-       
+        
+        {if !empty($upcoming_tasks)}
+            <div class="col-md-4 ">
+                <div class="box box-widget widget-user">
+                  <div class="widget-user-header bg-green">
+                    <i class="pull-right fa fa-tasks" style="font-size: 90px;"></i>
+                    <h3 class="widget-user-username">Aufgaben</h3>
+                    <h5 class="widget-user-desc"></h5>
+                  </div>
+                  <div class="box-footer no-padding">
+                    <ul class="nav nav-stacked">
+                        {foreach item=tsk from=$upcoming_tasks} 
+                            <li><a><strong>{$tsk->task}</strong><input type="checkbox" class="pull-right" onchange="processor('accomplish','task', {$tsk->id});" {if isset($tsk->accomplished->status_id)}{if $tsk->accomplished->status_id eq 2}checked{/if}{/if}><p>{$tsk->timestart} - {$tsk->timeend}</p>
+                                {if isset($tsk->accomplished->status_id)}{if  $tsk->accomplished->status_id eq 2}
+                                    <p class="text-green">Erledigt am {$tsk->accomplished->accomplished_time}</p>
+                                {/if}{/if}
+                                </a>
+                            </li>
+                        {/foreach}
+                    </ul>
+                  </div>
+                </div><!-- /.widget-user -->
+            </div><!-- /.col -->  
+        {/if}
    
         {if isset($myInstitutions)}     
         {foreach key=insid item=ins from=$myInstitutions}

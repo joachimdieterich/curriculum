@@ -62,9 +62,6 @@ try { // Error handling
             $mail->loadNewMessages($USER->id);
             if (isset($mail->inbox)){
                 $TEMPLATE->assign('mails', $mail->inbox);
-                /* Load recent Mails for Sidebar */
-                /*$recent_mails = new Mail();   
-                $TEMPLATE->assign('recent_mails', $recent_mails->loadCorrespondence(5, $USER->id, $USER->id, 'recent')); */
             }    
         }   
         
@@ -74,8 +71,7 @@ try { // Error handling
             $pdf->filename = 'print.pdf';
             $pdf->generate(); 
             unset($_SESSION['PAGE']->print);
-        }
-        
+        }    
     }
 
     $PAGE->controller = $CFG->controllers_root.'/'.$PAGE->action .'.php';       //load controller 
