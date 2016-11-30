@@ -48,7 +48,8 @@ $gump->validation_rules(array(
 'schooltype_id'  => 'required',
 'state_id'       => 'required',
 'country_id'     => 'required',
-'icon_id'        => 'required'   
+'icon_id'        => 'required',   
+'color'          => 'required'   
 ));
 
 
@@ -61,7 +62,8 @@ $curriculum->grade_id       = filter_input(INPUT_POST, 'grade_id',       FILTER_
 $curriculum->schooltype_id  = filter_input(INPUT_POST, 'schooltype_id',  FILTER_VALIDATE_INT);
 $curriculum->state_id       = filter_input(INPUT_POST, 'state_id',       FILTER_VALIDATE_INT);
 $curriculum->country_id     = filter_input(INPUT_POST, 'country_id',     FILTER_VALIDATE_INT);
-$curriculum->icon_id        = filter_input(INPUT_POST, 'icon_id',        FILTER_VALIDATE_INT);
+$curriculum->icon_id        = filter_input(INPUT_POST, 'icon_id',        FILTER_VALIDATE_INT);#
+$curriculum->color          = filter_input(INPUT_POST, 'color',     FILTER_SANITIZE_STRING).'AA'; //AA -> setting opacity
 
 $validated_data  = $gump->run($_POST);
 if (!isset($_POST['state'])){ $_POST['state'] = 1; }

@@ -1024,7 +1024,7 @@ class User {
      * @return string | array
      */
    public function get_curriculum_enrolments() { 
-        $db = DB::prepare('SELECT cu.curriculum, cu.id, cu.grade_id, gp.id AS group_id, gp.semester_id, gp.groups, cn.base_curriculum_id, cn.level 
+        $db = DB::prepare('SELECT cu.curriculum, cu.id, cu.grade_id, cu.icon_id, cu.color, gp.id AS group_id, gp.semester_id, gp.groups, cn.base_curriculum_id, cn.level 
                             FROM curriculum_enrolments AS ce, groups AS gp, institution_enrolments AS ie, groups_enrolments AS ge, curriculum AS cu 
                             LEFT JOIN curriculum_niveaus AS cn ON cn.curriculum_id = cu.id
                             WHERE cu.id = ce.curriculum_id 

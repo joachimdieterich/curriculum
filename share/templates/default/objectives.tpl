@@ -71,6 +71,7 @@
                         {elseif $showuser eq true}Keine eingeschriebenen Benutzer{/if}
                     </div>
                     <div class="tab-pane" id="f_coursebook">
+                        
                         {if isset($coursebook)} 
                             {Render::courseBook($coursebook)}
                         {/if}

@@ -212,5 +212,6 @@ function smarty_function_html_paginator($params, $template) {
         $html .= '> Alle <span id="span_unselect" class="hidden"><input type="checkbox" id="p_unselect" value="p_unselect" onclick="checkrow(\'none\', \''.$id.'\');"> Auswahl aufheben </span>';
         $html .= ' | <span id="count_selection">'.count($selected_id).'</span> Datensätze markiert</span><br>';
     } 
+    $html .= '</div></div>';
     return $html;
 }

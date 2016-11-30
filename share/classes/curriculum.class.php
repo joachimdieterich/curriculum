@@ -101,11 +101,13 @@ class Curriculum {
      * @var string
      */
     public $language_code; 
+    public $color; 
     /**
      * array which holds terminal objectives of this curriculum
      * @var type 
      */
-    public $terminal_objectives; 
+    public $terminal_objectives;
+    
     /**
      * add curriculum to db
      * @return mixed 
@@ -113,9 +115,9 @@ class Curriculum {
     public function add(){
         global $USER;
         checkCapabilities('curriculum:add', $USER->role_id);
-        $db = DB::prepare('INSERT INTO curriculum (curriculum, description, grade_id, subject_id, schooltype_id, state_id, icon_id, country_id, creator_id) 
-                                            VALUES (?,?,?,?,?,?,?,?,?)');
-        $db->execute(array($this->curriculum, $this->description, $this->grade_id, $this->subject_id, $this->schooltype_id, $this->state_id, $this->icon_id, $this->country_id, $USER->id));
+        $db = DB::prepare('INSERT INTO curriculum (curriculum, description, grade_id, subject_id, schooltype_id, state_id, icon_id, country_id, color, creator_id) 
+                                            VALUES (?,?,?,?,?,?,?,?,?,?)');
+        $db->execute(array($this->curriculum, $this->description, $this->grade_id, $this->subject_id, $this->schooltype_id, $this->state_id, $this->icon_id, $this->country_id, $this->color, $USER->id));
         return DB::lastInsertId();
     }
     
@@ -126,9 +128,9 @@ class Curriculum {
     public function update(){
         global $USER;
         checkCapabilities('curriculum:update', $USER->role_id); 
-        $db = DB::prepare('UPDATE curriculum SET curriculum = ?, description = ?, grade_id = ?, subject_id = ?, schooltype_id = ?, state_id = ?, icon_id = ?, country_id = ?
+        $db = DB::prepare('UPDATE curriculum SET curriculum = ?, description = ?, grade_id = ?, subject_id = ?, schooltype_id = ?, state_id = ?, icon_id = ?, country_id = ?, color = ?
                                                 WHERE id = ?');
-        return $db->execute(array($this->curriculum, $this->description, $this->grade_id, $this->subject_id, $this->schooltype_id, $this->state_id, $this->icon_id, $this->country_id, $this->id));
+        return $db->execute(array($this->curriculum, $this->description, $this->grade_id, $this->subject_id, $this->schooltype_id, $this->state_id, $this->icon_id, $this->country_id, $this->color, $this->id));
     }
     
     /**
@@ -189,6 +191,7 @@ class Curriculum {
         $this->icon_id          = $result->icon_id;
         $this->country_id       = $result->country_id;
         $this->language_code    = $result->code;
+        $this->color            = $result->color;
         $this->creation_time    = $result->creation_time;
         $this->creator_id       = $result->creator_id;
         if ($load_terminal_objectives){

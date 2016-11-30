@@ -76,7 +76,7 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$content  .='<form id="form_certificate"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_certificate.php"';
+$content   ='<form id="form_certificate"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_certificate.php"';
 if (isset($currentUrlId)){ $content .= $currentUrlId; }
 $content  .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
 if (isset($cert_id)){

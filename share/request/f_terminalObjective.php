@@ -82,8 +82,7 @@ $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
                               'f_content' => $footer));  
 
-$script = "<!-- daterangepicker -->
-       <script id='modal_script'>
+$script = "<script id='modal_script'>
         $.getScript('".$CFG->base_url ."public/assets/templates/AdminLTE-2.3.0/plugins/colorpicker/bootstrap-colorpicker.min.js', function (){
         $('.color-picker').colorpicker();
         });</script>";
