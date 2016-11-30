@@ -63,8 +63,8 @@ try { // Error handling
             if (isset($mail->inbox)){
                 $TEMPLATE->assign('mails', $mail->inbox);
                 /* Load recent Mails for Sidebar */
-                $recent_mails = new Mail();   
-                $TEMPLATE->assign('recent_mails', $recent_mails->loadCorrespondence(5, $USER->id, $USER->id, 'recent')); 
+                /*$recent_mails = new Mail();   
+                $TEMPLATE->assign('recent_mails', $recent_mails->loadCorrespondence(5, $USER->id, $USER->id, 'recent')); */
             }    
         }   
         

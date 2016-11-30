@@ -9,7 +9,7 @@
   <div class="tab-content">
     <!-- Home tab content -->
     <div class="tab-pane active" id="control-sidebar-home-tab">
-      <h3 class="control-sidebar-heading">Letzte Nachrichten</h3>
+      {*<h3 class="control-sidebar-heading">Letzte Nachrichten</h3>
       <ul class="control-sidebar-menu">
         {if isset($recent_mails)}  
             {foreach item=rm from=$recent_mails}  
@@ -26,7 +26,7 @@
         {else}
             <li><a href="#">Keine Nachrichten vorhanden</a></li>
         {/if}
-      </ul><!-- /.control-sidebar-menu -->
+      </ul><!-- /.control-sidebar-menu -->*}
 
       {*<h3 class="control-sidebar-heading">Anstehende Termine</h3>
       <ul class="control-sidebar-menu">
