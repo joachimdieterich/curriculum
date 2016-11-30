@@ -168,13 +168,13 @@ $content       .= Form::input_select('schooltype_id', 'Schultyp', $schooltypes->
 $countries = new State($country_id);                                                   //Load country   
 $content  .= Form::input_select('state_id', 'Bundesland/Region', $countries->getStates(), 'state', 'id', $state_id , $error);
 $content  .= Form::input_select('country_id', 'Land', $countries->getCountries(), 'de', 'id', $country_id , $error, 'getValues(\'state\', this.value, \'state_id\');');
-$content  .= '</div></form>';
+$content  .= '</form>';
 $f_content = '';   
 
 if (isset($edit)){
     $f_content .= '<button name="update" type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_curriculum\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>Lehrplan aktualisieren</button>'; 
 } 
-$f_content .= '<button id="bImport" name="import" type="submit" class="btn btn-primary pull-right hidden" onclick="document.getElementById(\'form_curriculum\').submit();"><i class="fa fa-floppy-o margin-r-5">Lehrplan importieren</button>'; 
+$f_content .= '<button id="bImport" name="import" type="submit" class="btn btn-primary pull-right hidden" onclick="document.getElementById(\'form_curriculum\').submit();">Lehrplan importieren</button>'; 
 if (isset($add)){
     $f_content .= '<button id="bAdd" name="add" type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_curriculum\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>Lehrplan hinzufügen</button> ';
 }    
