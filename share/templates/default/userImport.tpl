@@ -51,15 +51,12 @@
                                   <label for="exampleInputFile">CSV-Datei hochladen</label>
                                   <input name="datei" type="file" value="">
                                 </p> 
+                                <button type="submit" class="btn btn-primary">Importieren</button>
                             </div>
                             <span id='group_table'>{Render::table($group_table_params)}</span> 
                             <span id='role_talbe'>{Render::table($role_table_params)}</span>
                         </div> 
                     </div>
-                                
-                    <div class="box-footer">
-                        <button type="submit" class="btn btn-primary">Importieren</button>
-                    </div> 
                 </form>
             </div>  
         </div>  
