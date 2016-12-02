@@ -73,8 +73,8 @@ class CourseBook {
     public function delete(){
         global $USER;
         checkCapabilities('coursebook:delete', $USER->role_id);
-        $db = DB::prepare('DELETE FROM course_book WHERE cb_id = ?');
-        return $db->execute(array($this->id));
+        $db = DB::prepare('DELETE FROM course_book WHERE cb_id = ? AND creator_id = ?');
+        return $db->execute(array($this->id, $USER->id));
     } 
     
     public function load($dependency = 'cb_id', $value = null){
