@@ -154,16 +154,17 @@ class Form {
         /*$id, $label, $select_data, $select_label, $select_value, $input*/
         $error          = null;
         $onchange       = '';
-        $placeholder    ='---';
-        $class_left     ='col-sm-3';
-        $class_right    ='col-sm-9';
+        $placeholder    = '---';
+        $class_left     = 'col-sm-3';
+        $class_right    = 'col-sm-9';
+        $height         = '135px';
         $limiter        = ' ';
         foreach($params as $key => $val) { $$key = $val; }
         
         $form = '<div class="form-group '.validate_msg($error, $id, true).'">
                     <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
                     <div class="'.$class_right.'">
-                        <select multiple id="'.$id.'[]" name="'.$id.'[]" class="form-control" onchange="'.$onchange.'">';
+                        <select multiple id="'.$id.'[]" name="'.$id.'[]" class="form-control" style="height:'.$height.';" onchange="'.$onchange.'">';
                         if (count($select_data) > 0){
                             foreach ($select_data as $value) {
                                 if (strpos($select_label, ',')){ // more than one field in select_label                   
