@@ -21,11 +21,11 @@
                     {if checkCapabilities('user:addUser', $my_role_id, false)}
                     <div class="btn-group" role="group" aria-label="...">
                         <button type="button" class="btn btn-default" onclick="formloader('profile', 'new');"><a  href="#">
-                            <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Benutzer hinzufügen</a>
+                            <span class="fa fa-plus-circle" aria-hidden="true"></span> Benutzer hinzufügen</a>
                         </button>
                         {if checkCapabilities('menu:readuserImport', $my_role_id, false)}
                             <button type="button" class="btn btn-default" onclick="location.href='index.php?action=userImport';"><a href="index.php?action=userImport">
-                                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Benutzerliste importieren</a>
+                                <span class="fa fa-plus-circle" aria-hidden="true"></span> Benutzerliste importieren</a>
                             </button>
                         {/if}
                     </div>
@@ -49,16 +49,15 @@
                                 <p>Markierte Benutzer in Lerngruppe ein bzw. ausschreiben</p>
                                 {if isset($groups_array)}
                                     {Form::input_select_multiple(['id' => 'groups', 'label' => 'Lerngruppe', 'select_data' => $groups_array, 'select_label' => 'group, semester', 'select_value' => 'id', 'input' => null, 'error' => null, 'limiter' => ', ' ])}
-                                    {*Form::input_select('groups', 'Lerngruppe', $groups_array, 'group, semester', 'id', null, null)*}
                                     <div class="btn-group pull-right" role="group" aria-label="...">
                                         {if checkCapabilities('user:enroleToGroup', $my_role_id, false)}
                                         <button type='submit' name='enroleGroups' value='' class="btn btn-default">
-                                                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> einschreiben
+                                                <span class="fa fa-plus-circle" aria-hidden="true"></span> einschreiben
                                         </button>
                                         {/if}
                                         {if checkCapabilities('user:expelFromGroup', $my_role_id, false)}
                                             <button type='submit' name='expelGroups' value='' class="btn btn-default">
-                                                    <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> ausschreiben
+                                                    <span class="fa fa-minus-circle" aria-hidden="true"></span> ausschreiben
                                             </button>
                                         {/if}
                                     </div>
@@ -79,12 +78,12 @@
                                     <div class="btn-group pull-right" role="group" aria-label="...">
                                     {if checkCapabilities('user:enroleToInstitution', $my_role_id, false)}
                                         <button type='submit' name='enroleInstitution' value='' class="btn btn-default">
-                                            <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Rolle zuweisen / einschreiben
+                                            <span class="fa fa-plus-circle" aria-hidden="true"></span> Rolle zuweisen / einschreiben
                                         </button>
                                     {/if}
                                     {if checkCapabilities('user:expelFromInstitution', $my_role_id, false)}
                                         <button type='submit' name='expelInstitution' value='' class="btn btn-default">
-                                            <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> ausschreiben
+                                            <span class="fa fa-minus-circle" aria-hidden="true"></span> ausschreiben
                                         </button>
                                     {/if} 
                                     </div>
@@ -109,7 +108,7 @@
                                     <h4>Benutzer</h4>
                                     <p>Markierte Benutzer löschen</p>
                                     <button type='submit' name='deleteUser' value='' class="btn btn-default pull-right">
-                                            <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> löschen
+                                            <span class="fa fa-minus-circle" aria-hidden="true"></span> löschen
                                     </button>
                                 </div>
                             {/if}
