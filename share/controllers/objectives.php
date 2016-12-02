@@ -39,9 +39,8 @@ if (isset($_GET['p_select'])){
     SmartyPaginate::setSelection($_GET['p_select'], 'userPaginator');
 }
 $selected_user_id           = SmartyPaginate::_getSelection('userPaginator'); 
-
-$TEMPLATE->assign('selected_curriculum',            $selected_curriculum); 
 $TEMPLATE->assign('selected_user_id',               $selected_user_id);
+$TEMPLATE->assign('selected_curriculum',            $selected_curriculum); 
 $TEMPLATE->assign('selected_certificate_template',  filter_input(INPUT_GET, 'certificate_template', FILTER_VALIDATE_INT));
 
 list ($selected_curriculum, $selected_group) = explode('_', $selected_curriculum); //$selected_curriculum enthält curriculumid_groupid (zb. 32_24) wenn nur '_' gesetzt ist werden beide variabeln ''
@@ -50,12 +49,11 @@ $TEMPLATE->assign('sel_group_id',   $selected_group); //only selected group with
  
 if (isset($_POST['printCertificate'])){
     $TEMPLATE->assign('sel_curriculum',                 $_POST['sel_curriculum']);
-    $TEMPLATE->assign('selected_user_id',               explode(',',$_POST['sel_user_id']));
     $TEMPLATE->assign('sel_group_id',                   $_POST['sel_group_id']); 
     $TEMPLATE->assign('selected_certificate_template',  $_POST['certificate_template']); 
     if ($_POST['certificate_template'] != '-1'){
         $pdf = new Pdf();
-        $pdf->user_id       =  explode(',', $_POST['sel_user_id']);
+        $pdf->user_id       =  $selected_user_id;
         $pdf->curriculum_id =  $_POST['sel_curriculum'];
         $certificate        =  new Certificate();
         $certificate->id    = $_POST['certificate_template'];
@@ -144,10 +142,10 @@ $TEMPLATE->assign('showuser',                 $showuser);
 $TEMPLATE->assign('show_course',              $show_course);
 
 if(checkCapabilities('user:userListComplete', $USER->role_id, false)){          // Load courses
-    $TEMPLATE->assign('courses',              $courses->getCourse('admin', $USER->id));  
+    $TEMPLATE->assign('courses',              $courses->getCourse('admin_semester', $USER->id));  
 }
 if(checkCapabilities('user:userList',         $USER->role_id, false)){
-    $TEMPLATE->assign('courses',              $courses->getCourse('teacher', $USER->id));  // abhängig von USER->my_semester id --> s. Select in objectives.tpl, 
+    $TEMPLATE->assign('courses',              $courses->getCourse('teacher_semester', $USER->semester_id));  // abhängig von USER->my_semester id --> s. Select in objectives.tpl, 
 }
 $certificate                 = new Certificate();                               // Load certificate_templates
 $certificate->institution_id = $USER->institutions;

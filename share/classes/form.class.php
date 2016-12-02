@@ -130,6 +130,9 @@ class Form {
                   <div class="'.$class_right.'">
                       <select id="'.$id.'" name="'.$id.'" class="form-control" onchange="'.$onchange.'">';
                        if (count($select_data) > 0){
+                             if ($placeholder != '---'){
+                                $form .= '<option>'.$placeholder.'</option>';
+                             }
                             foreach ($select_data as $value) {
                                 if (strpos($select_label, ',')){ // more than one field in select_label
                                     foreach (explode(', ', $select_label) as $f) {

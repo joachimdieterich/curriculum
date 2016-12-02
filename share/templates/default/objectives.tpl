@@ -31,38 +31,19 @@
                 <div class="tab-content">
                     <div class="tab-pane active" id="f_userlist">
                         {if isset($courses)}
-                            <select  class='pull-left' id='course' name='course' onchange="window.location.assign('index.php?action=objectives&course='+this.value);"> {*_blank global regeln*}
-                                <option value="-1" data-skip="1">Kurs / Klasse wählen...</option>
-                                {section name=res loop=$courses}
-                                    {if $courses[res]->semester_id eq $my_semester_id}
-                                      <option value="{$courses[res]->id}" 
-                                      {if $courses[res]->id eq $selected_curriculum} selected {/if} 
-                                      data-icon="{$subjects_path}/{$courses[res]->icon}" data-html-text="{$courses[res]->group} - {$courses[res]->curriculum}">{$courses[res]->group} - {$courses[res]->curriculum}</option>  
+                            <form method='post' action='index.php?action=objectives&course={$selected_curriculum}&userID={implode(',',$selected_user_id)}&next={$currentUrlId}'>        
+                                <div class="form-horizontal">
+                                    {Form::input_select('course', '', $courses, 'group, curriculum', 'id', $selected_curriculum, null, "window.location.assign('index.php?action=objectives&course='+this.value);", 'Kurs / Klasse wählen...', '', 'col-sm-3')}
+                                    {if $show_course != '' and $terminalObjectives != false or !isset($selected_user_id)}{*Zertifikat*}
+                                        {Form::input_select('certificate_template', '', $certificate_templates, 'certificate, description', 'id', $selected_certificate_template, null, 'float-left', 'Zertifikatvorlage wählen...', '', 'col-sm-3')}   
+                                        <input type='hidden' name='sel_curriculum' value='{$sel_curriculum}'/>
+                                        <input type='hidden' name='sel_group_id' value='{$sel_group_id}'/>
+                                        <button type='submit' name='printCertificate' value='' class='btn btn-default'>
+                                            <span class="fa fa-files-o" aria-hidden="true"></span> {if count($selected_user_id) > 1} Zertifikate erstellen{else} Zertifikat erstellen{/if}
+                                        </button>
                                     {/if}
-                                {/section} 
-                            </select> 
-                            {if $show_course != '' and $terminalObjectives != false or !isset($selected_user_id)}{*Zertifikat*}
-                            <form method='post' action='index.php?action=objectives&course={$selected_curriculum}&userID={implode(',',$selected_user_id)}&next={$currentUrlId}'>
-                            <select class='pull-left ' id='certificate_template' name='certificate_template' onchange=""> 
-                                <option value="-1" data-skip="1">Zertifikatvorlage wählen...</option>
-                                {section name=res loop=$certificate_templates}
-                                    <option value="{$certificate_templates[res]->id}" 
-                                        {if $certificate_templates[res]->id eq $selected_certificate_template} selected {/if}>
-                                        {$certificate_templates[res]->certificate} - {$certificate_templates[res]->description}
-                                    </option>  
-                                {/section} 
-                            </select>    
-                                <input type='hidden' name='sel_curriculum' value='{$sel_curriculum}'/>
-                                <input type='hidden' name='sel_user_id' value='{implode(',',$selected_user_id)}'/>
-                                <input type='hidden' name='sel_group_id' value='{$sel_group_id}'/>
-                                <input class='menusubmit space-left' type='submit' name="printCertificate" value={if count($selected_user_id) > 1}'Zertifikate erstellen'{else} 'Zertifikat erstellen'{/if} /> 
+                                </div>
                             </form>
-                            {else}
-                                <select class='hidden pull-left space-left' id='certificate_template' name='certificate_template' onchange=""> {*hack, damit bei checkrow die Auswahl erhalten bleibt bzw. keine Fehler entstehen*}
-                                    <option value="-1" data-skip="1">Zertifikatvorlage wählen...</option>
-                                </select>
-                            {/if}
-                            <br>
                         {else}<strong>Sie haben noch keine Lehrpläne angelegt bzw. noch keine Klassen eingeschrieben.</strong>
                         {/if}
                         {if isset($userPaginator)}   
@@ -71,7 +52,6 @@
                         {elseif $showuser eq true}Keine eingeschriebenen Benutzer{/if}
                     </div>
                     <div class="tab-pane" id="f_coursebook">
-                        
                         {if isset($coursebook)} 
                             {Render::courseBook($coursebook)}
                         {/if}
