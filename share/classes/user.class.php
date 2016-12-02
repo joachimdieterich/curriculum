@@ -311,7 +311,11 @@ class User {
                 $this->id = DB::lastInsertId();                                 
                 $this->enroleToInstitution($institution_id);                    // enrol to institution
                 if (is_int($group_id)){                                         // enrol to group if id is set
-                    $this->enroleToGroup(array($group_id));
+                    $db_01 = DB::prepare('SELECT COUNT(id) FROM groups WHERE id = ? AND institution_id = ?'); //check if group is enroled to given institution
+                    $db_01->execute(array($group_id, $institution_id));
+                    if($db_01->fetchColumn() >= 1) {
+                        $this->enroleToGroup(array($group_id));
+                    }
                 }
                 $PAGE->message[] = array('message' => 'Der Benutzer <strong>'.$this->username.'</strong> wurde erfolgreich angelegt.', 'icon' => 'fa fa-user text-success');// Schließen und speichern
                 return $this->id;
