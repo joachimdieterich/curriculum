@@ -107,8 +107,8 @@
                   <!-- Add the bg color to the header using any of the bg-* classes -->
                     <div class="widget-user-header bg-aqua-active" style="background: linear-gradient(rgba(0,0,0,0.5),rgba(100,100,100,0.5)), url('{$access_file}{$ins->file_id|resolve_file_id:"l"}') center right;background-size: cover; background-repeat: no-repeat;">   
                     {*<i class="pull-right fa fa-institution" style="font-size: 90px;"></i>*}
-                    <h3 class="widget-user-username" style="text-shadow: 1px 1px #ff0000;">{$ins->institution}</h3>
-                    <h5 class="widget-user-desc" style="text-shadow: 1px 1px #ff0000;">{$ins->description}</h5>
+                    <h3 class="widget-user-username" style="text-shadow: 1px 1px #ff0000;text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">{$ins->institution}</h3>
+                    <h5 class="widget-user-desc" style="text-shadow: 1px 1px #ff0000;text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">{$ins->description}</h5>
                     <div class="row " style="padding-top:10px;padding-left: 5px;">
                         <div class="col-sm-4">
                             <i class="fa fa-user" data-toggle="tooltip" title="Schüler">{if isset($ins->statistic.$institution_std_role)}

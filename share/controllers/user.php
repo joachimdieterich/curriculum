@@ -96,7 +96,7 @@ $TEMPLATE->assign('myInstitutions', $institution->getInstitutions('user', null, 
 $users      = new USER();
 $p_options  = array('delete' => array('onclick'      => "del('user',__id__);", 
                                      'capability'   => checkCapabilities('user:delete', $USER->role_id, false),
-                                     'icon'         => 'fa fa-minus',
+                                     'icon'         => 'fa fa-trash',
                                      'tooltip'      => 'löschen'),
                     'edit'  => array('onclick'      => "formloader('profile','editUser',__id__);", 
                                      'capability'   => checkCapabilities('user:updateUser', $USER->role_id, false),

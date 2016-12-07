@@ -4,7 +4,7 @@
  * 
  * -------------------------------------------------------------
  * Smarty {html_paginator} plugin
- * File:        function.html_paginator.php
+ * File:        function.widget_paginator.php
  * Type:        function
  * Name:        paginator
  * Description: Paginator renderer.
@@ -16,7 +16,8 @@
  * 
  */
 
-function smarty_function_html_paginator($params, $template) {
+function smarty_function_widget_paginator($params, $template) {
+    global $CFG;
     require_once(dirname(__FILE__) . '/function.paginate_first.php');
     require_once(dirname(__FILE__) . '/function.paginate_order.php');
     require_once(dirname(__FILE__) . '/function.paginate_prev.php');
@@ -38,6 +39,7 @@ function smarty_function_html_paginator($params, $template) {
     $keys       = get_object_vars((object)$values[0]);
     $width      = SmartyPaginate::getWidth($id);                  // get width;
     $config     = SmartyPaginate::_getConfig($id);                // get config
+    
     if (isset($config['p_options'])){
         $keys['p_options']     = $config['p_options'];  
         if (isset($config['t_config'])){                          // get t_config if is set
@@ -45,6 +47,9 @@ function smarty_function_html_paginator($params, $template) {
                 $$k = $v;   
             }
         }
+    }
+    if (isset($config['p_widget'])){
+        $keys['p_widget']     = $config['p_widget']; 
     }
     
     $selected_id = SmartyPaginate::_getSelection($id);           // get selected ids
@@ -95,71 +100,13 @@ function smarty_function_html_paginator($params, $template) {
 
     /* Table */
     if (isset($values)){
-        $html .= '<div class="clearfix"><br><table class="table table-bordered table-striped dataTable" role="grid" ';
-        if (isset($table_id['id'])){        
-            $html .= 'id="'.$table_id['id'].'"';
-        } 
-        $html .='>';
-
-        /* generate list of all ids on the current page */
         foreach ($values as $_val){ $list[] = $_val->id; }
-
-        /* Table Header */
-        $html .='<tr>';
-        foreach ($keys as $_key => $_val){
-            if ($_key == 'id'){
-                $html .= '<td style="width:25px">';
-                $html .= '<input type="checkbox" id="'.$id.'_allonPage" ';
-                if (isset($page['onclick'])){        
-                    $html .= 'onclick="'.$page['onclick'].'"';
-                } else {
-                    $html .= 'onclick="checkrow(\'page\', \''.$id.'\');"';
-                }
-                $html .= '></td>';
-            } else if ($_key == 'p_options'){
-                $html .= '<td><i class="fa fa-bars pull-right" style="padding-top:5px"></i><i class="fa fa-print pull-right margin-r-5" style="padding-top:5px" onclick="processor(\'print\',\'paginator\',\''.$id.'\')"></i></td>';
-            } else {
-                if (array_key_exists($_key, $config) AND SmartyPaginate::getColumnVisibility($_key,$id)){
-                    $html .= '<td name="'.$id.'_col_'.$_key.'">'.smarty_function_paginate_order(array('id' => $id, 'key' => $_key, 'text' => $config[$_key]), $template);
-                    if ($_key == 'username' OR $_key == 'firstname' OR $_key == 'lastname'  OR $_key == 'email' OR $_key == 'city' OR $_key == 'curriculum' OR $_key == 'description'){ // hack: muss dynamisch gemacht werden
-                        $html .= '<input class="pull-right" id="'.$id.'_col_'.$_key.'_search" name="p_search" style="width:25px;" type="text" value="" onclick="toggle_input_size(\''.$id.'_col_'.$_key.'_search\');"  onblur="toggle_input_size(\''.$id.'_col_'.$_key.'_search\', false);" onkeydown="if (event.keyCode == 13) {event.preventDefault(); window.location.href = \''.removeUrlParameter($url, array ( 0 => 'paginator', 1 => 'paginator_search', 2 => 'order')).'&paginator='.$id.'&order='.$_key.'&paginator_search=\'+this.value;}">'; //event.preventDefault() importent to use paginator in <form>
-                    } 
-                    $html .=  '</td>';
-                }
-            }
-        }                
-        $html .= '</tr>';
-
-         /* Table Content */
-        foreach ($values as $_val){     
+        foreach ($values as $_val){
+            $opt = '';
             foreach ($keys as $k_key => $k_val){
-                if ($k_key == 'id'){ 
-                    if ($config[$k_key] == 'checkbox'){ // column id
-                        $html .= '<tr class="';
-                        if (isset($selected_id) && in_array($_val->$k_key, $selected_id)) {
-                            $html .='bg-aqua';
-                        }
-                        if (isset($_val->completed)){ if ($_val->completed == 100) { $html .= ' success '; } } // green background if completed == 100
-                        $html .= '" id="row'.$_val->$k_key.'" >';
-                        $html .= '<td ';
-                        if (isset($checkbox['onclick'])){
-                            $html .= 'onclick="'.str_replace('__id__', $_val->$k_key, $checkbox['onclick']).'"';   
-                        } else {
-                            $html .= 'onclick="checkrow(\''.$_val->$k_key.'\', \''.$id.'\');"';
-                        }
-                        $html .= ' ><input class="checkbox" type="checkbox" id="'.$id.'_'.$_val->$k_key.'" name="id[]" value="'.$_val->$k_key.'"';
-                        if (isset($selected_id) && in_array($_val->$k_key, $selected_id)) {
-                            $html .=   ' checked ';
-                        }
-                        $html .= ' /></td>';
-                    } else {
-                        $html .= '<tr id="row'.$_val->$k_key.'" onclick="checkrow(\''.$_val->$k_key.'\', \''.$id.'\')">'
-                                . '<td ><input class="hidden" type="checkbox" id="'.$_val->$k_key.'" name="id[]" value='.$_val->$k_key.' /></td>';
-                    }
-                    $_id = $_val->$k_key; // aktuelle id
-
+                if ($k_key == 'id'){
+                     $_id = $_val->$k_key; // aktuelle id
                 } else if ($k_key == 'p_options'){ // column optionen
-                    $html .= '<td>';
                     foreach ($config['p_options'] as $o_key => $o_val){
                         $p_options_type         = '';
                         $p_options_icon         = '';
@@ -170,27 +117,62 @@ function smarty_function_html_paginator($params, $template) {
                         if (array_key_exists('tooltip', (array)$o_val)){ $p_options_tooltip = $o_val['tooltip']; }
                         if (array_key_exists('capability',    (array)$o_val)){
                             if ($o_val['capability'] == true){ 
-                                $html .= '<a name="'.$o_key.'" type="button" class="'.$p_options_icon.' pull-right" '; if ($p_options_tooltip != ''){ $html .= "data-toggle='tooltip' title='".$p_options_tooltip."'";} if ($p_options_type != ''){  $html .= $p_options_type.'="'.str_replace('__id__', $_id, $o_val[$p_options_type]).'"></a>'; };
+                                $opt[$o_key] = '<a name="'.$o_key.'" type="button" style="color:#FFF;" class="'.$p_options_icon.'" '; if ($p_options_tooltip != ''){ $opt[$o_key] .= "data-toggle='tooltip' title='".$p_options_tooltip."'";} if ($p_options_type != ''){  $opt[$o_key] .= $p_options_type.'="'.str_replace('__id__', $_id, $o_val[$p_options_type]).'"></a>'; };
+                            }
+                        }
+                    }     
+                } else if ($k_key == 'p_widget'){ //get widget options
+                    foreach ($config['p_widget'] as $w_key => $w_val){
+                        if (strpos($w_val, ',')){ // more than one field in select_label
+                            foreach (explode(', ', $w_val) as $f) {
+                                $fields[]  = $_val->$f;
+                            }
+                            $$w_key = implode(" | ", $fields);
+                            unset($fields);
+                        } else {
+                            if (isset($_val->$w_val)){ 
+                                $$w_key = $_val->$w_val; 
+                            } else {
+                                $$w_key = $w_val;
                             }
                         }
                     }
-                    $html .= '</td>'; 
-                } else { // other columns
-                    if (array_key_exists($k_key, $config) AND SmartyPaginate::getColumnVisibility($k_key,$id)){
-                        $html .= '<td style=" word-break: break-all;" name="'.$id.'_col_'.$k_key.'" ';
-                            if (isset($td['onclick'])){
-                                $html .= 'onclick="'.str_replace('__id__', $_id, $td['onclick']).'"';
-                            } else {
-                                $html .= 'onclick="checkrow(\''.$_id.'\', \''.$id.'\');"';
-                            }
-                        $html .= '>'.$_val->$k_key.'</td>';
-                    }
                 }
             }
-            $html .= '</tr>';
-        }       
-
-        $html .= '</table></div>';
+            $html .= '<div class="col-lg-4 col-md-6 col-sm-12 margin-bottom">
+                      <div class="box box-widget widget-user collapsed-box ">
+                        <!-- Add the bg color to the header using any of the bg-* classes -->
+                        <span class="col-sm-12 no-margin" style="background: url('.$CFG->access_id_url.$file_id.') center center;  background-size: cover;">
+                            <div class="widget-user-header col-sm-12" style="background: '.$_val->color.';"  >
+                                <span class="pull-right no-margin">'.$opt['delete'].'</span>
+                                <h3 class="widget-user-username" style="color:#FFF;text-overflow: ellipsis;white-space: nowrap;overflow: hidden; text-shadow: 1px 1px #FF0000;">'.$header.'</h3> 
+                                <h5 class="widget-user-desc" style="color:#FFF; text-shadow: 1px 1px #FF0000;" >'.$subheader01 .'</h5>
+                                <h5 class="widget-user-desc" style="color:#FFF; text-shadow: 1px 1px #FF0000;" >'.$subheader02.'</h5>
+                                <span class="col-sm-12" style="background-color: '.substr($_val->color, 0,7).'; position:absolute; display:block; left:0;right:0;bottom:0;">
+                                    <a type="button" style="color:#FFF; padding:5px;text-shadow: 1px 1px #FF0000;" class="pull-right fa fa-chevron-circle-down" data-widget="collapse"></a>';
+                                    foreach ($opt as $o) {
+                                        $html .= '<span style="margin-right:15px;padding:5px;text-shadow: 1px 1px #FF0000;" class="fa">'.$o.'</span>';    
+                                    }
+                      $html .= '</span>
+                            </div>
+                        </span>';
+            
+                        /*$html .= '<div style="position: absolute;top: 45px;right: 15px;" >';
+                        $usr = new User();
+                        $usr->load('id', $_val->creator_id, false);
+                        $html .= '  <img class="img-circle img-bordered-sm" style="height:50px;width:50px;" src="'.$CFG->access_id_url.$usr->avatar_id.'" alt="User Avatar">';
+                        $html .= '</div>';*/
+              $html .= '<div class="box-footer no-padding" >
+                          <ul class="nav nav-stacked">
+                            <li style="padding: 10px 15px">'.$expand.'</li>
+                          </ul>
+                        </div>
+                      </div><!-- /.widget-user -->
+                    </div>
+                    <!-- /.col -->';
+        }
+        
+        $html .= '</div>'; //table end
         $html .= '<div class="btn-group pull-right" role="group" aria-label="...">'
             .smarty_function_paginate_first(array('id' => $id), $template, true).' '
             .smarty_function_paginate_prev(array('id' => $id), $template, true).' '

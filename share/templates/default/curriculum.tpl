@@ -18,14 +18,18 @@
             <div class="box box-primary">
                 <div class="box-body">
                     {if checkCapabilities('curriculum:add', $my_role_id, false)}
-                        <div class="btn-group " role="group" aria-label="..." onclick="formloader('curriculum','new');">
+                        <div class="btn-group" role="group" aria-label="..." onclick="formloader('curriculum','new');">
                             <button type="button" class="btn btn-default" >{*<a href="index.php?action=curriculum&function=new">*}
                                 <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Lehrplan hinzufügen / importieren
                             </button>
                         </div>
                     {/if}
                     <span class="clearfix"></span>
-                    {html_paginator id='curriculumP' title='Lehrpläne'}
+                    {if isset($c_widgets)}
+                        {widget_paginator id='curriculumP' title='Lehrpläne'}
+                    {else}    
+                        {html_paginator id='curriculumP' title='Lehrpläne'}
+                     {/if}
                 </div>
             </div>
         </div>

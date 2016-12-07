@@ -25,7 +25,7 @@
 global $USER, $TEMPLATE, $PAGE, $LOG;
 
 $TEMPLATE->assign('page_title', 'Timeline / Portfolio'); 
-$TEMPLATE->assign('breadcrumb',  array('Timeline / Portfolio' => 'index.php?action=portfolio'));
+$TEMPLATE->assign('breadcrumb',  array('Timeline / Portfolio' => 'index.php?action=Portfolio'));
 $artefacts = new Portfolio();
 $TEMPLATE->assign('artefact', $artefacts->getArtefacts()); 
 
