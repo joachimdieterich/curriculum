@@ -33,15 +33,24 @@
                         {if isset($courses)}
                             <form method='post' action='index.php?action=objectives&course={$selected_curriculum}&userID={implode(',',$selected_user_id)}&next={$currentUrlId}'>        
                                 <div class="form-horizontal">
-                                    {Form::input_select('course', '', $courses, 'group, curriculum', 'id', $selected_curriculum, null, "window.location.assign('index.php?action=objectives&course='+this.value);", 'Kurs / Klasse wählen...', '', 'col-sm-3')}
-                                    {if $show_course != '' and $terminalObjectives != false or !isset($selected_user_id)}{*Zertifikat*}
-                                        {Form::input_select('certificate_template', '', $certificate_templates, 'certificate, description', 'id', $selected_certificate_template, null, 'float-left', 'Zertifikatvorlage wählen...', '', 'col-sm-3')}   
-                                        <input type='hidden' name='sel_curriculum' value='{$sel_curriculum}'/>
-                                        <input type='hidden' name='sel_group_id' value='{$sel_group_id}'/>
-                                        <button type='submit' name='printCertificate' value='' class='btn btn-default'>
-                                            <span class="fa fa-files-o" aria-hidden="true"></span> {if count($selected_user_id) > 1} Zertifikate erstellen{else} Zertifikat erstellen{/if}
-                                        </button>
-                                    {/if}
+                                    <div class="row">
+                                        <div class="col-md-4 col-sm-12">
+                                            {Form::input_select('course', '', $courses, 'group, curriculum', 'id', $selected_curriculum, null, "window.location.assign('index.php?action=objectives&course='+this.value);", 'Kurs / Klasse wählen...', '', 'col-sm-12')}
+                                        </div>
+                                        {if $show_course != '' and $terminalObjectives != false}{*Zertifikat*}
+                                            <div class="col-md-4 col-sm-12">
+                                                {Form::input_select('certificate_template', '', $certificate_templates, 'certificate, description', 'id', $selected_certificate_template, null, 'float-left', 'Zertifikatvorlage wählen...', '', 'col-sm-12')}   
+                                            </div>
+                                            <input type='hidden' name='sel_curriculum' value='{$sel_curriculum}'/>
+                                            <input type='hidden' name='sel_group_id' value='{$sel_group_id}'/>
+                                            <div class="col-md-4 col-sm-12">
+                                                <button type='submit' name='printCertificate' value='' class='btn btn-default'>
+                                                    <span class="fa fa-files-o" aria-hidden="true"></span> {if count($selected_user_id) > 1} Zertifikate erstellen{else} Zertifikat erstellen{/if}
+                                                </button>
+                                            </div>
+                                        {/if}
+                                        
+                                    </div>
                                 </div>
                             </form>
                         {else}<strong>Sie haben noch keine Lehrpläne angelegt bzw. noch keine Klassen eingeschrieben.</strong>
