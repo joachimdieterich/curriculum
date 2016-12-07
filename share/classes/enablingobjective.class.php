@@ -739,7 +739,6 @@ class EnablingObjective {
                             }
                             break;
                 
-                            break;
             default:        break;
         } 
     }
@@ -753,7 +752,7 @@ class EnablingObjective {
                                 WHERE ua.reference_id = ena.id
                                 AND ua.context_id = 12
                                 AND ena.terminal_objective_id IN (?)
-                                AND ua.user_id = ? AND (ua.status_id = 1 OR ua.status_id = 11 OR ua.status_id = 21 OR ua.status_id = 31)');
+                                AND ua.user_id = ? AND (ua.status_id IN ("01","1","x1","11","21","31") OR ua.status_id IN ("02","2","x2","12","22","32"))');
         $db2->execute(array($ter_id, $user_id));
         $accomplished    = $db2->fetchColumn(); 
         if ($max > 0){
