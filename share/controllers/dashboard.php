@@ -62,4 +62,4 @@ $box_bg = array('0' => 'bg-white','' => 'bg-white','x0' => 'bg-red','0x' => 'bg-
                 );
 $TEMPLATE->assign('box_bg',$box_bg);
 
-$LOG->add($USER->id, 'view', $PAGE->url,  'Browser: '.$PAGE->browser. ' View: '.$PAGE->url); /* add log */
+$LOG->add($USER->id, 'view', $PAGE->url,  'Browser: '.$PAGE->browser); /* add log */
