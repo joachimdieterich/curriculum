@@ -198,6 +198,7 @@ class Pdf {
          if (file_exists($CFG->curriculumdata_root.'user/'.$USER->id.'/'.$this->filename)){
             unlink($CFG->curriculumdata_root.'user/'.$USER->id.'/'.$this->filename); 
         }
+        silent_mkdir($CFG->curriculumdata_root.'user/'.$USER->id.'/'); //add user folder if not exists
         $mpdf->Output($CFG->curriculumdata_root.'user/'.$USER->id.'/'.$this->filename, 'F');
         set_time_limit(30);
         header("Location: ".$CFG->access_file_url."user/".$USER->id."/".$this->filename);
