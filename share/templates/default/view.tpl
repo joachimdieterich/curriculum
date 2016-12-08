@@ -59,13 +59,13 @@
                                 <div class="panel panel-default box-objective {if isset($highlight)}{if in_array("ter_`$ter->id`", $highlight)} highlight {/if}{/if}"> 
                                     <div class="panel-heading boxheader" style="background: {$ter->color}">
                                         {if isset($showaddObjectives)}
-                                            <span class="fa fa-minus pull-right invert box-sm-icon text-primary" onclick="del('terminalObjectives', {$ter->id});"></span>
-                                            <span class="fa fa-edit pull-right invert box-sm-icon text-primary" onclick="formloader('terminalObjective','edit', {$ter->id});"></span>
+                                            <span class="fa fa-minus pull-right box-sm-icon text-primary" onclick="del('terminalObjectives', {$ter->id});"></span>
+                                            <span class="fa fa-edit pull-right box-sm-icon text-primary" onclick="formloader('terminalObjective','edit', {$ter->id});"></span>
                                             {if $ter->order_id neq '1'}
-                                                <span class="fa fa-arrow-up pull-left box-sm-icon text-primary" onclick="order('down', 'terminal_objective','{$ter->id}');"></span>
+                                                <span class="fa fa-arrow-up pull-left box-sm-icon text-primary" onclick='processor("orderObjective", "terminal_objective", "{$ter->id}", {["order" =>"down"]|@json_encode nofilter});'></span>
                                             {/if}
                                             {if not $smarty.foreach.foreach_ter.last}
-                                                <span class="fa fa-arrow-down pull-left box-sm-icon text-primary" onclick="order('up', 'terminal_objective','{$ter->id}');"></span>
+                                                <span class="fa fa-arrow-down pull-left box-sm-icon text-primary" onclick='processor("orderObjective", "terminal_objective", "{$ter->id}", {["order" =>"up"]|@json_encode nofilter});'></span>
                                             {/if}
                                         {/if}
                                     </div>
@@ -85,7 +85,6 @@
                                                 <a href="../share/request/uploadframe.php?context=terminal_objective&ref_id={$ter->id}{$tb_param}" class="nyroModal"><span class="fa fa-plus pull-right box-sm-icon"></span></a>                        
                                             {/if} 
                                         {/if}
-
                                         {if checkCapabilities('file:loadMaterial', $my_role_id, false) AND $ter->files neq '0'}
                                             <span class="fa fa-briefcase box-sm-icon text-primary" style="cursor:pointer;" data-toggle="tooltip" title="{$ter->files} Materialien verfügbar" onclick="formloader('material','ter',{$ter->id})"></span> {*<span class="badge label-primary" style="margin-top: -3px;font-size: 8px;line-height: .8"  data-toggle="tooltip" title="Material">{$ter->files}</span>*}
                                         {else}
@@ -133,13 +132,13 @@
                                             {if isset($showaddObjectives)}
                                                  {if isset($enabledObjectives[{$enaid+1}])} 
                                                      {if $ena->terminal_objective_id eq $enabledObjectives[{$enaid+1}]->terminal_objective_id}
-                                                         <span class="fa fa-arrow-right pull-right box-sm-icon text-primary" onclick="order('up', 'enabling_objective', '{$ena->id}');"></span>
+                                                         <span class="fa fa-arrow-right pull-right box-sm-icon text-primary" onclick='processor("orderObjective", "enabling_objective", "{$ena->id}", {["order" =>"up"]|@json_encode nofilter});'></span>
                                                      {/if}
                                                  {/if}
                                                  <span class="fa fa-minus pull-right box-sm-icon text-primary" onclick="del('enablingObjectives', {$ena->id});"></span>
                                                  <span class="fa fa-edit pull-right box-sm-icon text-primary" onclick="formloader('enablingObjective','edit', {$ena->id});"></span>
                                                  {if $ena->order_id neq '1'}
-                                                     <span class="fa fa-arrow-left pull-left box-sm-icon text-primary" onclick="order('down', 'enabling_objective', '{$ena->id}');"></span>
+                                                     <span class="fa fa-arrow-left pull-left box-sm-icon text-primary" onclick='processor("orderObjective", "enabling_objective", "{$ena->id}", {["order" =>"down"]|@json_encode nofilter});'></span>
                                                  {/if}
                                              {/if}
                                         </div>
