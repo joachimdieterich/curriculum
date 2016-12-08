@@ -30,7 +30,7 @@ echo'<html lang="de" class="no-js">
         <meta charset="utf-8"> 
         <link rel="stylesheet" href="../../public/assets/templates/AdminLTE-2.3.0/bootstrap/css/bootstrap.min.css"> 
         <link rel="stylesheet" href="../../share/libs/font-awesome/css/font-awesome.min.css">
-        <link rel="stylesheet" href="../../public/assets/stylesheets/google-fonts.css" >
+        <link rel="stylesheet" href="../../public/assets/stylesheets/google-fonts.min.css" >
         <link rel="stylesheet" href="../../public/assets/templates/AdminLTE-2.3.0/dist/css/AdminLTE.min.css">
         <link rel="stylesheet" href="../../public/assets/templates/AdminLTE-2.3.0/dist/css/skins/_all-skins.min.css">
      </head>

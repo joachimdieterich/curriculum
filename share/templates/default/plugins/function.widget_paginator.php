@@ -96,7 +96,7 @@ function smarty_function_widget_paginator($params, $template) {
                     } 
                 }     
     $html .= '</ul>
-              </div><br>'; 
+              </div><br><br>'; 
 
     /* Table */
     if (isset($values)){
@@ -144,12 +144,12 @@ function smarty_function_widget_paginator($params, $template) {
                         <!-- Add the bg color to the header using any of the bg-* classes -->
                         <span class="col-sm-12 no-margin" style="background: url('.$CFG->access_id_url.$file_id.') center center;  background-size: cover;">
                             <div class="widget-user-header col-sm-12" style="background: '.$_val->color.';"  >
-                                <span class="pull-right no-margin">'.$opt['delete'].'</span>
-                                <h3 class="widget-user-username" style="color:#FFF;text-overflow: ellipsis;white-space: nowrap;overflow: hidden; text-shadow: 1px 1px #FF0000;">'.$header.'</h3> 
-                                <h5 class="widget-user-desc" style="color:#FFF; text-shadow: 1px 1px #FF0000;" >'.$subheader01 .'</h5>
-                                <h5 class="widget-user-desc" style="color:#FFF; text-shadow: 1px 1px #FF0000;" >'.$subheader02.'</h5>
+                                <span class="pull-right no-margin text-white-shadow">'.$opt['delete'].'</span>
+                                <h3 class="widget-user-username" ><span class="text-white-shadow">'.$header.'</span></h3> 
+                                <h5 class="widget-user-desc text-white-shadow" >'.$subheader01 .'</h5>
+                                <h5 class="widget-user-desc text-white-shadow"  >'.$subheader02.'</h5>
                                 <span class="col-sm-12" style="background-color: '.substr($_val->color, 0,7).'; position:absolute; display:block; left:0;right:0;bottom:0;">
-                                    <a type="button" style="color:#FFF; padding:5px;text-shadow: 1px 1px #FF0000;" class="pull-right fa fa-chevron-circle-down" data-widget="collapse"></a>';
+                                    <a type="button" style="padding:5px;" class="pull-right fa fa-chevron-circle-down text-white-shadow" data-widget="collapse"></a>';
                                     foreach ($opt as $o) {
                                         $html .= '<span style="margin-right:15px;padding:5px;text-shadow: 1px 1px #FF0000;" class="fa">'.$o.'</span>';    
                                     }
@@ -173,6 +173,7 @@ function smarty_function_widget_paginator($params, $template) {
         }
         
         $html .= '</div>'; //table end
+        $html .= '<div class="col-sm-12">';
         $html .= '<div class="btn-group pull-right" role="group" aria-label="...">'
             .smarty_function_paginate_first(array('id' => $id), $template, true).' '
             .smarty_function_paginate_prev(array('id' => $id), $template, true).' '
@@ -194,6 +195,6 @@ function smarty_function_widget_paginator($params, $template) {
         $html .= '> Alle <span id="span_unselect" class="hidden"><input type="checkbox" id="p_unselect" value="p_unselect" onclick="checkrow(\'none\', \''.$id.'\');"> Auswahl aufheben </span>';
         $html .= ' | <span id="count_selection">'.count($selected_id).'</span> Datensätze markiert</span><br>';
     } 
-    $html .= '</div></div>';
+    $html .= '</div>';
     return $html;
 }

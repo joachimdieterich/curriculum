@@ -4,6 +4,7 @@
 <!--[if IE 8 ]>    <html lang="de" class="no-js ie ie8"> <![endif]-->
 <!--[if IE 9 ]>    <html lang="de" class="no-js ie ie9"> <![endif]-->
 <!--[if (gt IE 9)|!(IE)]><!--> 
+{strip}
 <html lang="de" class="no-js"> <!--<![endif]-->
 {* define global validate function*}
 {function validate_msg field=''}
@@ -40,7 +41,7 @@
         <link rel="stylesheet" href="{$media_url}templates/AdminLTE-2.3.0/bootstrap/css/bootstrap.min.css">
         <!-- Font Awesome -->
         <link rel="stylesheet" href="{$lib_url}/font-awesome/css/font-awesome.min.css">
-        <link rel="stylesheet" href="{$media_url}stylesheets/google-fonts.css" >
+        <link rel="stylesheet" href="{$media_url}stylesheets/google-fonts.min.css" >
         <!-- Ionicons --><!-- not used yet -->
         <!--link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"-->
         <!-- jvectormap -->
@@ -55,8 +56,8 @@
         <!-- Bootstrap Color Picker -->
         <link rel="stylesheet" href="{$media_url}templates/AdminLTE-2.3.0/plugins/colorpicker/bootstrap-colorpicker.min.css">
         <!-- Custom styles for this template -->
-        <link rel="stylesheet" href="{$media_url}stylesheets/all-bs.css">
-        <link rel="stylesheet" href="{$media_url}stylesheets/buttons.css" media="all">
+        <link rel="stylesheet" href="{$media_url}stylesheets/all-bs.min.css">
+        <link rel="stylesheet" href="{$media_url}stylesheets/buttons.min.css" media="all">
         <link rel="stylesheet" href="{$media_url}jquery.nyroModal/styles/nyroModal.css" media="all">
         {block name=additional_stylesheets}{/block}
     </head>
@@ -276,13 +277,13 @@
     <!-- SlimScroll 1.3.0 -->
     <script src="{$media_url}templates/AdminLTE-2.3.0/plugins/slimScroll/jquery.slimscroll.min.js"></script>
     <!-- curriculum settings (sidebar) -->
-    <script src="{$media_url}scripts/curriculum.js"></script>
+    <script src="{$media_url}scripts/curriculum.min.js"></script>
     <!-- jquery.nyroModal -->
     <script src="{$media_url}jquery.nyroModal/js/jquery.nyroModal.custom.js"></script> 
-    <script src="{$media_url}scripts/script.js"></script> 
+    <script src="{$media_url}scripts/script.min.js"></script> 
     <script src="{$media_url}scripts/PDFObject-master/pdfobject.min.js"></script> 
-    <script src="{$media_url}scripts/file.js"></script>
-    <script src="{$media_url}scripts/dragndrop.js"></script>     
+    <script src="{$media_url}scripts/file.min.js"></script>
+    <script src="{$media_url}scripts/dragndrop.min.js"></script>     
     
     {block name=additional_scripts} 
     <!-- Logout - Timer  -->
@@ -342,5 +343,5 @@
 
     {/block}  
     </body>
-    
 </html>
+{/strip}

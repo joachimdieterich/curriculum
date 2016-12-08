@@ -155,7 +155,7 @@ if ($my_upload->upload() OR filter_var($fileURL, FILTER_VALIDATE_URL)) {//in dat
             $mail->sender_id    = $USER->id;
             $mail->receiver_id  = $teachers[$i]; //current Teacher
             $mail->subject      = 'Lösung eingereicht';
-            $mail->message      = '<p>Zum Lernziel: <br> "'.$enabling_objective->enabling_objective.'" hat '.$USER->firstname.' '.$USER->lastname.' ('.$USER->username.') folgende Lösung eingereicht:<br>'; 
+            $mail->message      = '<p>Zum Lernziel: <strong>'.$enabling_objective->enabling_objective.'</strong> hat '.$USER->firstname.' '.$USER->lastname.' ('.$USER->username.') folgende Lösung eingereicht:<br>'; 
             $mail->message     .= '<link id="'.$file->id.'"></link>';
             $mail->message     .= '<accomplish id="'.$enabling_objective->id.'"></accomplish>';
             $mail->message     .= '</p>';

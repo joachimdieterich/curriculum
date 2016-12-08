@@ -326,7 +326,7 @@ class Render {
     
     public static function helpcard($help){
         global $USER;
-        $html =   '<div class="col-md-3 col-sm-6 col-xs-12">';
+        $html =   '<div class="col-lg-3 col-md-6 col-xs-12">';
                     if (checkCapabilities('help:update', $USER->role_id, false)){
                         $html .='<a><span class="pull-right" onclick="formloader(\'help\',\'edit\','.$help->id.');"><i class="fa fa-edit margin"></i></span></a>';
                     }
@@ -339,11 +339,12 @@ class Render {
                             //<span class="info-box-icon bg-aqua" style="background: url(\'../share/accessfile.php?id='.$help->file_id.');background-size: cover; background-repeat: no-repeat;"></span>
                     $html .= '<div class="info-box-content">
                               <span class="info-box-text text-black">'.$help->category.'</span>
-                              <span class="info-box-number text-black">'.$help->title.'</span>
-                              <span class="info-box-more text-primary">'.$help->description.'</span>
+                              <span class="info-box-number text-black text-ellipse">'.$help->title.'</span>
+                              <span class="info-box-more text-primary text-ellipse">'.$help->description.'</span>
                             </div><!-- /.info-box-content -->
+                            </a>
                           </div><!-- /.info-box -->
-                        </a>
+                        
                     </div>';
         return $html;                                    
     }

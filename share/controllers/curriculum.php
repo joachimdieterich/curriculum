@@ -34,7 +34,7 @@ if(isset($_GET['reset']) OR (isset($_POST['reset'])) OR (isset($_POST['new_curri
 /*******************************************************************************
  * END POST / GET
  */
-//$TEMPLATE->assign('c_widgets', 'Lehrpläne verwalten'); 
+$TEMPLATE->assign('c_widgets', 'Lehrpläne verwalten'); 
 
 $p_options = array('delete' => array('onclick'      => "del('curriculum',__id__);", 
                                      'capability'   => checkCapabilities('curriculum:delete', $USER->role_id, false),

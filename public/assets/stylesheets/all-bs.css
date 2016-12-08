@@ -26,6 +26,19 @@
     background-color: #FFFFFF !important;
 }
 
+.text-white-shadow {
+    color:          #FFF;
+    text-overflow:  ellipsis;
+    white-space:    nowrap;
+    overflow:       hidden; 
+    text-shadow:    1px 1px #FF0000;
+}
+.text-ellipse {
+    text-overflow:  ellipsis;
+    white-space:    nowrap;
+    overflow:       hidden;
+}
+
 .top-buffer { margin-top:10px; }
 
 .deactivate {

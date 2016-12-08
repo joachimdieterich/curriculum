@@ -120,7 +120,6 @@
                                                 {*if isset($solutions[$my_id])}
                                                    {foreach key=solID item=sol from=$solutions}
                                                        {if $sol->enabling_objective_id eq $ena->id AND $sol_btn neq $ena->id}
-
                                                        {/if}
                                                    {/foreach}
                                                 {/if*}
