@@ -507,16 +507,6 @@ function processor(/*proc, func, val, []*/){
     }
 }
 
-function order() {
-    var url = "../share/request/orderObjectives.php?order="+ arguments[0] +"&func="+ arguments[1]+"&id="+ arguments[2];
-    
-    req = XMLobject();
-    if(req) {        
-        req.onloadend = window.location.reload();
-        req.open("GET", url, true);
-        req.send(null);
-    }
-}
 /**
  * delete a dataset in a db-table
  **/
