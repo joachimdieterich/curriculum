@@ -173,18 +173,26 @@ function resetPaginator($instance){  //resets Paginator to index 1
  * @return string
  */
 function orderPaginator($instance, $table=null){
-    $search = SmartyPaginate::getSort('search', $instance);
-    
-    if ($table){
-        if (strpos(strtoupper($search), 'LIKE')){
-            $t      = $table[SmartyPaginate::_getOrder($instance)]; //get proper table shortcut
-            $search = substr_replace($search, $t.'.', 5, 0);        //add "table." to query
+    //error_log(json_encode(SmartyPaginate::_getSearchField($instance)));
+    if ($table AND is_array(SmartyPaginate::_getSearchField($instance))){
+        $search = ' AND (';
+        $fields = SmartyPaginate::_getSearchField($instance);
+        for ($i = 0; $i < count($fields); $i++) {           // generates sql search query based on field array
+            $t       = $table[$fields[$i]]; //get proper table shortcut
+            $search .= $t.'.'.$fields[$i].' LIKE \'%'.SmartyPaginate::_getSearch($instance).'%\' ';
+            if ($i+1 != count($fields)){
+                $search .= 'OR ';
+            } else {
+                $search .= ')';
+            }
         } 
-    }
-    $order  = SmartyPaginate::getSort('order', $instance);
-    $sort   = SmartyPaginate::getSort('sort', $instance) ;
-    if ($order){ 
-        return $search.' '. $order.' '.$sort;             
+        $order  = SmartyPaginate::_getOrder($instance);
+        if ($order != '') {
+            $order = ' ORDER BY '. $table[$order].'.'.$order; 
+        }
+        $sort   = SmartyPaginate::getSort('sort', $instance) ;
+        //error_log($search.' '.$order.' '.$sort);
+        return $search.' '.$order.' '.$sort;      
     } else {
        return '';
     }

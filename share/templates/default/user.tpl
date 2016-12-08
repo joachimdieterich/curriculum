@@ -63,8 +63,7 @@
                                     </div>
                                 </div> 
                                 {/if}
-                            {*else}<div class="form-group col-xs-12 col-sm-12 col-md-5 col-lg-3">
-                                <h4>Lerngruppe</h4><p><strong>Sie müssen zuerst eine Lerngruppe anlegen</strong></p></div>*}{/if}
+                            {/if}
 
                             {if checkCapabilities('user:updateRole', $my_role_id, false)}
                                 <div class="form-horizontal col-xs-12 col-sm-12 col-md-5 col-lg-3">

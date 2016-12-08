@@ -50,7 +50,18 @@ $copy_link  = '';
 foreach ($_GET  as $key => $value) { $$key = $value; } 
 /* get form data */
 foreach ($_POST as $key => $value) { $$key = $value; }
-
+if (isset($paginator) AND isset($paginator_search) AND isset($order)) {
+    if ($paginator_search == '%'){
+        unset ($_SESSION['SmartyPaginate'][$paginator]['pagi_search']);
+    } else {
+        if ($order != ''){ //if no field list is defined search in order field
+            SmartyPaginate::setSearchField(array($order),  $paginator);
+        } else {
+            SmartyPaginate::setOrder('', $paginator);
+        }
+        SmartyPaginate::setSearch($order, $paginator_search, $paginator);
+    }
+}
 ?>
 
 <!-- HTML -->
@@ -135,7 +146,6 @@ foreach ($_POST as $key => $value) { $$key = $value; }
               if (in_array($action, array('user','curriculum','userfiles','avatar'))){ 
               ?>
               <div class="box-header">
-                  
                   <div class="btn-group">
                       <button type="button" class="btn btn-default">
                           <a href="../share/request/uploadframe.php?action=<?php 

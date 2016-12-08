@@ -31,13 +31,14 @@
                 <div class="tab-content">
                     <div class="tab-pane active" id="f_userlist">
                         {if isset($courses)}
-                            <form method='post' action='index.php?action=objectives&course={$selected_curriculum}&userID={implode(',',$selected_user_id)}&next={$currentUrlId}'>        
+                            <form method='post' action='index.php?action=objectives&course={$selected_curriculum}{*&userID={implode(',',$selected_user_id)}&next={$currentUrlId}*}'>        
                                 <div class="form-horizontal">
                                     <div class="row">
                                         <div class="col-md-4 col-sm-12">
-                                            {Form::input_select('course', '', $courses, 'group, curriculum', 'id', $selected_curriculum, null, "window.location.assign('index.php?action=objectives&course='+this.value);", 'Kurs / Klasse wählen...', '', 'col-sm-12')}
+                                            {Form::input_select('course', '', $courses, 'group, curriculum', 'id', $selected_curriculum, null, "window.location.assign('index.php?action=objectives&paginator=userPaginator&p_reset=true&course='+this.value);", 'Kurs / Klasse wählen...', '', 'col-sm-12')}
                                         </div>
-                                        {if $show_course != '' and $terminalObjectives != false}{*Zertifikat*}
+                                        {*if $show_course != '' and $terminalObjectives != false*}{*Zertifikat*}
+                                        {if isset($userPaginator)}{*Zertifikat*}
                                             <div class="col-md-4 col-sm-12">
                                                 {Form::input_select('certificate_template', '', $certificate_templates, 'certificate, description', 'id', $selected_certificate_template, null, 'float-left', 'Zertifikatvorlage wählen...', '', 'col-sm-12')}   
                                             </div>
@@ -90,7 +91,7 @@
                 </div>
                 <div class="box-body">
         
-                {if $show_course != '' and $terminalObjectives != false or !isset($selected_user_id)} 
+                {if $show_course != '' and isset($terminalObjectives)} 
                     {foreach key=terid item=ter from=$terminalObjectives}
                         <div class="row" >
                             <div class="col-xs-12"> 

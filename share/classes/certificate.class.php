@@ -119,7 +119,11 @@ class Certificate {
      */
     public function getCertificates($paginator = ''){
         global $USER;
-        $order_param    = orderPaginator($paginator); 
+        $order_param    = orderPaginator($paginator,array('certificate' => 'ce',
+                                                          'description' => 'ce',
+                                                          'template'    => 'ce',
+                                                          'username'    => 'us',
+                                                          'institution' => 'ins')); 
         $certificates   = array();                      //Array of certificates
         $db             = DB::prepare('SELECT ce.*, us.username, ins.institution FROM certificate AS ce, users AS us, institution AS ins 
                            WHERE ce.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE us.id = user_id AND institution_id = ins.id AND user_id = ?) 

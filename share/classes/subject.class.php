@@ -66,7 +66,10 @@ class Subject {
      */
     public function getSubjects($paginator =''){
         global $USER;
-        $order_param    = orderPaginator($paginator); 
+        $order_param    = orderPaginator($paginator, array('subject' => 'sub',
+                                                        'description'    => 'sub',
+                                                        'subject_short'  => 'sub',
+                                                        'institution'    => 'ins')); 
         $subjects       = array();
         $db             = DB::prepare('SELECT sub.*, ins.institution 
                                        FROM subjects AS sub, institution AS ins 

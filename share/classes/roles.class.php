@@ -162,12 +162,13 @@ class Roles {
      */
     public function get($paginator = '', $all = false){
         global $USER;
-        $order_param = orderPaginator($paginator); 
+        $order_param = orderPaginator($paginator,array('role' => 'ro',
+                                                        'description'    => 'ro')); 
         if ($all){
-            $db          = DB::prepare('SELECT * FROM roles '.$order_param); // get all roles
+            $db          = DB::prepare('SELECT ro.* FROM roles AS ro '.$order_param); // get all roles
             $db->execute();
         } else {
-            $db          = DB::prepare('SELECT * FROM roles WHERE order_id >= (SELECT order_id FROM roles WHERE id = ?) '.$order_param); // man darf nur rollen vergeben die unter der eigenen sind. id = id damit suche funktioniert
+            $db          = DB::prepare('SELECT ro.* FROM roles AS ro WHERE ro.order_id >= (SELECT ro.order_id FROM roles AS ro WHERE ro.id = ?) '.$order_param); // man darf nur rollen vergeben die unter der eigenen sind. id = id damit suche funktioniert
             $db->execute(array($USER->role_id));
         }
         while ($result = $db->fetchObject()) {

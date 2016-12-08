@@ -106,6 +106,11 @@ $p_options  = array('delete' => array('onclick'      => "del('user',__id__);",
                                      'capability'   => checkCapabilities('user:getGroups', $USER->role_id, false),  //todo: use extra capability?
                                      'icon'         => 'fa fa-list-alt',
                                      'tooltip'      => 'Überblick'));
+$p_widget  = array('header'     => 'username',
+                   'subheader01'=> 'firstname, lastname',
+                   'subheader02'=> 'email',
+                   'file_id'    => 'avatar_id',
+                   'circle_image' => 'file_id'); 
 $p_config   = array('id'         => 'checkbox',
                     'username'   => 'Benutzername', 
                     'firstname'  => 'Vorname', 
@@ -116,5 +121,7 @@ $p_config   = array('id'         => 'checkbox',
                     /*'state'   => 'Bundesland', 
                     'country' => 'Land', */
                     ''    => 'Rolle', 
+                    'p_search'    => array('username','firstname','lastname','email','postalcode','city'),
+                    'p_widget'    => $p_widget,
                     'p_options'    => $p_options);
 setPaginator('userP', $TEMPLATE, $users->userList('institution', 'userP', filter_input(INPUT_GET, 'lost', FILTER_VALIDATE_BOOLEAN)), 'us_val', 'index.php?action=user', $p_config); //set Paginator    

@@ -731,6 +731,7 @@ class User {
             $this->email        = $result->email;
             $this->postalcode   = $result->postalcode;
             $this->city         = $result->city;
+            $this->avatar_id    = $result->avatar_id;
             
             $users[] = clone $this;
         } 
@@ -864,7 +865,10 @@ class User {
      */
     public function getUsers($dependency = null, $paginator = '', $id = null, $group = null){
         global $USER, $CFG;
-        $order_param = orderPaginator($paginator);
+        $order_param = orderPaginator($paginator, array('username'  => 'us', 
+                                                        'firstname' => 'us', 
+                                                        'lastname'  => 'us'
+                                                    ));
         
         checkCapabilities('user:getUsers', $USER->role_id);
         switch ($dependency) {

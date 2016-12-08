@@ -215,7 +215,6 @@ class Curriculum {
                                                         'schooltype' => 'sc',
                                                         'grade'      => 'gr',
                                                         'subject'    => 'su'));  
-        
         $curriculum = array();
         switch ($dependency) {
             case 'group':   $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, fl.filename, su.subject, 

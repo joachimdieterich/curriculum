@@ -24,7 +24,7 @@
 */
 include(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
-global $USER,$CFG;
+global $USER,$CFG, $PAGE;
 $USER   = $_SESSION['USER'];
 $func   = filter_input(INPUT_GET, 'func',           FILTER_SANITIZE_STRING);
 $object = file_get_contents("php://input");
@@ -56,6 +56,23 @@ switch ($func) {
     case "paginator_order": SmartyPaginate::setSort(filter_input(INPUT_GET, 'order', FILTER_SANITIZE_STRING),filter_input(INPUT_GET, 'sort', FILTER_SANITIZE_STRING), filter_input(INPUT_GET, 'paginator', FILTER_SANITIZE_STRING));
         break;
     case "paginator_checkrow": echo json_encode(SmartyPaginate::setSelection(filter_input(INPUT_GET, 'val', FILTER_SANITIZE_STRING), filter_input(INPUT_GET, 'paginator', FILTER_SANITIZE_STRING)));
+        break;
+    case "paginator_search": $paginator =  filter_input(INPUT_GET, 'val', FILTER_UNSAFE_RAW);
+                            if (filter_input(INPUT_GET, 'search', FILTER_UNSAFE_RAW) == '%'){
+                                unset ($_SESSION['SmartyPaginate'][$paginator]['pagi_search']);
+                            } else {
+                                $order = filter_input(INPUT_GET, 'order', FILTER_SANITIZE_STRING);
+                                if ($order != ''){ //if no field list is defined search in order field
+                                    SmartyPaginate::setSearchField(array(filter_input(INPUT_GET, 'order', FILTER_SANITIZE_STRING)),  filter_input(INPUT_GET, 'val', FILTER_UNSAFE_RAW));
+                                } else {
+                                    SmartyPaginate::setOrder('', $paginator);
+                                }
+                                SmartyPaginate::setSearch($order, filter_input(INPUT_GET, 'search', FILTER_UNSAFE_RAW), $paginator);
+                            }
+        break; 
+    case "paginator_reset": resetPaginator(filter_input(INPUT_GET, 'val', FILTER_UNSAFE_RAW));
+        break;
+    case "paginator_view": SmartyPaginate::setView(filter_input(INPUT_GET, 'view', FILTER_UNSAFE_RAW),filter_input(INPUT_GET, 'val', FILTER_UNSAFE_RAW));
         break;
                             
     default: break;

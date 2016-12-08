@@ -33,6 +33,10 @@ function smarty_function_widget_paginator($params, $template) {
             default: break;
         } 
     } 
+    if (SmartyPaginate::getView($id) == 'table'){
+        require_once(dirname(__FILE__) . '/function.html_paginator.php');
+        return smarty_function_html_paginator($params, $template);
+    }
     SmartyPaginate::setTitle($p_title, $id);
     $url        = SmartyPaginate::getUrl($id);                    // get url
     $values     = SmartyPaginate::_getData($id);                  // get values
@@ -62,20 +66,29 @@ function smarty_function_widget_paginator($params, $template) {
             }
         }
     }
-    
+    SmartyPaginate::setSearchField($config['p_search'], $id);
     if (!isset($values) AND !SmartyPaginate::_getSearch($id)){ return 'Keine Datensätze vorhanden.'; } 
-    $html  = '<div class="row"><div class="'.$width.'">';
+    $html  = '<div class="row"><div class="'.$width.' top-buffer" style="padding:0;">';
     if (null !== SmartyPaginate::_getSearch($id)){
-        $html .= '<div class="btn-group pull-left" href="'.removeUrlParameter($url, array ( 0 => 'paginator', 1 => 'p_reset')).'&paginator='.$id.'&p_reset=true">
-                    <a href="'.removeUrlParameter($url, array ( 0 => 'paginator', 1 => 'p_reset')).'&paginator='.$id.'&p_reset=true">
-                        <button type="button" class="btn btn-default fa fa-times-circle-o"> '.$config[SmartyPaginate::_getOrder($id)].': <i>'.SmartyPaginate::_getSearch($id).'</i></button>
-                    </a>
+        $html .= '<div class="col-sm-3 btn-group pull-left">
+                    <button type="button" class="btn btn-default fa fa-times-circle-o" onclick="processor(\'config\',\'paginator_reset\',\''.$id.'\');"> Suche: <i>'.SmartyPaginate::_getSearch($id).'</i></button>
                   </div>';
+    } else {
+        $html .= '<div class="col-sm-3 btn-group pull-left" ><div class="input-group">
+          <input type="text" name="q" class="form-control" placeholder="Suche..." onkeydown="if (event.keyCode == 13) {event.preventDefault(); processor(\'config\',\'paginator_search\',\''.$id.'\',{ \'order\':\'\',\'search\':this.value});}">
+              <span class="input-group-btn">
+                <button type="submit" name="search" id="search-btn" class="btn btn-flat" ><i class="fa fa-search"></i>
+                </button>
+              </span>
+        </div></div>';
     }
     
     /* Column controller */
-    $html .= '<div class="btn-group pull-right">
-                <button type="button" class="btn btn-default fa fa-th dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    $html .= '<div class="btn-group pull-right" style="padding-right:15px;">';
+    
+    $html .= '<button type="button" class="btn btn-default fa fa-table" onclick="processor(\'config\',\'paginator_view\',\''.$id.'\',{\'view\':\'table\'});"></button>';
+    
+    $html .= ' <button type="button" class="btn btn-default fa fa-th dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">';
@@ -139,35 +152,47 @@ function smarty_function_widget_paginator($params, $template) {
                     }
                 }
             }
+            if (!isset($_val->color)){
+                $_val->color = '#3c8dbc99'; //todo global color
+            }
             $html .= '<div class="col-lg-4 col-md-6 col-sm-12 margin-bottom">
                       <div class="box box-widget widget-user collapsed-box ">
                         <!-- Add the bg color to the header using any of the bg-* classes -->
-                        <span class="col-sm-12 no-margin" style="background: url('.$CFG->access_id_url.$file_id.') center center;  background-size: cover;">
-                            <div class="widget-user-header col-sm-12" style="background: '.$_val->color.';"  >
+                        <span class="col-sm-12 no-margin" ';
+                            if (isset($config['p_widget']['bg_image'])){ 
+                                $html .= 'style="background: url('.$CFG->access_id_url.$file_id.') center center;  background-size: cover;"';
+                            }
+                        $html .= ' ">';
+                        $html .= '    <div class="widget-user-header col-sm-12" style="background: '.$_val->color.';"  >
                                 <span class="pull-right no-margin text-white-shadow">'.$opt['delete'].'</span>
-                                <h3 class="widget-user-username" ><span class="text-white-shadow">'.$header.'</span></h3> 
+                                <h3 class="widget-user-username text-white-shadow" >'.$header.'</h3> 
                                 <h5 class="widget-user-desc text-white-shadow" >'.$subheader01 .'</h5>
-                                <h5 class="widget-user-desc text-white-shadow"  >'.$subheader02.'</h5>
-                                <span class="col-sm-12" style="background-color: '.substr($_val->color, 0,7).'; position:absolute; display:block; left:0;right:0;bottom:0;">
-                                    <a type="button" style="padding:5px;" class="pull-right fa fa-chevron-circle-down text-white-shadow" data-widget="collapse"></a>';
-                                    foreach ($opt as $o) {
+                                <h5 class="widget-user-desc text-white-shadow "  >'.$subheader02.'</h5>
+                                <span class="col-sm-12" style="background-color: '.substr($_val->color, 0,7).'; position:absolute; display:block; left:0;right:0;bottom:0;">';
+                                if (isset($expand)){ 
+                                    $html .= '<a type="button" style="padding:5px;" class="pull-right fa fa-chevron-circle-down text-white-shadow" data-widget="collapse"></a>';
+                                }
+                                foreach ($opt as $k =>$o) {
+                                    if ($k != 'delete'){ // skip delete button 
                                         $html .= '<span style="margin-right:15px;padding:5px;text-shadow: 1px 1px #FF0000;" class="fa">'.$o.'</span>';    
                                     }
-                      $html .= '</span>
+                                }
+                        $html .= '</span>
                             </div>
                         </span>';
-            
-                        /*$html .= '<div style="position: absolute;top: 45px;right: 15px;" >';
-                        $usr = new User();
-                        $usr->load('id', $_val->creator_id, false);
-                        $html .= '  <img class="img-circle img-bordered-sm" style="height:50px;width:50px;" src="'.$CFG->access_id_url.$usr->avatar_id.'" alt="User Avatar">';
-                        $html .= '</div>';*/
-              $html .= '<div class="box-footer no-padding" >
+                        if (isset($config['p_widget']['circle_image'])){ 
+                            $html .= '<div style="position: absolute;top: 75px;right: 15px;" >';
+                            $html .= '  <img class="img-circle img-bordered-sm" style="height:40px;width:40px;" src="'.$CFG->access_id_url.$file_id.'" alt="User Avatar">';
+                            $html .= '</div>';
+                        }
+                if (isset($expand)){     
+                    $html .= '<div class="box-footer no-padding" >
                           <ul class="nav nav-stacked">
-                            <li style="padding: 10px 15px">'.$expand.'</li>
+                            <li style="padding: 10px 15px; overflow:hidden;">'.$expand.'</li>
                           </ul>
-                        </div>
-                      </div><!-- /.widget-user -->
+                        </div>';
+                }
+              $html .= '</div><!-- /.widget-user -->
                     </div>
                     <!-- /.col -->';
         }

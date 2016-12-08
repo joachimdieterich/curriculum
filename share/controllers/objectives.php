@@ -66,7 +66,8 @@ if (isset($_POST['printCertificate'])){
 } 
 
 // load curriculum of actual user 
-if ($selected_curriculum != '' AND $selected_user_id != '' AND $selected_user_id[0] !== '') {
+//error_log(json_encode($selected_user_id));
+if ($selected_curriculum != '' AND $selected_user_id != '' AND isset($selected_user_id[0])) {
     if (count($selected_user_id) > 1){
         $terminal_objectives = new TerminalObjective();         //load terminal objectives
         $TEMPLATE->assign('terminalObjectives', $terminal_objectives->getObjectives('curriculum', $selected_curriculum));
@@ -85,7 +86,8 @@ if ($selected_curriculum != '' AND $selected_user_id != '' AND $selected_user_id
         $enabling_objectives->curriculum_id = $selected_curriculum;
         $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('user', $selected_user_id[0]));
         $show_course         = true; // setzen    
-    }       
+    }     
+    
 }    
 // load user list
 if ($selected_curriculum != '') {  
@@ -105,10 +107,10 @@ if ($selected_curriculum != '') {
                                                    'icon'       => 'fa fa-envelope',
                                                    'tooltip'    => 'Nachricht schreiben'));
     $t_config      = array('table_id'  => array('id'         => 'contentsmalltable'),
-                           'page'      => array('onclick'    => 'checkrow(\'page\', \'userPaginator\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&paginator=userPaginator&certificate_template=\'+document.getElementById(\'certificate_template\').value);'),
-                           'all'       => array('onclick'    => 'checkrow(\'all\', \'userPaginator\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&paginator=userPaginator&certificate_template=\'+document.getElementById(\'certificate_template\').value);'),
-                           'checkbox'  => array('onclick'    => 'checkrow(\'__id__\', \'userPaginator\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&paginator=userPaginator&certificate_template=\'+document.getElementById(\'certificate_template\').value);'),
-                           'td'        => array('onclick'    => 'checkrow(\'__id__\', \'userPaginator\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&p_select=__id__&paginator=userPaginator&certificate_template=\'+document.getElementById(\'certificate_template\').value);'));
+                           'page'      => array('onclick'    => 'checkrow(\'page\', \'userPaginator\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&certificate_template=\'+document.getElementById(\'certificate_template\').value);'),
+                           'all'       => array('onclick'    => 'checkrow(\'all\', \'userPaginator\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&certificate_template=\'+document.getElementById(\'certificate_template\').value);'),
+                           'checkbox'  => array('onclick'    => 'checkrow(\'__id__\', \'userPaginator\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&certificate_template=\'+document.getElementById(\'certificate_template\').value);'),
+                           'td'        => array('onclick'    => 'checkrow(\'__id__\', \'userPaginator\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&certificate_template=\'+document.getElementById(\'certificate_template\').value);'));
     if(checkCapabilities('dashboard:globalAdmin', $USER->role_id, false)){
     $p_config      = array('id'        => 'checkbox',
                            'username'  => 'Benutzername', 
@@ -117,6 +119,7 @@ if ($selected_curriculum != '') {
                            'completed' => 'Fortschritt',
                            'role_name' => 'Rolle',
                            'online'    => 'Status', /* status test */
+                           'p_search'  => array('username', 'firstname', 'lastname'),
                            'p_options' => $p_options,
                            't_config'  => $t_config);
     } else {
@@ -126,6 +129,7 @@ if ($selected_curriculum != '') {
                            'lastname'  => 'Nachname',
                            'completed' => 'Fortschritt',
                            'role_name' => 'Rolle',
+                           'p_search'  => array('username', 'firstname', 'lastname'),
                            'p_options' => $p_options,
                            't_config'  => $t_config); 
     }

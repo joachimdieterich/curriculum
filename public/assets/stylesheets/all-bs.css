@@ -31,7 +31,7 @@
     text-overflow:  ellipsis;
     white-space:    nowrap;
     overflow:       hidden; 
-    text-shadow:    1px 1px #FF0000;
+    text-shadow:    1px 1px #FF0000 !important;
 }
 .text-ellipse {
     text-overflow:  ellipsis;

@@ -92,7 +92,7 @@ $TEMPLATE->assign('semester', $semesters->getSemesters());
 $groups                     = new Group(); 
 $p_options = array('delete' => array('onclick'      => "del('group',__id__);", 
                                      'capability'   => checkCapabilities('groups:delete', $USER->role_id, false),
-                                     'icon'         => 'fa fa-minus', 
+                                     'icon'         => 'fa fa-trash', 
                                      'tooltip'      => 'löschen'),
                    'cal'    => array('onclick'      => 'formloader(\'group\',\'semester\',__id__)',
                                      'capability'   => checkCapabilities('groups:changeSemester', $USER->role_id, false),
@@ -106,6 +106,11 @@ $p_options = array('delete' => array('onclick'      => "del('group',__id__);",
                                       'capability'  => checkCapabilities('groups:showCurriculumEnrolments', $USER->role_id, false),
                                       'icon'        => 'fa fa-list-alt',
                                       'tooltip'     => 'Überblick'));
+$p_widget  = array('header'     => 'group',
+                   'subheader01'=> 'grade, semester',
+                   'subheader02'=> 'institution',
+                   'expand'     => 'description',
+                   'description'=> false); //false ==> don't show icon on widget
 $p_config =   array('id'            => 'checkbox',
                     'group'         => 'Lerngruppen',          //ändern auf groups in Object, da db Eintrag groups ist und die Suche so nicht funktioniert
                     'grade'         => '(Klassen)stufe',  
@@ -114,5 +119,7 @@ $p_config =   array('id'            => 'checkbox',
                     'institution'   => 'Institution / Schule',
                     'creation_time' => 'Erstellungsdatum',
                     /*'username'      => 'Erstellt von',*/
+                    'p_search'    => array('groups','description', 'grade', 'semester', 'institution'),
+                    'p_widget'     => $p_widget,
                     'p_options'     => $p_options);
 setPaginator('groupP', $TEMPLATE, $groups->getGroups('group', $USER->id,'groupP'), 'gp_val', 'index.php?action=group', $p_config); //set Paginator

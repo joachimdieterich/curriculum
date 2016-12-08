@@ -34,8 +34,6 @@ if(isset($_GET['reset']) OR (isset($_POST['reset'])) OR (isset($_POST['new_curri
 /*******************************************************************************
  * END POST / GET
  */
-$TEMPLATE->assign('c_widgets', 'Lehrpläne verwalten'); 
-
 $p_options = array('delete' => array('onclick'      => "del('curriculum',__id__);", 
                                      'capability'   => checkCapabilities('curriculum:delete', $USER->role_id, false),
                                      'icon'         => 'fa fa-trash', 
@@ -60,6 +58,7 @@ $p_widget  = array('header'     => 'curriculum',
                    'subheader01'=> 'grade, schooltype',
                    'subheader02'=> 'state',
                    'file_id'    => 'icon_id',
+                   'bg_image' => 'file_id',
                    'expand'     => 'description',
                    'description'=> false); //false ==> don't show icon on widget
 $p_config  = array('id'         => 'checkbox',
@@ -71,5 +70,6 @@ $p_config  = array('id'         => 'checkbox',
                    'state'       => 'Bundesland/Region',
                    /*'de'        => 'Land',*/
                    'p_options'   => $p_options,
+                   'p_search'    => array('curriculum','description','grade','schooltype','state','subject'),
                    'p_widget'    => $p_widget);
 setPaginator('curriculumP', $TEMPLATE, $curriculum->getCurricula('user', $USER->id, 'curriculumP'), 'cu_val', 'index.php?action=curriculum', $p_config);

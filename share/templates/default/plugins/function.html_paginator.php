@@ -17,6 +17,8 @@
  */
 
 function smarty_function_html_paginator($params, $template) {
+    
+    
     require_once(dirname(__FILE__) . '/function.paginate_first.php');
     require_once(dirname(__FILE__) . '/function.paginate_order.php');
     require_once(dirname(__FILE__) . '/function.paginate_prev.php');
@@ -32,6 +34,10 @@ function smarty_function_html_paginator($params, $template) {
             default: break;
         } 
     } 
+    if (SmartyPaginate::getView($id) == 'widget'){
+        require_once(dirname(__FILE__) . '/function.widget_paginator.php');
+        return smarty_function_widget_paginator($params, $template);
+    }
     SmartyPaginate::setTitle($p_title, $id);
     $url        = SmartyPaginate::getUrl($id);                    // get url
     $values     = SmartyPaginate::_getData($id);                  // get values
@@ -57,20 +63,30 @@ function smarty_function_html_paginator($params, $template) {
             }
         }
     }
-    
+    SmartyPaginate::setSearchField($config['p_search'], $id);
     if (!isset($values) AND !SmartyPaginate::_getSearch($id)){ return 'Keine Datensätze vorhanden.'; } 
-    $html  = '<div class="row"><div class="'.$width.'">';
+    $html  = '<div class="row"><div class="'.$width.' top-buffer" >';
     if (null !== SmartyPaginate::_getSearch($id)){
-        $html .= '<div class="btn-group pull-left" href="'.removeUrlParameter($url, array ( 0 => 'paginator', 1 => 'p_reset')).'&paginator='.$id.'&p_reset=true">
-                    <a href="'.removeUrlParameter($url, array ( 0 => 'paginator', 1 => 'p_reset')).'&paginator='.$id.'&p_reset=true">
-                        <button type="button" class="btn btn-default fa fa-times-circle-o"> '.$config[SmartyPaginate::_getOrder($id)].': <i>'.SmartyPaginate::_getSearch($id).'</i></button>
-                    </a>
+        $html .= '<div class="btn-group pull-left">
+                    <button type="button" class="btn btn-default fa fa-times-circle-o"  onclick="processor(\'config\',\'paginator_reset\',\''.$id.'\');"> Suche: <i>'.SmartyPaginate::_getSearch($id).'</i></button>
                   </div>';
+    } else {
+        $html .= '<div class="col-sm-3 btn-group pull-left" style="padding:0;"><div class="input-group">
+          <input type="text" name="q" class="form-control" placeholder="Suche..." onkeydown="if (event.keyCode == 13) {event.preventDefault(); processor(\'config\',\'paginator_search\',\''.$id.'\',{\'order\':\'\',\'search\':this.value});}">
+              <span class="input-group-btn">
+                <button type="submit" name="search" id="search-btn" class="btn btn-flat" ><i class="fa fa-search"></i>
+                </button>
+              </span>
+        </div></div>';
     }
     
     /* Column controller */
-    $html .= '<div class="btn-group pull-right">
-                <button type="button" class="btn btn-default fa fa-th dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    $html .= '<div class="btn-group pull-right">';
+    if (isset($config['p_widget'])){
+        $html .= '<button type="button" class="btn btn-default fa fa-th" onclick="processor(\'config\',\'paginator_view\',\''.$id.'\',{\'view\':\'widget\'});"></button>';
+    }
+                
+     $html .= ' <button type="button" class="btn btn-default fa fa-bars dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">';
@@ -117,12 +133,12 @@ function smarty_function_html_paginator($params, $template) {
                 }
                 $html .= '></td>';
             } else if ($_key == 'p_options'){
-                $html .= '<td><i class="fa fa-bars pull-right" style="padding-top:5px"></i><i class="fa fa-print pull-right margin-r-5" style="padding-top:5px" onclick="processor(\'print\',\'paginator\',\''.$id.'\')"></i></td>';
+                $html .= '<td><i class="fa fa-print pull-right margin-r-5" style="padding-top:5px" onclick="processor(\'print\',\'paginator\',\''.$id.'\')"></i></td>';
             } else {
                 if (array_key_exists($_key, $config) AND SmartyPaginate::getColumnVisibility($_key,$id)){
                     $html .= '<td name="'.$id.'_col_'.$_key.'">'.smarty_function_paginate_order(array('id' => $id, 'key' => $_key, 'text' => $config[$_key]), $template);
                     if ($_key == 'username' OR $_key == 'firstname' OR $_key == 'lastname'  OR $_key == 'email' OR $_key == 'city' OR $_key == 'curriculum' OR $_key == 'description'){ // hack: muss dynamisch gemacht werden
-                        $html .= '<input class="pull-right" id="'.$id.'_col_'.$_key.'_search" name="p_search" style="width:25px;" type="text" value="" onclick="toggle_input_size(\''.$id.'_col_'.$_key.'_search\');"  onblur="toggle_input_size(\''.$id.'_col_'.$_key.'_search\', false);" onkeydown="if (event.keyCode == 13) {event.preventDefault(); window.location.href = \''.removeUrlParameter($url, array ( 0 => 'paginator', 1 => 'paginator_search', 2 => 'order')).'&paginator='.$id.'&order='.$_key.'&paginator_search=\'+this.value;}">'; //event.preventDefault() importent to use paginator in <form>
+                        $html .= '<input class="pull-right" id="'.$id.'_col_'.$_key.'_search" name="p_search" style="width:25px;" type="text" value="" onclick="toggle_input_size(\''.$id.'_col_'.$_key.'_search\');"  onblur="toggle_input_size(\''.$id.'_col_'.$_key.'_search\', false);" onkeydown="if (event.keyCode == 13) {event.preventDefault(); processor(\'config\',\'paginator_search\',\''.$id.'\',{\'order\':\''.$_key.'\', \'search\':this.value});}">'; //event.preventDefault() importent to use paginator in <form>
                     } 
                     $html .=  '</td>';
                 }
@@ -209,7 +225,9 @@ function smarty_function_html_paginator($params, $template) {
         } else {
             $html .= 'onclick="checkrow(\'all\', \''.$id.'\');"';
         }
-        $html .= '> Alle <span id="span_unselect" class="hidden"><input type="checkbox" id="p_unselect" value="p_unselect" onclick="checkrow(\'none\', \''.$id.'\');"> Auswahl aufheben </span>';
+        $html .= '> Alle ';
+        $html .= '<span id="span_unselect" class="hidden"><input type="checkbox" id="p_unselect" value="p_unselect" onclick="checkrow(\'none\', \''.$id.'\');"> Auswahl aufheben </span>';
+        
         $html .= ' | <span id="count_selection">'.count($selected_id).'</span> Datensätze markiert</span><br>';
     } 
     $html .= '</div></div>';

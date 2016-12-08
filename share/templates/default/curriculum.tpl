@@ -25,11 +25,7 @@
                         </div>
                     {/if}
                     <span class="clearfix"></span>
-                    {if isset($c_widgets)}
-                        {widget_paginator id='curriculumP' title='Lehrpläne'}
-                    {else}    
                         {html_paginator id='curriculumP' title='Lehrpläne'}
-                     {/if}
                 </div>
             </div>
         </div>
