@@ -788,6 +788,37 @@ function element($element, $object, $string = NULL, $prefix = NULL){
     return $string;
 }
 
+/* based on https://gist.github.com/colourstheme/d992abc081df381ce656 */
+function ak_convert_hex2rgba($color, $opacity = false) {
+    $default = 'rgb(0,0,0)';    
+    
+    if (empty($color))
+        return $default;    
+
+    if ($color[0] == '#')           $color = substr($color, 1);
+    if (strlen($color) == 6)        $hex = array($color[0] . $color[1], $color[2] . $color[3], $color[4] . $color[5]);
+    elseif (strlen($color) == 3)    $hex = array($color[0] . $color[0], $color[1] . $color[1], $color[2] . $color[2]);
+    elseif (strlen($color) == 8) {  $hex = array($color[0] . $color[1], $color[2] . $color[3], $color[4] . $color[5]);
+                                    $hex_opacity = $color[6] . $color[7]; }
+    elseif (strlen($color) == 4) {  $hex = array($color[0] . $color[0], $color[1] . $color[1], $color[2] . $color[2]);
+                                    $hex_opacity = $color[3] . $color[3]; }
+    else                            return $default;
+       
+    $rgb = array_map('hexdec', $hex); 
+    if (isset($hex_opacity))     {  $opacity = implode(array_map('hexdec', array($hex_opacity))); 
+                                    $opacity = round(1/255*$opacity, 2);
+    }
+    if ($opacity) {
+        if (abs($opacity) > 1)
+            $opacity = 1.0;
+
+        $output = 'rgba(' . implode(",", $rgb) . ',' . $opacity . ')';
+    } else {
+        $output = 'rgb(' . implode(",", $rgb) . ')';
+    }    
+    return $output;
+}
+
 /*
 function element_functions($string, $prefix, $object){
     global $$prefix;        //defines object with dynamic obj name

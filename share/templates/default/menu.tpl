@@ -12,8 +12,8 @@
                             {if {$smarty.foreach.enrolments.index} neq 4} 
                             <li {if isset($page_curriculum )}{if ($page_curriculum eq $cur_menu->id) && ($page_group eq $cur_menu->group_id)} class="active treeview"{/if}{/if}>                                
                                 <a href="index.php?action=view&curriculum_id={$cur_menu->id}&group={$cur_menu->group_id}" >
-                                    {*<span style="position: absolute;left: 0;top: 0;bottom:0px;right:0; background: url('{$access_file}{$cur_menu->icon_id|resolve_file_id:"t"}') center; background-size: cover; "></span>
-                                    <span style="position: absolute;left: 0;top: 0;bottom:0px;right:0; background: {$cur_menu->color};"></span>*}
+                                    <span style="position: absolute;left: 0;top: 0;bottom:0px;right:0; background: url('{$access_file}{$cur_menu->icon_id|resolve_file_id:"t"}') center; background-size: cover; "></span>
+                                    <span style="position: absolute;left: 0;top: 0;bottom:0px;right:0; background: {ak_convert_hex2rgba($cur_menu->color)};"></span>
                                     {*<i class="fa fa-dashboard"></i>*}<span class="text-ellipse" style="position: absolute; color:#FFF;">{$cur_menu->curriculum}</span>&nbsp;<span class="label pull-right bg-green">{$cur_menu->groups}</span>
                                 </a>
                                 

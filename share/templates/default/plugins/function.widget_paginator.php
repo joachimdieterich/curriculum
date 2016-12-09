@@ -160,10 +160,10 @@ function smarty_function_widget_paginator($params, $template) {
                         <!-- Add the bg color to the header using any of the bg-* classes -->
                         <span class="col-xs-12 no-margin" ';
                             if (isset($config['p_widget']['bg_image'])){ 
-                                $html .= 'style="background: url('.$CFG->access_id_url.$file_id.') center center;  background-size: cover;"';
+                                $html .= 'style="background: url(\''.$CFG->access_id_url.$file_id.'&size=t\') center center;  background-size: cover;"';
                             }
                         $html .= ' ">';
-                        $html .= '    <div class="widget-user-header col-xs-12" style="background: '.$_val->color.';"  >
+                        $html .= '    <div class="widget-user-header col-xs-12" style=" background: '.ak_convert_hex2rgba($_val->color).';"  >
                                 <span class="pull-right no-margin text-white-shadow">'.$opt['delete'].'</span>
                                 <h3 class="widget-user-username text-white-shadow" >'.$header.'</h3> 
                                 <h5 class="widget-user-desc text-white-shadow" >'.$subheader01 .'</h5>
@@ -182,7 +182,7 @@ function smarty_function_widget_paginator($params, $template) {
                         </span>';
                         if (isset($config['p_widget']['circle_image'])){ 
                             $html .= '<div style="position: absolute;top: 75px;right: 15px;" >';
-                            $html .= '  <img class="img-circle img-bordered-sm" style="height:40px;width:40px;" src="'.$CFG->access_id_url.$file_id.'" alt="User Avatar">';
+                            $html .= '  <img class="img-circle img-bordered-sm" style="height:40px;width:40px;" src="'.$CFG->access_id_url.$file_id.'&size=t" alt="User Avatar">';
                             $html .= '</div>';
                         }
                 if (isset($expand)){     
