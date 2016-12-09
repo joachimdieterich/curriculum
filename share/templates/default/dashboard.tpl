@@ -27,7 +27,7 @@
                         <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
                       </div>
                     </div><!-- /.box-header -->
-                <div class="box-body">
+                <div class="box-body" style="overflow: scroll; width: 100%; max-height: 300px;">
                 {if isset($enabledObjectives)} 
                 Ziele die in den vergangenen <strong>{$my_acc_days}</strong> Tagen den Status geändert haben.
                     {foreach key=enaid item=ena from=$enabledObjectives}
@@ -85,7 +85,7 @@
                     <h5 class="widget-user-desc"></h5>
                   </div>
                   <div class="box-footer no-padding">
-                    <ul class="nav nav-stacked">
+                    <ul class="nav nav-stacked" style="overflow: scroll; width: 100%; max-height: 200px;">
                         {foreach item=tsk from=$upcoming_tasks} 
                             <li><a><strong>{$tsk->task}</strong><input type="checkbox" class="pull-right" onchange="processor('accomplish','task', {$tsk->id});" {if isset($tsk->accomplished->status_id)}{if $tsk->accomplished->status_id eq 2}checked{/if}{/if}><p>{$tsk->timestart} - {$tsk->timeend}</p>
                                 {if isset($tsk->accomplished->status_id)}{if  $tsk->accomplished->status_id eq 2}
@@ -110,18 +110,18 @@
                     <h3 class="widget-user-username" style="text-shadow: 1px 1px #ff0000;text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">{$ins->institution}</h3>
                     <h5 class="widget-user-desc" style="text-shadow: 1px 1px #ff0000;text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">{$ins->description}</h5>
                     <div class="row " style="padding-top:10px;padding-left: 5px;">
-                        <div class="col-sm-4">
+                        <div class="col-xs-4">
                             <i class="fa fa-user" data-toggle="tooltip" title="Schüler">{if isset($ins->statistic.$institution_std_role)}
                                                             {$ins->statistic.$institution_std_role}
                                                     {else}0 
                                                     {/if}</i>
                         </div>
-                        <div class="col-sm-4"><i class="fa fa-check-circle-o" data-toggle="tooltip" title="Erreichte Ziele">{if isset($ins->statistic.accomplished)}
+                        <div class="col-xs-4"><i class="fa fa-check-circle-o" data-toggle="tooltip" title="Erreichte Ziele">{if isset($ins->statistic.accomplished)}
                                                             {$ins->statistic.accomplished}
                                                          {else}0 
                                                          {/if}</i>
                         </div>
-                        <div class="col-sm-4"><i class="fa fa-graduation-cap" data-toggle="tooltip" title="Lehrer">{if isset($ins->statistic.7)}
+                        <div class="col-xs-4"><i class="fa fa-graduation-cap" data-toggle="tooltip" title="Lehrer">{if isset($ins->statistic.7)}
                                                             {$ins->statistic.7}
                                                          {else}0 
                                                          {/if}</i>
@@ -145,7 +145,7 @@
                 <h5 class="widget-user-desc">{$cla->institution_id|truncate:50}</h5>
               </div>
               <div class="box-footer no-padding">
-                <ul class="nav nav-stacked">
+                <ul class="nav nav-stacked" style="overflow: scroll; width: 100%; max-height: 200px;">
                     {if $my_enrolments}
                     {foreach item=cur_menu from=$my_enrolments}
                         {if $cur_menu->group_id eq $cla->id}
@@ -173,7 +173,7 @@
                   </div>
                 </div><!-- /.box-header -->
                 <div class="box-footer no-padding">
-                  <ul class="nav nav-pills nav-stacked">
+                  <ul class="nav nav-pills nav-stacked" style="overflow: scroll; width: 100%; max-height: 400px;">
                     <li><a href="#"><strong>Erreichte Ziele</strong></a></li>
                     <li><a href="#">Gesamt <span class="pull-right text-green">{$stat_acc_all}</span></a></li>
                     <li><a href="#">davon Heute <span class="pull-right text-green">{$stat_acc_today}</span></a></li>
