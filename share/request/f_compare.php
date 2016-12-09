@@ -83,34 +83,37 @@ if (isset($ena->enabling_objective)){
     $solutions = $files->getSolutions('objective', $user_id_list, $ena->id); 
     
     foreach ($order as $key => $value) {
-        $content .= '<div class="col-md-6 "><div class="box '.$value['class'].' box-solid">
-                        <div class="box-header with-border">
-                        <div class="box-title">'.$value['header'].'</div>';
-                        if ($value['color']){
-                            $content .= '<span class="pull-right badge bg-white '.$value['color'].'">Datum, Lehrer</span>';
-                        }
-                        $content .= '</div>
-                        <div class="box-footer no-padding">
-                            <ul class="nav nav-stacked">';
-                            if ($$value['var']){
-                                foreach($$value['var'] AS $v) {
-                                    $user     = new User();
-                                    $content .= '<li><a href="#">'.$user->resolveUserId($v->user_id);
-                                    
-                                    foreach ( $solutions as $s ) { 
-                                        if ( $v->user_id == $s->creator_id ) {
-                                            $content .= '<span onClick=\'formloader("material", "id", '.$ena->id.', {"target":"sub_popup", "user_id": "'.$v->user_id.'"});\'>&nbsp;<i class="fa fa-paperclip"></i></span>';          
-                                            break; // if one solution is found break to save time
-                                        }
-                                    }
-                                    
-                                    if ($value['color']){
-                                        $content .= '<span class="pull-right badge bg-'.$value['color'].'" data-toggle="tooltip" title="" data-original-title="Nachricht schreiben" onclick="formloader(\'mail\', \'gethelp\', '.$v->creator_id.');">'.date('d.m.Y',strtotime($v->accomplished_time)).', '.$user->resolveUserId($v->creator_id, 'name').'</span>';
-                                    }
-                                    $content .= '</a></li>';
-                                }   
+        if ($value['items'] > 1){ // only generate if there are items - todo check reason items == 1 and not 0
+            error_log($value['items']);
+            $content .= '<div class="col-md-6 "><div class="box '.$value['class'].' box-solid">
+                            <div class="box-header with-border">
+                            <div class="box-title">'.$value['header'].'</div>';
+                            if ($value['color']){
+                                $content .= '<span class="pull-right badge bg-white '.$value['color'].'">Datum, Lehrer</span>';
                             }
-        $content .= '</ul></div></div></div>'; 
+                            $content .= '</div>
+                            <div class="box-footer no-padding">
+                                <ul class="nav nav-stacked">';
+                                if ($$value['var']){
+                                    foreach($$value['var'] AS $v) {
+                                        $user     = new User();
+                                        $content .= '<li><a href="#">'.$user->resolveUserId($v->user_id);
+
+                                        foreach ( $solutions as $s ) { 
+                                            if ( $v->user_id == $s->creator_id ) {
+                                                $content .= '<span onClick=\'formloader("material", "id", '.$ena->id.', {"target":"sub_popup", "user_id": "'.$v->user_id.'"});\'>&nbsp;<i class="fa fa-paperclip"></i></span>';          
+                                                break; // if one solution is found break to save time
+                                            }
+                                        }
+
+                                        if ($value['color']){
+                                            $content .= '<span class="pull-right badge bg-'.$value['color'].'" data-toggle="tooltip" title="" data-original-title="Nachricht schreiben" onclick="formloader(\'mail\', \'gethelp\', '.$v->creator_id.');">'.date('d.m.Y',strtotime($v->accomplished_time)).', '.$user->resolveUserId($v->creator_id, 'name').'</span>';
+                                        }
+                                        $content .= '</a></li>';
+                                    }   
+                                }
+            $content .= '</ul></div></div></div>'; 
+        }
     }
 }
 $html = Form::modal(array('target' => 'null',
