@@ -71,7 +71,7 @@ function smarty_function_html_paginator($params, $template) {
                     <button type="button" class="btn btn-default fa fa-times-circle-o"  onclick="processor(\'config\',\'paginator_reset\',\''.$id.'\');"> Suche: <i>'.SmartyPaginate::_getSearch($id).'</i></button>
                   </div>';
     } else {
-        $html .= '<div class="col-sm-3 btn-group pull-left" style="padding:0;"><div class="input-group">
+        $html .= '<div class="col-sm-3 col-xs-8 btn-group pull-left" style="padding:0;"><div class="input-group">
           <input type="text" name="q" class="form-control" placeholder="Suche..." onkeydown="if (event.keyCode == 13) {event.preventDefault(); processor(\'config\',\'paginator_search\',\''.$id.'\',{\'order\':\'\',\'search\':this.value});}">
               <span class="input-group-btn">
                 <button type="submit" name="search" id="search-btn" class="btn btn-flat" ><i class="fa fa-search"></i>
