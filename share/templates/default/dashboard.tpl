@@ -18,8 +18,8 @@
 <section class="content">
     <!-- Info boxes -->
     <div class="row" >
-         <div class="col-md-4 ">
-            <div class="box box-primary">
+         <div class="col-md-4">
+            <div class="box box-primary bottom-buffer-20">
                 <div class="box-header with-border">
                       <h3 class="box-title">Erfolge</h3>
                       <div class="box-tools pull-right">
@@ -53,7 +53,7 @@
         {/if}
         {if checkCapabilities('dashboard:editBulletinBoard', $my_role_id, false) || $bulletinBoard} 
         <div class="col-md-8 col-sm-12 col-xs-12">
-            <div class="box box-primary">
+            <div class="box box-primary bottom-buffer-20">
                 <div class="box-header with-border">
                   <h3 class="box-title">Pinnwand</h3>
                   <div class="box-tools pull-right">
@@ -78,7 +78,7 @@
         
         {if !empty($upcoming_tasks)}
             <div class="col-md-4 ">
-                <div class="box box-widget widget-user">
+                <div class="box box-widget widget-user bottom-buffer-20">
                   <div class="widget-user-header bg-green">
                     <i class="pull-right fa fa-tasks" style="font-size: 90px;"></i>
                     <h3 class="widget-user-username">Aufgaben</h3>
@@ -103,7 +103,7 @@
         {if isset($myInstitutions)}     
         {foreach key=insid item=ins from=$myInstitutions}
             <div class="col-md-4">
-                <div class="box box-widget widget-user">
+                <div class="box box-widget widget-user bottom-buffer-20">
                   <!-- Add the bg color to the header using any of the bg-* classes -->
                     <div class="widget-user-header bg-aqua-active" style="background: linear-gradient(rgba(0,0,0,0.5),rgba(100,100,100,0.5)), url('{$access_file}{$ins->file_id|resolve_file_id:"l"}') center right;background-size: cover; background-repeat: no-repeat;">   
                     {*<i class="pull-right fa fa-institution" style="font-size: 90px;"></i>*}
@@ -137,7 +137,7 @@
         {foreach key=claid item=cla from=$myClasses}    
         <div class="col-md-4 ">
             <!-- Widget: user widget style 1 -->
-            <div class="box box-widget widget-user">
+            <div class="box box-widget widget-user bottom-buffer-20">
               <!-- Add the bg color to the header using any of the bg-* classes -->
               <div class="widget-user-header bg-yellow">
                 <i class="pull-right fa fa-group" style="font-size: 90px;"></i>
@@ -164,7 +164,7 @@
         
         {if isset($stat_users_online) && checkCapabilities('user:userListComplete', $my_role_id, false)}
         <div class="col-md-4 col-sm-12 col-xs-12">
-            <div class="box box-primary">
+            <div class="box box-primary bottom-buffer-20">
                 <div class="box-header with-border">
                   <h3 class="box-title">Statistik</h3>
                   <div class="box-tools pull-right">
@@ -204,7 +204,7 @@
         <!-- Add Block -->
         {if checkCapabilities('block:add', $my_role_id, false)}
         <div class="col-md-4 col-sm-12 col-xs-12">
-            <div class="box box-primary">
+            <div class="box box-primary bottom-buffer-20">
                 <div class="box-header with-border">
                   <h3 class="box-title">Block hinzufügen</h3>
                   <div class="box-tools pull-right">

@@ -35,7 +35,7 @@
                                 <div class="form-horizontal">
                                     <div class="row">
                                         <div class="col-md-4 col-sm-12">
-                                            {Form::input_select('course', '', $courses, 'group, curriculum', 'id', $selected_curriculum, null, "window.location.assign('index.php?action=objectives&paginator=userPaginator&p_reset=true&course='+this.value);", 'Kurs / Klasse wählen...', '', 'col-sm-12')}
+                                            {Form::input_select('course', '', $courses, 'group, curriculum', 'id', $selected_curriculum, null, "window.location.assign('index.php?action=objectives&course='+this.value);", 'Kurs / Klasse wählen...', '', 'col-sm-12')}
                                         </div>
                                         {*if $show_course != '' and $terminalObjectives != false*}{*Zertifikat*}
                                         {if isset($userPaginator)}{*Zertifikat*}

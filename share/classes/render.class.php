@@ -805,7 +805,7 @@ class Render {
         }
         if ($USER->role_id === $role_id OR $role_id == $CFG->standard_role){
         $html  = '<div class="'.$width.'">
-                    <div class="box box-primary '.$status.'">
+                    <div class="box box-primary '.$status.' bottom-buffer-20">
                         <div class="box-header with-border">
                               <h3 class="box-title">'.$name.'</h3>
                               <div class="box-tools pull-right">';
@@ -850,7 +850,7 @@ class Render {
         }
         if ($USER->role_id === $role_id OR $role_id == $CFG->standard_role){
             $html  = '<div class="'.$width.'">
-                        <div class="box box-primary '.$status.'">
+                        <div class="box box-primary '.$status.' bottom-buffer-20">
                             <div class="box-header with-border">
                                   <h3 class="box-title">'.$name.'</h3>
                                   <div class="box-tools pull-right">';

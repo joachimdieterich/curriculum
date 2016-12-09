@@ -34,6 +34,7 @@ $showuser                   = false;            //zurücksetzen
 $show_course                = false;            // zurücksetzen
 $selected_curriculum        = (isset($_GET['course']) && trim($_GET['course'] != '') ? $_GET['course'] : '_'); //'_' ist das Trennungszeichen 
 $selected_curriculumforURL  = $selected_curriculum;
+
 if (isset($_GET['p_select'])){
     unset($_SESSION['SmartyPaginate']['userPaginator']['pagi_selection']);
     SmartyPaginate::setSelection($_GET['p_select'], 'userPaginator');

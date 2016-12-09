@@ -41,6 +41,8 @@
 
 .top-buffer { margin-top:10px; }
 
+.bottom-buffer-20 { margin-bottom:20px !important; }
+
 .deactivate {
     opacity:0.2;
     filter:alpha(opacity=20); /* For IE8 and earlier */
