@@ -80,7 +80,8 @@
               </a>
                 
                 <!-- Header Navbar: style can be found in header.less -->
-                <nav class="navbar navbar-static-top" role="navigation">
+                <nav class="navbar navbar-static-top" role="navigation" {if isset($page_bg_file_id)}style="background: url('{$access_file_id}{$page_bg_file_id}') center center;  background-size: cover;"{/if}>
+                    
                     {if isset($my_id)}
                     <!-- Sidebar toggle button-->
                     <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
