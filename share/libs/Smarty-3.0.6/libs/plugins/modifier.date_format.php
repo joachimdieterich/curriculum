@@ -38,6 +38,7 @@ function smarty_modifier_date_format($string, $format = SMARTY_RESOURCE_DATE_FOR
     } else {
         return;
     } 
+    setlocale(LC_TIME, "de_DE");
     if($formatter=='strftime'||($formatter=='auto'&&strpos($format,'%')!==false)) {
         if (DS == '\\') {
             $_win_from = array('%D', '%h', '%n', '%r', '%R', '%t', '%T');
