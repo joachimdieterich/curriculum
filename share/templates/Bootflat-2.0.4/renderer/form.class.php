@@ -245,12 +245,12 @@ class Form {
     
     public static function input_dropdown($params){
         //params: $id, $label, $select_data, $select_label, $select_value, $input, $error, $onclick= '', $placeholder ='---', $icon
+        $class='';//$class          =  "notifications-menu";
+        $style='';
         foreach($params as $key => $val) { $$key = $val; }
         
-        $class='';//$class          =  "notifications-menu";
-        
         $count_semester = count($select_data);
-        $form = '<li class="dropdown '.$class.'" >
+        $form = '<li class="dropdown '.$class.'" style="'.$style.'">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">'; 
         if (isset($label)){
             $form .= $label.'<b class="caret"></b>';

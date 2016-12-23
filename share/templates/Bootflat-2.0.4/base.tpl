@@ -78,7 +78,7 @@
                 <nav class="navbar navbar-default navbar-custom" role="navigation">
                     <div style="padding-left:15px;padding-right:15px;">
                       <div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                          <button type="button" class="navbar-toggle " data-toggle="collapse" data-target=".navbar-collapse"><i class="fa fa-bars text-white"></i>
                             <span class="sr-only">Toggle navigation</span>
                         </button>
                             <a class="navbar-brand" href="index.php?action=dashboard"><img src="{$request_url}assets/images/logo_white_bg.png" height="40"></h5></a>
@@ -89,26 +89,26 @@
                       <div class="collapse navbar-collapse">
                         <ul class="nav navbar-nav navbar-right">
                             {if checkCapabilities('dashboard:globalAdmin', $my_role_id, false)}  
-                                <li>   
+                                <li class="pull-left" style="display: inline-block;">   
                                     <a href="index.php?action=statistic" style="padding: 15px 8px 15px 8px;">
                                      <i class="fa fa-pie-chart"></i>
                                     </a>
                                 </li>  
                             {/if}
-                            <li>   
+                            <li class="pull-left" style="display: inline-block;">   
                                 <a href="index.php?action=help" style="padding: 15px 8px 15px 8px;">
                                     <i class="fa fa-graduation-cap"></i>
                                 </a>
                             </li>
                             {if isset($mySemester) AND count($mySemester) > 1}
-                                {Form::input_dropdown(['icon' => 'fa-history', 'select_data' => $mySemester, 'select_label' => 'semester, institution', 'select_value' => 'id', 'input' => $my_semester_id, 'onclick' => "processor(\'semester\',\'set\',this.getAttribute(\'data-id\'));"])}
+                                {Form::input_dropdown(['class' => 'pull-left', 'style' => 'display: inline-block; ', 'icon' => 'fa-history', 'select_data' => $mySemester, 'select_label' => 'semester, institution', 'select_value' => 'id', 'input' => $my_semester_id, 'onclick' => "processor(\'semester\',\'set\',this.getAttribute(\'data-id\'));"])}
                             {else if isset($my_institutions) AND count($my_institutions) > 1}
-                                {Form::input_dropdown(['icon' => 'fa-history', 'select_data' => $my_institutions, 'select_label' => 'institution', 'institution_id', 'select_value' => 'institution_id', 'input' => $my_institution_id, 'onclick' => "processor('config','institution_id', this.getAttribute('data-id'));"])}
+                                {Form::input_dropdown(['class' => 'pull-left', 'style' => 'display: inline-block; ', 'icon' => 'fa-history', 'select_data' => $my_institutions, 'select_label' => 'institution', 'institution_id', 'select_value' => 'institution_id', 'input' => $my_institution_id, 'onclick' => "processor('config','institution_id', this.getAttribute('data-id'));"])}
                             {/if} 
                             
                             {if isset($mails)}  
                             <!-- Messages: style can be found in dropdown.less-->
-                            <li class="dropdown">
+                            <li class="dropdown pull-left" style="display: inline-block;">
                               <a href="#" class="dropdown-toggle" data-toggle="dropdown" >
                                 <i class="fa fa-envelope-o"></i>
                                 <span class="label label-success">{count($mails)}</span>
@@ -135,13 +135,13 @@
                               </ul>
                             </li>
                             {else}
-                            <li class=" messages-menu">   
+                            <li class="messages-menu pull-left margin-r-10" style="display: inline-block;">   
                                 <a href="index.php?action=messages&function=showInbox" style="padding: 15px 8px 15px 8px;"><i class="fa fa-envelope-o"></i></a>
                             </li>
                             {/if} 
                             
                             {if isset($page_message)}
-                            <li class="dropdown">
+                            <li class="dropdown pull-left" style="display: inline-block;">
                               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <i class="fa fa-bell-o"></i>
                                 <span class="label label-warning">{count($page_message)}</span>
@@ -167,20 +167,19 @@
                             </li>
                             {/if}
                             
-                            <li class="calendar-menu">   
+                            <li class="calendar-menu pull-left margin-r-10" style="display: inline-block;">   
                                 <a href="index.php?action=calendar" style="padding: 15px 8px 15px 8px;">
                                     <i class="fa fa-calendar"></i>
                                 </a>
                             </li> 
-                            <li class="timeline-menu">   
+                            <li class="timeline-menu" style="display: inline-block;">   
                                 <a href="index.php?action=portfolio" style="padding: 15px 8px 15px 8px;">
                                     <i class="fa fa-cubes"></i>
                                 </a>
                             </li>
                             
-                            
                             <!-- dropdown Lehrpläne -->
-                            <li class="dropdown">
+                            <li class="dropdown ">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Lehrpläne <b class="caret"></b></a>
                             <ul class="dropdown-menu" role="menu" style="width:350px; overflow: scroll; max-height: 200px;">
                                 {if $my_enrolments != ''}
@@ -310,7 +309,7 @@
                           </li>
                           <!-- ./dropdown Funktionen -->
                           <!-- dropdown Usermenü -->
-                          <li class="dropdown">
+                          <li class="dropdown ">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img class="media-object img-rounded" style="height: 18px;" src="{$access_file}{$my_avatar}" class="user-image" alt="User Image"> <b class="caret"></b></a>
                             <ul class="dropdown-menu" role="menu" style="width:350px;">
                                 <li class="dropdown-header">{$my_firstname} {$my_lastname}<span class="badge badge-primary pull-right">{$my_role_name}</span><br><small>Mitglied seit {$my_creation_time}</small></li>
@@ -336,21 +335,46 @@
                           </li>
                           <!-- ./dropdown Usermenü -->
                         </ul>
-                      </div>
+                    </div>
                     </div>
                 </nav>
             {* ./NAVBAR *}
             
             
-            <div class="row" style="padding-top:50px;">
+            <div class="row" >
                 <div class="col-xs-12">
-                    <div style="padding:20px;">
+                    <div  class="content-top-padding" >
                     <div id="popup" class="modal" onload="popupFunction(this.id);"><div class="modal-dialog"><div class="panel"><div class="panel-heading"><h3 >Loading...</h3></div><div class="panel-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div></div></div> <!-- Popup -->    
                     {block name=content} {/block}
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-12">
+                  <div class="footer">
+                    <div class="container">
+                      <div class="clearfix">
+                        <div class="footer-logo"><a href="#"><img src="{$request_url}assets/images/logo_white_bg.png">{$app_title}</a></div>
+                        <dl class="footer-nav">
+                          <dt class="nav-title">ABOUT</dt>
+                          <dd class="nav-item"><a href="http://curriculumonline.de" target="_blank"><i class="fa fa-question-circle"></i> curriculum</a></dd>
+                        </dl>
+                        <dl class="footer-nav">
+                          <dt class="nav-title">CONTRIBUTING</dt>
+                          <dd class="nav-item"><a href="http://www.github.com/joachimdieterich/curriculum" target="_blank"><i class="fa fa-github"></i> github</a></dd>
+                        </dl>
+                        <dl class="footer-nav">
+                          <dt class="nav-title">CONTACT</dt>
+                          <dd class="nav-item"><a href="mailto:mail@joachimdieterich.de"><i class="fa fa-at"></i> Joachim Dieterich</a></dd>
+                        </dl>
+                      </div>
+                      <div class="footer-copyright text-center">{$app_footer}</div>
+                    </div>
+                  </div>
+                </div>
+            </div>
         </body>
+        
     {/if}    
 <!-- SCRIPTS-->  
     <script src="{$lib_url}ckeditor/ckeditor.js"></script><!-- CK Editor -->
