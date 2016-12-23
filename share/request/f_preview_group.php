@@ -60,7 +60,6 @@ $content   .= Render::box_widget(array('widget_title' => 'Benutzer',
                                        'bg_icon'      => 'fa fa-user'));
 
 $html       = Form::modal(array('title'   => 'Überblick Lerngruppe <strong>'.$g->group.'</strong>',
-                                'content' => $content, 
-                                'c_color' => '#ecf0f5'));
+                                'content' => $content));
 
 echo json_encode(array('html'=>$html));

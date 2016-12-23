@@ -52,7 +52,7 @@ if ($user->exists('username', $_SERVER[$shib_config->username])){
 
     //Nutzungsbedingungen akzeptiert?
     if ($user->checkTermsOfUse() == false){
-       header('Location:../../../../share/request/getTermsofUse.php'); exit();
+       header('Location:../../../../public/index.php?action=terms'); exit();
     }
     header('Location:../../../../public/index.php?action=dashboard');
 } 

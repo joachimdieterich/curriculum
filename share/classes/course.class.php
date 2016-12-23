@@ -93,6 +93,7 @@ class Course {
      * @var string
      */
     public $icon; 
+    public $icon_id; 
 
  
     /**
@@ -105,10 +106,9 @@ class Course {
         global $USER;
         $course = array();
         switch ($dependency) {
-            case 'admin':   $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, gp.groups, gp.semester_id, gp.id AS gpid, ce.id AS course_id, fl.filename
-                                            FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp, files AS fl
+            case 'admin':   $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, cu.icon_id, gp.groups, gp.semester_id, gp.id AS gpid, ce.id AS course_id 
+                                            FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp
                                             WHERE cu.id = ce.curriculum_id
-                                            AND cu.icon_id = fl.id
                                             AND gp.id = ce.group_id
                                             AND ce.status = 1
                                             AND ce.group_id = ANY (SELECT id FROM groups 
@@ -117,10 +117,9 @@ class Course {
                                             ORDER BY gp.groups, cu.curriculum ASC');
                             $db->execute(array($id));          
                 break; 
-            case 'admin_semester':   $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, gp.groups, gp.semester_id, gp.id AS gpid, ce.id AS course_id, fl.filename
-                                            FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp, files AS fl
+            case 'admin_semester':   $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, cu.icon_id, gp.groups, gp.semester_id, gp.id AS gpid, ce.id AS course_id
+                                            FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp
                                             WHERE cu.id = ce.curriculum_id
-                                            AND cu.icon_id = fl.id
                                             AND gp.id = ce.group_id
                                             AND ce.status = 1
                                             AND gp.semester_id = ?
@@ -130,10 +129,10 @@ class Course {
                                             ORDER BY gp.groups, cu.curriculum ASC');
                             $db->execute(array($id,$USER->id));          
                 break; 
-            case 'teacher': $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, gp.groups, gp.semester_id, gp.id AS gpid, ce.id AS course_id, fl.filename
-                                            FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp, files AS fl
+            case 'teacher': $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, cu.icon_id, gp.groups, gp.semester_id, gp.id AS gpid, ce.id AS course_id
+                                            FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp
                                             WHERE cu.id = ce.curriculum_id
-                                            AND gp.id = ce.group_id AND cu.icon_id = fl.id 
+                                            AND gp.id = ce.group_id
                                             AND ce.status = 1
                                             AND ce.group_id = ANY(SELECT group_id
                                                     FROM groups_enrolments
@@ -141,10 +140,10 @@ class Course {
                                                     ORDER BY gp.groups, cu.curriculum ASC');        //Abfrage überarbeiten liefert fehlerhafte Ergenisse
                             $db->execute(array($id, $id)); 
                 break;
-            case 'teacher_semester': $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, gp.groups, gp.semester_id, gp.id AS gpid, ce.id AS course_id, fl.filename
-                                            FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp, files AS fl
+            case 'teacher_semester': $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, cu.icon_id, gp.groups, gp.semester_id, gp.id AS gpid, ce.id AS course_id
+                                            FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp
                                             WHERE cu.id = ce.curriculum_id
-                                            AND gp.id = ce.group_id AND cu.icon_id = fl.id 
+                                            AND gp.id = ce.group_id 
                                             AND ce.status = 1
                                             AND gp.semester_id = ?
                                             AND ce.group_id = ANY(SELECT group_id
@@ -166,6 +165,7 @@ class Course {
             $this->curriculum_id     = $result->id;
             $this->curriculum        = $result->curriculum;
             $this->description       = $result->description;
+            $this->icon_id           = $result->icon_id;
             if ($dependency == 'course'){  
                 $this->state         = $result->state; 
                 $this->country       = $result->de;
@@ -178,7 +178,7 @@ class Course {
                 $this->semester_id   = $result->semester_id;
                 $this->course        = $result->groups.' | '.$result->curriculum; //.' | '.$result->description; 
                 $this->group         = $result->groups;
-                $this->icon          = $result->filename;
+                //$this->icon          = $result->filename;
             }
             $course[]                = clone $this;        //it has to be clone, to get the object and not the reference
         }

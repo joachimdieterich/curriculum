@@ -82,7 +82,7 @@ $content .= Form::input_text('category', 'Kategorie', $category, $error, 'z.B. T
 $content .= '<input type="hidden" name="file_id" id="file_id" value="'.$file_id.'"/>';
  // id have to be set to add image
 $content .= '<div class="col-xs-3"></div><div class="col-xs-9">'
-            . '<a href="'.$CFG->request_url.'uploadframe.php?context=userFiles&target=file_id&ref_id='.$id.'&format=0&modal=true" class="nyroModal">';
+            . '<a href="'.$CFG->smarty_template_dir_url.'renderer/uploadframe.php?context=userFiles&target=file_id&ref_id='.$id.'&format=0&modal=true" class="nyroModal">';
             if (isset($id)) {
                 $content .= '<img id="icon" style="height:100px; margin-left: -5px; padding-bottom:10px;" src="'.$CFG->access_id_url.$file_id.'" >';
             } else {

@@ -188,9 +188,12 @@ class Pdf {
 
         include(dirname(__FILE__).'/../libs/MPDF57/mpdf.php');
         $mpdf           = new mPDF($this->font_encoding, 'A4', $this->font_size, $this->font_name);
-        $stylesheet     = file_get_contents(dirname(__FILE__).'/../../public/assets/templates/AdminLTE-2.3.0/bootstrap/css/bootstrap.css');
-        $stylesheet     .= file_get_contents(dirname(__FILE__).'/../../public/assets/templates/AdminLTE-2.3.0/dist/css/AdminLTE.min.css');
-        $stylesheet     .= file_get_contents(dirname(__FILE__).'/../../public/assets/templates/AdminLTE-2.3.0/dist/css/skins/_all-skins.min.css');
+        $stylesheet     = file_get_contents($CFG->smarty_template_dir.'bootstrap/css/bootstrap.css');
+        //$stylesheet     = file_get_contents(dirname(__FILE__).'/../../public/assets/templates/AdminLTE-2.3.0/bootstrap/css/bootstrap.css');
+        $stylesheet     .= file_get_contents($CFG->smarty_template_dir.'css/AdminLTE.min.css');
+        //$stylesheet     .= file_get_contents(dirname(__FILE__).'/../../public/assets/templates/AdminLTE-2.3.0/dist/css/skins/_all-skins.min.css');
+        $stylesheet     .= file_get_contents($CFG->smarty_template_dir.'skins/_all-skins.min.css');
+        //$stylesheet     .= file_get_contents(dirname(__FILE__).'/../../public/assets/stylesheets/all-bs.min.css');
         $stylesheet     .= file_get_contents(dirname(__FILE__).'/../../public/assets/stylesheets/all-bs.min.css');
         $mpdf->WriteHTML($stylesheet,1);
         $mpdf->WriteHTML($this->content, 2);

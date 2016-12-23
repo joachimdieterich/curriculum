@@ -29,7 +29,6 @@ global $USER;
 $USER       = $_SESSION['USER'];
 
 $state      = new State(filter_input(INPUT_GET, 'dependency_id', FILTER_VALIDATE_INT));
-/* bootstrap id == state_id*/
 $html       = '';
 foreach ($state->getStates() as $value) {
     $html  .= '<option label="'.$value->state.'" value="'.$value->id.'"'; 

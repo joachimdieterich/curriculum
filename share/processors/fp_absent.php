@@ -80,7 +80,6 @@ if($validated_data === false) {/* validation failed */
             }
         }
        /* $task->id = $task->add(); 
-        
         if (filter_input(INPUT_POST, 'reference_id', FILTER_VALIDATE_INT)){
             $context = new Context();
             $context->resolve('context', $_POST['func']);

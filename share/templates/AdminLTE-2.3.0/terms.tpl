@@ -22,6 +22,7 @@
                             <span class="fa fa-thumbs-o-down text-red"></span> Nein, ich stimme nicht zu.
                         </button>
                     </div>
+                    </form>
                     <div>
                         {foreach item=t from=$terms name=term}
                             <h2>{$t->title}</h2>

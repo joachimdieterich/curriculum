@@ -403,13 +403,13 @@ function setStatusColor(ena_id, status){
 
     document.getElementById(ena_id+"_green").className  = 'margin-r-5 '+green+' text-green pointer_hand';
     document.getElementById(ena_id+"_orange").className = 'margin-r-5 '+orange+' text-orange pointer_hand';
-    document.getElementById(ena_id+"_white").className  = 'margin-r-5 '+white+' text-white pointer_hand';
+    document.getElementById(ena_id+"_white").className  = 'margin-r-5 '+white+' text-gray pointer_hand';
     document.getElementById(ena_id+"_red").className    = 'margin-r-5 '+red+' text-red pointer_hand';
-    $(document.getElementById("ena_"+ena_id)).removeClass("bg-white");
-    $(document.getElementById("ena_"+ena_id)).removeClass("bg-green");
-    $(document.getElementById("ena_"+ena_id)).removeClass("bg-orange");
-    $(document.getElementById("ena_"+ena_id)).removeClass("bg-red");
-    $(document.getElementById("ena_"+ena_id)).addClass(bg);
+    $(document.getElementById("ena_header_"+ena_id)).removeClass("bg-white");
+    $(document.getElementById("ena_header_"+ena_id)).removeClass("bg-green");
+    $(document.getElementById("ena_header_"+ena_id)).removeClass("bg-orange");
+    $(document.getElementById("ena_header_"+ena_id)).removeClass("bg-red");
+    $(document.getElementById("ena_header_"+ena_id)).addClass(bg);
     document.getElementById("ena_status_"+ena_id).innerHTML = status;
 }
 

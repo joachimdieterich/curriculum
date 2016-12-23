@@ -819,6 +819,12 @@ function ak_convert_hex2rgba($color, $opacity = false) {
     return $output;
 }
 
+function random_file($dir, $type = 'jpg'){
+    $files = glob($dir . '/*.'.$type);
+    $file = array_rand($files);
+    return basename($files[$file]);
+}
+
 /*
 function element_functions($string, $prefix, $object){
     global $$prefix;        //defines object with dynamic obj name

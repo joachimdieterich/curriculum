@@ -64,8 +64,7 @@ if (isset($_GET['func'])){
                                 if (!is_object($value)){
                                     $$key = $value;
                                 }
-                            }
-                        
+                            }  
             break;
         default: break;
     }
@@ -98,7 +97,7 @@ $footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="d
 
 $script = "<!-- daterangepicker -->
         <script id='modal_script'>
-        $.getScript('".$CFG->base_url ."public/assets/templates/AdminLTE-2.3.0/plugins/daterangepicker/daterangepicker.js', function (){
+        $.getScript('".$CFG->smarty_template_dir_url."plugins/daterangepicker/daterangepicker.js', function (){
         //$('.color-picker').colorpicker();
         $('.datepicker').daterangepicker({timePicker: true, timePickerIncrement: 1, timePicker24Hour: true, locale: {format: 'DD.MM.YYYY HH:mm'}});
         });</script>";

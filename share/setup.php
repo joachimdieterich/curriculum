@@ -42,7 +42,7 @@ $TEMPLATE = new Smarty();
 $TEMPLATE->template_dir           = $CFG->smarty_template_dir; 
 $TEMPLATE->compile_dir            = $CFG->smarty_template_compile_dir;
 $TEMPLATE->cache_dir              = $CFG->smarty_template_cache_dir;
-$TEMPLATE->addPluginsDir($CFG->smarty_template_dir.'/plugins/');        //enable individual template smarty plugins
+$TEMPLATE->addPluginsDir($CFG->smarty_template_dir.'/plugins/');   //enable individual template smarty plugins
 $TEMPLATE->assign('tb_param',       $CFG->tb_param);
 $TEMPLATE->assign('global_timeout', $CFG->timeout);
 $TEMPLATE->assign('message_timeout',$CFG->message_timeout);
@@ -57,7 +57,8 @@ $TEMPLATE->assign('avatar_path',    $CFG->avatar_path);
 $TEMPLATE->assign('support_path',   $CFG->support_path);
 $TEMPLATE->assign('subjects_path',  $CFG->subjects_path);
 $TEMPLATE->assign('solutions_path', $CFG->solutions_path);
-$TEMPLATE->assign('template_url',   $CFG->smarty_template_dir);
+$TEMPLATE->assign('template_path',  $CFG->smarty_template_dir);
+$TEMPLATE->assign('template_url',   $CFG->smarty_template_dir_url);
 $TEMPLATE->assign('app_title',      $CFG->app_title);
 $TEMPLATE->assign('app_version',    $CFG->version);
 $TEMPLATE->assign('app_footer',     $CFG->app_footer);

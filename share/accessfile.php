@@ -73,7 +73,7 @@ if (filter_input(INPUT_GET, 'video') == true){
     exit;
 }
 
-if ($download == true){
+if (isset($download)){
     //header("Pragma: public"); //Useful when you come across this error: http://trac.edgewall.org/ticket/1020. IE 8 & less seems to like to cache things when they are on a SSL server. Putting 'Pragma:public' helps with: "Internet Explorer was not able to open this Internet site. The requested site is either unavailable or cannot be found. Please try again later"
     header('Content-Description: File Transfer');
     header('Content-Type: application/octet-stream');

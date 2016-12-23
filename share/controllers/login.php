@@ -89,7 +89,7 @@ function login($user){
 
     //Nutzungsbedingungen akzeptiert?
     if (($user->checkTermsOfUse() == false) OR ($user->username == $CFG->guest_usr)){
-       header('Location:../share/request/getTermsofUse.php'); exit();
+       header('Location:index.php?action=terms'); exit();
     }
     route($user);
 }

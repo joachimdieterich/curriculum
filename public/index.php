@@ -73,7 +73,8 @@ try { // Error handling
             unset($_SESSION['PAGE']->print);
         }    
     }
-
+    $TEMPLATE->assign('random_bg', $CFG->request_url.'assets/images/backgrounds/'.random_file($CFG->document_root .'assets/images/backgrounds/')); //get random bg-image
+    
     $PAGE->controller = $CFG->controllers_root.'/'.$PAGE->action .'.php';       //load controller 
    
     if (file_exists($PAGE->controller)) {   

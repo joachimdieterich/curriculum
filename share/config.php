@@ -28,13 +28,13 @@ $CFG = new stdClass();
 /* Application !IMPORTANT! Do not change manually*/
 $CFG->app_title='curriculum';
 $CFG->version='0.9.3';
-$CFG->app_footer='<a href="http://www.joachimdieterich.de">© Copyright 2014 - Joachim Dieterich.</a>'; 
+$CFG->app_footer='<a href="http://www.joachimdieterich.de">© Copyright 2014 - Joachim Dieterich</a>'; 
 
 /* DB Settings */
 $CFG->db_host='127.0.0.1';
-$CFG->db_user='root';
-$CFG->db_password ='root';
-$CFG->db_name='lmz_201606';
+$CFG->db_user='PUT_DB_USER_HERE';
+$CFG->db_password ='PUT_DB_PW_HERE';
+$CFG->db_name='PUT_DB_NAME_HERE';
 if ($CFG->db_name != ''){
     $DB = new PDO('mysql:host='.$CFG->db_host.';dbname='.$CFG->db_name.';charset=utf8', $CFG->db_user, $CFG->db_password ); 
     $DB->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -43,8 +43,9 @@ if ($CFG->db_name != ''){
 $CFG->ip= 'localhost';
 $CFG->protocol                      = 'http://'; //'https://';
 $CFG->base_url                      = $CFG->protocol.$CFG->ip.'/curriculum/';         //--> ! darf nicht localhost sein, da sonst probleme bei der Bilddarstellung bei Zugriff von extern
-$CFG->curriculumdata_root           = '/Applications/MAMP/curriculumdata/';
+$CFG->curriculumdata_root           = 'PUT_DATA_PATH_HERE';
 /*  Paths - do not edit */
+$CFG->share_root                    = dirname(__FILE__).'/';
 $CFG->document_root                 = dirname(__FILE__).'/../public/';
 $CFG->controllers_root              = dirname(__FILE__).'/controllers/'; 
 $CFG->plugins_root                  = dirname(__FILE__).'/plugins/'; 
@@ -58,8 +59,6 @@ $CFG->backup_root                   = $CFG->curriculumdata_root.'backups/';//URL
 $CFG->sql_backup_root               = $CFG->curriculumdata_root.'backups/sql/';
 $CFG->lib_root                      = dirname(__FILE__).'/libs/';
 $CFG->demo_root                     = $CFG->curriculumdata_root.'support/demo/';//URL for backups 
-//$CFG->salt                          = md5('loYfaz5r4w/ChAR1sJUw09sYkMaALLsOlKKpYb28LAcmFclAM3upsgwjDZ2tNsX2aVB6ZDJkIK6aO0DursPrqg==');
-//$CFG->access_file                   = '../share/accessfile.php?file='.$CFG->salt.'|';
 $CFG->access_file                   = '../share/accessfile.php?file=';
 $CFG->access_file_url               = $CFG->base_url.'share/accessfile.php?file=';
 $CFG->access_token_url              = $CFG->base_url.'share/accessfile.php?token=';
@@ -102,11 +101,19 @@ $CFG->paginator_id                  = '';                                       
 
 $CFG->shibboleth                    = true;                                     // show shibboleth Button in Login.tpl
 
+/* Guest Login*/
+$CFG->guest_login                   = true;
+$CFG->guest_usr                     = 'PUT_GUEST_USERNAME_HERE';
+$CFG->guest_pwd                     = 'PUT_GUEST_PASSWORD_HERE!';
+
 /* Get php_info('post_max_size') */
 $CFG->post_max_size                 = ini_get('post_max_size');
 
-/*  Smarty template engine*/
-$CFG->smarty_template_dir           = dirname(__FILE__).'/templates/';
+/*  Smarty template engine and actual template*/
+$CFG->smarty_template_dir           = dirname(__FILE__).'/templates/AdminLTE-2.3.0/';   // default template dir AdminLTE-2.3.0
+$CFG->smarty_template_dir_url       = $CFG->base_url.'share/templates/AdminLTE-2.3.0/'; // default template dir_url Bootflat-2.0.4
+//$CFG->smarty_template_dir           = dirname(__FILE__).'/templates/Bootflat-2.0.4/';   // default template dir AdminLTE-2.3.0
+//$CFG->smarty_template_dir_url       = $CFG->base_url.'share/templates/Bootflat-2.0.4/'; // default template dir_url Bootflat-2.0.4
 $CFG->smarty_template_compile_dir   = $CFG->smarty_template_dir.'compiled';
 $CFG->smarty_template_cache_dir     = $CFG->smarty_template_dir.'cached'; 
 

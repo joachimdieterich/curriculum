@@ -43,7 +43,7 @@ include('classes/enablingobjective.class.php');
 include('classes/event.class.php'); 
 include('classes/exception.class.php'); 
 include('classes/file.class.php'); 
-include('classes/form.class.php');                  // Form 
+
 include('classes/grade.class.php');     
 include('classes/group.class.php');  
 include('classes/gump.class.php');                  //validator class
@@ -62,8 +62,7 @@ include('classes/plugin.class.php');
 include('classes/portfolio.class.php'); 
 include('classes/printer.class.php'); 
 include('classes/quiz_question.class.php'); 
-include('classes/quiz_answer.class.php'); 
-include('classes/render.class.php');     
+include('classes/quiz_answer.class.php');
 include('classes/roles.class.php');     
 include('classes/schooltype.class.php'); 
 include('classes/search.class.php'); 
@@ -75,6 +74,10 @@ include('classes/task.class.php');
 include('classes/terminalobjective.class.php');
 include('classes/upload.class.php');  
 include('classes/user.class.php');     
+
+/*Render classes*/
+include($CFG->smarty_template_dir.'renderer/form.class.php');                  // Form 
+include($CFG->smarty_template_dir.'renderer/render.class.php');     
 
 /*Videostream*/
 include('classes/video_stream.class.php');     

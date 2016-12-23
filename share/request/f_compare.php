@@ -45,26 +45,26 @@ switch ($func) {
 
 $content    = '';
 if (isset($ena->enabling_objective)){  
-    $content .= '<div class="col-md-12 "><p>Übersicht zum Lernziel:'.filter_input(INPUT_GET, 'group_id', FILTER_VALIDATE_INT).'<br><strong>'.$ena->enabling_objective.'</strong></p></div>'; 
+    $content .= '<div class="col-md-12 "><p>Übersicht zum Lernziel:<br><strong>'.$ena->enabling_objective.'</strong></p></div>'; 
     $order   = array('acc_0' => array('items'  => count($acc_0), 
                                 'header' => 'Ziel nicht erreicht', 
                                 'color'  => 'text-red', 
-                                'class'  => 'box-danger',
+                                'class'  => 'danger',
                                 'var'    => 'acc_0'),
                    'acc_1' => array('items'  => count($acc_1), 
                                 'header' => 'Ziel erreicht', 
                                 'color'  => 'text-green',
-                                'class'  => 'box-success',
+                                'class'  => 'success',
                                 'var'    => 'acc_1'),
                    'acc_2' => array('items'  => count($acc_2), 
                                 'header' => 'Ziel mit Hilfe erreicht', 
                                 'color'  => 'text-orange',
-                                'class'  => 'box-warning',
+                                'class'  => 'warning',
                                 'var'    => 'acc_2'),
                    'acc_3' => array('items'  => count($acc_3), 
                                 'header' => 'Ziel noch nicht bearbeitet', 
                                 'color'  => false,
-                                'class'  => 'box-default',
+                                'class'  => 'default',
                                 'var'    => 'acc_3'),
                     );
     rsort($order);
@@ -80,41 +80,15 @@ if (isset($ena->enabling_objective)){
     }
     
     $files     = new File(); 
-    $solutions = $files->getSolutions('objective', $user_id_list, $ena->id); 
+    $content  .= Render::compare_list(array('order'     => $order,
+                                            'solutions' => $files->getSolutions('objective', $user_id_list, $ena->id),
+                                            'acc_0'     => $acc_0,
+                                            'acc_1'     => $acc_1,
+                                            'acc_2'     => $acc_2,
+                                            'acc_3'     => $acc_3,
+                                            )
+                                     );
     
-    foreach ($order as $key => $value) {
-        if ($value['items'] > 1){ // only generate if there are items - todo check reason items == 1 and not 0
-            error_log($value['items']);
-            $content .= '<div class="col-md-6 "><div class="box '.$value['class'].' box-solid">
-                            <div class="box-header with-border">
-                            <div class="box-title">'.$value['header'].'</div>';
-                            if ($value['color']){
-                                $content .= '<span class="pull-right badge bg-white '.$value['color'].'">Datum, Lehrer</span>';
-                            }
-                            $content .= '</div>
-                            <div class="box-footer no-padding">
-                                <ul class="nav nav-stacked">';
-                                if ($$value['var']){
-                                    foreach($$value['var'] AS $v) {
-                                        $user     = new User();
-                                        $content .= '<li><a href="#">'.$user->resolveUserId($v->user_id);
-
-                                        foreach ( $solutions as $s ) { 
-                                            if ( $v->user_id == $s->creator_id ) {
-                                                $content .= '<span onClick=\'formloader("material", "id", '.$ena->id.', {"target":"sub_popup", "user_id": "'.$v->user_id.'"});\'>&nbsp;<i class="fa fa-paperclip"></i></span>';          
-                                                break; // if one solution is found break to save time
-                                            }
-                                        }
-
-                                        if ($value['color']){
-                                            $content .= '<span class="pull-right badge bg-'.$value['color'].'" data-toggle="tooltip" title="" data-original-title="Nachricht schreiben" onclick="formloader(\'mail\', \'gethelp\', '.$v->creator_id.');">'.date('d.m.Y',strtotime($v->accomplished_time)).', '.$user->resolveUserId($v->creator_id, 'name').'</span>';
-                                        }
-                                        $content .= '</a></li>';
-                                    }   
-                                }
-            $content .= '</ul></div></div></div>'; 
-        }
-    }
 }
 $html = Form::modal(array('target' => 'null',
                           'sub_modal_id' => 'preview',
