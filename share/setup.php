@@ -39,10 +39,7 @@ global $TEMPLATE;                                                   // Smarty TE
 session_start();                                                    // Starte Sesseion
 
 $TEMPLATE = new Smarty();
-$TEMPLATE->template_dir           = $CFG->smarty_template_dir; 
-$TEMPLATE->compile_dir            = $CFG->smarty_template_compile_dir;
-$TEMPLATE->cache_dir              = $CFG->smarty_template_cache_dir;
-$TEMPLATE->addPluginsDir($CFG->smarty_template_dir.'/plugins/');   //enable individual template smarty plugins
+
 $TEMPLATE->assign('tb_param',       $CFG->tb_param);
 $TEMPLATE->assign('global_timeout', $CFG->timeout);
 $TEMPLATE->assign('message_timeout',$CFG->message_timeout);
@@ -57,8 +54,7 @@ $TEMPLATE->assign('avatar_path',    $CFG->avatar_path);
 $TEMPLATE->assign('support_path',   $CFG->support_path);
 $TEMPLATE->assign('subjects_path',  $CFG->subjects_path);
 $TEMPLATE->assign('solutions_path', $CFG->solutions_path);
-$TEMPLATE->assign('template_path',  $CFG->smarty_template_dir);
-$TEMPLATE->assign('template_url',   $CFG->smarty_template_dir_url);
+
 $TEMPLATE->assign('app_title',      $CFG->app_title);
 $TEMPLATE->assign('app_version',    $CFG->version);
 $TEMPLATE->assign('app_footer',     $CFG->app_footer);
@@ -74,7 +70,15 @@ if (isset($CFG->settings->repository)){
 /*if (isset($CFG->settings->auth)){
     $CFG->auth = get_plugin('auth',$CFG->settings->auth);
 }*/
-
+$TEMPLATE->template_dir           = dirname(__FILE__).'/templates/'.$CFG->settings->template.'/';
+$TEMPLATE->compile_dir            = $TEMPLATE->template_dir.'compiled';
+$TEMPLATE->cache_dir              = $TEMPLATE->template_dir.'cached';
+$TEMPLATE->assign('template_path',  $TEMPLATE->template_dir);
+$TEMPLATE->assign('template_url',   $CFG->base_url.'share/templates/'.$CFG->settings->template.'/');
+$TEMPLATE->addPluginsDir(dirname(__FILE__).'/templates/'.$CFG->settings->template.'/plugins/');   //enable individual template smarty plugins
+/*Template render classes*/
+include($TEMPLATE->template_dir .'renderer/form.class.php');                  // Form 
+include($TEMPLATE->template_dir .'renderer/render.class.php');    
 
 /** Sortierung der Paginatoren */
 /* Paginator reset*/
