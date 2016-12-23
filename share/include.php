@@ -73,11 +73,7 @@ include('classes/subject.class.php');
 include('classes/task.class.php');     
 include('classes/terminalobjective.class.php');
 include('classes/upload.class.php');  
-include('classes/user.class.php');     
-
-/*Render classes*/
-include($CFG->smarty_template_dir.'renderer/form.class.php');                  // Form 
-include($CFG->smarty_template_dir.'renderer/render.class.php');     
+include('classes/user.class.php');      
 
 /*Videostream*/
 include('classes/video_stream.class.php');     
