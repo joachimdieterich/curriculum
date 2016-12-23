@@ -53,7 +53,7 @@
         <!-- Bootstrap Color Picker -->
         <link rel="stylesheet" href="{$template_url}plugins/colorpicker/bootstrap-colorpicker.min.css">
         <!-- Custom styles for this template -->
-        <link rel="stylesheet" href="{$media_url}stylesheets/all-bs.min.css">
+        <link rel="stylesheet" href="{$template_url}css/all-bs.min.css">
         <link rel="stylesheet" href="{$media_url}stylesheets/buttons.min.css" media="all">
         <link rel="stylesheet" href="{$media_url}jquery.nyroModal/styles/nyroModal.css" media="all">
         {block name=additional_stylesheets}{/block}

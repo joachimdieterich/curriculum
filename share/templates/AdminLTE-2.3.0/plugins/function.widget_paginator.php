@@ -157,7 +157,6 @@ function smarty_function_widget_paginator($params, $template) {
             }
             $html .= '<div class="col-lg-4 col-md-6 col-sm-12 margin-bottom">
                       <div class="box box-widget widget-user collapsed-box bottom-buffer-20">
-                        <!-- Add the bg color to the header using any of the bg-* classes -->
                         <span class="col-xs-12 no-margin" ';
                             if (isset($config['p_widget']['bg_image'])){ 
                                 $html .= 'style="background: url(\''.$CFG->access_id_url.$file_id.'&size=t\') center center;  background-size: cover;"';
