@@ -32,8 +32,8 @@ if(isset($_GET['reset']) OR (isset($_POST['reset']))){
 
 $showuser                   = false;            //zurücksetzen
 $show_course                = false;            // zurücksetzen
-$selected_curriculum        = (isset($_GET['course']) && trim($_GET['course'] != '') ? $_GET['course'] : '_'); //'_' ist das Trennungszeichen 
-$selected_curriculumforURL  = $selected_curriculum;
+$selected_curriculum_id     = (isset($_GET['course']) && trim($_GET['course'] != '') ? $_GET['course'] : '_'); //'_' ist das Trennungszeichen 
+$selected_curriculumforURL  = $selected_curriculum_id;
 
 if (isset($_GET['p_select'])){
     unset($_SESSION['SmartyPaginate']['userPaginator']['pagi_selection']);
@@ -41,11 +41,11 @@ if (isset($_GET['p_select'])){
 }
 $selected_user_id           = SmartyPaginate::_getSelection('userPaginator'); 
 $TEMPLATE->assign('selected_user_id',               $selected_user_id);
-$TEMPLATE->assign('selected_curriculum',            $selected_curriculum); 
+$TEMPLATE->assign('selected_curriculum_id',         $selected_curriculum_id); 
 $TEMPLATE->assign('selected_certificate_template',  filter_input(INPUT_GET, 'certificate_template', FILTER_VALIDATE_INT));
 
-list ($selected_curriculum, $selected_group) = explode('_', $selected_curriculum); //$selected_curriculum enthält curriculumid_groupid (zb. 32_24) wenn nur '_' gesetzt ist werden beide variabeln ''
-$TEMPLATE->assign('sel_curriculum', $selected_curriculum); //only selected curriculum without group
+list ($selected_curriculum_id, $selected_group) = explode('_', $selected_curriculum_id); //$selected_curriculum_id enthält curriculumid_groupid (zb. 32_24) wenn nur '_' gesetzt ist werden beide variabeln ''
+$TEMPLATE->assign('sel_curriculum', $selected_curriculum_id); //only selected curriculum without group
 $TEMPLATE->assign('sel_group_id',   $selected_group); //only selected group without curriculum
  
 if (isset($_POST['printCertificate'])){
@@ -65,36 +65,12 @@ if (isset($_POST['printCertificate'])){
         $PAGE->message[]    = array('message' => 'Zertifikatvorlage muss gewählt werden', 'icon' => 'fa-files-o text-warning');
     }
 } 
-
-// load curriculum of actual user 
-//error_log(json_encode($selected_user_id));
-if ($selected_curriculum != '' AND $selected_user_id != '' AND isset($selected_user_id[0])) {
-    if (count($selected_user_id) > 1){
-        $terminal_objectives = new TerminalObjective();         //load terminal objectives
-        $TEMPLATE->assign('terminalObjectives', $terminal_objectives->getObjectives('curriculum', $selected_curriculum));
-        $enabling_objectives = new EnablingObjective();         //load enabling objectives
-        $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('group', $selected_curriculum, $selected_user_id));
-        $show_course         = true; // setzen
-    } else {
-        $user   = new User(); 
-        $user->load('id', $selected_user_id[0], false);
-        $TEMPLATE->assign('user', $user);
-        $group  = new Group();   
-        $TEMPLATE->assign('group', $group->getGroups('course', $selected_group));
-        $terminal_objectives = new TerminalObjective();         //load terminal objectives
-        $TEMPLATE->assign('terminalObjectives', $terminal_objectives->getObjectives('curriculum', $selected_curriculum));
-        $enabling_objectives = new EnablingObjective();         //load enabling objectives
-        $enabling_objectives->curriculum_id = $selected_curriculum;
-        $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('user', $selected_user_id[0]));
-        $show_course         = true; // setzen    
-    }     
-    
-}    
+  
 // load user list
-if ($selected_curriculum != '') {  
+if ($selected_curriculum_id != '') {  
     $course_user        = new User();
     $course_user->id    = $USER->id;
-    $users              = $course_user->getUsers('course', 'userPaginator', $selected_curriculum, $selected_group);
+    $users              = $course_user->getUsers('course', 'userPaginator', $selected_curriculum_id, $selected_group);
     if (is_array($users)){
         foreach ($users as $value) {                         //erzeuge id Liste der user
             $list[]     = $value->id;
@@ -136,10 +112,38 @@ if ($selected_curriculum != '') {
     }
     setPaginator('userPaginator', $TEMPLATE, $users, 'results', 'index.php?action=objectives&course='.$selected_curriculumforURL, $p_config); //set Paginator    
     /*course book*/
-    $sel_course     = $courses->getCourseId($selected_curriculum, $selected_group);
+    $sel_course     = $courses->getCourseId($selected_curriculum_id, $selected_group);
     $coursebook     = new CourseBook();
     $TEMPLATE->assign('coursebook',      $coursebook->get('course', $sel_course->id) );
 }
+
+// load curriculum of actual user 
+//error_log(json_encode($selected_user_id));
+if ($selected_curriculum_id != '' AND $selected_user_id != '' AND isset($selected_user_id[0])) {
+    if (count($selected_user_id) > 1){
+        $terminal_objectives = new TerminalObjective();         //load terminal objectives
+        $TEMPLATE->assign('terminalObjectives', $terminal_objectives->getObjectives('curriculum', $selected_curriculum_id));
+        $enabling_objectives = new EnablingObjective();         //load enabling objectives
+        $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('group', $selected_curriculum_id, $selected_user_id));
+        $show_course         = true; // setzen
+    } else {
+        $user   = new User(); 
+        $user->load('id', $selected_user_id[0], false);
+        $TEMPLATE->assign('user', $user);
+        $group  = new Group();   
+        $TEMPLATE->assign('group', $group->getGroups('course', $selected_group));
+        $terminal_objectives = new TerminalObjective();         //load terminal objectives
+        $TEMPLATE->assign('terminalObjectives', $terminal_objectives->getObjectives('curriculum', $selected_curriculum_id));
+        $enabling_objectives = new EnablingObjective();         //load enabling objectives
+        $enabling_objectives->curriculum_id = $selected_curriculum_id;
+        $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('user', $selected_user_id[0]));
+        $show_course         = true; // setzen    
+    }     
+    $certificate                 = new Certificate();                               // Load certificate_templates
+    $certificate->institution_id = $USER->institutions;
+    $certificate->curriculum_id  = $selected_curriculum_id;
+    $TEMPLATE->assign('certificate_templates', $certificate->getCertificates());
+}  
 /*******************************************************************************
  * END POST / GET  
  */    
@@ -152,9 +156,6 @@ if(checkCapabilities('user:userListComplete', $USER->role_id, false)){          
 if(checkCapabilities('user:userList',         $USER->role_id, false)){
     $TEMPLATE->assign('courses',              $courses->getCourse('teacher_semester', $USER->semester_id));  // abhängig von USER->my_semester id --> s. Select in objectives.tpl, 
 }
-$certificate                 = new Certificate();                               // Load certificate_templates
-$certificate->institution_id = $USER->institutions;
-$TEMPLATE->assign('certificate_templates', $certificate->getCertificates());
 
 $box_bg = array('0' => 'bg-white',
                 '' => 'bg-white',
@@ -189,4 +190,4 @@ $box_bg = array('0' => 'bg-white',
 $TEMPLATE->assign('box_bg',$box_bg);
 
 $content = new Content();
-$TEMPLATE->assign('cur_content', array('label'=>'Hinweise zum Lehrplan', 'entrys'=> $content->get('curriculum', $selected_curriculum)));
+$TEMPLATE->assign('cur_content', array('label'=>'Hinweise zum Lehrplan', 'entrys'=> $content->get('curriculum', $selected_curriculum_id)));
