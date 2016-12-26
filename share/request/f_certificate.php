@@ -34,6 +34,7 @@ $cert_id           = null;
 $certificate       = null; 
 $description       = null;
 $institution_id    = null;
+$curriculum_id     = null;
 $template          = null;
 $func              = $_GET['func'];
 $error             = null;
@@ -88,6 +89,13 @@ $content  .= '<input type="hidden" name="reference_id" id="reference_id" value="
 $content  .= Form::input_text('certificate', 'Zertifikat', $certificate, $error, 'z. B. MedienkomP@ss Zertifikat');
 $content  .= Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung');
 $content  .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'institution_id', $institution_id , $error);
+$curriculum = new Curriculum();
+$cur_array              = $curriculum->getCurricula('user', $USER->id, 'curriculumP');
+$cur_global             = new Curriculum();
+$cur_global->id         = 0; // global certificate
+$cur_global->curriculum = 'globales Zertifikat';
+$cur_array = array_merge(array($cur_global), $cur_array); //add entry to select list 
+$content  .= Form::input_select('curriculum_id', 'Lehrplan', $cur_array , 'curriculum', 'id', $curriculum_id , $error);
 $content  .= Form::input_textarea('template', 'Zertifikat-Vorlage', $template, $error);
 $content  .= Form::info('info', 'Felder:', '*&lt;!--Vorname--&gt;, *&lt;!--Nachname--&gt;</br> 
                                             *&lt;!--Start--&gt;, *&lt;!--Ende--&gt</br>
