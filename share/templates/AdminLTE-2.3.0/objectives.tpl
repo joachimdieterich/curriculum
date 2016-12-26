@@ -31,14 +31,14 @@
                 <div class="tab-content">
                     <div class="tab-pane active" id="f_userlist">
                         {if isset($courses)}
-                            <form method='post' action='index.php?action=objectives&course={$selected_curriculum}{*&userID={implode(',',$selected_user_id)}&next={$currentUrlId}*}'>        
+                            <form method='post' action='index.php?action=objectives&course={$selected_curriculum_id}{*&userID={implode(',',$selected_user_id)}&next={$currentUrlId}*}'>        
                                 <div class="form-horizontal">
                                     <div class="row">
                                         <div class="col-md-4 col-sm-12">
-                                            {Form::input_select('course', '', $courses, 'group, curriculum', 'id', $selected_curriculum, null, "window.location.assign('index.php?action=objectives&course='+this.value);", 'Kurs / Klasse wählen...', '', 'col-sm-12')}
+                                            {Form::input_select('course', '', $courses, 'group, curriculum', 'id', $selected_curriculum_id, null, "window.location.assign('index.php?action=objectives&course='+this.value);", 'Kurs / Klasse wählen...', '', 'col-sm-12')}
                                         </div>
                                         {*if $show_course != '' and $terminalObjectives != false*}{*Zertifikat*}
-                                        {if isset($userPaginator)}{*Zertifikat*}
+                                        {if isset($certificate_templates)}{*Zertifikat*}
                                             <div class="col-md-4 col-sm-12">
                                                 {Form::input_select('certificate_template', '', $certificate_templates, 'certificate, description', 'id', $selected_certificate_template, null, 'float-left', 'Zertifikatvorlage wählen...', '', 'col-sm-12')}   
                                             </div>
@@ -49,8 +49,7 @@
                                                     <span class="fa fa-files-o" aria-hidden="true"></span> {if count($selected_user_id) > 1} Zertifikate erstellen{else} Zertifikat erstellen{/if}
                                                 </button>
                                             </div>
-                                        {/if}
-                                        
+                                        {else}<input id="certificate_template" class="hidden" value="false"/>{* hack to get js working if no user is selected *}{/if}
                                     </div>
                                 </div>
                             </form>
