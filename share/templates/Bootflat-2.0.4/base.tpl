@@ -46,6 +46,7 @@
         <link rel="stylesheet" href="{$media_url}stylesheets/google-fonts.min.css" >
         <!-- Bootstrap Color Picker -->
         <link rel="stylesheet" href="{$template_url}plugins/colorpicker/bootstrap-colorpicker.min.css">
+        <link rel="stylesheet" href="{$template_url}css/buttons.min.css">
         {*<!-- Ionicons --><!-- not used yet -->
         <!--link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"-->
         <!-- daterangepicker -->
@@ -54,15 +55,12 @@
         <link rel="stylesheet" href="{$template_url}css/AdminLTE.min.css">
         <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
         <link rel="stylesheet" href="{$template_url}css/skins/_all-skins.min.css">
-        <!--link rel="stylesheet" href="{$template_url}css/skins/skin-blue-light.min.css"-->
-        
-
-        <link rel="stylesheet" href="{$media_url}stylesheets/buttons.min.css" media="all">*}
+        <!--link rel="stylesheet" href="{$template_url}css/skins/skin-blue-light.min.css"-->*}
         <link rel="stylesheet" href="{$media_url}jquery.nyroModal/styles/nyroModal.css" media="all">
         {block name=additional_stylesheets}{/block}
     </head>
     
-    {if $page_action eq 'login' OR  $page_action eq 'lock'}
+    {if $page_action eq 'login' OR  $page_action eq 'lock' OR  $page_action eq 'install'}
         <body style="background-image: url('{$random_bg}'); background-size: cover;" >
             {block name=content} {/block}
         </body>

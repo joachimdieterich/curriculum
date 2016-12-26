@@ -43,7 +43,7 @@
                 {if $art->artefact_type eq 'solution'}
                 <dd class="{if ($artid % 2 == 1)}pos-left{else}pos-right{/if} clearfix">
                     <div class="circ"></div>
-                    <span class="time">{$art->creation_time|date_format:"%d %B"}</span>
+                    <div class="time">{$art->creation_time|date_format:"%d %B"}</div>
                     <div class="events">
                         <h4 class="events-heading"><a href="#">{$art->curriculum}</a></h4>
                         <div class="events-body">

@@ -282,14 +282,13 @@ class Form {
                           </li>';
                           //<!--option label="'.$label.'" value="'.$value->$select_value.'"'; if ($input == $value->$select_value){ $form .= 'selected="selected"'; } $form .= '>'.$label.'</option>';
             }
-       } else {
+        } else {
                 $form .= '<li>
                             <a href="#">
                               <i class="text-aqua"></i> '.$placeholder.'
                             </a>
                           </li>';
-       }
-                          
+        }               
         $form .= '    
                       </li>
                       <li class="footer"><!-- <a href="#">Alle anzeigen</a>--></li>
@@ -320,9 +319,7 @@ class Form {
                         </button>
                         <input id="'.$id.'_fSelector" name="file" type="file" class="btn btn-primary col-sm-12" onchange="fileChange(\''.$id.'\');">
                     </div>
-                </div>  
-            ';
-        
+                </div>';
         return $form; 
     }
     

@@ -63,13 +63,17 @@ $TEMPLATE->assign('cfg_shibboleth', $CFG->shibboleth);
 
 /* Load Plugins */
 $config = new Config();
-$CFG->settings = $config->load();
-if (isset($CFG->settings->repository)){
-    $CFG->repository = get_plugin('repository',$CFG->settings->repository);
+if (isset($CFG->db_configured)){
+    $CFG->settings = $config->load();
+    if (isset($CFG->settings->repository)){
+        $CFG->repository = get_plugin('repository',$CFG->settings->repository);
+    }
+    /*if (isset($CFG->settings->auth)){
+        $CFG->auth = get_plugin('auth',$CFG->settings->auth);
+    }*/
 }
-/*if (isset($CFG->settings->auth)){
-    $CFG->auth = get_plugin('auth',$CFG->settings->auth);
-}*/
+
+if (!isset($CFG->settings->template)){ $CFG->settings->template = 'Bootflat-2.0.4'; } // fallback for installation process
 $TEMPLATE->template_dir           = dirname(__FILE__).'/templates/'.$CFG->settings->template.'/';
 $TEMPLATE->compile_dir            = $TEMPLATE->template_dir.'compiled';
 $TEMPLATE->cache_dir              = $TEMPLATE->template_dir.'cached';
