@@ -33,7 +33,7 @@ spl_autoload_register(function ($className) {
     $extensions = array(".php", ".class.php");
     $paths = array('classes');
     foreach ($paths as $path) {
-        $filename = $path . DIRECTORY_SEPARATOR . $className;
+        $filename = $path . DIRECTORY_SEPARATOR . strtolower($className);
         foreach ($extensions as $ext) {
             if (is_readable($base_dir .$filename . $ext)) {
                 include ($base_dir . $filename . $ext);
