@@ -38,24 +38,15 @@
         <link rel="stylesheet" href="{$template_url}css/site.min.css">
         <link rel="stylesheet" href="{$template_url}css/all-bs.min.css">
         <script type="text/javascript" src="{$template_url}js/site.min.js"></script>
-        
-        <!-- Bootstrap 3.3.5 -->
-        <!--<link rel="stylesheet" href="{$template_url}css/bootstrap.min.css">-->
         <!-- Font Awesome -->
         <link rel="stylesheet" href="{$lib_url}/font-awesome/css/font-awesome.min.css">
-        <link rel="stylesheet" href="{$media_url}stylesheets/google-fonts.min.css" >
+        <link rel="stylesheet" href="{$template_url}css/google-fonts.min.css" >
         <!-- Bootstrap Color Picker -->
         <link rel="stylesheet" href="{$template_url}plugins/colorpicker/bootstrap-colorpicker.min.css">
         <link rel="stylesheet" href="{$template_url}css/buttons.min.css">
-        {*<!-- Ionicons --><!-- not used yet -->
-        <!--link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"-->
+        {*
         <!-- daterangepicker -->
-        <link rel="stylesheet" href="{$template_url}plugins/daterangepicker/daterangepicker.css">
-        <!-- Theme style -->
-        <link rel="stylesheet" href="{$template_url}css/AdminLTE.min.css">
-        <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
-        <link rel="stylesheet" href="{$template_url}css/skins/_all-skins.min.css">
-        <!--link rel="stylesheet" href="{$template_url}css/skins/skin-blue-light.min.css"-->*}
+        <link rel="stylesheet" href="{$template_url}plugins/daterangepicker/daterangepicker.css">*}
         <link rel="stylesheet" href="{$media_url}jquery.nyroModal/styles/nyroModal.css" media="all">
         {block name=additional_stylesheets}{/block}
     </head>
@@ -221,6 +212,13 @@
                                     </a>
                                 </li>
                                 {/if}
+                                {if checkCapabilities('menu:readWallet', $my_role_id, false)}
+                                <li class="{if $page_action eq 'wallet'}active{/if}">
+                                    <a href="index.php?action=wallet">
+                                        <i class="fa fa-newspaper-o margin-r-10"></i>Sammelmappe
+                                    </a>
+                                </li>
+                                {/if}
 
                                 {if checkCapabilities('menu:readCurriculum', $my_role_id, false)}
                                 <li class="{if $page_action eq 'curriculum'}active{/if}">
@@ -342,7 +340,7 @@
             <div class="row" >
                 <div class="col-xs-12">
                     <div  class="content-top-padding" >
-                    <div id="popup" class="modal" onload="popupFunction(this.id);"><div class="modal-dialog"><div class="panel"><div class="panel-heading"><h3 >Loading...</h3></div><div class="panel-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div></div></div> <!-- Popup -->    
+                    <div id="popup" class="modal" onload="popupFunction(this.id);"><div class="modal-dialog"><div class="panel"><div class="panel-heading"><h3 >Loading...</h3></div><div class="panel-body"><div class="overlay text-center"><i class="fa fa-refresh fa-spin"></i></div></div></div></div></div> <!-- Popup -->    
                     {block name=content} {/block}
                     </div>
                 </div>
@@ -387,6 +385,7 @@
     <script src="{$media_url}scripts/dragndrop.min.js"></script>     
     
     {block name=additional_scripts} 
+        
     <!-- Logout - Timer  -->
     {if isset($institution_timeout)}
     <script type="text/javascript">
@@ -422,8 +421,7 @@
                 }   
             }
         });
-        $('#popup_generate').nyroModal();
-        
+        $('#popup_generate').nyroModal();  
     });
     
     </script>

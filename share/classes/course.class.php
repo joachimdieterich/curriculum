@@ -78,6 +78,7 @@ class Course {
      * @var string 
      */
     public $group; 
+    public $group_id; 
     /**
      * name of grade
      * @var string
@@ -218,6 +219,23 @@ class Course {
        $db = DB::prepare('SELECT * FROM curriculum_enrolments AS ce
                         WHERE ce.curriculum_id = ? AND ce.group_id = ?');
        $db->execute(array($curriculum_id, $group_id));
+       $result = $db->fetchObject();
+        if ($result){
+            $this->id            = $result->id;
+            $this->status        = $result->status;
+            $this->curriculum_id = $result->curriculum_id;
+            $this->group_id      = $result->group_id;
+            $this->creation_time = $result->creation_time;
+            $this->expel_time    = $result->expel_time;
+            $this->creator_id    = $result->creator_id;
+            return $this;
+        }
+   }
+   
+   public function getCourseById($id){
+       $db = DB::prepare('SELECT * FROM curriculum_enrolments AS ce
+                        WHERE ce.id = ?');
+       $db->execute(array($id));
        $result = $db->fetchObject();
         if ($result){
             $this->id            = $result->id;

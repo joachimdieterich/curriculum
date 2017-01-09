@@ -43,13 +43,13 @@ class Content {
     public $sub_creator_id;
     public $sub_creator;
    
-    public function add(){
+    public function add($subscribe = true){
         global $USER;
         checkCapabilities('content:add', $USER->role_id);
         $db = DB::prepare('INSERT INTO content (title,content,timecreated,creator_id) VALUES (?,?,NOW(),?)');
         if($db->execute(array($this->title, $this->content, $USER->id))){
             $this->id = DB::lastInsertId(); 
-            $this->addSubscription();
+            if ($subscribe) { $this->addSubscription(); }
             return $this->id;
         } else {
             return false;

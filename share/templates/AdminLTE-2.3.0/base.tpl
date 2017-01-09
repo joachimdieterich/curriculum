@@ -40,9 +40,7 @@
         <link rel="stylesheet" href="{$template_url}bootstrap/css/bootstrap.min.css">
         <!-- Font Awesome -->
         <link rel="stylesheet" href="{$lib_url}/font-awesome/css/font-awesome.min.css">
-        <link rel="stylesheet" href="{$media_url}stylesheets/google-fonts.min.css" >
-        <!-- Ionicons --><!-- not used yet -->
-        <!--link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"-->
+        <link rel="stylesheet" href="{$template_url}css/google-fonts.min.css" >
         <!-- daterangepicker -->
         <link rel="stylesheet" href="{$template_url}plugins/daterangepicker/daterangepicker.css">
         <!-- Theme style -->

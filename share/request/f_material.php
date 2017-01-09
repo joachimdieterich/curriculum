@@ -33,9 +33,9 @@ $header     = 'Material';
 $file       = new File();
 $func       = filter_input(INPUT_GET, 'func', FILTER_UNSAFE_RAW);
 switch ($func) {
-    case 'ena':         $files  = $file->getFiles('enabling_objective', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => true));
+    case 'enabling_objective':         $files  = $file->getFiles('enabling_objective', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => true));
         break;
-    case 'ter':         $files  = $file->getFiles('terminal_objective', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => true));
+    case 'terminal_objective':         $files  = $file->getFiles('terminal_objective', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => true));
         break;
     case 'id' :         $files  = $file->getFiles('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => false, 'user_id' => filter_input(INPUT_GET, 'user_id', FILTER_VALIDATE_INT)));
                         $header = 'Lösungen / Dateien des Users';

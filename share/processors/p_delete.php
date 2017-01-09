@@ -46,6 +46,8 @@ switch ($db) {
     case "task":                $t = new Task();                break;
     case "courseBook":          $t = new CourseBook();          break;
     case "content":             $t = new Content();             break;
+    case "wallet":              $t = new Wallet();              break;
+    case "wallet_content":      $t = new WalletContent();       break;
     default: break;
 }
 

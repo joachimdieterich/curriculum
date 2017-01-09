@@ -59,6 +59,13 @@
                     </a>
                 </li>
                 {/if}
+                {if checkCapabilities('menu:readWallet', $my_role_id, false)}
+                <li class="treeview {if $page_action eq 'wallet'}active{/if}">
+                    <a href="index.php?action=wallet">
+                        <i class="fa fa-newspaper-o"></i> <span>Sammelmappe</span>
+                    </a>
+                </li>
+                {/if}
 
                 {if checkCapabilities('menu:readCurriculum', $my_role_id, false)}
                 <li class="treeview {if $page_action eq 'curriculum'}active{/if}">

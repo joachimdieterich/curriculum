@@ -199,7 +199,7 @@ class Render {
             case '.url':    $content     ='<iframe src="'.$file->filename.'" style="width:100%; height: 600px;"></iframe>';
                 break;
             default:        if (checkCapabilities('plugin:useEmbeddableGoogleDocumentViewer', $USER->role_id, false) AND !is_array(getimagesize($CFG->curriculumdata_root.$file->full_path))){
-                                $content = '<iframe src="http://docs.google.com/gview?url='.$CFG->access_token_url .$file->addFileToken($file->id).'" style="width:100%; height:500px;" frameborder="0"></iframe>';
+                                $content = '<iframe src="http://docs.google.com/gview?url='.$CFG->access_token_url .$file->addFileToken($file->id).'&embedded=true" style="width:100%; height:500px;" frameborder="0"></iframe>';
                             } else {
                                 $content = RENDER::thumb(array($file->id), null, 'div');
                             }
@@ -313,7 +313,7 @@ class Render {
                                     $html .=   '<i class="'.resolveFileType($file->type).' info-box-icon"></i>';
                                 } else {
                                     $html .=   '<div style="height: 90px;
-  width: 100%; background: url(\''.$url.'\'); background-size: cover; background-repeat: no-repeat;"></div>';
+  width: 100%; background: url(\''.$url.'\') center; background-size: cover; background-repeat: no-repeat;"></div>';
                                 }
                     break;
                 default:
@@ -350,6 +350,119 @@ class Render {
                               </div><!-- /.events-->
                     </div>';
         return $html;                                    
+    }
+    public static function wallet_thumb($params){
+        $width_class     = 'col-lg-3 col-md-4 col-sm-6 col-xs-12';
+                
+        foreach($params as $key => $val) {
+            $$key = $val;
+        }
+        global $USER;
+        $html =   '<div class="'.$width_class.'">';
+                    
+                    $html .= '<div class="thumbnail">
+                                <div class="row">
+                                <div class="col-xs-12" >';
+                    $html .= RENDER::thumb($wallet->file_id, null, null, $format='thumb');      
+                    $html .= '  </div>
+                                </div>';
+                    if (checkCapabilities('help:update', $USER->role_id, false)){
+                        $html .='<a class="pull-right"><span class="fa fa-edit padding-top-5 margin-r-5" onclick="formloader(\'wallet\',\'edit\','.$wallet->id.');"></span></a>';
+                    }
+                    if (checkCapabilities('help:add', $USER->role_id, false)){
+                        $html .='<a class="pull-right"><span class="fa fa-trash padding-top-5 margin-r-5" onclick="del(\'wallet\','.$wallet->id.');"></span></a>';
+                    }
+                    
+                    $html .= '  <span class="pull-left"><small>'.$wallet->timerange.'</small></span><div class="caption text-center"><br>
+                                  <h5 class="events-heading text-ellipse"><a href="index.php?action=walletView&wallet='.$wallet->id.'">'.$wallet->title.'</a></h5>
+                                  <p style="overflow: scroll; width: 100%; height: 100px;">'.$wallet->description.'</p>
+                                </div>
+                              </div><!-- /.events-->
+                    </div>';
+        return $html;                                    
+    }
+    public static function wallet_content($wallet_content, $edit){
+       $html  =   '<div class="'.$wallet_content->width_class.' '.$wallet_content->position;
+       if ($edit == true){
+           $html  .=   ' wallet-content"><span class="pull-right" style="position: absolut;" ><button type="button" class"margin-r-10" onclick="formloader(\'wallet_content\',\'edit\','.$wallet_content->id.');"><i class="fa fa-edit"></i></button>'
+                      . '<button type="button"  onclick="del(\'wallet_content\','.$wallet_content->id.');"><i class="fa fa-trash"></i></button></span>';
+       } else {
+            $html  .=  '">';
+       }
+       switch ($wallet_content->context) {
+           case 'content':  $c = new Content();
+                            $c->load('id', $wallet_content->reference_id); 
+                            $html  .= $c->content;
+
+               break;
+
+           default:         $f = new File();
+                            $f->load($wallet_content->reference_id);
+                            
+                            $html  .=Render::file($f);
+               break;
+       }
+       $html .=   '</div>';
+        return $html;  
+    }
+    
+    /* add all possible options (ter and ena) to this objective function*/
+    public static function objective($params){
+       global $USER;
+       $type        = 'terminal_objective'; 
+       $edit        = false;
+       //
+       //$objective 
+       foreach($params as $key => $val) {
+            $$key = $val;
+       }
+       if (!isset($objective->color)){ 
+           $objective->color = '#FFF'; 
+           $text_class       = 'text-black';
+       } else {
+           $text_class       = 'text-white';
+       }
+       $html  =   '<div class="box box-objective ';
+            if (isset($highlight)){
+                if (in_array($type.'_'.$objective->id, $highlight)){
+                    $html  .= 'highlight';
+                }
+            }
+        $html  .= ' style="background: '.$objective->color.'"> 
+                            <div class="boxheader" >';
+            if ($edit){
+                $html  .= '<span class="fa fa-minus pull-right box-sm-icon text-primary" onclick="del('.$type.', '.$objective->id.');"></span>
+                                    <span class="fa fa-edit pull-right box-sm-icon text-primary" onclick="formloader('.$type.',\'edit\', '.$objective->id.');"></span>';
+                if ($orderup){
+                    $html  .= '<span class="fa fa-arrow-up pull-left box-sm-icon text-primary" onclick=\'processor("orderObjective", '.$type.', "'.$objective->id.'", {"order":"down"});\'></span>';
+                }
+                if ($orderdown){
+                    $html  .= '<span class="fa fa-arrow-down pull-left box-sm-icon text-primary" onclick=\'processor("orderObjective", '.$type.', "'.$objective->id.'", {"order":"up"});\'></span>';
+                }
+            }
+        $html  .='  </div>
+                    <div id="'.$type.'_'.$objective->id.'" class="panel-body boxwrap" >
+                        <div class="boxscroll" style="background: '.$objective->color.'">
+                            <div class="boxcontent '.$text_class.'">'.$objective->$type.'</div>
+                        </div>
+                    </div>
+                    <div class="boxfooter" style="background: '.$objective->color.'">';
+                        if ($objective->description != ''){
+                            $html  .='<span class="fa fa-info pull-right box-sm-icon text-primary" style="padding-top:2px; margin-right:3px;" data-toggle="tooltip" title="Beschreibung" onclick="formloader(\'description\', \''.$type.'\', '.$objective->id.');"></span>';
+                        }
+                        if ($edit){
+                            if (checkCapabilities('file:upload', $USER->role_id, false)){
+                                $html  .='<a href="../share/templates/Bootflat-2.0.4/renderer/uploadframe.php?context='.$type.'&ref_id='.$objective->id.'{$tb_param}" class="nyroModal"><span class="fa fa-plus pull-right box-sm-icon"></span></a>';
+                            } 
+                        }
+                        if (checkCapabilities('file:loadMaterial', $USER->role_id, false) AND $objective->files != null){
+                            $html  .='<span class="fa fa-briefcase box-sm-icon text-primary" style="cursor:pointer;" data-toggle="tooltip" title="'.$objective->files.' Materialien verfügbar" onclick="formloader(\'material\',\''.$type.'\','.$objective->id.')"></span>';
+                        } else {
+                            $html  .='<span class="fa fa-briefcase box-sm-icon deactivate"></span>';
+                        }
+        $html  .='    </div>
+                  </div>';
+        return $html;
     }
     
     public static function mail($mail, $box = null){
@@ -799,84 +912,6 @@ class Render {
         return $r;
     }
     
-    /* not used ? --> now available as smarty function Todo: add more config options*/
-    /*public static function moodle_block($params){ 
-        global $USER, $CFG;
-        $width  = 'col-md-4';
-        $status = '';
-        foreach($params['blockdata'] as $key => $val) {
-            $$key = $val;
-        }
-        if ($USER->role_id === $role_id OR $role_id == $CFG->standard_role){
-        $html  = '<div class="'.$width.'">
-                    <div class="box box-primary '.$status.' bottom-buffer-20">
-                        <div class="box-header with-border">
-                              <h3 class="box-title">'.$name.'</h3>
-                              <div class="box-tools pull-right">';
-                                if (checkCapabilities('block:add', $USER->role_id, false)){
-                                    $html  .= '<button class="btn btn-box-tool" data-widget="edit" onclick="formloader(\'block\',\'edit\','.$id.');"><i class="fa fa-edit"></i></button>';
-                                }
-                                $html  .= '<button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                                <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                              </div>
-                        </div><!-- /.box-header -->
-                        <div class="box-body text-center">
-                            <form target="_blank" action="'.$configdata.'" method="post">
-                               <div class="form-group has-feedback">
-                                 <input type="text" name="username" class="form-control" placeholder="Benutzername">
-                                 <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-                               </div>
-                               <div class="form-group has-feedback">
-                                 <input type="password" name="password" class="form-control" placeholder="Passwort">
-                                 <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-                               </div>
-                               <div class="row">
-                                 <div class="col-xs-4">
-                                   <button type="submit" class="btn btn-primary btn-block btn-flat">Anmelden</button>
-                                 </div><!-- /.col -->
-                               </div>
-                             </form>
-                        </div>
-                    </div>
-               </div>';
-            if ($visible == 1){
-                return $html; 
-            }
-        }
-    }*/
-    
-    /* not used ? --> now available as smarty function
-     * public static function html_block($params){ 
-        global $USER,$CFG;
-        $width  = 'col-md-4';
-        $status = '';
-        foreach($params['blockdata'] as $key => $val) {
-            $$key = $val;
-        }
-        if ($USER->role_id === $role_id OR $role_id == $CFG->standard_role){
-            $html  = '<div class="'.$width.'">
-                        <div class="box box-primary '.$status.' bottom-buffer-20">
-                            <div class="box-header with-border">
-                                  <h3 class="box-title">'.$name.'</h3>
-                                  <div class="box-tools pull-right">';
-                                    if (checkCapabilities('block:add', $USER->role_id, false)){
-                                        $html  .= '<button class="btn btn-box-tool" data-widget="edit" onclick="formloader(\'block\',\'edit\','.$id.');"><i class="fa fa-edit"></i></button>';
-                                    }
-                                    $html  .= '<button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                                    <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                                  </div>
-                            </div><!-- /.box-header -->
-                            <div class="box-body">
-                                '.$configdata.'
-                            </div>
-                        </div>
-                   </div>';
-
-            if ($visible == 1){
-                return $html; 
-            }
-        }
-    }*/
     /*Simple table - example see userImport.tpl*/
     public static function table($params){
         $width_class     = 'col-md-6';

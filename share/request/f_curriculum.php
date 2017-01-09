@@ -165,8 +165,8 @@ $schooltypes = new Schooltype();                                                
 $content       .= Form::input_select('schooltype_id', 'Schultyp', $schooltypes->getSchooltypes(), 'schooltype', 'id', $schooltype_id , $error);
 
 $countries = new State($country_id);                                                   //Load country   
-$content  .= Form::input_select('state_id', 'Bundesland/Region', $countries->getStates(), 'state', 'id', $state_id , $error);
 $content  .= Form::input_select('country_id', 'Land', $countries->getCountries(), 'de', 'id', $country_id , $error, 'getValues(\'state\', this.value, \'state_id\');');
+$content  .= Form::input_select('state_id', 'Bundesland/Region', $countries->getStates(), 'state', 'id', $state_id , $error);
 $content  .= Form::input_color(array('id' => 'color', 'rgb' => $color, 'error' => $error));
 $content  .= '</form>';
 $f_content = '';   

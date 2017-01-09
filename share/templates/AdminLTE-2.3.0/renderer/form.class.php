@@ -124,11 +124,11 @@ class Form {
      * @param type $class_right
      * @return string
      */
-    public static function input_select($id, $label, $select_data, $select_label, $select_value, $input, $error, $onchange= '', $placeholder ='---', $class_left='col-sm-3', $class_right='col-sm-9'){
+    public static function input_select($id, $label, $select_data, $select_label, $select_value, $input, $error, $onchange= '', $placeholder ='---', $class_left='col-sm-3', $class_right='col-sm-9', $disabled = ''){
         $form = '<div class="form-group '.validate_msg($error, $id, true).'">
                   <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
                   <div class="'.$class_right.'">
-                      <select id="'.$id.'" name="'.$id.'" class="form-control" onchange="'.$onchange.'">';
+                      <select id="'.$id.'" name="'.$id.'" class="form-control" onchange="'.$onchange.'" '.$disabled.'>';
                        if (count($select_data) > 0){
                              if ($placeholder != '---'){
                                 $form .= '<option>'.$placeholder.'</option>';
@@ -150,6 +150,9 @@ class Form {
                        }
         $form .= '</select> ';
         $form .= '</div></div>';
+        if ($disabled != ''){       
+            $form .= '<input type="hidden" name="'.$id.'" value="'.$input.'" />'; //to get value on submit
+        }
         
         return $form;
     }
@@ -179,7 +182,11 @@ class Form {
                                 } else {
                                     $label  = $value->$select_label;
                                 }
-                                $form .= '<option label="'.$label.'" value="'.$value->$select_value.'"'; if ($input == $value->$select_value){ $form .= 'selected="selected"'; } $form .= '>'.$label.'</option>';
+                                $form .= '<option label="'.strip_tags($label).'" value="'.$value->$select_value.'"'; 
+                                    if (is_array($input)){
+                                        if (in_array($value->$select_value, $input)){ $form .= 'selected="selected"'; } 
+                                    }
+                                $form .= '>'.strip_tags($label).'</option>';
                             }
                         } else {
                            $form .= '<option label="'.$placeholder.'">'.$placeholder.'</option>';

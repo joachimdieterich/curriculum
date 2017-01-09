@@ -76,6 +76,24 @@ switch ($func) {
                                                                 'header'        => SmartyPaginate::getVisibleColumns($id)
                                                                 ));
         break;
+    case "walletView":          $wallet   = new Wallet($id); //todo: layout of pdf not like walletview
+                                $wallet->get('user', $USER->id);
+                                $content  = '<p style="text-align:right; padding-right:15px; font-size:50%;"><img style="float:right; margin-left:5px; width:12px;" alt="" src="../public/assets/images/logo_white_bg.png"  />'.$CFG->app_title.' ('.$CFG->version.') auf '.$CFG->base_url.' </p>';
+                                $content .= '<h4 style="padding-left: 15px;">'.$wallet->title.'</h4>';
+                                $content .= '<p>'.$wallet->description.'</p>';
+                                $i        = false;
+                                error_log(json_encode($wallet->content));
+                                foreach ($wallet->content as $v) {
+                                    if ($i != $v->order_id){
+                                        if ($i != false) {
+                                            $content .= '</div>';
+                                        }
+                                        $content .= '<div class="row">';
+                                        $i = $v->order_id;
+                                    }
+                                    $content .= RENDER::wallet_content($v);
+                                }
+        break;
     default: break;
 }
 

@@ -68,7 +68,14 @@
     margin: 0px !important;
     padding:0px !important;
 }
-
+.separated{
+    border: 1px solid #ddd;
+    border-left-width: 0px;
+    border-right-width: 0px;
+}
+.wallet-content:hover {
+    border:1px dashed #f00;
+}
 /*styles (xs, sm) */
 @media (max-width: 990px) {
 .box {

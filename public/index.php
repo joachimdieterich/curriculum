@@ -43,11 +43,6 @@ try { // Error handling
                    if (isset($_SESSION['username'])){
                        $TEMPLATE->assign('loginname',      $_SESSION['username']);                                      
                    }
-                   $TEMPLATE->assign('stat_users_online',  $USER->usersOnline($USER->institutions));  
-                   $statistics = new Statistic();
-                   $TEMPLATE->assign('stat_acc_all',       $statistics->getAccomplishedObjectives('all'));  
-                   $TEMPLATE->assign('stat_acc_today',     $statistics->getAccomplishedObjectives('today'));  
-                   $TEMPLATE->assign('stat_users_today',   $statistics->getUsersOnline('today'));  
                    detect_reload();   
             break;
     }

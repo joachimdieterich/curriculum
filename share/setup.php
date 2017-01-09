@@ -73,13 +73,16 @@ if (isset($CFG->db_configured)){
     }*/
 }
 
-if (!isset($CFG->settings->template)){ $CFG->settings->template = 'Bootflat-2.0.4'; } // fallback for installation process
+if (!isset($CFG->settings->template)){ 
+    $CFG->settings->template = 'Bootflat-2.0.4'; // fallback for installation process
+} 
 $TEMPLATE->template_dir           = dirname(__FILE__).'/templates/'.$CFG->settings->template.'/';
 $TEMPLATE->compile_dir            = $TEMPLATE->template_dir.'compiled';
 $TEMPLATE->cache_dir              = $TEMPLATE->template_dir.'cached';
 $TEMPLATE->assign('template_path',  $TEMPLATE->template_dir);
-$TEMPLATE->assign('template_url',   $CFG->base_url.'share/templates/'.$CFG->settings->template.'/');
-$TEMPLATE->addPluginsDir(dirname(__FILE__).'/templates/'.$CFG->settings->template.'/plugins/');   //enable individual template smarty plugins
+$CFG->smarty_template_dir_url     = $CFG->base_url.'share/templates/'.$CFG->settings->template.'/';
+$TEMPLATE->assign('template_url',   $CFG->smarty_template_dir_url );
+$TEMPLATE->addPluginsDir(dirname(__FILE__).'/templates/'.$CFG->settings->template.'/plugins/');   //load smarty plugins for actual template
 /*Template render classes*/
 include($TEMPLATE->template_dir .'renderer/form.class.php');                  // Form 
 include($TEMPLATE->template_dir .'renderer/render.class.php');    

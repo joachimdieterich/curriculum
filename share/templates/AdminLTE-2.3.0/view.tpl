@@ -86,7 +86,7 @@
                                             {/if} 
                                         {/if}
                                         {if checkCapabilities('file:loadMaterial', $my_role_id, false) AND $ter->files neq '0'}
-                                            <span class="fa fa-briefcase box-sm-icon text-primary" style="cursor:pointer;" data-toggle="tooltip" title="{$ter->files} Materialien verfügbar" onclick="formloader('material','ter',{$ter->id})"></span> {*<span class="badge label-primary" style="margin-top: -3px;font-size: 8px;line-height: .8"  data-toggle="tooltip" title="Material">{$ter->files}</span>*}
+                                            <span class="fa fa-briefcase box-sm-icon text-primary" style="cursor:pointer;" data-toggle="tooltip" title="{$ter->files} Materialien verfügbar" onclick="formloader('material','terminal_objective',{$ter->id})"></span> {*<span class="badge label-primary" style="margin-top: -3px;font-size: 8px;line-height: .8"  data-toggle="tooltip" title="Material">{$ter->files}</span>*}
                                         {else}
                                             <span class="fa fa-briefcase box-sm-icon deactivate"></span>
                                         {/if}
@@ -165,7 +165,7 @@
                                             {/if}  
                                             <span class="pull-left" style="margin-right:10px;">
                                             {if checkCapabilities('file:loadMaterial', $my_role_id, false) AND $ena->files neq '0'}
-                                                <i class="fa fa-briefcase box-sm-icon text-primary " style="cursor:pointer;" data-toggle="tooltip" title="{$ena->files} Materialien verfügbar" onclick="formloader('material','ena', {$ena->id});"></i> {*<span class="badge label-primary" style="margin-top: -3px;font-size: 8px;line-height: .8"  data-toggle="tooltip" title="Material">{$ena->files}</span>*}
+                                                <i class="fa fa-briefcase box-sm-icon text-primary " style="cursor:pointer;" data-toggle="tooltip" title="{$ena->files} Materialien verfügbar" onclick="formloader('material','enabling_objective', {$ena->id});"></i> {*<span class="badge label-primary" style="margin-top: -3px;font-size: 8px;line-height: .8"  data-toggle="tooltip" title="Material">{$ena->files}</span>*}
                                             {else}
                                                 <span class="fa fa-briefcase box-sm-icon deactivate"></span>
                                             {/if} 

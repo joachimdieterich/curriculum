@@ -41,6 +41,12 @@ $upcoming_events = new Event();
 $TEMPLATE->assign('upcoming_events', $upcoming_events->get('upcoming', $USER->id, '', 5));
 $upcoming_tasks  = new Task();
 $TEMPLATE->assign('upcoming_tasks', $upcoming_tasks->get('upcoming', $USER->id));
+/*get statistic*/
+$TEMPLATE->assign('stat_users_online',  $USER->usersOnline($USER->institutions));  
+$statistics = new Statistic();
+$TEMPLATE->assign('stat_acc_all',       $statistics->getAccomplishedObjectives('all'));  
+$TEMPLATE->assign('stat_acc_today',     $statistics->getAccomplishedObjectives('today'));  
+$TEMPLATE->assign('stat_users_today',   $statistics->getUsersOnline('today'));  
 
 /* Load blocks*/
 $blocks         = new Block();
