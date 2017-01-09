@@ -199,7 +199,7 @@ class Render {
             case '.url':    $content     ='<iframe src="'.$file->filename.'" style="width:100%; height: 600px;"></iframe>';
                 break;
             default:        if (checkCapabilities('plugin:useEmbeddableGoogleDocumentViewer', $USER->role_id, false) AND !is_array(getimagesize($CFG->curriculumdata_root.$file->full_path))){
-                                $content = '<iframe src="http://docs.google.com/gview?url='.$CFG->access_token_url .$file->addFileToken($file->id).'" style="width:100%; height:500px;" frameborder="0"></iframe>';
+                                $content = '<iframe src="http://docs.google.com/gview?url='.$CFG->access_token_url .$file->addFileToken($file->id).'&embedded=true" style="width:100%; height:500px;" frameborder="0"></iframe>';
                             } else {
                                 $content = RENDER::thumb(array($file->id), null, 'div');
                             }
@@ -312,7 +312,7 @@ class Render {
                 case 'thumb':   if ($icon == true){
                                     $html .=   '<i class="'.resolveFileType($file->type).' info-box-icon"></i>';
                                 } else {
-                                    $html .=   '<div class="info-box-icon" style="background: url(\''.$url.'\'); background-size: cover; background-repeat: no-repeat;"></div>';
+                                    $html .=   '<div class="info-box-icon" style="background: url(\''.$url.'\') center; background-size: cover; background-repeat: no-repeat;"></div>';
                                 }
                     break;
                 default:
@@ -347,6 +347,55 @@ class Render {
                         
                     </div>';
         return $html;                                    
+    }
+    
+    public static function wallet_thumb($params){
+        $width_class     = 'col-lg-3 col-md-4 col-sm-6 col-xs-12';
+                
+        foreach($params as $key => $val) {
+            $$key = $val;
+        }
+        global $USER;
+        $html =   '<div class="'.$width_class.'">';
+                    
+                    $html .= '<div class="thumbnail">
+                                <div class="row">
+                                <div class="col-xs-12" >';
+                    $html .= RENDER::thumb($wallet->file_id, null, null, $format='thumb');      
+                    $html .= '  </div>
+                                </div>';
+                    if (checkCapabilities('help:update', $USER->role_id, false)){
+                        $html .='<a class="pull-right"><span class="fa fa-edit padding-top-5 margin-r-5" onclick="formloader(\'wallet\',\'edit\','.$wallet->id.');"></span></a>';
+                    }
+                    if (checkCapabilities('help:add', $USER->role_id, false)){
+                        $html .='<a class="pull-right"><span class="fa fa-trash padding-top-5 margin-r-5" onclick="del(\'wallet\','.$wallet->id.');"></span></a>';
+                    }
+                    
+                    $html .= '  <span class="pull-left"><small>'.$wallet->timerange.'</small></span><div class="caption text-center"><br>
+                                  <h5 class="events-heading text-ellipse"><a href="index.php?action=walletView&wallet='.$wallet->id.'">'.$wallet->title.'</a></h5>
+                                  <p style="overflow: scroll; width: 100%; height: 100px;">'.$wallet->description.'</p>
+                                </div>
+                              </div><!-- /.events-->
+                    </div>';
+        return $html;                                    
+    }
+    public static function wallet_content($wallet_content){
+       $html  =   '<div class="'.$wallet_content->width_class.' '.$wallet_content->position.'">';
+       switch ($wallet_content->context) {
+           case 'content':  $c = new Content();
+                            $c->load('id', $wallet_content->reference_id); 
+                            $html  .= $c->content;
+
+               break;
+
+           default:         $f = new File();
+                            $f->load($wallet_content->reference_id);
+                            
+                            $html  .=Render::file($f);
+               break;
+       }
+       $html .=   '</div>';
+        return $html;  
     }
     
     public static function mail($mail, $box = null){
