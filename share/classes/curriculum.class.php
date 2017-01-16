@@ -208,6 +208,7 @@ class Curriculum {
      */
     public function getCurricula($dependency = null, $id = null, $paginator = ''){
         global $USER;
+        
         $order_param = orderPaginator($paginator, array('curriculum' => 'cu',
                                                         'description' => 'cu',
                                                         'de'         => 'co',
@@ -215,6 +216,9 @@ class Curriculum {
                                                         'schooltype' => 'sc',
                                                         'grade'      => 'gr',
                                                         'subject'    => 'su'));  
+        if ($order_param == ''){
+            $order_param = 'ORDER BY cu.curriculum';
+        }
         $curriculum = array();
         switch ($dependency) {
             case 'group':   $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, fl.filename, su.subject, 
