@@ -36,11 +36,11 @@ $gump                  = new Gump();    /* Validation */
 $_POST                 = $gump->sanitize($_POST);       //sanitize $_POST
 // todo alle Regeln definieren
 $gump->validation_rules(array(
-'title'       => 'required',
-'description' => 'required',   
-'course_id'   => 'required',
-'timerange'   => 'required',
-'objective_id'   => 'required'
+'title'         => 'required',
+'description'   => 'required',   
+'curriculum_id' => 'required',
+'timerange'     => 'required',
+'objective_id'  => 'required'
 ));
 
 $validated_data  = $gump->run($_POST);
@@ -58,7 +58,7 @@ if($validated_data === false) {/* validation failed */
     }
     $wallet->title       = filter_input(INPUT_POST, 'title',       FILTER_SANITIZE_STRING);    
     $wallet->description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);    
-    $wallet->course_id   = $_POST['course_id'];
+    $wallet->curriculum_id   = $_POST['curriculum_id'];
     $wallet->file_id     = filter_input(INPUT_POST, 'file_id',     FILTER_VALIDATE_INT);
     $wallet->subject_id  = filter_input(INPUT_POST, 'subject_id',  FILTER_VALIDATE_INT);
     $wallet->timerange   = filter_input(INPUT_POST, 'timerange',   FILTER_UNSAFE_RAW);

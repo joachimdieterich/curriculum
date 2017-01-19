@@ -29,8 +29,8 @@ global $USER;
 
 $USER       = $_SESSION['USER'];
 $func       = $_GET['func'];
-$object         = file_get_contents("php://input");
-$data           = json_decode($object, true);
+$object     = file_get_contents("php://input");
+$data       = json_decode($object, true);
 if (is_array($data)) {
     foreach ($data as $key => $value){
         $$key = $value;

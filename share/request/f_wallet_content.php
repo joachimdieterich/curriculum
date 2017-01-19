@@ -33,6 +33,7 @@ $id             = null;
 $title          = null; 
 $width_class    = null;
 $position       = null;
+$row_id         = null; 
 $order_id       = null; 
 $html           = null;
 $file_id        = $CFG->standard_avatar_id;
@@ -53,6 +54,7 @@ if (isset($_GET['func'])){
                             $walletc    = new WalletContent();
                             $wc         = $walletc->get('wallet_id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
                             $wallet_id  = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+                            $row_id     = filter_input(INPUT_GET, 'row_id', FILTER_VALIDATE_INT);
                             $order_id   = filter_input(INPUT_GET, 'order_id', FILTER_VALIDATE_INT);
                             
             break;
@@ -61,6 +63,7 @@ if (isset($_GET['func'])){
                             $walletc    = new WalletContent();
                             $wc         = $walletc->get('wallet_id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
                             $wallet_id  = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+                            $row_id     = filter_input(INPUT_GET, 'row_id', FILTER_VALIDATE_INT);
                             $order_id   = filter_input(INPUT_GET, 'order_id', FILTER_VALIDATE_INT);
                             $ct         = new Context();
                             $ct->resolve('context','content');
@@ -108,6 +111,7 @@ if (isset($id)) {                                                               
      $content .= '<input id="id" name="id" type="text" class="invisible" value="'.$id.'">';
 }
 $content .= '<input id="type" name="type" type="text" class="invisible" value="'.$type.'">';
+$content .= '<input id="row_id" name="row_id" type="text" class="invisible" value="'.$row_id.'">';
 $content .= '<input id="order_id" name="order_id" type="text" class="invisible" value="'.$order_id.'">';
 $content .= '<input id="wallet_id" name="wallet_id" type="text" class="invisible" value="'.$wallet_id.'">';
 $content .= Form::input_text('title', 'Titel', $title, $error, 'Titel');
@@ -130,7 +134,7 @@ $content .= Form::input_select('width_class', 'Blockgröße (Breite)', $w, 'labe
 /* Reihe /orderID*/
 $order_obj = new stdClass();
 foreach ($w as $key => $value) {
-    if ($key == 'order_id'){
+    if ($key == 'row_id'){
         $width_obj->label       = $key;
         $width_obj->width_class = $value;
         $w[] = clone $width_obj;

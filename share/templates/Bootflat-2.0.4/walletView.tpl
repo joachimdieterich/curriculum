@@ -24,11 +24,6 @@
                 </form>
             </div>
         </div>
-        {if checkCapabilities('wallet:add', $my_role_id, false)}    
-            <div class="pull-left" style="padding: 0 0 10px 15px;">
-                <button type="button" class="btn btn-default " onclick="formloader('wallet','new');" ><i class="fa fa-plus"></i> Sammelmappe hinzufügen</button>
-            </div>
-        {/if}
     </div>
     <div class="row">
         <div class="col-xs-1">
@@ -77,36 +72,36 @@
                             <div style="display:inline-table">{RENDER::objective(["type" =>"enabling_objective", "objective" => $o])}</div>
                         {/foreach}
                     </div>
-                    {assign var="order_id" value="-1"} 
+                    {assign var="row_id" value="-1"} 
                     {foreach key=wcid item=wc from=$wallet->content}
-                        {if $order_id neq $wc->order_id}
-                            {if $order_id neq "-1"}                                
+                        {if $row_id neq $wc->row_id}
+                            {if $row_id neq "-1"}                                
                             </div><!-- ./row_x-->
                             </div><!-- ./panel-->
                             {/if}
-                            {assign var="order_id" value=$wc->order_id}
+                            {assign var="row_id" value=$wc->row_id}
                             <div class="col-xs-12 panel">
-                                <div id="row_{$wc->order_id}" class="row panel-default">  
+                                <div id="row_{$wc->row_id}" class="row panel-default">  
                                 {if $edit eq true}
-                                  <div class="panel-heading">Block {$wc->order_id+1}
+                                  <div class="panel-heading">Block {$wc->row_id+1}
                                       <div class="box-tools pull-right" >
-                                          <span class="fa fa-file-o margin-r-10" onclick='formloader("wallet_content", "new_file", {$wallet->id}, {["order_id" => $order_id]|@json_encode nofilter});'></span>
-                                          <span class="fa fa-align-left" onclick='formloader("wallet_content", "new_content", {$wallet->id}, {["order_id" => $order_id]|@json_encode nofilter});'></span>
+                                          <span class="fa fa-file-o margin-r-10" onclick='formloader("wallet_content", "new_file", {$wallet->id}, {["row_id" => $row_id]|@json_encode nofilter});'></span>
+                                          <span class="fa fa-align-left" onclick='formloader("wallet_content", "new_content", {$wallet->id}, {["row_id" => $row_id]|@json_encode nofilter});'></span>
                                       </div>
                                   </div>
                               {/if}
                         {/if}
-                            {RENDER::wallet_content($wc,$edit)}
+                        {RENDER::wallet_content($wc,$edit)}
                     {/foreach}
                     {if $edit eq true}
-                        {assign var="order_id" value=$order_id+1}  
-                        <div class="btn btn-default pull-left" onclick='formloader("wallet_content", "new_file", {$wallet->id}, {["order_id" => $order_id]|@json_encode nofilter});'>
+                        {assign var="row_id" value=$row_id+1}  
+                        <div class="btn btn-default pull-left" onclick='formloader("wallet_content", "new_file", {$wallet->id}, {["row_id" => $row_id]|@json_encode nofilter});'>
                             <span class="fa-stack fa">
                                 <i class="fa fa-file-o fa-stack-1x"></i>
                                 <i class="fa fa-plus-circle fa-stack-1x" style="margin-top: -10px; padding-left: 20px;"></i>
                             </span>
                         </div>
-                        <div class="btn btn-default" onclick='formloader("wallet_content", "new_content", {$wallet->id}, {["order_id" => $order_id]|@json_encode nofilter});'>
+                        <div class="btn btn-default" onclick='formloader("wallet_content", "new_content", {$wallet->id}, {["row_id" => $row_id]|@json_encode nofilter});'>
                             <span class="fa-stack fa">
                                 <i class="fa fa-align-left fa-stack-1x"></i>
                                 <i class="fa fa-plus-circle fa-stack-1x" style="margin-top: -10px; padding-left: 20px;"></i>

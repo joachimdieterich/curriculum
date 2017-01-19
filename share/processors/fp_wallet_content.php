@@ -47,8 +47,8 @@ $_POST          = $gump->sanitize($_POST);       //sanitize $_POST
 $gump->validation_rules(array(
 'wallet_id'   => 'required',
 'width_class' => 'required',   
-'position'   => 'required',
-'order_id'   => 'required'
+'position'    => 'required',
+'row_id'      => 'required'
 ));
 
 $validated_data  = $gump->run($_POST);
@@ -90,6 +90,7 @@ if($validated_data === false) {/* validation failed */
     }
     $wallet_content->width_class = filter_input(INPUT_POST, 'width_class', FILTER_SANITIZE_STRING); 
     $wallet_content->position    = filter_input(INPUT_POST, 'position',    FILTER_SANITIZE_STRING); 
+    $wallet_content->row_id      = filter_input(INPUT_POST, 'row_id',    FILTER_VALIDATE_INT);
     $wallet_content->order_id    = filter_input(INPUT_POST, 'order_id',    FILTER_VALIDATE_INT);
     switch ($_POST['func']) {
         case 'new_file':

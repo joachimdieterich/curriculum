@@ -382,10 +382,15 @@ class Render {
         return $html;                                    
     }
     public static function wallet_content($wallet_content, $edit){
-       $html  =   '<div class="'.$wallet_content->width_class.' '.$wallet_content->position;
+       $html  =   '<div style="position:relative;" class="'.$wallet_content->width_class.' '.$wallet_content->position;
        if ($edit == true){
-           $html  .=   ' wallet-content"><span class="pull-right" style="position: absolut;" ><button type="button" class"margin-r-10" onclick="formloader(\'wallet_content\',\'edit\','.$wallet_content->id.');"><i class="fa fa-edit"></i></button>'
-                      . '<button type="button"  onclick="del(\'wallet_content\','.$wallet_content->id.');"><i class="fa fa-trash"></i></button></span>';
+           $html  .=   ' wallet-content"><span style="position: absolute; right:15px;" ><button type="button" onclick="formloader(\'wallet_content\',\'edit\','.$wallet_content->id.');"><i class="fa fa-edit"></i></button>'
+                      . '<button type="button"  onclick="del(\'wallet_content\','.$wallet_content->id.');"><i class="fa fa-trash"></i></button>'
+                      . '<button type="button"  onclick=\'processor("orderWalletContent","left",'.$wallet_content->id.', {"order":"left"});\'><i class="fa fa-arrow-left"></i></button>'
+                   . '<button type="button"  onclick=\'processor("orderWalletContent","right",'.$wallet_content->id.', {"order":"right"});\'><i class="fa fa-arrow-right"></i></button>'
+                   . '<button type="button"  onclick=\'processor("orderWalletContent","up",'.$wallet_content->id.', {"order":"up"});\'><i class="fa fa-arrow-down"></i></button>'
+                      . '<button type="button"  onclick=\'processor("orderWalletContent","down",'.$wallet_content->id.', {"order":"down"});\'><i class="fa fa-arrow-up"></i></button>'
+                      . '</span>';
        } else {
             $html  .=  '">';
        }
@@ -397,8 +402,7 @@ class Render {
                break;
 
            default:         $f = new File();
-                            $f->load($wallet_content->reference_id);
-                            
+                            $f->load($wallet_content->reference_id);     
                             $html  .=Render::file($f);
                break;
        }

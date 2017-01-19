@@ -34,7 +34,7 @@ class Wallet {
     public $timeend;
     public $timerange;
     
-    public $course_id;
+    public $curriculum_id;
     public $user_list_id;
     public $subject_id;
     public $content;
@@ -72,8 +72,8 @@ class Wallet {
         list ($this->timestart, $this->timeend) = explode(' - ',$this->timerange); // copy timestart and timeend from timerage
         $this->timestart = date('Y-m-d G:i:s', strtotime($this->timestart));
         $this->timeend   = date('Y-m-d G:i:s', strtotime($this->timeend));
-        $db = DB::prepare('INSERT INTO wallet (title,description,file_id, course_id, user_list_id, subject_id, timestart, timeend) VALUES (?,?,?,?,?,?,?,?)');
-        if ($db->execute(array($this->title, $this->description, $this->file_id, $this->course_id, $this->user_list_id, $this->subject_id,$this->timestart, $this->timeend))){
+        $db = DB::prepare('INSERT INTO wallet (title,description,file_id, curriculum_id, user_list_id, subject_id, timestart, timeend, creator_id) VALUES (?,?,?,?,?,?,?,?,?)');
+        if ($db->execute(array($this->title, $this->description, $this->file_id, $this->curriculum_id, $this->user_list_id, $this->subject_id,$this->timestart, $this->timeend, $USER->id))){
             $this->id = DB::lastInsertId();  
             /* Remove all old objectives from wallet bevore adding new to prevent ambigious results*/
             $db_del = DB::prepare('DELETE FROM wallet_objectives  
@@ -130,8 +130,8 @@ class Wallet {
         list ($this->timestart, $this->timeend) = explode(' - ',$this->timerange); // copy timestart and timeend from timerage
         $this->timestart = date('Y-m-d G:i:s', strtotime($this->timestart));
         $this->timeend   = date('Y-m-d G:i:s', strtotime($this->timeend));
-        $db = DB::prepare('UPDATE wallet SET title = ?,description = ?,file_id = ?, course_id = ?, user_list_id = ?, subject_id = ?, timestart = ?, timeend = ? WHERE id = ?');
-        if ($db->execute(array($this->title, $this->description, $this->file_id, $this->course_id, $this->user_list_id, $this->subject_id, $this->timestart, $this->timeend, $this->id))){
+        $db = DB::prepare('UPDATE wallet SET title = ?,description = ?,file_id = ?, curriculum_id = ?, user_list_id = ?, subject_id = ?, timestart = ?, timeend = ? WHERE id = ?');
+        if ($db->execute(array($this->title, $this->description, $this->file_id, $this->curriculum_id, $this->user_list_id, $this->subject_id, $this->timestart, $this->timeend, $this->id))){
             /* Remove all old objectives from wallet bevore adding new to prevent ambigious results*/
             $db_del = DB::prepare('DELETE FROM wallet_objectives  
                                                    WHERE wallet_id = ? 
@@ -152,24 +152,25 @@ class Wallet {
     }
     
     public function get($dependency, $id = false){
+        global $USER;
         switch ($dependency) {
             case 'id':      $db = DB::prepare('SELECT wa.id FROM wallet AS wa WHERE wa.id = ?');
-                                $db->execute(array($id));
+                            $db->execute(array($id));
                 break;
-            case 'user':    $db = DB::prepare('SELECT wa.id FROM wallet AS wa WHERE wa.id = ?');
-                            $db->execute(array($this->id));
+            case 'user':    $db = DB::prepare('SELECT wa.id FROM wallet AS wa WHERE wa.id = ? AND wa.creator_id = ?');
+                            $db->execute(array($this->id, $USER->id));
                             $content = new WalletContent();
                             $content->wallet_id = $this->id;
                             $this->content = $content->get('user', $id);
                 break;
             case 'search':  if ($id){
                                 $db = DB::prepare('SELECT wa.id FROM wallet AS wa 
-                                                                WHERE wa.title LIKE ? OR wa.description LIKE ? 
+                                                                WHERE wa.creator_id = ? AND wa.title LIKE ? OR wa.description LIKE ? 
                                                                 ORDER BY wa.title');
-                                $db->execute(array('%'.$id.'%', '%'.$id.'%'));
+                                $db->execute(array($USER->id, '%'.$id.'%', '%'.$id.'%'));
                             } else {
-                                $db = DB::prepare('SELECT wa.id FROM wallet AS wa ORDER BY wa.title');
-                                $db->execute();
+                                $db = DB::prepare('SELECT wa.id FROM wallet AS wa WHERE wa.creator_id = ? ORDER BY wa.title');
+                                $db->execute(array($USER->id));
                             }
                 break;
             

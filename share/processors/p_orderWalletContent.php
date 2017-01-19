@@ -2,10 +2,10 @@
 /** This file is part of curriculum - http://www.joachimdieterich.de
 * 
 * @package core
-* @filename get_objectives.php
-* @copyright 2016 Joachim Dieterich
+* @filename p_orderWalletContent.php
+* @copyright 2017 Joachim Dieterich
 * @author Joachim Dieterich
-* @date 2016.12.28 15:34
+* @date 2017.01.09 12:46
 * @license: 
 *
 * The MIT License (MIT)
@@ -22,21 +22,29 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-$base_url  = dirname(__FILE__).'/../';
+$base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER;
-$USER      = $_SESSION['USER'];
-$cur_id    = filter_input(INPUT_GET, 'dependency_id', FILTER_VALIDATE_INT);
-$ena       = new EnablingObjective();
-$ena->curriculum_id = $cur_id;
-$obj       = $ena->getObjectives('curriculum', $cur_id);
-$html      = '';
-foreach ($obj as $value) {
-    $html  .=  '<option label="'.strip_tags($value->enabling_objective).'" value="'.$value->id.'"'; 
-    if (filter_input(INPUT_GET, 'select_id', FILTER_VALIDATE_INT) == $value->id) { 
-        $html  .= ' selected="selected"';    
-    } 
-    $html  .= '><span>'.strip_tags($value->enabling_objective).'<span></option>';
+
+$USER       = $_SESSION['USER'];
+$func       = $_GET['func'];
+$object     = file_get_contents("php://input");
+$data       = json_decode($object, true);
+if (is_array($data)) {
+    foreach ($data as $key => $value){
+        $$key = $value;
+    }
 }
-echo json_encode(array('html'=>$html));
+switch ($func) {
+    case 'left':    
+    case 'right':  
+    case 'up':
+    case 'down':    $wc = new WalletContent();
+                    $wc->id     = filter_input(INPUT_GET, 'val',  FILTER_VALIDATE_INT);
+                    $wc->load();
+                    $wc->order(filter_input(INPUT_GET, 'order', FILTER_SANITIZE_STRING));
+        break;
+    default:
+        break;
+}

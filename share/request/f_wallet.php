@@ -34,7 +34,8 @@ $title          = null;
 $description    = null; 
 $file_id        = $CFG->standard_avatar_id;
 $event_id       = null;
-$course_id      = null; 
+$curriculum_id  = null; 
+$objectives     = null;
 $user_list_id   = null;
 $subject_id     = null;
 $timerange      = null;
@@ -92,18 +93,15 @@ $content .= '<div class="col-xs-3"></div><div class="col-xs-9">'
                              <i class="fa fa-plus"></i> Bild hinzufügen';
             }
 $content .= '</a></div>';
+$curriculum   = new Curriculum();
+$curriculum    = $curriculum->getCurricula('user', $USER->id);
 
-    $courses = new Course(); 
-    if(checkCapabilities('user:userListComplete', $USER->role_id, false)){
-        $courses = $courses->getCourse('admin', $USER->id);  
-    } else if(checkCapabilities('user:userList', $USER->role_id, false)){
-        $courses = $courses->getCourse('teacher', $USER->id);  // abhängig von USER->my_semester id --> s. Select in objectives.tpl, 
-    }  
-    if ($id == null) {
-        $content .= Form::input_select('course_id', 'Kurs / Klasse', $courses, 'course', 'course_id', $course_id , $error, 'getValues(\'objectives\', this.value, \'objective_id[]\');');
-    } else {
-        $content .= Form::input_select('course_id', 'Kurs / Klasse', $courses, 'course', 'course_id', $course_id , $error, '','', 'col-sm-3', 'col-sm-9', 'disabled="disabled"');
-    }
+if ($id == null) {
+    $curriculum_id = $curriculum[0]->id;        
+    $content .= Form::input_select('curriculum_id', 'Lehrplan', $curriculum, 'curriculum', 'id', $curriculum_id , $error, 'getValues(\'objectives\', this.value, \'objective_id[]\');');
+} else {
+    $content .= Form::input_select('curriculum_id', 'Lehrplan', $curriculum, 'curriculum', 'id', $curriculum_id , $error, '','', 'col-sm-3', 'col-sm-9', 'disabled="disabled"');
+}
 
 /* todo: are subgroups "Schülerauswahl" necessary?*/
 /*$content .= Form::input_select_multiple(array('id' => 'user_list', 'label' => 'Schülerauswahl', 'select_data' => $members, 'select_label' => 'firstname, lastname', 'select_value' => 'id', 'input' => $user_list, 'error' => $error));*/
@@ -112,15 +110,8 @@ $subjects                   = new Subject();
 $subjects->institution_id   = $USER->institutions;
 $content .= Form::input_select('subject_id', 'Fach', $subjects->getSubjects(), 'subject, institution', 'id', $subject_id , $error);
 $content .= Form::input_date(array('id'=>'timerange', 'label' => 'Zeitraum' , 'time' => $timerange, 'error' => $error, 'placeholder' => '', $type = 'date'));
-//$content .= Form::input_select_multiple('objective_id', 'Lernziele', $objectives, 'course', 'course_id', $course_id , $error);
-if ($id == null){
-    $course_id = $courses[0]->course_id;
-}
-$course    = new Course();
-$course->getCourseById($course_id);
-$ena       = new EnablingObjective();
-
-$content .= Form::input_select_multiple(array('id' => 'objective_id', 'label' => 'Kompetenzen/ Lernziele', 'select_data' => $ena->getObjectives('course', $course->curriculum_id, $course->group_id), 'select_label' => 'enabling_objective', 'select_value' => 'id', 'input' => $objectives, 'error' => $error));
+$ena      = new EnablingObjective();
+$content .= Form::input_select_multiple(array('id' => 'objective_id', 'label' => 'Kompetenzen/ Lernziele', 'select_data' => $ena->getObjectives('curriculum', $curriculum_id), 'select_label' => 'enabling_objective', 'select_value' => 'id', 'input' => $objectives, 'error' => $error));
 
 $content .= '</form>';
 $footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_wallet\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>'; 
