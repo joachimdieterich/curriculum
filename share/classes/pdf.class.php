@@ -136,11 +136,11 @@ class Pdf {
                                 global $egl;
                                 if ($egl->accomplished_status_id == '') {$egl->accomplished_status_id = 3;} // wenn Status noch nicht gesetzt wurde
                                 if (in_array($egl->accomplished_status_id, array("01","1","x1","11","21","31")) AND in_array($r[1] , array("01","1","x1","11","21","31"))){
-                                    return '<div '.$r[2].'>- '.strip_tags($egl->enabling_objective).'</div>';
+                                    return '<div '.$r[2].'> '.strip_tags($egl->enabling_objective).'</div>';
                                 } else if (in_array($egl->accomplished_status_id, array("02","2","x2","12","22","32")) AND in_array($r[1] , array("02","2","x2","12","22","32"))){
-                                    return '<div '.$r[2].'>- '.strip_tags($egl->enabling_objective).'</div>';
+                                    return '<div '.$r[2].'> '.strip_tags($egl->enabling_objective).'</div>';
                                 } else if (in_array($egl->accomplished_status_id, array("03","3","x3","13","23","33")) AND in_array($r[1] , array("03","3","x3","13","23","33"))){
-                                    return '<div '.$r[2].'>- '.strip_tags($egl->enabling_objective).'</div>';
+                                    return '<div '.$r[2].'> '.strip_tags($egl->enabling_objective).'</div>';
                                 } 
                             }, $e); 
                             /* <ziel></ziel> auflösen */ 
