@@ -109,7 +109,7 @@ class WalletContent {
     }
     
     public function order($direction){
-        error_log($direction.': '.  json_encode($this));
+        //error_log($direction.': '.  json_encode($this));
         switch ($direction) {
             case 'left':    if ($this->order_id == 0){ 
                                 // order_id-1 may not be smaller than 0

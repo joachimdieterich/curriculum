@@ -507,6 +507,19 @@ function processor(/*proc, func, val, []*/){
     }
 }
 
+function comment(/*func reference_id, context_id, text, (parent_id)*/){
+    if (typeof(arguments[4]) !== 'undefined'){
+        var url = "../share/processors/p_comment.php?func="+ arguments[0] +"&ref_id="+ arguments[1] + "&context_id=" + arguments[2] + "&text=" + arguments[3] +  "&parent_id=" + arguments[4];
+    } else {
+        var url = "../share/processors/p_comment.php?func="+ arguments[0] +"&ref_id="+ arguments[1] + "&context_id=" + arguments[2] + "&text=" + arguments[3];
+    }
+    req = XMLobject();
+    if(req) {  
+        req.onreadystatechange =  window.location.reload();
+        req.open("GET", url, false); //false --> important for print function
+        req.send(null);
+    }
+}
 /**
  * delete a dataset in a db-table
  **/

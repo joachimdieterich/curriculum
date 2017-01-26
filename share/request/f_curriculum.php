@@ -90,12 +90,12 @@ if (isset($_SESSION['FORM'])){
 
 $content ='';
 if (!isset($edit)){ // Tabs ausblenden wenn im Edit-Modus
-$content .= '<div class="nav-tabs-custom">';
-$content .= '<ul class="nav nav-tabs">
-        <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false" onclick="toggle([\'form_curriculum\', \'bAdd\'], [\'tab_1\']);">Lehrplan hinzufügen</a></li>';
-        if (checkCapabilities('curriculum:import', $USER->role_id, false)){
-          $content .= '<li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="true" onclick="toggle([\'tab_1\'], [\'form_curriculum\', \'bAdd\']);">Lehrplan importieren</a></li>';
-        }
+$content .= '<div class="nav-tabs-custom"> 
+              <ul class="nav nav-tabs">
+                <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false" onclick="toggle([\'form_curriculum\', \'bAdd\'], [\'tab_1\']);">Lehrplan hinzufügen</a></li>';
+                if (checkCapabilities('curriculum:import', $USER->role_id, false)){
+                  $content .= '<li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="true" onclick="toggle([\'tab_1\'], [\'form_curriculum\', \'bAdd\']);">Lehrplan importieren</a></li>';
+                }
 $content .='</ul>';
 
 $content .= '<div class="tab-content">

@@ -39,6 +39,13 @@ class Wallet {
     public $subject_id;
     public $content;
     public $objectives;
+    public $creator_id;
+    
+    /*sharing*/
+    public $permission;
+    
+    /*commnts*/
+    public $comments; //array of comment object
     
     public function __construct($id = null) {
         if ($id != null){ 
@@ -59,6 +66,19 @@ class Wallet {
             }
             $this->timerange = date('d.m.Y G:i', strtotime($this->timestart)) .' - '. date('d.m.Y G:i', strtotime($result->timeend));
             $this->objectives = $this->getObjectives();
+            if ($this->creator_id != $USER->id){ //get permissions
+                $db1 = DB::prepare('SELECT ws.* FROM wallet_sharing AS ws, context AS co
+                                                            WHERE co.context = ? 
+                                                            AND co.context_id = ws.context_id 
+                                                            AND ws.reference_id = ?
+                                                            AND ws.wallet_id = ?');
+                $db1->execute(array('userFiles',$USER->id, $this->id));
+                $db1_result = $db1->fetchObject();
+                $this->permission = $db1_result->permission;
+            } else { // owner has full access
+                $this->permission = 2;
+            }
+            
             return true;                                                        
         } else { 
             return false; 
@@ -151,7 +171,7 @@ class Wallet {
         return $db->execute(array($this->id));
     }
     
-    public function get($dependency, $id = false){
+    public function get($dependency, $id = false, $context = null){
         global $USER;
         switch ($dependency) {
             case 'id':      $db = DB::prepare('SELECT wa.id FROM wallet AS wa WHERE wa.id = ?');
@@ -162,6 +182,10 @@ class Wallet {
                             $content = new WalletContent();
                             $content->wallet_id = $this->id;
                             $this->content = $content->get('user', $id);
+                            $cm = new Comment();
+                            $cm->reference_id = $this->id;
+                            $cm->context_id   = 18; //todo !!!
+                            $this->comments   = $cm->get('reference');
                 break;
             case 'search':  if ($id){
                                 $db = DB::prepare('SELECT wa.id FROM wallet AS wa 
@@ -173,6 +197,14 @@ class Wallet {
                                 $db->execute(array($USER->id));
                             }
                 break;
+            case 'shared':  $db = DB::prepare('SELECT wa.id FROM wallet AS wa, wallet_sharing AS ws, context AS co
+                                                            WHERE co.context = ? 
+                                                            AND co.context_id = ws.context_id 
+                                                            AND wa.id = ws.wallet_id
+                                                            AND ws.reference_id = ?
+                                                            ');
+                            $db->execute(array($context, $id));
+                break;
             
             default:
                 break;
@@ -183,7 +215,7 @@ class Wallet {
             $this->load($result->id); 
             $r[]  = clone $this;
         } 
-
+        
         return $r;     
     }
 }

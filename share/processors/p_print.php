@@ -82,7 +82,7 @@ switch ($func) {
                                 $content .= '<h4 style="padding-left: 15px;">'.$wallet->title.'</h4>';
                                 $content .= '<p>'.$wallet->description.'</p>';
                                 $i        = false;
-                                error_log(json_encode($wallet->content));
+                                
                                 foreach ($wallet->content as $v) {
                                     if ($i != $v->order_id){
                                         if ($i != false) {

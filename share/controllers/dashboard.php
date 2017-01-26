@@ -23,7 +23,7 @@
 */
 global $USER, $PAGE, $TEMPLATE, $LOG;
 $TEMPLATE->assign('page_title', 'Startseite'); 
-$TEMPLATE->assign('breadcrumb',  array('Dashboard' => 'index.php?action=dashboard'));
+$TEMPLATE->assign('breadcrumb',  array('Startseite' => 'index.php?action=dashboard'));
 
 $acc_obj        = new EnablingObjective();
 $TEMPLATE->assign('enabledObjectives', $acc_obj->getObjectiveStatusChanges()); /* Load last accomplished Objectives */

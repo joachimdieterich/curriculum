@@ -24,12 +24,18 @@
                 </form>
             </div>
         </div>
-        {if checkCapabilities('wallet:add', $my_role_id, false)}    
-            <div class="pull-left" style="padding: 0 0 10px 15px;">
-                <button type="button" class="btn btn-default " onclick="formloader('wallet','new')" ><i class="fa fa-plus"></i> Sammelmappe hinzufügen</button>
+        
+        <div class="pull-left" style="padding: 0 0 10px 15px;">
+            <div class="btn-group">
+                {if checkCapabilities('wallet:add', $my_role_id, false)}                        
+                    <button type="button" class="btn btn-default " onclick="formloader('wallet','new')" ><i class="fa fa-plus"></i> Neue Sammelmappe</button>
+                {/if}
+                <button type="button" class="btn btn-default " onclick="location.href='index.php?action=wallet';" ><i class="fa fa-user"></i> Meine Sammelmappen </button>
+                <button type="button" class="btn btn-default " onclick="location.href='index.php?action=wallet&view=shared';" ><i class="fa fa-share-alt"></i> Freigaben</button>
             </div>
-        {/if}
+        </div>
     </div>
+    
     <div class="row">
         {foreach key=walletid item=w from=$wallet}
             {RENDER::wallet_thumb(['wallet'=>$w])}

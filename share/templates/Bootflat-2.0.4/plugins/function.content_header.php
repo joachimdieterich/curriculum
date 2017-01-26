@@ -39,10 +39,12 @@ function smarty_function_content_header($params) {
                 $_html_result .= '<li><a href="index.php?action=dashboard">Home</a></li>';
                 foreach ($pages as $key =>$value){
                     $_html_result .= '<li ';
-                    if ($value == $p_title){
+                    if ($key == $p_title){
                         $_html_result .= 'class="active"';
+                        $_html_result .= '><span>'.$key.'</span></li>';
+                    } else {
+                        $_html_result .= '><a href="'.$value.'">'.$key.'</a></li>';
                     }
-                    $_html_result .= '><span>'.$key.'</span></li>';
                     
                 }
                 if (isset($help)){

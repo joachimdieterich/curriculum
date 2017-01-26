@@ -49,7 +49,7 @@ class Render {
             $green     = 'fa fa-circle-o';
             $orange    = 'fa fa-circle-o';
             $white     = 'fa fa-circle-o';
-            //error_log($ena->accomplished_status_id);
+            
             switch (true) {
                 case $ena->accomplished_status_id === 'x0': $red    = 'fa fa-check-circle-o';
                            $bg     = 'bg-red';
@@ -363,21 +363,32 @@ class Render {
                     $html .= '<div class="thumbnail">
                                 <div class="row">
                                 <div class="col-xs-12" >';
+                                if ($wallet->creator_id == $USER->id){ //only owner can edit and delete wallet(settings) 
+                                $html .= '<span style="position: absolute; right:15px;" >';
+                                    if (checkCapabilities('help:add', $USER->role_id, false)){
+                                        $html .= '<button type="button"  onclick="formloader(\'wallet\',\'edit\','.$wallet->id.');"><i class="fa fa-edit"></i></button>';
+                                    }
+                                    if (checkCapabilities('help:add', $USER->role_id, false)){
+                                        $html .= '<button type="button"  onclick="del(\'wallet\','.$wallet->id.');"><i class="fa fa-trash"></i></button>';
+                                    }
+                                    $html .= '</span>';
+                                }
                     $html .= RENDER::thumb($wallet->file_id, null, null, $format='thumb');      
                     $html .= '  </div>
                                 </div>';
-                    if (checkCapabilities('help:update', $USER->role_id, false)){
-                        $html .='<a class="pull-right"><span class="fa fa-edit padding-top-5 margin-r-5" onclick="formloader(\'wallet\',\'edit\','.$wallet->id.');"></span></a>';
+                    switch ($wallet->permission) {
+                        case '0': $icon = 'eye';            $tt = 'lesezugriff';    break;
+                        case '1': $icon = 'commenting-o';   $tt = 'kommentierbar';  break;
+                        case '2': $icon = 'pencil';         $tt = 'schreibzugriff'; break;
+                        default: break;
                     }
-                    if (checkCapabilities('help:add', $USER->role_id, false)){
-                        $html .='<a class="pull-right"><span class="fa fa-trash padding-top-5 margin-r-5" onclick="del(\'wallet\','.$wallet->id.');"></span></a>';
-                    }
-                    
-                    $html .= '  <span class="pull-left"><small>'.$wallet->timerange.'</small></span><div class="caption text-center"><br>
+                    $html .='<span class="fa fa-'.$icon.' padding-top-5 margin-r-5 pull-right"  data-toggle="tooltip" title="'.$tt.'"></span>';
+                    $html .= '  <div class="caption text-center">
                                   <h5 class="events-heading text-ellipse"><a href="index.php?action=walletView&wallet='.$wallet->id.'">'.$wallet->title.'</a></h5>
+                                  <small>'.$wallet->timerange.'</small>    
                                   <p style="overflow: scroll; width: 100%; height: 100px;">'.$wallet->description.'</p>
                                 </div>
-                              </div><!-- /.events-->
+                              </div>
                     </div>';
         return $html;                                    
     }
@@ -409,7 +420,62 @@ class Render {
        $html .=   '</div>';
         return $html;  
     }
+    public static function comments($params){
+        global $CFG;
+        foreach($params as $key => $val) {
+             $$key = $val;
+        }
+        $html = '<ul class="media-list">';
+        foreach ($comments as $cm) {
+            $u = new User();
+            $u->load('id', $cm->creator_id, false);
+            $size = '48';
+
+            $html .=  '<li class="media"><a class="pull-left" href="#" ><div style="height:'.$size.'px;width:'.$size.'px;background: url('.$CFG->access_id_url.$u->avatar_id.') center right;background-size: cover; background-repeat: no-repeat;"></div></a>
+                      <div class="media-body" >
+                          <h4 class="media-heading">'.$u->username.' <small class="text-black"> '.$cm->creation_time.'</small></h4>
+                              <p class="media-heading">'.$cm->text.'<br><a id="answer_'.$cm->id.'" onclick="toggle([\'comment_'.$cm->id.'\', \'cmbtn_'.$cm->id.'\'], [\'answer_'.$cm->id.'\'])">Antworten</a></p>';
+                              $html .='<textarea id="comment_'.$cm->id.'" name="comment"  class="hidden" style="width:100%;"></textarea>
+                                        <button id="cmbtn_'.$cm->id.'" type="submit" class="btn btn-primary pull-right hidden" onclick="comment(\'new\','.$cm->reference_id.', '.$cm->context_id.', document.getElementById(\'comment_'.$cm->id.'\').value, '.$cm->id.');"><i class="fa fa-commenting-o margin-r-10"></i>Kommentar abschicken</button>';
+
+            /* sub comments */
+            if (!empty($cm->comment)){
+              $html .= RENDER::sub_comments(array('comment' => $cm->comment));
+            }
+            $html .= '</li><hr class="dashed">';
+        }
+        $html .=  '</ul>';
+
+        return $html;
+    }
     
+    public static function sub_comments($params){
+        global $CFG;
+        foreach($params as $key => $val) {
+             $$key = $val;
+        }
+        
+        $html = '';
+        foreach ($comment as $cm){
+            $u = new User();
+            $u->load('id', $cm->creator_id, false);
+            $size = '32';
+            $html .=  '<div class="media"><a class="pull-left" href="#" ><div style="height:'.$size.'px;width:'.$size.'px;background: url('.$CFG->access_id_url.$u->avatar_id.') center right;background-size: cover; background-repeat: no-repeat;"></div></a>
+                        <div class="media-body" >
+                            <h4 class="media-heading">'.$u->username.' <small class="text-black"> '.$cm->creation_time.'</small></h4>
+                                <p class="media-heading">'.$cm->text.'<br><a id="answer_'.$cm->id.'" onclick="toggle([\'comment_'.$cm->id.'\', \'cmbtn_'.$cm->id.'\'], [\'answer_'.$cm->id.'\'])">Antworten</a></p>';
+                                $html .='<textarea id="comment_'.$cm->id.'" name="comment"  class="hidden" style="width:100%;"></textarea>
+                                        <button id="cmbtn_'.$cm->id.'" type="submit" class="btn btn-primary pull-right hidden" onclick="comment(\'new\','.$cm->reference_id.', '.$cm->context_id.', document.getElementById(\'comment_'.$cm->id.'\').value, '.$cm->id.');"><i class="fa fa-commenting-o margin-r-10"></i>Kommentar abschicken</button>';
+                                if (!empty($cm->comment)){
+                                    $html .= RENDER::sub_comments(array('comment' => $cm->comment));
+                                }                         
+            $html .=  ' </div></div>';
+
+                
+        }
+        return $html;
+        
+    }
     /* add all possible options (ter and ena) to this objective function*/
     public static function objective($params){
        global $USER;

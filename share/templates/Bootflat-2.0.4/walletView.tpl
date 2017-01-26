@@ -26,6 +26,7 @@
         </div>
     </div>
     <div class="row">
+        {*
         <div class="col-xs-1">
             <ul class="nav nav-stacked affix panel" id="sidebar">
                 <li><a onclick='formloader("wallet_content", "new_file", {$wallet->id});'>  
@@ -46,24 +47,30 @@
                 </li>
               </ul>
         </div>
-        <div class="col-xs-11">
+        *}
+        <div class="col-xs-12">
             <div class="panel">
                 <div class="panel-heading">
-                    <div class="pull-right">
-                        <div class="btn-group">
-                          <button type="button" class="btn btn-default"><i class="fa fa-share-alt"></i></button>
-                          </div>
-                    </div>
-                    <div class="pull-right margin-r-10">
-                        {if $edit eq true}
-                            <a href="{removeUrlParameter($page_url, 'edit')}"><button type="button" class="btn btn-default"><i class="fa fa-check"></i></button></a>
-                        {else}
-                            <a href="{$page_url}&edit=true"><button type="button" class="btn btn-default"><i class="fa fa-edit"></i></button></a>
-                        {/if}
-                        <button type="button" class="btn btn-default"><i class="fa fa-trash"></i></button>  
-                    </div>
+                    {if $wallet->permission eq 2}
+                        <div class="pull-right">
+                            <div class="btn-group">
+                              <button type="button" class="btn btn-default" onclick="formloader('wallet_sharing','edit',{$wallet->id});"><i class="fa fa-share-alt"></i></button>
+                              </div>
+                        </div>
+                    {/if}
+                    {if $wallet->creator_id eq $my_id}
+                        <div class="pull-right margin-r-10">
+                            {if $edit eq true}
+                                <a href="{removeUrlParameter($page_url, 'edit')}"><button type="button" class="btn btn-default"><i class="fa fa-check"></i></button></a>
+                            {else}
+                                <a href="{$page_url}&edit=true"><button type="button" class="btn btn-default"><i class="fa fa-edit"></i></button></a>
+                            {/if}
+                            <button type="button" class="btn btn-default"><i class="fa fa-trash"></i></button>  
+                        </div>
+                    {/if}
                     <strong>{$wallet->title}</strong><br>{$wallet->timerange}
                 </div>
+                
                 <div class="panel-body">
                     <div class="alert alert-info">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -84,7 +91,7 @@
                                 <div id="row_{$wc->row_id}" class="row panel-default">  
                                 {if $edit eq true}
                                   <div class="panel-heading">Block {$wc->row_id+1}
-                                      <div class="box-tools pull-right" >
+                                      <div class="box-tools pull-right" > Elemente hinzufügen
                                           <span class="fa fa-file-o margin-r-10" onclick='formloader("wallet_content", "new_file", {$wallet->id}, {["row_id" => $row_id]|@json_encode nofilter});'></span>
                                           <span class="fa fa-align-left" onclick='formloader("wallet_content", "new_content", {$wallet->id}, {["row_id" => $row_id]|@json_encode nofilter});'></span>
                                       </div>
@@ -93,25 +100,39 @@
                         {/if}
                         {RENDER::wallet_content($wc,$edit)}
                     {/foreach}
-                    {if $edit eq true}
-                        {assign var="row_id" value=$row_id+1}  
-                        <div class="btn btn-default pull-left" onclick='formloader("wallet_content", "new_file", {$wallet->id}, {["row_id" => $row_id]|@json_encode nofilter});'>
-                            <span class="fa-stack fa">
-                                <i class="fa fa-file-o fa-stack-1x"></i>
-                                <i class="fa fa-plus-circle fa-stack-1x" style="margin-top: -10px; padding-left: 20px;"></i>
-                            </span>
-                        </div>
-                        <div class="btn btn-default" onclick='formloader("wallet_content", "new_content", {$wallet->id}, {["row_id" => $row_id]|@json_encode nofilter});'>
-                            <span class="fa-stack fa">
-                                <i class="fa fa-align-left fa-stack-1x"></i>
-                                <i class="fa fa-plus-circle fa-stack-1x" style="margin-top: -10px; padding-left: 20px;"></i>
-                            </span>
+                    {if !empty($wallet->content)}{* if bocks exist: close last block if *}
+                            </div>
                         </div>
                     {/if}
-                    </div>        
-            </div>
+                    
+                    {if $edit eq true}
+                        {assign var="row_id" value=$row_id+1} 
+                        {if $edit eq true}
+                            <div class="col-xs-12 panel">
+                                <div id="row_{$wc->row_id}" class="row panel-default"> 
+                                <div class="panel-heading">Block {$row_id+1}
+                                    <div class="box-tools pull-right" > Elemente hinzufügen
+                                        <span class="fa fa-file-o margin-r-10" onclick='formloader("wallet_content", "new_file", {$wallet->id}, {["row_id" => $row_id]|@json_encode nofilter});'></span>
+                                        <span class="fa fa-align-left" onclick='formloader("wallet_content", "new_content", {$wallet->id}, {["row_id" => $row_id]|@json_encode nofilter});'></span>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        {/if}
+                    {/if}
+                
+                    <h4>Kommentare</h4>
+                    {RENDER::comments(["comments" => $wallet->comments])}
+
+                    {if $wallet->permission > 0}
+                        Neuen Kommentar hinzufügen
+                        <textarea id="comment" name="comment"  style="width:100%;"></textarea>
+                        <button type="submit" class="btn btn-primary pull-right" onclick="comment('new',{$wallet->id}, 18, document.getElementById('comment').value);"><i class="fa fa-commenting-o margin-r-10"></i>Kommentar abschicken</button>
+                    {/if}
+                
+                </div>
+            </div>        
         </div>
-        
     </div>
 </section>
 {/block}

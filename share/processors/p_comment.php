@@ -2,10 +2,10 @@
 /** This file is part of curriculum - http://www.joachimdieterich.de
 * 
 * @package core
-* @filename help.php
-* @copyright 2016 Joachim Dieterich
+* @filename p_comment.php
+* @copyright 2017 Joachim Dieterich
 * @author Joachim Dieterich
-* @date 2016.12.28 05:25
+* @date 2017.01.24 16:07
 * @license: 
 *
 * The MIT License (MIT)
@@ -22,26 +22,28 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-global $PAGE, $USER, $TEMPLATE;
-$TEMPLATE->assign('breadcrumb',  array('Sammelmappe' => 'index.php?action=wallet'));
-$TEMPLATE->assign('page_title', 'Sammelmappe');  
-$search = false;
-if (isset($_POST) ){
-    if (isset($_POST['search'])){
-        $search = filter_input(INPUT_POST, 'search', FILTER_SANITIZE_STRING);
-        $TEMPLATE->assign('wallet_reset', true); 
-    }
-}
-if (isset($_GET['view'])){
-    switch ($_GET['view']) {
-        case 'shared':  $wallet   = new Wallet();
-                        $TEMPLATE->assign('wallet', $wallet->get('shared', $USER->id, 'userFiles')); 
-            break;
+$base_url   = dirname(__FILE__).'/../';
+include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
+include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
+global $USER;
 
-        default:
-            break;
-    }
-} else {
-    $wallet   = new Wallet();
-    $TEMPLATE->assign('wallet', $wallet->get('search', $search));   
+$USER       = $_SESSION['USER'];
+$func       = $_GET['func'];
+
+switch ($func) {
+    case 'new':     $cm = new Comment();
+                    $cm->text           = filter_input(INPUT_GET, 'text',        FILTER_SANITIZE_STRING);
+                    $cm->reference_id   = filter_input(INPUT_GET, 'ref_id',         FILTER_VALIDATE_INT);
+                    $cm->context_id     = filter_input(INPUT_GET, 'context_id',  FILTER_VALIDATE_INT);
+                    if (isset($_GET['parent_id'])){
+                        $cm->parent_id  = filter_input(INPUT_GET, 'parent_id',  FILTER_VALIDATE_INT);
+                    } else {
+                        $cm->parent_id  = null;
+                    }
+                    $cm->add();
+    break;
+    case 'update':  
+        break;
+    default:
+        break;
 }

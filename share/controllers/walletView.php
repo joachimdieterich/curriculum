@@ -25,7 +25,7 @@
 
 global $CFG, $USER, $PAGE, $TEMPLATE, $INSTITUTION;
 $TEMPLATE->assign('breadcrumb',  array('Sammelmappe' => 'index.php?action=wallet', 'Ansicht' => 'index.php?action=walletView'));
-$TEMPLATE->assign('page_title', 'Sammelmappe Ansicht');  
+$TEMPLATE->assign('page_title', 'Ansicht');  
 if (isset($_GET['edit'])){ $TEMPLATE->assign('edit', true); } else { $TEMPLATE->assign('edit', false); }
 /******************************************************************************
  * END POST / GET
@@ -33,6 +33,7 @@ if (isset($_GET['edit'])){ $TEMPLATE->assign('edit', true); } else { $TEMPLATE->
 
 $wallet   = new Wallet(filter_input(INPUT_GET, 'wallet', FILTER_VALIDATE_INT));
 $wallet->get('user', $USER->id);
+//error_log(json_encode($wallet->comments));
 $TEMPLATE->assign('wallet', $wallet); 
 
 $ena = new EnablingObjective;
