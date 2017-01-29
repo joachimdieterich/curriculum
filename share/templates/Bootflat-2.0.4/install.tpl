@@ -55,7 +55,9 @@
                         {Form::input_text('db_user', 'DB User', $db_user, $error, 'database username')}
                         {Form::input_text('db_password', 'DB Password', $db_password, $error, 'database password', 'password')}
                         {Form::input_text('db_name', 'DB Name', $db_name, $error, 'database name')}
-                        {Form::input_text('dataroot', 'Datenpfad', $dataroot, $error, 'e.g. /var/www/dataroot/ (folder should be outside of htmlroot)')}
+                        {Form::input_text('server_name', 'Domain', $server_name, $error, 'www.curriculumonline.de')}
+                        {Form::input_text('app_url', 'URL-Pfad', $app_url, $error, 'curriculum')}
+                        {Form::input_text('data_root', 'Datenpfad', $data_root, $error, 'e.g. /var/www/dataroot/ (folder should be outside of htmlroot)')}
                         <button type='submit' name='step_1' value='' class="btn btn-default pull-right">
                                 <span class="fa fa-arrow-right" aria-hidden="true"></span> weiter
                         </button>
@@ -64,12 +66,10 @@
 
                 {if $step == 2}
                     {*Serverdaten*}
-                    <p><h3>Titel und URL</h3></p>
+                    <p><h3>Webseiten-Titel</h3></p>
                     <br>
                     <div class="form-horizontal col-xs-8">
                         {Form::input_text('app_title', 'Name der Seite', $app_title, $error, 'curriculum')}
-                        {Form::input_text('app_url', 'URL-Pfad', $app_url, $error, 'curriculum')}
-                        {Form::input_text('app_path', 'Pfad zum Datenverzeichnis', $app_path, $error, '/var/www/vhosts/meinedomain.de/curriculumdata')}
                         {*<p><label>Beispieldaten installieren</label><input class="centervertical" type="checkbox" name="demo"/></p>{*not yet available - dedication incorrect*}
                         <button type='submit' name='step_2' value='' class="btn btn-default pull-right">
                                 <span class="fa fa-arrow-right" aria-hidden="true"></span> weiter
@@ -78,75 +78,57 @@
                 {/if}
 
                 {if $step == 3}
-                    {*Serverdaten*}
-                    <p>&nbsp;</p>
-                    <p><h3>Institution</h3></p>
-                    <input type='hidden' name='demo' id='demo' {if isset($demo)}value='{$demo}'{/if} />   
-                    <p><label>Institution / Schule*: </label><input class='inputlarge' type='text' name='institution' id='institution' {if isset($institution)}value='{$institution}'{/if} /></p> 
-                    {*validate_msg field='institution'*}
-                    <p><label>Beschreibung*: </label><input class='inputlarge' type='institution_description' name='institution_description' {if isset($institution_description)}value='{$institution_description}'{/if}/></p>
-                    {*validate_msg field='institution_description'*}
-                    <p id="schooltype_list"><label>Schultyp: </label><select name="schooltype_id" >
-                        {section name=res loop=$schooltype}  
-                            <option value={$schooltype[res]->id}>{$schooltype[res]->schooltype}</option>
-                        {/section}
-                        </select></p>  
-                    <p><label>Anderer Schultyp... </label><input class="centervertical" type="checkbox" name='btn_newSchooltype' value='Neuen Schultyp anlegen' onclick="checkbox_addForm(this.checked, 'inline', 'newSchooltype', 'schooltype_list')"/></p>
-                    <div id="newSchooltype" style="display:none;">
-                        <p><label>Schultyp: </label><input class='inputlarge' type='text' name='new_schooltype' id='schooltype_id' {if isset($new_schooltype)}value='{$new_schooltype}'{/if} /></p> 
-                        <p><label>Beschreibung: </label><input class='inputlarge' type='text' name='schooltype_description' {if isset($schooltype_description)}value='{$schooltype_description}'{/if}/></p>
+                    {*Institution*}
+                    <p><h3>Institution</h3></p><br>
+                    <div class="form-horizontal col-xs-8">
+                        {Form::input_text('institution', 'Institution / Schule', $institution, $error, 'Name der Institution/Schule')}
+                        {Form::input_text('description', 'Beschreibung', $description, $error, 'z.B. Adresse')}
+                        {Form::input_select('schooltype_id', 'Schulart', $schooltypes, 'schooltype', 'id', $schooltype_id , $error)}
+                        {*Form::input_checkbox('btn_newSchooltype', 'Neuen Schultyp anlegen', $btn_newSchooltype, $error, 'checkbox', "toggle(['newSchooltype'], ['schooltype_id']);")*}
+                        <div id="newSchooltype" {if !$new_schooltype} class="hidden"{/if}>
+                            {Form::input_text('newSchool', 'Neue Schulart', $new_schooltype, $error, 'z. B. Medienzentrum Landau')}
+                            {Form::input_text('schooltype_description', 'Beschreibung', $schooltype_description, $error, 'Beschreibung der neuen Schulart')}
+                        </div>
+                        {Form::input_select('country_id', 'Land', $countries, 'de', 'id', $country_id , $error, "getValues('state', this.value, 'state_id');")}
+                        {Form::input_select('state_id', 'Bundesland/Region', $states, 'state', 'id', $state_id , $error)}
+                        <button type='submit' name='step_3' value='' class="btn btn-default pull-right">
+                                <span class="fa fa-arrow-right" aria-hidden="true"></span> weiter
+                        </button>
                     </div>
-                    <p><label>Land: </label><select name="country" onchange="loadStates(this.value);">
-                        {section name=res loop=$countries}  
-                            <option label={$countries[res]->de} value={$countries[res]->id}>{$countries[res]->de}</option>
-                        {/section}
-                    </select></p>
-
-                    <p id="states">
-
-                    </p>
-                    <p><label>&nbsp;</label><input type='submit' name='step_3' value='weiter' /></p>
                 {/if}
 
                 {if $step == 4}
-                {*Admindaten*}
-                <p>&nbsp;</p>
-                <p><h3>Administrator</h3></p>
-                <input type='hidden' name='institution_id' id='institution_id' {if isset($institution_id)}value='{$institution_id}'{/if} />   
-                <p><label>Benutzername*:</label><input id='username' name='username' {if isset($username)}value='{$username}'{/if} /></p>
-                {*validate_msg field='username'*}
-                <p><label>Vorname*: </label><input name='firstname'{if isset($firstname)}value='{$firstname}'{/if}/></p>
-                {*validate_msg field='firstname'*}
-                <p><label>Nachname*: </label><input name='lastname'{if isset($lastname)}value='{$lastname}'{/if}/></p>
-                {*validate_msg field='lastname'*}
-                <p><label>Email*: </label><input name='email'{if isset($email)}value='{$email}'{/if}/></p>
-                {*validate_msg field='email'*}
-                <p><label>PLZ*: </label><input name='postalcode'{if isset($postalcode)}value='{$postalcode}'{/if}/></p>
-                {*validate_msg field='postalcode'*}
-                <p><label>Ort*: </label><input name='city' {if isset($city)}value='{$city}'{/if}/></p>
-                {*validate_msg field='city'*}
-                <p><label>Land: </label><select name='country' onchange="loadStates(this.value);">
-                        {section name=res loop=$countries}  
-                            <option label={$countries[res]->de} value={$countries[res]->id}>{$countries[res]->de}</option>
-                        {/section}
-                    </select></p>
-
-                    <p id="states">
-                    </p>
-                <p><label>Passwort*: </label></td><td><input type="password" name='password' {if isset($password)}value='{$password}'{/if}/></p>                                       
-                {*validate_msg field='password'*}
-                    <p><label>&nbsp;</label><input type='submit' name='step_4' value='weiter' /></p>
+                    {*Admindaten*}
+                    <p><h3>Administrator</h3></p><br>
+                    <div class="form-horizontal col-xs-8">
+                        <input type='hidden' name='institution_id' id='institution_id' {if isset($institution_id)}value='{$institution_id}'{/if} />   
+                        {Form::input_text('username', 'Benutzername', $username, $error, 'admin')}
+                        {Form::input_text('firstname', 'Vorname', $firstname, $error, 'Max')}
+                        {Form::input_text('lastname', 'Nachname', $lastname, $error, 'Mustermann')}
+                        {Form::input_text('email', 'Email', $email, $error, 'mail@curriculumonline.de')}
+                        {Form::input_text('postalcode', 'PLZ', $postalcode, $error, '')}
+                        {Form::input_text('city', 'Ort', $city, $error, '')}
+                        {Form::input_select('country_id', 'Land', $countries, 'de', 'id', $country_id , $error, "getValues('state', this.value, 'state_id');")}
+                        {Form::input_select('state_id', 'Bundesland/Region', $states, 'state', 'id', $state_id , $error)}
+                        {Form::input_text('pw', 'Kennwort', null, $error, '','password')}
+                        {Form::input_checkbox('show_pw', 'Passwort anzeigen', $show_pw, $error, 'checkbox', "unmask('pw', this.checked);")}
+                        <button type='submit' name='step_4' value='' class="btn btn-default pull-right">
+                            <span class="fa fa-arrow-right" aria-hidden="true"></span> weiter
+                        </button>
+                    </div>
                 {/if}
 
                 {if $step == 5}
                 {*Finished*}
-                <p>&nbsp;</p>
-                <p><h3>Installation abgeschlossen</h3></p>
-                <p>Die Installation wurde erfolgreich abgeschlossen.</p> 
-                <p>Bitte löschen sie die Datei /share/controllers/install.php !</p>
-                <p>Mit dem Button gelangen sie zum Login.</p>
-
-                <p><label>&nbsp;</label><input type='submit' name='step_5' value='Zum Login' /></p>
+                <p><h3>Administrator</h3></p><br>
+                    <div class="form-horizontal col-xs-8">
+                        <p>Die Installation wurde erfolgreich abgeschlossen.</p> 
+                        <p>Alle bestehenden Demo-Benutzer können mit ihrem Passwort genutzt werden.</p>
+                        <p>Mit dem Button gelangen sie zum Login.</p>
+                        <button type='submit' name='step_5' value='' class="btn btn-default pull-right">
+                            <span class="fa fa-arrow-right" aria-hidden="true"></span> Anmelden
+                        </button>
+                    </div>   
                 {/if}
             </form>
             <div class="col-xs-4">

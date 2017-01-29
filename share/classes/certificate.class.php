@@ -169,7 +169,7 @@ class Certificate {
     * @return boolean
     */
     public function dedicate(){ // only use during install
-        $db = DB::prepare('UPDATE certificate SET institution_id = ?, creator_id = ?');        
-        return $db->execute(array($this->institution_id, $this->creator_id));
+        $db = DB::prepare('UPDATE certificate SET creator_id = ?');        
+        return $db->execute(array($this->creator_id));
     }
 }

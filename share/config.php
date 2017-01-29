@@ -31,10 +31,10 @@ $CFG->version='0.9.3';
 $CFG->app_footer='<a href="http://www.curriculumonline.de" target="_blank">© Copyright 2014 - Joachim Dieterich</a>'; 
 
 /* DB Settings */
-$CFG->db_host='127.0.0.1';
-$CFG->db_user='PUT_DB_USER_HERE';
-$CFG->db_password ='PUT_DB_PW_HERE';
-$CFG->db_name='PUT_DB_NAME_HERE';
+$CFG->db_host='';
+$CFG->db_user='';
+$CFG->db_password ='';
+$CFG->db_name='';
 if ($CFG->db_name != ''){
     try {
         $DB = new PDO('mysql:host='.$CFG->db_host.';dbname='.$CFG->db_name.';charset=utf8', $CFG->db_user, $CFG->db_password ); 
@@ -45,10 +45,11 @@ if ($CFG->db_name != ''){
         exit($e->getMessage());
     }
 }
-$CFG->ip= '192.168.0.13';
-$CFG->protocol                      = 'http://'; //'https://';
-$CFG->base_url                      = $CFG->protocol.$CFG->ip.'/curriculum/';         //--> ! darf nicht localhost sein, da sonst probleme bei der Bilddarstellung bei Zugriff von extern
-$CFG->curriculumdata_root           = '/Applications/MAMP/curriculumdata/';
+$CFG->ip=filter_input(INPUT_SERVER, 'SERVER_NAME', FILTER_UNSAFE_RAW);
+$CFG->protocol= 'http://'; //'https://';
+$CFG->base_folder=implode('/', array_slice(explode('/',filter_input(INPUT_SERVER, 'REQUEST_URI', FILTER_UNSAFE_RAW)), 1, 1)).'/';
+$CFG->base_url= $CFG->protocol.$CFG->ip.'/'.$CFG->base_folder;         //--> ! darf nicht localhost sein, da sonst probleme bei der Bilddarstellung bei Zugriff von extern
+$CFG->curriculumdata_root= '';
 /*  Paths - do not edit */
 $CFG->share_root                    = dirname(__FILE__).'/';
 $CFG->document_root                 = dirname(__FILE__).'/../public/';
@@ -63,9 +64,7 @@ $CFG->institutions_root             = $CFG->curriculumdata_root.'institution/';
 $CFG->backup_root                   = $CFG->curriculumdata_root.'backups/';//URL for backups 
 $CFG->sql_backup_root               = $CFG->curriculumdata_root.'backups/sql/';
 $CFG->lib_root                      = dirname(__FILE__).'/libs/';
-$CFG->demo_root                     = $CFG->curriculumdata_root.'support/demo/';//URL for backups 
-//$CFG->salt                          = md5('loYfaz5r4w/ChAR1sJUw09sYkMaALLsOlKKpYb28LAcmFclAM3upsgwjDZ2tNsX2aVB6ZDJkIK6aO0DursPrqg==');
-//$CFG->access_file                   = '../share/accessfile.php?file='.$CFG->salt.'|';
+$CFG->demo_root                     = $CFG->curriculumdata_root.'support/';//URL for backups 
 $CFG->access_file                   = '../share/accessfile.php?file=';
 $CFG->access_file_url               = $CFG->base_url.'share/accessfile.php?file=';
 $CFG->access_token_url              = $CFG->base_url.'share/accessfile.php?token=';
@@ -110,18 +109,13 @@ $CFG->shibboleth                    = true;                                     
 
 /* Guest Login*/
 $CFG->guest_login                   = true;
-$CFG->guest_usr                     = 'PUT_GUEST_USERNAME_HERE';
-$CFG->guest_pwd                     = 'PUT_GUEST_PASSWORD_HERE!';
+$CFG->guest_usr                     = 'gast';
+$CFG->guest_pwd                     = 'GastPW!';
 
 /* Get php_info('post_max_size') */
 $CFG->post_max_size                 = ini_get('post_max_size');
 
-/*  Smarty template engine --> now configured in setup.php 
-$CFG->smarty_template_dir           = dirname(__FILE__).'/templates/AdminLTE-2.3.0/';   // default template dir AdminLTE-2.3.0
-$CFG->smarty_template_dir_url       = $CFG->base_url.'share/templates/AdminLTE-2.3.0/'; // default template dir_url Bootflat-2.0.4
-$CFG->smarty_template_compile_dir   = $CFG->smarty_template_dir.'compiled';
-$CFG->smarty_template_cache_dir     = $CFG->smarty_template_dir.'cached'; */
-
+/*  Smarty template engine --> now configured in setup.php */
 
 /**
  * Writes a custom message to the log file for debugging purposes.

@@ -135,6 +135,8 @@ class Content {
     */
     public function dedicate(){ // only use during install
         $db = DB::prepare('UPDATE content SET  creator_id = ?');        
-        return $db->execute(array($this->creator_id));
+        $db->execute(array($this->creator_id));
+        $db1 = DB::prepare('UPDATE content_subscriptions SET  creator_id = ?');        
+        return $db1->execute(array($this->creator_id));
     }
 }

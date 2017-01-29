@@ -203,7 +203,7 @@ class Roles {
         $db1                    = DB::prepare('UPDATE role_capabilities SET creator_id = ?');
         $dedicate_capabilities  = $db1->execute(array($this->creator_id));
         
-        if ($dedicate_roles == true AND $dedicate_capabilities == true){
+        /*if ($dedicate_roles == true AND $dedicate_capabilities == true){
             $db2            = DB::prepare('DELETE FROM roles WHERE id = -1');
             $dedicate_roles = $db2->execute();
             $db3            = DB::prepare('DELETE FROM role_capabilities WHERE role_id = -1');
@@ -211,6 +211,6 @@ class Roles {
             return true;
         } else {
             return false;
-        }
+        }*/
     }
 }

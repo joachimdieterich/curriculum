@@ -25,6 +25,12 @@ global $CFG, $TEMPLATE, $PAGE;
 
 $user       = new User();
 $message    = '';
+if(filter_input(INPUT_GET, 'install', FILTER_UNSAFE_RAW)) {
+    if (file_exists(dirname(__FILE__).'/install.php')){
+        unlink(dirname(__FILE__).'/install.php'); // delete install file after installation
+    }
+}
+
 if(filter_input(INPUT_POST, 'guest', FILTER_UNSAFE_RAW) AND $CFG->guest_login == true) {
     $user->username = $CFG->guest_usr;
     $user->password = md5($CFG->guest_pwd);

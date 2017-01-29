@@ -338,7 +338,7 @@ class EnablingObjective {
                                     $res_03 = $db_03->fetchObject();
                                     if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
                                         $ext = $CFG->repository->count(1,$result->id);
-                                    } 
+                                    } else { $ext = ''; }
                                     $this->files                = $res_03->MAX.$ext; //nummer of materials
                                     
                                     /* Check if Quiz is available for this enabling objective*/

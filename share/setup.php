@@ -74,6 +74,7 @@ if (isset($CFG->db_configured)){
 }
 
 if (!isset($CFG->settings->template)){ 
+    $CFG->settings           = new stdClass();
     $CFG->settings->template = 'Bootflat-2.0.4'; // fallback for installation process
 } 
 $TEMPLATE->template_dir           = dirname(__FILE__).'/templates/'.$CFG->settings->template.'/';

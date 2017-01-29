@@ -1228,7 +1228,7 @@ class User {
     */
     public function dedicate(){ // only use during install
         global $USER;
-        checkCapabilities('user:dedicate', $USER->role_id);
+        checkCapabilities('install:dedicate', $USER->role_id);
         $db = DB::prepare('UPDATE users SET creator_id = ?');
         return $db->execute(array($this->creator_id));
     }
