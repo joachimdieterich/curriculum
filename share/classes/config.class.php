@@ -30,8 +30,8 @@ class Config {
     }
     
     public function load(){
-        $db = DB::prepare('SELECT * FROM config');
-        $db->execute(array());
+        $db = DB::prepare('SELECT * FROM config WHERE context_id = (SELECT context_id FROM context WHERE context = ?) AND reference_id = 0'); //load std values
+        $db->execute(array('config'));
         $config = new stdClass();
         while($result = $db->fetchObject()) { 
             $config->{$result->name} = $result->value;
