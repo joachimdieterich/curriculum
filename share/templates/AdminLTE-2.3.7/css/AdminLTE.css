@@ -4111,6 +4111,9 @@ table.text-center th {
 .margin-r-5 {
   margin-right: 5px;
 }
+.margin-r-10 {
+  margin-right: 10px;
+}
 .inline {
   display: inline;
 }

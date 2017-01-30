@@ -24,6 +24,12 @@
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 class Config {
+    public $id;
+    public $name;
+    public $value;
+    public $context_id;
+    public $reference_id;
+    public $timestamp;
     
     public function __construct() {
         
@@ -37,6 +43,46 @@ class Config {
             $config->{$result->name} = $result->value;
         }
         return $config;
+    }
+    
+    public function set(){
+        $db = DB::prepare('SELECT id FROM config WHERE name = ? AND context_id = ? AND reference_id = ?');
+        $db->execute(array($this->name, $this->context_id, $this->reference_id));
+        $this->id = $db->fetchColumn();
+        if($this->id > 0) { 
+            $db = DB::prepare('UPDATE config SET name = ?, value = ?, context_id = ?, reference_id = ? WHERE id = ?');
+            return $db->execute(array($this->name, $this->value, $this->context_id, $this->reference_id, $this->id));
+        } else {
+            $db = DB::prepare('INSERT INTO config (name,value,context_id,reference_id) VALUES (?,?,?,?)');
+            return $db->execute(array($this->name, $this->value, $this->context_id, $this->reference_id));
+        }
+    }
+    
+    public function get($dependency = 'global', $name = null, $context = null, $reference_id = null){
+        if ($name         == null){ $name         = $this->name; }
+        if ($context      == null){ $context      = $this->context; }
+        if ($reference_id == null){ $reference_id = $this->reference_id; }
+        switch ($dependency) {
+            case 'global':  $db = DB::prepare('SELECT * FROM config WHERE name = ? AND context_id = (SELECT context_id FROM context WHERE context = ?) AND reference_id = 0'); //load std values
+                            $db->execute(array($name, 'config'));
+                break;
+            case 'user':
+            case 'institution':
+                            $db = DB::prepare('SELECT * FROM config WHERE name = ? AND context_id = (SELECT context_id FROM context WHERE context = ?) AND reference_id = ?'); //load std values
+                            $db->execute(array($name, $context, $reference_id));
+                break;
+
+            default:
+                break;
+        }
+        $result = $db->fetchObject();
+        if ($result){
+            foreach ($result as $key => $value) {
+                $this->{$key} = $value;
+            }
+            return $this;
+        } else { return false;}
+        
     }
     
 }

@@ -357,16 +357,20 @@ CREATE TABLE `config` (
   `id` bigint(10) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL DEFAULT '',
   `value` longtext NOT NULL,
+  `context_id` int(11) unsigned NOT NULL,
+  `reference_id` int(11) unsigned NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='curriculum configuration variables';
 
 LOCK TABLES `config` WRITE;
 /*!40000 ALTER TABLE `config` DISABLE KEYS */;
 
-INSERT INTO `config` (`id`, `name`, `value`)
+INSERT INTO `config` (`id`, `name`, `value`, `context_id`, `reference_id`, `timestamp`)
 VALUES
-	(1,'auth','shibboleth'),
-	(3,'template','Bootflat-2.0.4');
+	(1, 'auth', 'shibboleth', 19, 0, '2017-01-30 08:53:02'),
+	(2, 'repository', 'omega', 19, 0, '2017-01-30 08:53:04'),
+	(3, 'template', 'Bootflat-2.0.4', 19, 0, '2017-01-30 08:53:16');
 
 /*!40000 ALTER TABLE `config` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -490,24 +494,25 @@ LOCK TABLES `context` WRITE;
 
 INSERT INTO `context` (`id`, `context`, `context_id`, `path`)
 VALUES
-	(1,'userFiles',1,'user/'),
-	(2,'curriculum',2,'curriculum/'),
-	(3,'avatar',3,'user/'),
-	(4,'solution',4,'solutions/'),
-	(5,'subjectIcon',5,'subjects/'),
-	(6,'badge',6,'badges/'),
-	(7,'editor',7,'user/'),
-	(8,'backup',8,'backups/'),
-	(9,'institution',9,'institution/'),
-	(10,'courseBook',10,'coursebook/'),
-	(11,'dashboard',11,NULL),
-	(12,'enabling_objective',12,NULL),
-	(13,'task',13,NULL),
-	(14,'terms',14,NULL),
-	(15,'content',15,NULL),
-	(16,'group',16,NULL),
-	(17,'course',17,NULL),
-	(18,'wallet',18,NULL);
+	(1, 'userFiles', 1, 'user/'),
+	(2, 'curriculum', 2, 'curriculum/'),
+	(3, 'avatar', 3, 'user/'),
+	(4, 'solution', 4, 'solutions/'),
+	(5, 'subjectIcon', 5, 'subjects/'),
+	(6, 'badge', 6, 'badges/'),
+	(7, 'editor', 7, 'user/'),
+	(8, 'backup', 8, 'backups/'),
+	(9, 'institution', 9, 'institution/'),
+	(10, 'courseBook', 10, 'coursebook/'),
+	(11, 'dashboard', 11, NULL),
+	(12, 'enabling_objective', 12, NULL),
+	(13, 'task', 13, NULL),
+	(14, 'terms', 14, NULL),
+	(15, 'content', 15, NULL),
+	(16, 'group', 16, NULL),
+	(17, 'course', 17, NULL),
+	(18, 'wallet', 18, NULL),
+	(19, 'config', 19, NULL);
 
 /*!40000 ALTER TABLE `context` ENABLE KEYS */;
 UNLOCK TABLES;
