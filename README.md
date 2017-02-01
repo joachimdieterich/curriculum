@@ -2,6 +2,7 @@ curriculum BETA Version 0.9.3
 
 Version 0.9.3
 =================
+- Adding PHPMailer v.5.2.15
 - Installation User Interface
 - Guest User
 - Self Assessment for students
