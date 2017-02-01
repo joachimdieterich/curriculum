@@ -39,6 +39,11 @@ $password       = $_POST['password'];
 switch ($_POST['func']) {
     case 'reset':   if ($user->changePassword(md5($password))){
                         $_SESSION['PAGE']->message[] = array('message' => 'Vergessenes Passwort erfolgreich geändert', 'icon' => 'fa-key text-success');
+                        $user->load('username', $user->username, false);
+                        $mail               = new Mail();
+                        $mail->sender_id    = $user->id;
+                        $mail->receiver_id  = $USER->id;
+                        $mail->delete('obsolete');
                     }
                     $_SESSION['FORM']            = new stdClass();
                     $_SESSION['FORM']            = null;

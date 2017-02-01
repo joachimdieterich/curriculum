@@ -177,12 +177,23 @@ class Mail {
     }
     
     
-    public function delete(){
+    public function delete($dependency = 'mail'){
         global $USER;
         checkCapabilities('mail:delete', $USER->role_id);
-        $db = DB::prepare('DELETE FROM message WHERE id = ?');
-        return $db->execute(array($this->id));
+        switch ($dependency) {
+            case 'mail':        $db = DB::prepare('DELETE FROM message WHERE id = ?');
+                                return $db->execute(array($this->id));
+                break;
+            case 'obsolete':    $db = DB::prepare('DELETE FROM message WHERE subject = ? AND sender_id = ? AND receiver_id <> ?');
+                                return $db->execute(array('Passwort vergessen', $this->sender_id, $this->receiver_id));
+                break;
+
+            default:
+                break;
+        }
+        
     }
+    
     /**
      * post Mail
      * @return boolean 

@@ -39,15 +39,19 @@ if(filter_input(INPUT_POST, 'guest', FILTER_UNSAFE_RAW) AND $CFG->guest_login ==
     }
 } else if(filter_input(INPUT_POST, 'reset', FILTER_UNSAFE_RAW)) {
     $user->username = (filter_input(INPUT_POST,     'username', FILTER_UNSAFE_RAW));     
-    $user->load('username', $user->username, true);
+    $user->load('username', $user->username, false);
     /* write creator of this user to reset password. todo: write acutal teacher/admin*/
     $mail   = new Mail();
     $mail->sender_id    = $user->id;
-    $mail->receiver_id  = $user->creator_id; //current Teacher
-    $mail->subject      = 'Passwort vergessen';
-    $mail->message     .= '<p><strong>'.$user->resolveUserId($user->id, 'full').'</strong> hat das Passwort vergessen. Über den folgenden Link können Sie es zurücksetzen.';
-    $mail->message     .= '<br><a onclick="formloader(\'password\',\'reset\','.$user->id.');">Passwort zurücksetzen</a></p>';
-    $mail->postMail('reset');
+    $institution        = new Institution();
+    $institution_admins = $institution->getAdmin($user->id);
+    foreach ($institution_admins AS $admin_id){  //send mail to all institution admins... (if pw is reset, all mails to other admins will be deleted) todo. reset pw with email
+        $mail->receiver_id  = $admin_id->user_id; 
+        $mail->subject      = 'Passwort vergessen';
+        $mail->message     .= '<p><strong>'.$user->resolveUserId($user->id, 'full').'</strong> hat das Passwort vergessen. Über den folgenden Link können Sie es zurücksetzen.';
+        $mail->message     .= '<br><a onclick="formloader(\'password\',\'reset\','.$user->id.');">Passwort zurücksetzen</a></p>';
+        $mail->postMail('reset');
+    }
     $PAGE->message[] = array('message' => 'Ihr Passwort wird durch den Administrator zurückgesetzt.', 'icon' => 'fa-key text-success'); 
     
     

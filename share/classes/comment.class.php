@@ -28,10 +28,13 @@ class Comment {
     public $id;
     public $reference_id;
     public $context_id;
-    public $parent_id; //parent comment
+    public $parent_id; //parent comment_id
     public $text;
     public $creator_id;
     public $creation_time;
+    public $likes;
+    public $dislikes;
+    public $status; 
     
     public $comment; // array of sub comment
    
@@ -75,7 +78,7 @@ class Comment {
     public function update(){
         global $USER;
         checkCapabilities('comment:update', $USER->role_id);
-        $db = DB::prepare('UPDATE comments SET text = ? WHERE id = ? AND creator_id');
+        $db = DB::prepare('UPDATE comments SET text = ? WHERE id = ? AND creator_id = ?');
         if ($db->execute(array($this->text, $this->id, $USER->id))){
             return true;
         } else { return false;}
@@ -84,8 +87,14 @@ class Comment {
     public function delete(){
         global $USER;
         checkCapabilities('comment:delete', $USER->role_id);
-        $db = DB::prepare('DELETE FROM comments WHERE id = ?');
-        return $db->execute(array($this->id));
+        $db = DB::prepare('SELECT id FROM comments WHERE parent_id = ?');
+        $db->execute(array($this->id));
+        if($db->fetchColumn() > 0) { 
+            $_SESSION['PAGE']->message[] = array('message' => 'Kommentar kann nicht gelöscht werden, da es bereits Antworten zum Kommentar gibt.', 'icon' => 'fa-exclamation-triangle text-danger');
+        } else {
+            $db = DB::prepare('DELETE FROM comments WHERE id = ?');
+            return $db->execute(array($this->id));
+        }
     }
     
     public function get($dependency, $id = false){
@@ -110,6 +119,18 @@ class Comment {
         } 
         
         return $r;     
+    }
+    
+    public function set($dependency = 'likes', $id = null){
+        if ($id == null){
+            $id = $this->id;
+        } 
+        
+        $db = DB::prepare('UPDATE comments SET '.$dependency.' = ? WHERE id = ?');
+        if ($db->execute(array($this->$dependency, $id))){
+            return true;
+        } else { return false;}
+        
     }
     
     public function getSubComment($parent_id){

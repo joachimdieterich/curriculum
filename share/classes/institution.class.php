@@ -356,6 +356,21 @@ class Institution {
         }
     }
     
+    public function getAdmin($user_id){
+        $db = DB::prepare('Select DISTINCT ie.user_id FROM institution_enrolments AS ie, role_capabilities AS rc 
+	WHERE rc.capability = \'user:userListInstitution\' AND rc.permission = 1
+	AND ie.status = 1 AND ie.role_id = rc.role_id
+        AND ie.institution_id IN (SELECT institution_id FROM institution_enrolments WHERE user_id = ? AND status = 1)');
+        if ($db->execute(array($user_id))) {
+            while ($result = $db->fetchObject()){
+                $admins[]  = $result;
+            }
+            return $admins;
+        } else {
+            return false;
+        }
+    }
+    
     /**
     * function used during the install process to set up creator id to new admin
     * @return boolean

@@ -393,7 +393,7 @@ class Render {
         return $html;                                    
     }
     public static function wallet_content($wallet_content, $edit){
-       $html  =   '<div style="position:relative;" class="'.$wallet_content->width_class.' '.$wallet_content->position;
+       $html  =   '<div class="'.$wallet_content->width_class;
        if ($edit == true){
            $html  .=   ' wallet-content"><span style="position: absolute; right:15px;" ><button type="button" onclick="formloader(\'wallet_content\',\'edit\','.$wallet_content->id.');"><i class="fa fa-edit"></i></button>'
                       . '<button type="button"  onclick="del(\'wallet_content\','.$wallet_content->id.');"><i class="fa fa-trash"></i></button>'
@@ -403,7 +403,7 @@ class Render {
                       . '<button type="button"  onclick=\'processor("orderWalletContent","down",'.$wallet_content->id.', {"order":"down"});\'><i class="fa fa-arrow-up"></i></button>'
                       . '</span>';
        } else {
-            $html  .=  '">';
+            $html  .=  '"><span class="'.$wallet_content->position.'">';
        }
        switch ($wallet_content->context) {
            case 'content':  $c = new Content();
@@ -417,24 +417,41 @@ class Render {
                             $html  .=Render::file($f);
                break;
        }
-       $html .=   '</div>';
+       $html .=   '</span></div>';
         return $html;  
     }
     public static function comments($params){
-        global $CFG;
+        global $CFG, $USER;
         foreach($params as $key => $val) {
              $$key = $val;
         }
-        $html = '<ul class="media-list">';
+        if (!isset($permission)){ $permission = 1; }
+        $html = '<ul class="media-list ">';
         foreach ($comments as $cm) {
-            $u = new User();
+            $u      = new User();
             $u->load('id', $cm->creator_id, false);
-            $size = '48';
-
-            $html .=  '<li class="media"><a class="pull-left" href="#" ><div style="height:'.$size.'px;width:'.$size.'px;background: url('.$CFG->access_id_url.$u->avatar_id.') center right;background-size: cover; background-repeat: no-repeat;"></div></a>
+            $size   = '48';
+            $html  .= '<li class="media" >
+                       <a class="pull-left" href="#" >
+                         <div style="height:'.$size.'px;width:'.$size.'px;background: url('.$CFG->access_id_url.$u->avatar_id.') center right;background-size: cover; background-repeat: no-repeat;"></div>
+                        </a>
+                        <a style="cursor:pointer;" class="text-red margin-r-10 pull-right" onclick=\'processor("set","comments",'.$cm->id.', {"dependency":"dislikes", "input":"'.($cm->dislikes+1).'"});\'><i class="fa fa-thumbs-o-down margin-r-5"></i> '.$cm->dislikes.' </a>
+                        <a style="cursor:pointer;" class="text-green margin-r-10 pull-right" onclick=\'processor("set","comments",'.$cm->id.', {"dependency":"likes", "input":"'.($cm->likes+1).'"});\'><i class="fa fa-thumbs-o-up margin-r-5"></i> '.$cm->likes.' </a>
+                        
                       <div class="media-body" >
-                          <h4 class="media-heading">'.$u->username.' <small class="text-black"> '.$cm->creation_time.'</small></h4>
-                              <p class="media-heading">'.$cm->text.'<br><a id="answer_'.$cm->id.'" onclick="toggle([\'comment_'.$cm->id.'\', \'cmbtn_'.$cm->id.'\'], [\'answer_'.$cm->id.'\'])">Antworten</a></p>';
+                          <h4 class="media-heading">'.$u->username.' <small class="text-black margin-r-10"> '.$cm->creation_time.'</small> 
+                          </h4>
+                              <p class="media-heading">'.$cm->text.'<br>';
+                              if ($cm->creator_id == $USER->id){
+                                  if ($permission > 0){
+                                    $html  .= '<a class="text-red" onclick="del(\'comment\','.$cm->id.');"><i class="fa fa-trash "></i></a>';
+                                  }
+                              } else {
+                                $html  .= '<a class="text-red" onclick=""><i class="fa fa-exclamation-triangle "></i> Kommentar melden</a>';
+                              }
+                              if ($permission > 0){
+                                $html  .= ' | <a id="answer_'.$cm->id.'" onclick="toggle([\'comment_'.$cm->id.'\', \'cmbtn_'.$cm->id.'\'], [\'answer_'.$cm->id.'\'])">Antworten</a></p>';
+                              }
                               $html .='<textarea id="comment_'.$cm->id.'" name="comment"  class="hidden" style="width:100%;"></textarea>
                                         <button id="cmbtn_'.$cm->id.'" type="submit" class="btn btn-primary pull-right hidden" onclick="comment(\'new\','.$cm->reference_id.', '.$cm->context_id.', document.getElementById(\'comment_'.$cm->id.'\').value, '.$cm->id.');"><i class="fa fa-commenting-o margin-r-10"></i>Kommentar abschicken</button>';
 
@@ -450,20 +467,36 @@ class Render {
     }
     
     public static function sub_comments($params){
-        global $CFG;
+        global $CFG, $USER;
         foreach($params as $key => $val) {
              $$key = $val;
         }
-        
+        if (!isset($permission)){ $permission = 1; }
         $html = '';
         foreach ($comment as $cm){
             $u = new User();
             $u->load('id', $cm->creator_id, false);
             $size = '32';
-            $html .=  '<div class="media"><a class="pull-left" href="#" ><div style="height:'.$size.'px;width:'.$size.'px;background: url('.$CFG->access_id_url.$u->avatar_id.') center right;background-size: cover; background-repeat: no-repeat;"></div></a>
+            $html .=  '<div class="media ">
+                        <a class="pull-left" href="#" >
+                            <div style="height:'.$size.'px;width:'.$size.'px;background: url('.$CFG->access_id_url.$u->avatar_id.') center right;background-size: cover; background-repeat: no-repeat;"></div>
+                        </a>                        
                         <div class="media-body" >
-                            <h4 class="media-heading">'.$u->username.' <small class="text-black"> '.$cm->creation_time.'</small></h4>
-                                <p class="media-heading">'.$cm->text.'<br><a id="answer_'.$cm->id.'" onclick="toggle([\'comment_'.$cm->id.'\', \'cmbtn_'.$cm->id.'\'], [\'answer_'.$cm->id.'\'])">Antworten</a></p>';
+                            <h4 class="media-heading">'.$u->username.' <small class="text-black margin-r-10"> '.$cm->creation_time.'</small>
+                                <a style="cursor:pointer;" class="text-green margin-r-10 " onclick=\'processor("set","comments",'.$cm->id.', {"dependency":"likes", "input":"'.($cm->likes+1).'"});\'><i class="fa fa-thumbs-o-up margin-r-5"></i> '.$cm->likes.' </a>
+                                <a style="cursor:pointer;" class="text-red margin-r-10 " onclick=\'processor("set","comments",'.$cm->id.', {"dependency":"dislikes", "input":"'.($cm->dislikes+1).'"});\'><i class="fa fa-thumbs-o-down margin-r-5"></i> '.$cm->dislikes.' </a>
+                            </h4>
+                                <p class="media-heading">'.$cm->text.'<br>';
+                                if ($cm->creator_id == $USER->id){
+                                    if ($permission > 0){
+                                        $html  .= '<a class="text-red" onclick="del(\'comment\','.$cm->id.');"><i class="fa fa-trash "></i></a>';
+                                    }
+                                  } else {
+                                    $html  .= '<a class="text-red" onclick=""><i class="fa fa-exclamation-triangle "></i> Kommentar melden</a>';
+                                  }
+                                if ($permission > 0){  
+                                    $html .= ' | <a id="answer_'.$cm->id.'" onclick="toggle([\'comment_'.$cm->id.'\', \'cmbtn_'.$cm->id.'\'], [\'answer_'.$cm->id.'\'])">Antworten</a></p>';
+                                }
                                 $html .='<textarea id="comment_'.$cm->id.'" name="comment"  class="hidden" style="width:100%;"></textarea>
                                         <button id="cmbtn_'.$cm->id.'" type="submit" class="btn btn-primary pull-right hidden" onclick="comment(\'new\','.$cm->reference_id.', '.$cm->context_id.', document.getElementById(\'comment_'.$cm->id.'\').value, '.$cm->id.');"><i class="fa fa-commenting-o margin-r-10"></i>Kommentar abschicken</button>';
                                 if (!empty($cm->comment)){
@@ -486,6 +519,7 @@ class Render {
        foreach($params as $key => $val) {
             $$key = $val;
        }
+       if (!isset($user_id)){$user_id = $USER->id;} // if user_id is set --> accCheckbox set this user 
        if (!isset($objective->color)){ 
            $objective->color = '#FFF'; 
            $text_class       = 'text-black';
@@ -525,10 +559,15 @@ class Render {
                                 $html  .='<a href="../share/templates/Bootflat-2.0.4/renderer/uploadframe.php?context='.$type.'&ref_id='.$objective->id.'{$tb_param}" class="nyroModal"><span class="fa fa-plus pull-right box-sm-icon"></span></a>';
                             } 
                         }
+                        $html  .='<span class="pull-left" style="margin-right:10px;">';
                         if (checkCapabilities('file:loadMaterial', $USER->role_id, false) AND $objective->files != null){
                             $html  .='<span class="fa fa-briefcase box-sm-icon text-primary" style="cursor:pointer;" data-toggle="tooltip" title="'.$objective->files.' Materialien verfügbar" onclick="formloader(\'material\',\''.$type.'\','.$objective->id.')"></span>';
                         } else {
                             $html  .='<span class="fa fa-briefcase box-sm-icon deactivate"></span>';
+                        }
+                        $html  .='</span>';
+                        if (checkCapabilities('course:selfAssessment', $USER->role_id, false)){
+                            $html  .='<span class="pull-left">'.Render::accCheckboxes($objective->id, $user_id, $user_id, false).'</span>';
                         }
         $html  .='    </div>
                   </div>';
