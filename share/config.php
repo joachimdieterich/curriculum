@@ -115,7 +115,7 @@ $CFG->guest_pwd                     = 'GastPW!';
 /* Get php_info('post_max_size') */
 $CFG->post_max_size                 = ini_get('post_max_size');
 
-/* Email settings for PHPMailer() */
+/* email settings for PHPMailer() */
 $CFG->email_Host                    = '';
 $CFG->email_SMTPAuth                = true;
 $CFG->email_Username                = '';
