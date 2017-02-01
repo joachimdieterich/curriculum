@@ -208,7 +208,7 @@ class Mail {
         
         switch ($dependency) {
             case 'person': $db = DB::prepare('INSERT INTO message (sender_id,receiver_id,subject,message,sender_status,receiver_status) VALUES (?,?,?,?,1,0)');
-                           return $db->execute(array($this->sender_id, $this->receiver_id, $this->subject, $this->message));
+                           return $db->execute(array($this->sender_id, $this->receiver_id, $this->subject, $this->message)); 
                 break;
             case 'group':  $user = new User();
                            $group_members = $user->getGroupMembers('group', $id);
