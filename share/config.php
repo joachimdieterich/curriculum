@@ -115,6 +115,14 @@ $CFG->guest_pwd                     = 'GastPW!';
 /* Get php_info('post_max_size') */
 $CFG->post_max_size                 = ini_get('post_max_size');
 
+/* Email settings for PHPMailer() */
+$CFG->email_Host                    = '';
+$CFG->email_SMTPAuth                = true;
+$CFG->email_Username                = '';
+$CFG->email_Password                = '';
+$CFG->email_SMTPSecure              = 'tls';
+$CFG->email_Port                    = '587';
+
 /*  Smarty template engine --> now configured in setup.php */
 
 /**
