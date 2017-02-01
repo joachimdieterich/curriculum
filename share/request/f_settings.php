@@ -51,7 +51,7 @@ if (isset($_GET['func'])){
     }
 }
 
-/* if validation failed, get formdata from session*/
+/* if validation failed, get formdata from session */
 if (isset($_SESSION['FORM'])){
     if (is_object($_SESSION['FORM'])) {
         foreach ($_SESSION['FORM'] as $key => $value){
