@@ -47,8 +47,13 @@ if (isset($func)){
         case "reset":       checkCapabilities('user:resetPassword', $USER->role_id);
                             $header     = 'Kennwort zurücksetzen';
                             $user       = new User();
-                            $user->load('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
-                            $username   = $user->username;    
+                            if (is_int($_GET['id'])){
+                                $user->load('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
+                                $username   = $user->username;    
+                            } else {
+                                $username = $USER->username;
+                            }
+                            
             break;
         default: break;
     }

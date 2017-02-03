@@ -30,7 +30,15 @@ if(filter_input(INPUT_GET, 'install', FILTER_UNSAFE_RAW)) {
         unlink(dirname(__FILE__).'/install.php'); // delete install file after installation
     }
 }
-
+if (filter_input(INPUT_GET, 'username', FILTER_UNSAFE_RAW) AND filter_input(INPUT_GET, 'token', FILTER_UNSAFE_RAW)){
+    $user->username = (filter_input(INPUT_GET,     'username', FILTER_UNSAFE_RAW));     
+    $user->token    = (filter_input(INPUT_GET,     'token', FILTER_UNSAFE_RAW));     
+    if($user->checkLoginData(true)) { 
+         login($user);
+    } else { 
+        $PAGE->message[] = array('message' => 'Benutzername bzw. Passwort falsch.', 'icon' => 'fa-key text-warning');     
+    } 
+}
 if(filter_input(INPUT_POST, 'guest', FILTER_UNSAFE_RAW) AND $CFG->guest_login == true) {
     $user->username = $CFG->guest_usr;
     $user->password = md5($CFG->guest_pwd);
@@ -45,16 +53,26 @@ if(filter_input(INPUT_POST, 'guest', FILTER_UNSAFE_RAW) AND $CFG->guest_login ==
     $mail->sender_id    = $user->id;
     $institution        = new Institution();
     $institution_admins = $institution->getAdmin($user->id);
-    foreach ($institution_admins AS $admin_id){  //send mail to all institution admins... (if pw is reset, all mails to other admins will be deleted) todo. reset pw with email
-        $mail->receiver_id  = $admin_id->user_id; 
+    if ($CFG->settings->resetPW != 'email'){
         $mail->subject      = 'Passwort vergessen';
         $mail->message     .= '<p><strong>'.$user->resolveUserId($user->id, 'full').'</strong> hat das Passwort vergessen. Über den folgenden Link können Sie es zurücksetzen.';
-        $mail->message     .= '<br><a onclick="formloader(\'password\',\'reset\','.$user->id.');">Passwort zurücksetzen</a></p>';
-        $mail->postMail('reset');
+        $mail->message     .= '<br><a onclick="formloader(\'password\',\'reset\','.$user->id.');">Passwort zurücksetzen</a></p>';   
+        foreach ($institution_admins AS $admin_id){  //send mail to all institution admins... (if pw is reset, all mails to other admins will be deleted) todo. reset pw with email
+            $mail->receiver_id  = $admin_id->user_id; 
+            $mail->postMail('reset');
+        }
+    } else {
+        $mail->subject      = 'Passwort zurücksetzen';
+        $mail->message     .= '<p>Sehr geehrter '.$CFG->app_title.'- Nutzer, <br><br> Sie haben Ihr Passwort vergessen?<br><br> '
+                           .  'Über den folgenden Link können Sie ein neues Passwort für Ihren Zugang festlegen. <a href="'.$CFG->base_url.'public/index.php?action=login&username='.$user->username.'&token='.$user->token.'"><strong> Passwort zurücksetzen</strong></a><br><br>'
+                           .  'Wenn Ihnen Ihr bisheriges Passwort wieder eingefallen ist, können Sie sich wie gewohnt weiterhin unter <br>'.$CFG->base_url .' wieder anmelden. Danach verliert diese E-Mail ihre Gültigkeit.<br><br>'
+                           .  'Wen sie keine Passwortänderung angefordert haben, können Sie diese E-Mail ignorieren.<br><br>Mit freundlichen Grüßen<br><br>Ihr curriculum-Server :)<br><br>'.$CFG->app_footer;
+        if ($mail->postMail('reset')){
+            $PAGE->message[] = array('message' => 'Email: "Passwort zurücksetzen" wurde erfolgreich verschickt.', 'icon' => 'fa-key text-success');
+            $reset = true;
+        }
     }
     $PAGE->message[] = array('message' => 'Ihr Passwort wird durch den Administrator zurückgesetzt.', 'icon' => 'fa-key text-success'); 
-    
-    
 } else if(filter_input(INPUT_POST, 'login', FILTER_UNSAFE_RAW)) {
     $user->username = (filter_input(INPUT_POST,     'username', FILTER_UNSAFE_RAW));     
     $user->password = (md5(filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW)));
@@ -77,7 +95,7 @@ if(filter_input(INPUT_POST, 'guest', FILTER_UNSAFE_RAW) AND $CFG->guest_login ==
         default:
             break;
     }
-}
+} 
 
 $TEMPLATE->assign('page_title',  'Login');
 $TEMPLATE->assign('breadcrumb',  array('Login' => 'index.php?action=login'));
@@ -105,8 +123,11 @@ function login($user){
 }
 
 function route($usr){
-    global $PAGE;
+    global $PAGE,$CFG;
     $confirmed = $usr->getConfirmed();
+    if(filter_input(INPUT_POST, 'reset', FILTER_UNSAFE_RAW)){ 
+        $confirmed = 1; //hack to prevent case 2
+    }
     switch ($confirmed) {
         case 1:     if (isset($PAGE->wantsurl)){            //if user wants a url -> redirect
                         header('Location:'.$PAGE->wantsurl); 
@@ -114,7 +135,11 @@ function route($usr){
                         header('Location:index.php?action=dashboard'); 
                     }
             break;
-        case 2:     //header('Location:index.php?action=password&login=first');//ab Version 0.5 BETA nicht verwendet // --> 1. Login nach erfolgreichem Registrieren
+        case 2:     $_SESSION['FORM']       = new stdClass();
+                    $_SESSION['FORM']->id   = null;
+                    $_SESSION['FORM']->form = 'password';
+                    $_SESSION['FORM']->func = 'reset';
+                    header('Location:'.$CFG->base_url.'public/index.php?action=dashboard');
             break;
         case 3:     $_SESSION['FORM']       = new stdClass();
                     $_SESSION['FORM']->id   = null;

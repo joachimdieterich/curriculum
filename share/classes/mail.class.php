@@ -199,16 +199,51 @@ class Mail {
      * @return boolean 
      */
     public function postMail($dependency = 'person', $id = null){
+        global $CFG;
         if ($dependency != 'reset'){
             checkCapabilities('mail:postMail', $_SESSION['USER']->role_id); // User kann per cronjob festgelegt sein, daher $_SESSION 
         } else {
             $dependency = 'person';
         }
         
+        if ($CFG->settings->resetPW == 'email'){
+            $email              = new PHPMailer();
+            $email->isSMTP();                                      // Set mailer to use SMTP
+            $email->Host        = $CFG->email_Host;                // Specify main and backup SMTP servers
+            $email->SMTPAuth    = $CFG->email_SMTPAuth;            // Enable SMTP authentication
+            $email->Username    = $CFG->email_Username;            // SMTP username
+            $email->Password    = $CFG->email_Password;            // SMTP password
+            $email->SMTPSecure  = $CFG->email_SMTPSecure;          // Enable TLS encryption, `ssl` also accepted
+            $email->Port        = $CFG->email_Port;                // TCP port to connect to
+        }
         
         switch ($dependency) {
-            case 'person': $db = DB::prepare('INSERT INTO message (sender_id,receiver_id,subject,message,sender_status,receiver_status) VALUES (?,?,?,?,1,0)');
-                           return $db->execute(array($this->sender_id, $this->receiver_id, $this->subject, $this->message)); 
+            case 'person':  switch ($CFG->settings->resetPW) {
+                                case 'email':   $u = new User();
+                                                $u->load('id',$this->sender_id, false);
+                                                $u->set('confirmed', 2); //set confirmed to reset PW
+                                                $email->CharSet = 'UTF-8';
+                                                $email->setFrom($CFG->email_Username, $CFG->app_title);
+                                                $email->addAddress($u->email);                          // Add a recipient
+                                                $email->isHTML(true);                                   // Set email format to HTML
+
+                                                $email->Subject = $this->subject;
+                                                $email->Body    = $this->message;
+                                                $email->AltBody = strip_tags($this->message);
+
+                                                if(!$email->send()) {
+                                                    error_log('Message could not be sent.');
+                                                    error_log('Mailer Error: ' . $email->ErrorInfo);
+                                                } else {
+                                                    return true;
+                                                }
+                                    break;
+
+                                default:    $db = DB::prepare('INSERT INTO message (sender_id,receiver_id,subject,message,sender_status,receiver_status) VALUES (?,?,?,?,1,0)');
+                                            return $db->execute(array($this->sender_id, $this->receiver_id, $this->subject, $this->message)); 
+                                    break;
+                            }
+                           
                 break;
             case 'group':  $user = new User();
                            $group_members = $user->getGroupMembers('group', $id);

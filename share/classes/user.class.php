@@ -283,7 +283,16 @@ class User {
                 $this->institution = new Institution($this->institution_id);
             }
         }
-        $this->token             = $result->token;   
+        if ($result->token == NULL){                    //Token has to be set to reset password: if NULL --> user never was logged in. 
+            $this->set('token', getToken());
+        } else {
+            $this->token             = $result->token;   
+        }
+    }
+    public function set($dependency, $value, $id = NULL){
+        if ($id == null){ $id = $this->id; }
+        $db = DB::prepare('UPDATE users SET '.$dependency.' = ? WHERE id = ?');
+        return $db->execute(array($value, $id));
     }
     
     public function getRole($id){
@@ -940,14 +949,25 @@ class User {
     * check login data
     * @return boolean 
     */
-   public function checkLoginData(){
-        $db     = DB::prepare('SELECT COUNT(id) FROM users WHERE UPPER(username) = UPPER(?) AND password=?');
-        $db->execute(array($this->username, $this->password));
-        $count  = $db->fetchColumn();
-        if ($count > 0){
-            return true;
+   public function checkLoginData($resetPW = false){
+        if ($resetPW){
+            $db     = DB::prepare('SELECT COUNT(id) FROM users WHERE UPPER(username) = UPPER(?) AND token=?');
+            $db->execute(array($this->username, $this->token));
+            $count  = $db->fetchColumn();
+            if ($count > 0){
+                return true;
+            } else {
+                return false; 
+            }
         } else {
-            return false; 
+            $db     = DB::prepare('SELECT COUNT(id) FROM users WHERE UPPER(username) = UPPER(?) AND password=?');
+            $db->execute(array($this->username, $this->password));
+            $count  = $db->fetchColumn();
+            if ($count > 0){
+                return true;
+            } else {
+                return false; 
+            }
         }
    }
    
