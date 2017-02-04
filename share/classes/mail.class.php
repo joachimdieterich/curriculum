@@ -206,7 +206,7 @@ class Mail {
             $dependency = 'person';
         }
         
-        if ($CFG->settings->resetPW == 'email'){
+        if ($CFG->settings->messaging == 'email'){
             $email              = new PHPMailer();
             $email->isSMTP();                                      // Set mailer to use SMTP
             $email->Host        = $CFG->email_Host;                // Specify main and backup SMTP servers
@@ -218,7 +218,7 @@ class Mail {
         }
         
         switch ($dependency) {
-            case 'person':  switch ($CFG->settings->resetPW) {
+            case 'person':  switch ($CFG->settings->messaging) {
                                 case 'email':   $u = new User();
                                                 $u->load('id',$this->sender_id, false);
                                                 $u->set('confirmed', 2); //set confirmed to reset PW

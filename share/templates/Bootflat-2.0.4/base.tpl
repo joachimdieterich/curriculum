@@ -321,7 +321,7 @@
                                                 <i class="fa fa-folder-open"></i>
                                             </a>
                                         {/if} 
-                                        {if checkCapabilities('file:upload', $my_role_id, false)}
+                                        {if checkCapabilities('template:change', $my_role_id, false)}
                                             <a onclick="formloader('settings', 'edit');" data-toggle="tooltip" title="Einstellungen" ><i class="fa fa-sliders"></i></a>
                                         {/if} 
                                     </span>

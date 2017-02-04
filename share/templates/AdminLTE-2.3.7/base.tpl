@@ -218,10 +218,12 @@
                             </li>
                           </ul>
                         </li>
-                        <!-- Control Sidebar Toggle Button -->
-                        <li>
-                          <a href="#" onclick="formloader('settings', 'edit');"><i class="fa fa-gears"></i></a>
-                        </li>
+                        {if checkCapabilities('template:change', $my_role_id, false)}
+                            <!-- Control Sidebar Toggle Button -->
+                            <li>
+                              <a href="#" onclick="formloader('settings', 'edit');"><i class="fa fa-gears"></i></a>
+                            </li>
+                        {/if}
                       </ul>
                     </div>    
                     {/if}   

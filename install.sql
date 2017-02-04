@@ -370,7 +370,8 @@ INSERT INTO `config` (`id`, `name`, `value`, `context_id`, `reference_id`, `time
 VALUES
 	(1, 'auth', 'shibboleth', 19, 0, '2017-01-30 08:53:02'),
 	(2, 'repository', 'omega', 19, 0, '2017-01-30 08:53:04'),
-	(3, 'template', 'Bootflat-2.0.4', 19, 0, '2017-01-30 08:53:16');
+	(3, 'template', 'Bootflat-2.0.4', 19, 0, '2017-01-30 08:53:16'),
+        (4, 'messaging', 'email', 19, 0, '2017-02-03 13:27:04');
 
 /*!40000 ALTER TABLE `config` ENABLE KEYS */;
 UNLOCK TABLES;

@@ -53,7 +53,7 @@ if(filter_input(INPUT_POST, 'guest', FILTER_UNSAFE_RAW) AND $CFG->guest_login ==
     $mail->sender_id    = $user->id;
     $institution        = new Institution();
     $institution_admins = $institution->getAdmin($user->id);
-    if ($CFG->settings->resetPW != 'email'){
+    if ($CFG->settings->messaging != 'email'){
         $mail->subject      = 'Passwort vergessen';
         $mail->message     .= '<p><strong>'.$user->resolveUserId($user->id, 'full').'</strong> hat das Passwort vergessen. Über den folgenden Link können Sie es zurücksetzen.';
         $mail->message     .= '<br><a onclick="formloader(\'password\',\'reset\','.$user->id.');">Passwort zurücksetzen</a></p>';   
