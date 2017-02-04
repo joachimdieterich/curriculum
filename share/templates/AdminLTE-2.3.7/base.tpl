@@ -206,7 +206,7 @@
                                       <a href="#" class="btn btn-default btn-flat  pull-left" onclick="formloader('profile', 'edit');" data-toggle="tooltip" title="Profil bearbeiten"><i class="fa fa-user"></i></a>
                                   {/if}
                                   {if checkCapabilities('file:upload', $my_role_id, false)}
-                                      <a href="../share/templates/AdminLTE-2.3.0/renderer/uploadframe.php?context=userFiles{$tb_param}" data-toggle="tooltip" title="Meine Dateien" class="btn btn-default btn-flat  nyroModal">
+                                      <a href="../share/templates/AdminLTE-2.3.7/renderer/uploadframe.php?context=userFiles{$tb_param}" data-toggle="tooltip" title="Meine Dateien" class="btn btn-default btn-flat  nyroModal">
                                           <i class="fa fa-folder-open"></i>
                                       </a>
                                   {/if} 

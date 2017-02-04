@@ -82,7 +82,7 @@
                                         {/if}
                                         {if isset($showaddObjectives)}
                                             {if checkCapabilities('file:upload', $my_role_id, false)}
-                                                <a href="../share/templates/AdminLTE-2.3.0/renderer/uploadframe.php?context=terminal_objective&ref_id={$ter->id}{$tb_param}" class="nyroModal"><span class="fa fa-plus pull-right box-sm-icon"></span></a>                        
+                                                <a href="../share/templates/AdminLTE-2.3.7/renderer/uploadframe.php?context=terminal_objective&ref_id={$ter->id}{$tb_param}" class="nyroModal"><span class="fa fa-plus pull-right box-sm-icon"></span></a>                        
                                             {/if} 
                                         {/if}
                                         {if checkCapabilities('file:loadMaterial', $my_role_id, false) AND $ter->files neq '0'}
@@ -124,7 +124,7 @@
                                                    {/foreach}
                                                 {/if*}
                                                 {if checkCapabilities('file:upload', $my_role_id, false)}
-                                                    <a href="../share/templates/AdminLTE-2.3.0/renderer/uploadframe.php?context=solution&ref_id={$ena->id}{$tb_param}" class="nyroModal">
+                                                    <a href="../share/templates/AdminLTE-2.3.7/renderer/uploadframe.php?context=solution&ref_id={$ena->id}{$tb_param}" class="nyroModal">
                                                     <span class="fa {if $sol_btn eq $ena->id OR $sol_btn eq false}fa-check-circle-o{else}fa-upload{/if} invert pull-right box-sm-icon" data-toggle="tooltip" {if $sol_btn eq $ena->id OR $sol_btn eq false}title="Lösung eingereicht"{else}title="Lösung einreichen"{/if}></span></a>
                                                 {/if}  
                                             {/if}
@@ -155,7 +155,7 @@
                                             {if isset($showaddObjectives)}
                                                 <span class="fa fa-check-square-o pull-right box-sm-icon text-primary" onclick="formloader('addQuiz','enabling_objective','{$ena->id}');"></span>
                                                 {if checkCapabilities('file:upload', $my_role_id, false)}
-                                                    <a href="../share/templates/AdminLTE-2.3.0/renderer/uploadframe.php?context=enabling_objective&ref_id={$ena->id}{$tb_param}" class="nyroModal">
+                                                    <a href="../share/templates/AdminLTE-2.3.7/renderer/uploadframe.php?context=enabling_objective&ref_id={$ena->id}{$tb_param}" class="nyroModal">
                                                      <span class="fa fa-plus pull-right box-sm-icon" ></span></a>
                                                 {/if}
                                             {else}
