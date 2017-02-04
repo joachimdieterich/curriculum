@@ -314,7 +314,10 @@ class Institution {
             }
             
             $db2     = DB::prepare('SELECT count(ua.id) as max FROM user_accomplished AS ua, institution_enrolments AS ie 
-                                WHERE ua.user_id = ie.user_id AND ua.status_id > 0 AND ie.institution_id = ? AND ua.context_id  = 12'); // enabling_objectives
+                                WHERE ua.user_id = ie.user_id AND (status_id = "x1" OR status_id = "x2" 
+                                                                OR status_id = "11" OR status_id = "12"
+                                                                OR status_id = "21" OR status_id = "22"
+                                                                OR status_id = "31" OR status_id = "32") AND ie.institution_id = ? AND ua.context_id  = 12'); // enabling_objectives
             $db2->execute(array($this->id));
             $r2 = $db2->fetchObject();
             $this->statistic['accomplished'] = $r2->max;
