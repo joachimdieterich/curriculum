@@ -215,20 +215,24 @@ class Mail {
         global $CFG;
         if ($dependency != 'reset'){
             checkCapabilities('mail:postMail', $_SESSION['USER']->role_id); // User kann per cronjob festgelegt sein, daher $_SESSION 
-        } else {
-            $dependency = 'person';
-        }
+        } 
         
         switch ($dependency) {
+            case 'reset':
             case 'person':  switch ($CFG->settings->messaging) {                //send email to sender --> e.g. reset password
                                 case 'email':   $u = new User();
                                                 $u->load('id',$this->sender_id, false);
-                                                $u->set('confirmed', 2); //set confirmed to reset PW
+                                                if ($dependency == 'reset'){
+                                                    $u->set('confirmed', 2); //set confirmed to reset PW
+                                                }
                                                 $this->email->CharSet = 'UTF-8';
-                                                $this->email->setFrom($CFG->email_Username, $CFG->app_title);
-                                                $this->email->addAddress($u->email);                          // Add a recipient
+                                                $this->email->setFrom($u->email, $CFG->app_title);
+                                                $this->email->addCC($u->email); //send copy to sender
+                                                /* get receiver email */
+                                                $u->load('id',$this->receiver_id, false);
+                                                $this->email->addAddress($u->email); // Add a recipient
+                                                
                                                 $this->email->isHTML(true);                                   // Set email format to HTML
-
                                                 $this->email->Subject = $this->subject;
                                                 $this->email->Body    = $this->message;
                                                 $this->email->AltBody = strip_tags($this->message);
