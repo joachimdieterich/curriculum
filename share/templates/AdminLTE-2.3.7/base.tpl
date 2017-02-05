@@ -269,7 +269,7 @@
     <!-- Logout - Timer  -->
     {if isset($institution_timeout)}
     <script type="text/javascript">
-        idleMax = {$global_timeout};        // Logout based on global timout value
+        idleMax = {$global_timeout};
         idleTime = 0;
         $(document).ready(function () {
             var idleInterval = setInterval("timerIncrement()", 60000); 
