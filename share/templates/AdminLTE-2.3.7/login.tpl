@@ -5,7 +5,6 @@
 {block name=nav}{$smarty.block.parent}{/block}
 
 {block name=additional_scripts}{$smarty.block.parent}
-    <script src="{$template_url}plugins/jQuery/jQuery-2.1.4.min.js"></script><!-- jQuery 2.1.4 -->
     <script src="{$template_url}bootstrap/js/bootstrap.min.js"></script><!-- Bootstrap 3.3.5 -->
 {/block}
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}

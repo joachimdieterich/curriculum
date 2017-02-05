@@ -57,8 +57,8 @@
         {block name=additional_stylesheets}{/block}
     </head>
     
-    {if $page_action eq 'login' OR  $page_action eq 'lock'}
-    <body class="hold-transition {if $page_action eq 'login'}login-page{/if} {if $page_action eq 'lock'}lockscreen{/if}" style="background-image: url('{$random_bg}'); background-size: cover;" >
+    {if $page_action eq 'login' OR  $page_action eq 'lock' OR  $page_action eq 'extern'}
+    <body class="hold-transition {if $page_action eq 'login' OR  $page_action eq 'extern'}login-page{/if} {if $page_action eq 'lock'}lockscreen{/if}" style="background-image: url('{$random_bg}'); background-size: cover;" >
         {block name=content} {/block}
     </body>
     {else}
@@ -231,7 +231,7 @@
             </header>        
                 
             <!-- Sidebar left - Menu -->
-            {if $page_name neq 'login'} <!--Kein Menu -->        
+            {if $page_name neq 'login' OR  $page_action eq 'extern'} <!--Kein Menu -->        
                 {block name=nav}{include file='menu.tpl'}{/block} 
             {/if}
             

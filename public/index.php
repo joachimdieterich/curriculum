@@ -34,6 +34,8 @@ try { // Error handling
             break;
         case 'install': $TEMPLATE->assign('page_action',      'install'); 
             break;
+        case 'extern':  $TEMPLATE->assign('page_action',      'extern'); 
+            break;
 
         default:   require ('../share/session.php');                                                           // Erst Session aufbauen damit $USER verfügbar ist, dann login-check!
                    require ('../share/login-check.php');                                                       // Check ob Session abgelaufen ist

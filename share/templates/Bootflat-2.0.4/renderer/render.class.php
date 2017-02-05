@@ -38,8 +38,8 @@ class Render {
             }, $string);     
     }
     
-     public static function accCheckboxes($id, $student, $teacher, $link = true){
-        global $USER;
+     public static function accCheckboxes($id, $student, $teacher, $link = true, $email = false, $token = false){
+        global $USER, $CFG;
         if ($USER->id != $student OR $student == $teacher){ // 2. Bedingung bewirkt, dass als Lehrer eigene Einreichungen bewerten kann --> für Demonstration der Plattform wichtig
             $ena       = new EnablingObjective();
             $ena->id   = $id;
@@ -125,7 +125,7 @@ class Render {
             $course     = new Course();
             $ena->load();
             
-            if (!checkCapabilities('objectives:setStatus', $USER->role_id, false)){
+            if ((!checkCapabilities('objectives:setStatus', $USER->role_id, false)) AND (!$email)){ //if student or email
                $status = $ena->accomplished_status_id;
                 if (strlen($status) > 1){
                     $teacher_status = substr($status, 1,1);
@@ -144,12 +144,18 @@ class Render {
                 } else {
                     $student_status = 'x';
                 }
-                
-                $html   = '<a class="pointer_hand"><i id="'.$id.'_green" style="font-size:18px;" class="'.$green.' margin-r-5 text-green pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'1\')"></i></a>'
-                    . '<a class="pointer_hand"><i id="'.$id.'_orange" style="font-size:18px; " class="'.$orange.' margin-r-5 text-orange pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'2\')"></i></a>'
-                    . '<a class="pointer_hand"><i id="'.$id.'_red" style="font-size:18px;" class="'.$red.' margin-r-5 text-red pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'0\')"></i></a>'
-                    . '<a class="pointer_hand"><i id="'.$id.'_white" style="font-size:18px;" class="'.$white.' margin-r-5 text-gray pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'3\')"></i></a>';
-            
+                if ($email AND $token){ //generate Links for Email
+                    $html   = '<br><strong>Lösung bewerten:</strong><br><br>Nutzer hat das Ziel ...<br><br>';
+                    $html  .= '<a href="'.$CFG->base_url.'public/index.php?action=extern&teacher='.$teacher.'&student='.$student.'&ena_id='.$id.'&status='.$student_status.'1'.'&token='.$token.'">... selbständig erreicht.</a>'
+                        . '<br><a href="'.$CFG->base_url.'public/index.php?action=extern&teacher='.$teacher.'&student='.$student.'&ena_id='.$id.'&status='.$student_status.'2'.'&token='.$token.'">... mit Hilfe erreicht.</a>'
+                        . '<br><a href="'.$CFG->base_url.'public/index.php?action=extern&teacher='.$teacher.'&student='.$student.'&ena_id='.$id.'&status='.$student_status.'3'.'&token='.$token.'">... nicht bearbeitet.</a>'
+                        . '<br><a href="'.$CFG->base_url.'public/index.php?action=extern&teacher='.$teacher.'&student='.$student.'&ena_id='.$id.'&status='.$student_status.'0'.'&token='.$token.'">... nicht erreicht.</a>';
+                } else {
+                    $html   = '<a class="pointer_hand"><i id="'.$id.'_green" style="font-size:18px;" class="'.$green.' margin-r-5 text-green pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'1\')"></i></a>'
+                        . '<a class="pointer_hand"><i id="'.$id.'_orange" style="font-size:18px; " class="'.$orange.' margin-r-5 text-orange pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'2\')"></i></a>'
+                        . '<a class="pointer_hand"><i id="'.$id.'_red" style="font-size:18px;" class="'.$red.' margin-r-5 text-red pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'0\')"></i></a>'
+                        . '<a class="pointer_hand"><i id="'.$id.'_white" style="font-size:18px;" class="'.$white.' margin-r-5 text-gray pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'3\')"></i></a>';
+                }
             }
             
             if ($link){
@@ -420,6 +426,7 @@ class Render {
        $html .=   '</span></div>';
         return $html;  
     }
+    
     public static function comments($params){
         global $CFG, $USER;
         foreach($params as $key => $val) {

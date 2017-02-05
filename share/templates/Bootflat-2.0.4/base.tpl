@@ -51,7 +51,7 @@
         {block name=additional_stylesheets}{/block}
     </head>
     
-    {if $page_action eq 'login' OR  $page_action eq 'lock' OR  $page_action eq 'install'}
+    {if $page_action eq 'login' OR  $page_action eq 'lock' OR  $page_action eq 'install' OR  $page_action eq 'extern'}
         <body style="background-image: url('{$random_bg}'); background-size: cover;" >
             {block name=content} {/block}
         </body>

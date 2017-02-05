@@ -98,12 +98,24 @@ class Mail {
      * @var int 
      */
     public $reveicer_status;
+    public $email; //PHP Mailer Class
     
     /**
      * class constructor 
      */
     public function __construct() {
-        
+        global $CFG;
+        if ($CFG->settings->messaging == 'email'){
+            $this->email              = new PHPMailer();
+            $this->email->isSMTP();                                      // Set mailer to use SMTP
+            $this->email->Host        = $CFG->email_Host;                // Specify main and backup SMTP servers
+            $this->email->SMTPAuth    = $CFG->email_SMTPAuth;            // Enable SMTP authentication
+            $this->email->Username    = $CFG->email_Username;            // SMTP username
+            $this->email->Password    = $CFG->email_Password;            // SMTP password
+            $this->email->SMTPSecure  = $CFG->email_SMTPSecure;          // Enable TLS encryption, `ssl` also accepted
+            $this->email->Port        = $CFG->email_Port;                // TCP port to connect to
+            $this->email->setFrom($CFG->email_Username, $CFG->app_title);
+        }
     }
     
     /**
@@ -194,6 +206,7 @@ class Mail {
         
     }
     
+    
     /**
      * post Mail
      * @return boolean 
@@ -206,38 +219,28 @@ class Mail {
             $dependency = 'person';
         }
         
-        if ($CFG->settings->messaging == 'email'){
-            $email              = new PHPMailer();
-            $email->isSMTP();                                      // Set mailer to use SMTP
-            $email->Host        = $CFG->email_Host;                // Specify main and backup SMTP servers
-            $email->SMTPAuth    = $CFG->email_SMTPAuth;            // Enable SMTP authentication
-            $email->Username    = $CFG->email_Username;            // SMTP username
-            $email->Password    = $CFG->email_Password;            // SMTP password
-            $email->SMTPSecure  = $CFG->email_SMTPSecure;          // Enable TLS encryption, `ssl` also accepted
-            $email->Port        = $CFG->email_Port;                // TCP port to connect to
-        }
-        
         switch ($dependency) {
-            case 'person':  switch ($CFG->settings->messaging) {
+            case 'person':  switch ($CFG->settings->messaging) {                //send email to sender --> e.g. reset password
                                 case 'email':   $u = new User();
                                                 $u->load('id',$this->sender_id, false);
                                                 $u->set('confirmed', 2); //set confirmed to reset PW
-                                                $email->CharSet = 'UTF-8';
-                                                $email->setFrom($CFG->email_Username, $CFG->app_title);
-                                                $email->addAddress($u->email);                          // Add a recipient
-                                                $email->isHTML(true);                                   // Set email format to HTML
+                                                $this->email->CharSet = 'UTF-8';
+                                                $this->email->setFrom($CFG->email_Username, $CFG->app_title);
+                                                $this->email->addAddress($u->email);                          // Add a recipient
+                                                $this->email->isHTML(true);                                   // Set email format to HTML
 
-                                                $email->Subject = $this->subject;
-                                                $email->Body    = $this->message;
-                                                $email->AltBody = strip_tags($this->message);
-
-                                                if(!$email->send()) {
+                                                $this->email->Subject = $this->subject;
+                                                $this->email->Body    = $this->message;
+                                                $this->email->AltBody = strip_tags($this->message);
+                                                
+                                                if(!$this->email->send()) {
                                                     error_log('Message could not be sent.');
-                                                    error_log('Mailer Error: ' . $email->ErrorInfo);
+                                                    error_log('Mailer Error: ' . $this->email->ErrorInfo);
                                                 } else {
                                                     return true;
                                                 }
                                     break;
+                                    
 
                                 default:    $db = DB::prepare('INSERT INTO message (sender_id,receiver_id,subject,message,sender_status,receiver_status) VALUES (?,?,?,?,1,0)');
                                             return $db->execute(array($this->sender_id, $this->receiver_id, $this->subject, $this->message)); 

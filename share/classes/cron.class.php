@@ -119,7 +119,7 @@ class Cron {
                         $mail->status       = true; 
                         $mail->postMail();
                         $message           .= '- Benachrichtigung verschickt.<br>';
-                        $objectives[$i]->setAccomplishedStatus('cron',$objectives[$i]->accomplished_users, -1, 2);
+                        $objectives[$i]->setAccomplishedStatus('cron',$objectives[$i]->accomplished_users, 0, 2);
                         $message           .= '- Status auf deaktiviert gesetzt (Wiederholung erforderlich).<br>';
                     } else { $message      .= "Keine abgelaufenen Ziele vorhanden<br>"; }   
                 }

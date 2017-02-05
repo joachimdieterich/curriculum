@@ -149,13 +149,32 @@ if ($my_upload->upload() OR filter_var($fileURL, FILTER_VALIDATE_URL)) {//in dat
         $enabling_objective->id = $file->enabling_objective_id;
         $enabling_objective->load();
         $teachers               = $course->getTeacher($USER->id, $enabling_objective->curriculum_id); //get Teachers
-        
+        $token                  = getToken();
+        $enabling_objective->setAccomplishedStatus('student', $USER->id, $USER->id, '1x', $token);     //set setAccomplishedStatus with token    
         $mail = new Mail();
         for($i = 0; $i < count($teachers); ++$i) {
             $mail->sender_id    = $USER->id;
             $mail->receiver_id  = $teachers[$i]; //current Teacher
-            $mail->subject      = 'Lösung eingereicht';
+            $mail->subject      = $CFG->app_title.': '.$USER->firstname.' '.$USER->lastname.' ('.$USER->username.') hat eine Lösung eingereicht';
             $mail->message      = '<p>Zum Lernziel: <strong>'.$enabling_objective->enabling_objective.'</strong> hat '.$USER->firstname.' '.$USER->lastname.' ('.$USER->username.') folgende Lösung eingereicht:<br>'; 
+            if ($CFG->settings->messaging == 'email'){                          // if email messaging is activated
+                $file->load($file->id);
+                $mail->email->addAttachment($CFG->curriculumdata_root.$file->full_path, $file->filename);   //Add solution to email 
+                $mail->email->CharSet = 'UTF-8';
+                $mail->email->addAddress($USER->email);                         // Add a recipient
+                $mail->email->isHTML(true);                                     // Set email format to HTML
+                $mail->email->Subject = $mail->subject;
+                $mail->email->Body    = $mail->message;
+                
+                $mail->email->Body   .= Render::accCheckboxes($enabling_objective->id, $mail->sender_id, $mail->receiver_id, false, true, $token).'</p>';
+                $mail->email->AltBody = strip_tags($mail->message);
+                if(!$mail->email->send()) {
+                    error_log('Message could not be sent.');
+                    error_log('Mailer Error: ' . $mail->email->ErrorInfo);
+                } else {
+                    return true;
+                }
+            } 
             $mail->message     .= '<link id="'.$file->id.'"></link>';
             $mail->message     .= '<accomplish id="'.$enabling_objective->id.'"></accomplish>';
             $mail->message     .= '</p>';
