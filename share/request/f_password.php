@@ -39,7 +39,7 @@ if (is_array($data)) {
             
 if (isset($func)){
     switch ($func) {
-        case "changePW":    $info = true;
+        case "changePW":    $info       = true;
         case "edit":        checkCapabilities('user:resetPassword', $USER->role_id);
                             $header     = 'Kennwort ändern';
                             $username   = $USER->username;      
@@ -88,7 +88,7 @@ $content.= '</form>';
 $footer  = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_password\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button> ';
    
 $html    = Form::modal(array('title'     => $header,
-                              'content'   => $content, 
-                              'f_content' => $footer)); 
+                             'content'   => $content, 
+                             'f_content' => $footer)); 
 
 echo json_encode(array('html'=>$html));

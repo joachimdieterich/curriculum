@@ -48,4 +48,4 @@ $LOG = new Log();
 require 'classes/video_stream.class.php';                                   //Videostream
 require 'libs/htmlpurifier-4.7.0-standalone/HTMLPurifier.standalone.php';   //HTML Purifier
 require 'libs/rtf-html-php-master/rtf-html-php.php';
-require 'libs/PHPMailer-5.2.15/PHPMailerAutoload.php';
+require 'libs/PHPMailer-5.2.22/PHPMailerAutoload.php';
