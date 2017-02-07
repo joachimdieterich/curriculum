@@ -701,6 +701,7 @@ class EnablingObjective {
      * @return type 
      */
     public function setAccomplishedStatus($dependency = null, $user_id = null, $creator_id = null, $status = 'x2', $token = null) {
+        global $USER;
         switch ($dependency) {
             case 'cron':    $db = DB::prepare('UPDATE user_accomplished SET status_id = ? WHERE reference_id = ? AND context_id = 12');
                             return $db->execute(array($status, $this->id));
