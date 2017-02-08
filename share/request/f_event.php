@@ -105,7 +105,10 @@ $content .= Form::input_text('event', 'Termin', $event, $error, 'z. B. Treffen i
 $content .= Form::input_textarea('description', 'Beschreibung', $description, $error, 'Beschreibung');
 $content .= Form::input_date(array('id'=>'timerange', 'label' => 'Dauer' , 'time' => $timerange, 'error' => $error, 'placeholder' => '', $type = 'date'));
 $content .= '</form>';
-$footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_event\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';   
+if ($_GET['func'] == 'edit'){
+    $footer   = '<button type="submit" class="btn btn-danger pull-left" onclick="alert(\'Funktion noch nicht verfügbar\');"><i class="fa fa-trash margin-r-5"></i> Termin löschen</button>';
+}
+$footer   .= '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_event\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';   
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
                               'f_content' => $footer));
