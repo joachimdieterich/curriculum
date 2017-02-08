@@ -34,9 +34,9 @@ if (filter_input(INPUT_GET, 'username', FILTER_UNSAFE_RAW) AND filter_input(INPU
     $user->username = (filter_input(INPUT_GET,     'username', FILTER_UNSAFE_RAW));     
     $user->token    = (filter_input(INPUT_GET,     'token', FILTER_UNSAFE_RAW));     
     if($user->checkLoginData(true)) { 
-        login($user);
+        $user->load('username', $user->username, false);
         $user->set('confirmed', 2); //set confirmed to reset PW
-                                                
+        login($user);                                
     } else { 
         $PAGE->message[] = array('message' => 'Benutzername bzw. Passwort falsch.', 'icon' => 'fa-key text-warning');     
     } 
@@ -78,10 +78,18 @@ if(filter_input(INPUT_POST, 'guest', FILTER_UNSAFE_RAW) AND $CFG->guest_login ==
 } else if(filter_input(INPUT_POST, 'login', FILTER_UNSAFE_RAW)) {
     $user->username = (filter_input(INPUT_POST,     'username', FILTER_UNSAFE_RAW));     
     $user->password = (md5(filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW)));
+    
     $TEMPLATE->assign('username', $user->username);                 // Benutzername bei falschem Passwort automatisch einsetzen.
     
     if($user->checkLoginData()) { 
-         login($user);
+        /* Check confirm status, if status == 2, but login data is correct set confirmed to 1 to prevent reset dialog */
+        $c = $user->getConfirmed();
+        if($c == 2){ 
+            $user->load('username', $user->username, false);
+            $user->set('confirmed', 1); 
+        }
+        login($user);
+        
     } else { 
         $PAGE->message[] = array('message' => 'Benutzername bzw. Passwort falsch.', 'icon' => 'fa-key text-warning');     
     }  

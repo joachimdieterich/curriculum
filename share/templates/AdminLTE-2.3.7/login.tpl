@@ -46,7 +46,7 @@
           <a href="../share/plugins/auth/shibboleth/index.php" class="btn btn-block btn-social btn-openid"><img src="assets/images/icons/shibboleth-web.png"></img> Über Shibboleth anmelden</a>
         </div>
         {/if}
-        <a href="#" onclick="toggle(['reset', 'reset_info'], ['login', 'password']);">Passwort vergessen</a><br>
+        <p  id="pw_reset"><a  href="#" onclick="toggle(['reset', 'reset_info'], ['login', 'password', 'pw_reset']);">Passwort vergessen</a></p>
         <a href="#" class="text-center" onclick="alert('Funktion noch nicht verfügbar');">Registrieren</a>
 
       </div><!-- /.login-box-body -->
