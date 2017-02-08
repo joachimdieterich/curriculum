@@ -34,7 +34,9 @@ if (filter_input(INPUT_GET, 'username', FILTER_UNSAFE_RAW) AND filter_input(INPU
     $user->username = (filter_input(INPUT_GET,     'username', FILTER_UNSAFE_RAW));     
     $user->token    = (filter_input(INPUT_GET,     'token', FILTER_UNSAFE_RAW));     
     if($user->checkLoginData(true)) { 
-         login($user);
+        login($user);
+        $user->set('confirmed', 2); //set confirmed to reset PW
+                                                
     } else { 
         $PAGE->message[] = array('message' => 'Benutzername bzw. Passwort falsch.', 'icon' => 'fa-key text-warning');     
     } 

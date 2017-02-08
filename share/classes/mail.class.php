@@ -222,9 +222,6 @@ class Mail {
             case 'person':  switch ($CFG->settings->messaging) {                //send email to sender --> e.g. reset password
                                 case 'email':   $u = new User();
                                                 $u->load('id',$this->sender_id, false);
-                                                if ($dependency == 'reset'){
-                                                    $u->set('confirmed', 2); //set confirmed to reset PW
-                                                }
                                                 $this->email->CharSet = 'UTF-8';
                                                 $this->email->setFrom($u->email, $CFG->app_title);
                                                 $this->email->addCC($u->email); //send copy to sender
