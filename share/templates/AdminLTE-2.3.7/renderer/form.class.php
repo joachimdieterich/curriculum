@@ -128,7 +128,7 @@ class Form {
         $form = '<div class="form-group '.validate_msg($error, $id, true).'">
                   <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
                   <div class="'.$class_right.'">
-                      <select id="'.$id.'" name="'.$id.'" class="form-control" onchange="'.$onchange.'" '.$disabled.'>';
+                      <select id="'.$id.'" name="'.$id.'" class="chosen-select form-control" onchange="'.$onchange.'" '.$disabled.'>';
                        if (count($select_data) > 0){
                              if ($placeholder != '---'){
                                 $form .= '<option>'.$placeholder.'</option>';
@@ -170,7 +170,7 @@ class Form {
         $form = '<div class="form-group '.validate_msg($error, $id, true).'">
                     <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
                     <div class="'.$class_right.'">
-                        <select multiple id="'.$id.'[]" name="'.$id.'[]" class="form-control" style="height:'.$height.';" onchange="'.$onchange.'">';
+                        <select multiple id="'.$id.'[]" name="'.$id.'[]" class="chosen-select form-control" style="height:'.$height.';" onchange="'.$onchange.'">';
                         if (count($select_data) > 0){
                             foreach ($select_data as $value) {
                                 if (strpos($select_label, ',')){ // more than one field in select_label                   

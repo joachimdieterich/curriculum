@@ -386,7 +386,21 @@
     <script src="{$media_url}scripts/PDFObject-master/pdfobject.min.js"></script> 
     <script src="{$media_url}scripts/file.min.js"></script>
     <script src="{$media_url}scripts/dragndrop.min.js"></script>     
-    
+    {* Adding chosen to get better select input ui *}
+    <link rel="stylesheet" href="{$media_url}scripts/chosen_v1.6.3/chosen.min.css">
+    <script src="{$media_url}scripts/chosen_v1.6.3/chosen.jquery.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    var config = {
+      '.chosen-select'           : {literal}{}{/literal},
+      '.chosen-select-deselect'  : {literal}{allow_single_deselect:true}{/literal},
+      '.chosen-select-no-single' : {literal}{disable_search_threshold:10}{/literal},
+      '.chosen-select-no-results': {literal}{no_results_text:'Keine Treffer!'}{/literal},
+      '.chosen-select-width'     : {literal}{width:"95%"}{/literal}
+    };
+    for (var selector in config) {
+      $(selector).chosen(config[selector]);
+    }
+  </script>
     {block name=additional_scripts} 
         
     <!-- Logout - Timer  -->
