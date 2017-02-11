@@ -183,7 +183,7 @@ $html     = Form::modal(array('title'     => $header,
                               'f_content' => $f_content));
 $script = "<script id='modal_script'>
         $.getScript('".$CFG->smarty_template_dir_url."plugins/colorpicker/bootstrap-colorpicker.min.js', function (){
-        $('.color-picker').colorpicker();
-        });</script>";
+            $('.color-picker').colorpicker();
+            });</script>";
 
 echo json_encode(array('html'=>$html, 'script' => $script));

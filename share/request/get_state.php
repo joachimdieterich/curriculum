@@ -37,4 +37,5 @@ foreach ($state->getStates() as $value) {
     } 
     $html  .='>'.$value->state.'</option>';
 }
+error_log(json_encode(array('html'=>$html)));
 echo json_encode(array('html'=>$html));

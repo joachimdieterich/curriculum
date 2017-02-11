@@ -629,6 +629,10 @@ function setValues() {
                 response = JSON.parse(req.responseText);
                 if (document.getElementById(arguments[0])){
                     document.getElementById(arguments[0]).innerHTML = response.html;
+                    /* update chosen-select if present */
+                    if ($(document.getElementById(arguments[0])).hasClass("chosen-select")){
+                        $(document.getElementById(arguments[0])).trigger('chosen:updated');
+                    }
                 }  
             }
         }
@@ -719,7 +723,8 @@ function resizeModal(){
  */
 function popupFunction(e){
     $("body").addClass("modal-open");                                           //prevent scrolling on body tag
-    eval($("#"+e).children("script").text());                                   // aktiviert scripte im Element e
+    var script = $("#"+e).children("script").text();
+    eval(script);                                   // aktiviert scripte im Element e
     resizeModal();                                                              // resize modal 
     
     textareas = document.getElementsByTagName("textarea");                      // Replace the <textarea id="editor1"> with a CKEditor instance, using default configuration
@@ -731,7 +736,6 @@ function popupFunction(e){
         }); 
     }
     
-    
     var config = {
       '.chosen-select'           : {},
       '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -740,9 +744,8 @@ function popupFunction(e){
       '.chosen-select-width'     : {width:"95%"}
     };
     for (var selector in config) {
-      $(selector).chosen(config[selector]);
+        $(selector).chosen(config[selector]);
     }
-
 }
 
 /**
