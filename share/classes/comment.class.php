@@ -27,6 +27,7 @@
 class Comment {
     public $id;
     public $reference_id;
+    public $context;
     public $context_id;
     public $parent_id; //parent comment_id
     public $text;
@@ -103,8 +104,10 @@ class Comment {
             case 'id':          $db = DB::prepare('SELECT cm.id FROM comments AS cm WHERE cm.id = ?');
                                 $db->execute(array($id));
                 break;
-            case 'reference':   $db = DB::prepare('SELECT cm.id FROM comments AS cm WHERE cm.reference_id = ? AND cm.context_id = ? AND cm.parent_id IS NULL ORDER BY creation_time');
-                                $db->execute(array($this->reference_id, $this->context_id));
+            case 'reference':   $db = DB::prepare('SELECT cm.id FROM comments AS cm, context AS co '
+                                                . 'WHERE cm.reference_id = ? '
+                                                . 'AND cm.context_id = co.context_id AND co.context = ? AND cm.parent_id IS NULL ORDER BY creation_time');
+                                $db->execute(array($this->reference_id, $this->context));
             
             default:
                 break;

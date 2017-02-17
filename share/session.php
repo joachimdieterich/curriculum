@@ -31,15 +31,15 @@ $USER = new User();
 
 if (isset($_SESSION['USER'])){                                                  // Wenn $USER Object uin Session existiert diesen übernehmen
     assign_to_template($_SESSION['USER'],'my_');                                // $_SESSION['USER'] im $TEMPLATE verfügbar machen
-    $USER                   =  $_SESSION['USER'];
-    $institution = new Institution();
-    $timeout = $institution->getTimeout($USER->institution_id);
+    $USER                       =  $_SESSION['USER'];
+    $institution                = new Institution();
+    $timeout                    = $institution->getTimeout($USER->institution_id);
     if ($timeout){
         $CFG->timeout = $timeout;
     }
     $TEMPLATE->assign('global_timeout', $CFG->timeout);
 } else {                                                                        // ... anderenfalls $USER aus db laden
-    $_SESSION['USER']       =  new User();  
+    $_SESSION['USER']           =  new User();  
     session_reload_user();
  }
 /**

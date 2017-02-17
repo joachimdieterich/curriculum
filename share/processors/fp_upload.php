@@ -166,7 +166,7 @@ if ($my_upload->upload() OR filter_var($fileURL, FILTER_VALIDATE_URL)) {//in dat
                 $mail->email->Subject = $mail->subject;
                 $mail->email->Body    = $mail->message;
                 
-                $mail->email->Body   .= Render::accCheckboxes($enabling_objective->id, $mail->sender_id, $mail->receiver_id, false, true, $token).'</p>';
+                $mail->email->Body   .= Render::accCheckboxes(array('id' => $enabling_objective->id, 'student' => $mail->sender_id, 'teacher' => $mail->receiver_id, 'link' => false, 'email' => true, 'token' => $token)).'</p>';
                 $mail->email->AltBody = strip_tags($mail->message);
                 if(!$mail->email->send()) {
                     error_log('Message could not be sent.');

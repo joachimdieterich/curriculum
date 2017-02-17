@@ -73,10 +73,10 @@ if (isset($currentUrlId)){ $content .= $currentUrlId; }
 $content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
 
 if (isset($info)){
-    $content .= Form::info('p_rule', ' ', 'Ihr Kennwort wurde neu angelegt bzw. zurückgesetzt. Bitte ändern Sie daher das Kennwort um unbefugten Zugriff auf Ihre Daten zu vermeiden.');
+    $content .= Form::info(array('id' => 'p_rule', 'content' => 'Ihr Kennwort wurde neu angelegt bzw. zurückgesetzt. Bitte ändern Sie daher das Kennwort um unbefugten Zugriff auf Ihre Daten zu vermeiden.'));
 }
 $content .= Form::input_text('username', 'Benutzername', $username, $error,'','text',null, null, 'col-sm-3','col-sm-9', true);
-$content .= Form::info('p_rule', ' ', 'Das Kennwort muss ...<br>- mind. 8 Zeichen lang sein<br>- mind. 1 Großbuchstaben <br>- mind. 1 Kleinbuchstaben<br>- mind. 1 Zahl<br>- mind. 1 Sonderzeichen <br> enthalten. ');
+$content .= Form::info(array('id' => 'p_rule', 'content' => 'Das Kennwort muss ...<br>- mind. 8 Zeichen lang sein<br>- mind. 1 Großbuchstaben <br>- mind. 1 Kleinbuchstaben<br>- mind. 1 Zahl<br>- mind. 1 Sonderzeichen <br> enthalten. '));
 if ($func != 'reset'){
     $content .= Form::input_text('oldpassword', 'Altes Kennwort', null, $error, '','password');
 }

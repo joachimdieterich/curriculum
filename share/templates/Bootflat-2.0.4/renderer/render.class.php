@@ -34,12 +34,21 @@ class Render {
         return preg_replace_callback('/<accomplish id="(\d+)"><\/accomplish>/i', 
             function($r){ 
                 global $s, $t; 
-                return Render::accCheckboxes($r[1], $s, $t);
+                return Render::accCheckboxes(array('id' => $r[1], 'student' => $s, 'teacher' => $t));
             }, $string);     
     }
     
-     public static function accCheckboxes($id, $student, $teacher, $link = true, $email = false, $token = false){
+    public static function accCheckboxes($params){
+        //$id, $student, $teacher
         global $USER, $CFG;
+        $link   = true;
+        $email  = false; 
+        $token  = false;
+        if (!is_array($params)){ //hack to use json_arrays from smarty
+            $params = json_decode($params);
+        }
+        foreach($params as $key => $val) { $$key = $val; }   
+        
         if ($USER->id != $student OR $student == $teacher){ // 2. Bedingung bewirkt, dass als Lehrer eigene Einreichungen bewerten kann --> für Demonstration der Plattform wichtig
             $ena       = new EnablingObjective();
             $ena->id   = $id;
@@ -574,7 +583,7 @@ class Render {
                         }
                         $html  .='</span>';
                         if (checkCapabilities('course:selfAssessment', $USER->role_id, false)){
-                            $html  .='<span class="pull-left">'.Render::accCheckboxes($objective->id, $user_id, $user_id, false).'</span>';
+                            $html  .='<span class="pull-left">'.Render::accCheckboxes(array('id' => $objective->id, 'student' => $user_id, 'teacher' => $user_id, 'link' => false)).'</span>';
                         }
         $html  .='    </div>
                   </div>';

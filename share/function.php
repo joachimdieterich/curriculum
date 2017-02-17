@@ -745,7 +745,7 @@ function exists_plugin($type, $plugin) {
  */
 function session_reload_user(){
     global $USER, $CFG, $TEMPLATE;
-    
+    $USER = new User();
     $USER->load('username', $_SESSION['username']);                             // Benutzer aus DB laden
     $USER->password         = '';                                               // Passwort aus Session löschen
     $_SESSION['USER']       =& $USER;

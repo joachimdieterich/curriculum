@@ -35,7 +35,7 @@
                 </div>
                 <div class="panel-group panel-group-lists collapse in" id="accordion_erfolg" style="overflow: scroll; width: 100%; max-height: 300px;">
                 {foreach key=enaid item=ena from=$enabledObjectives}
-                <div class="panel {$box_bg[$ena->accomplished_status_id]}">
+                <div class="panel bg-{$box_bg[$ena->accomplished_status_id]}">
                     <div class="panel-heading">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" data-parent="#accordion_erfolg" href="#tab_ena_{$ena->id}" class="collapsed">

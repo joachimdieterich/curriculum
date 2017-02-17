@@ -881,6 +881,27 @@ class User {
         
         checkCapabilities('user:getUsers', $USER->role_id);
         switch ($dependency) {
+            case 'curriculum':  case 'course':  $db = DB::prepare('SELECT us.*, ie.role_id FROM users AS us, groups_enrolments AS ge, curriculum_enrolments AS ce, institution_enrolments as ie, groups as gr
+                                                WHERE us.id = ge.user_id 
+                                                AND ce.curriculum_id = ?
+                                                AND ce.status = 1
+                                                AND ce.group_id = ge.group_id
+                                                AND ie.user_id = us.id
+                                                AND ie.status = 1                                                      
+                                                AND ge.status = 1 
+                                                AND gr.institution_id = ie.institution_id
+                                                AND gr.id = ge.group_id '.$order_param);
+                                $db->execute(array($id)); 
+                                while($result = $db->fetchObject()) {  
+                                    $this->id           = $result->id;
+                                    $this->username     = $result->username;
+                                    $this->firstname    = $result->firstname; 
+                                    $this->lastname     = $result->lastname; 
+                                    $this->role_id      = $result->role_id; 
+                                    $users[]            = clone $this; 
+                                }
+                                
+                break;
             case 'course':  $db = DB::prepare('SELECT us.*, ie.role_id FROM users AS us, groups_enrolments AS ge, curriculum_enrolments AS ce, institution_enrolments as ie, groups as gr
                                                 WHERE us.id = ge.user_id 
                                                 AND ce.curriculum_id = ?
@@ -917,9 +938,8 @@ class User {
                                     if (!checkCapabilities('objectives:setStatus', $this->role_id, FALSE)){ //only add to list if not able to set status == teacher
                                         $ena = new EnablingObjective();
                                         $this->completed = $ena->getPercentageOfCompletion($id, $this->id);
-                                        $users[] = clone $this; 
                                     }
-                                    
+                                    $users[] = clone $this;      
                             }
                             break;
             case 'institution':  $db = DB::prepare('SELECT DISTINCT us.* FROM users AS us

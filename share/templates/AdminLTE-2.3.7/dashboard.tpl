@@ -31,7 +31,7 @@
                 {if isset($enabledObjectives)} 
                 Ziele die in den vergangenen <strong>{$my_acc_days}</strong> Tagen den Status geändert haben.
                     {foreach key=enaid item=ena from=$enabledObjectives}
-                        <div class="callout {$box_bg[$ena->accomplished_status_id]}">
+                        <div class="callout bg-{$box_bg[$ena->accomplished_status_id]}">
                             <p><strong>{$ena->curriculum}</strong><span class="badge pull-right" data-toggle="tooltip" title="Lernstand gesetzt von ...">{$ena->accomplished_teacher}</span></p>
                             {strip_tags($ena->enabling_objective|truncate:100)}
                         </div>

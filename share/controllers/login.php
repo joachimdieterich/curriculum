@@ -114,16 +114,16 @@ $TEMPLATE->assign('message',     $message);
 function login($user){
     global $CFG, $PAGE;
     if (isset($_SESSION['wantsurl'])){  
-            $PAGE->wantsurl = $_SESSION['wantsurl'];                // save wantsurl in $PAGE, session gets destroyed!
+            $PAGE->wantsurl = $_SESSION['wantsurl'];                            // save wantsurl in $PAGE, session gets destroyed!
     }
-    session_destroy();                                          // Verhindert, dass eine bestehende Session genutzt wird --> verursacht Probleme (token / uploadframe)
+    session_destroy();                                                          // Verhindert, dass eine bestehende Session genutzt wird --> verursacht Probleme (token / uploadframe)
     session_start();
 
     $_SESSION['username']   = $user->username;
     $_SESSION['timein']     = time();
     $user->load('username', $user->username, true);
-
     $user->setLastLogin();
+    session_reload_user();
 
     //Nutzungsbedingungen akzeptiert?
     if (($user->checkTermsOfUse() == false) OR ($user->username == $CFG->guest_usr)){

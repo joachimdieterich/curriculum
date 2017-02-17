@@ -26,46 +26,32 @@
         </div>
     </div>
     <div class="row">
-        {*
-        <div class="col-xs-1">
-            <ul class="nav nav-stacked affix panel" id="sidebar">
-                <li><a onclick='formloader("wallet_content", "new_file", {$wallet->id});'>  
-                        <span class="fa-stack fa margin-r-10">
-                            <i class="fa fa-file-o fa-stack-1x"></i>
-                            <i class="fa fa-plus-circle fa-stack-1x" style="margin-top: -10px; padding-left: 20px;"></i>
-                        </span>
-                        Datei
-                    </a>
-                </li>
-                <li><a  onclick='formloader("wallet_content", "new_content", {$wallet->id};'>
-                        <span class="fa-stack fa margin-r-10">
-                            <i class="fa fa-align-left fa-stack-1x"></i>
-                            <i class="fa fa-plus-circle fa-stack-1x" style="margin-top: -10px; padding-left: 20px;"></i>
-                        </span>
-                        Text
-                    </a>
-                </li>
-              </ul>
-        </div>
-        *}
         <div class="col-xs-12">
             <div class="panel">
                 <div class="panel-heading">
-                    {if $wallet->permission eq 2}
-                        <div class="pull-right">
-                            <div class="btn-group">
-                              <button type="button" class="btn btn-default" onclick="formloader('wallet_sharing','edit',{$wallet->id});"><i class="fa fa-share-alt"></i></button>
-                              </div>
-                        </div>
-                    {/if}
-                    {if $wallet->creator_id eq $my_id}
-                        <div class="pull-right margin-r-10">
+                    <div class="pull-right">
+                        <div class="btn-group">
+                        {if $wallet->creator_id eq $my_id OR $wallet->permission eq 2}
                             {if $edit eq true}
-                                <a href="{removeUrlParameter($page_url, 'edit')}"><button type="button" class="btn btn-default"><i class="fa fa-check"></i></button></a>
+                                <button type="button" class="btn btn-default"><a href="{removeUrlParameter($page_url, 'edit')}"><i class="fa fa-check"></i></a></button>
                             {else}
-                                <a href="{$page_url}&edit=true"><button type="button" class="btn btn-default"><i class="fa fa-edit"></i></button></a>
+                                <button type="button" class="btn btn-default"><a href="{$page_url}&edit=true"><i class="fa fa-edit"></i></a></button>
                             {/if}
-                            <button type="button" class="btn btn-default"><i class="fa fa-trash"></i></button>  
+                        {/if}    
+                        {if $wallet->creator_id eq $my_id} 
+                            {if checkCapabilities('wallet:delete', $my_role_id, false) AND $wallet->creator_id eq $my_id}  
+                                <button type="button" class="btn btn-default"><i class="fa fa-trash"></i></button>  
+                            {/if}  
+                            {if checkCapabilities('wallet:share', $my_role_id, false)}
+                                <button type="button" class="btn btn-default" onclick="formloader('wallet_sharing','edit',{$wallet->id});"><i class="fa fa-share-alt"></i></button>
+                            {/if}
+                        {/if}
+                        </div>
+                    </div>
+                    
+                    {if $wallet->creator_id eq $my_id}
+                        <div class="pull-right margin-r-5">
+                            {Form::input_select('wallet_user_id', '', $userlist, 'firstname, lastname', 'id', $sel_user_id, null, "window.location.assign('index.php?action=walletView&wallet={$wallet->id}&user_id='+this.value);", 'Sammelmappe von Kursteilnehmer wählen...', '', 'col-sm-12')}
                         </div>
                     {/if}
                     <strong>{$wallet->title}</strong><br>{$wallet->timerange}
@@ -76,7 +62,11 @@
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                         {$wallet->description}<br>
                         {foreach key=oid item=o from=$objectives}
-                            <div style="display:inline-table">{RENDER::objective(["type" =>"enabling_objective", "objective" => $o])}</div>
+                            {if isset($sel_user_id)}
+                                <div style="display:inline-table">{RENDER::objective(["type" =>"enabling_objective", "objective" => $o , "user_id" => $sel_user_id])}</div>
+                            {else}
+                                <div style="display:inline-table">{RENDER::objective(["type" =>"enabling_objective", "objective" => $o ])}</div>
+                            {/if}
                         {/foreach}
                     </div>
                     {assign var="row_id" value="-1"} 

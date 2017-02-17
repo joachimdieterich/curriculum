@@ -79,8 +79,10 @@ if($validated_data === false) {/* validation failed */
                         if ($_POST['func'] == 'edit'){
                             $content->id                  = $_POST['content_id'];
                             $wallet_content->reference_id = $content->id;
+                            checkCapabilities('wallet:workon', $USER->role_id);   //has to be done here --> content class normally uses permission content:add
                             $content->update();
                         }  else {
+                            checkCapabilities('wallet:workon', $USER->role_id);   //has to be done here --> content class normally uses permission  content:add
                             $wallet_content->reference_id = $content->add(false); 
                         }
             break;

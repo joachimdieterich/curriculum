@@ -61,8 +61,10 @@ if($validated_data === false) {/* validation failed */
 } else {
     if ($_POST['func'] == 'edit'){
         $content->id         = $_POST['id'];
+        checkCapabilities('content:update', $USER->role_id); //has to be done here --> content class is used in wallet with permission wallet:update
         $content->update();
     }  else {
+        checkCapabilities('content:add', $USER->role_id);   //has to be done here --> content class is used in wallet with permission wallet:add
         $content->add(); 
     }
     $_SESSION['FORM']            = null;                     // reset Session Form object 

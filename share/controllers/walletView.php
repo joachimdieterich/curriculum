@@ -26,15 +26,27 @@
 global $CFG, $USER, $PAGE, $TEMPLATE, $INSTITUTION;
 $TEMPLATE->assign('breadcrumb',  array('Sammelmappe' => 'index.php?action=wallet', 'Ansicht' => 'index.php?action=walletView'));
 $TEMPLATE->assign('page_title', 'Ansicht');  
+
+$wallet   = new Wallet(filter_input(INPUT_GET, 'wallet', FILTER_VALIDATE_INT));
 if (isset($_GET['edit'])){ $TEMPLATE->assign('edit', true); } else { $TEMPLATE->assign('edit', false); }
+if (isset($_GET['user_id'])){ 
+    $sel_user_id    = $_GET['user_id'];
+    $TEMPLATE->assign('sel_user_id', $sel_user_id); 
+    $wallet->get('user', $sel_user_id);
+} else { 
+    $wallet->get('user', $USER->id);
+}
 /******************************************************************************
  * END POST / GET
  */
 
-$wallet   = new Wallet(filter_input(INPUT_GET, 'wallet', FILTER_VALIDATE_INT));
-$wallet->get('user', $USER->id);
+$course_user        = new User();
+$course_user->id    = $USER->id;
+
+$TEMPLATE->assign('userlist', $course_user->getUsers('curriculum', 'walletPaginator', $wallet->curriculum_id));
 //error_log(json_encode($wallet->comments));
 $TEMPLATE->assign('wallet', $wallet); 
+$TEMPLATE->assign('course', $wallet); 
 
 $ena = new EnablingObjective;
 $obj = array();

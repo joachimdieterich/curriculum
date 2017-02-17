@@ -179,13 +179,13 @@ class Wallet {
                 break;
             case 'user':    $db = DB::prepare('SELECT wa.id FROM wallet AS wa WHERE wa.id = ? AND wa.creator_id = ?');
                             $db->execute(array($this->id, $USER->id));
-                            $content = new WalletContent();
+                            $content            = new WalletContent();
                             $content->wallet_id = $this->id;
-                            $this->content = $content->get('user', $id);
-                            $cm = new Comment();
-                            $cm->reference_id = $this->id;
-                            $cm->context_id   = 18; //todo !!!
-                            $this->comments   = $cm->get('reference');
+                            $this->content      = $content->get('user', $id);
+                            $cm                 = new Comment();
+                            $cm->reference_id   = $this->id;
+                            $cm->context        = 'wallet'; 
+                            $this->comments     = $cm->get('reference');
                 break;
             case 'search':  if ($id){
                                 $db = DB::prepare('SELECT wa.id FROM wallet AS wa 

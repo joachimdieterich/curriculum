@@ -165,7 +165,7 @@
                                     {/if} 
                                     </span>
                                     {if checkCapabilities('course:selfAssessment', $my_role_id, false) AND !isset($showaddObjectives)}
-                                        <span class="pull-left">{Render::accCheckboxes($ena->id, $my_id, $my_id, false)}</span>
+                                        <span class="pull-left">{Render::accCheckboxes( {['id' => $ena->id, 'student' => $my_id, 'teacher' => $my_id, 'link' => false]|@json_encode nofilter})}</span>
                                     {/if}
                                 </div>
                             </div>    

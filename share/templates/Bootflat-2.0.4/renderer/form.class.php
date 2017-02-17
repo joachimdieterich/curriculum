@@ -26,11 +26,16 @@
 */
 class Form {
     
-    public static function info($id, $label, $content, $class_left='col-sm-3', $class_right='col-sm-9'){
-        $form = '<div class="form-group">
-                  <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
-                  <div class="'.$class_right.'">'.$content.'</div>
-                </div>';  
+    public static function info($params){
+        // params: $id, $label, $content, 
+        $label          = '';
+        $class_left     = 'col-sm-3'; 
+        $class_right    = 'col-sm-9';
+        foreach($params as $key => $val) { $$key = $val; }
+        $form = "<div class=\"form-group\">
+                  <label class=\"control-label {$class_left}\" for=\"{$id}\">{$label}</label>
+                  <div class=\"{$class_right}\">{$content}</div>
+                </div>";  
 
         return $form;
     }
@@ -126,9 +131,11 @@ class Form {
      */
     public static function input_select($id, $label, $select_data, $select_label, $select_value, $input, $error, $onchange= '', $placeholder ='---', $class_left='col-sm-3', $class_right='col-sm-9', $disabled = ''){
         
-        $form = '<div class="form-group '.validate_msg($error, $id, true).'">
-                  <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
-                  <div class="'.$class_right.'">
+        $form = '<div class="form-group '.validate_msg($error, $id, true).'">';
+        if ($class_left != ''){ // if left class is empty no label is set
+            $form .= ' <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>';
+        }
+        $form .= ' <div class="'.$class_right.'">
                       <select id="'.$id.'" name="'.$id.'" class="form-control chosen-select" onchange="'.$onchange.'" '.$disabled.'>';
                        if (count($select_data) > 0){
                              if ($placeholder != '---'){
@@ -139,10 +146,10 @@ class Form {
                                     foreach (explode(', ', $select_label) as $f) {
                                         $fields[]  = $value->$f;
                                     }
-                                    $label = implode(" | ", $fields);
+                                    $label = implode(" ", $fields);
                                     unset($fields);
                                 } else {
-                                    $label  = $value->$select_label;
+                                    $label = $value->$select_label;
                                 }
                                 $form .= '<option label="'.$label.'" value="'.$value->$select_value.'"'; if ($input == $value->$select_value){ $form .= 'selected="selected"'; } $form .= '>'.$label.'</option>';
                             }

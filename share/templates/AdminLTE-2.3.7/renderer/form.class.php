@@ -25,18 +25,29 @@
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 class Form {
-    
-    public static function info($id, $label, $content, $class_left='col-sm-3', $class_right='col-sm-9'){
-        $form = '<div class="form-group">
-                  <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
-                  <div class="'.$class_right.'">'.$content.'</div>
-                </div>';  
+    /**
+     * info
+     * 
+     * Infotext
+     * 
+     * @param array $params Possible params: id, label, content, class_left (default: col-sm-3), class_right (default: col-sm-9)
+     * @return string HTML
+     */
+    public static function info($params){
+        $label          = '';
+        $class_left     = 'col-sm-3'; 
+        $class_right    = 'col-sm-9';
+        foreach($params as $key => $val) { $$key = $val; }   
 
-        return $form;
+        return "<div class=\"form-group\">
+                  <label class=\"control-label {$class_left}\" for=\"{$id}\">{$label}</label>
+                  <div class=\"{$class_right}\">{$content}</div>
+                </div>";
     }
     
      /**
-      * Test input -> todo use $params statt einzelner parameter
+      * input_text
+      * Text input -> todo use $params statt einzelner parameter
       * @param string $id 
       * @param string $label
       * @param mixed $data
@@ -47,34 +58,34 @@ class Form {
       * @return string
       */
     public static function input_text($id, $label, $input, $error, $placeholder ='Text...', $type='text', $min=null, $max=null, $class_left='col-sm-3', $class_right='col-sm-9', $readonly = null){
-        $form = '<div class="form-group '.validate_msg($error, $id, true).'">
-                  <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
-                  <div class="'.$class_right.'">'.validate_msg($error, $id).'<input id="'.$id.'" name="'.$id.'" type="'.$type.'" ';
-                  if ($min) {$form .= 'min="'.$min.'" ';}
-                  if ($min) {$form .= 'max="'.$max.'" ';}
-        $form .= 'class="form-control" placeholder="'.$placeholder.'" ';
+        $form = "<div class='form-group ".validate_msg($error, $id, true)."'>
+                  <label class='control-label {$class_left}' for='{$id}'>{$label}</label>
+                  <div class='{$class_right}'>".validate_msg($error, $id)."<input id='{$id}' name='{$id}' type='{$type}'";
+                  if ($min) {$form .= "min='{$min}'";}
+                  if ($min) {$form .= "max='{$max}'";}
+        $form .= "class='form-control' placeholder='{$placeholder}'";
         if (isset($input)) { 
-            $form .=  'value="'.$input.'"';  
+            $form .=  "value='{$input}'";  
         } 
         if (isset($readonly)) { 
-            $form .=  ' readonly ';  
+            $form .=  " readonly ";  
         } 
-        $form .= ' /> </div></div>';  
+        $form .= " /> </div></div>";  
 
         return $form;
     }
     
     public static function input_textarea($id, $label, $input, $error, $placeholder ='Text...', $class_left='col-sm-3', $class_right='col-sm-9'){
-        $form  = '<div class="form-group '.validate_msg($error, $id, true).'"><label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
-                  <div class="'.$class_right.'">';
-        $form .= '<textarea id="'.$id.'" name="'.$id.'" class="ckeditor" rows="10" cols="80" style="visibility: hidden; display: none;">';
+        $form  = "<div class='form-group ".validate_msg($error, $id, true)."'><label class='control-label {$class_left}' for='{$id}'>{$label}</label>
+                  <div class='{$class_right}'>
+                  <textarea id='{$id}' name='{$id}' class='ckeditor' rows='10' cols='80' style='visibility: hidden; display: none;'>";
         if (isset($input)) { 
             $form .=  $input;  
         } else {
             $form .=  $placeholder;
         }
-        $form .= '</textarea>';
-        $form .= '</div></div>'; 
+        $form .= "</textarea>
+                  </div></div>"; 
 
         return $form;
     }
@@ -125,9 +136,12 @@ class Form {
      * @return string
      */
     public static function input_select($id, $label, $select_data, $select_label, $select_value, $input, $error, $onchange= '', $placeholder ='---', $class_left='col-sm-3', $class_right='col-sm-9', $disabled = ''){
-        $form = '<div class="form-group '.validate_msg($error, $id, true).'">
-                  <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
-                  <div class="'.$class_right.'">
+        $limiter        = ' '; //todo: $params array 
+        $form = '<div class="form-group '.validate_msg($error, $id, true).'">';
+        if ($class_left != ''){ // if left class is empty no label is set
+            $form .= ' <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>';
+        }
+        $form .= ' <div class="'.$class_right.'">
                       <select id="'.$id.'" name="'.$id.'" class="chosen-select form-control" onchange="'.$onchange.'" '.$disabled.'>';
                        if (count($select_data) > 0){
                              if ($placeholder != '---'){
@@ -138,7 +152,7 @@ class Form {
                                     foreach (explode(', ', $select_label) as $f) {
                                         $fields[]  = $value->$f;
                                     }
-                                    $label = implode(" | ", $fields);
+                                    $label = implode($limiter, $fields);
                                     unset($fields);
                                 } else {
                                     $label  = $value->$select_label;

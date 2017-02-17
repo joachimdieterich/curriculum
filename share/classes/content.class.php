@@ -45,7 +45,6 @@ class Content {
    
     public function add($subscribe = true){
         global $USER;
-        checkCapabilities('content:add', $USER->role_id);
         $db = DB::prepare('INSERT INTO content (title,content,timecreated,creator_id) VALUES (?,?,NOW(),?)');
         if($db->execute(array($this->title, $this->content, $USER->id))){
             $this->id = DB::lastInsertId(); 
@@ -58,7 +57,6 @@ class Content {
     
     public function update(){
         global $USER;
-        checkCapabilities('content:update', $USER->role_id);
         $db = DB::prepare('UPDATE content SET title = ?, content = ? WHERE id = ?');
         return $db->execute(array($this->title, $this->content, $this->id));
     }

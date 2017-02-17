@@ -97,13 +97,13 @@ $cur_global->curriculum = 'globales Zertifikat';
 $cur_array = array_merge(array($cur_global), $cur_array); //add entry to select list 
 $content  .= Form::input_select('curriculum_id', 'Lehrplan', $cur_array , 'curriculum', 'id', $curriculum_id , $error);
 $content  .= Form::input_textarea('template', 'Zertifikat-Vorlage', $template, $error);
-$content  .= Form::info('info', 'Felder:', '*&lt;!--Vorname--&gt;, *&lt;!--Nachname--&gt;</br> 
+$content  .= Form::info(array('id' => 'info', 'label' => 'Felder', 'content' => '*&lt;!--Vorname--&gt;, *&lt;!--Nachname--&gt;</br> 
                                             *&lt;!--Start--&gt;, *&lt;!--Ende--&gt</br>
                                              &lt;!--Ort--&gt;, &lt;!--Datum--&gt;, &lt;!--Unterschrift--&gt;</br>
                                              &lt;!--Thema--&gt;, &lt;!--Ziel--&gt;</br>
                                              &lt;!--Ziel_mit_Hilfe_erreicht--&gt;,  &lt;!--Ziel_erreicht--&gt;, &lt;!--Ziel_offen--&gt;</br>
                                              &lt;ziel status="[1]" class="[objective_green row]" &gt;&lt;/ziel&gt;</br>
-                                             &lt;!--Bereich{terminal_objective_id,...}--&gt;HTML&lt;!--/Bereich--&gt;');
+                                             &lt;!--Bereich{terminal_objective_id,...}--&gt;HTML&lt;!--/Bereich--&gt;'));
 $content  .= '</form>';
 $footer    = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_certificate\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>'; 
    

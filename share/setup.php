@@ -69,6 +69,7 @@ if (isset($CFG->db_configured)){
         $CFG->repository = get_plugin('repository',$CFG->settings->repository);
     }
     /* load user template config */
+    
     if (isset($_SESSION['USER']->id)){
         $config = new Config();
         $c = $config->get('user', 'template', 'userFiles', $_SESSION['USER']->id);

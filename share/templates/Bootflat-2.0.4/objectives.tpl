@@ -133,7 +133,7 @@
                                                 </div>
                                             </div>
                                             <div class="boxfooter">
-                                                <span class=" pull-left">{Render::accCheckboxes($ena->id, implode(',',$selected_user_id), $my_id, false)}</span>
+                                                <span class=" pull-left">{Render::accCheckboxes( {['id' => $ena->id, 'student' => implode(',',$selected_user_id), 'teacher' => $my_id, 'link' => false]|@json_encode nofilter})}</span>
                                                 <span class=" fa fa-info pull-right box-sm-icon text-primary" onclick="formloader('description', 'enabling_objective', '{$ena->id}');"></span>
                                             </div>
                                         </div> 

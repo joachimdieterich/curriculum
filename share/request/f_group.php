@@ -97,7 +97,7 @@ $grades                     = new Grade();                                      
 $grades->institution_id     = $USER->institutions; 
 $content .= Form::input_select('grade_id', 'Klassenstufe', $grades->getGrades('institution',$institution_id), 'grade, institution', 'id', $grade_id , $error);
 if (isset($change_semester)){
-    $content .= Form::info('p_group', ' ', 'Um eine leere Lerngruppe zu erstellen, Haken entfernen.');
+    $content .= Form::info(array('id' => 'p_group', 'content' => 'Um eine leere Lerngruppe zu erstellen, Haken entfernen.'));
     $content .= Form::input_checkbox('assumeUsers', 'Personen übernehmen', $assumeUsers , $error);
 }
 $content .= '</form>';
