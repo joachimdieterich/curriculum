@@ -1041,7 +1041,7 @@ class Render {
                                 if (checkCapabilities('block:add', $USER->role_id, false)){
                                     $html  .= '<button class="btn btn-box-tool" data-widget="edit" onclick="formloader(\'block\',\'edit\','.$id.');"><i class="fa fa-edit"></i></button>';
                                 }
-                                $html  .= '<button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                $html  .= '<button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
                                 <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
                               </div>
                         </div><!-- /.box-header -->
