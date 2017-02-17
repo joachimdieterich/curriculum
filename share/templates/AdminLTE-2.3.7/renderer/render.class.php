@@ -34,12 +34,22 @@ class Render {
         return preg_replace_callback('/<accomplish id="(\d+)"><\/accomplish>/i', 
             function($r){ 
                 global $s, $t; 
-                return Render::accCheckboxes($r[1], $s, $t);
+                return Render::accCheckboxes(array('id' => $r[1], 'student' => $s, 'teacher' => $t));
             }, $string);     
     }
     
-     public static function accCheckboxes($id, $student, $teacher, $link = true, $email = false, $token = false){
+    public static function accCheckboxes($params){
+        //$id, $student, $teacher
         global $USER, $CFG;
+        $link   = true;
+        $email  = false; 
+        $token  = false;
+        
+        if (!is_array($params)){ //hack to use json_arrays from smarty
+            $params = json_decode($params);
+        }
+        foreach($params as $key => $val) { $$key = $val; }   
+        
         if ($USER->id != $student OR $student == $teacher){ // 2. Bedingung bewirkt, dass als Lehrer eigene Einreichungen bewerten kann --> für Demonstration der Plattform wichtig
             $ena       = new EnablingObjective();
             $ena->id   = $id;
@@ -135,8 +145,8 @@ class Render {
                 $teacher = $student;
                 $html   = '<a class="pointer_hand"><i id="'.$id.'_green" style="font-size:18px;" class="'.$green.' margin-r-5 text-green pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \'1'.$teacher_status.'\')"></i></a>'
                         . '<a class="pointer_hand"><i id="'.$id.'_orange" style="font-size:18px;" class="'.$orange.' margin-r-5 text-orange pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \'2'.$teacher_status.'\')"></i></a>'
-                        . '<a class="pointer_hand"><i id="'.$id.'_white" style="font-size:18px;" class="'.$white.' margin-r-5 text-white pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \'3'.$teacher_status.'\')"></i></a>'
-                        . '<a class="pointer_hand"><i id="'.$id.'_red" style="font-size:18px;" class="'.$red.' margin-r-5 text-red pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \'0'.$teacher_status.'\')"></i></a>';
+                        . '<a class="pointer_hand"><i id="'.$id.'_red" style="font-size:18px;" class="'.$red.' margin-r-5 text-red pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \'0'.$teacher_status.'\')"></i></a>'
+                        . '<a class="pointer_hand"><i id="'.$id.'_white" style="font-size:18px;" class="'.$white.' margin-r-5 text-gray pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \'3'.$teacher_status.'\')"></i></a>';
             } else {
                 $status = $ena->accomplished_status_id;
                 if (strlen($status) > 1){
@@ -153,8 +163,8 @@ class Render {
                 } else {
                     $html   = '<a class="pointer_hand"><i id="'.$id.'_green" style="font-size:18px;" class="'.$green.' margin-r-5 text-green pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'1\')"></i></a>'
                         . '<a class="pointer_hand"><i id="'.$id.'_orange" style="font-size:18px;" class="'.$orange.' margin-r-5 text-orange pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'2\')"></i></a>'
-                        . '<a class="pointer_hand"><i id="'.$id.'_white" style="font-size:18px;" class="'.$white.' margin-r-5 text-white pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'3\')"></i></a>'
-                        . '<a class="pointer_hand"><i id="'.$id.'_red" style="font-size:18px;" class="'.$red.' margin-r-5 text-red pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'0\')"></i></a>';
+                        . '<a class="pointer_hand"><i id="'.$id.'_red" style="font-size:18px;" class="'.$red.' margin-r-5 text-red pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'0\')"></i></a>'
+                        . '<a class="pointer_hand"><i id="'.$id.'_white" style="font-size:18px;" class="'.$white.' margin-r-5 text-gray pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'3\')"></i></a>';
                 }
             }
             
@@ -561,7 +571,7 @@ class Render {
                         }
                         $html  .='</span>';
                         if (checkCapabilities('course:selfAssessment', $USER->role_id, false)){
-                            $html  .='<span class="pull-left">'.Render::accCheckboxes($objective->id, $user_id, $user_id, false).'</span>';
+                            $html  .='<span class="pull-left">'.Render::accCheckboxes(array('id' => $objective->id, 'student' => $user_id, 'teacher' => $user_id, 'link' => false)).'</span>';
                         }
         $html  .='    </div>
                   </div>';
@@ -1076,7 +1086,7 @@ class Render {
                                     if (checkCapabilities('block:add', $USER->role_id, false)){
                                         $html  .= '<button class="btn btn-box-tool" data-widget="edit" onclick="formloader(\'block\',\'edit\','.$id.');"><i class="fa fa-edit"></i></button>';
                                     }
-                                    $html  .= '<button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                    $html  .= '<button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
                                     <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
                                   </div>
                             </div><!-- /.box-header -->
