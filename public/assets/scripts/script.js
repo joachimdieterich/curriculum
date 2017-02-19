@@ -723,6 +723,8 @@ function resizeModal(){
  */
 function popupFunction(e){
     $("body").addClass("modal-open");                                           //prevent scrolling on body tag
+    $("#overlay").addClass("overlay");                                           //darken background
+    
     var script = $("#"+e).children("script").text();
     eval(script);                                   // aktiviert scripte im Element e
     resizeModal();                                                              // resize modal 
@@ -835,6 +837,7 @@ function closePopup(id){
     removeMedia();  // Important to empty audio element cache in webkit browsers. see description on function
     $('#'+popup).hide();  
     $("body").removeClass("modal-open"); //reactivate scrolling on body
+    $("#overlay").removeClass("overlay");                                           //remove darken background
     document.getElementById(popup).style.zIndex = 3000; // reset zIndex;
     document.getElementById(popup).innerHTML    = '<div class="modal-dialog"><div class="box"><div class="box-header"><h3 class="box-title">Loading...</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div></div>';    
 }
