@@ -881,7 +881,7 @@ class User {
         
         checkCapabilities('user:getUsers', $USER->role_id);
         switch ($dependency) {
-            case 'curriculum':  case 'course':  $db = DB::prepare('SELECT us.*, ie.role_id FROM users AS us, groups_enrolments AS ge, curriculum_enrolments AS ce, institution_enrolments as ie, groups as gr
+            case 'curriculum':  $db = DB::prepare('SELECT us.*, ie.role_id FROM users AS us, groups_enrolments AS ge, curriculum_enrolments AS ce, institution_enrolments as ie, groups as gr
                                                 WHERE us.id = ge.user_id 
                                                 AND ce.curriculum_id = ?
                                                 AND ce.status = 1
@@ -899,8 +899,7 @@ class User {
                                     $this->lastname     = $result->lastname; 
                                     $this->role_id      = $result->role_id; 
                                     $users[]            = clone $this; 
-                                }
-                                
+                                }               
                 break;
             case 'course':  $db = DB::prepare('SELECT us.*, ie.role_id FROM users AS us, groups_enrolments AS ge, curriculum_enrolments AS ce, institution_enrolments as ie, groups as gr
                                                 WHERE us.id = ge.user_id 
@@ -939,7 +938,7 @@ class User {
                                         $ena = new EnablingObjective();
                                         $this->completed = $ena->getPercentageOfCompletion($id, $this->id);
                                     }
-                                    $users[] = clone $this;      
+                                    $users[] = clone $this;  
                             }
                             break;
             case 'institution':  $db = DB::prepare('SELECT DISTINCT us.* FROM users AS us
