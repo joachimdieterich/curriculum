@@ -246,6 +246,7 @@ class Group {
         global $USER;
         $order_param = orderPaginator($paginator, array('groups'        => 'gp',
                                                         'description'   => 'gp', 
+                                                        'creation_time' => 'gp', 
                                                         'grade'         => 'gr',
                                                         'semester'      => 'se', 
                                                         'institution'   => 'ins'));       
