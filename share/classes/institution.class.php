@@ -261,7 +261,10 @@ class Institution {
     public function getInstitutions($dependency = 'user', $paginator = '', $id = null){
         $order_param = orderPaginator($paginator, array('institution'   => 'ins',
                                                         'description'   => 'ins',
+                                                        'schooltype_id' => 'ins',
+                                                        'creation_time' => 'ins',
                                                         'schooltype'    => 'sch',
+                                                        'state_id'      => 'ins',
                                                         'state'         => 'sta',
                                                         'de'            => 'co',));  
         switch ($dependency) {
