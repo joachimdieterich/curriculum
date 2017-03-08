@@ -246,9 +246,13 @@ class Group {
         global $USER;
         $order_param = orderPaginator($paginator, array('groups'        => 'gp',
                                                         'description'   => 'gp', 
+                                                        'creation_time' => 'gp', 
                                                         'grade'         => 'gr',
                                                         'semester'      => 'se', 
-                                                        'institution'   => 'ins'));        
+                                                        'institution'   => 'ins'));       
+        if ($order_param == ''){
+            $order_param = 'ORDER BY gp.groups';
+        }
         $groups      = array();
         switch ($dependency) {
             case 'course':  $db = DB::prepare('SELECT gp.*, gr.grade, se.semester FROM groups AS gp, semester AS se, grade AS gr

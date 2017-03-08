@@ -31,17 +31,23 @@ $certificates->institution_id = $USER->institutions;
 
 $p_options = array('delete' => array('onclick'    => "del('certificate',__id__);", 
                                      'capability' => checkCapabilities('certificate:delete', $USER->role_id, false),
-                                     'icon'       => 'fa fa-minus',
+                                     'icon'       => 'fa fa-trash',
                                      'tooltip'    => 'löschen'),
                     'edit'  => array('onclick'    => "formloader('certificate','edit',__id__);",
                                      'capability' => checkCapabilities('certificate:update', $USER->role_id, false),
                                      'icon'       => 'fa fa-edit',
                                      'tooltip'    => 'bearbeiten'));
+$p_widget  = array('header'     => 'certificate',
+                   'subheader01'=> 'description',
+                   'subheader02'=> 'institution',
+                   'expand'     => 'template',
+                   'description'=> false); //false ==> don't show icon on widget
 $p_config =  array('id'           => 'checkbox',
                     'certificate' => 'Titel des Zertifikat-Vorlage', 
                   'description'   => 'Beschreibung', 
                   'institution'   => 'Institution', 
                   'creation_time' => 'Erstellungs-Datum',
-                  /*'username'      => 'Erstellt von',*/
+                  'p_search'    => array('certificate','description','institution','template'),
+                  'p_widget' => $p_widget, 
                   'p_options'     => $p_options);
 setPaginator('certificateP', $TEMPLATE, $certificates->getCertificates('certificateP'), 'ct_val', 'index.php?action=certificate', $p_config); //set Paginator

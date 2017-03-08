@@ -41,10 +41,8 @@ $terminal_objective->description        = $purifier->purify(filter_input(INPUT_P
  
 $gump = new Gump();    /* Validation */
 $_POST = $gump->sanitize($_POST);       //sanitize $_POST
-$terminal_objective->curriculum_id      = $_POST['curriculum_id'];
-
-$terminal_objective->color              = $_POST['color'];
-//$terminal_objective->creator_id         = $USER->id; // now set in add function
+$terminal_objective->curriculum_id      = filter_input(INPUT_POST, 'curriculum_id', FILTER_VALIDATE_INT);
+$terminal_objective->color              = filter_input(INPUT_POST, 'color',         FILTER_SANITIZE_STRING);
 
 $gump->validation_rules(array(
 'terminal_objective'         => 'required'

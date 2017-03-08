@@ -34,7 +34,7 @@ switch ($db) {
     case "file":                $t = new File();                break;
     case "grade":               $t = new Grade();               break;
     case "group":               $t = new Group();               break;
-    case "help":                $t = new Help();               break;
+    case "help":                $t = new Help();                break;
     case "role":                $t = new Roles();               break;      
     case "semester":            $t = new Semester();            break;
     case "subject":             $t = new Subject();             break;
@@ -45,7 +45,10 @@ switch ($db) {
     case "terminalObjectives":  $t = new TerminalObjective();   break;
     case "task":                $t = new Task();                break;
     case "courseBook":          $t = new CourseBook();          break;
-    case "content":             $t = new Content();          break;
+    case "comment":             $t = new Comment();             break;
+    case "content":             $t = new Content();             break;
+    case "wallet":              $t = new Wallet();              break;
+    case "wallet_content":      $t = new WalletContent();       break;
     default: break;
 }
 

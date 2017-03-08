@@ -39,10 +39,7 @@ global $TEMPLATE;                                                   // Smarty TE
 session_start();                                                    // Starte Sesseion
 
 $TEMPLATE = new Smarty();
-$TEMPLATE->template_dir           = $CFG->smarty_template_dir; 
-$TEMPLATE->compile_dir            = $CFG->smarty_template_compile_dir;
-$TEMPLATE->cache_dir              = $CFG->smarty_template_cache_dir;
-$TEMPLATE->addPluginsDir($CFG->smarty_template_dir.'/plugins/');        //enable individual template smarty plugins
+
 $TEMPLATE->assign('tb_param',       $CFG->tb_param);
 $TEMPLATE->assign('global_timeout', $CFG->timeout);
 $TEMPLATE->assign('message_timeout',$CFG->message_timeout);
@@ -57,7 +54,7 @@ $TEMPLATE->assign('avatar_path',    $CFG->avatar_path);
 $TEMPLATE->assign('support_path',   $CFG->support_path);
 $TEMPLATE->assign('subjects_path',  $CFG->subjects_path);
 $TEMPLATE->assign('solutions_path', $CFG->solutions_path);
-$TEMPLATE->assign('template_url',   $CFG->smarty_template_dir);
+
 $TEMPLATE->assign('app_title',      $CFG->app_title);
 $TEMPLATE->assign('app_version',    $CFG->version);
 $TEMPLATE->assign('app_footer',     $CFG->app_footer);
@@ -66,31 +63,48 @@ $TEMPLATE->assign('cfg_shibboleth', $CFG->shibboleth);
 
 /* Load Plugins */
 $config = new Config();
-$CFG->settings = $config->load();
-if (isset($CFG->settings->repository)){
-    $CFG->repository = get_plugin('repository',$CFG->settings->repository);
+if (isset($CFG->db_configured)){
+    $CFG->settings = $config->load();
+    if (isset($CFG->settings->repository)){
+        $CFG->repository = get_plugin('repository',$CFG->settings->repository);
+    }
+    /* load user template config */
+    
+    if (isset($_SESSION['USER']->id)){
+        $config = new Config();
+        $c = $config->get('user', 'template', 'userFiles', $_SESSION['USER']->id);
+        if ($c){
+            $CFG->settings->template = $c->value;
+        }
+    }
+    /*if (isset($CFG->settings->auth)){
+        $CFG->auth = get_plugin('auth',$CFG->settings->auth);
+    }*/
 }
-/*if (isset($CFG->settings->auth)){
-    $CFG->auth = get_plugin('auth',$CFG->settings->auth);
-}*/
 
+if (!isset($CFG->settings->template)){ 
+    $CFG->settings           = new stdClass();
+    $CFG->settings->template = 'Bootflat-2.0.4'; // fallback for installation process
+} 
+$TEMPLATE->template_dir           = dirname(__FILE__).'/templates/'.$CFG->settings->template.'/';
+$TEMPLATE->compile_dir            = $TEMPLATE->template_dir.'compiled';
+$TEMPLATE->cache_dir              = $TEMPLATE->template_dir.'cached';
+$TEMPLATE->assign('template_path',  $TEMPLATE->template_dir);
+$CFG->smarty_template_dir_url     = $CFG->base_url.'share/templates/'.$CFG->settings->template.'/';
+$TEMPLATE->assign('template_url',   $CFG->smarty_template_dir_url );
+$TEMPLATE->addPluginsDir(dirname(__FILE__).'/templates/'.$CFG->settings->template.'/plugins/');   //load smarty plugins for actual template
+/*Template render classes*/
+include($TEMPLATE->template_dir .'renderer/form.class.php');                  // Form 
+include($TEMPLATE->template_dir .'renderer/render.class.php');    
 
 /** Sortierung der Paginatoren */
 /* Paginator reset*/
 if (filter_input(INPUT_GET, 'order', FILTER_UNSAFE_RAW) && filter_input(INPUT_GET, 'sort', FILTER_UNSAFE_RAW) && filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW)){
     SmartyPaginate::setSort(filter_input(INPUT_GET, 'order', FILTER_UNSAFE_RAW),filter_input(INPUT_GET, 'sort', FILTER_UNSAFE_RAW), filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW));
 }
-/* Paginator limit*/
+/* Paginator limit */
 if (filter_input(INPUT_GET, 'paginator_limit', FILTER_UNSAFE_RAW) && filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW)){
     SmartyPaginate::setLimit(filter_input(INPUT_GET, 'paginator_limit', FILTER_UNSAFE_RAW), filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW));
-}
-/* Paginator search*/
-if (filter_input(INPUT_GET, 'order', FILTER_UNSAFE_RAW) && filter_input(INPUT_GET, 'paginator_search', FILTER_UNSAFE_RAW) && filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW)){
-    if (filter_input(INPUT_GET, 'paginator_search', FILTER_UNSAFE_RAW) == '%'){
-        unset ($_SESSION['SmartyPaginate'][filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW)]['pagi_search']);
-    } else {
-        SmartyPaginate::setSearch(filter_input(INPUT_GET, 'order', FILTER_UNSAFE_RAW),filter_input(INPUT_GET, 'paginator_search', FILTER_UNSAFE_RAW), filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW));
-    }
 }
 
 if (filter_input(INPUT_GET, 'p_reset', FILTER_UNSAFE_RAW) && filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW)){

@@ -32,7 +32,7 @@ if (checkCapabilities('menu:readLog', $USER->role_id)){
     $p_config =   array('id'        => 'checkbox', 
                   'creation_time'   => 'Datum/Zeit', 
                   'ip'              => 'IP',
-                  'user_id'         => 'Username',
+                  'username'         => 'Username',
                   'action'          => 'Aktion',
                   'url'             => 'URL',
                   'info'            => 'Info');

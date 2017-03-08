@@ -78,6 +78,7 @@ class Course {
      * @var string 
      */
     public $group; 
+    public $group_id; 
     /**
      * name of grade
      * @var string
@@ -93,6 +94,7 @@ class Course {
      * @var string
      */
     public $icon; 
+    public $icon_id; 
 
  
     /**
@@ -102,12 +104,12 @@ class Course {
      * @return array of course objects
      */
     public function getCourse($dependency = null, $id = null){
+        global $USER;
         $course = array();
         switch ($dependency) {
-            case 'admin':   $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, gp.groups, gp.semester_id, gp.id AS gpid, ce.id AS course_id, fl.filename
-                                            FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp, files AS fl
+            case 'admin':   $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, cu.icon_id, gp.groups, gp.semester_id, gp.id AS gpid, ce.id AS course_id 
+                                            FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp
                                             WHERE cu.id = ce.curriculum_id
-                                            AND cu.icon_id = fl.id
                                             AND gp.id = ce.group_id
                                             AND ce.status = 1
                                             AND ce.group_id = ANY (SELECT id FROM groups 
@@ -116,16 +118,40 @@ class Course {
                                             ORDER BY gp.groups, cu.curriculum ASC');
                             $db->execute(array($id));          
                 break; 
-            case 'teacher': $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, gp.groups, gp.semester_id, gp.id AS gpid, ce.id AS course_id, fl.filename
-                                            FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp, files AS fl
+            case 'admin_semester':   $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, cu.icon_id, gp.groups, gp.semester_id, gp.id AS gpid, ce.id AS course_id
+                                            FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp
                                             WHERE cu.id = ce.curriculum_id
-                                            AND gp.id = ce.group_id AND cu.icon_id = fl.id 
+                                            AND gp.id = ce.group_id
+                                            AND ce.status = 1
+                                            AND gp.semester_id = ?
+                                            AND ce.group_id = ANY (SELECT id FROM groups 
+                                                                   WHERE institution_id = ANY (SELECT institution_id FROM institution_enrolments 
+                                                                                                WHERE user_id = ? and status = 1))
+                                            ORDER BY gp.groups, cu.curriculum ASC');
+                            $db->execute(array($id,$USER->id));          
+                break; 
+            case 'teacher': $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, cu.icon_id, gp.groups, gp.semester_id, gp.id AS gpid, ce.id AS course_id
+                                            FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp
+                                            WHERE cu.id = ce.curriculum_id
+                                            AND gp.id = ce.group_id
                                             AND ce.status = 1
                                             AND ce.group_id = ANY(SELECT group_id
                                                     FROM groups_enrolments
                                                     WHERE user_id =  ? OR creator_id = ? AND status = 1)
                                                     ORDER BY gp.groups, cu.curriculum ASC');        //Abfrage überarbeiten liefert fehlerhafte Ergenisse
                             $db->execute(array($id, $id)); 
+                break;
+            case 'teacher_semester': $db = DB::prepare('SELECT cu.id, cu.curriculum, cu.description, cu.icon_id, gp.groups, gp.semester_id, gp.id AS gpid, ce.id AS course_id
+                                            FROM curriculum AS cu, curriculum_enrolments AS ce, groups AS gp
+                                            WHERE cu.id = ce.curriculum_id
+                                            AND gp.id = ce.group_id 
+                                            AND ce.status = 1
+                                            AND gp.semester_id = ?
+                                            AND ce.group_id = ANY(SELECT group_id
+                                                    FROM groups_enrolments
+                                                    WHERE user_id =  ? OR creator_id = ? AND status = 1)
+                                                    ORDER BY gp.groups, cu.curriculum ASC');        //Abfrage überarbeiten liefert fehlerhafte Ergenisse
+                            $db->execute(array($id, $USER->id, $USER->id)); 
                 break;
             case 'course':  $db = DB::prepare('SELECT cu.*, co.de, st.state, sc.schooltype, gr.grade, su.subject  
                                             FROM curriculum AS cu, countries AS co, state AS st, schooltype AS sc, grade AS gr, subjects AS su
@@ -140,6 +166,7 @@ class Course {
             $this->curriculum_id     = $result->id;
             $this->curriculum        = $result->curriculum;
             $this->description       = $result->description;
+            $this->icon_id           = $result->icon_id;
             if ($dependency == 'course'){  
                 $this->state         = $result->state; 
                 $this->country       = $result->de;
@@ -152,7 +179,7 @@ class Course {
                 $this->semester_id   = $result->semester_id;
                 $this->course        = $result->groups.' | '.$result->curriculum; //.' | '.$result->description; 
                 $this->group         = $result->groups;
-                $this->icon          = $result->filename;
+                //$this->icon          = $result->filename;
             }
             $course[]                = clone $this;        //it has to be clone, to get the object and not the reference
         }
@@ -192,6 +219,23 @@ class Course {
        $db = DB::prepare('SELECT * FROM curriculum_enrolments AS ce
                         WHERE ce.curriculum_id = ? AND ce.group_id = ?');
        $db->execute(array($curriculum_id, $group_id));
+       $result = $db->fetchObject();
+        if ($result){
+            $this->id            = $result->id;
+            $this->status        = $result->status;
+            $this->curriculum_id = $result->curriculum_id;
+            $this->group_id      = $result->group_id;
+            $this->creation_time = $result->creation_time;
+            $this->expel_time    = $result->expel_time;
+            $this->creator_id    = $result->creator_id;
+            return $this;
+        }
+   }
+   
+   public function getCourseById($id){
+       $db = DB::prepare('SELECT * FROM curriculum_enrolments AS ce
+                        WHERE ce.id = ?');
+       $db->execute(array($id));
        $result = $db->fetchObject();
         if ($result){
             $this->id            = $result->id;

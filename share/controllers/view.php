@@ -58,7 +58,10 @@ $TEMPLATE->assign('terminal_objectives', $terminal_objectives->getObjectives('cu
 
 $enabling_objectives = new EnablingObjective();                                     //load enabling objectives
 $enabling_objectives->curriculum_id = $PAGE->curriculum;
-$TEMPLATE->assign('course', $courses->getCourse('course', $PAGE->curriculum)); 
+$cur                 = $courses->getCourse('course', $PAGE->curriculum);
+$TEMPLATE->assign('course', $cur); 
+$TEMPLATE->assign('page_bg_file_id', $cur[0]->icon_id); 
+
 switch ($function) {
     case 'addObjectives':   $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('curriculum', $PAGE->curriculum));
                             $TEMPLATE->assign('page_title', 'Lehrplaninhalt bearbeiten'); 

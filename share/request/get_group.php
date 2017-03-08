@@ -43,9 +43,7 @@ switch (filter_input(INPUT_GET, 'format', FILTER_UNSAFE_RAW)) {
                             $html  .= ' selected="selected"';
                         } 
                         $html  .= '>'.$value->group.'</option>';
-
                     }
         break;
 }
-
 echo json_encode(array('html'=>$html));

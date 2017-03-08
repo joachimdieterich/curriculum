@@ -23,7 +23,7 @@
 */
 global $USER, $PAGE, $TEMPLATE, $LOG;
 $TEMPLATE->assign('page_title', 'Startseite'); 
-$TEMPLATE->assign('breadcrumb',  array('Dashboard' => 'index.php?action=dashboard'));
+$TEMPLATE->assign('breadcrumb',  array('Startseite' => 'index.php?action=dashboard'));
 
 $acc_obj        = new EnablingObjective();
 $TEMPLATE->assign('enabledObjectives', $acc_obj->getObjectiveStatusChanges()); /* Load last accomplished Objectives */
@@ -35,6 +35,18 @@ $TEMPLATE->assign('bulletinBoard', $institution->getBulletinBoard());
 
 $groups         = new Group(); 
 $TEMPLATE->assign('myClasses', $groups->getGroups('user', $USER->id));
+
+/*get upcoming events*/
+$upcoming_events = new Event();
+$TEMPLATE->assign('upcoming_events', $upcoming_events->get('upcoming', $USER->id, '', 5));
+$upcoming_tasks  = new Task();
+$TEMPLATE->assign('upcoming_tasks', $upcoming_tasks->get('upcoming', $USER->id));
+/*get statistic*/
+$TEMPLATE->assign('stat_users_online',  $USER->usersOnline($USER->institutions));  
+$statistics = new Statistic();
+$TEMPLATE->assign('stat_acc_all',       $statistics->getAccomplishedObjectives('all'));  
+$TEMPLATE->assign('stat_acc_today',     $statistics->getAccomplishedObjectives('today'));  
+$TEMPLATE->assign('stat_users_today',   $statistics->getUsersOnline('today'));  
 
 /* Load blocks*/
 $blocks         = new Block();
@@ -48,12 +60,12 @@ if (checkCapabilities('dashboard:globalAdmin', $USER->role_id, false) OR checkCa
     //$TEMPLATE->assign('cronjob', 'Es wurde zuletzt am '.$cron->check_cronjob().' geprüft, ob Ziele abgelaufen sind.<br>');
 }
 
-$box_bg = array('0' => 'bg-white','' => 'bg-white','x0' => 'bg-red','0x' => 'bg-white','1x' => 'bg-white','2x' => 'bg-white','3x' => 'bg-white',
-                '00' => 'bg-red','10' => 'bg-red','20' => 'bg-red','30' => 'bg-red',
-                'x1' => 'bg-green','1' => 'bg-green','01' => 'bg-green','11' => 'bg-green','21' => 'bg-green','31' => 'bg-green',
-                'x2' => 'bg-orange','02' => 'bg-orange','2' => 'bg-orange','12' => 'bg-orange','22' => 'bg-orange','32' => 'bg-orange',
-                'x3' => 'bg-white','3' => 'bg-white','03' => 'bg-white','13' => 'bg-white','23' => 'bg-white','33' => 'bg-white',
+$box_bg = array('0' => 'white','' => 'white','x0' => 'red','0x' => 'white','1x' => 'white','2x' => 'white','3x' => 'white',
+                '00' => 'red','10' => 'red','20' => 'red','30' => 'red',
+                'x1' => 'green','1' => 'green','01' => 'green','11' => 'green','21' => 'green','31' => 'green',
+                'x2' => 'orange','02' => 'orange','2' => 'orange','12' => 'orange','22' => 'orange','32' => 'orange',
+                'x3' => 'white','3' => 'white','03' => 'white','13' => 'white','23' => 'white','33' => 'white',
                 );
 $TEMPLATE->assign('box_bg',$box_bg);
 
-$LOG->add($USER->id, 'view', $PAGE->url,  'Browser: '.$PAGE->browser. ' View: '.$PAGE->url); /* add log */
+$LOG->add($USER->id, 'view', $PAGE->url,  'Browser: '.$PAGE->browser); /* add log */

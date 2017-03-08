@@ -53,7 +53,7 @@ class Pdf {
         foreach($this->user_id as $key=>$member){
             $this->content  = $this->template;
             $mpdf           = new mPDF($this->font_encoding, 'A4', $this->font_size, $this->font_name);
-            $stylesheet     = file_get_contents(dirname(__FILE__).'/../../public/assets/stylesheets/certificate.css');
+            $stylesheet     = file_get_contents(dirname(__FILE__).'/../../public/assets/stylesheets/certificate.min.css');
             $mpdf->WriteHTML($stylesheet,1);
             $ena            = $enabling_objectives->getObjectives('user', $member);
             $user->load('id', $member);
@@ -136,11 +136,11 @@ class Pdf {
                                 global $egl;
                                 if ($egl->accomplished_status_id == '') {$egl->accomplished_status_id = 3;} // wenn Status noch nicht gesetzt wurde
                                 if (in_array($egl->accomplished_status_id, array("01","1","x1","11","21","31")) AND in_array($r[1] , array("01","1","x1","11","21","31"))){
-                                    return '<div '.$r[2].'>- '.strip_tags($egl->enabling_objective).'</div>';
+                                    return '<div '.$r[2].'> '.strip_tags($egl->enabling_objective).'</div>';
                                 } else if (in_array($egl->accomplished_status_id, array("02","2","x2","12","22","32")) AND in_array($r[1] , array("02","2","x2","12","22","32"))){
-                                    return '<div '.$r[2].'>- '.strip_tags($egl->enabling_objective).'</div>';
+                                    return '<div '.$r[2].'> '.strip_tags($egl->enabling_objective).'</div>';
                                 } else if (in_array($egl->accomplished_status_id, array("03","3","x3","13","23","33")) AND in_array($r[1] , array("03","3","x3","13","23","33"))){
-                                    return '<div '.$r[2].'>- '.strip_tags($egl->enabling_objective).'</div>';
+                                    return '<div '.$r[2].'> '.strip_tags($egl->enabling_objective).'</div>';
                                 } 
                             }, $e); 
                             /* <ziel></ziel> auflösen */ 
@@ -184,20 +184,20 @@ class Pdf {
     } 
     
     public function generate(){
-        global $USER, $CFG;
+        global $USER, $CFG, $TEMPLATE;
 
         include(dirname(__FILE__).'/../libs/MPDF57/mpdf.php');
         $mpdf           = new mPDF($this->font_encoding, 'A4', $this->font_size, $this->font_name);
-        //$stylesheet   = file_get_contents(dirname(__FILE__).'/../../public/assets/stylesheets/certificate.css');
-        $stylesheet     = file_get_contents(dirname(__FILE__).'/../../public/assets/templates/AdminLTE-2.3.0/bootstrap/css/bootstrap.css');
-        $stylesheet     .= file_get_contents(dirname(__FILE__).'/../../public/assets/templates/AdminLTE-2.3.0/dist/css/AdminLTE.min.css');
-        $stylesheet     .= file_get_contents(dirname(__FILE__).'/../../public/assets/templates/AdminLTE-2.3.0/dist/css/skins/_all-skins.min.css');
-        $stylesheet     .= file_get_contents(dirname(__FILE__).'/../../public/assets/stylesheets/all-bs.css');
+        /*$stylesheet     = file_get_contents($CFG->smarty_template_dir.'bootstrap/css/bootstrap.css');
+        $stylesheet     .= file_get_contents($CFG->smarty_template_dir.'css/AdminLTE.min.css');
+        $stylesheet     .= file_get_contents($CFG->smarty_template_dir.'skins/_all-skins.min.css');*/
+        $stylesheet     .= file_get_contents($TEMPLATE->template_dir.'css/all-bs.min.css');
         $mpdf->WriteHTML($stylesheet,1);
         $mpdf->WriteHTML($this->content, 2);
          if (file_exists($CFG->curriculumdata_root.'user/'.$USER->id.'/'.$this->filename)){
             unlink($CFG->curriculumdata_root.'user/'.$USER->id.'/'.$this->filename); 
         }
+        silent_mkdir($CFG->curriculumdata_root.'user/'.$USER->id.'/'); //add user folder if not exists
         $mpdf->Output($CFG->curriculumdata_root.'user/'.$USER->id.'/'.$this->filename, 'F');
         set_time_limit(30);
         header("Location: ".$CFG->access_file_url."user/".$USER->id."/".$this->filename);

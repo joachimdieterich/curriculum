@@ -51,17 +51,23 @@ class Certificate {
      */
     public $creation_time; 
     /**
-     * ID of User who created this certificate-template
+     * id of User who created this certificate-template
      * @var int
      */
     public $creator_id; 
     public $creator;
     /**
-     * ID of institution to which certificate-template belongs to
+     * id of institution to which certificate-template belongs to
      * @var int
      */
     public $institution_id; 
     public $institution;
+    /**
+     * id of curriculum to wich certificate-template belongs to
+     * @var int 
+     */
+    public $curriculum_id;
+    public $curriculum;
    
     
     /**
@@ -71,8 +77,8 @@ class Certificate {
     public function add(){
         global $USER;
         checkCapabilities('certificate:add', $USER->role_id);
-        $db = DB::prepare('INSERT INTO certificate (certificate,description,template,creator_id,institution_id) VALUES (?,?,?,?,?)');
-        return $db->execute(array($this->certificate, $this->description, $this->template, $USER->id, $this->institution_id));
+        $db = DB::prepare('INSERT INTO certificate (certificate,description,template,creator_id,institution_id,curriculum_id) VALUES (?,?,?,?,?,?)');
+        return $db->execute(array($this->certificate, $this->description, $this->template, $USER->id, $this->institution_id, $this->curriculum_id));
     }
     
     /**
@@ -82,8 +88,8 @@ class Certificate {
     public function update(){
         global $USER;
         checkCapabilities('certificate:update', $USER->role_id);  
-        $db = DB::prepare('UPDATE certificate SET certificate = ?, description = ?, template = ? WHERE id = ?');
-        return $db->execute(array($this->certificate, $this->description, $this->template, $this->id));
+        $db = DB::prepare('UPDATE certificate SET certificate = ?, description = ?, template = ?, institution_id = ?, curriculum_id = ? WHERE id = ?');
+        return $db->execute(array($this->certificate, $this->description, $this->template, $this->institution_id, $this->curriculum_id, $this->id));
     }
     
     /**
@@ -111,6 +117,7 @@ class Certificate {
         $this->description       = $result->description;
         $this->template          = $result->template;
         $this->institution_id    = $result->institution_id;
+        $this->curriculum_id     = $result->curriculum_id;
     }
     
     /**
@@ -119,12 +126,24 @@ class Certificate {
      */
     public function getCertificates($paginator = ''){
         global $USER;
-        $order_param    = orderPaginator($paginator); 
+        $order_param    = orderPaginator($paginator,array('certificate' => 'ce',
+                                                          'description' => 'ce',
+                                                          'template'    => 'ce',
+                                                          'username'    => 'us',
+                                                          'institution' => 'ins')); 
         $certificates   = array();                      //Array of certificates
-        $db             = DB::prepare('SELECT ce.*, us.username, ins.institution FROM certificate AS ce, users AS us, institution AS ins 
-                           WHERE ce.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE us.id = user_id AND institution_id = ins.id AND user_id = ?) 
-                           AND ins.id = ce.institution_id '.$order_param);
-        $db->execute(array($USER->id));
+        if (isset($this->curriculum_id)){
+            $db             = DB::prepare('SELECT ce.*, us.username, ins.institution FROM certificate AS ce, users AS us, institution AS ins
+                               WHERE ce.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE us.id = user_id AND institution_id = ins.id AND user_id = ?) 
+                               AND ins.id = ce.institution_id 
+                               AND (ce.curriculum_id = ? OR ce.curriculum_id = 0) '.$order_param);
+            $db->execute(array($USER->id, $this->curriculum_id));
+        } else {
+            $db             = DB::prepare('SELECT ce.*, us.username, ins.institution FROM certificate AS ce, users AS us, institution AS ins
+                               WHERE ce.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE us.id = user_id AND institution_id = ins.id AND user_id = ?) 
+                               AND ins.id = ce.institution_id '.$order_param);
+            $db->execute(array($USER->id));
+        }
         
         while($result = $db->fetchObject()) { 
                 $this->id              = $result->id;
@@ -136,6 +155,8 @@ class Certificate {
                 $this->creator         = $result->username;
                 $this->institution_id  = $result->institution_id;
                 $this->institution     = $result->institution;
+                /*$this->curriculum_id   = $result->curriculum_id;
+                $this->curriculum      = $result->curriculum; */
                 
                 $certificates[] = clone $this;        //it has to be clone, to get the object and not the reference       
         } 
@@ -148,7 +169,7 @@ class Certificate {
     * @return boolean
     */
     public function dedicate(){ // only use during install
-        $db = DB::prepare('UPDATE certificate SET institution_id = ?, creator_id = ?');        
-        return $db->execute(array($this->institution_id, $this->creator_id));
+        $db = DB::prepare('UPDATE certificate SET creator_id = ?');        
+        return $db->execute(array($this->creator_id));
     }
 }

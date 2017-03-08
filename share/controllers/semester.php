@@ -32,12 +32,15 @@ $semesters->institution_id  = $USER->institutions;
 
 $p_options = array('delete' => array('onclick'    => "del('semester',__id__);", 
                                      'capability' => checkCapabilities('semester:delete', $USER->role_id, false),
-                                     'icon'       => 'fa fa-minus',
+                                     'icon'       => 'fa fa-trash',
                                      'tooltip'    => 'löschen'),
                     'edit'  => array('onclick'    => "formloader('semester','edit',__id__);", 
                                      'capability' => checkCapabilities('semester:update', $USER->role_id, false),
                                      'icon'       => 'fa fa-edit',
                                      'tooltip'    => 'bearbeiten'));
+$p_widget  = array('header'     => 'semester',
+                   'subheader01'=> 'description',
+                   'subheader02'=> 'institution'); //false ==> don't show icon on widget
 $p_config = array('id'            => 'checkbox',
                   'semester'      => 'Lerzeitraum', 
                   'description'   => 'Beschreibung',
@@ -46,5 +49,7 @@ $p_config = array('id'            => 'checkbox',
                   'end'           => 'Lernzeitraum-Ende',
                   'creation_time' => 'Erstellungsdatum',
                   'username'      => 'Erstellt von',
+                  'p_search'    => array('semester','description','institution'),
+                  'p_widget' => $p_widget, 
                   'p_options'     => $p_options);
 setPaginator('semesterP', $TEMPLATE, $semesters->getSemesters('all',null,'semesterP'), 'se_val', 'index.php?action=semester', $p_config); 

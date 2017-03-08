@@ -1,0 +1,227 @@
+/** This file is part of curriculum - http://www.joachimdieterich.de
+* 
+* @package core
+* @filename all-bs.css
+* @copyright 2015 Joachim Dieterich
+* @author Joachim Dieterich
+* @date 2015.10.14 10.39
+* @license: 
+*
+* The MIT License (MIT)
+* Copyright (c) 2012 Joachim Dieterich http://www.curriculumonline.de
+* 
+* Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
+* to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+* and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+* 
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+* 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
+* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
+* THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+/* adminLTE color */
+.bg-white {
+    background-color: #FFFFFF !important;
+}
+
+.text-white-shadow {
+    color:          #FFF;
+    text-overflow:  ellipsis;
+    white-space:    nowrap;
+    overflow:       hidden; 
+    text-shadow:    1px 1px #FF0000 !important;
+}
+.text-ellipse {
+    text-overflow:  ellipsis;
+    white-space:    nowrap;
+    overflow:       hidden;
+}
+
+.top-buffer { margin-top:10px; }
+
+.bottom-buffer-20 { margin-bottom:20px !important; }
+
+.deactivate {
+    opacity:0.2;
+    filter:alpha(opacity=20); /* For IE8 and earlier */
+    cursor: not-allowed !important;
+}
+
+.invert {
+   filter: invert(100%);
+   -webkit-filter: invert(100%);
+}
+
+/*
+ * Curriculum boxes in sm view
+ */
+.no-margin{
+    margin: 0px !important;
+    padding:0px !important;
+}
+
+/*styles (xs, sm) */
+@media (max-width: 990px) {
+.box {
+    float: left;
+    width: 100%;
+    position: relative;
+    margin: 0px;
+}
+
+.boxheader {
+    margin: 0px 0 0 15px;
+    position: absolute;
+    left: 1px;
+    padding: 4px 10px 0 0px;
+    height: 75px;
+    width: 40px;
+    font-size: 70%;
+    text-align: center;
+    
+    /* get rid of top right radius*/
+    -webkit-border-top-right-radius: 0 !important;
+     -moz-border-top-right-radius: 0 !important;
+          border-top-right-radius: 0 !important;
+    /* add bottom left radius*/      
+    -webkit-border-bottom-left-radius: 5% !important;
+     -moz-border-bottom-left-radius: 5% !important;
+          border-bottom-left-radius: 5% !important;      
+}
+
+.boxscroll{
+    /*width: 170px; *//*20px more than box to hide scrollbar*/
+    padding-top: 5px;
+    padding-right: 25px; /*for Firefox only*/
+    overflow: auto;
+    height: 75px!important;  
+}
+
+.boxwrap {
+    width: 100%;
+    overflow:hidden;
+    margin: 0px !important;
+    padding: 0px;
+} 
+
+
+.boxcontent {    /*Hack: boxwrap, boxscroll and boxcontent used to hide scroll crossbrowser compatible*/
+    margin: 0px;
+    font-size: 90%;
+    padding-left: 60px;
+    padding-right: 60px;
+    font-size: 90%;
+}    
+    
+.boxfooter {    
+    margin: -75px 16px ;
+    padding: 4px 10px 0 10px;
+    position: absolute;
+    /*top: 0px; bottom:0px; */right:0px;
+    width: 40px;
+    height: 75px;
+    overflow: auto;
+    border: 0px !important;
+    /* add top right radius*/
+    -webkit-border-top-right-radius: 5% !important;
+     -moz-border-top-right-radius: 5% !important;
+          border-top-right-radius: 5% !important;
+    /* ged rid of bottom left radius*/      
+    -webkit-border-bottom-left-radius: 0 !important;
+     -moz-border-bottom-left-radius: 0 !important;
+          border-bottom-left-radius: 0 !important;  
+    
+}
+.box-objective {
+    margin: 0px;
+} 
+
+.box-sm-icon {
+    display: block;
+    text-align: center;
+    float: none !important;
+    padding-bottom: 6px;
+}
+
+}
+/* /.sm view */
+
+
+/*styles (md, lg) */
+@media (min-width: 991px) {
+    .box-objective {
+        float: left;
+        height: 150px;
+        width: 150px;
+        position: relative;
+        margin: 0px;
+    }
+    .boxheader {
+        width: 100%;
+        margin: 0px;
+        padding: 4px 10px 0 10px;
+        height: 25px;
+        font-size: 90%;
+        position: relative;
+        
+        /* add top right radius*/
+    -webkit-border-top-right-radius: 3px !important;
+     -moz-border-top-right-radius: 3px !important;
+          border-top-right-radius: 3px !important;
+    }
+
+    .boxscroll{
+        width: 170px; /*20px more than box to hide scrollbar*/
+        padding-top: 5px;
+        padding-right: 25px; /*for Firefox only*/
+        overflow: auto;
+        height: 100px!important;  
+    }   
+    .boxwrap {
+        width: 100%;
+        overflow:hidden;
+        margin: 0px !important;
+        padding: 0px;
+    } 
+
+
+    .boxcontent {    /*Hack: boxwrap, boxscroll and boxcontent used to hide scroll crossbrowser compatible*/
+        margin: 0px;
+        width:150px; 
+        font-size: 90%;
+        padding-left: 10px;
+        padding-right: 10px;
+        font-size: 90%;
+    }
+
+    .boxfooter {    
+        margin: 0px;
+        padding: 4px 10px 0 10px;
+        position: absolute;
+        top: 123px;bottom:0px; left:0px; right:0px;
+        height: 25px;
+        width:100%;
+        font-size: 90%;    
+        border-top: 1px solid #ddd !important;
+        text-align: left !important;
+        /* get rid of top right radius*/
+    -webkit-border-top-right-radius: 0 !important;
+     -moz-border-top-right-radius: 0 !important;
+          border-top-right-radius: 0 !important;
+    }
+}
+
+body .modal-open {
+    overflow: hidden;
+}
+.highlight {
+    border-color: red !important;
+    
+}
+
+#sub_popup {
+    vertical-align: middle;
+    z-index: 2000;
+}

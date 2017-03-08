@@ -33,9 +33,9 @@ $header     = 'Material';
 $file       = new File();
 $func       = filter_input(INPUT_GET, 'func', FILTER_UNSAFE_RAW);
 switch ($func) {
-    case 'ena':         $files  = $file->getFiles('enabling_objective', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => true));
+    case 'enabling_objective':         $files  = $file->getFiles('enabling_objective', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => true));
         break;
-    case 'ter':         $files  = $file->getFiles('terminal_objective', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => true));
+    case 'terminal_objective':         $files  = $file->getFiles('terminal_objective', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => true));
         break;
     case 'id' :         $files  = $file->getFiles('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => false, 'user_id' => filter_input(INPUT_GET, 'user_id', FILTER_VALIDATE_INT)));
                         $header = 'Lösungen / Dateien des Users';
@@ -80,12 +80,22 @@ if (!$files){
             $active[$key] = '';
         }
     }
-    $content .= '<ul class="nav nav-tabs">
-                 <li class="'.$active[1].'"><a href="#f_context_1" data-toggle="tab" >Global <span class="label label-primary">'.$file_context_count[1].'</span></a></li>
-                 <li class="'.$active[2].'"><a href="#f_context_2" data-toggle="tab" >Institution <span class="label label-primary">'.$file_context_count[2].'</span></a></li>
-                 <li class="'.$active[3].'"><a href="#f_context_3" data-toggle="tab" >Gruppe <span class="label label-primary">'.$file_context_count[3].'</span></a></li>
-                 <li class="'.$active[4].'"><a href="#f_context_4" data-toggle="tab" >Persönlich <span class="label label-primary">'.$file_context_count[4].'</span></a></li>
-                 <li class="'.$active[5].'"><a href="#f_context_5" data-toggle="tab" >Externe Medien <span class="label label-primary">'.$file_context_count[5].'</span></a></li>';
+    $content .= '<ul class="nav nav-tabs">';
+    if ($file_context_count[1] != 0){
+        $content .= '<li class="'.$active[1].'"><a href="#f_context_1" data-toggle="tab" >Global <span class="label label-primary">'.$file_context_count[1].'</span></a></li>';
+    }  
+    if ($file_context_count[2] != 0){
+        $content .= '<li class="'.$active[2].'"><a href="#f_context_2" data-toggle="tab" >Institution <span class="label label-primary">'.$file_context_count[2].'</span></a></li>';
+    }
+    if ($file_context_count[3] != 0){
+        $content .= '<li class="'.$active[3].'"><a href="#f_context_3" data-toggle="tab" >Gruppe <span class="label label-primary">'.$file_context_count[3].'</span></a></li>';
+    }
+    if ($file_context_count[4] != 0){
+        $content .= '<li class="'.$active[4].'"><a href="#f_context_4" data-toggle="tab" >Persönlich <span class="label label-primary">'.$file_context_count[4].'</span></a></li>';
+    }
+    if ($file_context_count[5] != 0){
+        $content .= '<li class="'.$active[5].'"><a href="#f_context_5" data-toggle="tab" >Externe Medien <span class="label label-primary">'.$file_context_count[5].'</span></a></li>';
+    }
     $content .='</ul>';
     /* tab content*/
     $content .='<div class="tab-content">';

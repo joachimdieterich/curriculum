@@ -82,18 +82,20 @@ if($validated_data === false) {/* validation failed */
                         $TEMPLATE->assign('institution_id', $institution_id);
                         if (isset($institution_id)){
                             $_SESSION['PAGE']->message[] = array('message' => 'Institution hinzufgefügt', 'icon' => 'fa-university text-success');
-                            session_reload_user();
+                            session_reload_user(); //reload session to get changes to current session (my enrolments)
                         }               
             
             break;
         case 'edit':    if ($new_institution->update()){
                             $_SESSION['PAGE']->message[] = array('message' => 'Institution erfolgreich aktualisiert', 'icon' => 'fa-university text-success');
+                            session_reload_user(); //reload session to get changes to current session (my enrolments)
                         }
             break;
 
         default:
             break;
     }
+    
     $_SESSION['FORM']            = null;                     // reset Session Form object 
 }
 

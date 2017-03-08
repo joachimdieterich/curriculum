@@ -37,7 +37,11 @@ if (checkCapabilities('backup:getAllBackups', $USER->role_id, false)) {         
 
 $TEMPLATE->assign('web_backup_path', $CFG->web_backup_path);  
 
-$p_options = array('download'     => array('href'    => "../share/accessfile.php?id=__id__",
+$p_options = array('delete' => array('onclick'    => "del('file',__id__);", 
+                                     'capability' => checkCapabilities('backup:delete', $USER->role_id, false),
+                                     'icon'       => 'fa fa-trash',
+                                     'tooltip'    => 'löschen'),
+                    'download'     => array('href'    => "../share/accessfile.php?id=__id__",
                                            'capability' => true,
                                            'icon'    => 'fa fa-download', 
                                            'tooltip' => 'Sicherung herunterladen')/*,           // in this version backups are only made as .curriculum files (xml)
@@ -45,10 +49,15 @@ $p_options = array('download'     => array('href'    => "../share/accessfile.php
                                            'capability' => true,
                                            'icon'    => 'fa fa-file-code-o', 
                                            'tooltip' => 'Sicherung herunterladen')*/); 
+$p_widget  = array('header'     => 'title',
+                   'subheader01'=> 'description',
+                   'subheader02'=> 'author'); //false ==> don't show icon on widget
 $p_config = array('id' => 'checkbox',
                   'title'         => 'Titel', 
                   'description'   => 'Beschreibung',
                   'creation_time' => 'Datum',
                   'author'        => 'Erstellt durch',
+                  'p_search'    => array('title','description'),
+                  'p_widget' => $p_widget, 
                   'p_options'     => $p_options);
 setPaginator('fileBackupPaginator', $TEMPLATE, $backup_list, 'fb_val', 'index.php?action=backup', $p_config);      

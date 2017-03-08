@@ -41,6 +41,7 @@ $institution_id = null;
 $grade_id       = null;       
 $schooltype_id  = null;  
 $state_id       = null;
+$color          = '#3cc95b';
 $error          = null;
 $object         = file_get_contents("php://input");
 $data           = json_decode($object, true);
@@ -89,12 +90,12 @@ if (isset($_SESSION['FORM'])){
 
 $content ='';
 if (!isset($edit)){ // Tabs ausblenden wenn im Edit-Modus
-$content .= '<div class="nav-tabs-custom">';
-$content .= '<ul class="nav nav-tabs">
-        <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false" onclick="toggle([\'form_curriculum\', \'bAdd\'], [\'tab_1\']);">Lehrplan hinzufügen</a></li>';
-        if (checkCapabilities('curriculum:import', $USER->role_id, false)){
-          $content .= '<li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="true" onclick="toggle([\'tab_1\'], [\'form_curriculum\', \'bAdd\']);">Lehrplan importieren</a></li>';
-        }
+$content .= '<div class="nav-tabs-custom"> 
+              <ul class="nav nav-tabs">
+                <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false" onclick="toggle([\'form_curriculum\', \'bAdd\'], [\'tab_1\']);">Lehrplan hinzufügen</a></li>';
+                if (checkCapabilities('curriculum:import', $USER->role_id, false)){
+                  $content .= '<li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="true" onclick="toggle([\'tab_1\'], [\'form_curriculum\', \'bAdd\']);">Lehrplan importieren</a></li>';
+                }
 $content .='</ul>';
 
 $content .= '<div class="tab-content">
@@ -160,26 +161,29 @@ $grades = new Grade();                                                          
 $grades->institution_id = $USER->institutions;
 $content       .= Form::input_select('grade_id', 'Klassenstufe', $grades->getGrades(), 'grade', 'id', $grade_id , $error);
 
-
 $schooltypes = new Schooltype();                                                // Load schooltype 
 $content       .= Form::input_select('schooltype_id', 'Schultyp', $schooltypes->getSchooltypes(), 'schooltype', 'id', $schooltype_id , $error);
-
-
-$countries = new State($country_id);                                                   //Load country   
-$content  .= Form::input_select('state_id', 'Bundesland/Region', $countries->getStates(), 'state', 'id', $state_id , $error);
+$countries = new State();                                                   //Load country   
 $content  .= Form::input_select('country_id', 'Land', $countries->getCountries(), 'de', 'id', $country_id , $error, 'getValues(\'state\', this.value, \'state_id\');');
-$content  .= '</div></form>';
+$countries->load($country_id);
+$content  .= Form::input_select('state_id', 'Bundesland/Region', $countries->getStates(), 'state', 'id', $state_id , $error);
+$content  .= Form::input_color(array('id' => 'color', 'rgb' => $color, 'error' => $error));
+$content  .= '</form>';
 $f_content = '';   
 
 if (isset($edit)){
     $f_content .= '<button name="update" type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_curriculum\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>Lehrplan aktualisieren</button>'; 
 } 
-$f_content .= '<button id="bImport" name="import" type="submit" class="btn btn-primary pull-right hidden" onclick="document.getElementById(\'form_curriculum\').submit();"><i class="fa fa-floppy-o margin-r-5">Lehrplan importieren</button>'; 
+$f_content .= '<button id="bImport" name="import" type="submit" class="btn btn-primary pull-right hidden" onclick="document.getElementById(\'form_curriculum\').submit();">Lehrplan importieren</button>'; 
 if (isset($add)){
     $f_content .= '<button id="bAdd" name="add" type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_curriculum\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>Lehrplan hinzufügen</button> ';
 }    
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
                               'f_content' => $f_content));
+$script = "<script id='modal_script'>
+        $.getScript('".$CFG->smarty_template_dir_url."plugins/colorpicker/bootstrap-colorpicker.min.js', function (){
+            $('.color-picker').colorpicker();
+            });</script>";
 
-echo json_encode(array('html'=>$html));
+echo json_encode(array('html'=>$html, 'script' => $script));

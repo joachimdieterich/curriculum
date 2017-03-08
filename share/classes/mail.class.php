@@ -98,12 +98,24 @@ class Mail {
      * @var int 
      */
     public $reveicer_status;
+    public $email; //PHP Mailer Class
     
     /**
      * class constructor 
      */
     public function __construct() {
-        
+        global $CFG;
+        if ($CFG->settings->messaging == 'email'){
+            $this->email              = new PHPMailer();
+            $this->email->isSMTP();                                      // Set mailer to use SMTP
+            $this->email->Host        = $CFG->email_Host;                // Specify main and backup SMTP servers
+            $this->email->SMTPAuth    = $CFG->email_SMTPAuth;            // Enable SMTP authentication
+            $this->email->Username    = $CFG->email_Username;            // SMTP username
+            $this->email->Password    = $CFG->email_Password;            // SMTP password
+            $this->email->SMTPSecure  = $CFG->email_SMTPSecure;          // Enable TLS encryption, `ssl` also accepted
+            $this->email->Port        = $CFG->email_Port;                // TCP port to connect to
+            $this->email->setFrom($CFG->email_Username, $CFG->app_title);
+        }
     }
     
     /**
@@ -177,27 +189,65 @@ class Mail {
     }
     
     
-    public function delete(){
+    public function delete($dependency = 'mail'){
         global $USER;
         checkCapabilities('mail:delete', $USER->role_id);
-        $db = DB::prepare('DELETE FROM message WHERE id = ?');
-        return $db->execute(array($this->id));
+        switch ($dependency) {
+            case 'mail':        $db = DB::prepare('DELETE FROM message WHERE id = ?');
+                                return $db->execute(array($this->id));
+                break;
+            case 'obsolete':    $db = DB::prepare('DELETE FROM message WHERE subject = ? AND sender_id = ? AND receiver_id <> ?');
+                                return $db->execute(array('Passwort vergessen', $this->sender_id, $this->receiver_id));
+                break;
+
+            default:
+                break;
+        }
+        
     }
+    
+    
     /**
      * post Mail
      * @return boolean 
      */
     public function postMail($dependency = 'person', $id = null){
+        global $CFG;
         if ($dependency != 'reset'){
             checkCapabilities('mail:postMail', $_SESSION['USER']->role_id); // User kann per cronjob festgelegt sein, daher $_SESSION 
-        } else {
-            $dependency = 'person';
-        }
-        
+        } 
         
         switch ($dependency) {
-            case 'person': $db = DB::prepare('INSERT INTO message (sender_id,receiver_id,subject,message,sender_status,receiver_status) VALUES (?,?,?,?,1,0)');
-                           return $db->execute(array($this->sender_id, $this->receiver_id, $this->subject, $this->message));
+            case 'reset':
+            case 'person':  switch ($CFG->settings->messaging) {                //send email to sender --> e.g. reset password
+                                case 'email':   $u = new User();
+                                                $u->load('id',$this->sender_id, false);
+                                                $this->email->CharSet = 'UTF-8';
+                                                $this->email->setFrom($u->email, $CFG->app_title);
+                                                $this->email->addCC($u->email); //send copy to sender
+                                                /* get receiver email */
+                                                $u->load('id',$this->receiver_id, false);
+                                                $this->email->addAddress($u->email); // Add a recipient
+                                                
+                                                $this->email->isHTML(true);                                   // Set email format to HTML
+                                                $this->email->Subject = $this->subject;
+                                                $this->email->Body    = $this->message;
+                                                $this->email->AltBody = strip_tags($this->message);
+                                                
+                                                if(!$this->email->send()) {
+                                                    error_log('Message could not be sent.');
+                                                    error_log('Mailer Error: ' . $this->email->ErrorInfo);
+                                                } else {
+                                                    return true;
+                                                }
+                                    break;
+                                    
+
+                                default:    $db = DB::prepare('INSERT INTO message (sender_id,receiver_id,subject,message,sender_status,receiver_status) VALUES (?,?,?,?,1,0)');
+                                            return $db->execute(array($this->sender_id, $this->receiver_id, $this->subject, $this->message)); 
+                                    break;
+                            }
+                           
                 break;
             case 'group':  $user = new User();
                            $group_members = $user->getGroupMembers('group', $id);

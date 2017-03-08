@@ -53,7 +53,7 @@ class Context {
             $this->id          = $result->id;
             $this->context     = $result->context;
             $this->description = $result->description;
-            $context[]         = clone $this;   
+            $context[$result->context]         = clone $this;   
         }
         return $context;
         

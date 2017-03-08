@@ -48,8 +48,6 @@ switch ($func) {
                     }
                     $header           = 'Benutzerrolle aktualisieren';           
         break;
-    
-    
     default:
         break;
 }

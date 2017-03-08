@@ -88,14 +88,15 @@ $TEMPLATE->assign('breadcrumb',  array('Benutzerverwaltung' => 'index.php?action
 $roles      = new Roles(); 
 $TEMPLATE->assign('roles', $roles->get());                              //getRoles
 
-$group_list = $groups->getGroups('group', $USER->id);                   // Load groups
+//$group_list = $groups->getGroups('group', $USER->id);                   // Load groups
+$group_list = $groups->getGroups('institution', $USER->institution_id);   // Load groups --> only load groups of current institution to prevent enroling to groups of foreign institutions
 $TEMPLATE->assign('groups_array', $group_list);                         
 $TEMPLATE->assign('myInstitutions', $institution->getInstitutions('user', null, $USER->id));
 
 $users      = new USER();
 $p_options  = array('delete' => array('onclick'      => "del('user',__id__);", 
                                      'capability'   => checkCapabilities('user:delete', $USER->role_id, false),
-                                     'icon'         => 'fa fa-minus',
+                                     'icon'         => 'fa fa-trash',
                                      'tooltip'      => 'löschen'),
                     'edit'  => array('onclick'      => "formloader('profile','editUser',__id__);", 
                                      'capability'   => checkCapabilities('user:updateUser', $USER->role_id, false),
@@ -105,6 +106,11 @@ $p_options  = array('delete' => array('onclick'      => "del('user',__id__);",
                                      'capability'   => checkCapabilities('user:getGroups', $USER->role_id, false),  //todo: use extra capability?
                                      'icon'         => 'fa fa-list-alt',
                                      'tooltip'      => 'Überblick'));
+$p_widget  = array('header'     => 'username',
+                   'subheader01'=> 'firstname, lastname',
+                   'subheader02'=> 'email',
+                   'file_id'    => 'avatar_id',
+                   'circle_image' => 'file_id'); 
 $p_config   = array('id'         => 'checkbox',
                     'username'   => 'Benutzername', 
                     'firstname'  => 'Vorname', 
@@ -115,5 +121,7 @@ $p_config   = array('id'         => 'checkbox',
                     /*'state'   => 'Bundesland', 
                     'country' => 'Land', */
                     ''    => 'Rolle', 
+                    'p_search'    => array('username','firstname','lastname','email','postalcode','city'),
+                    'p_widget'    => $p_widget,
                     'p_options'    => $p_options);
 setPaginator('userP', $TEMPLATE, $users->userList('institution', 'userP', filter_input(INPUT_GET, 'lost', FILTER_VALIDATE_BOOLEAN)), 'us_val', 'index.php?action=user', $p_config); //set Paginator    

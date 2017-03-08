@@ -2,6 +2,9 @@ curriculum BETA Version 0.9.3
 
 Version 0.9.3
 =================
+- Adding chosen_v1.6.3 for awesome select inputs
+- Adding PHPMailer v.5.2.15
+- Installation User Interface
 - Guest User
 - Self Assessment for students
 - Bootstrap Layout (AdminLTE 2)

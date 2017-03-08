@@ -115,8 +115,7 @@ $html     = Form::modal(array('title'     => $header,
 
 $script = "<!-- daterangepicker -->
         <script id='modal_script'>
-        $.getScript('".$CFG->base_url ."public/assets/templates/AdminLTE-2.3.0/plugins/daterangepicker/daterangepicker.js', function (){
-        //$('.color-picker').colorpicker();
+        $.getScript('".$TEMPLATE->template_dir."plugins/daterangepicker/daterangepicker.js', function (){
         $('.datepicker').daterangepicker({timePicker: true, timePickerIncrement: 1, timePicker24Hour: true, locale: {format: 'DD.MM.YYYY HH:mm'}});
         });</script>";
 echo json_encode(array('html'=>$html, 'script'=> $script));

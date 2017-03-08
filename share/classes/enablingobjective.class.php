@@ -338,7 +338,7 @@ class EnablingObjective {
                                     $res_03 = $db_03->fetchObject();
                                     if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
                                         $ext = $CFG->repository->count(1,$result->id);
-                                    } 
+                                    } else { $ext = ''; }
                                     $this->files                = $res_03->MAX.$ext; //nummer of materials
                                     
                                     /* Check if Quiz is available for this enabling objective*/
@@ -682,7 +682,6 @@ class EnablingObjective {
         }
         
         while($result = $db->fetchObject()) {
-            //$users[] = $result->user_id; 
             $users[] = $result; 
         }
 
@@ -701,7 +700,7 @@ class EnablingObjective {
      * @param int $status
      * @return type 
      */
-    public function setAccomplishedStatus($dependency = null, $user_id = null, $creator_id = null, $status = 2) {
+    public function setAccomplishedStatus($dependency = null, $user_id = null, $creator_id = null, $status = 'x2', $token = null) {
         global $USER;
         switch ($dependency) {
             case 'cron':    $db = DB::prepare('UPDATE user_accomplished SET status_id = ? WHERE reference_id = ? AND context_id = 12');
@@ -731,19 +730,26 @@ class EnablingObjective {
             case 'student': $db = DB::prepare('SELECT COUNT(id) FROM user_accomplished WHERE reference_id = ? AND user_id = ? AND context_id = 12');
                             $db->execute(array($this->id, $user_id));
                             if($db->fetchColumn() >= 1) { 
-                                $db = DB::prepare('UPDATE user_accomplished SET status_id = ? WHERE reference_id = ? AND user_id = ? AND context_id = 12');
-                                return $db->execute(array($status, $this->id, $user_id));
+                                $db = DB::prepare('UPDATE user_accomplished SET status_id = ?, token = ? WHERE reference_id = ? AND user_id = ? AND context_id = 12');
+                                return $db->execute(array($status, $token, $this->id, $user_id));
                             } else {
-                                $db = DB::prepare('INSERT INTO user_accomplished(reference_id,context_id,user_id,status_id,creator_id) VALUES (?,?,?,?,?)');
-                                return $db->execute(array($this->id, 12, $user_id, $status, $user_id));
+                                $db = DB::prepare('INSERT INTO user_accomplished(reference_id,context_id,user_id,status_id,token,creator_id) VALUES (?,?,?,?,?,?)');
+                                return $db->execute(array($this->id, 12, $user_id, $status, $token, $user_id));
                             }
                             break;
+            case 'extern':  $db1    = DB::prepare('SELECT COUNT(id) FROM user_accomplished WHERE reference_id = ? AND context_id = ? AND user_id = ? AND status_id = ? AND token = ?');
+                            $db1->execute(array($this->id, 12, $user_id, '1x', $token));
+                            $count  = $db1->fetchColumn(); 
+                            if ($count == 1){
+                                $db = DB::prepare('UPDATE user_accomplished SET status_id = ?, creator_id = ? WHERE reference_id = ? AND user_id = ? AND context_id = 12');
+                                return $db->execute(array($status, $creator_id, $this->id, $user_id));
+                            }
+                break;
                 
-                            break;
             default:        break;
         } 
     }
-    
+      
     function calcTerminalPercentage($ter_id, $user_id){
         $db1    = DB::prepare('SELECT COUNT(id) FROM enablingObjectives WHERE terminal_objective_id IN (?)');
         $db1->execute(array($ter_id));
@@ -753,7 +759,7 @@ class EnablingObjective {
                                 WHERE ua.reference_id = ena.id
                                 AND ua.context_id = 12
                                 AND ena.terminal_objective_id IN (?)
-                                AND ua.user_id = ? AND (ua.status_id = 1 OR ua.status_id = 11 OR ua.status_id = 21 OR ua.status_id = 31)');
+                                AND ua.user_id = ? AND (ua.status_id IN ("01","1","x1","11","21","31") OR ua.status_id IN ("02","2","x2","12","22","32"))');
         $db2->execute(array($ter_id, $user_id));
         $accomplished    = $db2->fetchColumn(); 
         if ($max > 0){

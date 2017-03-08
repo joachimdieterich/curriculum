@@ -30,22 +30,21 @@ try { // Error handling
     $PAGE->action   = filter_input(INPUT_GET, 'action', FILTER_UNSAFE_RAW);
     if (!$PAGE->action) { $PAGE->action = 'login'; $_SESSION['lock'] = false;}
     switch ($PAGE->action) {                                  
-        case 'login':  $TEMPLATE->assign('page_action',      'login');                                      
-        //case 'install':  
+        case 'login':   $TEMPLATE->assign('page_action',      'login');                                      
+            break;
+        case 'install': $TEMPLATE->assign('page_action',      'install'); 
+            break;
+        case 'extern':  $TEMPLATE->assign('page_action',      'extern'); 
             break;
 
         default:   require ('../share/session.php');                                                           // Erst Session aufbauen damit $USER verfügbar ist, dann login-check!
                    require ('../share/login-check.php');                                                       // Check ob Session abgelaufen ist
+                   $PAGE->action   = filter_input(INPUT_GET, 'action', FILTER_UNSAFE_RAW);
 
-                   $TEMPLATE->assign('mySemester',         $_SESSION['SEMESTER']);                                     // ARRAY mit Lernzeiträumen in die der USER eingeschrieben ist.
+                   $TEMPLATE->assign('mySemester',         $_SESSION['SEMESTER']);                             // ARRAY mit Lernzeiträumen in die der USER eingeschrieben ist.
                    if (isset($_SESSION['username'])){
                        $TEMPLATE->assign('loginname',      $_SESSION['username']);                                      
                    }
-                   $TEMPLATE->assign('stat_users_online',  $USER->usersOnline($USER->institutions));  
-                   $statistics = new Statistic();
-                   $TEMPLATE->assign('stat_acc_all',       $statistics->getAccomplishedObjectives('all'));  
-                   $TEMPLATE->assign('stat_acc_today',     $statistics->getAccomplishedObjectives('today'));  
-                   $TEMPLATE->assign('stat_users_today',   $statistics->getUsersOnline('today'));  
                    detect_reload();   
             break;
     }
@@ -62,15 +61,8 @@ try { // Error handling
             $mail->loadNewMessages($USER->id);
             if (isset($mail->inbox)){
                 $TEMPLATE->assign('mails', $mail->inbox);
-                /* Load recent Mails for Sidebar */
-                $recent_mails = new Mail();   
-                $TEMPLATE->assign('recent_mails', $recent_mails->loadCorrespondence(5, $USER->id, $USER->id, 'recent')); 
             }    
         }   
-        $upcoming_events = new Event();
-        $TEMPLATE->assign('upcoming_events', $upcoming_events->get('upcoming', $USER->id, '', 5));
-        $upcoming_tasks  = new Task();
-        $TEMPLATE->assign('upcoming_tasks', $upcoming_tasks->get('upcoming', $USER->id));
         
         if (isset($_SESSION['PAGE']->print)){
             $pdf = new Pdf();
@@ -78,13 +70,14 @@ try { // Error handling
             $pdf->filename = 'print.pdf';
             $pdf->generate(); 
             unset($_SESSION['PAGE']->print);
-         }
-        
+        }    
     }
-
-    $PAGE->controller = $CFG->controllers_root.'/'.$PAGE->action .'.php';       //load controller 
-   
-    if (file_exists($PAGE->controller)) {   
+    $TEMPLATE->assign('random_bg', $CFG->request_url.'assets/images/backgrounds/'.random_file($CFG->document_root .'assets/images/backgrounds/')); //get random bg-image
+    
+    $PAGE->controller = $CFG->controllers_root.$PAGE->action .'.php';       //load controller 
+    
+    if (file_exists($PAGE->controller)) { 
+        
         include($PAGE->controller);  
         $TEMPLATE->assign('page_name',  $PAGE->action );
         if (isset($PAGE->message)){/* Systemnachrichten */
@@ -95,13 +88,15 @@ try { // Error handling
                 $_SESSION['PAGE']->message = null;  //reset to prevent multiple notifications
             }
         } 
-    } else {  
+    } else { 
+        
         $TEMPLATE->assign('page_name',         $PAGE->action);  
         $PAGE->action = 'error-404';
         throw new CurriculumException($PAGE->action .'.php nicht vorhanden.'); 
     }
     
  } catch (CurriculumException $e){ // CurriculumException im controller
+     
     if ($PAGE->action != 'error-404'){
         $TEMPLATE->assign('page_name',         $PAGE->action);  
         $PAGE->action = 'error-403';
@@ -116,8 +111,8 @@ try {
     $TEMPLATE->display((isset($TEMPLATE_prefix) ? $TEMPLATE_prefix : '').$PAGE->action .'.tpl');
 } catch (CurriculumException $e){   // wenn CurriculumException erst im Template geworfen wird.
     echo '<p>'.$e.'</p>';       // Ausgabe des Fehlers
-} catch (SmartyException $e) {    
-    $TEMPLATE->display($CFG->smarty_template_dir.'error-404.tpl');
+} catch (SmartyException $e) { 
+    $TEMPLATE->display($TEMPLATE->template_dir.'error-404.tpl');
 } catch (Exception $e) {
-    $TEMPLATE->display($CFG->smarty_template_dir.'error-500.tpl');
+    $TEMPLATE->display($TEMPLATE->template_dir.'error-500.tpl');
 }  

@@ -81,6 +81,7 @@ class SmartyPaginate {
             'first_text' => 'first',
             'last_text' => 'last',
             'pagi_search' => null,
+            'pagi_searchfield'=> null,
             'pagi_orderby' => null,
             'pagi_updown'=> null
             );
@@ -124,6 +125,11 @@ class SmartyPaginate {
             return $_SESSION['SmartyPaginate'][$id]['item_limit'];
         } else {return false;}
     }    
+    static function getView($id = 'default') {
+        if (isset($_SESSION['SmartyPaginate'][$id]['pagi_view'])){
+            return $_SESSION['SmartyPaginate'][$id]['pagi_view'];
+        } else {return 'table';}
+    }    
             
     /**
      * setSort
@@ -146,11 +152,22 @@ class SmartyPaginate {
             }
             
     }
+    static function setOrder($porder, $id = 'default') {
+        $_SESSION['SmartyPaginate'][$id]['pagi_orderby'] = $porder;
+    }
+    static function setView($view, $id = 'default') {
+        $_SESSION['SmartyPaginate'][$id]['pagi_view'] = $view;
+    }
     static function setSearch($porder,  $search=null, $id = 'default') {
         $_SESSION['SmartyPaginate'][$id]['pagi_orderby'] = $porder;
             
         if (isset($search)){
             $_SESSION['SmartyPaginate'][$id]['pagi_search'] = $search;
+        }
+    }
+    static function setSearchField($searchfield, $id = 'default') {
+        if (isset($searchfield)){
+            $_SESSION['SmartyPaginate'][$id]['pagi_searchfield'] = $searchfield;
         }
     }
     
@@ -608,6 +625,13 @@ class SmartyPaginate {
       static function _getSearch($id = 'default'){
           if (isset($_SESSION['SmartyPaginate'][$id]['pagi_search'])){
                 return $_SESSION['SmartyPaginate'][$id]['pagi_search'];
+            } else {
+                return null;
+            }
+      }
+      static function _getSearchField($id = 'default'){
+          if (isset($_SESSION['SmartyPaginate'][$id]['pagi_searchfield'])){
+                return $_SESSION['SmartyPaginate'][$id]['pagi_searchfield'];
             } else {
                 return null;
             }

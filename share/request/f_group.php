@@ -84,18 +84,20 @@ if (isset($id)){
 }
 $content .= '<input type="hidden" name="func" id="func" value="'.$func.'"/>';
 $content .= Form::input_text('group', 'Lerngruppe', $group, $error);
-$content .= Form::input_text('description', 'Beschreibung', $description, $error);
-
-$semesters                  = new Semester();                                   //Load Semesters
-$semesters->institution_id  = $USER->institutions; 
+$content .= Form::input_text('description', 'Beschreibung', $description, $error);        
 $content .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'institution_id', $institution_id , $error, 'getMultipleValues([\'semester\', this.value, \'semester_id\'], [\'grade\', this.value, \'grade_id\']);');
-$content .= Form::input_select('semester_id', 'Lernzeitraum', $semesters->getSemesters('institution',$USER->institution_id), 'semester, institution', 'id', $semester_id , $error);
+if ($institution_id == null){
+    $institution_id = reset($USER->institutions)->institution_id; //get id of first institution to load proper semesterlist
+}
+$semesters                  = new Semester();  //Load Semesters
+$semesters->institution_id  = $institution_id;
+$content .= Form::input_select('semester_id', 'Lernzeitraum', $semesters->getSemesters('institution',$institution_id), 'semester, institution', 'id', $semester_id , $error);
 
 $grades                     = new Grade();                                      //Load Grades
 $grades->institution_id     = $USER->institutions; 
-$content .= Form::input_select('grade_id', 'Klassenstufe', $grades->getGrades('institution',$USER->institution_id), 'grade, institution', 'id', $grade_id , $error);
+$content .= Form::input_select('grade_id', 'Klassenstufe', $grades->getGrades('institution',$institution_id), 'grade, institution', 'id', $grade_id , $error);
 if (isset($change_semester)){
-    $content .= Form::info('p_group', ' ', 'Um eine leere Lerngruppe zu erstellen, Haken entfernen.');
+    $content .= Form::info(array('id' => 'p_group', 'content' => 'Um eine leere Lerngruppe zu erstellen, Haken entfernen.'));
     $content .= Form::input_checkbox('assumeUsers', 'Personen übernehmen', $assumeUsers , $error);
 }
 $content .= '</form>';

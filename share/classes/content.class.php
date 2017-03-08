@@ -43,13 +43,12 @@ class Content {
     public $sub_creator_id;
     public $sub_creator;
    
-    public function add(){
+    public function add($subscribe = true){
         global $USER;
-        checkCapabilities('content:add', $USER->role_id);
         $db = DB::prepare('INSERT INTO content (title,content,timecreated,creator_id) VALUES (?,?,NOW(),?)');
         if($db->execute(array($this->title, $this->content, $USER->id))){
             $this->id = DB::lastInsertId(); 
-            $this->addSubscription();
+            if ($subscribe) { $this->addSubscription(); }
             return $this->id;
         } else {
             return false;
@@ -58,7 +57,6 @@ class Content {
     
     public function update(){
         global $USER;
-        checkCapabilities('content:update', $USER->role_id);
         $db = DB::prepare('UPDATE content SET title = ?, content = ? WHERE id = ?');
         return $db->execute(array($this->title, $this->content, $this->id));
     }
@@ -102,6 +100,14 @@ class Content {
                                                         AND cts.content_id = ct.id');
                                 $db->execute(array($id));
                 break;
+            
+            case 'terms':       $db = DB::prepare('SELECT ct.id FROM content AS ct, content_subscriptions AS cts, context AS co
+                                                        WHERE  co.context = "terms"
+                                                        AND co.context_id = cts.context_id
+                                                        AND cts.content_id = ct.id');
+                                $db->execute();
+                break;
+            
             default:
                 break;
         }
@@ -127,6 +133,8 @@ class Content {
     */
     public function dedicate(){ // only use during install
         $db = DB::prepare('UPDATE content SET  creator_id = ?');        
-        return $db->execute(array($this->creator_id));
+        $db->execute(array($this->creator_id));
+        $db1 = DB::prepare('UPDATE content_subscriptions SET  creator_id = ?');        
+        return $db1->execute(array($this->creator_id));
     }
 }

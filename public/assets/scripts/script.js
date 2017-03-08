@@ -403,13 +403,13 @@ function setStatusColor(ena_id, status){
 
     document.getElementById(ena_id+"_green").className  = 'margin-r-5 '+green+' text-green pointer_hand';
     document.getElementById(ena_id+"_orange").className = 'margin-r-5 '+orange+' text-orange pointer_hand';
-    document.getElementById(ena_id+"_white").className  = 'margin-r-5 '+white+' text-white pointer_hand';
+    document.getElementById(ena_id+"_white").className  = 'margin-r-5 '+white+' text-gray pointer_hand';
     document.getElementById(ena_id+"_red").className    = 'margin-r-5 '+red+' text-red pointer_hand';
-    $(document.getElementById("ena_"+ena_id)).removeClass("bg-white");
-    $(document.getElementById("ena_"+ena_id)).removeClass("bg-green");
-    $(document.getElementById("ena_"+ena_id)).removeClass("bg-orange");
-    $(document.getElementById("ena_"+ena_id)).removeClass("bg-red");
-    $(document.getElementById("ena_"+ena_id)).addClass(bg);
+    $(document.getElementById("ena_header_"+ena_id)).removeClass("bg-white");
+    $(document.getElementById("ena_header_"+ena_id)).removeClass("bg-green");
+    $(document.getElementById("ena_header_"+ena_id)).removeClass("bg-orange");
+    $(document.getElementById("ena_header_"+ena_id)).removeClass("bg-red");
+    $(document.getElementById("ena_header_"+ena_id)).addClass(bg);
     document.getElementById("ena_status_"+ena_id).innerHTML = status;
 }
 
@@ -507,13 +507,16 @@ function processor(/*proc, func, val, []*/){
     }
 }
 
-function order() {
-    var url = "../share/request/orderObjectives.php?order="+ arguments[0] +"&func="+ arguments[1]+"&id="+ arguments[2];
-    
+function comment(/*func reference_id, context_id, text, (parent_id)*/){
+    if (typeof(arguments[4]) !== 'undefined'){
+        var url = "../share/processors/p_comment.php?func="+ arguments[0] +"&ref_id="+ arguments[1] + "&context_id=" + arguments[2] + "&text=" + arguments[3] +  "&parent_id=" + arguments[4];
+    } else {
+        var url = "../share/processors/p_comment.php?func="+ arguments[0] +"&ref_id="+ arguments[1] + "&context_id=" + arguments[2] + "&text=" + arguments[3];
+    }
     req = XMLobject();
-    if(req) {        
-        req.onloadend = window.location.reload();
-        req.open("GET", url, true);
+    if(req) {  
+        req.onreadystatechange =  window.location.reload();
+        req.open("GET", url, false); //false --> important for print function
         req.send(null);
     }
 }
@@ -626,6 +629,10 @@ function setValues() {
                 response = JSON.parse(req.responseText);
                 if (document.getElementById(arguments[0])){
                     document.getElementById(arguments[0]).innerHTML = response.html;
+                    /* update chosen-select if present */
+                    if ($(document.getElementById(arguments[0])).hasClass("chosen-select")){
+                        $(document.getElementById(arguments[0])).trigger('chosen:updated');
+                    }
                 }  
             }
         }
@@ -716,7 +723,10 @@ function resizeModal(){
  */
 function popupFunction(e){
     $("body").addClass("modal-open");                                           //prevent scrolling on body tag
-    eval($("#"+e).children("script").text());                                   // aktiviert scripte im Element e
+    $("#overlay").addClass("overlay");                                           //darken background
+    
+    var script = $("#"+e).children("script").text();
+    eval(script);                                   // aktiviert scripte im Element e
     resizeModal();                                                              // resize modal 
     
     textareas = document.getElementsByTagName("textarea");                      // Replace the <textarea id="editor1"> with a CKEditor instance, using default configuration
@@ -726,6 +736,17 @@ function popupFunction(e){
         CKEDITOR.on('instanceReady',function(){
             resizeModal();      // if ckeditor is used, then modal has to be resized after ckeditor is ready
         }); 
+    }
+    
+    var config = {
+      '.chosen-select'           : {},
+      '.chosen-select-deselect'  : {allow_single_deselect:true},
+      '.chosen-select-no-single' : {disable_search_threshold:10},
+      '.chosen-select-no-results': {no_results_text:'Keine Treffer!'},
+      '.chosen-select-width'     : {width:"95%"}
+    };
+    for (var selector in config) {
+        $(selector).chosen(config[selector]);
     }
 }
 
@@ -816,6 +837,7 @@ function closePopup(id){
     removeMedia();  // Important to empty audio element cache in webkit browsers. see description on function
     $('#'+popup).hide();  
     $("body").removeClass("modal-open"); //reactivate scrolling on body
+    $("#overlay").removeClass("overlay");                                           //remove darken background
     document.getElementById(popup).style.zIndex = 3000; // reset zIndex;
     document.getElementById(popup).innerHTML    = '<div class="modal-dialog"><div class="box"><div class="box-header"><h3 class="box-title">Loading...</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div></div>';    
 }

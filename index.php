@@ -22,7 +22,7 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
  * THE USE OR OTHER DEALINGS IN THE SOFTWARE.    
  */
-if (file_exists(dirname(__FILE__).'/share/controllers/install.php') AND file_exists(dirname(__FILE__).'/share/templates/install.tpl')){
+if (file_exists(dirname(__FILE__).'/share/controllers/install.php') AND file_exists(dirname(__FILE__).'/share/templates/Bootflat-2.0.4/install.tpl')){
     header('Location:public/index.php?action=install');
 } else {
     header('Location:public/index.php');

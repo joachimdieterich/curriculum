@@ -283,7 +283,16 @@ class User {
                 $this->institution = new Institution($this->institution_id);
             }
         }
-        $this->token             = $result->token;   
+        if ($result->token == NULL){                    //Token has to be set to reset password: if NULL --> user never was logged in. 
+            $this->set('token', getToken());
+        } else {
+            $this->token             = $result->token;   
+        }
+    }
+    public function set($dependency, $value, $id = NULL){
+        if ($id == null){ $id = $this->id; }
+        $db = DB::prepare('UPDATE users SET '.$dependency.' = ? WHERE id = ?');
+        return $db->execute(array($value, $id));
     }
     
     public function getRole($id){
@@ -311,7 +320,11 @@ class User {
                 $this->id = DB::lastInsertId();                                 
                 $this->enroleToInstitution($institution_id);                    // enrol to institution
                 if (is_int($group_id)){                                         // enrol to group if id is set
-                    $this->enroleToGroup(array($group_id));
+                    $db_01 = DB::prepare('SELECT COUNT(id) FROM groups WHERE id = ? AND institution_id = ?'); //check if group is enroled to given institution
+                    $db_01->execute(array($group_id, $institution_id));
+                    if($db_01->fetchColumn() >= 1) {
+                        $this->enroleToGroup(array($group_id));
+                    }
                 }
                 $PAGE->message[] = array('message' => 'Der Benutzer <strong>'.$this->username.'</strong> wurde erfolgreich angelegt.', 'icon' => 'fa fa-user text-success');// Schließen und speichern
                 return $this->id;
@@ -727,6 +740,7 @@ class User {
             $this->email        = $result->email;
             $this->postalcode   = $result->postalcode;
             $this->city         = $result->city;
+            $this->avatar_id    = $result->avatar_id;
             
             $users[] = clone $this;
         } 
@@ -860,10 +874,33 @@ class User {
      */
     public function getUsers($dependency = null, $paginator = '', $id = null, $group = null){
         global $USER, $CFG;
-        $order_param = orderPaginator($paginator);
+        $order_param = orderPaginator($paginator, array('username'  => 'us', 
+                                                        'firstname' => 'us', 
+                                                        'lastname'  => 'us'
+                                                    ));
         
         checkCapabilities('user:getUsers', $USER->role_id);
         switch ($dependency) {
+            case 'curriculum':  $db = DB::prepare('SELECT us.*, ie.role_id FROM users AS us, groups_enrolments AS ge, curriculum_enrolments AS ce, institution_enrolments as ie, groups as gr
+                                                WHERE us.id = ge.user_id 
+                                                AND ce.curriculum_id = ?
+                                                AND ce.status = 1
+                                                AND ce.group_id = ge.group_id
+                                                AND ie.user_id = us.id
+                                                AND ie.status = 1                                                      
+                                                AND ge.status = 1 
+                                                AND gr.institution_id = ie.institution_id
+                                                AND gr.id = ge.group_id '.$order_param);
+                                $db->execute(array($id)); 
+                                while($result = $db->fetchObject()) {  
+                                    $this->id           = $result->id;
+                                    $this->username     = $result->username;
+                                    $this->firstname    = $result->firstname; 
+                                    $this->lastname     = $result->lastname; 
+                                    $this->role_id      = $result->role_id; 
+                                    $users[]            = clone $this; 
+                                }               
+                break;
             case 'course':  $db = DB::prepare('SELECT us.*, ie.role_id FROM users AS us, groups_enrolments AS ge, curriculum_enrolments AS ce, institution_enrolments as ie, groups as gr
                                                 WHERE us.id = ge.user_id 
                                                 AND ce.curriculum_id = ?
@@ -900,9 +937,8 @@ class User {
                                     if (!checkCapabilities('objectives:setStatus', $this->role_id, FALSE)){ //only add to list if not able to set status == teacher
                                         $ena = new EnablingObjective();
                                         $this->completed = $ena->getPercentageOfCompletion($id, $this->id);
-                                        $users[] = clone $this; 
                                     }
-                                    
+                                    $users[] = clone $this;  
                             }
                             break;
             case 'institution':  $db = DB::prepare('SELECT DISTINCT us.* FROM users AS us
@@ -932,14 +968,25 @@ class User {
     * check login data
     * @return boolean 
     */
-   public function checkLoginData(){
-        $db     = DB::prepare('SELECT COUNT(id) FROM users WHERE UPPER(username) = UPPER(?) AND password=?');
-        $db->execute(array($this->username, $this->password));
-        $count  = $db->fetchColumn();
-        if ($count > 0){
-            return true;
+   public function checkLoginData($resetPW = false){
+        if ($resetPW){
+            $db     = DB::prepare('SELECT COUNT(id) FROM users WHERE UPPER(username) = UPPER(?) AND token=?');
+            $db->execute(array($this->username, $this->token));
+            $count  = $db->fetchColumn();
+            if ($count > 0){
+                return true;
+            } else {
+                return false; 
+            }
         } else {
-            return false; 
+            $db     = DB::prepare('SELECT COUNT(id) FROM users WHERE UPPER(username) = UPPER(?) AND password=?');
+            $db->execute(array($this->username, $this->password));
+            $count  = $db->fetchColumn();
+            if ($count > 0){
+                return true;
+            } else {
+                return false; 
+            }
         }
    }
    
@@ -1024,7 +1071,7 @@ class User {
      * @return string | array
      */
    public function get_curriculum_enrolments() { 
-        $db = DB::prepare('SELECT cu.curriculum, cu.id, cu.grade_id, gp.id AS group_id, gp.semester_id, gp.groups, cn.base_curriculum_id, cn.level 
+        $db = DB::prepare('SELECT cu.curriculum, cu.id, cu.grade_id, cu.icon_id, cu.color, gp.id AS group_id, gp.semester_id, gp.groups, cn.base_curriculum_id, cn.level 
                             FROM curriculum_enrolments AS ce, groups AS gp, institution_enrolments AS ie, groups_enrolments AS ge, curriculum AS cu 
                             LEFT JOIN curriculum_niveaus AS cn ON cn.curriculum_id = cu.id
                             WHERE cu.id = ce.curriculum_id 
@@ -1220,7 +1267,7 @@ class User {
     */
     public function dedicate(){ // only use during install
         global $USER;
-        checkCapabilities('user:dedicate', $USER->role_id);
+        checkCapabilities('install:dedicate', $USER->role_id);
         $db = DB::prepare('UPDATE users SET creator_id = ?');
         return $db->execute(array($this->creator_id));
     }

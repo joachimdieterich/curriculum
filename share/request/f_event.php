@@ -38,11 +38,13 @@ $event             = null;
 $description       = null;
 $creation_time     = null;
 $creator_id        = null;
-/*if (isset($COURSE->id)){
+if (isset($COURSE->id)){
 $course_id         = $COURSE->id;
-}*/
-$group_id          = null;
-$user_id           = null;
+} else {
+  $course_id       = 0;  
+}
+$group_id          = 0;
+$user_id           = $USER->id;
 $context_id        = 1;
 $repeat_id         = null;
 $sequence          = null;
@@ -98,18 +100,22 @@ $content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>
 if (isset($event_id)){
     $content .= '<input type="hidden" name="event_id" id="event_id" value="'.$event_id.'"/> ';
 }
+
 $content .= Form::input_text('event', 'Termin', $event, $error, 'z. B. Treffen in der Aula');
 $content .= Form::input_textarea('description', 'Beschreibung', $description, $error, 'Beschreibung');
 $content .= Form::input_date(array('id'=>'timerange', 'label' => 'Dauer' , 'time' => $timerange, 'error' => $error, 'placeholder' => '', $type = 'date'));
 $content .= '</form>';
-$footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_event\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';   
+if ($_GET['func'] == 'edit'){
+    $footer   = '<button type="submit" class="btn btn-danger pull-left" onclick="alert(\'Funktion noch nicht verfügbar\');"><i class="fa fa-trash margin-r-5"></i> Termin löschen</button>';
+}
+$footer   .= '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_event\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';   
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
                               'f_content' => $footer));
 
 $script = "<!-- daterangepicker -->
         <script id='modal_script'>
-        $.getScript('".$CFG->base_url ."public/assets/templates/AdminLTE-2.3.0/plugins/daterangepicker/daterangepicker.js', function (){
+        $.getScript('".$CFG->smarty_template_dir_url."/plugins/daterangepicker/daterangepicker.js', function (){
         //$('.color-picker').colorpicker();
         $('.datepicker').daterangepicker({timePicker: true, timePickerIncrement: 1, timePicker24Hour: true, locale: {format: 'DD.MM.YYYY HH:mm'}});
         });</script>";

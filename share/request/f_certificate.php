@@ -34,6 +34,7 @@ $cert_id           = null;
 $certificate       = null; 
 $description       = null;
 $institution_id    = null;
+$curriculum_id     = null;
 $template          = null;
 $func              = $_GET['func'];
 $error             = null;
@@ -76,7 +77,7 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$content  .='<form id="form_certificate"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_certificate.php"';
+$content   ='<form id="form_certificate"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_certificate.php"';
 if (isset($currentUrlId)){ $content .= $currentUrlId; }
 $content  .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
 if (isset($cert_id)){
@@ -88,14 +89,21 @@ $content  .= '<input type="hidden" name="reference_id" id="reference_id" value="
 $content  .= Form::input_text('certificate', 'Zertifikat', $certificate, $error, 'z. B. MedienkomP@ss Zertifikat');
 $content  .= Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung');
 $content  .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'institution_id', $institution_id , $error);
+$curriculum = new Curriculum();
+$cur_array              = $curriculum->getCurricula('user', $USER->id, 'curriculumP');
+$cur_global             = new Curriculum();
+$cur_global->id         = 0; // global certificate
+$cur_global->curriculum = 'globales Zertifikat';
+$cur_array = array_merge(array($cur_global), $cur_array); //add entry to select list 
+$content  .= Form::input_select('curriculum_id', 'Lehrplan', $cur_array , 'curriculum', 'id', $curriculum_id , $error);
 $content  .= Form::input_textarea('template', 'Zertifikat-Vorlage', $template, $error);
-$content  .= Form::info('info', 'Felder:', '*&lt;!--Vorname--&gt;, *&lt;!--Nachname--&gt;</br> 
+$content  .= Form::info(array('id' => 'info', 'label' => 'Felder', 'content' => '*&lt;!--Vorname--&gt;, *&lt;!--Nachname--&gt;</br> 
                                             *&lt;!--Start--&gt;, *&lt;!--Ende--&gt</br>
                                              &lt;!--Ort--&gt;, &lt;!--Datum--&gt;, &lt;!--Unterschrift--&gt;</br>
                                              &lt;!--Thema--&gt;, &lt;!--Ziel--&gt;</br>
                                              &lt;!--Ziel_mit_Hilfe_erreicht--&gt;,  &lt;!--Ziel_erreicht--&gt;, &lt;!--Ziel_offen--&gt;</br>
                                              &lt;ziel status="[1]" class="[objective_green row]" &gt;&lt;/ziel&gt;</br>
-                                             &lt;!--Bereich{terminal_objective_id,...}--&gt;HTML&lt;!--/Bereich--&gt;');
+                                             &lt;!--Bereich{terminal_objective_id,...}--&gt;HTML&lt;!--/Bereich--&gt;'));
 $content  .= '</form>';
 $footer    = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_certificate\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>'; 
    

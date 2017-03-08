@@ -82,9 +82,8 @@ $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
                               'f_content' => $footer));  
 
-$script = "<!-- daterangepicker -->
-       <script id='modal_script'>
-        $.getScript('".$CFG->base_url ."public/assets/templates/AdminLTE-2.3.0/plugins/colorpicker/bootstrap-colorpicker.min.js', function (){
+$script = "<script id='modal_script'>
+        $.getScript('".$CFG->smarty_template_dir_url."plugins/colorpicker/bootstrap-colorpicker.min.js', function (){
         $('.color-picker').colorpicker();
         });</script>";
 echo json_encode(array('html'=> $html, 'script' => $script));

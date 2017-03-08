@@ -57,6 +57,15 @@ class Event {
         list ($this->timestart, $this->timeend) = explode(' - ',$this->timerange); // copy timestart and timeend from timerage
         $this->timestart = date('Y-m-d G:i:s', strtotime($this->timestart));
         $this->timeend   = date('Y-m-d G:i:s', strtotime($this->timeend));
+        switch ($this->context_id) {
+            case 1: $this->course_id = 0; 
+                    $this->group_id  = 0;
+                    $this->user_id   = $USER->id;
+                break;
+
+            default:
+                break;
+        }
         $db = DB::prepare('INSERT INTO event (event,description,course_id,group_id,user_id,context_id,repeat_id,sequence,reminder_interval,timestart,timeend,status,creation_time,creator_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
         return $db->execute(array($this->event, $this->description, $this->course_id, $this->group_id, $this->user_id, $this->context_id, $this->repeat_id, $this->sequence, $this->reminder_interval, $this->timestart, $this->timeend, $this->status, $this->creation_time, $USER->id));
     }

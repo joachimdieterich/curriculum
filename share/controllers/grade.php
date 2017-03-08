@@ -31,15 +31,20 @@ $grade->institution_id  = $USER->institutions;
 
 $p_options = array('delete' => array('onclick'    => "del('grade',__id__);", 
                                      'capability' => checkCapabilities('grade:delete', $USER->role_id, false),
-                                     'icon'       => 'fa fa-minus',
+                                     'icon'       => 'fa fa-trash',
                                      'tooltip'    => 'löschen'),
                     'edit'  => array('onclick'    => "formloader('grade','edit',__id__);",
                                      'capability' => checkCapabilities('grade:update', $USER->role_id, false),
                                      'icon'       => 'fa fa-edit',
                                      'tooltip'    => 'bearbeiten'));
+$p_widget  = array('header'     => 'grade',
+                   'subheader01'=> 'description',
+                   'subheader02'=> 'institution'); //false ==> don't show icon on widget
 $p_config =   array('id'         => 'checkbox',
                     'grade'       => 'Klassenstufe', 
                     'description' => 'Beschreibung', 
                     'institution' => 'Institution', 
+                    'p_search'    => array('grade','description','institution'),
+                    'p_widget' => $p_widget, 
                     'p_options'   => $p_options);
 setPaginator('gradeP', $TEMPLATE, $grade->getGrades('all', null, 'gradeP'), 'gr_val', 'index.php?action=grade', $p_config); 

@@ -27,27 +27,35 @@ ob_start();
 include_once('setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 global $CFG, $USER;
 
-if (null != filter_input(INPUT_GET, 'token')){                  // Zugriff über token. Externe Services. 
+/* get url parameters */
+foreach ($_GET  as $key => $value) { 
+    $$key = $value; 
+} 
+
+if (isset($token)){                  // Zugriff über token. Externe Services. 
     $f      = new File();
-    $id     = $f->getFileID(filter_input(INPUT_GET, 'token'));
+    $id     = $f->getFileID($token);
     if ($id == false){ die(); }
-    $f->deleteFileToken(filter_input(INPUT_GET, 'token'));      // Token wird gelöscht und kann nicht mehr genutzt werden.
+    $f->deleteFileToken($token);      // Token wird gelöscht und kann nicht mehr genutzt werden.
 } else {
     //if ((!isset($_SESSION['USER'])) && (!isset($USER->id))){ echo 'Kein Zugriff!'; die(); }
 }
-
-if (null != filter_input(INPUT_GET, 'id')){
-    $id   = filter_input(INPUT_GET, 'id');
-} 
 
 if (isset($id)){ 
     $f      = new File();
     $f->id  = $id;
     $f->load();
-    if (filter_input(INPUT_GET, 'type')){
-        $path   = realpath($CFG->curriculumdata_root.str_lreplace($f->type, '.'.filter_input(INPUT_GET, 'type'), $f->full_path)); // hack für xml Download über file_id
+    if (isset($type)){
+        $path   = realpath($CFG->curriculumdata_root.str_lreplace($f->type, '.'.$type, $f->full_path)); // hack für xml Download über file_id
     } else {
-        $path   = realpath($CFG->curriculumdata_root.$f->full_path);
+        
+        if (isset($size) AND isset($f->file_version[$size]['full_path']) ){
+            $path   = realpath($CFG->curriculumdata_root.$f->file_version[$size]['full_path']); //returns size if is set and provided -> else fallback to full size
+        } else {
+            $path   = realpath($CFG->curriculumdata_root.$f->full_path);
+        }
+        
+        
     }
     // if file does not exist
     if (!file_exists($path)){
@@ -65,7 +73,7 @@ if (filter_input(INPUT_GET, 'video') == true){
     exit;
 }
 
-if (filter_input(INPUT_GET, 'download') == true){
+if (isset($download)){
     //header("Pragma: public"); //Useful when you come across this error: http://trac.edgewall.org/ticket/1020. IE 8 & less seems to like to cache things when they are on a SSL server. Putting 'Pragma:public' helps with: "Internet Explorer was not able to open this Internet site. The requested site is either unavailable or cannot be found. Please try again later"
     header('Content-Description: File Transfer');
     header('Content-Type: application/octet-stream');

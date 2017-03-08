@@ -173,18 +173,26 @@ function resetPaginator($instance){  //resets Paginator to index 1
  * @return string
  */
 function orderPaginator($instance, $table=null){
-    $search = SmartyPaginate::getSort('search', $instance);
-    
-    if ($table){
-        if (strpos(strtoupper($search), 'LIKE')){
-            $t      = $table[SmartyPaginate::_getOrder($instance)]; //get proper table shortcut
-            $search = substr_replace($search, $t.'.', 5, 0);        //add "table." to query
+    //error_log(json_encode(SmartyPaginate::_getSearchField($instance)));
+    if ($table AND is_array(SmartyPaginate::_getSearchField($instance))){
+        $search = ' AND (';
+        $fields = SmartyPaginate::_getSearchField($instance);
+        for ($i = 0; $i < count($fields); $i++) {           // generates sql search query based on field array
+            $t       = $table[$fields[$i]]; //get proper table shortcut
+            $search .= $t.'.'.$fields[$i].' LIKE \'%'.SmartyPaginate::_getSearch($instance).'%\' ';
+            if ($i+1 != count($fields)){
+                $search .= 'OR ';
+            } else {
+                $search .= ')';
+            }
         } 
-    }
-    $order  = SmartyPaginate::getSort('order', $instance);
-    $sort   = SmartyPaginate::getSort('sort', $instance) ;
-    if ($order){ 
-        return $search.' '. $order.' '.$sort;             
+        $order  = SmartyPaginate::_getOrder($instance);
+        if ($order != '') {
+            $order = ' ORDER BY '. $table[$order].'.'.$order; 
+        }
+        $sort   = SmartyPaginate::getSort('sort', $instance) ;
+        //error_log($search.' '.$order.' '.$sort);
+        return $search.' '.$order.' '.$sort;      
     } else {
        return '';
     }
@@ -737,7 +745,7 @@ function exists_plugin($type, $plugin) {
  */
 function session_reload_user(){
     global $USER, $CFG, $TEMPLATE;
-    
+    $USER = new User();
     $USER->load('username', $_SESSION['username']);                             // Benutzer aus DB laden
     $USER->password         = '';                                               // Passwort aus Session löschen
     $_SESSION['USER']       =& $USER;
@@ -778,6 +786,43 @@ function element($element, $object, $string = NULL, $prefix = NULL){
     }
     $string = element_functions($string, 'this', $object);*/
     return $string;
+}
+
+/* based on https://gist.github.com/colourstheme/d992abc081df381ce656 */
+function ak_convert_hex2rgba($color, $opacity = false) {
+    $default = 'rgb(0,0,0)';    
+    
+    if (empty($color))
+        return $default;    
+
+    if ($color[0] == '#')           $color = substr($color, 1);
+    if (strlen($color) == 6)        $hex = array($color[0] . $color[1], $color[2] . $color[3], $color[4] . $color[5]);
+    elseif (strlen($color) == 3)    $hex = array($color[0] . $color[0], $color[1] . $color[1], $color[2] . $color[2]);
+    elseif (strlen($color) == 8) {  $hex = array($color[0] . $color[1], $color[2] . $color[3], $color[4] . $color[5]);
+                                    $hex_opacity = $color[6] . $color[7]; }
+    elseif (strlen($color) == 4) {  $hex = array($color[0] . $color[0], $color[1] . $color[1], $color[2] . $color[2]);
+                                    $hex_opacity = $color[3] . $color[3]; }
+    else                            return $default;
+       
+    $rgb = array_map('hexdec', $hex); 
+    if (isset($hex_opacity))     {  $opacity = implode(array_map('hexdec', array($hex_opacity))); 
+                                    $opacity = round(1/255*$opacity, 2);
+    }
+    if ($opacity) {
+        if (abs($opacity) > 1)
+            $opacity = 1.0;
+
+        $output = 'rgba(' . implode(",", $rgb) . ',' . $opacity . ')';
+    } else {
+        $output = 'rgb(' . implode(",", $rgb) . ')';
+    }    
+    return $output;
+}
+
+function random_file($dir, $type = 'jpg'){
+    $files = glob($dir . '/*.'.$type);
+    $file = array_rand($files);
+    return basename($files[$file]);
 }
 
 /*

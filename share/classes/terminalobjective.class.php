@@ -208,7 +208,7 @@ class TerminalObjective {
                                     
                                     if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
                                         $ext = $CFG->repository->count(0,$result->id);
-                                    }
+                                    } else { $ext = ''; }
                                     $this->files                = $res_02->MAX.$ext; //nummer of materials
                                     
                                     $objectives[]               = clone $this; 

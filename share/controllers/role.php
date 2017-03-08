@@ -30,14 +30,18 @@ $role = new Roles();
 
 $p_options = array('delete' => array('onclick'    => "del('role',__id__);", 
                                      'capability' => checkCapabilities('role:delete', $USER->role_id, false),
-                                     'icon'       => 'fa fa-minus',
+                                     'icon'       => 'fa fa-trash',
                                      'tooltip'    => 'löschen'),
                     'edit'  => array('onclick'    => "formloader('role','edit',__id__);",
                                      'capability' => checkCapabilities('role:update', $USER->role_id, false),
                                      'icon'       => 'fa fa-edit',
                                      'tooltip'    => 'bearbeiten'));
+$p_widget  = array('header'     => 'role',
+                   'subheader01'=> 'description'); //false ==> don't show icon on widget
 $p_config =   array('id'          => 'checkbox',
                     'role'        => 'Rolle', 
-                  'description'   => 'Beschreibung', 
+                  'description'   => 'Beschreibung',
+                  'p_search'    => array('role','description'),
+                  'p_widget'     => $p_widget,
                   'p_options'     => $p_options);
 setPaginator('roleP', $TEMPLATE, $role->get('roleP'), 'ro_val', 'index.php?action=role', $p_config); //set Paginator

@@ -112,15 +112,16 @@ $content .= Form::input_text('schooltype_description', 'Beschreibung', $schoolty
 $content .= '</div>';
 
 $countries = new State($country_id);                                                   //Load country   
-$content .= Form::input_select('state_id', 'Bundesland/Region', $countries->getStates(), 'state', 'id', $state_id , $error);
+$states    = $countries->getStates();
 $content .= Form::input_select('country_id', 'Land', $countries->getCountries(), 'de', 'id', $country_id , $error, 'getValues(\'state\', this.value, \'state_id\');');
+$content .= Form::input_select('state_id', 'Bundesland/Region', $states, 'state', 'id', $state_id , $error);
    
 /* institution logo */ 
 
 $content .= '<input type="hidden" name="file_id" id="file_id" value="'.$file_id.'"/>';
 if (isset($id)) { // id have to be set to add image
 $content .= '<div class="col-xs-3"></div><div class="col-xs-9">'
-                . '<a href="'.$CFG->request_url .'uploadframe.php?context=institution&target=file_id&ref_id='.$id.'&format=0&modal=true" class="nyroModal">'
+                . '<a href="'.$CFG->smarty_template_dir_url.'renderer/uploadframe.php?context=institution&target=file_id&ref_id='.$id.'&format=0&modal=true" class="nyroModal">'
             . '<img id="icon" style="height:100px; margin-left: -5px; padding-bottom:10px;" src="'.$CFG->access_id_url.$file_id.'" alt="Foto der Institution">'
             . '</a></div>';
 } 
@@ -151,11 +152,9 @@ $script = '<script id=\'modal_script\'>
             callbacks: {
                 beforeShowBg: function(){
                     $(\'body\').css(\'overflow\', \'hidden\');
-                       
                 },
                 afterHideBg: function(){
                     $(\'body\').css(\'overflow\', \'\');
-                 
                 },
                 afterShowCont: function(nm) {
                     $(\'.scroll_list\').height($(\'.modal\').height()-150);

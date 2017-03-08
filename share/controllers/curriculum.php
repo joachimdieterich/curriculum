@@ -34,28 +34,34 @@ if(isset($_GET['reset']) OR (isset($_POST['reset'])) OR (isset($_POST['new_curri
 /*******************************************************************************
  * END POST / GET
  */
-
-
 $p_options = array('delete' => array('onclick'      => "del('curriculum',__id__);", 
                                      'capability'   => checkCapabilities('curriculum:delete', $USER->role_id, false),
-                                     'icon'         => 'fa fa-minus', 
+                                     'icon'         => 'fa fa-trash', 
                                      'tooltip'      => 'löschen'),
-                   'add'    => array('href'         => 'index.php?action=view&function=addObjectives&curriculum_id=__id__', 
+                   /*'add'    => array('href'         => 'index.php?action=view&function=addObjectives&curriculum_id=__id__', 
                                      'capability'   => checkCapabilities('curriculum:addObjectives', $USER->role_id, false),
                                      'icon'         => 'fa fa-plus', 
-                                     'tooltip'      => 'Lehrplaninhalt bearbeiten'),
-                   'edit'   => array('onclick'         => "formloader('curriculum','edit',__id__);",
+                                     'tooltip'      => 'Lehrplaninhalt bearbeiten'),*/
+                   'edit'   => array('onclick'      => "formloader('curriculum','edit',__id__);",
                                      'capability'   => checkCapabilities('curriculum:update', $USER->role_id, false),
                                      'icon'         => 'fa fa-edit',
                                      'tooltip'      => 'bearbeiten'),
-                   'profile'  => array('onclick'   => "formloader('preview_curriculum','full',__id__);", 
+                   'preview'  => array('onclick'    => "formloader('preview_curriculum','full',__id__);", 
                                      'capability'   => checkCapabilities('curriculum:addObjectives', $USER->role_id, false),  //todo: use extra capability?
                                      'icon'         => 'fa fa-list-alt',
                                      'tooltip'      => 'Überblick'),
-                    'info'  => array('onclick'   => "formloader('description','curriculum',__id__);", 
+                   'description'  => array('onclick'      => "formloader('description','curriculum',__id__);", 
                                      'capability'   => true,  //free for all
                                      'icon'         => 'fa fa-info',
                                      'tooltip'      => 'Beschreibung'));
+$p_widget  = array('header'     => 'curriculum',
+                   'subheader01'=> 'grade, schooltype',
+                   'subheader02'=> 'state',
+                   'file_id'    => 'icon_id',
+                   'bg_image' => 'file_id',
+                   'expand'     => 'description',
+                   'description'=> false); //false ==> don't show icon on widget
+$t_config      = array('td'        => array('onclick'         => "location.href='index.php?action=view&function=addObjectives&curriculum_id=__id__'"));
 $p_config  = array('id'         => 'checkbox',
                    'curriculum'  => 'Lehrplan', 
                    /*'description' => 'Beschreibung', */
@@ -63,6 +69,9 @@ $p_config  = array('id'         => 'checkbox',
                    'grade'       => 'Klassenstufe',
                    'schooltype'  => 'Schultyp',
                    'state'       => 'Bundesland/Region',
-                   /*'de'          => 'Land',*/
-                   'p_options'   => $p_options);
+                   /*'de'        => 'Land',*/
+                   'p_options'   => $p_options,
+                   't_config'  => $t_config,
+                   'p_search'    => array('curriculum','description','grade','schooltype','state','subject'),
+                   'p_widget'    => $p_widget);
 setPaginator('curriculumP', $TEMPLATE, $curriculum->getCurricula('user', $USER->id, 'curriculumP'), 'cu_val', 'index.php?action=curriculum', $p_config);

@@ -49,10 +49,10 @@ if ($user->exists('username', $_SERVER[$shib_config->username])){
     $user->load('username', $_SERVER[$shib_config->username], true);
 
     $user->setLastLogin();
-
+    session_reload_user();
     //Nutzungsbedingungen akzeptiert?
     if ($user->checkTermsOfUse() == false){
-       header('Location:../../../../share/request/getTermsofUse.php'); exit();
+       header('Location:../../../../public/index.php?action=terms'); exit();
     }
     header('Location:../../../../public/index.php?action=dashboard');
 } 

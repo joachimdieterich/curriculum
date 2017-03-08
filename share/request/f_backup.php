@@ -53,7 +53,7 @@ if (isset($func)){
                     /* load backups and courses */
                     $courses            = new Course(); //load Courses
                     if (checkCapabilities('backup:getAllBackups', $USER->role_id, false)) {                          // Administrators
-                        $options        = $courses->getCourse('admin',  $USER->id);
+                        $options        = $courses->getCourse('admin', $USER->id);
                     } else if (checkCapabilities('backup:getMyBackups', $USER->role_id, false)) {                    // Teacher and Tutor
                         $options        = $courses->getCourse('teacher', $USER->id);
                     } 

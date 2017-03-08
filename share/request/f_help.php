@@ -2,7 +2,7 @@
 /** This file is part of curriculum - http://www.joachimdieterich.de
 * 
 * @package core
-* @filename form_institution.php
+* @filename f_help.php
 * @copyright 2016 Joachim Dieterich
 * @author Joachim Dieterich
 * @date 2016.04.06 09:08
@@ -25,7 +25,7 @@
 $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
-global $CFG, $USER;
+global $CFG, $USER, $TEMPLATE;
 $USER           = $_SESSION['USER'];
 $func           = $_GET['func'];
 /*Variablen anlegen -> vermeidet unnötige if-Abfragen im Formular*/
@@ -82,7 +82,7 @@ $content .= Form::input_text('category', 'Kategorie', $category, $error, 'z.B. T
 $content .= '<input type="hidden" name="file_id" id="file_id" value="'.$file_id.'"/>';
  // id have to be set to add image
 $content .= '<div class="col-xs-3"></div><div class="col-xs-9">'
-            . '<a href="'.$CFG->request_url.'uploadframe.php?context=userFiles&target=file_id&ref_id='.$id.'&format=0&modal=true" class="nyroModal">';
+            . '<a href="'.$CFG->smarty_template_dir_url.'renderer/uploadframe.php?context=userFiles&target=file_id&ref_id='.$id.'&format=0&modal=true" class="nyroModal">';
             if (isset($id)) {
                 $content .= '<img id="icon" style="height:100px; margin-left: -5px; padding-bottom:10px;" src="'.$CFG->access_id_url.$file_id.'" >';
             } else {

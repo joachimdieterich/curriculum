@@ -30,12 +30,17 @@ $state     = new State;
 
 $p_options = array('delete' => array('onclick'    => "del('institution',__id__);", 
                                      'capability' => checkCapabilities('institution:delete', $USER->role_id, false),
-                                     'icon'       => 'fa fa-minus',
+                                     'icon'       => 'fa fa-trash',
                                      'tooltip'    => 'löschen'),
                     'edit'  => array('onclick'    => "formloader('institution', 'edit',__id__);",
                                      'capability' => checkCapabilities('institution:update', $USER->role_id, false),
                                      'icon'       => 'fa fa-edit',
                                      'tooltip'    => 'bearbeiten'));
+$p_widget  = array('header'     => 'institution',
+                   'subheader01'=> 'description',
+                   'subheader02'=> 'state_id',
+                   'file_id'    => 'file_id',
+                   'bg_image' => 'file_id'); //false ==> don't show icon on widget
 $p_view    = array('id'           => 'checkbox', 
                   'institution'   => 'Institution', 
                   'description'   => 'Beschreibung', 
@@ -44,6 +49,8 @@ $p_view    = array('id'           => 'checkbox',
                   'de'            => 'Land',
                   'creation_time' => 'Erstellungsdatum',
                   'username'      => 'Administrator',
+                  'p_search'    => array('institution','description','schooltype','state','de'),
+                  'p_widget' => $p_widget, 
                   'p_options'     => $p_options);
 $institution = new Institution();
 setPaginator('institutionP', $TEMPLATE, $institution->getInstitutions('all', 'institutionP'), 'in_val', 'index.php?action=institution', $p_view); //set Paginator   
