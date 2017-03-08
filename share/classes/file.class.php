@@ -445,6 +445,7 @@ class File {
         $order_param = orderPaginator($paginator, array('filename'      => 'fl',
                                                         'title'         => 'fl', 
                                                         'description'   => 'fl',
+                                                        'creation_time' => 'fl',
                                                         'author'        => 'fl')); 
         switch ($dependency) {
             case 'context':             $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
