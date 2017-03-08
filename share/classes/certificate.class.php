@@ -129,6 +129,7 @@ class Certificate {
         $order_param    = orderPaginator($paginator,array('certificate' => 'ce',
                                                           'description' => 'ce',
                                                           'template'    => 'ce',
+                                                          'creation_time' => 'ce',
                                                           'username'    => 'us',
                                                           'institution' => 'ins')); 
         $certificates   = array();                      //Array of certificates
