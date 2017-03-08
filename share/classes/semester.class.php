@@ -89,6 +89,9 @@ class Semester {
         global $USER;
         $order_param = orderPaginator($paginator, array('semester'      => 'se',
                                                         'description'   => 'se', 
+                                                        'begin'         => 'se', 
+                                                        'end'           => 'se', 
+                                                        'creation_time' => 'se', 
                                                         'institution'   => 'ins')); 
         $semesters = array();
         switch ($dependency) {
