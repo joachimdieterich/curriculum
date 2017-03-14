@@ -149,7 +149,7 @@ class TerminalObjective {
     public function delete(){
         global $USER;
         checkCapabilities('objectives:deleteTerminalObjectives', $USER->role_id);
-        // load objective to get order_id
+        // load objective to recalc order_id
         $this->load();
         $db = DB::prepare('UPDATE terminalObjectives SET order_id = order_id - 1 WHERE curriculum_id = ? AND order_id > ?');
         if ($db->execute(array($this->curriculum_id, $this->order_id))) {
