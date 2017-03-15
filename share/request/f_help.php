@@ -82,16 +82,20 @@ $content .= Form::input_text('category', 'Kategorie', $category, $error, 'z.B. T
 $content .= '<input type="hidden" name="file_id" id="file_id" value="'.$file_id.'"/>';
  // id have to be set to add image
 $content .= '<div class="col-xs-3"></div><div class="col-xs-9">'
-            . '<a href="'.$CFG->smarty_template_dir_url.'renderer/uploadframe.php?context=userFiles&target=file_id&ref_id='.$id.'&format=0&modal=true" class="nyroModal">';
-            if (isset($id)) {
-                $content .= '<img id="icon" style="height:100px; margin-left: -5px; padding-bottom:10px;" src="'.$CFG->access_id_url.$file_id.'" >';
-            } else {
-                $content .= '<i class="fa fa-plus"></i> Datei hinzufügen';
-            }
+            . '<a href="'.$CFG->smarty_template_dir_url.'renderer/uploadframe.php?context=userFiles&target=file_id&ref_id='.$id.'&format=0&modal=true" class="nyroModal">
+               <img id="icon" class="hidden" style="height:100px; margin-left: -5px; padding-bottom:10px;"';
+               if (isset($id)) { 
+                   $content .= 'src="'.$CFG->access_id_url.$file_id.'" ';
+               }
+                   $content .= '>';
+               if (!isset($id)) {
+                   $content .= '<span id="add_btn" ><i class="fa fa-plus"></i> Datei hinzufügen</span>';
+               }
 $content .= '</a></div></form>';
 $footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_help\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>'; 
 
-$html     = Form::modal(array('title'     => $header,
+$html     = Form::modal(array('target'    => 'null',
+                              'title'     => $header,
                               'content'   => $content, 
                               'f_content' => $footer));
 
@@ -116,6 +120,8 @@ $script = '<script id=\'modal_script\'>
         });
         $(\'#file_id\').change(\'input\', function() {
             document.getElementById("icon").src = "'.$CFG->access_id_url.'"+document.getElementById("file_id").value;
+            $(\'#icon\').removeClass("hidden");
+            $(\'#add_btn\').addClass("hidden");
         });
         </script>';
-echo json_encode(array('html'   => $html, 'script' => $script));
+echo json_encode(array('html' => $html, 'script' => $script));
