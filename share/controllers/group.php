@@ -35,7 +35,8 @@ if($_POST ){
     $group = new Group();
     switch ($_POST) {
         case isset($_POST['enrol']): 
-        case isset($_POST['expel']):   foreach ($_POST['id'] as $check ) { 
+        case isset($_POST['expel']):   $sel_id    = SmartyPaginate::_getSelection('groupP'); //use selection from paginator (don't use form data $_POST['id']) to get selections on all pages of paginator
+                                       foreach ($sel_id as $check ) { 
                                             if ($check == "none" ) {   
                                                 if (count($_POST['id']) == 1){  // Diese Abfrage ist wichtig, da sonst Meldungen doppelt ausgegeben werden. 
                                                     $PAGE->message[] = array('message' => 'Es muss mindestens eine Lerngruppe ausgewählt werden!', 'icon' => 'fa-group text-warning');
