@@ -95,8 +95,10 @@ class Grade {
      * @return boolean 
      */
     public function delete(){
-        global $USER,$PAGE;
+        global $USER, $PAGE, $LOG;
         checkCapabilities('grade:delete', $USER->role_id);
+        $this->load();
+        $LOG->add($USER->id, 'grade.class.php', dirname(__FILE__), 'Delete grade: '.$this->grade.', creator_id: '.$this->creator_id);
         $db = DB::prepare('SELECT id FROM curriculum WHERE grade_id = ?');
         $db->execute(array($this->id));
         if ($db->fetchObject()){ //endroled !

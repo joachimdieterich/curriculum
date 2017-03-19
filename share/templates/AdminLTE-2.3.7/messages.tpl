@@ -82,7 +82,6 @@
                             {if ($smarty.section.mail.index eq ($index+$my_paginator_limit-1))}
                             <li><span class="pull-right" style="padding-right:20px;">{$index+1} - {$smarty.section.mail.index+1}</span><a href="index.php?action=messages&function={$mailbox_func}&index={$smarty.section.mail.index}" class="text-center"><i class="fa fa-plus text-light-blue"></i>Weitere Nachrichten laden</li></a>
                             {/if}
-                            
                         </li>        
                         {/section}
                     {else}

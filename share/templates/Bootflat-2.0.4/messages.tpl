@@ -18,7 +18,7 @@
 <!-- Main content -->
 <div class="row">
   <!-- mail menu -->  
-  <div class="col-md-3">
+  <div class="col-xs-12 col-md-3">
       <a href="#" class="btn btn-primary btn-block margin-bottom" onclick="formloader('mail','new');">Nachricht schreiben </a><br>
     <div class="panel panel-primary">
       <div class="panel-heading ">Postfächer</div>
@@ -83,7 +83,7 @@
   </div><!-- /.col -->
   <!-- /mail menu-->
 
-  <div class="col-md-9 " id="mailbox"> <!-- placeholder for mails--></div><!-- /.col -->
+  <div class="col-xs-12 col-md-9 " id="mailbox"> <!-- placeholder for mails--></div><!-- /.col -->
   {/if}       
 </div><!-- /.row -->
     

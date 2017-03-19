@@ -19,7 +19,7 @@
     <!-- Info boxes -->
     <div class="row" >
          <div class="col-md-4">
-            <div class="box box-primary bottom-buffer-20">
+            <div class="box bottom-buffer-20">
                 <div class="box-header with-border">
                       <h3 class="box-title">Erfolge</h3>
                       <div class="box-tools pull-right">
@@ -53,7 +53,7 @@
         {/if}
         {if checkCapabilities('dashboard:editBulletinBoard', $my_role_id, false) || $bulletinBoard} 
         <div class="col-md-8 col-sm-12 col-xs-12">
-            <div class="box box-primary bottom-buffer-20">
+            <div class="box bottom-buffer-20">
                 <div class="box-header with-border">
                   <h3 class="box-title">Pinnwand</h3>
                   <div class="box-tools pull-right">
@@ -164,7 +164,7 @@
         
         {if isset($stat_users_online) && checkCapabilities('user:userListComplete', $my_role_id, false)}
         <div class="col-md-4 col-sm-12 col-xs-12">
-            <div class="box box-primary bottom-buffer-20">
+            <div class="box bottom-buffer-20">
                 <div class="box-header with-border">
                   <h3 class="box-title">Statistik</h3>
                   <div class="box-tools pull-right">
@@ -204,7 +204,7 @@
         <!-- Add Block -->
         {if checkCapabilities('block:add', $my_role_id, false)}
         <div class="col-md-4 col-sm-12 col-xs-12">
-            <div class="box box-primary bottom-buffer-20">
+            <div class="box bottom-buffer-20">
                 <div class="box-header with-border">
                   <h3 class="box-title">Block hinzufügen</h3>
                   <div class="box-tools pull-right">

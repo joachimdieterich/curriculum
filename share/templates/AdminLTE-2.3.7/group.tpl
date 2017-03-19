@@ -14,41 +14,46 @@
 <section class="content">
     <div class="row">
         <div class="col-xs-12">
-            <div class="box box-primary">
+            <div class="box box-default">
+                <form id='grouplist' method='post' action='index.php?action=group&next={$currentUrlId}'>
                 <div class="box-body">
-                {if checkCapabilities('groups:add', $my_role_id, false)}    
-                    <div class="btn-group" role="group" aria-label="...">
-                        <button type="button" class="btn btn-default" onclick="formloader('group','new');"><a  href="#">
-                                <span class="fa fa-plus-circle" aria-hidden="true"></span> Lerngruppe hinzufügen</a>
-                        </button>
-                    </div>	
-                {/if}
-                <form id='classlist' method='post' action='index.php?action=group&next={$currentUrlId}'>
-                {html_paginator id='groupP' title='Lerngruppen'}
-                    {if checkCapabilities('groups:enrol', $my_role_id, false) OR checkCapabilities('groups:expel', $my_role_id, false)}
-                        {if isset($curriculum_list)}
-                        <div class="form-horizontal col-xs-12 col-sm-12 col-md-5 col-lg-5">
-                                    <h4>Lerngruppe</h4>
-                                    <p>Markierte Lerngruppe(n)in Lehrplan ein- und ausschreiben</p>     
-                        {Form::input_select_multiple(['id' => 'curriculum', 'label' => 'Lehrplan', 'select_data' => $curriculum_list, 'select_label' => 'curriculum', 'select_value' => 'id', 'input' => null, 'error' => null, 'limiter' => ' | ' ])}
+                    {if checkCapabilities('groups:add', $my_role_id, false)}    
                         <div class="btn-group" role="group" aria-label="...">
-                            {if checkCapabilities('groups:enrol', $my_role_id, false)}
-                                <button type="submit" class="btn btn-default" onclick="document.getElementById('enrol').click();"><a href="#">
-                                    <span class="fa fa-plus-circle" aria-hidden="true"></span> einschreiben</a>
-                                </button>
-                                <input class="invisible" type='submit' id='enrol' name='enrol' value='einschreiben' />
-                            {/if}
-                            {if checkCapabilities('groups:expel', $my_role_id, false)}
-                                <button id="expel" name="expel" type="submit" class="btn btn-default" onclick="document.getElementById('expel').click();"><a href="#">
-                                    <span class="fa fa-plus-circle" aria-hidden="true"></span> ausschreiben</a>
-                                </button>
-                                <input class="invisible" type='submit' id='expel' name='expel' value='ausschreiben' />
-                            {/if}
-                        </div>
-                        {/if}
-                     {/if}   
-                </form> 
+                            <button type="button" class="btn btn-default" onclick="formloader('group','new');"><a  href="#">
+                               <span class="fa fa-plus-circle" aria-hidden="true"></span> Lerngruppe hinzufügen</a>
+                            </button>
+                        </div>	
+                    {/if}
+                    {html_paginator id='groupP' title='Lerngruppen'}
                 </div>
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                        {if checkCapabilities('user:resetPassword', $my_role_id, false)}
+                            <li class="active"><a href="#f_group" data-toggle="tab">Lerngruppe</a></li>
+                        {/if}
+                    </ul>
+                    <div class="tab-content">
+                        {if checkCapabilities('groups:enrol', $my_role_id, false) OR checkCapabilities('groups:expel', $my_role_id, false)}
+                            {if isset($curriculum_list)}
+                                <div id="f_group" class="tab-pane active row" >
+                                    <div class="form-horizontal col-xs-12">
+                                        {Form::info(['id' => 'group_info', 'content' => 'Markierte Lerngruppe(n)in Lehrplan ein- und ausschreiben'])}
+                                        {Form::input_select_multiple(['id' => 'curriculum', 'label' => 'Lehrplan', 'select_data' => $curriculum_list, 'select_label' => 'curriculum', 'select_value' => 'id', 'input' => null, 'error' => null, 'limiter' => ' | ' ])}
+                                        <div class="btn-group" role="group" aria-label="...">
+                                            {if checkCapabilities('groups:enrol', $my_role_id, false)}
+                                                {Form::input_button(['id' => 'enrol', 'label' => 'einschreiben', 'icon' => 'fa fa-plus-circle'])}
+                                            {/if}
+                                            {if checkCapabilities('groups:expel', $my_role_id, false)}
+                                                {Form::input_button(['id' => 'expel', 'label' => 'ausschreiben', 'icon' => 'fa fa-minus-circle'])}
+                                            {/if}
+                                        </div>
+                                    </div>
+                                </div>
+                            {/if}
+                        {/if}   
+                    </div>
+                </div>
+                </form>            
             </div>
         </div>
     </div>

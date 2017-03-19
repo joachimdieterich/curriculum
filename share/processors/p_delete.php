@@ -31,6 +31,7 @@ $id     = filter_input(INPUT_GET, 'id',           FILTER_SANITIZE_STRING); // ke
 switch ($db) {
     case "certificate":         $t = new Certificate();         break;
     case "curriculum":          $t = new Curriculum();          break;
+    case "event":               $t = new Event();               break;
     case "file":                $t = new File();                break;
     case "grade":               $t = new Grade();               break;
     case "group":               $t = new Group();               break;
@@ -41,8 +42,8 @@ switch ($db) {
     case "user":                $t = new User();                break;
     case "institution":         $t = new Institution();         break;
     case "message":             $t = new Mail();                break;
-    case "enablingObjectives":  $t = new EnablingObjective();   break;
-    case "terminalObjectives":  $t = new TerminalObjective();   break;
+    case "enabling_objective":  $t = new EnablingObjective();   break;
+    case "terminal_objective":  $t = new TerminalObjective();   break;
     case "task":                $t = new Task();                break;
     case "courseBook":          $t = new CourseBook();          break;
     case "comment":             $t = new Comment();             break;

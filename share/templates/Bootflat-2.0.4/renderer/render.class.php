@@ -142,10 +142,10 @@ class Render {
                     $teacher_status = 'x';
                 }
                 $teacher = $student;
-                $html   = '<a class="pointer_hand"><i id="'.$id.'_green" style="font-size:18px;" class="'.$green.' margin-r-5 text-green pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \'1'.$teacher_status.'\')"></i></a>'
-                    . '<a class="pointer_hand"><i id="'.$id.'_orange" style="font-size:18px;" class="'.$orange.' margin-r-5 text-orange pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \'2'.$teacher_status.'\')"></i></a>'
-                    . '<a class="pointer_hand"><i id="'.$id.'_red" style="font-size:18px; " class="'.$red.' margin-r-5 text-red pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \'0'.$teacher_status.'\')"></i></a>'
-                    . '<a class="pointer_hand"><i id="'.$id.'_white" style="font-size:18px; " class="'.$white.' margin-r-5 text-gray pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \'3'.$teacher_status.'\')"></i></a>';
+                $html   = '<a class="pointer_hand"><i id="'.$id.'_green" style="font-size:18px;" class="'.$green.' margin-r-5 text-green pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \'1'.$teacher_status.'\')"></i></a>'
+                    . '<a class="pointer_hand"><i id="'.$id.'_orange" style="font-size:18px;" class="'.$orange.' margin-r-5 text-orange pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \'2'.$teacher_status.'\')"></i></a>'
+                    . '<a class="pointer_hand"><i id="'.$id.'_red" style="font-size:18px; " class="'.$red.' margin-r-5 text-red pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \'0'.$teacher_status.'\')"></i></a>'
+                    . '<a class="pointer_hand"><i id="'.$id.'_white" style="font-size:18px; " class="'.$white.' margin-r-5 text-gray pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \'3'.$teacher_status.'\')"></i></a>';
             } else {
                 $status = $ena->accomplished_status_id;
                 if (strlen($status) > 1){
@@ -160,10 +160,10 @@ class Render {
                         . '<br><a href="'.$CFG->base_url.'public/index.php?action=extern&teacher='.$teacher.'&student='.$student.'&ena_id='.$id.'&status='.$student_status.'3'.'&token='.$token.'">... nicht bearbeitet.</a>'
                         . '<br><a href="'.$CFG->base_url.'public/index.php?action=extern&teacher='.$teacher.'&student='.$student.'&ena_id='.$id.'&status='.$student_status.'0'.'&token='.$token.'">... nicht erreicht.</a>';
                 } else {
-                    $html   = '<a class="pointer_hand"><i id="'.$id.'_green" style="font-size:18px;" class="'.$green.' margin-r-5 text-green pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'1\')"></i></a>'
-                        . '<a class="pointer_hand"><i id="'.$id.'_orange" style="font-size:18px; " class="'.$orange.' margin-r-5 text-orange pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'2\')"></i></a>'
-                        . '<a class="pointer_hand"><i id="'.$id.'_red" style="font-size:18px;" class="'.$red.' margin-r-5 text-red pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'0\')"></i></a>'
-                        . '<a class="pointer_hand"><i id="'.$id.'_white" style="font-size:18px;" class="'.$white.' margin-r-5 text-gray pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'3\')"></i></a>';
+                    $html   = '<a class="pointer_hand"><i id="'.$id.'_green" style="font-size:18px;" class="'.$green.' margin-r-5 text-green pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'1\')"></i></a>'
+                        . '<a class="pointer_hand"><i id="'.$id.'_orange" style="font-size:18px; " class="'.$orange.' margin-r-5 text-orange pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'2\')"></i></a>'
+                        . '<a class="pointer_hand"><i id="'.$id.'_red" style="font-size:18px;" class="'.$red.' margin-r-5 text-red pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'0\')"></i></a>'
+                        . '<a class="pointer_hand"><i id="'.$id.'_white" style="font-size:18px;" class="'.$white.' margin-r-5 text-gray pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'3\')"></i></a>';
                 }
             }
             

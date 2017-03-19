@@ -165,8 +165,10 @@ class Wallet {
     }
     
     public function delete(){
-        global $USER;
+        global $USER, $LOG;
         checkCapabilities('wallet:delete', $USER->role_id);
+        $this->load();
+        $LOG->add($USER->id, 'wallet.class.php', dirname(__FILE__), 'Delete wallet: '.$this->title.', curriculum_id: '.$this->curriculum_id.', creator_id: '.$this->creator_id);
         $db = DB::prepare('DELETE FROM wallet WHERE id = ?');
         return $db->execute(array($this->id));
     }

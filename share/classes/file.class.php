@@ -164,32 +164,10 @@ class File {
         $this->load();
         $db = DB::prepare('DELETE FROM files WHERE id=?');
         if ($db->execute(array($this->id))){/* unlink file*/
-            switch ($this->context_id) {
-                case 1: $path = $CFG->user_root.$this->path; 
-                    break;
-                case 2: if ($this->enabling_objective_id === NULL){ // Terminal objective
-                            $path = $CFG->curriculum_root.$this->curriculum_id.'/'.$this->terminal_objective_id.'/'; //Datei vom Server löschen     
-                        } else {// enabling objecitve
-                            $path = $CFG->curriculum_root.$this->curriculum_id.'/'.$this->terminal_objective_id.'/'.$this->enabling_objective_id.'/'; //Datei vom Server löschen     
-                        }
-                    break;
-                case 3: $path = $CFG->user_root.$this->path; // evtl erst checken, ob Avatar verwendet wird.
-                    break;
-                case 4: $path = $CFG->solutions_root.$this->path; 
-                    break;
-                case 5: $path = $CFG->subjects_root; 
-                    break;
-                case 6: $path = $CFG->badges_root; 
-                    break; 
-                case 7: $path = $CFG->user_root.$this->path; 
-                    break;
-                case 8: $path = $CFG->backup_root.$this->path; 
-                    break;
-                case 9: $path = $CFG->institutions_root.$this->path; 
-                    break;
-                default: $return = false; 
-                    break;
-            }
+            $co = new Context();
+            $co->resolve('id', $this->context_id);
+            $path = $CFG->curriculumdata_root.$co->path;
+
             if ($path) {
                 $LOG->add($USER->id, 'uploadframe.php', dirname(__FILE__), 'Context: '.$this->context_id.' Delete: '.$this->path.''.$this->filename);
                 if ($this->type == ".url"){ // bei urls muss keine Datei gelöscht werden 

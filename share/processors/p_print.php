@@ -68,6 +68,15 @@ switch ($func) {
                                 $content = Printer::coursebook(array('coursebook' => array($t)));
                                
         break;
+    case "courseBookUserComplete":  
+                                $t       = new CourseBook();    
+                                $cbook   = $t->get('user', null, '');
+                                $content = '';
+                                foreach ($cbook as $cb) {
+                                    $content .= Printer::coursebook(array('coursebook' => array($cb)));  
+                                }
+        break;
+    
     case "paginator":           $content  = '<p style="text-align:right; padding-right:15px; font-size:50%;"><img style="float:right; margin-left:5px; width:12px;" alt="" src="../public/assets/images/logo_white_bg.png"  />'.$CFG->app_title.' ('.$CFG->version.') auf '.$CFG->base_url.' </p>';
                                 $content .= '<h4 style="padding-left: 15px;">'.SmartyPaginate::getTitle($id).'</h4>';
                                 $content .= RENDER::table(array('width_class'   => 'col-md-12',

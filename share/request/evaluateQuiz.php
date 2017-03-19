@@ -28,9 +28,8 @@ include(dirname(__FILE__).'/../login-check.php');  //check login status and rese
 global $USER;
 $USER       = $_SESSION['USER'];
 
-$html = '';
+$html       = '';
 $question   = new Question();
-$i          = 0; 
 $c          = 0;
 
 foreach($_POST as $key =>$value){
@@ -53,27 +52,24 @@ foreach($_POST as $key =>$value){
         default:
             break;
     }
-    $i++;
 }
+$i         = $question->countQuestions();
 $enabling_objectives = new EnablingObjective();
 if ( $question->objective_type == 1){ // Fall dass ein Thema mit einem Test versehen wird ist noch nicht fertig
     $enabling_objectives->id = $question->objective_id;
 }
-$percent = round($c/$i*100);
+$percent   = round($c/$i*100);
 if ($percent >= 90) {
-    $enabling_objectives->setAccomplishedStatus('quiz', $USER->id, $USER->id, 1); 
+    $enabling_objectives->setAccomplishedStatus('quiz', $USER->id, $USER->id, '11'); 
     $html .= '<p>Sie haben '.$c.' von '.$i.' Fragen ('. $percent .'%) richtig beantwortet. Das Ziel ... wurde auf grün gesetzt.</p>';        
 } else if ($percent >= 50 AND $percent < 90 ) {
-    $enabling_objectives->setAccomplishedStatus('quiz', $USER->id, $USER->id, 2);
+    $enabling_objectives->setAccomplishedStatus('quiz', $USER->id, $USER->id, '22');
     $html .=  '<p>Sie haben '.$c.' von '.$i.' Fragen ('. $percent .'%) richtig beantwortet. Das Ziel ... wurde auf orange gesetzt.</p>';
 } else {
-    $enabling_objectives->setAccomplishedStatus('quiz', $USER->id, $USER->id, 0); 
+    $enabling_objectives->setAccomplishedStatus('quiz', $USER->id, $USER->id, '00'); 
     $html .=  '<p>Sie haben '.$c.' von '.$i.' Fragen ('. $percent .'%) richtig beantwortet. Das Ziel ... wurde auf rot gesetzt</p>';
 }
 
-$q_list               = $question->getQuestions('objective');
-
-$html .= Render::quiz($q_list, $_POST, true);
+$q_list    = $question->getQuestions('objective');
+$html     .= Render::quiz($q_list, $_POST, true);
 echo $html;
-
-//object_to_array($_POST);

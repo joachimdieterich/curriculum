@@ -68,26 +68,64 @@ if (isset($id)) {                                                               
 }
 $content .= '<div class="nav-tabs-custom"> 
                 <ul class="nav nav-tabs">
-                    <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false" ><i class="fa fa-user margin-r-10"></i>Persönliche Einstellungen</a></li>
-                    <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="true" ><i class="fa fa-university margin-r-10"></i>Einstellungen (Institution)</a></li>
-                </ul>
+                    <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false" ><i class="fa fa-user margin-r-10"></i> Persönliche Einstellungen</a></li>
+                    <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="true" ><i class="fa fa-university margin-r-10"></i> Einstellungen (Institution)</a></li>';
+if (checkCapabilities('user:userListComplete', $USER->role_id, false)){
+$content .=         '<li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="true" ><i class="fa fa-globe margin-r-10"></i> Einstellungen (global)</a></li>';
+}
+$content .=   ' </ul>
             </div>
             <div class="tab-content">
-                <div class="tab-pane active" id="tab_1">';
-    $directories = glob($CFG->share_root . '/templates/*' , GLOB_ONLYDIR);
-    $templates_obj = new stdClass();
-    foreach ($directories as $key => $value) {
-        $templates_obj->label     = $key;
-        $templates_obj->template  = basename($value);
-        $t[] = clone $templates_obj;
-    }
-    $content .= Form::input_select('template', 'Template', $t, 'template', 'template', $selected_template,  $error);
+                <div class="tab-pane active" id="tab_1">
+                    <div class="nav-tabs-custom small"> 
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a href="#sub_tab_1" data-toggle="tab" aria-expanded="false" ><i class="fa fa-dashboard margin-r-10"></i> Template</a></li> 
+                            <li ><a href="#sub_tab_2" data-toggle="tab" aria-expanded="true" ><i class="fa fa- fa-envelope margin-r-10"></i> Signatur</a></li> 
+                        </ul>
+                    </div>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="sub_tab_1">';
+                            $directories = glob($CFG->share_root . '/templates/*' , GLOB_ONLYDIR);
+                            $templates_obj = new stdClass();
+                            foreach ($directories as $key => $value) {
+                                $templates_obj->label     = $key;
+                                $templates_obj->template  = basename($value);
+                                $t[] = clone $templates_obj;
+                            }
+                            $content .= Form::input_select('template', 'Template', $t, 'template', 'template', $selected_template,  $error);
+                            $content .= Form::input_button(['id' => 'user_template_save','label'=>'Speichern',  'icon'=>'fa fa-save']);
+                               
+           $content .= '</div>
+                        <div class="tab-pane" id="sub_tab_2">';
+                            $signature = new Content();
+                            $content .= Form::info(['id' => 'user_signature_info', 'content' => 'Hier können Sie ihre Signatur für Nachrichten ändern.']);
+                            if (isset($signature->get('signature', $USER->id)[0]->content)){
+                                $s = $signature->get('signature', $USER->id)[0]->content;
+                            } else {
+                                $s = '';
+                            }
+                            $content .= Form::input_textarea('user_signature', 'Signatur', $s, $error, '');
+                            $content .= Form::input_button(['id' => 'user_signature_save','label'=>'Speichern',  'icon'=>'fa fa-save']);
+         $content .=    '</div>
+                    </div>';
+                            
+                             
+                
+    
     $content .='</div><!-- /.tab-pane -->
                 <div class="tab-pane" id="tab_2"> under construction
-                </div><!-- /.tab-pane -->
-            </div>';
+                </div><!-- /.tab-pane -->';
+    if (checkCapabilities('user:userListComplete', $USER->role_id, false)){
+        $terms = new Content();
+        $content .=  '<div class="tab-pane" id="tab_3">';
+        $content .= Form::info(['id' => 'global_terms_info', 'content' => 'Hier können Sie die Nutzungsbedingungen / Datenschutzerklärung ändern. <br>Diese muss von allen Nutzern beim ersten Login bestätigt werden.']);
+        $content .= Form::input_textarea('global_terms', 'Nutzungsbedingungen / Datenschutzerklärung', $terms->get('terms')[0]->content, $error, '');
+        $content .= Form::input_button(['id' => 'global_terms_save','label'=>'Speichern',  'icon'=>'fa fa-save']);
+        $content .=  '</div><!-- /.tab-pane -->';
+    }
+     $content .= '</div>';
 $content .= '</form>';
-$footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_settings\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>'; 
+$footer   = ''; 
 
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 

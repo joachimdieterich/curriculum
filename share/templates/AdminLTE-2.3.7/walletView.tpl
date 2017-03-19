@@ -25,7 +25,7 @@
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row top-buffer">
         <div class="col-xs-12">
             <div class="panel">
                 <div class="panel-heading">
@@ -61,7 +61,7 @@
                         {$wallet->description}<br>
                         
                         {foreach key=oid item=o from=$objectives}
-                            {if isset($sel_user_id)}
+                            {if $sel_user_id}
                                 <div style="display:inline-table">{RENDER::objective(["type" =>"enabling_objective", "objective" => $o , "user_id" => $sel_user_id])}</div>
                             {else}
                                 <div style="display:inline-table">{RENDER::objective(["type" =>"enabling_objective", "objective" => $o ])}</div>

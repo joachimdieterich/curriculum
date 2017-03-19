@@ -193,8 +193,10 @@ class Semester {
      * @return boolean 
      */
     public function delete(){
-        global $USER;
+        global $USER, $LOG;
         checkCapabilities('semester:delete', $USER->role_id);
+        $this->load();
+        $LOG->add($USER->id, 'semester.class.php', dirname(__FILE__), 'Delete semester: '.$this->semester.', institution_id: '.$this->institution_id);
         $db     = DB::prepare('SELECT id FROM groups WHERE semester_id = ?');
         $db->execute(array($this->id));
         if ($db->fetchObject()){

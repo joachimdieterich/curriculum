@@ -28,6 +28,7 @@ include(dirname(__FILE__).'/../login-check.php');  //check login status and rese
 global $USER, $CFG;
 $USER     = $_SESSION['USER'];
 $func     = $_GET['func']; //not used yet
+$content = '';
 switch ($func) {
     case 'random':  $enabling_objective     = new EnablingObjective();
                     $enabling_objective->id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);//filter_input(INPUT_GET, 'enablingObjectiveID', FILTER_VALIDATE_INT);
@@ -40,7 +41,7 @@ switch ($func) {
 $header = "Unterstützung anfordern";
 
 if ($result){
-    $content = 'Folgende Benutzer haben das Lernziel: <strong>'.$enabling_objective->enabling_objective.'</strong> bereits erreicht und können dir helfen:<br>';
+    $content .= 'Folgende Benutzer haben das Lernziel: <strong>'.$enabling_objective->enabling_objective.'</strong> bereits erreicht und können dir helfen:<br>';
 
     $users   = new User();
     if (count($result) > 10){$max = 10;} else {$max = count($result);}
@@ -58,7 +59,8 @@ if ($result){
 }
 $footer = '';
 
-$html     = Form::modal(array('title'     => $header,
+$html     = Form::modal(array('target'    => 'null',
+                              'title'     => $header,
                               'content'   => $content, 
                               'f_content' => $footer));  
 

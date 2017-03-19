@@ -26,7 +26,7 @@
 global $CFG, $USER, $PAGE, $TEMPLATE, $INSTITUTION;
 $TEMPLATE->assign('breadcrumb',  array('Sammelmappe' => 'index.php?action=wallet', 'Ansicht' => 'index.php?action=walletView'));
 $TEMPLATE->assign('page_title', 'Ansicht');  
-
+$TEMPLATE->assign('sel_user_id', false); 
 $wallet   = new Wallet(filter_input(INPUT_GET, 'wallet', FILTER_VALIDATE_INT));
 if (isset($_GET['edit'])){ $TEMPLATE->assign('edit', true); } else { $TEMPLATE->assign('edit', false); }
 if (isset($_GET['user_id'])){ 

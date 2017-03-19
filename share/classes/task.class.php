@@ -61,8 +61,10 @@ class Task {
     }
     
     public function delete(){
-        global $USER;
+        global $USER, $LOG;
         checkCapabilities('task:delete', $USER->role_id);
+        $this->load();
+        $LOG->add($USER->id, 'task.class.php', dirname(__FILE__), 'Delete task: '.$this->task.', creator_id: '.$this->creator_id);
         $db             = DB::prepare('DELETE FROM task WHERE id = ?');
         $ret_task       = $db->execute(array($this->id));
         $db             = DB::prepare('DELETE FROM task_enrolments WHERE task_id = ?');

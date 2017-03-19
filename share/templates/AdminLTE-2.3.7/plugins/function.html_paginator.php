@@ -129,7 +129,7 @@ function smarty_function_html_paginator($params, $template) {
                 if (isset($page['onclick'])){        
                     $html .= 'onclick="'.$page['onclick'].'"';
                 } else {
-                    $html .= 'onclick="checkrow(\'page\', \''.$id.'\');"';
+                    $html .= 'onclick="checkrow(\'page\', \''.$id.'\', \'true\');"';
                 }
                 $html .= '></td>';
             } else if ($_key == 'p_options'){
@@ -161,7 +161,7 @@ function smarty_function_html_paginator($params, $template) {
                         if (isset($checkbox['onclick'])){
                             $html .= 'onclick="'.str_replace('__id__', $_val->$k_key, $checkbox['onclick']).'"';   
                         } else {
-                            $html .= 'onclick="checkrow(\''.$_val->$k_key.'\', \''.$id.'\');"';
+                            $html .= 'onclick="checkrow(\''.$_val->$k_key.'\', \''.$id.'\', \'true\');"';
                         }
                         $html .= ' ><input class="checkbox" type="checkbox" id="'.$id.'_'.$_val->$k_key.'" name="id[]" value="'.$_val->$k_key.'"';
                         if (isset($selected_id) && in_array($_val->$k_key, $selected_id)) {
@@ -169,7 +169,7 @@ function smarty_function_html_paginator($params, $template) {
                         }
                         $html .= ' /></td>';
                     } else {
-                        $html .= '<tr id="row'.$_val->$k_key.'" onclick="checkrow(\''.$_val->$k_key.'\', \''.$id.'\')">'
+                        $html .= '<tr id="row'.$_val->$k_key.'" onclick="checkrow(\''.$_val->$k_key.'\', \''.$id.'\',  \'true\')">'
                                 . '<td ><input class="hidden" type="checkbox" id="'.$_val->$k_key.'" name="id[]" value='.$_val->$k_key.' /></td>';
                     }
                     $_id = $_val->$k_key; // aktuelle id
@@ -197,7 +197,7 @@ function smarty_function_html_paginator($params, $template) {
                             if (isset($td['onclick'])){
                                 $html .= 'onclick="'.str_replace('__id__', $_id, $td['onclick']).'"';
                             } else {
-                                $html .= 'onclick="checkrow(\''.$_id.'\', \''.$id.'\');"';
+                                $html .= 'onclick="checkrow(\''.$_id.'\', \''.$id.'\', \'true\');"';
                             }
                         $html .= '>'.$_val->$k_key.'</td>';
                     }
@@ -223,10 +223,10 @@ function smarty_function_html_paginator($params, $template) {
         if (isset($all['onclick'])){        
             $html .= 'onclick="'.$all['onclick'].'"';
         } else {
-            $html .= 'onclick="checkrow(\'all\', \''.$id.'\');"';
+            $html .= 'onclick="checkrow(\'all\', \''.$id.'\', \'true\');"';
         }
         $html .= '> Alle ';
-        $html .= '<span id="span_unselect" class="hidden"><input type="checkbox" id="p_unselect" value="p_unselect" onclick="checkrow(\'none\', \''.$id.'\');"> Auswahl aufheben </span>';
+        $html .= '<span id="span_unselect" class="hidden"><input type="checkbox" id="p_unselect" value="p_unselect" onclick="checkrow(\'none\', \''.$id.'\', \'true\');"> Auswahl aufheben </span>';
         
         $html .= ' | <span id="count_selection">'.count($selected_id).'</span> Datensätze markiert</span><br>';
     } 

@@ -156,16 +156,26 @@ class EnablingObjective {
      * @return boolean 
      */
     public function delete(){
-        global $USER;
+        global $USER, $LOG;
         checkCapabilities('objectives:deleteEnablingObjectives', $USER->role_id);
-        $db = DB::prepare('DELETE FROM enablingObjectives WHERE id = ?');
-        return $db->execute(array($this->id));
+        // load objective to recalc order_id when deleting objective
+        $this->load();
+        $LOG->add($USER->id, 'enablingobjective.class.php', dirname(__FILE__), 'Delete enablingobjective: '.$this->enabling_objective.', curriculum_id: '.$this->curriculum_id.' creator_id: '.$this->creator_id);
+        $db = DB::prepare('UPDATE enablingObjectives SET order_id = order_id - 1 WHERE terminal_objective_id = ? AND order_id > ?');
+        if ($db->execute(array($this->terminal_objective_id, $this->order_id))) {
+            $db01 = DB::prepare('DELETE FROM enablingObjectives WHERE id = ?');
+        return $db01->execute(array($this->id));
+        } else {
+            return false;
+        }
+        
     } 
     
     /**
      * Load enabling objectives from db 
      */
     public function load(){
+        global $CFG;
         $db = DB::prepare('SELECT * FROM enablingObjectives WHERE id = ?');
         $db->execute(array($this->id));
         while($result = $db->fetchObject()) { 
@@ -178,6 +188,14 @@ class EnablingObjective {
             $this->repeat_interval       = $result->repeat_interval;
             $this->creation_time         = $result->creation_time;
             $this->creator_id            = $result->creator_id;
+            /* Check if Material or external Reference is set */
+            $db_02 = DB::prepare('SELECT COUNT(*) AS MAX FROM files AS fi WHERE ena_id = ? AND context_id = 2');
+            $db_02->execute(array($result->id));
+            $res_02 = $db_02->fetchObject();
+            if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
+                $ext = $CFG->repository->count(1,$result->id);
+            } 
+            $this->files                = $res_02->MAX.$ext; //nummer of materials
         }   
     }
     /**

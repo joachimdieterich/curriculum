@@ -81,35 +81,12 @@ class WalletSharing {
     
     public function delete($id = null){
         if ($id == null){ $id = $this->id; }
-        global $USER;
+        global $USER, $LOG;
         checkCapabilities('wallet:share', $USER->role_id);
+        $this->load();
+        $LOG->add($USER->id, 'walletsharing.class.php', dirname(__FILE__), 'Delete walletsharing: id = '.$this->id.', creator_id: '.$this->creator_id);
         $db = DB::prepare('DELETE FROM wallet_sharing WHERE id = ?');
         return $db->execute(array($id));
     }
-    
-    public function get($dependency, $id = false, $context = null){
-        global $USER;
-        switch ($dependency) {
-            /*case 'id':      $db = DB::prepare('SELECT wa.id FROM wallet AS wa WHERE wa.id = ?');
-                            $db->execute(array($id));
-                break;
-            case 'user':    $db = DB::prepare('SELECT wa.id FROM wallet AS wa WHERE wa.id = ? AND wa.creator_id = ?');
-                            $db->execute(array($this->id, $USER->id));
-                            $content = new WalletContent();
-                            $content->wallet_id = $this->id;
-                            $this->content = $content->get('user', $id);
-                break;
-            */
-            default:
-                break;
-        }
-        
-        $r  = array();
-        while($result = $db->fetchObject()) { 
-            $this->load($result->id); 
-            $r[]  = clone $this;
-        } 
-
-        return $r;     
-    }
+   
 }

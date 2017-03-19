@@ -24,7 +24,7 @@
 */
 global $CFG, $USER, $PAGE; 
 if(isset($_SESSION['USER']->id)) {                          // Angemeldet?
-    $session_life       = time() - $_SESSION['timein'];     // Errechne vergangene Zeit seit letzter Aktion
+    $session_life       = time() - $_SESSION['timein'];     // Errechne vergangene Zeit seit letzter Aktion    
     if($session_life > ($CFG->timeout)*60){                 // *60 = Minuten
         logout();                                           // Session abgelaufen
     }

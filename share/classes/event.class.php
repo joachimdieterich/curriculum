@@ -81,10 +81,17 @@ class Event {
     }
     
     public function delete(){
-        global $USER;
+        global $USER, $LOG;
         checkCapabilities('event:delete', $USER->role_id);
-        $db = DB::prepare('DELETE FROM event WHERE id = ?');
-        return $db->execute(array($this->id));
+        $this->load();
+        $co = new Context();
+        if ($co->resolve('context', 'userFiles')->context_id == $this->context_id){ // only delete user events yet 
+            $LOG->add($USER->id, 'event.class.php', dirname(__FILE__), 'Delete event: '.$this->event.', creator_id: '.$this->creator_id);
+            $db = DB::prepare('DELETE FROM event WHERE id = ?');
+            return $db->execute(array($this->id));
+        } else {
+            $_SESSION['PAGE']->message[] = array('message' => 'Zur Zeit können nur persönliche Termine gelöscht werden.', 'icon' => 'fa fa-calendar text-warning');// Schließen und speichern
+        }
     } 
     
     public function load($dependency = 'id', $value = null){

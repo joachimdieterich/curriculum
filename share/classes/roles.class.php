@@ -105,8 +105,8 @@ class Roles {
                         $update_role_capabilities = $db->execute(array($this->id, $v_key));
                     } else {  
                         $db = DB::prepare('INSERT INTO role_capabilities (role_id, capability, permission, creator_id) 
-                                            VALUES (?, ?, ?, ?)');
-                        $update_role_capabilities = $db->execute(array($this->id, $v_key, $v_value, $USER->id));
+                                            VALUES (?, ?, '.$v_value.', ?)');
+                        $update_role_capabilities = $db->execute(array($this->id, $v_key, $USER->id));
                     }
                 }
             }
@@ -123,12 +123,14 @@ class Roles {
      * @return mixed 
      */
     public function delete(){
-        global $USER;
+        global $USER, $LOG;
         checkCapabilities('role:delete', $USER->role_id);
-            $db             = DB::prepare('DELETE FROM roles WHERE id = ?');
-            $delete_role    = $db->execute(array($this->id));
-            $db1            = DB::prepare('DELETE FROM role_capabilities WHERE role_id= ?');
-            $delete_role_capabilities = $db1->execute(array($this->id));
+        $this->load();
+        $LOG->add($USER->id, 'roles.class.php', dirname(__FILE__), 'Delete role: '.$this->role.', creator_id: '.$this->creator_id);
+        $db             = DB::prepare('DELETE FROM roles WHERE id = ?');
+        $delete_role    = $db->execute(array($this->id));
+        $db1            = DB::prepare('DELETE FROM role_capabilities WHERE role_id= ?');
+        $delete_role_capabilities = $db1->execute(array($this->id));
         if ($delete_role == true AND $delete_role_capabilities == true){
                 return true;
             } else {

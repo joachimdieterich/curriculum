@@ -26,7 +26,9 @@
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#f_userlist" data-toggle="tab">Kursliste</a></li>
-                    <li><a href="#f_coursebook" data-toggle="tab">Kursbuch</a></li>
+                    {if isset($coursebook)} 
+                        <li><a href="#f_coursebook" data-toggle="tab">Kursbuch</a></li>
+                    {/if}
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="f_userlist">
@@ -60,11 +62,11 @@
                                     {html_paginator id='userPaginator' title='Kurs'} 
                         {elseif $showuser eq true}Keine eingeschriebenen Benutzer{/if}
                     </div>
+                    {if isset($coursebook)} 
                     <div class="tab-pane" id="f_coursebook">
-                        {if isset($coursebook)} 
-                            {Render::courseBook($coursebook)}
-                        {/if}
+                        {Render::courseBook($coursebook)}
                     </div>
+                    {/if}
                 </div>
             </div>
         </div>
@@ -73,7 +75,7 @@
     {if isset($userPaginator)} 
     <div class="row ">
         <div class="col-xs-12">
-            <div class="box box-primary">
+            <div class="box box-default">
                 <div class="box-header ">
                     {if isset($user->avatar)}
                         {*if $user->avatar_id neq 0*}
@@ -95,46 +97,13 @@
                         <div class="row" >
                             <div class="col-xs-12"> 
                                 {*Thema Row*}
-                                <div class="panel panel-default box-objective"> 
-                                    <div class="panel-heading boxheader" style="background: {$ter->color}"></div>
-                                    <div id="ter_{$ter->id}" class="panel-body bg-gray disabled color-palette boxwrap">
-                                        <div class="boxscroll">
-                                            <div class="boxcontent">
-                                                {$ter->terminal_objective}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="panel-footer boxfooter">
-                                        <span class="fa fa-info pull-right box-sm-icon text-primary" onclick="formloader('description', 'terminal_objective', '{$ter->id}');"></span>
-                                    </div>
-                                </div> 
+                                {RENDER::objective(["type" =>"terminal_objective", "objective" => $ter , "user_id" => $selected_user_id,"group_id" => $sel_group_id])}
                                 {*Ende Thema*}
 
                                 {*Anfang Ziel*}
                                 {foreach key=enaid item=ena from=$enabledObjectives}
                                     {if $ena->terminal_objective_id eq $ter->id}
-                                        <div style="display:none" id="ena_status_{$ena->id}">{0+$ena->accomplished_status_id}</div>
-                                        <div id="ena_{$ena->id}" class="panel panel-default box-objective {$box_bg[$ena->accomplished_status_id]}"> 
-                                            <div id="ena_header_{$ena->id}" class="panel-heading boxheader" style="background: {$ter->color}">
-                                                {if isset($ena->accomplished_users) and isset($ena->enroled_users) and isset($ena->accomplished_percent)}
-                                                    {$ena->accomplished_users} von {$ena->enroled_users} ({$ena->accomplished_percent}%)
-                                                {/if}
-                                                <span class="fa fa-bar-chart-o pull-right invert box-sm-icon text-primary" onclick='formloader("compare","group", {$ena->id},{["group_id"=>$sel_group_id]|@json_encode nofilter});'></span>
-                                                <span class="fa fa-files-o pull-right invert box-sm-icon text-primary margin-r-5" onclick='formloader("material","solution", {$ena->id},{["group_id"=>$sel_group_id,"curriculum_id" => $sel_curriculum]|@json_encode nofilter});'></span>
-                                            </div>
-                                            <div class="panel-body boxwrap" onclick="setAccomplishedObjectives({$my_id}, '{implode(',',$selected_user_id)}', {$ena->id}, {$sel_group_id});">
-                                                <div class="boxscroll">
-                                                    <div class="boxcontent">
-                                                        {$ena->enabling_objective}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="panel-footer boxfooter">
-                                                
-                                                <span class=" pull-left">{Render::accCheckboxes( {['id' => $ena->id, 'student' => implode(',',$selected_user_id), 'teacher' => $my_id, 'link' => false]|@json_encode nofilter})}</span>
-                                                <span class=" fa fa-info pull-right box-sm-icon text-primary" onclick="formloader('description', 'enabling_objective', '{$ena->id}');"></span>
-                                            </div>
-                                        </div> 
+                                        {RENDER::objective(["type" =>"enabling_objective", "objective" => $ena , "user_id" => $selected_user_id, "group_id" => $sel_group_id, "border_color" => $ter->color])}
                                     {/if}
                                 {/foreach}
                                 {*Ende Ziel*}

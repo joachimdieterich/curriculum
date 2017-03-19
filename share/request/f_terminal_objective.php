@@ -2,10 +2,10 @@
 /** This file is part of curriculum - http://www.joachimdieterich.de
 * 
 * @package core
-* @filename f_enablingObjective.php
+* @filename f_terminalObjective.php
 * @copyright 2015 Joachim Dieterich
 * @author Joachim Dieterich
-* @date 2015.09.27 14:46
+* @date 2015.06.01 17:09
 * @license: 
 *
 * The MIT License (MIT)
@@ -27,35 +27,31 @@ include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER, $CFG;
 $USER                   = $_SESSION['USER'];
-$enabling_objective_id  = '';
-$enabling_objective     = '';
+$terminal_objective_id  = '';
+$terminal_objective     = '';
 $description            = '';
 $curriculum_id          = '';
-$terminal_objective_id  = '';
 $reference              = '';
-$repeat_interval        = 0;
+$color                  = '#3cc95b';
 $error                  = '';
-$ena_objective          = new EnablingObjective(); 
+$ter_objective          = new TerminalObjective(); 
 $func                   = $_GET['func'];
-
 switch ($func) {
-    case 'edit':    $ena_objective->id            = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);  // edit case: id == ena_id
-                    $enabling_objective_id        = $ena_objective->id;
-                    $ena_objective->load();                                 //Läd die bestehenden Daten aus der db
-                    foreach ($ena_objective as $key => $value){
+    case 'edit':    $ter_objective->id            = $_GET['id'];
+                    $terminal_objective_id        = $ter_objective->id;
+                    $ter_objective->load();                                 //Läd die bestehenden Daten aus der db
+                    foreach ($ter_objective as $key => $value){
                         $$key = $value;
                     }
+                    
                     if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
-                        $reference                = $CFG->repository->getReference('enabling_objective', $ena_objective->id);
+                        $reference  = $CFG->repository->getReference('terminal_objective', $ter_objective->id);
                     }
-                    $header                       = 'Ziel aktualisieren';           
+                    $header                       = 'Thema bearbeiten';           
         break;
-    case 'new':     $ter_objective                = new TerminalObjective();
-                    $ter_objective->id            = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT); // new case: id == ter_id
-                    $ter_objective->load();
+    case 'new':     $ter_objective->curriculum_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
                     $curriculum_id                = $ter_objective->curriculum_id;
-                    $terminal_objective_id        = $ter_objective->id;
-                    $header                       = 'Ziel hinzufügen';
+                    $header                       = 'Thema hinzufügen';
         break;
     
     default:
@@ -71,21 +67,23 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$content = '<form id="form_enabling_objective" method="post" action="../share/processors/fp_enablingObjective.php">
-<input type="hidden" name="curriculum_id" id="curriculum_id" value="'.$curriculum_id.'"/>
+$content = '<form id="form_terminal_objective" method="post" action="../share/processors/fp_terminal_objective.php">
 <input type="hidden" name="terminal_objective_id" id="terminal_objective_id" value="'.$terminal_objective_id.'"/> 
-<input type="hidden" name="enabling_objective_id" id="enabling_objective_id" value="'.$enabling_objective_id.'"/> 
+<input type="hidden" name="curriculum_id" id="curriculum_id" value="'.$curriculum_id.'"/>
 <input type="hidden" name="func" id="func" value="'.$func.'"/>'; 
-$content .= Form::input_textarea('enabling_objective', 'Ziel', $enabling_objective, $error, 'z.B. ');
+$content .= Form::input_textarea('terminal_objective', 'Thema', $terminal_objective, $error, 'z.B. ');
 $content .= Form::input_textarea('description', 'Beschreibung', $description, $error, 'z.B. ');
 $content .= Form::input_text('reference', 'Externe Referenz', $reference, $error, 'Beschreibung');
-
-$intervals = new Interval();
-$content .= Form::input_select('repeat_interval', 'Ziel wiederholen?',$intervals->getIntervals(), 'description', 'repeat_interval', $repeat_interval, $error );
+$content .= Form::input_color(array('id' => 'color', 'rgb' => $color, 'error' => $error));
 $content .= '</form>';
-$footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_enabling_objective\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';
+$footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_terminal_objective\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';
 
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
                               'f_content' => $footer));  
-echo json_encode(array('html'=> $html));
+
+$script = "<script id='modal_script'>
+        $.getScript('".$CFG->smarty_template_dir_url."plugins/colorpicker/bootstrap-colorpicker.min.js', function (){
+        $('.color-picker').colorpicker();
+        });</script>";
+echo json_encode(array('html'=> $html, 'script' => $script));

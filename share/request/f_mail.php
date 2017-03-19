@@ -31,6 +31,7 @@ $func           = $_GET['func'];
 $mail_id        = null;
 $receiver_id    = null;
 $group_id       = null;
+$signature_id   = null;
 $subject        = null;
 $message_text   = null;
 $error          = null;
@@ -96,6 +97,11 @@ $content .= Form::input_select('group_id', 'Empfänger', $groups->getGroups('gro
 $content .= '<input id="add_group" name="add_group" type="submit" class="hidden"/></div><!-- /.tab-pane -->';
 $content .= Form::input_text('subject', 'Betreff', $subject, $error);
 $content .= Form::input_textarea('message_text', 'Nachricht', $message_text, $error, 'Sehr geehrter Empfänger ...');
+$s        = new Content();
+$signature = $s->get('signature', $USER->id);
+if (isset($signature[0]->content)){
+    $content .= Form::input_select('signature_id', 'Signatur', $signature, 'title', 'id', $signature_id , $error);
+}
 $content .= '</div></div></form>';
 $footer   = '<button id="add_person_btn" type="submit" class="btn btn-primary pull-right" onclick="$(\'#add_person\').click();" ><i class="fa fa-paper-plane margin-r-5"></i>'.$header.'</button> 
              <button id="add_group_btn"type="submit" class="btn btn-primary pull-right hidden" onclick="$(\'#add_group\').click();" ><i class="fa fa-paper-plane margin-r-5"></i>'.$header.'</button> ';

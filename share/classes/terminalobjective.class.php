@@ -147,10 +147,18 @@ class TerminalObjective {
      * @return boolean 
      */
     public function delete(){
-        global $USER;
+        global $USER, $LOG;
         checkCapabilities('objectives:deleteTerminalObjectives', $USER->role_id);
-        $db = DB::prepare('DELETE FROM terminalObjectives WHERE id = ?');
-        return $db->execute(array($this->id));
+        // load objective to recalc order_id
+        $this->load();
+        $LOG->add($USER->id, 'terminalobjective.class.php', dirname(__FILE__), 'Delete terminalobjective: '.$this->terminal_objective.', curriculum_id: '.$this->curriculum_id);
+        $db = DB::prepare('UPDATE terminalObjectives SET order_id = order_id - 1 WHERE curriculum_id = ? AND order_id > ?');
+        if ($db->execute(array($this->curriculum_id, $this->order_id))) {
+            $db01 = DB::prepare('DELETE FROM terminalObjectives WHERE id = ?');
+            return $db01->execute(array($this->id));
+        } else {
+            return false;
+        }
     } 
     
     /**
@@ -200,7 +208,6 @@ class TerminalObjective {
                                         $enabling_objectives = new EnablingObjective();
                                         $this->enabling_objectives = $enabling_objectives->getObjectives('terminal_objective', $this->id);
                                     }
-                                    
                                     /* Check if Material or external Reference is set */
                                     $db_02 = DB::prepare('SELECT COUNT(*) AS MAX FROM files WHERE ter_id = ? AND ISNULL(ena_id) AND context_id = 2');
                                     $db_02->execute(array($result->id));
@@ -209,7 +216,7 @@ class TerminalObjective {
                                     if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
                                         $ext = $CFG->repository->count(0,$result->id);
                                     } else { $ext = ''; }
-                                    $this->files                = $res_02->MAX.$ext; //nummer of materials
+                                    $this->files                = $res_02->MAX.$ext; //nummer of materials*/
                                     
                                     $objectives[]               = clone $this; 
                                 }

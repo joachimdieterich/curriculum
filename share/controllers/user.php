@@ -30,7 +30,7 @@ $institution = new Institution();
 //error_log(json_encode(SmartyPaginate::_getSelection('userP')));
 if (isset($_POST) ){
     $edit_user = new User(); 
-    $sel_id    = SmartyPaginate::_getSelection('userP');
+    $sel_id    = SmartyPaginate::_getSelection('userP'); //use selection from paginator (don't use form data) to get selections on all pages of paginator
     if (is_array($sel_id)){
         foreach ($sel_id as $edit_user->id ) { //Array per schleife abarbeiten	
             $edit_user->load('id',$edit_user->id);      // load current user 

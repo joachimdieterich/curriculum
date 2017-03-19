@@ -62,8 +62,10 @@ class Content {
     }
     
     public function delete(){
-        global $USER;
+        global $USER, $LOG;
         checkCapabilities('content:delete', $USER->role_id);
+        $this->load();
+        $LOG->add($USER->id, 'content.class.php', dirname(__FILE__), 'Delete content: '.$this->title.', creator_id: '.$this->creator_id);
         $db = DB::prepare('DELETE FROM content WHERE id = ?');
         return $db->execute(array($this->id));
     } 
@@ -106,6 +108,13 @@ class Content {
                                                         AND co.context_id = cts.context_id
                                                         AND cts.content_id = ct.id');
                                 $db->execute();
+                break;
+            case 'signature':   $db = DB::prepare('SELECT ct.id FROM content AS ct, content_subscriptions AS cts, context AS co
+                                                        WHERE  co.context = "'.$dependency.'"
+                                                        AND co.context_id = cts.context_id
+                                                        AND cts.reference_id = ?
+                                                        AND cts.content_id = ct.id');
+                                $db->execute(array($id));
                 break;
             
             default:

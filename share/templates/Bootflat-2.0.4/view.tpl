@@ -59,8 +59,8 @@
                         <div class="box box-objective {if isset($highlight)}{if in_array("ter_`$ter->id`", $highlight)} highlight {/if}{/if}" style="background: {$ter->color}"> 
                             <div class="boxheader" >
                                 {if isset($showaddObjectives)}
-                                    <span class="fa fa-minus pull-right box-sm-icon text-primary" onclick="del('terminalObjectives', {$ter->id});"></span>
-                                    <span class="fa fa-edit pull-right box-sm-icon text-primary" onclick="formloader('terminalObjective','edit', {$ter->id});"></span>
+                                    <span class="fa fa-minus pull-right box-sm-icon text-primary" onclick="del('terminal_objectives', {$ter->id});"></span>
+                                    <span class="fa fa-edit pull-right box-sm-icon text-primary" onclick="formloader('terminal_objective','edit', {$ter->id});"></span>
                                     {if $ter->order_id neq '1'}
                                         <span class="fa fa-arrow-up pull-left box-sm-icon text-primary" onclick='processor("orderObjective", "terminal_objective", "{$ter->id}", {["order" =>"down"]|@json_encode nofilter});'></span>
                                     {/if}
@@ -188,7 +188,7 @@
             {if isset($showaddObjectives)}  
                 <div class="box box-objective bg-white"> 
                     <span style="position:absolute; top:20px; width:100%;text-align: center;"><h5 class="text-primary">Thema</h5></span>
-                    <div class="panel-body text-primary" style="text-align: center; font-size:100px;" onclick="formloader('terminalObjective','new', {$course[0]->curriculum_id});">+</div>
+                    <div class="panel-body text-primary" style="text-align: center; font-size:100px;" onclick="formloader('terminal_objective','new', {$course[0]->curriculum_id});">+</div>
                 </div>
             {/if}        
         </div>

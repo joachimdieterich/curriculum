@@ -68,4 +68,10 @@ $box_bg = array('0' => 'white','' => 'white','x0' => 'red','0x' => 'white','1x' 
                 );
 $TEMPLATE->assign('box_bg',$box_bg);
 
+$accordion = array(array("header" => "Accordion 01", "body" => "Text 1"),
+                   array("header" => "Accordion 02", "body" => "Text 2"),
+                   array("header" => "Accordion 03", "body" => "Text 3")
+                  );
+$TEMPLATE->assign('accordion',  $accordion);
+
 $LOG->add($USER->id, 'view', $PAGE->url,  'Browser: '.$PAGE->browser); /* add log */

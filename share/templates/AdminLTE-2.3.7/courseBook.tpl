@@ -30,10 +30,9 @@ $('#cb_datepicker').datepicker({
 <section class="content">
     <div class="row ">
         <div class="col-xs-12">
+            {Form::input_button(['id' => 'print_full_coursebook', 'label' => 'Kursbuch drucken', 'type' => 'button', 'onclick' => 'processor(\'print\',\'courseBookUserComplete\',\'\');', 'icon' => 'fa fa-print' ])}
             {*<input id="cb_datepicker" data-provide="datepicker" data-date-format="dd.mm.yyyy" onchange="location.href='index.php?action=courseBook&date='+this.value;">*}
             {html_timeline id='coursebookP'} 
-            
-            {*Render::courseBook($coursebook)*}  
         </div>
     </div>
 </section>

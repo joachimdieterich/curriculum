@@ -138,10 +138,12 @@ class Curriculum {
      * @return mixed 
      */
     public function delete(){
-        global $USER, $PAGE;
+        global $USER, $PAGE, $LOG;
         checkCapabilities('curriculum:delete', $USER->role_id);
+        $this->load();
+        $LOG->add($USER->id, 'curriculum.class.php', dirname(__FILE__), 'Delete curriculum: '.$this->curriculum.', creator_id: '.$this->creator_id);
         //check if groups are enroled in this curriculum 
-        $enrdb = DB::prepare('SELECT id FROM curriculum_enrolments WHERE curriculum_id=?');
+        $enrdb = DB::prepare('SELECT id FROM curriculum_enrolments WHERE curriculum_id=? AND status = 1');
         $enrdb->execute(array($this->id));
         if ($enrdb->fetchObject()){
             $PAGE->message[] = array('message' => 'Lehrplan kann nicht gelöscht werden. Es sind Gruppen eingeschrieben', 'icon' => 'fa fa-th text-success');// Schließen und speichern

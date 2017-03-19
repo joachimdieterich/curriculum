@@ -99,8 +99,10 @@ class Certificate {
      * @return boolean 
      */
     public function delete(){
-        global $USER;
+        global $USER, $LOG;
         checkCapabilities('certificate:delete', $USER->role_id);
+        $this->load();
+        $LOG->add($USER->id, 'certificate.class.php', dirname(__FILE__), 'Delete certificate: '.$this->certificate.', curriculum_id: '.$this->curriculum_id.' institution_id: '.$this->institution_id);
         $db = DB::prepare('DELETE FROM certificate WHERE id = ?');
         return $db->execute(array($this->id));
     } 
