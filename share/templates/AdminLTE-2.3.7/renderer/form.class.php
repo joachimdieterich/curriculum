@@ -25,6 +25,19 @@
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 class Form {
+    
+    public static function input_button ($params){
+        $class      = 'btn btn-default';
+        $type       = 'submit';
+        $onclick    = '';
+        $icon       = '';
+        $label      = 'submit';
+        foreach($params as $key => $val) { $$key = $val; }  
+        return "<button id=\"btn_{$id}\"type=\"submit\" name=\"{$id}\" class=\"{$class}\" onclick=\"{$onclick}\">
+                    <span class=\"{$icon}\"></span> {$label}
+                </button>";
+    }
+    
     /**
      * info
      * 
@@ -142,7 +155,7 @@ class Form {
             $form .= ' <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>';
         }
         $form .= ' <div class="'.$class_right.'">
-                      <select id="'.$id.'" name="'.$id.'" class="chosen-select form-control" onchange="'.$onchange.'" '.$disabled.'>';
+                      <select id="'.$id.'" name="'.$id.'" class="select2 form-control" onchange="'.$onchange.'" '.$disabled.'>';
                        if (count($select_data) > 0){
                              if ($placeholder != '---'){
                                 $form .= '<option>'.$placeholder.'</option>';
@@ -184,7 +197,7 @@ class Form {
         $form = '<div class="form-group '.validate_msg($error, $id, true).'">
                     <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
                     <div class="'.$class_right.'">
-                        <select multiple id="'.$id.'[]" name="'.$id.'[]" class="chosen-select form-control" style="height:'.$height.';" onchange="'.$onchange.'">';
+                        <select multiple id="'.$id.'[]" name="'.$id.'[]" class="select2 form-control" style="height:'.$height.';" onchange="'.$onchange.'">';
                         if (count($select_data) > 0){
                             foreach ($select_data as $value) {
                                 if (strpos($select_label, ',')){ // more than one field in select_label                   

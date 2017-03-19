@@ -214,9 +214,9 @@ function smarty_function_widget_paginator($params, $template) {
         if (isset($all['onclick'])){        
             $html .= 'onclick="'.$all['onclick'].'"';
         } else {
-            $html .= 'onclick="checkrow(\'all\', \''.$id.'\');"';
+            $html .= 'onclick="checkrow(\'all\', \''.$id.'\', \'true\');"';
         }
-        $html .= '> Alle <span id="span_unselect" class="hidden"><input type="checkbox" id="p_unselect" value="p_unselect" onclick="checkrow(\'none\', \''.$id.'\');"> Auswahl aufheben </span>';
+        $html .= '> Alle <span id="span_unselect" class="hidden"><input type="checkbox" id="p_unselect" value="p_unselect" onclick="checkrow(\'none\', \''.$id.'\', \'true\');"> Auswahl aufheben </span>';
         $html .= ' | <span id="count_selection">'.count($selected_id).'</span> Datensätze markiert</span><br>';
     } 
     $html .= '</div>';

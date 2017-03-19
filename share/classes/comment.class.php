@@ -86,8 +86,10 @@ class Comment {
     }
     
     public function delete(){
-        global $USER;
+        global $USER, $LOG;
         checkCapabilities('comment:delete', $USER->role_id);
+        $this->load();
+        $LOG->add($USER->id, 'comment.class.php', dirname(__FILE__), 'Delete comment: '.$this->comment.', context_id: '.$this->context_id.' creator_id: '.$this->creator_id);
         $db = DB::prepare('SELECT id FROM comments WHERE parent_id = ?');
         $db->execute(array($this->id));
         if($db->fetchColumn() > 0) { 

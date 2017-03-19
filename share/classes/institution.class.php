@@ -154,8 +154,10 @@ class Institution {
      * @return boolean 
      */
     public function delete(){
-        global $USER;
+        global $USER, $LOG;
         checkCapabilities('institution:delete', $USER->role_id);
+        $this->load();
+        $LOG->add($USER->id, 'institution.class.php', dirname(__FILE__), 'Delete institution: '.$this->institution.', creator_id: '.$this->creator_id);
         $db = DB::prepare('SELECT id FROM institution_enrolments WHERE institution_id = ? AND status = 1 AND user_id <> ?');
         $db->execute(array($this->id, $USER->id));
         if ($db->fetchObject()){

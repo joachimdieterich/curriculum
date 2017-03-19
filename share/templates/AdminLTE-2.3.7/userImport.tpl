@@ -16,7 +16,7 @@
 <section class="content">
     <div class="row">
         <div class="col-xs-12">
-            <div class="box box-primary">
+            <div class="box box-default">
                 <div class="box-header with-border">
                   <h3 class="box-title">Nutzerkonten per CSV-Datei hochladen</h3>
                   {*<div class="box-tools pull-right">
@@ -63,7 +63,7 @@
               
         {if isset($nusr_val)}
         <div class="col-xs-12">
-            <div class="box box-primary">
+            <div class="box box-default">
                 <div class="box-header with-border">
                   <h3 class="box-title">Neue Nutzer</h3>
                   <div class="box-tools pull-right">

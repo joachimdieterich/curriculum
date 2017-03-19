@@ -96,8 +96,10 @@ class Schooltype {
      * @return mixed 
      */
     public function delete(){
-        global $USER;
+        global $USER, $LOG;
         checkCapabilities('schooltype:delete', $USER->role_id);
+        $this->load();
+        $LOG->add($USER->id, 'schooltype.class.php', dirname(__FILE__), 'Delete schooltype: '.$this->schooltype.', file_id: '.$this->creator_id);
         $db     = DB::prepare('SELECT id FROM curriculum WHERE schooltype_id = ?');
         $db->execute(array($this->id));
         if ($db->fetchObject()){

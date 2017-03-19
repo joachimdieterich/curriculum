@@ -190,8 +190,10 @@ class Mail {
     
     
     public function delete($dependency = 'mail'){
-        global $USER;
+        global $USER, $LOG;
         checkCapabilities('mail:delete', $USER->role_id);
+        $this->loadMail($this->id);
+        $LOG->add($USER->id, 'mail.class.php', dirname(__FILE__), 'Delete mail: '.$this->subject.', sender_id: '.$this->sender_id);
         switch ($dependency) {
             case 'mail':        $db = DB::prepare('DELETE FROM message WHERE id = ?');
                                 return $db->execute(array($this->id));

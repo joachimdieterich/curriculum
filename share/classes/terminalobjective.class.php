@@ -147,10 +147,11 @@ class TerminalObjective {
      * @return boolean 
      */
     public function delete(){
-        global $USER;
+        global $USER, $LOG;
         checkCapabilities('objectives:deleteTerminalObjectives', $USER->role_id);
         // load objective to recalc order_id
         $this->load();
+        $LOG->add($USER->id, 'terminalobjective.class.php', dirname(__FILE__), 'Delete terminalobjective: '.$this->terminal_objective.', curriculum_id: '.$this->curriculum_id);
         $db = DB::prepare('UPDATE terminalObjectives SET order_id = order_id - 1 WHERE curriculum_id = ? AND order_id > ?');
         if ($db->execute(array($this->curriculum_id, $this->order_id))) {
             $db01 = DB::prepare('DELETE FROM terminalObjectives WHERE id = ?');

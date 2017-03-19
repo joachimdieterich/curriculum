@@ -71,8 +71,10 @@ class CourseBook {
     }
     
     public function delete(){
-        global $USER;
+        global $USER, $LOG;
         checkCapabilities('coursebook:delete', $USER->role_id);
+        $this->load();
+        $LOG->add($USER->id, 'coursebook.class.php', dirname(__FILE__), 'Delete coursebook: '.$this->topic.', course_id: '.$this->course_id.' creator_id: '.$this->creator_id);
         $db = DB::prepare('DELETE FROM course_book WHERE cb_id = ? AND creator_id = ?');
         return $db->execute(array($this->id, $USER->id));
     } 

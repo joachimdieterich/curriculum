@@ -129,11 +129,14 @@ class Group {
      * @return boolean 
      */
     public function delete(){
-        global $USER;
+        global $USER, $LOG;
         checkCapabilities('groups:delete', $USER->role_id);
+        $this->load();
+        $LOG->add($USER->id, 'group.class.php', dirname(__FILE__), 'Delete group: '.$this->group.', institution_id: '.$this->institution_id.' creator_id: '.$this->creator_id);
         $db = DB::prepare('SELECT id FROM curriculum_enrolments WHERE group_id = ? AND status = 1');
         $db->execute(array($this->id));
         if ($db->fetchObject()){
+            $_SESSION['PAGE']->message[] = array('message' => 'Die Gruppe ist in Lehrpläne eingeschrieben. Bitte schreiben Sie die Gruppe vor dem Löschen aus.', 'icon' => 'fa fa-group text-warning');// Schließen und speichern
             return false;
         } else {
             $db = DB::prepare('DELETE FROM groups WHERE id = ?');

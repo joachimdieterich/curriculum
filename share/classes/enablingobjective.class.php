@@ -156,10 +156,11 @@ class EnablingObjective {
      * @return boolean 
      */
     public function delete(){
-        global $USER;
+        global $USER, $LOG;
         checkCapabilities('objectives:deleteEnablingObjectives', $USER->role_id);
         // load objective to recalc order_id when deleting objective
         $this->load();
+        $LOG->add($USER->id, 'enablingobjective.class.php', dirname(__FILE__), 'Delete enablingobjective: '.$this->enabling_objective.', curriculum_id: '.$this->curriculum_id.' creator_id: '.$this->creator_id);
         $db = DB::prepare('UPDATE enablingObjectives SET order_id = order_id - 1 WHERE terminal_objective_id = ? AND order_id > ?');
         if ($db->execute(array($this->terminal_objective_id, $this->order_id))) {
             $db01 = DB::prepare('DELETE FROM enablingObjectives WHERE id = ?');

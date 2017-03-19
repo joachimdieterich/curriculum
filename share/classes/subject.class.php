@@ -132,8 +132,10 @@ class Subject {
      * @return boolean 
      */
     public function delete(){
-        global $USER;
+        global $USER, $LOG;
         checkCapabilities('subject:delete', $USER->role_id);
+        $this->load();
+        $LOG->add($USER->id, 'subject.class.php', dirname(__FILE__), 'Delete subject: '.$this->subject.', institution_id: '.$this->institution_id);
         $db = DB::prepare('SELECT id FROM curriculum WHERE subject_id = ?');
         $db->execute(array($this->id));
         if ($db->fetchObject()){

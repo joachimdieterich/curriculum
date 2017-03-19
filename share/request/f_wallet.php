@@ -146,4 +146,4 @@ $script = '<script id=\'modal_script\'>
         $(\'.datepicker\').daterangepicker({timePicker: true, timePickerIncrement: 1, timePicker24Hour: true, locale: {format: \'DD.MM.YYYY HH:mm\'}});
         });
         </script>';
-echo json_encode(array('html'   => $html, 'script' => $script));
+echo json_encode(array('html' => $html, 'script' => $script));

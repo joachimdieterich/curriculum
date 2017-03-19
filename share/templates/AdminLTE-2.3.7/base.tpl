@@ -44,14 +44,14 @@
         <!-- daterangepicker -->
         <link rel="stylesheet" href="{$template_url}plugins/daterangepicker/daterangepicker.css">
         <!-- Theme style -->
-        <link rel="stylesheet" href="{$template_url}css/AdminLTE.min.css">
+        <link rel="stylesheet" href="{$template_url}css/less/AdminLTE.css">
         <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
-        <link rel="stylesheet" href="{$template_url}css/skins/_all-skins.min.css">
+        <link rel="stylesheet" href="{$template_url}css/less/skins/_all-skins.css">
         <!--link rel="stylesheet" href="{$template_url}css/skins/skin-blue-light.min.css"-->
         <!-- Bootstrap Color Picker -->
         <link rel="stylesheet" href="{$template_url}plugins/colorpicker/bootstrap-colorpicker.min.css">
         <!-- Custom styles for this template -->
-        <link rel="stylesheet" href="{$template_url}css/all-bs.min.css">
+        <!-- <link rel="stylesheet" href="{$template_url}css/all-bs.min.css">-->
         <link rel="stylesheet" href="{$template_url}css/buttons.min.css">
         <link rel="stylesheet" href="{$media_url}jquery.nyroModal/styles/nyroModal.css" media="all">
         {block name=additional_stylesheets}{/block}
@@ -255,6 +255,7 @@
     <script src="{$lib_url}ckeditor/ckeditor.js"></script><!-- CK Editor -->
     <script src="{$template_url}plugins/moment/moment.min.js"></script><!-- moment -->
     <script src="{$media_url}scripts/jquery-2.2.1.min.js"></script> <!-- jQuery 2.2.1 -->
+    <script src="{$media_url}scripts/alterClass.min.js"></script> <!-- jQuery 2.2.1 -->
     <script src="{$template_url}bootstrap/js/bootstrap.min.js"></script><!-- Bootstrap 3.3.5 -->
     <script src="{$template_url}js/app.min.js"></script><!-- AdminLTE App -->
     <script src="{$template_url}plugins/slimScroll/jquery.slimscroll.min.js"></script><!-- SlimScroll 1.3.0 -->
@@ -263,22 +264,12 @@
     <script src="{$media_url}scripts/script.min.js"></script> 
     <script src="{$media_url}scripts/PDFObject-master/pdfobject.min.js"></script> 
     <script src="{$media_url}scripts/file.min.js"></script>
-    <script src="{$media_url}scripts/dragndrop.min.js"></script>     
-    {* Adding chosen to get better select input ui *}
-    <link rel="stylesheet" href="{$media_url}scripts/chosen_v1.6.3/chosen.min.css">
-    <script src="{$media_url}scripts/chosen_v1.6.3/chosen.jquery.min.js" type="text/javascript"></script>
-    <script type="text/javascript">
-    var config = {
-      '.chosen-select'           : {literal}{}{/literal},
-      '.chosen-select-deselect'  : {literal}{allow_single_deselect:true}{/literal},
-      '.chosen-select-no-single' : {literal}{disable_search_threshold:10}{/literal},
-      '.chosen-select-no-results': {literal}{no_results_text:'Keine Treffer!'}{/literal},
-      '.chosen-select-width'     : {literal}{width:"95%"}{/literal}
-    };
-    for (var selector in config) {
-      $(selector).chosen(config[selector]);
-    }
-  </script>
+    <script src="{$media_url}scripts/dragndrop.min.js"></script>
+    <!-- Select2 -->
+    <link rel="stylesheet" href="{$template_url}plugins/select2/select2.css">
+    <script src="{$template_url}plugins/select2/select2.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="{$template_url}css/less/select2.css">
+
     {block name=additional_scripts} 
     <!-- Logout - Timer  -->
     {if isset($institution_timeout)}
@@ -288,6 +279,7 @@
         $(document).ready(function () {
             var idleInterval = setInterval("timerIncrement()", 60000); 
             $(document.getElementById('popup')).attr('class', 'modal');
+            $(".select2").select2();
         });
         function timerIncrement() {
             idleTime = idleTime + 1;

@@ -16,7 +16,7 @@
 <section class="content">
     <div class="row">
         <div class="col-xs-12">
-            <div class="box box-primary">
+            <div class="box box-default">
                 <div class="box-header with-border">
                     {if checkCapabilities('user:addUser', $my_role_id, false)}
                     <div class="btn-group" role="group" aria-label="...">
@@ -42,80 +42,90 @@
                     <form id='userlist'   method='post' action="index.php?action=user&next={$currentUrlId}">
                         {html_paginator id='userP' title='Benutzerliste'} 
                         <input class="invisible" type="checkbox" name="id[]" value="none" checked /><!--Hack - nothing selected-->  
-                            <div class="row">
-                            {if checkCapabilities('user:enroleToGroup', $my_role_id, false) OR checkCapabilities('user:expelFromGroup', $my_role_id, false)}
-                                <div class="form-horizontal col-xs-12 col-sm-12 col-md-5 col-lg-3">
-                                <h4>Lerngruppe</h4>
-                                <p>Markierte Benutzer in Lerngruppe ein bzw. ausschreiben</p>
-                                {if isset($groups_array)}
-                                    {Form::input_select_multiple(['id' => 'groups', 'label' => 'Lerngruppe', 'select_data' => $groups_array, 'select_label' => 'group, semester', 'select_value' => 'id', 'input' => null, 'error' => null, 'limiter' => ', ' ])}
-                                    <div class="btn-group pull-right" role="group" aria-label="...">
-                                        {if checkCapabilities('user:enroleToGroup', $my_role_id, false)}
-                                        <button type='submit' name='enroleGroups' value='' class="btn btn-default">
-                                                <span class="fa fa-plus-circle" aria-hidden="true"></span> einschreiben
-                                        </button>
-                                        {/if}
-                                        {if checkCapabilities('user:expelFromGroup', $my_role_id, false)}
-                                            <button type='submit' name='expelGroups' value='' class="btn btn-default">
-                                                    <span class="fa fa-minus-circle" aria-hidden="true"></span> ausschreiben
-                                            </button>
-                                        {/if}
-                                    </div>
-                                </div> 
-                                {/if}
-                            {/if}
-
-                            {if checkCapabilities('user:updateRole', $my_role_id, false)}
-                                <div class="form-horizontal col-xs-12 col-sm-12 col-md-5 col-lg-3">
-                                    <h4>Institution / Rolle</h4>
-                                    <p>Beim Zuweisen einer Rolle werden die markierten Nutzer automatisch in die aktuelle/ausgewählte Institution eingeschrieben bzw. die Daten aktualisiert.</p>
-                                    {if isset($myInstitutions)}
-                                        {Form::input_select('institution', 'Institution', $myInstitutions, 'institution', 'id', $my_institution_id, null)}
-                                    {/if}    
-                                    {Form::input_select('roles', 'Benutzer-Rolle', $roles, 'role', 'id', $institution_std_role, null)}
-
-                                    <div class="btn-group pull-right" role="group" aria-label="...">
-                                    {if checkCapabilities('user:enroleToInstitution', $my_role_id, false)}
-                                        <button type='submit' name='enroleInstitution' value='' class="btn btn-default">
-                                            <span class="fa fa-plus-circle" aria-hidden="true"></span> Rolle zuweisen / einschreiben
-                                        </button>
-                                    {/if}
-                                    {if checkCapabilities('user:expelFromInstitution', $my_role_id, false)}
-                                        <button type='submit' name='expelInstitution' value='' class="btn btn-default">
-                                            <span class="fa fa-minus-circle" aria-hidden="true"></span> ausschreiben
-                                        </button>
-                                    {/if} 
-                                    </div>
-                                </div>    
-                            {/if}     
-
-                            {if checkCapabilities('user:resetPassword', $my_role_id, false)}
-                                <div class="form-horizontal col-xs-12 col-sm-12 col-md-5 col-lg-3">
-                                    <h4>Passwort zurücksetzen</h4>
-                                    <p>Neues Passwort für markierte Benutzer festlegen. Passwort muss mind. 6 Zeichen lang sein.</p>
-                                    {Form::input_text('pwchange', 'Passwort', '', null, '', 'password')}
-                                    {Form::input_checkbox('showpassword', 'Passwort anzeigen', '', null, 'checkbox', 'unmask(\'pwchange\', this.checked);')}
-                                    {Form::input_checkbox('confirm', 'Passwortänderung', '', null)}
-                                    <button type='submit' name='resetPassword' value='' class="btn btn-default pull-right">
-                                            <span class="fa fa-lock" aria-hidden="true"></span> Passwort zurücksetzen
-                                    </button>
-                                </div>
-                            {/if}
-
-                            {if checkCapabilities('user:delete', $my_role_id, false)} 
-                                <div class="form-horizontal col-xs-12 col-sm-12 col-md-5 col-lg-3">
-                                    <h4>Benutzer</h4>
-                                    <p>Markierte Benutzer löschen</p>
-                                    <button type='submit' name='deleteUser' value='' class="btn btn-default pull-right">
-                                            <span class="fa fa-minus-circle" aria-hidden="true"></span> löschen
-                                    </button>
-                                </div>
-                            {/if}
-                        </div>    
-                    </form>     
-                </div>
+                </div>  
             </div>
-        </div>
+            {* Function Tabs *}
+            <div class="row ">
+                    <div class="col-sm-12">
+                        <div class="nav-tabs-custom">
+                            <ul class="nav nav-tabs">
+                                {if checkCapabilities('user:resetPassword', $my_role_id, false)}
+                                    <li class="active"><a href="#f_password" data-toggle="tab">Passwort</a></li>
+                                {/if}
+                                {if checkCapabilities('user:enroleToGroup', $my_role_id, false) OR checkCapabilities('user:expelFromGroup', $my_role_id, false)}
+                                    <li><a href="#f_group" data-toggle="tab">Lerngruppe</a></li>
+                                {/if}
+                                {if checkCapabilities('user:updateRole', $my_role_id, false)}
+                                    <li><a href="#f_institution" data-toggle="tab">Institution / Rolle</a></li>
+                                {/if}
+                                {if checkCapabilities('user:delete', $my_role_id, false)}
+                                    <li><a href="#f_delete" data-toggle="tab"><span class="text-danger">löschen</span></a></li>
+                                {/if}
+                            </ul>
+
+                            <div class="tab-content">
+                                {if checkCapabilities('user:resetPassword', $my_role_id, false)}
+                                    <div id="f_password" class="tab-pane active row " >
+                                        <div class="form-horizontal col-xs-12">
+                                        {Form::info(['id' => 'pw_info', 'content' => 'Neues Passwort für markierte Benutzer festlegen. Passwort muss mind. 6 Zeichen lang sein.'])}
+                                        {Form::input_text('pwchange', 'Passwort', '', null, '', 'password')}
+                                        {Form::input_checkbox('showpassword', 'Passwort anzeigen', '', null, 'checkbox', 'unmask(\'pwchange\', this.checked);')}
+                                        {Form::input_checkbox('confirm', 'Passwortänderung', '', null)}
+                                        {Form::input_button(['id' => 'resetPassword', 'label' => 'Passwort zurücksetzen', 'icon' => 'fa fa-lock', 'class' => 'btn btn-default pull-right'])}
+                                        </div>
+                                    </div>
+                                {/if}
+                                {if checkCapabilities('user:enroleToGroup', $my_role_id, false) OR checkCapabilities('user:expelFromGroup', $my_role_id, false)}
+                                    <div id="f_group" class="tab-pane row" >
+                                        <div class="form-horizontal col-xs-12">
+                                            {Form::info(['id' => 'group_info', 'content' => 'Markierte Benutzer in Lerngruppe ein bzw. ausschreiben.'])}
+                                        {if isset($groups_array)}
+                                            {Form::input_select_multiple(['id' => 'groups', 'label' => 'Lerngruppe', 'select_data' => $groups_array, 'select_label' => 'group, semester', 'select_value' => 'id', 'input' => null, 'error' => null, 'limiter' => ', ' ])}
+                                            <div class="btn-group pull-right" role="group" aria-label="...">
+                                            {if checkCapabilities('user:enroleToGroup', $my_role_id, false)}
+                                                {Form::input_button(['id' => 'enroleGroups', 'label' => 'einschreiben', 'icon' => 'fa fa-plus-circle', 'class' => 'btn btn-default pull-left'])}
+                                            {/if}
+                                            {if checkCapabilities('user:expelFromGroup', $my_role_id, false)}
+                                                {Form::input_button(['id' => 'expelGroups', 'label' => 'ausschreiben', 'icon' => 'fa fa-minus-circle', 'class' => 'btn btn-default pull-left'])}
+                                            {/if}
+                                            </div>
+                                        {/if}
+                                        </div>
+                                    </div>
+                                {/if}
+                                {if checkCapabilities('user:updateRole', $my_role_id, false)}
+                                    <div id="f_institution" class="tab-pane row" >
+                                        <div class="form-horizontal col-xs-12">
+                                            {Form::info(['id' => 'role_info', 'content' => 'Beim Zuweisen einer Rolle werden die markierten Nutzer automatisch in die aktuelle/ausgewählte Institution eingeschrieben bzw. die Daten aktualisiert.'])}
+                                        {if isset($myInstitutions)}
+                                            {Form::input_select('institution', 'Institution', $myInstitutions, 'institution', 'id', $my_institution_id, null)}
+                                        {/if}    
+                                        {Form::input_select('roles', 'Benutzer-Rolle', $roles, 'role', 'id', $institution_std_role, null)}
+
+                                        <div class="btn-group pull-right" role="group" aria-label="...">
+                                        {if checkCapabilities('user:enroleToInstitution', $my_role_id, false)}
+                                            {Form::input_button(['id' => 'enroleInstitution', 'label' => 'Rolle zuweisen / einschreiben', 'icon' => 'fa fa-plus-circle', 'class' => 'btn btn-default'])}
+                                        {/if}
+                                        {if checkCapabilities('user:expelFromInstitution', $my_role_id, false)}
+                                            {Form::input_button(['id' => 'expelInstitution', 'label' => 'ausschreiben', 'icon' => 'fa fa-minus-circle', 'class' => 'btn btn-default'])}
+                                        {/if} 
+                                        </div>
+                                        </div>
+                                    </div>
+                                {/if}
+                                {if checkCapabilities('user:delete', $my_role_id, false)}
+                                    <div class="tab-pane row" id="f_delete">
+                                        <div class="form-horizontal col-xs-12">
+                                            {Form::info(['id' => 'user_info', 'content' => 'Markierte Benutzer löschen.'])}
+                                            {Form::input_button(['id' => 'deleteUser', 'label' => 'löschen', 'icon' => 'fa fa-minus-circle', 'class' => 'btn btn-default pull-right'])}
+                                        </div>
+                                    </div>
+                                {/if}
+                            </div><!-- ./tab-content -->
+                        </div><!-- ./nav-tabs-custom -->
+                    </div><!-- ./col-xs-12 -->  
+                </form>     
+            </div>
     
         {if !isset($groups_array)}<p>Sie können noch keine Benutzer verwalten, da sie entweder nicht über die nötigen Rechte verfügen, oder keine Benutzer in ihrer Institution vorhanden sind.</p><p>&nbsp;</p>{/if}
    </div> 

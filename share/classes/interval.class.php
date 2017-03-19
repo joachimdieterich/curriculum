@@ -66,8 +66,6 @@ class Interval {
      * @return \Interval
      */
     public function getIntervals(){
-        global $USER;
-       
         $intervals = array();
         $db        = DB::prepare('SELECT * FROM repeat_interval');
         $db->execute();

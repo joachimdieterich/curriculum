@@ -84,10 +84,10 @@ if ($selected_curriculum_id != '') {
                                                    'icon'       => 'fa fa-envelope',
                                                    'tooltip'    => 'Nachricht schreiben'));
     $t_config      = array('table_id'  => array('id'         => 'contentsmalltable'),
-                           'page'      => array('onclick'    => 'checkrow(\'page\', \'userPaginator\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&certificate_template=\'+document.getElementById(\'certificate_template\').value);'),
-                           'all'       => array('onclick'    => 'checkrow(\'all\', \'userPaginator\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&certificate_template=\'+document.getElementById(\'certificate_template\').value);'),
-                           'checkbox'  => array('onclick'    => 'checkrow(\'__id__\', \'userPaginator\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&certificate_template=\'+document.getElementById(\'certificate_template\').value);'),
-                           'td'        => array('onclick'    => 'checkrow(\'__id__\', \'userPaginator\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&certificate_template=\'+document.getElementById(\'certificate_template\').value);'));
+                           'page'      => array('onclick'    => 'checkrow(\'page\', \'userPaginator\', \'false\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&certificate_template=\'+document.getElementById(\'certificate_template\').value);'),
+                           'all'       => array('onclick'    => 'checkrow(\'all\', \'userPaginator\', \'false\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&certificate_template=\'+document.getElementById(\'certificate_template\').value);'),
+                           'checkbox'  => array('onclick'    => 'checkrow(\'__id__\', \'userPaginator\', \'false\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&certificate_template=\'+document.getElementById(\'certificate_template\').value);'),
+                           'td'        => array('onclick'    => 'checkrow(\'__id__\', \'userPaginator\', \'false\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&p_select=__id__&certificate_template=\'+document.getElementById(\'certificate_template\').value);'));
     if(checkCapabilities('dashboard:globalAdmin', $USER->role_id, false)){
     $p_config      = array('id'        => 'checkbox',
                            'username'  => 'Benutzername', 
@@ -157,7 +157,7 @@ if(checkCapabilities('user:userList',         $USER->role_id, false)){
     $TEMPLATE->assign('courses',              $courses->getCourse('teacher_semester', $USER->semester_id));  // abhängig von USER->my_semester id --> s. Select in objectives.tpl, 
 }
 
-$box_bg = array('0' => 'bg-white',
+/*$box_bg = array('0' => 'bg-white',
                 '' => 'bg-white',
                 'x0' => 'bg-red',
                 '0x' => 'bg-white',
@@ -187,7 +187,7 @@ $box_bg = array('0' => 'bg-white',
                 '23' => 'bg-white',
                 '33' => 'bg-white',
                 );
-$TEMPLATE->assign('box_bg',$box_bg);
+$TEMPLATE->assign('box_bg',$box_bg);*/
 
 $content = new Content();
 $TEMPLATE->assign('cur_content', array('label'=>'Hinweise zum Lehrplan', 'entrys'=> $content->get('curriculum', $selected_curriculum_id)));

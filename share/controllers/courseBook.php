@@ -36,8 +36,7 @@ if (isset($_GET['date'])){
 if (checkCapabilities('menu:readCourseBook', $USER->role_id)){
     $coursebook = new CourseBook();
     $cb         = $coursebook->get('user', null, $date);
-    //$TEMPLATE->assign('coursebook', $cb); 
-    $p_config =   array('topic'     => 'Thema', 
+    $p_config   =   array('topic'     => 'Thema', 
                     'description'   => 'Beschreibung', 
                     'creation_time' => 'Datum', 
                     'curriculum_id' => 'Lehrplan_ID', 

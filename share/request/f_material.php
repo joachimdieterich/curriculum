@@ -281,7 +281,7 @@ if (!$files){
 if (filter_input(INPUT_GET, 'target', FILTER_SANITIZE_STRING)){
     $target = filter_input(INPUT_GET, 'target', FILTER_SANITIZE_STRING);
 } else { $target = 'popup'; }
-$html     = Form::modal(array('target'   => $target,
+$html     = Form::modal(array('target'   => 'null',
                                  'title' => $header, 
                                'content' => $content, 
                             'background' => '#ecf0f5'));  

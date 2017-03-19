@@ -49,18 +49,53 @@ if($validated_data === false) {/* validation failed */
     $_SESSION['FORM']->func      = $_POST['func']; 
 } else {
     switch (isset($_POST)) {
-        case isset($_POST['template']): $context              = new Context();
-                                        $context->resolve('context', 'userFiles');
-                                        $config->name         = 'template';
-                                        $config->value        = filter_input(INPUT_POST, 'template',    FILTER_UNSAFE_RAW);
-                                        $config->context_id   = $context->context_id;
-                                        $config->reference_id = $USER->id;
-                                        
-                                        $config->set();
-            break;
+        case isset($_POST['user_template_save']):   $context              = new Context();
+                                                    $context->resolve('context', 'userFiles');
+                                                    $config->name         = 'template';
+                                                    $config->value        = filter_input(INPUT_POST, 'template',    FILTER_UNSAFE_RAW);
+                                                    $config->context_id   = $context->context_id;
+                                                    $config->reference_id = $USER->id;
 
+                                                    $config->set();
+        
+            break;
         default:
             break;
+    }
+    $content = new Content();
+    if (isset($_POST['global_terms_save'])){    // edit AGBs
+        $content->get('terms');
+        $purify           = HTMLPurifier_Config::createDefault();
+        $purify->set('Core.Encoding', 'UTF-8'); // replace with your encoding
+        $purify->set('HTML.Doctype', 'HTML 4.01 Transitional'); // replace with your doctype
+        $purifier         = new HTMLPurifier($purify);
+        $content->content = $purifier->purify(filter_input(INPUT_POST, 'global_terms', FILTER_UNSAFE_RAW)); //replace with new version
+        if (checkCapabilities('user:userListComplete', $USER->role_id, false)){ //== superadmin
+            $content->update();
+        }
+    }
+    
+    if (isset($_POST['user_signature_save'])){    // edit signature
+        $content->get('signature', $USER->id);
+        
+        $purify           = HTMLPurifier_Config::createDefault();
+        $purify->set('Core.Encoding', 'UTF-8'); // replace with your encoding
+        $purify->set('HTML.Doctype', 'HTML 4.01 Transitional'); // replace with your doctype
+        $purifier         = new HTMLPurifier($purify);
+        $content->content = $purifier->purify(filter_input(INPUT_POST, 'user_signature', FILTER_UNSAFE_RAW)); //replace with new version
+        if (checkCapabilities('user:update', $USER->role_id, false)){ 
+            if (isset($content->id)){
+                $content->update();
+            } else {
+                $content->title         = 'Signatur '.$USER->lastname;
+                $co                     = new Context();
+                $co->resolve('context', 'signature');
+                $content->context_id    = $co->context_id;
+                $content->file_context  = '1'; //global
+                $content->reference_id  = $USER->id;
+                $content->add();
+            }
+        }
     }
     $_SESSION['FORM']            = null;                     // reset Session Form object 
 }

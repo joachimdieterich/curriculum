@@ -312,7 +312,6 @@ class file_upload {
             if ($this->existing_file($new_file)) {
                     $newfile = $this->upload_dir.$new_file;
                     if ($this->check_dir($this->upload_dir)) {
-                        
                             if (move_uploaded_file($tmp_file, $newfile)) {
                                     umask(0);
                                     chmod($newfile , $this->fileperm);

@@ -143,10 +143,10 @@ class Render {
                     $teacher_status = 'x';
                 }
                 $teacher = $student;
-                $html   = '<a class="pointer_hand"><i id="'.$id.'_green" style="font-size:18px;" class="'.$green.' margin-r-5 text-green pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \'1'.$teacher_status.'\')"></i></a>'
-                        . '<a class="pointer_hand"><i id="'.$id.'_orange" style="font-size:18px;" class="'.$orange.' margin-r-5 text-orange pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \'2'.$teacher_status.'\')"></i></a>'
-                        . '<a class="pointer_hand"><i id="'.$id.'_red" style="font-size:18px;" class="'.$red.' margin-r-5 text-red pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \'0'.$teacher_status.'\')"></i></a>'
-                        . '<a class="pointer_hand"><i id="'.$id.'_white" style="font-size:18px;" class="'.$white.' margin-r-5 text-gray pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \'3'.$teacher_status.'\')"></i></a>';
+                $html   = '<a class="pointer_hand" data-toggle="tooltip" title="Selbsteinschätzung: Ich kann das selbstständig." ><i id="'.$id.'_green" style="font-size:18px;" class="'.$green.' margin-r-5 text-green pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \'1'.$teacher_status.'\')"></i></a>'
+                        . '<a class="pointer_hand" data-toggle="tooltip" title="Selbsteinschätzung: Ich kann das mit Hilfe." ><i id="'.$id.'_orange" style="font-size:18px;" class="'.$orange.' margin-r-5 text-orange pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \'2'.$teacher_status.'\')"></i></a>'
+                        . '<a class="pointer_hand" data-toggle="tooltip" title="Selbsteinschätzung: Ich kann das noch nicht." ><i id="'.$id.'_red" style="font-size:18px;" class="'.$red.' margin-r-5 text-red pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \'0'.$teacher_status.'\')"></i></a>'
+                        . '<a class="pointer_hand" data-toggle="tooltip" title="Selbsteinschätzung: Ich habe das noch nicht bearbeitet." ><i id="'.$id.'_white" style="font-size:18px;" class="'.$white.' margin-r-5 text-gray pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \'3'.$teacher_status.'\')"></i></a>';
             } else {
                 $status = $ena->accomplished_status_id;
                 if (strlen($status) > 1){
@@ -161,10 +161,10 @@ class Render {
                         . '<br><a href="'.$CFG->base_url.'public/index.php?action=extern&teacher='.$teacher.'&student='.$student.'&ena_id='.$id.'&status='.$student_status.'3'.'&token='.$token.'">... nicht bearbeitet.</a>'
                         . '<br><a href="'.$CFG->base_url.'public/index.php?action=extern&teacher='.$teacher.'&student='.$student.'&ena_id='.$id.'&status='.$student_status.'0'.'&token='.$token.'">... nicht erreicht.</a>';
                 } else {
-                    $html   = '<a class="pointer_hand"><i id="'.$id.'_green" style="font-size:18px;" class="'.$green.' margin-r-5 text-green pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'1\')"></i></a>'
-                        . '<a class="pointer_hand"><i id="'.$id.'_orange" style="font-size:18px;" class="'.$orange.' margin-r-5 text-orange pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'2\')"></i></a>'
-                        . '<a class="pointer_hand"><i id="'.$id.'_red" style="font-size:18px;" class="'.$red.' margin-r-5 text-red pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'0\')"></i></a>'
-                        . '<a class="pointer_hand"><i id="'.$id.'_white" style="font-size:18px;" class="'.$white.' margin-r-5 text-gray pointer_hand" onclick="setAccomplishedObjectivesBySolution('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'3\')"></i></a>';
+                    $html   = '<a class="pointer_hand"><i id="'.$id.'_green" style="font-size:18px;" class="'.$green.' margin-r-5 text-green pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'1\')"></i></a>'
+                        . '<a class="pointer_hand"><i id="'.$id.'_orange" style="font-size:18px;" class="'.$orange.' margin-r-5 text-orange pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'2\')"></i></a>'
+                        . '<a class="pointer_hand"><i id="'.$id.'_red" style="font-size:18px;" class="'.$red.' margin-r-5 text-red pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'0\')"></i></a>'
+                        . '<a class="pointer_hand"><i id="'.$id.'_white" style="font-size:18px;" class="'.$white.' margin-r-5 text-gray pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'3\')"></i></a>';
                 }
             }
             
@@ -515,66 +515,143 @@ class Render {
     }
     /* add all possible options (ter and ena) to this objective function*/
     public static function objective($params){
-       global $USER;
+       global $CFG, $USER, $PAGE;
        $type        = 'terminal_objective'; 
        $edit        = false;
-       //
+       $sol_btn     = false;
+       $orderup     = false;
+       $orderdown   = false;
        //$objective 
        foreach($params as $key => $val) {
             $$key = $val;
        }
        if (!isset($user_id)){$user_id = $USER->id;} // if user_id is set --> accCheckbox set this user 
        if (!isset($objective->color)){ 
-           $objective->color = '#FFF'; 
-           $text_class       = 'text-black';
+            $objective->color = '#FFF'; 
+            $text_class       = 'text-black';
        } else {
            $text_class       = 'text-white';
        }
+       if (!isset($border_color)){
+            $border_color = $objective->color; 
+        }
        $html  =   '<div class="box box-objective ';
             if (isset($highlight)){
                 if (in_array($type.'_'.$objective->id, $highlight)){
                     $html  .= 'highlight';
                 }
             }
-        $html  .= ' style="background: '.$objective->color.'"> 
-                            <div class="boxheader" >';
-            if ($edit){
-                $html  .= '<span class="fa fa-minus pull-right box-sm-icon text-primary" onclick="del('.$type.', '.$objective->id.');"></span>
-                                    <span class="fa fa-edit pull-right box-sm-icon text-primary" onclick="formloader('.$type.',\'edit\', '.$objective->id.');"></span>';
-                if ($orderup){
-                    $html  .= '<span class="fa fa-arrow-up pull-left box-sm-icon text-primary" onclick=\'processor("orderObjective", '.$type.', "'.$objective->id.'", {"order":"down"});\'></span>';
-                }
-                if ($orderdown){
-                    $html  .= '<span class="fa fa-arrow-down pull-left box-sm-icon text-primary" onclick=\'processor("orderObjective", '.$type.', "'.$objective->id.'", {"order":"up"});\'></span>';
+            $html  .= ' style="background: '.$objective->color.'" style="border: 1px solid '.$border_color.'">';
+            /*************** Header ***************/
+            if ($type == 'enabling_objective'){
+                $html  .= '<div id="ena_header_'.$objective->id.'" class="boxheader bg-'.$objective->accomplished_status_id.'" >';
+            } else {
+                $html  .= '<div class="boxheader">';
+            }
+            if (checkCapabilities('groups:showAccomplished', $USER->role_id, false)){
+                if (isset($objective->accomplished_users) AND isset($objective->enroled_users) AND isset($objective->accomplished_percent)){
+                    $html  .= '<span class=" pull-left hidden-sm hidden-xs text-black" data-toggle="tooltip" title="Stand der Lerngruppe">'.$objective->accomplished_users.' von '.$objective->enroled_users.' ('.$objective->accomplished_percent.'%)</span><!--Ziel-->  ';
                 }
             }
-        $html  .='  </div>
-                    <div id="'.$type.'_'.$objective->id.'" class="panel-body boxwrap" >
+        
+            if ($edit){
+                if ($type == 'terminal_objective'){
+                    $icon_up    = 'down'; 
+                    $icon_down  = 'up';
+                    $position   = 'pull-left';
+                } else {
+                    $icon_up    = 'right'; 
+                    $icon_down  = 'left';
+                    $position   = 'pull-right';
+                }
+                if ($orderup){
+                    $html  .= '<span class="fa fa-arrow-'.$icon_up.' '.$position.' box-sm-icon text-primary" onclick=\'processor("orderObjective", "'.$type.'", "'.$objective->id.'", {"order":"up"});\'></span>';
+                }
+                $html  .= '<span class="fa fa-minus pull-right box-sm-icon text-primary margin-r-5" onclick=\'del("'.$type.'", '.$objective->id.');\'></span>
+                           <span class="fa fa-edit pull-right box-sm-icon text-primary" onclick=\'formloader("'.$type.'", "edit", '.$objective->id.');\'></span>';
+                if ($orderdown){
+                    $html  .= '<span class="fa fa-arrow-'.$icon_down.' pull-left box-sm-icon text-primary" onclick=\'processor("orderObjective", "'.$type.'", "'.$objective->id.'", {"order":"down"});\'></span>';
+                }
+            } else {
+                if (checkCapabilities('course:setAccomplishedStatus', $USER->role_id, false) AND $type != 'terminal_objective' ){
+                    $html  .= '<span class="fa fa-bar-chart-o pull-right invert box-sm-icon text-primary" onclick=\'formloader("compare","group", '.$objective->id.',  {"group_id":"'.$group_id.'"});\'></span>
+                               <span class="fa fa-files-o pull-right invert box-sm-icon text-primary margin-r-5" onclick=\'formloader("material","solution", '.$objective->id.', {"group_id":"'.$group_id.'", "curriculum_id": "'.$objective->curriculum_id.'"});\'></span>';
+                }
+                if (checkCapabilities('user:getHelp', $USER->role_id, false) AND $type != 'terminal_objective'){
+                    $html  .= '<span class="fa fa-support pull-right box-sm-icon text-primary"  data-toggle="tooltip" title="Gruppenmitglied kontaktieren" onclick=\'formloader("support","random", '.$objective->id.', {"group_id":"'.$group_id.'"});\'></span>';
+                }
+                if (checkCapabilities('file:solutionUpload', $USER->role_id, false) AND $type != 'terminal_objective' AND isset($soutions)){
+                    foreach ($solutions AS $s){
+                        if (($USER->id == $s->creator_id) AND ($s->enabling_objective_id == $objective->id) AND ($sol_btn != $objective->id)){
+                            $sol_btn = $objective->id;
+                            break;
+                        }
+                    }
+                    if (checkCapabilities('file:upload', $USER->role_id, false)){
+                        $html  .= '<a href="../share/templates/AdminLTE-2.3.7/renderer/uploadframe.php?context=solution&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal">
+                        <span class="fa ';
+                        if ($sol_btn == $objective->id){
+                            $html  .= 'fa-check-circle-o ';
+                        } else {
+                            $html  .= 'fa-upload ';
+                        } 
+                            $html  .= 'pull-right text-primary" data-toggle="tooltip"';
+                        if ($sol_btn == $objective->id){
+                            $html  .= ' title="Lösung eingereicht"';
+                        } else {
+                            $html  .= ' title="Lösung einreichen"';
+                        }
+                        $html  .= '></span></a>'; 
+                    }
+                }
+            }
+         $html  .='  </div>';    
+        /*************** ./Header ***************/
+        /*************** Body ***************/    
+        $html  .='  <div id="'.$type.'_'.$objective->id.'" class="panel-body boxwrap" >
+                        
                         <div class="boxscroll" style="background: '.$objective->color.'">
                             <div class="boxcontent '.$text_class.'">'.$objective->$type.'</div>
                         </div>
-                    </div>
-                    <div class="boxfooter" style="background: '.$objective->color.'">';
+                    </div>';
+        /*************** ./Body ***************/
+        /*************** Footer ***************/
+        $html  .= '  <div class="boxfooter">';
                         if ($objective->description != ''){
                             $html  .='<span class="fa fa-info pull-right box-sm-icon text-primary" style="padding-top:2px; margin-right:3px;" data-toggle="tooltip" title="Beschreibung" onclick="formloader(\'description\', \''.$type.'\', '.$objective->id.');"></span>';
                         }
-                        if ($edit){
-                            if (checkCapabilities('file:upload', $USER->role_id, false)){
-                                $html  .='<a href="../share/templates/Bootflat-2.0.4/renderer/uploadframe.php?context='.$type.'&ref_id='.$objective->id.'{$tb_param}" class="nyroModal"><span class="fa fa-plus pull-right box-sm-icon"></span></a>';
-                            } 
-                        }
-                        $html  .='<span class="pull-left" style="margin-right:10px;">';
-                        if (checkCapabilities('file:loadMaterial', $USER->role_id, false) AND $objective->files != null){
+                         $html  .='<span class="pull-left" style="margin-right:10px;">';
+                        if (checkCapabilities('file:loadMaterial', $USER->role_id, false) AND $objective->files != 0){
                             $html  .='<span class="fa fa-briefcase box-sm-icon text-primary" style="cursor:pointer;" data-toggle="tooltip" title="'.$objective->files.' Materialien verfügbar" onclick="formloader(\'material\',\''.$type.'\','.$objective->id.')"></span>';
                         } else {
-                            $html  .='<span class="fa fa-briefcase box-sm-icon deactivate"></span>';
+                            $html  .='<span class="fa fa-briefcase box-sm-icon deactivate text-gray" style="cursor:not-allowed;" data-toggle="tooltip" title="Keine Materialien verfügbar"></span>';
                         }
                         $html  .='</span>';
-                        if (checkCapabilities('course:selfAssessment', $USER->role_id, false)){
-                            $html  .='<span class="pull-left">'.Render::accCheckboxes(array('id' => $objective->id, 'student' => $user_id, 'teacher' => $user_id, 'link' => false)).'</span>';
-                        }
-        $html  .='    </div>
-                  </div>';
+                        if ($edit){
+                            if ($type != 'terminal_objective'){
+                                $html  .= '<span class="fa fa-check-square-o pull-right box-sm-icon text-primary" onclick=\'formloader("addQuiz", "enabling_objective", "'.$objective->id.'");\'></span>';
+                            }
+                            if (checkCapabilities('file:upload', $USER->role_id, false)){
+                                $html  .='<a href="../share/templates/AdminLTE-2.3.7/renderer/uploadframe.php?context='.$type.'&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal"><span class="fa fa-plus pull-right box-sm-icon"></span></a>';
+                            } 
+                        } else {
+                            if (checkCapabilities('course:selfAssessment', $USER->role_id, false) AND $type != 'terminal_objective'){
+                                if (is_array($user_id)){
+                                    $user_id = implode(',',$user_id);
+                                }
+                                $html  .='<span class="pull-left">'.Render::accCheckboxes(array('id' => $objective->id, 'student' => $user_id, 'teacher' => $USER->id, 'link' => false)).'</span>';
+                            }
+                            if (checkCapabilities('quiz:showQuiz', $USER->role_id, false) AND $type != 'terminal_objective' AND $PAGE->action == 'view'){
+                                if ($objective->quiz != '0'){
+                                    $html  .='<span class="fa fa-check-square-o pull-right box-sm-icon text-primary" onclick=\'formloader("quiz","enabling_objective","'.$objective->id.'");\'></span>';
+                                }
+                            }
+                        }  
+                        
+        $html  .=' </div>';
+                        
+        /*************** ./Footer ***************/
+        $html  .= '</div>';
         return $html;
     }
     
@@ -594,7 +671,7 @@ class Render {
         } 
         $thumbs = Render::link($mail->message, 'message');
         $mail->message = Render::accomplish($mail->message, $sender->id, $receiver->id);
-        $content = '<div class="box box-primary">
+        $content = '<div class="box">
                 <div class="box-header with-border">
                   <h3 class="box-title">Nachricht</h3>
                   <div class="box-tools pull-right" >
@@ -1034,7 +1111,7 @@ class Render {
         }
         if ($USER->role_id === $role_id OR $role_id == $CFG->standard_role){
         $html  = '<div class="'.$width.'">
-                    <div class="box box-primary '.$status.' bottom-buffer-20">
+                    <div class="box '.$status.' bottom-buffer-20">
                         <div class="box-header with-border">
                               <h3 class="box-title">'.$name.'</h3>
                               <div class="box-tools pull-right">';
@@ -1079,7 +1156,7 @@ class Render {
         }
         if ($USER->role_id === $role_id OR $role_id == $CFG->standard_role){
             $html  = '<div class="'.$width.'">
-                        <div class="box box-primary '.$status.' bottom-buffer-20">
+                        <div class="box '.$status.' bottom-buffer-20">
                             <div class="box-header with-border">
                                   <h3 class="box-title">'.$name.'</h3>
                                   <div class="box-tools pull-right">';
@@ -1156,7 +1233,7 @@ class Render {
         /*default params*/
         $class_width     = 'col-md-6';
         $widget_type    = 'user';
-        $bg_color       = 'primary';
+        $bg_color       = '';
         $widget_title   = 'Titel';
         $widget_desc    = 'desc';
         $bg_badge       = 'bg-green';
@@ -1231,12 +1308,12 @@ class Render {
                                         $user     = new User();
                                         $html .= '<li><a href="#">'.$user->resolveUserId($v->user_id);
 
-                                        foreach ( $solutions as $s ) { 
+                                        /*foreach ( $solutions as $s ) { 
                                             if ( $v->user_id == $s->creator_id ) {
-                                                $html .= '<span onClick=\'formloader("material", "id", '.$ena->id.', {"target":"sub_popup", "user_id": "'.$v->user_id.'"});\'>&nbsp;<i class="fa fa-paperclip"></i></span>';          
+                                                $html .= '<span onClick=\'formloader("material", "id", '.$ena_id.', {"target":"sub_popup", "user_id": "'.$v->user_id.'"});\'>&nbsp;<i class="fa fa-paperclip"></i></span>';          
                                                 break; // if one solution is found break to save time
                                             }
-                                        }
+                                        }*/
 
                                         if ($value['color']){
                                             $html .= '<span class="pull-right badge bg-'.$value['color'].'" data-toggle="tooltip" title="" data-original-title="Nachricht schreiben" onclick="formloader(\'mail\', \'gethelp\', '.$v->creator_id.');">'.date('d.m.Y',strtotime($v->accomplished_time)).', '.$user->resolveUserId($v->creator_id, 'name').'</span>';

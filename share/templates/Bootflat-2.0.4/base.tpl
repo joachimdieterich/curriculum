@@ -386,8 +386,12 @@
     <script src="{$media_url}scripts/PDFObject-master/pdfobject.min.js"></script> 
     <script src="{$media_url}scripts/file.min.js"></script>
     <script src="{$media_url}scripts/dragndrop.min.js"></script>     
+    <!-- Select2 -->
+    <link rel="stylesheet" href="{$template_url}plugins/select2/select2.min.css">
+    <script src="{$template_url}plugins/select2/select2.full.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="{$template_url}css/less/select2.css">
     {* Adding chosen to get better select input ui *}
-    <link rel="stylesheet" href="{$media_url}scripts/chosen_v1.6.3/chosen.min.css">
+    {*<link rel="stylesheet" href="{$media_url}scripts/chosen_v1.6.3/chosen.min.css">
     <script src="{$media_url}scripts/chosen_v1.6.3/chosen.jquery.min.js" type="text/javascript"></script>
     <script type="text/javascript">
     var config = {
@@ -400,7 +404,7 @@
     for (var selector in config) {
       $(selector).chosen(config[selector]);
     }
-  </script>
+  </script>*}
     {block name=additional_scripts} 
         
     <!-- Logout - Timer  -->
@@ -411,6 +415,7 @@
         $(document).ready(function () {
             var idleInterval = setInterval("timerIncrement()", 60000); 
             $(document.getElementById('popup')).attr('class', 'modal');
+            $(".select2").select2();
         });
         function timerIncrement() {
             idleTime = idleTime + 1;

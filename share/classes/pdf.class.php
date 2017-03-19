@@ -190,11 +190,11 @@ class Pdf {
         $mpdf           = new mPDF($this->font_encoding, 'A4', $this->font_size, $this->font_name);
         /*$stylesheet     = file_get_contents($CFG->smarty_template_dir.'bootstrap/css/bootstrap.css');
         $stylesheet     .= file_get_contents($CFG->smarty_template_dir.'css/AdminLTE.min.css');
-        $stylesheet     .= file_get_contents($CFG->smarty_template_dir.'skins/_all-skins.min.css');*/
+        $stylesheet     .= file_get_contents($CFG->smarty_template_dir.'skins/_all-skins.min.css');
         $stylesheet     .= file_get_contents($TEMPLATE->template_dir.'css/all-bs.min.css');
-        $mpdf->WriteHTML($stylesheet,1);
+        $mpdf->WriteHTML($stylesheet,1);*/
         $mpdf->WriteHTML($this->content, 2);
-         if (file_exists($CFG->curriculumdata_root.'user/'.$USER->id.'/'.$this->filename)){
+        if (file_exists($CFG->curriculumdata_root.'user/'.$USER->id.'/'.$this->filename)){
             unlink($CFG->curriculumdata_root.'user/'.$USER->id.'/'.$this->filename); 
         }
         silent_mkdir($CFG->curriculumdata_root.'user/'.$USER->id.'/'); //add user folder if not exists

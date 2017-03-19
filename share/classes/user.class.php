@@ -376,8 +376,10 @@ class User {
      * @return boolean 
      */
     public function delete(){
-        global $USER;
+        global $USER, $LOG;
         checkCapabilities('user:delete', $USER->role_id);
+        $this->load('id', $this->id, false);
+        $LOG->add($USER->id, 'user.class.php', dirname(__FILE__), 'Delete user: ('.$this->resolveUserId($this->id).'), creator_id: '.$this->creator_id);
         if ($this->id != $USER->id){
             $db = DB::prepare('DELETE FROM users WHERE id = ?');
             if ($db->execute(array($this->id))) {
@@ -1159,15 +1161,18 @@ class User {
     function resolveUserId($id, $dependency = 'full'){
         $db = DB::prepare('SELECT firstname, lastname, username FROM users WHERE id =?');
         $db->execute(array($id));
-        $result  = $db->fetchObject();
-        switch ($dependency) {
-            case 'full':     return $result->firstname.' '.$result->lastname.' ('.$result->username.')';
-                break;
-            case 'name':     return $result->firstname.' '.$result->lastname;
-                break;
-            case 'username': return $result->username;
-            default:
-                break;
+        if ($result = $db->fetchObject()){
+            switch ($dependency) {
+                case 'full':     return $result->firstname.' '.$result->lastname.' ('.$result->username.')';
+                    break;
+                case 'name':     return $result->firstname.' '.$result->lastname;
+                    break;
+                case 'username': return $result->username;
+                default:
+                    break;
+            }
+        } else {
+            return 'Gelöschter Nutzer';
         }
         
     }

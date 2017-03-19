@@ -26,6 +26,7 @@
 global $CFG, $USER, $PAGE, $TEMPLATE, $INSTITUTION;
 $TEMPLATE->assign('breadcrumb',  array('Lehrplan' => 'index.php?action=view'));
 $function = '';
+$TEMPLATE->assign('page_group',     ''); //prevent error log
 if ($_GET){ 
     switch ($_GET) {
         case isset($_GET['group']):         $PAGE->group = $_GET['group'];
@@ -54,7 +55,7 @@ if ((isset($_GET['function']) AND $_GET['function'] == 'addObjectives')) {
 $courses = new Course(); // Load course
 
 $terminal_objectives = new TerminalObjective();                                     //load terminal objectives
-$TEMPLATE->assign('terminal_objectives', $terminal_objectives->getObjectives('curriculum', $PAGE->curriculum));
+$TEMPLATE->assign('terminal_objectives', $terminal_objectives->getObjectives('curriculum', $PAGE->curriculum /*false*/)); // default -> false: only load terminal objectives
 
 $enabling_objectives = new EnablingObjective();                                     //load enabling objectives
 $enabling_objectives->curriculum_id = $PAGE->curriculum;
@@ -79,6 +80,8 @@ $TEMPLATE->assign('niveaus', $niveau->getNiveau());
 
 $files = new File(); 
 $TEMPLATE->assign('solutions', $files->getSolutions('course', $USER->id, $PAGE->curriculum));  // load solutions
+
+/* now realized as css class*/
 $box_bg = array('0' => 'bg-white',
                 '' => 'bg-white',
                 'x0' => 'bg-red',

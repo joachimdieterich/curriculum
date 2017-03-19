@@ -75,8 +75,8 @@ function resizeBlocks(){
         $('#'+arguments[1][i]).height(h);
     }
 }
-
-function toggle_input_size(){ // allgemeine definieren . arg 1 soll angezeigt werden und alle weiteren deaktiviert werden. Anz. der arg. soll variabel sein
+/* allgemeine definieren . arg 1 soll angezeigt werden und alle weiteren deaktiviert werden. Anz. der arg. soll variabel sein */
+function toggle_input_size(){ 
     if (arguments[1] === false) {
         document.getElementById(arguments[0]).style.width = '25px';
     } else {
@@ -157,7 +157,11 @@ function update_paginator(paginator){
  */
 function checkrow(/*rowNr,link*/) {
     paginator = arguments[1];
-    var url = "../share/processors/p_config.php?func=paginator_checkrow&val="+ arguments[0] +"&paginator="+paginator;
+    if (arguments.length >= 2) { 
+        var url = "../share/processors/p_config.php?func=paginator_checkrow&val="+ arguments[0] +"&paginator="+paginator+"&reset="+arguments[2];     
+    } else {
+        var url = "../share/processors/p_config.php?func=paginator_checkrow&val="+ arguments[0] +"&paginator="+paginator;
+    }
 
     req = XMLobject();
     if(req) {  
@@ -168,12 +172,10 @@ function checkrow(/*rowNr,link*/) {
         req.send(null);
     }
     
-    if (arguments.length === 3) { //reload with given url
-        window.location.assign(arguments[2]);        
+    if (arguments.length === 4) { //reload with given url
+        window.location.assign(arguments[3]);        
     }
 }
-
-
 
 function checkfile(file){
     var ch = document.getElementById(file);
@@ -203,7 +205,7 @@ function raiseEvent (eventType, elementID){
     o = null;
 } 
 
-/* XMLObject für SQL Abfragen*/
+/* XMLObject fuer SQL Abfragen*/
 function XMLobject() {
     var request = false;
 
@@ -232,7 +234,7 @@ function process(){
     $('#popup').show(); 
     if (req.readyState === 4) {  
         if (req.status === 200) {   
-           if (req.responseText.length !== 0){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen --> auf 0 geändert - testen!
+           if (req.responseText.length !== 0){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen --> auf 0 geaendert - testen!
                 response = JSON.parse(req.responseText);
                 if (typeof(response.target)!=='undefined'){  // if target is defined show response in target div
                     popup = response.target;
@@ -243,14 +245,14 @@ function process(){
                 
                 if (document.getElementById(popup)){
                     document.getElementById(popup).innerHTML = response.html;
-                    if (typeof(response.class)!=='undefined'){
-                        $(document.getElementById(popup)).addClass(response.class);
-                    }
-                    if (typeof(response.zindex)!=='undefined'){
+                    /*if (typeof(response.cssclass)!=="undefined"){
+                        $(document.getElementById(popup)).addClass(response.cssclass);
+                    }*/
+                    if (typeof(response.zindex)!=="undefined"){
                         document.getElementById(popup).style.zIndex = response.zindex;
                     }
                     
-                    if (typeof(response.script)!=='undefined'){ // loads js for popup
+                    if (typeof(response.script)!=="undefined"){ /* loads js for popup*/
                         document.getElementById(popup).innerHTML = document.getElementById(popup).innerHTML+response.script;
                     }
                     
@@ -260,7 +262,7 @@ function process(){
                         $("form:first *:input,select,textarea").filter(":not([readonly='readonly']):not([disabled='disabled']):not([type='hidden'])").first().focus();
                     });
                 } else {
-                    alert(req.responseText); //unschön, aber #popup ist vom modalframe aus nicht verfügbar
+                    alert(req.responseText); //unschoen, aber #popup ist vom modalframe aus nicht verfuegbar
                 }    
            } else {
                window.location.reload();
@@ -293,7 +295,7 @@ function unmask(ID,checked){
 }
 
 
-function hideFile() { //nach dem löschen wird das thumbnail ausgeblendet
+function hideFile() { //nach dem l\u00f6schen wird das thumbnail ausgeblendet
     if (req.readyState === 4) {  
         if (req.status === 200) {    
            if (req.responseText.length !== 1){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen
@@ -405,49 +407,13 @@ function setStatusColor(ena_id, status){
     document.getElementById(ena_id+"_orange").className = 'margin-r-5 '+orange+' text-orange pointer_hand';
     document.getElementById(ena_id+"_white").className  = 'margin-r-5 '+white+' text-gray pointer_hand';
     document.getElementById(ena_id+"_red").className    = 'margin-r-5 '+red+' text-red pointer_hand';
-    $(document.getElementById("ena_header_"+ena_id)).removeClass("bg-white");
-    $(document.getElementById("ena_header_"+ena_id)).removeClass("bg-green");
-    $(document.getElementById("ena_header_"+ena_id)).removeClass("bg-orange");
-    $(document.getElementById("ena_header_"+ena_id)).removeClass("bg-red");
-    $(document.getElementById("ena_header_"+ena_id)).addClass(bg);
-    document.getElementById("ena_status_"+ena_id).innerHTML = status;
+    $(document.getElementById("ena_header_"+ena_id)).alterClass('bg-*', 'bg-'+status);
 }
 
-function setAccomplishedObjectives(creatorID, userID, enablingObjectiveID, groupID){        
-    var statusID = document.getElementById("ena_status_"+enablingObjectiveID).innerHTML; //convert html to int
-    
-    if (statusID.length == 2){
-      var student_status_id = statusID.toString()[0];
-      var teacher_status_id = statusID.toString()[1];
-    } else {
-        var student_status_id = 'x';
-        var teacher_status_id = statusID;
-    }
-    
-    if (teacher_status_id == '3' || teacher_status_id === 'x'){
-        teacher_status_id = '0'; // reset
-    } else {
-        teacher_status_id = parseInt(teacher_status_id) + 1 ; 
-    } 
-    statusID = student_status_id+''+teacher_status_id;
-    
-    var url = "../share/request/setAccObjectives.php?userID="+ userID +"&creatorID="+ creatorID +"&enablingObjectiveID="+ enablingObjectiveID+"&statusID="+statusID;
 
-    req = XMLobject();
-    if(req) {        
-        req.onreadystatechange = function (){
-            if (req.readyState===4 && req.status===200){
-                setStatusColor(enablingObjectiveID, statusID);
-            }
-        };
-            req.open("GET", url, true);
-            req.send(null);
-        }  
-}
-
-//SetAccomplishedObjectivesBySolution
-function setAccomplishedObjectivesBySolution(creatorID, userID, enablingObjectiveID, statusID){       
-    var url = "../share/request/setAccObjectives.php?userID="+ userID +"&creatorID="+ creatorID +"&enablingObjectiveID="+ enablingObjectiveID+"&statusID="+statusID;
+//SetAccomplishedObjectives
+function setAccomplishedObjectives(creatorID, userID, enablingObjectiveID, statusID){       
+    var url = "../share/processors/p_setAccObjectives.php?userID="+ userID +"&creatorID="+ creatorID +"&enablingObjectiveID="+ enablingObjectiveID+"&statusID="+statusID;
     req = XMLobject();
     if(req) {        
         req.onreadystatechange = function (){
@@ -469,8 +435,8 @@ function getRequest(url){
     
     if(req) {        
         req.onreadystatechange = process;
-        req.open("GET", url); // ! security ! im Formular muss überprüft werden, ob user die Daten (bez. auf id) sehen darf
-        req.setRequestHeader('Content-Type', 'application/json; charset=utf-8'); //Kann Meldung "Automatically populating $HTTP_RAW_POST_DATA is deprecated " in der Konsole erzeugen: Lösung: always_populate_raw_post_data = -1 //in der php.ini auf -1 setzen. 
+        req.open("GET", url); // ! security ! im Formular muss ueberprueft werden, ob user die Daten (bez. auf id) sehen darf
+        req.setRequestHeader('Content-Type', 'application/json; charset=utf-8'); //Kann Meldung "Automatically populating $HTTP_RAW_POST_DATA is deprecated " in der Konsole erzeugen: Loesung: always_populate_raw_post_data = -1 //in der php.ini auf -1 setzen. 
         req.send();
     }   
 }
@@ -524,12 +490,12 @@ function comment(/*func reference_id, context_id, text, (parent_id)*/){
  * delete a dataset in a db-table
  **/
 function del() {
-    if (confirm("Datensatz wirklich löschen?")) {   //Meldung "Wirklich löschen?"
+    if (confirm("Datensatz wirklich l\u00f6schen?")) {
         var url = "../share/processors/p_delete.php?db="+arguments[0]+"&id="+ arguments[1]; 
         
         req = XMLobject();
         if(req) {      
-            if (arguments[0] === 'message'){                                                    // Mail aus Liste entfernen und gelöschte Mail ausblenden
+            if (arguments[0] === 'message'){                                                    // Mail aus Liste entfernen und geloeschte Mail ausblenden
               document.getElementById(arguments[2]+'_'+arguments[1]).style.display='none';
               document.getElementById('mailbox').style.display='none';
             } else if (arguments[0] === 'file'){
@@ -539,7 +505,7 @@ function del() {
                 };
             } else {
                req.onreadystatechange = process; //Dialog mit Meldungen zeigen 
-               //Reload erfolgt über Submit des Popups req.onreadystatechange = reloadPage; //window.location.reload() wichtig, damit Änderungen angezeigt werden
+               //Reload erfolgt ueber Submit des Popups req.onreadystatechange = reloadPage; //window.location.reload() wichtig, damit Aenderungen angezeigt werden
             }
             req.open("GET", url, true);
             req.send(null);
@@ -548,7 +514,7 @@ function del() {
 }
 
 function removeMaterial(){
-    if (confirm("Datei wirklich löschen?")) {   //Meldung "Wirklich löschen?"
+    if (confirm("Datei wirklich l\u00f6schen?")) {
         var url     = "../share/request/deleteFile.php?fileID="+ arguments[0];         //Link unterscheidet sich von den anderen Funktionen, da diese Funktion ((nur)vom upload_frame aufgerufen wird
         var fileID  = arguments[0];
         req         = XMLobject();
@@ -563,7 +529,7 @@ function removeMaterial(){
 }
 
 function deleteFile() {
-    if (confirm("Datei wirklich löschen?")) {   //Meldung "Wirklich löschen?"
+    if (confirm("Datei wirklich l\u00f6schen?")) {
         var url     = "deleteFile.php?fileID="+ arguments[0];         //Link unterscheidet sich von den anderen Funktionen, da diese Funktion ((nur)vom upload_frame aufgerufen wird
         var fileID  = arguments[0];
         req         = XMLobject();
@@ -633,6 +599,7 @@ function setValues() {
                     if ($(document.getElementById(arguments[0])).hasClass("chosen-select")){
                         $(document.getElementById(arguments[0])).trigger('chosen:updated');
                     }
+                    
                 }  
             }
         }
@@ -737,8 +704,8 @@ function popupFunction(e){
             resizeModal();      // if ckeditor is used, then modal has to be resized after ckeditor is ready
         }); 
     }
-    
-    var config = {
+    $(".select2").select2();
+    /*var config = {
       '.chosen-select'           : {},
       '.chosen-select-deselect'  : {allow_single_deselect:true},
       '.chosen-select-no-single' : {disable_search_threshold:10},
@@ -747,7 +714,7 @@ function popupFunction(e){
     };
     for (var selector in config) {
         $(selector).chosen(config[selector]);
-    }
+    }*/
 }
 
 /**

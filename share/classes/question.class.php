@@ -92,4 +92,18 @@ class Question {
         }
     }
     
+    public function countQuestions($dependency = 'objective'){
+        switch ($dependency) {
+            case 'objective':   $db = DB::prepare('SELECT count(id) FROM quiz_questions WHERE objective_type = ? AND objective_id = ?');
+                                $db->execute(array($this->objective_type, $this->objective_id));
+                break;
+
+            default:
+                break;
+        }
+        
+        $max = $db->fetchColumn();
+        return $max;
+    }
+    
 }

@@ -53,8 +53,10 @@ class Help {
     }
     
     public function delete(){
-        global $USER;
+        global $USER, $LOG;
         checkCapabilities('help:delete', $USER->role_id);
+        $this->load();
+        $LOG->add($USER->id, 'help.class.php', dirname(__FILE__), 'Delete helpfile: '.$this->title.', file_id: '.$this->file_id);
         $db = DB::prepare('DELETE FROM help WHERE id = ?');
         return $db->execute(array($this->id));
     }

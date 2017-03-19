@@ -221,7 +221,7 @@
               </div>
             </div><!-- /.col -->*}
             <div class="col-md-12">
-              <div class="box box-primary">
+              <div class="box box-default">
                 <div class="box-body">
                   <!-- THE CALENDAR -->
                   <div id="calendar"></div>
