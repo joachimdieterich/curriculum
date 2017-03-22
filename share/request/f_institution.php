@@ -99,15 +99,16 @@ $content .= Form::input_text('description', 'Beschreibung', $description, $error
 
 /* schooltypes */ 
 $sch     = new Schooltype();
+$content .= '<div id="existingSchooltype"> ';
 $content .= Form::input_select('schooltype_id', 'Schulart', $sch->getSchooltypes(), 'schooltype', 'id', $schooltype_id , $error);
-
+$content .= '</div>';
 
 /* add new schooltype*/ 
-$content .= Form::input_checkbox('btn_newSchooltype', 'Neuen Schultyp anlegen', $btn_newSchooltype, $error, 'checkbox', 'toggle([\'newSchooltype\'], [\'schooltype_id\']);');
+$content .= Form::input_checkbox('btn_newSchooltype', 'Neuen Schultyp anlegen', $btn_newSchooltype, $error, 'checkbox', 'toggle([\'newSchooltype\'], [\'existingSchooltype\']);');
 $content .= '<div id="newSchooltype" ';
 if (!isset($new_schooltype) AND !isset($schooltype_description)){ $content .= 'class="hidden"';} // only hide if no Data is given
 $content .= '>';
-$content .= Form::input_text('newSchool', 'Neue Schulart', $new_schooltype, $error, 'z. B. Medienzentrum Landau');
+$content .= Form::input_text('new_schooltype', 'Neue Schulart', $new_schooltype, $error, 'z. B. Medienzentrum Landau');
 $content .= Form::input_text('schooltype_description', 'Beschreibung', $schooltype_description, $error, 'Beschreibung der neuen Schulart');
 $content .= '</div>';
 

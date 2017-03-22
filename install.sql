@@ -892,24 +892,6 @@ VALUES
 /*!40000 ALTER TABLE `curriculum_enrolments` ENABLE KEYS */;
 UNLOCK TABLES;
 
-
-# Export von Tabelle curriculum_niveaus
-# ------------------------------------------------------------
-
-# DROP TABLE IF EXISTS `curriculum_niveaus`;
-
-#  CREATE TABLE `curriculum_niveaus` (
---   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
---   `name` varchar(250) NOT NULL DEFAULT '',
---   `description` text,
---   `base_curriculum_id` int(11) unsigned NOT NULL,
---   `level` tinyint(4) unsigned NOT NULL DEFAULT '0',
---   `curriculum_id` int(11) DEFAULT NULL,
---   PRIMARY KEY (`id`)
--- ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-
 # Export von Tabelle enablingObjectives
 # ------------------------------------------------------------
 
@@ -1507,7 +1489,7 @@ CREATE TABLE `institution` (
   `institution` varchar(200) DEFAULT NULL,
   `description` varchar(2048) DEFAULT NULL,
   `schooltype_id` int(11) unsigned NOT NULL,
-  `country_id` char(2) NOT NULL DEFAULT 'DE',
+  `country_id` char(2) NOT NULL DEFAULT '56',
   `state_id` int(11) unsigned NOT NULL DEFAULT '11',
   `creation_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `creator_id` int(11) unsigned NOT NULL,
@@ -2469,7 +2451,7 @@ CREATE TABLE `schooltype` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `schooltype` varchar(200) DEFAULT NULL,
   `description` varchar(2048) DEFAULT NULL,
-  `country_id` char(2) NOT NULL DEFAULT 'DE',
+  `country_id` char(2) NOT NULL DEFAULT '56',
   `state_id` int(11) unsigned NOT NULL DEFAULT '11',
   `creation_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `creator_id` int(11) unsigned NOT NULL,
@@ -2482,16 +2464,16 @@ LOCK TABLES `schooltype` WRITE;
 
 INSERT INTO `schooltype` (`id`, `schooltype`, `description`, `country_id`, `state_id`, `creation_time`, `creator_id`)
 VALUES
-	(1,'Realschule plus','Realschule plus','DE',11,'0000-00-00 00:00:00',532),
-	(2,'IGS','Integrierte Gesamtschule','DE',11,'0000-00-00 00:00:00',532),
-	(3,'Gymnasium','Gymnasium','DE',11,'0000-00-00 00:00:00',532),
-	(5,'Förderschule','','DE',11,'0000-00-00 00:00:00',532),
-	(6,'Hauptschule','Hauptschule','DE',11,'0000-00-00 00:00:00',532),
-	(8,'Universität','Koblenz-Landau','DE',11,'0000-00-00 00:00:00',532),
-	(9,'Pädagogisches Landesinstitut','PL','DE',11,'2015-08-14 20:42:56',532),
-	(10,'Gesamtschule','Gesamtschule','DE',11,'2016-01-25 14:46:41',532),
-	(12,'Einrichtung','Medienbildung','DE',11,'2016-07-07 09:20:42',532),
-	(13,'Grundschule','Grundschule','DE',11,'2016-11-13 13:57:12',532);
+	(1,'Realschule plus','Realschule plus','56',11,'0000-00-00 00:00:00',532),
+	(2,'IGS','Integrierte Gesamtschule','56',11,'0000-00-00 00:00:00',532),
+	(3,'Gymnasium','Gymnasium','56',11,'0000-00-00 00:00:00',532),
+	(5,'Förderschule','','56',11,'0000-00-00 00:00:00',532),
+	(6,'Hauptschule','Hauptschule','56',11,'0000-00-00 00:00:00',532),
+	(8,'Universität','Koblenz-Landau','56',11,'0000-00-00 00:00:00',532),
+	(9,'Pädagogisches Landesinstitut','56','DE',11,'2015-08-14 20:42:56',532),
+	(10,'Gesamtschule','Gesamtschule','56',11,'2016-01-25 14:46:41',532),
+	(12,'Einrichtung','Medienbildung','56',11,'2016-07-07 09:20:42',532),
+	(13,'Grundschule','Grundschule','56',11,'2016-11-13 13:57:12',532);
 
 /*!40000 ALTER TABLE `schooltype` ENABLE KEYS */;
 UNLOCK TABLES;

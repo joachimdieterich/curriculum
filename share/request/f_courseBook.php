@@ -95,7 +95,7 @@ $content .= '">
 <input type="hidden" name="func" id="func" value="'.$func.'"/>
 <input id="id" name="id" type="text" class="invisible" ';
 if (isset($id)) { $content .= 'value="'.$id.'"';} $content .= '>';
-$content .= Form::input_textarea('topic', 'Thema', $topic, $error, 'Studenthema');
+$content .= Form::input_textarea('topic', 'Thema', $topic, $error, 'Stundenthema');
 $content .= Form::input_textarea('description', 'Beschreibung', $description, $error, 'Beschreibung');
 
 $courses = new Course(); 
