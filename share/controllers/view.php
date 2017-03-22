@@ -87,7 +87,7 @@ $files = new File();
 $TEMPLATE->assign('solutions', $files->getSolutions('course', $USER->id, $PAGE->curriculum));  // load solutions
 
 /* now realized as css class*/
-$box_bg = array('0' => 'bg-white',
+/*$box_bg = array('0' => 'bg-white',
                 '' => 'bg-white',
                 'x0' => 'bg-red',
                 '0x' => 'bg-white',
@@ -117,7 +117,7 @@ $box_bg = array('0' => 'bg-white',
                 '23' => 'bg-white',
                 '33' => 'bg-white',
                 );
-$TEMPLATE->assign('box_bg',$box_bg);
+$TEMPLATE->assign('box_bg',$box_bg);*/
 
 $content = new Content();
 $TEMPLATE->assign('cur_content', array('label'=>'Hinweise zum Lehrplan', 'entrys'=> $content->get('curriculum', $enabling_objectives->curriculum_id )));
