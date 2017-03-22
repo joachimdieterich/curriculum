@@ -45,8 +45,13 @@ if ($_GET){
 }
 
 if ((isset($_GET['function']) AND $_GET['function'] == 'addObjectives')) {
-    $function = 'addObjectives';
-    $TEMPLATE->assign('showaddObjectives', true); //blendet die addButtons ein
+    $cur        = new Curriculum();
+    $cur->id    = $_GET['curriculum_id'];
+    $cur->load();
+    if (checkCapabilities('curriculum:update', $USER->role_id) OR ($cur->creator_id == $USER->id)){ //only edit if capability is set or user == owner
+        $function = 'addObjectives';
+        $TEMPLATE->assign('showaddObjectives', true); //blendet die addButtons ein
+    }
 }
 /******************************************************************************
  * END POST / GET
