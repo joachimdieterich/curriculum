@@ -38,16 +38,12 @@ $p_options = array('delete' => array('onclick'      => "del('curriculum',__id__)
                                      'capability'   => checkCapabilities('curriculum:delete', $USER->role_id, false),
                                      'icon'         => 'fa fa-trash', 
                                      'tooltip'      => 'löschen'),
-                   /*'add'    => array('href'         => 'index.php?action=view&function=addObjectives&curriculum_id=__id__', 
-                                     'capability'   => checkCapabilities('curriculum:addObjectives', $USER->role_id, false),
-                                     'icon'         => 'fa fa-plus', 
-                                     'tooltip'      => 'Lehrplaninhalt bearbeiten'),*/
                    'edit'   => array('onclick'      => "formloader('curriculum','edit',__id__);",
                                      'capability'   => checkCapabilities('curriculum:update', $USER->role_id, false),
                                      'icon'         => 'fa fa-edit',
                                      'tooltip'      => 'bearbeiten'),
                    'preview'  => array('onclick'    => "formloader('preview_curriculum','full',__id__);", 
-                                     'capability'   => checkCapabilities('curriculum:addObjectives', $USER->role_id, false),  //todo: use extra capability?
+                                     'capability'   => true, 
                                      'icon'         => 'fa fa-list-alt',
                                      'tooltip'      => 'Überblick'),
                    'description'  => array('onclick'      => "formloader('description','curriculum',__id__);", 
