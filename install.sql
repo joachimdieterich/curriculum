@@ -232,7 +232,6 @@ VALUES
 	(110,'page:showStudentDocu','Dokumentation zur Plattform auf Startseite anzeigen','Ability to see docu pdf on dasboard','read','page'),
 	(111,'page:showTeacherDocu','Dokumentation zur Plattform auf Startseite anzeigen','Ability to see docu pdf on dasboard','read','page'),
 	(112,'page:showCronjob','Zeigt auf der Startseite an, wann cronjobs zuletzt gestartet wurden','Ability to see cronjob execution time on dasboard','read','page'),
-	(114,'curriculum:addObjectives','Ziele zum Lehrplan hinzufügen','Ability to add objectives','write','curriculum'),
 	(115,'user:getHelp','Benutzer anzeigen, die Ziel erfolgreich abgschlossen haben','Ability to see user who accomplished objective','read','curriculum'),
 	(116,'groups:showAccomplished','Anzeigen wie viele Gruppenteilnehmer ein Ziel abgeschlossen haben','Ability to see percentage of users who has accomplished a objective','read','curriculum'),
 	(117,'file:editMaterial','Material editieren','Ability to edit material','write','curriculum'),
@@ -897,17 +896,17 @@ UNLOCK TABLES;
 # Export von Tabelle curriculum_niveaus
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `curriculum_niveaus`;
+# DROP TABLE IF EXISTS `curriculum_niveaus`;
 
-CREATE TABLE `curriculum_niveaus` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(250) NOT NULL DEFAULT '',
-  `description` text,
-  `base_curriculum_id` int(11) unsigned NOT NULL,
-  `level` tinyint(4) unsigned NOT NULL DEFAULT '0',
-  `curriculum_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+#  CREATE TABLE `curriculum_niveaus` (
+--   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+--   `name` varchar(250) NOT NULL DEFAULT '',
+--   `description` text,
+--   `base_curriculum_id` int(11) unsigned NOT NULL,
+--   `level` tinyint(4) unsigned NOT NULL DEFAULT '0',
+--   `curriculum_id` int(11) DEFAULT NULL,
+--   PRIMARY KEY (`id`)
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 
@@ -1814,7 +1813,6 @@ VALUES
 	(973,1,'page:showTeacherDocu',1,'2014-10-03 20:37:49',532),
 	(978,1,'page:showStudentDocu',1,'2014-10-03 20:38:16',532),
 	(983,1,'page:showCronjob',1,'2014-10-03 20:42:03',532),
-	(993,1,'curriculum:addObjectives',1,'2014-10-12 10:32:05',532),
 	(998,1,'user:getHelp',1,'2014-10-12 16:43:04',532),
 	(1003,1,'groups:showAccomplished',1,'2014-10-12 16:49:22',532),
 	(1008,1,'file:editMaterial',1,'2014-10-12 17:03:36',532),
@@ -1836,7 +1834,6 @@ VALUES
 	(1209,5,'certificate:delete',1,'2015-03-10 11:07:26',532),
 	(1210,5,'certificate:update',1,'2015-03-10 11:07:26',532),
 	(1213,5,'curriculum:add',1,'2015-03-10 11:07:26',532),
-	(1214,5,'curriculum:addObjectives',1,'2015-03-10 11:07:26',532),
 	(1215,5,'curriculum:delete',1,'2015-03-10 11:07:26',532),
 	(1216,5,'curriculum:update',1,'2015-03-10 11:07:26',532),
 	(1217,5,'dashboard:globalAdmin',1,'2015-03-10 11:07:26',532),
@@ -1943,7 +1940,6 @@ VALUES
 	(1332,6,'certificate:delete',0,'2015-03-10 11:07:57',532),
 	(1333,6,'certificate:update',0,'2015-03-10 11:07:57',532),
 	(1336,6,'curriculum:add',0,'2015-03-10 11:07:57',532),
-	(1337,6,'curriculum:addObjectives',0,'2015-03-10 11:07:57',532),
 	(1338,6,'curriculum:delete',0,'2015-03-10 11:07:57',532),
 	(1339,6,'curriculum:update',0,'2015-03-10 11:07:57',532),
 	(1340,6,'dashboard:globalAdmin',0,'2015-03-10 11:07:57',532),
@@ -2050,7 +2046,6 @@ VALUES
 	(1455,7,'certificate:delete',0,'2015-03-10 11:08:32',532),
 	(1456,7,'certificate:update',0,'2015-03-10 11:08:32',532),
 	(1459,7,'curriculum:add',0,'2015-03-10 11:08:32',532),
-	(1460,7,'curriculum:addObjectives',0,'2015-03-10 11:08:32',532),
 	(1461,7,'curriculum:delete',0,'2015-03-10 11:08:32',532),
 	(1462,7,'curriculum:update',0,'2015-03-10 11:08:32',532),
 	(1463,7,'dashboard:globalAdmin',0,'2015-03-10 11:08:32',532),
@@ -2298,7 +2293,6 @@ VALUES
 	(1902,0,'dashboard:globalAdmin',0,'2015-08-16 20:47:01',532),
 	(1903,0,'curriculum:update',0,'2015-08-16 20:47:01',532),
 	(1904,0,'curriculum:delete',0,'2015-08-16 20:47:01',532),
-	(1905,0,'curriculum:addObjectives',0,'2015-08-16 20:47:01',532),
 	(1906,0,'curriculum:add',0,'2015-08-16 20:47:01',532),
 	(1907,0,'certificate:update',0,'2015-08-16 20:47:01',532),
 	(1908,0,'certificate:delete',0,'2015-08-16 20:47:01',532),
