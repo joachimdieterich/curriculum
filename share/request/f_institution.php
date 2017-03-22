@@ -135,9 +135,12 @@ if ($semester_id){
 $content .= Form::input_text('paginator_limit', 'Listeneinträge / Seite', $paginator_limit, $error, '30','number',5,150);
 $content .= Form::input_text('acc_days', 'Lernerfolge x Tage anzeigen', $acc_days, $error, '7','number',1,356);
 $content .= Form::input_text('timeout', 'Timeout (Minuten)', $acc_days, $error, '15','number',1,240);
-$content .= Form::input_text('csv_size', 'CSV-Dateien (byte)', $csv_size, $error, '30','number',5000,1048576);
+$content .= '<input type="hidden" name="csv_size" id="csv_size" value="'.$csv_size.'"/>';
+$content .= '<input type="hidden" name="avatar_size" id="avatar_size" value="'.$csv_size.'"/>';
+$content .= '<input type="hidden" name="material_size" id="material_size" value="'.$csv_size.'"/>';
+/*$content .= Form::input_text('csv_size', 'CSV-Dateien (byte)', $csv_size, $error, '30','number',5000,1048576); 
 $content .= Form::input_text('avatar_size', 'Profilfotos (byte)', $csv_size, $error, '30','number',5000,1048576);
-$content .= Form::input_text('material_size', 'Dateien (byte)', $csv_size, $error, '30','number',5000,1048576);
+$content .= Form::input_text('material_size', 'Dateien (byte)', $csv_size, $error, '30','number',5000,1048576);*/
 $content .= '</form>';
 $footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_institution\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button> ';
   
