@@ -101,13 +101,12 @@
             </div><!-- /.col -->  
         {/if}
    
-        {if isset($myInstitutions)}     
+        {*if isset($myInstitutions)}     
         {foreach key=insid item=ins from=$myInstitutions}
             <div class="col-md-4">
                 <div class="box box-widget widget-user bottom-buffer-20">
                   <!-- Add the bg color to the header using any of the bg-* classes -->
                     <div class="widget-user-header bg-aqua-active" style="background: linear-gradient(rgba(0,0,0,0.5),rgba(100,100,100,0.5)), url('{$access_file}{$ins->file_id|resolve_file_id:"l"}') center right;background-size: cover; background-repeat: no-repeat;">   
-                    {*<i class="pull-right fa fa-institution" style="font-size: 90px;"></i>*}
                     <h3 class="widget-user-username" style="text-shadow: 1px 1px #ff0000;text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">{$ins->institution}</h3>
                     <h5 class="widget-user-desc" style="text-shadow: 1px 1px #ff0000;text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">{$ins->description}</h5>
                     <div class="row " style="padding-top:10px;padding-left: 5px;">
@@ -132,8 +131,56 @@
                 </div><!-- /.widget-user -->
            </div><!-- /.col -->
         {/foreach}
-        {/if}
+        {/if*}
         
+        {if isset($myInstitutions)}
+        <div class="col-md-4 ">
+            <!-- Widget: user widget style 1 -->
+            <div class="box box-widget widget-user bottom-buffer-20">
+              <!-- Add the bg color to the header using any of the bg-* classes -->
+              <div class="widget-user-header bg-yellow">
+                <i class="pull-right fa fa-university" style="font-size: 90px;"></i>
+                <h3 class="widget-user-username">Meine Institution(en)</h3>
+              </div>
+              <div class="box-footer no-padding">
+                <ul class="nav nav-stacked" style="overflow: scroll; width: 100%; max-height: 200px;">
+                    {if $my_enrolments}
+                    {foreach key=insid item=ins from=$myInstitutions}
+                        <li><a>{$ins->institution}
+                                <small class="label pull-right bg-primary">
+                                    <i class="fa fa-user" data-toggle="tooltip" title="Schüler">
+                                        {if isset($ins->statistic.$institution_std_role)}
+                                                {$ins->statistic.$institution_std_role}
+                                        {else}0 
+                                        {/if}
+                                    </i>
+                                </small>
+                                <small class="label pull-right bg-primary margin-r-5">
+                                    <i class="fa fa-check-circle-o" data-toggle="tooltip" title="Erreichte Ziele">
+                                        {if isset($ins->statistic.accomplished)}
+                                            {$ins->statistic.accomplished}
+                                        {else}0 
+                                        {/if}
+                                    </i>
+                                </small>
+                                <small class="label pull-right bg-primary margin-r-5">
+                                    <i class="fa fa-graduation-cap" data-toggle="tooltip" title="Lehrer">
+                                        {if isset($ins->statistic.7)}
+                                            {$ins->statistic.7}
+                                        {else}0 
+                                        {/if}
+                                    </i>
+                                </small>
+                                <br><small>{$ins->description}</small>
+                            </a></li>
+                    {/foreach}
+                    {/if}
+                </ul>
+              </div>
+            </div><!-- /.widget-user -->
+        </div><!-- /.col -->        
+        {/if}    
+            
         {if isset($myClasses)}
         {foreach key=claid item=cla from=$myClasses}    
         <div class="col-md-4 ">
