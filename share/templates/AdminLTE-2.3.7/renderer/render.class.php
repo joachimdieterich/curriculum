@@ -620,8 +620,9 @@ class Render {
                         if ($objective->description != ''){
                             $html  .='<span class="fa fa-info pull-right box-sm-icon text-primary" style="padding-top:2px; margin-right:3px;" data-toggle="tooltip" title="Beschreibung" onclick="formloader(\'description\', \''.$type.'\', '.$objective->id.');"></span>';
                         }
-                         $html  .='<span class="pull-left" style="margin-right:10px;">';
-                        if (checkCapabilities('file:loadMaterial', $USER->role_id, false) AND $objective->files != 0){
+                        $html  .='<span class="pull-left" style="margin-right:10px;">';
+                        error_log($objective->files);
+                        if (checkCapabilities('file:loadMaterial', $USER->role_id, false) AND $objective->files != '0'){
                             $html  .='<span class="fa fa-briefcase box-sm-icon text-primary" style="cursor:pointer;" data-toggle="tooltip" title="'.$objective->files.' Materialien verfügbar" onclick="formloader(\'material\',\''.$type.'\','.$objective->id.')"></span>';
                         } else {
                             $html  .='<span class="fa fa-briefcase box-sm-icon deactivate text-gray" style="cursor:not-allowed;" data-toggle="tooltip" title="Keine Materialien verfügbar"></span>';
