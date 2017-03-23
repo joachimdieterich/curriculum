@@ -576,7 +576,7 @@ class Render {
                             } 
                         }
                         $html  .='<span class="pull-left" style="margin-right:10px;">';
-                        if (checkCapabilities('file:loadMaterial', $USER->role_id, false) AND $objective->files != null){
+                        if (checkCapabilities('file:loadMaterial', $USER->role_id, false) AND $objective->files != '0'){
                             $html  .='<span class="fa fa-briefcase box-sm-icon text-primary" style="cursor:pointer;" data-toggle="tooltip" title="'.$objective->files.' Materialien verfügbar" onclick="formloader(\'material\',\''.$type.'\','.$objective->id.')"></span>';
                         } else {
                             $html  .='<span class="fa fa-briefcase box-sm-icon deactivate"></span>';
