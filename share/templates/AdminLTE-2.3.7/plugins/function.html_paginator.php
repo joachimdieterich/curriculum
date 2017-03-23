@@ -159,7 +159,7 @@ function smarty_function_html_paginator($params, $template) {
                         if (isset($selected_id) && in_array($_val->$k_key, $selected_id)) {
                             $html .='bg-aqua';
                         }
-                        if (isset($_val->completed)){ if ($_val->completed == 100) { $html .= ' success '; } } // green background if completed == 100
+                        if (isset($_val->completed)){ if ($_val->completed == 100) { $html .= ' success text-black'; } } // green background if completed == 100
                         $html .= '" id="row'.$_val->$k_key.'" >';
                         $html .= '<td ';
                         if (isset($checkbox['onclick'])){
