@@ -48,9 +48,11 @@ if ((isset($_GET['function']) AND $_GET['function'] == 'addObjectives')) {
     $cur        = new Curriculum();
     $cur->id    = $_GET['curriculum_id'];
     $cur->load();
-    if (checkCapabilities('curriculum:update', $USER->role_id) OR ($cur->creator_id == $USER->id)){ //only edit if capability is set or user == owner
+    if (checkCapabilities('curriculum:update', $USER->role_id, false) AND ($cur->creator_id == $USER->id)){ //only edit if capability is set or user == owner
         $function = 'addObjectives';
         $TEMPLATE->assign('showaddObjectives', true); //blendet die addButtons ein
+    } else {
+        $PAGE->message[] = array('message' => 'Lehrplan kann nur vom Ersteller editiert werden. ', 'icon' => 'fa fa-th text-warning');// Schließen und speichern 
     }
 }
 /******************************************************************************
