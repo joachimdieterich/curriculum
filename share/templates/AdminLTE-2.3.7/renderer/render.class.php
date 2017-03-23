@@ -587,22 +587,22 @@ class Render {
                             break;
                         }
                     }
-                    if (checkCapabilities('file:upload', $USER->role_id, false)){
-                        $html  .= '<a href="../share/templates/AdminLTE-2.3.7/renderer/uploadframe.php?context=solution&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal">
-                        <span class="fa ';
-                        if ($sol_btn == $objective->id){
-                            $html  .= 'fa-check-circle-o ';
-                        } else {
-                            $html  .= 'fa-upload ';
-                        } 
-                            $html  .= 'pull-right text-primary" data-toggle="tooltip"';
-                        if ($sol_btn == $objective->id){
-                            $html  .= ' title="Lösung eingereicht"';
-                        } else {
-                            $html  .= ' title="Lösung einreichen"';
-                        }
-                        $html  .= '></span></a>'; 
+                }
+                if (checkCapabilities('file:upload', $USER->role_id, false)){
+                    $html  .= '<a href="../share/templates/AdminLTE-2.3.7/renderer/uploadframe.php?context=solution&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal">
+                    <span class="fa ';
+                    if ($sol_btn == $objective->id){
+                        $html  .= 'fa-check-circle-o ';
+                    } else {
+                        $html  .= 'fa-upload ';
+                    } 
+                        $html  .= 'pull-right text-primary" data-toggle="tooltip"';
+                    if ($sol_btn == $objective->id){
+                        $html  .= ' title="Lösung eingereicht"';
+                    } else {
+                        $html  .= ' title="Lösung einreichen"';
                     }
+                    $html  .= '></span></a>'; 
                 }
             }
          $html  .='  </div>';    
@@ -621,7 +621,6 @@ class Render {
                             $html  .='<span class="fa fa-info pull-right box-sm-icon text-primary" style="padding-top:2px; margin-right:3px;" data-toggle="tooltip" title="Beschreibung" onclick="formloader(\'description\', \''.$type.'\', '.$objective->id.');"></span>';
                         }
                         $html  .='<span class="pull-left" style="margin-right:10px;">';
-                        error_log($objective->files);
                         if (checkCapabilities('file:loadMaterial', $USER->role_id, false) AND $objective->files != '0'){
                             $html  .='<span class="fa fa-briefcase box-sm-icon text-primary" style="cursor:pointer;" data-toggle="tooltip" title="'.$objective->files.' Materialien verfügbar" onclick="formloader(\'material\',\''.$type.'\','.$objective->id.')"></span>';
                         } else {
