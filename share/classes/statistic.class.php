@@ -127,6 +127,20 @@ class Statistic {
         return $this->generateCSV($line_array);
     }
     
+     public function lastlogin($dependency = 'users'){
+        global $CFG;
+        $db = DB::prepare('SELECT COUNT(id) AS max, DATE(last_login) AS date
+                            FROM '.$dependency.'
+                            GROUP BY DATE(last_login)');
+        $db->execute();
+        $line_array[] = array('total','date');
+
+        while($result = $db->fetchObject()) { 
+            $line_array[] =  array($result->max, $result->date);
+        }
+        return $this->generateCSV($line_array);
+    }
+    
     public function map($modus = 'institutions'){
         global $CFG;
         $data = array();
@@ -240,19 +254,21 @@ class Statistic {
                                 $node_l0->size = $size_l0;
                                 return json_encode($node_l0);
                 break;
-            case 'usage':          return $this->getCreationStatistic('log');
+            case 'usage':        return $this->getCreationStatistic('log');
                 break;
-            case 'accomplished':   return $this->getAccomplishedPerDays();
+            case 'accomplished': return $this->getAccomplishedPerDays();
                  break;           
-            case 'newUsers':       return $this->getCreationStatistic('users');
+            case 'newUsers':     return $this->getCreationStatistic('users');
                  break;           
-            case 'newCurricula':   return $this->getCreationStatistic('curriculum');
+            case 'newCurricula': return $this->getCreationStatistic('curriculum');
                  break;           
-            case 'newGroups':   return $this->getCreationStatistic('groups');
+            case 'newGroups':    return $this->getCreationStatistic('groups');
                  break;           
-            case 'newMessages':   return $this->getCreationStatistic('message');
+            case 'newMessages':  return $this->getCreationStatistic('message');
                  break;           
-            case 'acceptTerms':   return $this->acceptTerms();
+            case 'acceptTerms':  return $this->acceptTerms();
+                 break;           
+            case 'lastlLogin':   return $this->lastlogin();
                  break;           
                 
             default:

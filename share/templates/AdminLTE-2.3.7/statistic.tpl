@@ -316,6 +316,7 @@
                     <li class="{if $chart eq 'newGroups'}active{/if}"><a href="index.php?action=statistic&chart=newGroups" >Neue Lerngruppen</a></li>
                     <li class="{if $chart eq 'newMessages'}active{/if}"><a href="index.php?action=statistic&chart=newMessages" >Neue Nachrichten</a></li>
                     <li class="{if $chart eq 'acceptTerms'}active{/if}"><a href="index.php?action=statistic&chart=acceptTerms" >Nutzungsbedingungen akzeptiert</a></li>
+                    <li class="{if $chart eq 'lastlLogin'}active{/if}"><a href="index.php?action=statistic&chart=lastlLogin" >Letzter login (Alle Nutzer)</a></li>
                 </ul>
                 <div id="chart" style="margin-top: 10px;"></div>
                 {*<div class="tab-content">
