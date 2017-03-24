@@ -100,7 +100,6 @@ class Statistic {
  
     
     public function getCreationStatistic($dependency = 'log'){
-        global $CFG;
         $db = DB::prepare('SELECT COUNT(id) AS max, DATE(creation_time) AS date
                             FROM '.$dependency.'
                             GROUP BY DATE(creation_time)');
@@ -114,7 +113,6 @@ class Statistic {
     }
     
     public function acceptTerms($dependency = 'accept_terms'){
-        global $CFG;
         $db = DB::prepare('SELECT COUNT(id) AS max, DATE(timestamp) AS date
                             FROM '.$dependency.'
                             GROUP BY DATE(timestamp)');
@@ -128,9 +126,8 @@ class Statistic {
     }
     
      public function lastlogin($dependency = 'users'){
-        global $CFG;
         $db = DB::prepare('SELECT COUNT(id) AS max, DATE(last_login) AS date
-                            FROM '.$dependency.'
+                            FROM '.$dependency.'  WHERE last_login <> ""
                             GROUP BY DATE(last_login)');
         $db->execute();
         $line_array[] = array('total','date');
