@@ -94,5 +94,10 @@ if (isset($download)){
     header('Content-Length: ' . filesize($path));
     ob_flush(); flush(); // empty output buffer
     readfile($path);
+    
+    /* quick and dirty -> delete if requested file = chart.csv for security */
+    if (basename($path) == 'chart.csv'){
+        unlink($path);
+    }
     exit();
 }
