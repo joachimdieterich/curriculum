@@ -721,16 +721,16 @@ class EnablingObjective {
     public function setAccomplishedStatus($dependency = null, $user_id = null, $creator_id = null, $status = 'x2', $token = null) {
         global $USER;
         switch ($dependency) {
-            case 'cron':    $db = DB::prepare('UPDATE user_accomplished SET status_id = ? WHERE reference_id = ? AND context_id = 12');
+            case 'cron':    $db = DB::prepare('UPDATE user_accomplished SET status_id = ?, accomplished_time = CURRENT_TIMESTAMP WHERE reference_id = ? AND context_id = 12');
                             return $db->execute(array($status, $this->id));
                             break;
             case 'quiz':    $db = DB::prepare('SELECT COUNT(id) FROM user_accomplished WHERE reference_id = ? AND user_id = ? AND context_id = 12');
                             $db->execute(array($this->id, $user_id));
                             if($db->fetchColumn() >= 1) {
-                                $db = DB::prepare('UPDATE user_accomplished SET status_id = ?, creator_id = ? WHERE reference_id = ? AND user_id = ? AND context_id = 12');
+                                $db = DB::prepare('UPDATE user_accomplished SET status_id = ?, creator_id = ?, accomplished_time = CURRENT_TIMESTAMP WHERE reference_id = ? AND user_id = ? AND context_id = 12');
                                 return $db->execute(array($status, $creator_id, $this->id, $user_id));
                             } else {
-                                $db = DB::prepare('INSERT INTO user_accomplished(reference_id,context_id,user_id,status_id,creator_id) VALUES (?,?,?,?,?)');
+                                $db = DB::prepare('INSERT INTO user_accomplished(reference_id,context_id,user_id,status_id,creator_id, accomplished_time) VALUES (?,?,?,?,?,CURRENT_TIMESTAMP)');
                                 return $db->execute(array($this->id, 12, $user_id, $status, $creator_id));
                             }
                             break;
@@ -738,20 +738,20 @@ class EnablingObjective {
                             $db = DB::prepare('SELECT COUNT(id) FROM user_accomplished WHERE reference_id = ? AND user_id = ? AND context_id = 12');
                             $db->execute(array($this->id, $user_id));
                             if($db->fetchColumn() >= 1) { 
-                                $db = DB::prepare('UPDATE user_accomplished SET status_id = ?, creator_id = ? WHERE reference_id = ? AND user_id = ? AND context_id = 12');
+                                $db = DB::prepare('UPDATE user_accomplished SET status_id = ?, creator_id = ?, accomplished_time = CURRENT_TIMESTAMP WHERE reference_id = ? AND user_id = ? AND context_id = 12');
                                 return $db->execute(array($status, $creator_id, $this->id, $user_id));
                             } else {
-                                $db = DB::prepare('INSERT INTO user_accomplished(reference_id,context_id,user_id,status_id,creator_id) VALUES (?,?,?,?,?)');
+                                $db = DB::prepare('INSERT INTO user_accomplished(reference_id,context_id,user_id,status_id,creator_id,accomplished_time) VALUES (?,?,?,?,?,CURRENT_TIMESTAMP)');
                                 return $db->execute(array($this->id, 12, $user_id, $status, $creator_id));
                             }
                             break;
             case 'student': $db = DB::prepare('SELECT COUNT(id) FROM user_accomplished WHERE reference_id = ? AND user_id = ? AND context_id = 12');
                             $db->execute(array($this->id, $user_id));
                             if($db->fetchColumn() >= 1) { 
-                                $db = DB::prepare('UPDATE user_accomplished SET status_id = ?, token = ? WHERE reference_id = ? AND user_id = ? AND context_id = 12');
+                                $db = DB::prepare('UPDATE user_accomplished SET status_id = ?, token = ?, accomplished_time = CURRENT_TIMESTAMP WHERE reference_id = ? AND user_id = ? AND context_id = 12');
                                 return $db->execute(array($status, $token, $this->id, $user_id));
                             } else {
-                                $db = DB::prepare('INSERT INTO user_accomplished(reference_id,context_id,user_id,status_id,token,creator_id) VALUES (?,?,?,?,?,?)');
+                                $db = DB::prepare('INSERT INTO user_accomplished(reference_id,context_id,user_id,status_id,token,creator_id,accomplished_time) VALUES (?,?,?,?,?,?,CURRENT_TIMESTAMP)');
                                 return $db->execute(array($this->id, 12, $user_id, $status, $token, $user_id));
                             }
                             break;
@@ -759,7 +759,7 @@ class EnablingObjective {
                             $db1->execute(array($this->id, 12, $user_id, '1x', $token));
                             $count  = $db1->fetchColumn(); 
                             if ($count == 1){
-                                $db = DB::prepare('UPDATE user_accomplished SET status_id = ?, creator_id = ? WHERE reference_id = ? AND user_id = ? AND context_id = 12');
+                                $db = DB::prepare('UPDATE user_accomplished SET status_id = ?, creator_id = ?, accomplished_time = CURRENT_TIMESTAMP WHERE reference_id = ? AND user_id = ? AND context_id = 12');
                                 return $db->execute(array($status, $creator_id, $this->id, $user_id));
                             }
                 break;

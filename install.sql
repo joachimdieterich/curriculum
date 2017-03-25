@@ -2721,7 +2721,7 @@ CREATE TABLE `user_accomplished` (
   `reference_id` int(11) unsigned NOT NULL,
   `user_id` int(11) unsigned NOT NULL,
   `status_id` char(2) DEFAULT NULL COMMENT '0=rot, 1 = grün, 2 = orange, 3 = weiß',
-  `accomplished_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `accomplished_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `creator_id` int(11) unsigned NOT NULL,
   `context_id` int(11) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
