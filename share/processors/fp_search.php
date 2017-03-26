@@ -39,9 +39,9 @@ switch ($_POST['func']) {
                                 $highlight  = array();
                                 foreach($result AS $r){
                                     if (isset($r->enabling_objective)){
-                                        $highlight[] = 'ena_'.$r->id;
+                                        $highlight[] = 'enabling_objective_'.$r->id;
                                     } else {
-                                        $highlight[] = 'ter_'.$r->id;
+                                        $highlight[] = 'terminal_objective_'.$r->id;
                                     } 
                                 }
                                 $_SESSION['highlight'] = $highlight;

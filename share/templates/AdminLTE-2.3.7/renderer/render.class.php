@@ -541,12 +541,12 @@ class Render {
                     $html  .= 'highlight';
                 }
             }
-            $html  .= ' style="background: '.$objective->color.'" style="border: 1px solid '.$border_color.'">';
+            $html  .= '" style="background: '.$objective->color.'; border: 1px solid '.$border_color.'">';
             /*************** Header ***************/
             if ($type == 'enabling_objective'){
                 $html  .= '<div id="ena_header_'.$objective->id.'" class="boxheader bg-'.$objective->accomplished_status_id.'" >';
             } else {
-                $html  .= '<div class="boxheader">';
+                $html  .= '<div class="boxheader >';
             }
             if (checkCapabilities('groups:showAccomplished', $USER->role_id, false)){
                 if (isset($objective->accomplished_users) AND isset($objective->enroled_users) AND isset($objective->accomplished_percent)){

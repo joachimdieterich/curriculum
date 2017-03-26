@@ -58,9 +58,9 @@
                          {if $ter->order_id neq '1'}
                              {assign var="orderdown" value=true}
                          {/if}
-                         {RENDER::objective(["type" =>"terminal_objective", "objective" => $ter , "user_id" => $my_id, "edit" => true, "orderup" => $orderup, "orderdown" => $orderdown])}
+                         {RENDER::objective(["type" =>"terminal_objective", "objective" => $ter , "user_id" => $my_id, "edit" => true, "orderup" => $orderup, "orderdown" => $orderdown, "highlight" => $highlight])}
                      {else}
-                         {RENDER::objective(["type" =>"terminal_objective", "objective" => $ter , "user_id" => $my_id])}
+                         {RENDER::objective(["type" =>"terminal_objective", "objective" => $ter , "user_id" => $my_id, "highlight" => $highlight])}
                      {/if}
                      {*Ende Thema*}
 
@@ -79,9 +79,9 @@
                                  {if $ena->order_id neq '1'}
                                      {assign var="orderdown" value=true}
                                  {/if}
-                                 {RENDER::objective(["type" =>"enabling_objective", "objective" => $ena , "user_id" => $my_id, "solutions" => $solutions, "edit" => true, "orderup" => $orderup, "orderdown" => $orderdown, "border_color" => $ter->color])}
+                                 {RENDER::objective(["type" =>"enabling_objective", "objective" => $ena , "user_id" => $my_id, "solutions" => $solutions, "edit" => true, "orderup" => $orderup, "orderdown" => $orderdown, "border_color" => $ter->color, "highlight" => $highlight])}
                              {else}
-                                 {RENDER::objective(["type" =>"enabling_objective", "objective" => $ena , "user_id" => $my_id, "solutions" => $solutions, "group_id" => $page_group, "border_color" => $ter->color])}
+                                 {RENDER::objective(["type" =>"enabling_objective", "objective" => $ena , "user_id" => $my_id, "solutions" => $solutions, "group_id" => $page_group, "border_color" => $ter->color, "highlight" => $highlight])}
                              {/if}
                          {/if}
                          {/foreach}
