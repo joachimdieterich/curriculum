@@ -596,9 +596,14 @@ function setValues() {
                 if (document.getElementById(arguments[0])){
                     document.getElementById(arguments[0]).innerHTML = response.html;
                     /* update chosen-select if present */
-                    if ($(document.getElementById(arguments[0])).hasClass("chosen-select")){
-                        $(document.getElementById(arguments[0])).trigger('chosen:updated');
+                    if ($('#'+arguments[0]).hasClass("chosen-select")){
+                        $('#'+arguments[0]).trigger('chosen:updated');
                     }
+                    /* update select2 if present */
+                    if ($('#'+arguments[0]).hasClass("select2")){
+                        $('#'+arguments[0]).select2();
+                    }
+                    
                     
                 }  
             }
