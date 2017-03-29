@@ -38,80 +38,73 @@
                     </button>
                 {/if}
             </div>
-            {if isset($niveaus)}
-                <div class="btn-group pull-left">
-                {foreach name=foreach_niveau item=niveau from=$niveaus} 
-                    <button type="button" class="btn btn-paginator"><a href="index.php?action=view&curriculum_id={$niveau->curriculum_id}{if !isset($showaddObjectives)}&group={$page_group}{/if}">{$niveau->name}</a></button>
-                {/foreach}
-                </div>
-           {/if}
-           </div>
-           <div class="col-xs-12 top-buffer" >
-            {if $terminal_objectives != false}
-                {assign var="sol_btn" value="false"}  
-                {*Thema Row*}
-                {foreach name=foreach_ter key=terid item=ter from=$terminal_objectives}   
-                <div class="row" >
-                    <div class="col-xs-12"> 
-                        {*Thema Row*}
-                        {if isset($showaddObjectives)}
-                            {assign var="orderup" value=false}
-                            {if isset($terminal_objectives[{$terid+1}])}
-                                {if $terminal_objectives[{$terid+1}]->curriculum_id eq $ter->curriculum_id}
-                                    {assign var="orderup" value=true} 
-                                {/if}
-                            {/if}    
-                            {assign var="orderdown" value=false}
-                            {if $ter->order_id neq '1'}
-                                {assign var="orderdown" value=true}
-                            {/if}
-                            {RENDER::objective(["type" =>"terminal_objective", "objective" => $ter , "user_id" => $my_id, "edit" => true, "orderup" => $orderup, "orderdown" => $orderdown])}
-                        {else}
-                            {RENDER::objective(["type" =>"terminal_objective", "objective" => $ter , "user_id" => $my_id])}
-                        {/if}
-                        {*Ende Thema*}
+        </div>
+        <div class="col-xs-12 top-buffer" >
+         {if $terminal_objectives != false}
+             {assign var="sol_btn" value="false"}  
+             {*Thema Row*}
+             {foreach name=foreach_ter key=terid item=ter from=$terminal_objectives}   
+             <div class="row" >
+                 <div class="col-xs-12"> 
+                     {*Thema Row*}
+                     {if isset($showaddObjectives)}
+                         {assign var="orderup" value=false}
+                         {if isset($terminal_objectives[{$terid+1}])}
+                             {if $terminal_objectives[{$terid+1}]->curriculum_id eq $ter->curriculum_id}
+                                 {assign var="orderup" value=true} 
+                             {/if}
+                         {/if}    
+                         {assign var="orderdown" value=false}
+                         {if $ter->order_id neq '1'}
+                             {assign var="orderdown" value=true}
+                         {/if}
+                         {RENDER::objective(["type" =>"terminal_objective", "objective" => $ter , "user_id" => $my_id, "edit" => true, "orderup" => $orderup, "orderdown" => $orderdown, "highlight" => $highlight])}
+                     {else}
+                         {RENDER::objective(["type" =>"terminal_objective", "objective" => $ter , "user_id" => $my_id, "highlight" => $highlight])}
+                     {/if}
+                     {*Ende Thema*}
 
-                        {*Ziele*}
-                        {if $enabledObjectives != false}
-                            {foreach key=enaid item=ena from=$enabledObjectives}
-                            {if $ena->terminal_objective_id eq $ter->id}
-                                {if isset($showaddObjectives)}
-                                    {assign var="orderup" value=false}
-                                    {if isset($enabledObjectives[{$enaid+1}])}
-                                        {if $enabledObjectives[{$enaid+1}]->terminal_objective_id eq $ena->terminal_objective_id}
-                                            {assign var="orderup" value=true} 
-                                        {/if}
-                                    {/if}    
-                                    {assign var="orderdown" value=false}
-                                    {if $ena->order_id neq '1'}
-                                        {assign var="orderdown" value=true}
-                                    {/if}
-                                    {RENDER::objective(["type" =>"enabling_objective", "objective" => $ena , "user_id" => $my_id, "solutions" => $solutions, "edit" => true, "orderup" => $orderup, "orderdown" => $orderdown, "border_color" => $ter->color])}
-                                {else}
-                                    {RENDER::objective(["type" =>"enabling_objective", "objective" => $ena , "user_id" => $my_id, "solutions" => $solutions, "group_id" => $page_group, "border_color" => $ter->color])}
-                                {/if}
-                            {/if}
-                            {/foreach}
-                        {/if}
+                     {*Ziele*}
+                     {if $enabledObjectives != false}
+                         {foreach key=enaid item=ena from=$enabledObjectives}
+                         {if $ena->terminal_objective_id eq $ter->id}
+                             {if isset($showaddObjectives)}
+                                 {assign var="orderup" value=false}
+                                 {if isset($enabledObjectives[{$enaid+1}])}
+                                     {if $enabledObjectives[{$enaid+1}]->terminal_objective_id eq $ena->terminal_objective_id}
+                                         {assign var="orderup" value=true} 
+                                     {/if}
+                                 {/if}    
+                                 {assign var="orderdown" value=false}
+                                 {if $ena->order_id neq '1'}
+                                     {assign var="orderdown" value=true}
+                                 {/if}
+                                 {RENDER::objective(["type" =>"enabling_objective", "objective" => $ena , "user_id" => $my_id, "solutions" => $solutions, "edit" => true, "orderup" => $orderup, "orderdown" => $orderdown, "border_color" => $ter->color, "highlight" => $highlight])}
+                             {else}
+                                 {RENDER::objective(["type" =>"enabling_objective", "objective" => $ena , "user_id" => $my_id, "solutions" => $solutions, "group_id" => $page_group, "border_color" => $ter->color, "highlight" => $highlight])}
+                             {/if}
+                         {/if}
+                         {/foreach}
+                     {/if}
 
-                    {if isset($showaddObjectives)}  
-                        <div class="box box-objective bg-white"> 
-                            <span style="position:absolute; top:20px; width:100%;text-align: center;"><h5 class="text-primary">Ziel</h5></span>
-                            <div class="text-primary" style="text-align: center; padding: 25px; font-size:100px;" onclick="formloader('enabling_objective','new', {$ter->id});">+</div>
-                        </div>
-                    {/if}
-                    </div> <!-- /.col -->
-                </div><!-- .row-->
-                <div class="hidden-lg hidden-md"><br/></div>
-                {/foreach}
-            {/if}
-            {* Neues Thema *}        
-            {if isset($showaddObjectives)}  
-                <div class="box box-objective bg-white"> 
-                    <span style="position:absolute; top:20px; width:100%;text-align: center;"><h5 class="text-primary">Thema</h5></span>
-                    <div class="text-primary" style="text-align: center; padding: 25px; font-size:100px;" onclick="formloader('terminal_objective','new', {$course[0]->curriculum_id});">+</div>
-                </div>
-            {/if}        
+                 {if isset($showaddObjectives)}  
+                     <div class="box box-objective bg-white"> 
+                         <span style="position:absolute; top:20px; width:100%;text-align: center;"><h5 class="text-primary">Ziel</h5></span>
+                         <div class="text-primary" style="text-align: center; padding: 25px; font-size:100px;" onclick="formloader('enabling_objective','new', {$ter->id});">+</div>
+                     </div>
+                 {/if}
+                 </div> <!-- /.col -->
+             </div><!-- .row-->
+             <div class="hidden-lg hidden-md"><br/></div>
+             {/foreach}
+         {/if}
+         {* Neues Thema *}        
+         {if isset($showaddObjectives)}  
+             <div class="box box-objective bg-white"> 
+                 <span style="position:absolute; top:20px; width:100%;text-align: center;"><h5 class="text-primary">Thema</h5></span>
+                 <div class="text-primary" style="text-align: center; padding: 25px; font-size:100px;" onclick="formloader('terminal_objective','new', {$course[0]->curriculum_id});">+</div>
+             </div>
+         {/if}        
         </div>            
     </div>
 </section>

@@ -170,7 +170,7 @@ class Render {
             
             if ($link){
                 $group_id   = $course->getGroupID($ena->curriculum_id, $teacher, $student);
-                $html  .= '<button class="btn btn-default btn-sm"><a href="index.php?action=objectives&course='.$ena->curriculum_id.'_'.$group_id.'&paginator=userPaginator&userPaginator_sel_id='.$student.'&certificate_template=-1&reset"><i class="fa fa-th"></i> Zum Lehrplan</a></button>'     ;
+                $html  .= '<button class="btn btn-default btn-sm"><a href="index.php?action=objectives&course='.$ena->curriculum_id.'_'.$group_id.'&paginator=userPaginator&p_select='.$student.'&certificate_template=-1&reset"><i class="fa fa-th"></i> Zum Lehrplan</a></button>'     ;
             }
             return $html;
         }
@@ -541,12 +541,12 @@ class Render {
                     $html  .= 'highlight';
                 }
             }
-            $html  .= ' style="background: '.$objective->color.'" style="border: 1px solid '.$border_color.'">';
+            $html  .= '" style="background: '.$objective->color.'; border: 1px solid '.$border_color.'">';
             /*************** Header ***************/
             if ($type == 'enabling_objective'){
                 $html  .= '<div id="ena_header_'.$objective->id.'" class="boxheader bg-'.$objective->accomplished_status_id.'" >';
             } else {
-                $html  .= '<div class="boxheader">';
+                $html  .= '<div class="boxheader >';
             }
             if (checkCapabilities('groups:showAccomplished', $USER->role_id, false)){
                 if (isset($objective->accomplished_users) AND isset($objective->enroled_users) AND isset($objective->accomplished_percent)){
@@ -587,22 +587,22 @@ class Render {
                             break;
                         }
                     }
-                    if (checkCapabilities('file:upload', $USER->role_id, false)){
-                        $html  .= '<a href="../share/templates/AdminLTE-2.3.7/renderer/uploadframe.php?context=solution&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal">
-                        <span class="fa ';
-                        if ($sol_btn == $objective->id){
-                            $html  .= 'fa-check-circle-o ';
-                        } else {
-                            $html  .= 'fa-upload ';
-                        } 
-                            $html  .= 'pull-right text-primary" data-toggle="tooltip"';
-                        if ($sol_btn == $objective->id){
-                            $html  .= ' title="Lösung eingereicht"';
-                        } else {
-                            $html  .= ' title="Lösung einreichen"';
-                        }
-                        $html  .= '></span></a>'; 
+                }
+                if (checkCapabilities('file:upload', $USER->role_id, false)){
+                    $html  .= '<a href="../share/templates/AdminLTE-2.3.7/renderer/uploadframe.php?context=solution&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal">
+                    <span class="fa ';
+                    if ($sol_btn == $objective->id){
+                        $html  .= 'fa-check-circle-o ';
+                    } else {
+                        $html  .= 'fa-upload ';
+                    } 
+                        $html  .= 'pull-right text-primary" data-toggle="tooltip"';
+                    if ($sol_btn == $objective->id){
+                        $html  .= ' title="Lösung eingereicht"';
+                    } else {
+                        $html  .= ' title="Lösung einreichen"';
                     }
+                    $html  .= '></span></a>'; 
                 }
             }
          $html  .='  </div>';    
@@ -620,8 +620,8 @@ class Render {
                         if ($objective->description != ''){
                             $html  .='<span class="fa fa-info pull-right box-sm-icon text-primary" style="padding-top:2px; margin-right:3px;" data-toggle="tooltip" title="Beschreibung" onclick="formloader(\'description\', \''.$type.'\', '.$objective->id.');"></span>';
                         }
-                         $html  .='<span class="pull-left" style="margin-right:10px;">';
-                        if (checkCapabilities('file:loadMaterial', $USER->role_id, false) AND $objective->files != 0){
+                        $html  .='<span class="pull-left" style="margin-right:10px;">';
+                        if (checkCapabilities('file:loadMaterial', $USER->role_id, false) AND $objective->files != '0'){
                             $html  .='<span class="fa fa-briefcase box-sm-icon text-primary" style="cursor:pointer;" data-toggle="tooltip" title="'.$objective->files.' Materialien verfügbar" onclick="formloader(\'material\',\''.$type.'\','.$objective->id.')"></span>';
                         } else {
                             $html  .='<span class="fa fa-briefcase box-sm-icon deactivate text-gray" style="cursor:not-allowed;" data-toggle="tooltip" title="Keine Materialien verfügbar"></span>';

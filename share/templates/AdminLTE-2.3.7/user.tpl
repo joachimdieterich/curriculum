@@ -4,7 +4,16 @@
 {block name=description}{$smarty.block.parent}{/block}
 {block name=nav}{$smarty.block.parent}{/block}
 
-{block name=additional_scripts}{$smarty.block.parent}{/block}
+{block name=additional_scripts}{$smarty.block.parent}
+<script> 
+  function userdelete() {
+  if(confirm("Sollen die ausgewählten Benutzer wirklich gelöscht werden?"))
+    $("#btn_deleteUser").click();
+  else
+    return false;
+    }
+</script>
+{/block}
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
 {block name=content}
@@ -117,7 +126,8 @@
                                     <div class="tab-pane row" id="f_delete">
                                         <div class="form-horizontal col-xs-12">
                                             {Form::info(['id' => 'user_info', 'content' => 'Markierte Benutzer löschen.'])}
-                                            {Form::input_button(['id' => 'deleteUser', 'label' => 'löschen', 'icon' => 'fa fa-minus-circle', 'class' => 'btn btn-default pull-right'])}
+                                            {Form::input_button(['id' => 'submitdeleteUser', 'label' => 'löschen', 'icon' => 'fa fa-minus-circle', 'type' => 'button', 'onclick' => 'userdelete()', 'class' => 'btn btn-default pull-right'])}
+                                            {Form::input_button(['id' => 'deleteUser', 'label' => 'löschen', 'icon' => 'fa fa-minus-circle', 'class' => 'hidden'])}
                                         </div>
                                     </div>
                                 {/if}

@@ -148,7 +148,7 @@ class Event {
                 break;
             case 'upcoming':$db = DB::prepare('SELECT ev.*
                                                     FROM event AS ev
-                                                    WHERE ev.creator_id = ? AND timestart >= NOW() ORDER BY timestart ASC LIMIT ?'.$order_param );
+                                                    WHERE ev.creator_id = ? AND timestart >= NOW() ORDER BY timestart ASC LIMIT ? '.$order_param );
                             $db->execute(array($id, $limit));
                 break;
 

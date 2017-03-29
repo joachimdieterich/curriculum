@@ -514,18 +514,15 @@ class User {
         checkCapabilities('user:enroleToInstitution', $USER->role_id);
         $institution        = new Institution();
         $institution->id    = $institution_id; 
-        $institution->load();
-        $db                 = DB::prepare('SELECT count(id) FROM institution_enrolments WHERE institution_id = ? AND user_id = ?');
-        $db->execute(array($institution_id, $this->id));
+        $institution->load(); //load to generate readable feedback notifications
         /* ! Security ! check if role_id is permitted for $USER*/
         $role = new Roles();
-        //error_log('rolle:'.json_encode($role->checkRoleOrder($this->role_id)));
         if ($role->checkRoleOrder($this->role_id) === null) {
             $PAGE->message[] = array('message' => 'Rolle für '.$this->username.' wurde wegen fehlender Berechtigung auf die Standard-Rolle zurückgesetzt.', 'icon' => 'fa fa-group text-warning');// Schließen und speichern
             $this->role_id    = $CFG->standard_role; 
         } 
         
-        if($db->fetchColumn() > 0) {
+        if($this->checkInstitutionEnrolment($institution_id) > 0) {
             $db = DB::prepare('UPDATE institution_enrolments SET status = 1, creator_id = ?, role_id = ? WHERE user_id = ? AND institution_id = ?');
             if ($db->execute(array($USER->id, $this->role_id, $this->id, $institution_id))){
                 $_SESSION['PAGE']->message[] = array('message' => 'Benutzereinschreibung (<strong>'.$this->username.'</strong>) der Institution <strong>'.$institution->institution.'</strong> aktualisiert.', 'icon' => 'fa fa-user text-success');// Schließen und speichern
@@ -1073,9 +1070,8 @@ class User {
      * @return string | array
      */
    public function get_curriculum_enrolments() { 
-        $db = DB::prepare('SELECT cu.curriculum, cu.id, cu.grade_id, cu.icon_id, cu.color, gp.id AS group_id, gp.semester_id, gp.groups, cn.base_curriculum_id, cn.level 
+        $db = DB::prepare('SELECT cu.curriculum, cu.id, cu.grade_id, cu.icon_id, cu.color, gp.id AS group_id, gp.semester_id, gp.groups 
                             FROM curriculum_enrolments AS ce, groups AS gp, institution_enrolments AS ie, groups_enrolments AS ge, curriculum AS cu 
-                            LEFT JOIN curriculum_niveaus AS cn ON cn.curriculum_id = cu.id
                             WHERE cu.id = ce.curriculum_id 
                             AND ce.status = 1 
                             AND gp.id = ce.group_id 
@@ -1091,7 +1087,7 @@ class User {
         while($result = $db->fetchObject()) { 
             $c                      = new Curriculum();
             $c->id                  = $result->id;
-            $c->base_curriculum_id  = null; //if no niveau / level is set base_curriculum_id = null;
+            //$c->base_curriculum_id  = null; //if no niveau / level is set base_curriculum_id = null;
             $e                      = new EnablingObjective();
             $result->completed      = $e->getPercentageOfCompletion($result->id, $this->id);
             $data[]                 = $result;         

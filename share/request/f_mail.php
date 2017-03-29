@@ -45,7 +45,6 @@ if (is_array($data)) {
             
 if (isset($func)){
     switch ($func) {
-        
         case 'gethelp': $subject           = $USER->firstname.' '.$USER->lastname.' braucht Deine Hilfe.';
                         $receiver_id       = filter_input(INPUT_GET, 'id',    FILTER_UNSAFE_RAW);
         case 'new':     checkCapabilities('mail:postMail', $USER->role_id);

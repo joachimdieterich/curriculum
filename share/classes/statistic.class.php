@@ -72,6 +72,71 @@ class Statistic {
                 break;
         }
     }
+   
+    private function generateCSV($line_array){
+        global $CFG;
+        $file = fopen($CFG->curriculumdata_root.'temp/chart.csv','w');
+
+        foreach ($line_array as $line) {
+            fputcsv($file, $line);
+        }
+        fclose($file);
+        return $CFG->access_file_url.'temp/chart.csv';
+    }
+
+
+    public function getAccomplishedPerDays(){
+        $db = DB::prepare('SELECT COUNT(accomplished_time) AS max, DATE(accomplished_time) AS date
+                            FROM user_accomplished 
+                            GROUP BY DATE(accomplished_time)');
+        $db->execute();
+        $line_array[] = array('total','date');
+        while($result = $db->fetchObject()) { 
+            $line_array[] =  array($result->max, $result->date);
+        }
+        return $this->generateCSV($line_array);
+    }
+    
+ 
+    
+    public function getCreationStatistic($dependency = 'log'){
+        $db = DB::prepare('SELECT COUNT(id) AS max, DATE(creation_time) AS date
+                            FROM '.$dependency.'
+                            GROUP BY DATE(creation_time)');
+        $db->execute();
+        $line_array[] = array('total','date');
+
+        while($result = $db->fetchObject()) { 
+            $line_array[] =  array($result->max, $result->date);
+        }
+        return $this->generateCSV($line_array);
+    }
+    
+    public function acceptTerms($dependency = 'accept_terms'){
+        $db = DB::prepare('SELECT COUNT(id) AS max, DATE(timestamp) AS date
+                            FROM '.$dependency.'
+                            GROUP BY DATE(timestamp)');
+        $db->execute();
+        $line_array[] = array('total','date');
+
+        while($result = $db->fetchObject()) { 
+            $line_array[] =  array($result->max, $result->date);
+        }
+        return $this->generateCSV($line_array);
+    }
+    
+     public function lastlogin($dependency = 'users'){
+        $db = DB::prepare('SELECT COUNT(id) AS max, DATE(last_login) AS date
+                            FROM '.$dependency.'  WHERE last_login <> ""
+                            GROUP BY DATE(last_login)');
+        $db->execute();
+        $line_array[] = array('total','date');
+
+        while($result = $db->fetchObject()) { 
+            $line_array[] =  array($result->max, $result->date);
+        }
+        return $this->generateCSV($line_array);
+    }
     
     public function map($modus = 'institutions'){
         global $CFG;
@@ -186,6 +251,23 @@ class Statistic {
                                 $node_l0->size = $size_l0;
                                 return json_encode($node_l0);
                 break;
+            case 'usage':        return $this->getCreationStatistic('log');
+                break;
+            case 'accomplished': return $this->getAccomplishedPerDays();
+                 break;           
+            case 'newUsers':     return $this->getCreationStatistic('users');
+                 break;           
+            case 'newCurricula': return $this->getCreationStatistic('curriculum');
+                 break;           
+            case 'newGroups':    return $this->getCreationStatistic('groups');
+                 break;           
+            case 'newMessages':  return $this->getCreationStatistic('message');
+                 break;           
+            case 'acceptTerms':  return $this->acceptTerms();
+                 break;           
+            case 'lastlLogin':   return $this->lastlogin();
+                 break;           
+                
             default:
                 break;
         }

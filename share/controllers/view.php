@@ -45,8 +45,15 @@ if ($_GET){
 }
 
 if ((isset($_GET['function']) AND $_GET['function'] == 'addObjectives')) {
-    $function = 'addObjectives';
-    $TEMPLATE->assign('showaddObjectives', true); //blendet die addButtons ein
+    $cur        = new Curriculum();
+    $cur->id    = $_GET['curriculum_id'];
+    $cur->load();
+    if (checkCapabilities('curriculum:update', $USER->role_id, false) AND ($cur->creator_id == $USER->id)){ //only edit if capability is set or user == owner
+        $function = 'addObjectives';
+        $TEMPLATE->assign('showaddObjectives', true); //blendet die addButtons ein
+    } else {
+        $PAGE->message[] = array('message' => 'Lehrplan kann nur vom Ersteller editiert werden. ', 'icon' => 'fa fa-th text-warning');// Schließen und speichern 
+    }
 }
 /******************************************************************************
  * END POST / GET
@@ -73,46 +80,8 @@ switch ($function) {
         break;
 }
 
-/* Todo Niveaus */
-$niveau = new Curriculum();
-$niveau->id = $PAGE->curriculum;
-$TEMPLATE->assign('niveaus', $niveau->getNiveau());
-
 $files = new File(); 
 $TEMPLATE->assign('solutions', $files->getSolutions('course', $USER->id, $PAGE->curriculum));  // load solutions
-
-/* now realized as css class*/
-$box_bg = array('0' => 'bg-white',
-                '' => 'bg-white',
-                'x0' => 'bg-red',
-                '0x' => 'bg-white',
-                '1x' => 'bg-white',
-                '2x' => 'bg-white',
-                '3x' => 'bg-white',
-                '00' => 'bg-red',
-                '10' => 'bg-red',
-                '20' => 'bg-red',
-                '30' => 'bg-red',
-                'x1' => 'bg-green',
-                '1' => 'bg-green',
-                '01' => 'bg-green',
-                '11' => 'bg-green',
-                '21' => 'bg-green',
-                '31' => 'bg-green',
-                'x2' => 'bg-orange',
-                '02' => 'bg-orange',
-                '2' => 'bg-orange',
-                '12' => 'bg-orange',
-                '22' => 'bg-orange',
-                '32' => 'bg-orange',
-                'x3' => 'bg-white',
-                '3' => 'bg-white',
-                '03' => 'bg-white',
-                '13' => 'bg-white',
-                '23' => 'bg-white',
-                '33' => 'bg-white',
-                );
-$TEMPLATE->assign('box_bg',$box_bg);
 
 $content = new Content();
 $TEMPLATE->assign('cur_content', array('label'=>'Hinweise zum Lehrplan', 'entrys'=> $content->get('curriculum', $enabling_objectives->curriculum_id )));

@@ -4,7 +4,16 @@
 {block name=description}{$smarty.block.parent}{/block}
 {block name=nav}{$smarty.block.parent}{/block}
 
-{block name=additional_scripts}{$smarty.block.parent}{/block}
+{block name=additional_scripts}{$smarty.block.parent}
+<script> 
+  function userdelete() {
+  if(confirm("Sollen die ausgewählten Benutzer wirklich gelöscht werden?"))
+    $("#btn_deleteUser").click();
+  else
+    return false;
+    }
+</script>
+{/block}
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
 {block name=content}
@@ -104,9 +113,10 @@
                             <div class="form-horizontal col-xs-12 col-sm-12 col-md-5 col-lg-3">
                                 <h4>Benutzer</h4>
                                 <p>Markierte Benutzer löschen</p>
-                                <button type='submit' name='deleteUser' value='' class="btn btn-default pull-right">
+                                <button type='submit' name='deleteUser' value='' class="btn btn-default pull-right" onclick="userdelete();">
                                         <span class="fa fa-minus-circle" aria-hidden="true"></span> löschen
                                 </button>
+                                <button id='btn_deleteUser' type='submit' name='deleteUser' value='' class="hidden"></button>
                             </div>
                         {/if}
                     </div>    

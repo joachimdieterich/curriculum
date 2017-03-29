@@ -232,7 +232,6 @@ VALUES
 	(110,'page:showStudentDocu','Dokumentation zur Plattform auf Startseite anzeigen','Ability to see docu pdf on dasboard','read','page'),
 	(111,'page:showTeacherDocu','Dokumentation zur Plattform auf Startseite anzeigen','Ability to see docu pdf on dasboard','read','page'),
 	(112,'page:showCronjob','Zeigt auf der Startseite an, wann cronjobs zuletzt gestartet wurden','Ability to see cronjob execution time on dasboard','read','page'),
-	(114,'curriculum:addObjectives','Ziele zum Lehrplan hinzufügen','Ability to add objectives','write','curriculum'),
 	(115,'user:getHelp','Benutzer anzeigen, die Ziel erfolgreich abgschlossen haben','Ability to see user who accomplished objective','read','curriculum'),
 	(116,'groups:showAccomplished','Anzeigen wie viele Gruppenteilnehmer ein Ziel abgeschlossen haben','Ability to see percentage of users who has accomplished a objective','read','curriculum'),
 	(117,'file:editMaterial','Material editieren','Ability to edit material','write','curriculum'),
@@ -893,24 +892,6 @@ VALUES
 /*!40000 ALTER TABLE `curriculum_enrolments` ENABLE KEYS */;
 UNLOCK TABLES;
 
-
-# Export von Tabelle curriculum_niveaus
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `curriculum_niveaus`;
-
-CREATE TABLE `curriculum_niveaus` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(250) NOT NULL DEFAULT '',
-  `description` text,
-  `base_curriculum_id` int(11) unsigned NOT NULL,
-  `level` tinyint(4) unsigned NOT NULL DEFAULT '0',
-  `curriculum_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-
 # Export von Tabelle enablingObjectives
 # ------------------------------------------------------------
 
@@ -1508,7 +1489,7 @@ CREATE TABLE `institution` (
   `institution` varchar(200) DEFAULT NULL,
   `description` varchar(2048) DEFAULT NULL,
   `schooltype_id` int(11) unsigned NOT NULL,
-  `country_id` char(2) NOT NULL DEFAULT 'DE',
+  `country_id` char(2) NOT NULL DEFAULT '56',
   `state_id` int(11) unsigned NOT NULL DEFAULT '11',
   `creation_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `creator_id` int(11) unsigned NOT NULL,
@@ -1814,7 +1795,6 @@ VALUES
 	(973,1,'page:showTeacherDocu',1,'2014-10-03 20:37:49',532),
 	(978,1,'page:showStudentDocu',1,'2014-10-03 20:38:16',532),
 	(983,1,'page:showCronjob',1,'2014-10-03 20:42:03',532),
-	(993,1,'curriculum:addObjectives',1,'2014-10-12 10:32:05',532),
 	(998,1,'user:getHelp',1,'2014-10-12 16:43:04',532),
 	(1003,1,'groups:showAccomplished',1,'2014-10-12 16:49:22',532),
 	(1008,1,'file:editMaterial',1,'2014-10-12 17:03:36',532),
@@ -1836,7 +1816,6 @@ VALUES
 	(1209,5,'certificate:delete',1,'2015-03-10 11:07:26',532),
 	(1210,5,'certificate:update',1,'2015-03-10 11:07:26',532),
 	(1213,5,'curriculum:add',1,'2015-03-10 11:07:26',532),
-	(1214,5,'curriculum:addObjectives',1,'2015-03-10 11:07:26',532),
 	(1215,5,'curriculum:delete',1,'2015-03-10 11:07:26',532),
 	(1216,5,'curriculum:update',1,'2015-03-10 11:07:26',532),
 	(1217,5,'dashboard:globalAdmin',1,'2015-03-10 11:07:26',532),
@@ -1943,7 +1922,6 @@ VALUES
 	(1332,6,'certificate:delete',0,'2015-03-10 11:07:57',532),
 	(1333,6,'certificate:update',0,'2015-03-10 11:07:57',532),
 	(1336,6,'curriculum:add',0,'2015-03-10 11:07:57',532),
-	(1337,6,'curriculum:addObjectives',0,'2015-03-10 11:07:57',532),
 	(1338,6,'curriculum:delete',0,'2015-03-10 11:07:57',532),
 	(1339,6,'curriculum:update',0,'2015-03-10 11:07:57',532),
 	(1340,6,'dashboard:globalAdmin',0,'2015-03-10 11:07:57',532),
@@ -2050,7 +2028,6 @@ VALUES
 	(1455,7,'certificate:delete',0,'2015-03-10 11:08:32',532),
 	(1456,7,'certificate:update',0,'2015-03-10 11:08:32',532),
 	(1459,7,'curriculum:add',0,'2015-03-10 11:08:32',532),
-	(1460,7,'curriculum:addObjectives',0,'2015-03-10 11:08:32',532),
 	(1461,7,'curriculum:delete',0,'2015-03-10 11:08:32',532),
 	(1462,7,'curriculum:update',0,'2015-03-10 11:08:32',532),
 	(1463,7,'dashboard:globalAdmin',0,'2015-03-10 11:08:32',532),
@@ -2298,7 +2275,6 @@ VALUES
 	(1902,0,'dashboard:globalAdmin',0,'2015-08-16 20:47:01',532),
 	(1903,0,'curriculum:update',0,'2015-08-16 20:47:01',532),
 	(1904,0,'curriculum:delete',0,'2015-08-16 20:47:01',532),
-	(1905,0,'curriculum:addObjectives',0,'2015-08-16 20:47:01',532),
 	(1906,0,'curriculum:add',0,'2015-08-16 20:47:01',532),
 	(1907,0,'certificate:update',0,'2015-08-16 20:47:01',532),
 	(1908,0,'certificate:delete',0,'2015-08-16 20:47:01',532),
@@ -2475,7 +2451,7 @@ CREATE TABLE `schooltype` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `schooltype` varchar(200) DEFAULT NULL,
   `description` varchar(2048) DEFAULT NULL,
-  `country_id` char(2) NOT NULL DEFAULT 'DE',
+  `country_id` char(2) NOT NULL DEFAULT '56',
   `state_id` int(11) unsigned NOT NULL DEFAULT '11',
   `creation_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `creator_id` int(11) unsigned NOT NULL,
@@ -2488,16 +2464,16 @@ LOCK TABLES `schooltype` WRITE;
 
 INSERT INTO `schooltype` (`id`, `schooltype`, `description`, `country_id`, `state_id`, `creation_time`, `creator_id`)
 VALUES
-	(1,'Realschule plus','Realschule plus','DE',11,'0000-00-00 00:00:00',532),
-	(2,'IGS','Integrierte Gesamtschule','DE',11,'0000-00-00 00:00:00',532),
-	(3,'Gymnasium','Gymnasium','DE',11,'0000-00-00 00:00:00',532),
-	(5,'Förderschule','','DE',11,'0000-00-00 00:00:00',532),
-	(6,'Hauptschule','Hauptschule','DE',11,'0000-00-00 00:00:00',532),
-	(8,'Universität','Koblenz-Landau','DE',11,'0000-00-00 00:00:00',532),
-	(9,'Pädagogisches Landesinstitut','PL','DE',11,'2015-08-14 20:42:56',532),
-	(10,'Gesamtschule','Gesamtschule','DE',11,'2016-01-25 14:46:41',532),
-	(12,'Einrichtung','Medienbildung','DE',11,'2016-07-07 09:20:42',532),
-	(13,'Grundschule','Grundschule','DE',11,'2016-11-13 13:57:12',532);
+	(1,'Realschule plus','Realschule plus','56',11,'0000-00-00 00:00:00',532),
+	(2,'IGS','Integrierte Gesamtschule','56',11,'0000-00-00 00:00:00',532),
+	(3,'Gymnasium','Gymnasium','56',11,'0000-00-00 00:00:00',532),
+	(5,'Förderschule','','56',11,'0000-00-00 00:00:00',532),
+	(6,'Hauptschule','Hauptschule','56',11,'0000-00-00 00:00:00',532),
+	(8,'Universität','Koblenz-Landau','56',11,'0000-00-00 00:00:00',532),
+	(9,'Pädagogisches Landesinstitut','56','DE',11,'2015-08-14 20:42:56',532),
+	(10,'Gesamtschule','Gesamtschule','56',11,'2016-01-25 14:46:41',532),
+	(12,'Einrichtung','Medienbildung','56',11,'2016-07-07 09:20:42',532),
+	(13,'Grundschule','Grundschule','56',11,'2016-11-13 13:57:12',532);
 
 /*!40000 ALTER TABLE `schooltype` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -2745,7 +2721,7 @@ CREATE TABLE `user_accomplished` (
   `reference_id` int(11) unsigned NOT NULL,
   `user_id` int(11) unsigned NOT NULL,
   `status_id` char(2) DEFAULT NULL COMMENT '0=rot, 1 = grün, 2 = orange, 3 = weiß',
-  `accomplished_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `accomplished_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `creator_id` int(11) unsigned NOT NULL,
   `context_id` int(11) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),

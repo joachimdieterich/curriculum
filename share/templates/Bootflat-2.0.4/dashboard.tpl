@@ -95,11 +95,11 @@
                                 {if isset($tsk->accomplished->status_id)}{if  $tsk->accomplished->status_id eq 2}
                                     <p class="text-green">Erledigt am {$tsk->accomplished->accomplished_time}</p>
                                 {/if}{/if}
+                                <div>{$tsk->description}</div>
                                 </a>
                             </li>
                         {/foreach}
                     </ul>
-                  
                 </div><!-- /.widget-user -->
             </div><!-- /.col -->  
         {/if}

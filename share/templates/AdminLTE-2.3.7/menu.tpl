@@ -8,7 +8,6 @@
             {if $my_enrolments != ''}
                 {foreach item=cur_menu from=$my_enrolments name=enrolments}
                     {if $cur_menu->semester_id eq $my_semester_id}
-                        {if  $cur_menu->id eq $cur_menu->base_curriculum_id || $cur_menu->base_curriculum_id eq null}
                             {if {$smarty.foreach.enrolments.index} neq 4} 
                             <li {if isset($page_curriculum )}{if ($page_curriculum eq $cur_menu->id) && ($page_group eq $cur_menu->group_id)} class="active treeview"{/if}{/if}>                                
                                 <a class="text-ellipse" href="index.php?action=view&curriculum_id={$cur_menu->id}&group={$cur_menu->group_id}" >
@@ -29,7 +28,6 @@
                                 <ul class="treeview-menu" style="display: none;">
                                 {assign var="submenu" value=true} 
                             {/if}    
-                        {/if}
                     {/if}
                 {/foreach}
                 {if isset($submenu)}

@@ -416,11 +416,16 @@ class Form {
         }
         /* Box content */
         $html .= '<div class="info-box-content">';
-        if (isset($delete)){
-        $html .= '<div class="pull-right">
-                    <button class="btn btn-box-tool" onclick="removeMaterial('.$id.')"><i class="fa fa-trash"></i></button>
-                  </div>';
+        
+        $html .= '<div class="pull-right">';
+        if (isset($url)){
+            $html .= '<button class="btn btn-box-tool"><a href="'.$url.'" target="_blank"><i class="fa fa-download"></i></a></button>';
         }
+        if (isset($delete)){
+            $html .= '<button class="btn btn-box-tool" onclick="removeMaterial('.$id.')"><i class="fa fa-trash"></i></button>';
+        }
+        $html .= '</div>';
+        
         $html .= '<span class="info-box-text">';
         if (isset($player)){
             $html .= $player.'<br>';

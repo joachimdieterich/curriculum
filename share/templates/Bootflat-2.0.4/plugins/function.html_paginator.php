@@ -137,9 +137,12 @@ function smarty_function_html_paginator($params, $template) {
             } else {
                 if (array_key_exists($_key, $config) AND SmartyPaginate::getColumnVisibility($_key,$id)){
                     $html .= '<td name="'.$id.'_col_'.$_key.'">'.smarty_function_paginate_order(array('id' => $id, 'key' => $_key, 'text' => $config[$_key]), $template);
-                    if ($_key == 'username' OR $_key == 'firstname' OR $_key == 'lastname'  OR $_key == 'email' OR $_key == 'city' OR $_key == 'curriculum' OR $_key == 'description'){ // hack: muss dynamisch gemacht werden
+                    /*if ($_key == 'username' OR $_key == 'firstname' OR $_key == 'lastname'  OR $_key == 'email' OR $_key == 'city' OR $_key == 'curriculum' OR $_key == 'description'){ // hack: muss dynamisch gemacht werden
                         $html .= '<input class="pull-right" id="'.$id.'_col_'.$_key.'_search" name="p_search" style="width:25px;" type="text" value="" onclick="toggle_input_size(\''.$id.'_col_'.$_key.'_search\');"  onblur="toggle_input_size(\''.$id.'_col_'.$_key.'_search\', false);" onkeydown="if (event.keyCode == 13) {event.preventDefault(); processor(\'config\',\'paginator_search\',\''.$id.'\',{\'order\':\''.$_key.'\', \'search\':this.value});}">'; //event.preventDefault() importent to use paginator in <form>
-                    } 
+                    }*/
+                    if (SmartyPaginate::_getOrder($id) == $_key) {
+                        $html .= ' <i class="text-primary pull-right fa fa-sort-'.strtolower(SmartyPaginate::_getSort($id)).'"></i>';
+                    }
                     $html .=  '</td>';
                 }
             }

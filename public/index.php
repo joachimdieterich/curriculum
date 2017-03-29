@@ -52,7 +52,10 @@ try { // Error handling
     /** highlight */
     if (isset($_SESSION['highlight'])){
         $TEMPLATE->assign('highlight', $_SESSION['highlight']);
-    } 
+        unset($_SESSION['highlight']);
+    } else {
+        $TEMPLATE->assign('highlight', NULL); 
+    }
     
     /**Load new Messages */
     if (isset($USER)){

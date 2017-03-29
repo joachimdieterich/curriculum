@@ -201,10 +201,10 @@ class Task {
                                     default: $status = 2;
                                         break;
                                 } // else $status = 2 by default
-                                $db = DB::prepare('UPDATE user_accomplished SET status_id = ? WHERE reference_id = ? AND user_id = ? AND creator_id = ? AND context_id = 13 ');
+                                $db = DB::prepare('UPDATE user_accomplished SET status_id = ?, accomplished_time = CURRENT_TIMESTAMP WHERE reference_id = ? AND user_id = ? AND creator_id = ? AND context_id = 13');
                                 return $db->execute(array($status, $this->id, $user_id, $USER->id));
                             } else {
-                                $db = DB::prepare('INSERT INTO user_accomplished (status_id, reference_id, user_id, creator_id, context_id) VALUES (?,?,?,?,?)');
+                                $db = DB::prepare('INSERT INTO user_accomplished (status_id, reference_id, user_id, creator_id, context_id,accomplished_time) VALUES (?,?,?,?,?,CURRENT_TIMESTAMP)');
                                 return $db->execute(array($status, $this->id, $user_id, $USER->id, 13)); //context_id 13 == task 
                             }
                 break;

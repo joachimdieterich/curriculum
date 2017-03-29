@@ -279,7 +279,7 @@ class Curriculum {
         return $curriculum;
    }
    
-   public function getNiveau(){  
+   /*public function getNiveau(){  
        $db = DB::prepare('SELECT cn.* FROM curriculum_niveaus AS cn
                                                 WHERE cn.base_curriculum_id = (SELECT base_curriculum_id FROM curriculum_niveaus
                                                 WHERE curriculum_id = ?) ORDER BY level');
@@ -289,7 +289,7 @@ class Curriculum {
                                         $niveaus[] = $result; 
                             }
                             return $niveaus;
-   }
+   }*/
    
    public function loadImportFormData($file){
         global $CFG, $USER;

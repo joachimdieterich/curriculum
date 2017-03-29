@@ -67,16 +67,23 @@ if($validated_data === false) {/* validation failed */
     $new_institution->timeout           = filter_input(INPUT_POST, 'timeout',           FILTER_VALIDATE_INT);
     $new_institution->semester_id       = filter_input(INPUT_POST, 'semester_id',       FILTER_VALIDATE_INT);
     $new_institution->file_id           = filter_input(INPUT_POST, 'file_id',           FILTER_VALIDATE_INT);
+    
     switch ($_POST['func']) {
         case 'new':     if (isset($_POST['btn_newSchooltype'])){ 
                             $new_schooltype = new Schooltype();
                             $new_schooltype->schooltype = filter_input(INPUT_POST, 'new_schooltype',    FILTER_SANITIZE_STRING);
                             $new_schooltype->description= filter_input(INPUT_POST, 'schooltype_description',FILTER_SANITIZE_STRING);
-                            $new_schooltype->country_id = filter_input(INPUT_POST, 'country',           FILTER_VALIDATE_INT);
-                            $new_schooltype->state_id   = filter_input(INPUT_POST, 'state',             FILTER_VALIDATE_INT);
-                            $_POST['schooltype_id']     = $new_schooltype->add(); 
+                            $new_schooltype->country_id = filter_input(INPUT_POST, 'country_id',           FILTER_VALIDATE_INT);
+                            $new_schooltype->state_id   = filter_input(INPUT_POST, 'state_id',             FILTER_VALIDATE_INT);
+                            $new_schooltype_id     = $new_schooltype->add(); 
+                            
                         }
-                        $new_institution->schooltype_id = filter_input(INPUT_POST, 'schooltype_id',    FILTER_VALIDATE_INT);
+                        if (isset($new_schooltype_id)){
+                            $schooltype_id = $new_schooltype_id;
+                        } else {
+                            $schooltype_id = filter_input(INPUT_POST, 'schooltype_id',    FILTER_VALIDATE_INT);
+                        }
+                        $new_institution->schooltype_id = $schooltype_id;
                         $institution_id                 = $new_institution->add();
                         $USER->enroleToInstitution($institution_id); 
                         $TEMPLATE->assign('institution_id', $institution_id);
