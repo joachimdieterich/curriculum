@@ -85,11 +85,20 @@ class Statistic {
     }
 
 
-    public function getAccomplishedPerDays(){
-        $db = DB::prepare('SELECT COUNT(accomplished_time) AS max, DATE(accomplished_time) AS date
-                            FROM user_accomplished 
-                            GROUP BY DATE(accomplished_time)');
-        $db->execute();
+    public function getAccomplishedPerDays($status = ''){
+        switch ($status) {
+            case '':     $db = DB::prepare('SELECT COUNT(accomplished_time) AS max, DATE(accomplished_time) AS date
+                                            FROM user_accomplished 
+                                            GROUP BY DATE(accomplished_time)');
+                            $db->execute();
+                break;
+            default:        $db = DB::prepare('SELECT COUNT(accomplished_time) AS max, DATE(accomplished_time) AS date
+                                            FROM user_accomplished WHERE status_id IN ('.$status.')
+                                            GROUP BY DATE(accomplished_time)');
+                            $db->execute();
+                break;
+        }
+        
         $line_array[] = array('total','date');
         while($result = $db->fetchObject()) { 
             $line_array[] =  array($result->max, $result->date);
@@ -138,7 +147,7 @@ class Statistic {
         return $this->generateCSV($line_array);
     }
     
-    public function map($modus = 'institutions'){
+    public function map($modus = 'institutions', $dependency = ''){
         global $CFG;
         $data = array();
         $node_l0 = new Node();
@@ -253,7 +262,7 @@ class Statistic {
                 break;
             case 'usage':        return $this->getCreationStatistic('log');
                 break;
-            case 'accomplished': return $this->getAccomplishedPerDays();
+            case 'accomplished': return $this->getAccomplishedPerDays($dependency);
                  break;           
             case 'newUsers':     return $this->getCreationStatistic('users');
                  break;           

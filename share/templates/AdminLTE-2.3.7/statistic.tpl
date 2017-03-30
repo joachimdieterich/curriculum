@@ -318,7 +318,12 @@
                     <li class="{if $chart eq 'acceptTerms'}active{/if}"><a href="index.php?action=statistic&chart=acceptTerms" >Nutzungsbedingungen akzeptiert</a></li>
                     <li class="{if $chart eq 'lastlLogin'}active{/if}"><a href="index.php?action=statistic&chart=lastlLogin" >Letzter login (Alle Nutzer)</a></li>
                 </ul>
-                <div id="chart" style="margin-top: 10px;"></div>
+                <div id="chart" style="margin-top: 10px;">
+                    {if $chart eq 'accomplished'}
+                        
+                        {FORM::input_select('accomplished_status', 'Status', $status, 'status', 'id', $accomplished_status, '', "window.location.assign('index.php?action=statistic&chart=accomplished&status='+this.value);")}
+                    {/if}
+                </div>
                 {*<div class="tab-content">
                     <div class="tab-pane active" id="f_context_1"></div>
                     <div class="tab-pane " id="f_context_2"></div>

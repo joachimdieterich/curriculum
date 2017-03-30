@@ -603,8 +603,6 @@ function setValues() {
                     if ($('#'+arguments[0]).hasClass("select2")){
                         $('#'+arguments[0]).select2();
                     }
-                    
-                    
                 }  
             }
         }
