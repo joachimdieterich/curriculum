@@ -573,11 +573,11 @@ class Render {
                     $html  .= '<span class="fa fa-arrow-'.$icon_down.' pull-left box-sm-icon text-primary" onclick=\'processor("orderObjective", "'.$type.'", "'.$objective->id.'", {"order":"down"});\'></span>';
                 }
             } else {
-                if (checkCapabilities('course:setAccomplishedStatus', $USER->role_id, false) AND $type != 'terminal_objective' ){
+                if (checkCapabilities('course:setAccomplishedStatus', $USER->role_id, false) AND $type != 'terminal_objective' AND isset($group_id)){
                     $html  .= '<span class="fa fa-bar-chart-o pull-right invert box-sm-icon text-primary" onclick=\'formloader("compare","group", '.$objective->id.',  {"group_id":"'.$group_id.'"});\'></span>
                                <span class="fa fa-files-o pull-right invert box-sm-icon text-primary margin-r-5" onclick=\'formloader("material","solution", '.$objective->id.', {"group_id":"'.$group_id.'", "curriculum_id": "'.$objective->curriculum_id.'"});\'></span>';
                 }
-                if (checkCapabilities('user:getHelp', $USER->role_id, false) AND $type != 'terminal_objective'){
+                if (checkCapabilities('user:getHelp', $USER->role_id, false) AND $type != 'terminal_objective' AND isset($group_id)){
                     $html  .= '<span class="fa fa-support pull-right box-sm-icon text-primary"  data-toggle="tooltip" title="Gruppenmitglied kontaktieren" onclick=\'formloader("support","random", '.$objective->id.', {"group_id":"'.$group_id.'"});\'></span>';
                 }
                 if (checkCapabilities('file:solutionUpload', $USER->role_id, false) AND $type != 'terminal_objective' AND isset($soutions)){

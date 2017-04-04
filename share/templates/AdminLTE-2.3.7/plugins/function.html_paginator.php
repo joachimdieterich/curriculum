@@ -63,6 +63,7 @@ function smarty_function_html_paginator($params, $template) {
             }
         }
     }
+    if (!isset($config['p_search'])){$config['p_search'] = '';} //fallback
     SmartyPaginate::setSearchField($config['p_search'], $id);
     if (!isset($values) AND !SmartyPaginate::_getSearch($id)){ return 'Keine Datensätze vorhanden.'; } 
     $html  = '<div class="row"><div class="'.$width.' top-buffer" >';
@@ -101,7 +102,9 @@ function smarty_function_html_paginator($params, $template) {
                                 if (SmartyPaginate::getColumnVisibility($_key,$id)){
                                     $html .='checked';
                                 }
-                                $html .= '><span class="col-xs-10" style="font-weight:400;">'.$config[$_key].'</span></label></li>';
+                                if (!is_array($config[$_key])){
+                                    $html .= '><span class="col-xs-10" style="font-weight:400;">'.$config[$_key].'</span></label></li>';
+                                }
                                 break;
                         }
                     } 

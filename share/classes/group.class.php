@@ -103,11 +103,18 @@ class Group {
                 break;
         }
         if($db->fetchColumn() >= 1) { 
+            //return id of group entry (important for import usage)
+            $db1 = DB::prepare('SELECT id FROM groups WHERE groups = ? AND semester_id = ? AND institution_id = ?');
+            $db1->execute(array($this->group, $this->semester_id, $this->institution_id));
+            $result = $db1->fetchObject(); 
+            $this->id = $result->id;
             return false;
         } else {     
             $db = DB::prepare('INSERT INTO groups (groups,description,grade_id,semester_id,institution_id,creator_id) 
                                                 VALUES (?,?,?,?,?,?)');
-            return $db->execute(array($this->group, $this->description, $this->grade_id, $this->semester_id, $this->institution_id, $USER->id));
+            $db->execute(array($this->group, $this->description, $this->grade_id, $this->semester_id, $this->institution_id, $USER->id));
+            $this->id = DB::lastInsertId();   
+            return $this->id;
         }
     }
     

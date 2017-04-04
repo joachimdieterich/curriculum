@@ -54,14 +54,14 @@ $TEMPLATE->assign('groups',     $groups   );
 $TEMPLATE->assign('role_id',    $CFG->standard_role);
 $TEMPLATE->assign('delimiter',  ';');
 $PAGE->group_table = array('header' => array('id'    => 'group_id', 
-                                             'group' => 'Lerngruppe'), 
+                                             'group' => 'Lerngruppe (group)'), 
                                              'data' => $groups,
                                              'width_class'   => 'row col-xs-12 col-sm-6 col-md-3 col-lg-3',
                                              'style'         => 'padding-left: 20px; padding-right: 20px;',
                                              'table_class'   => 'table table-striped');
 $TEMPLATE->assign('group_table_params', $PAGE->group_table);
 $PAGE->role_table = array(  'header' => array('id'   => 'role_id', 
-                                              'role' => 'Rolle'), 
+                                              'role' => 'Rolle (role)'), 
                                               'data' => $roles ,
                                               'width_class'   => 'row col-xs-12 col-sm-6 col-md-3 col-lg-3',
                                               'style'         => 'padding-left: 20px; padding-right: 20px;',

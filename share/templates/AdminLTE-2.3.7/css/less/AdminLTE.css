@@ -228,6 +228,9 @@ a:focus {
   border-color: red !important;
   border-width: 2px !important;
 }
+.wallet-content:hover {
+  border: 1px dashed #f00;
+}
 /*
  * Component: Main Header
  * ----------------------
@@ -2214,8 +2217,7 @@ a:focus {
     padding-top: 5px;
   }
   .box .boxscroll {
-    width: 220px;
-    /*20px more than box to hide scrollbar*/
+    width: 200px;
     padding-top: 5px;
     padding-right: 25px;
     /*for Firefox only*/

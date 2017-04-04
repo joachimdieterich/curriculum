@@ -307,13 +307,15 @@ class User {
     * @return mixed 
     */
     public function add($institution_id, $group_id = null){ 
-        global $USER, $PAGE; 
+        global $USER, $PAGE, $CFG; 
         checkCapabilities('user:addUser', $USER->role_id);
         $db = DB::prepare('SELECT COUNT(id) FROM users WHERE UPPER(username) = UPPER(?)');
         $db->execute(array($this->username));
         if($db->fetchColumn() >= 1) { 
             $PAGE->message[] = array('message' => 'Benutzer '.$this->firstname.' '.$this->lastname.'('.$this->username.') existiert bereits', 'icon' => 'fa fa-user text-warning');// Schließen und speichern
         } else {
+            if (!isset($this->paginator_limit)){ $this->paginator_limit = $CFG->paginator_limit; } //fallback
+            if (!isset($this->acc_days))       { $this->acc_days        = $CFG->acc_days; }        //fallback
             $db = DB::prepare('INSERT INTO users (username,firstname,lastname,email,postalcode,city,state_id,country_id,avatar_id,password,confirmed,creator_id,paginator_limit,acc_days) 
                                             VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
             if($db->execute(array($this->username,$this->firstname,$this->lastname,$this->email,$this->postalcode,$this->city,$this->state_id,$this->country_id,intval($this->avatar_id),md5($this->password),$this->confirmed,$USER->id,$this->paginator_limit,$this->acc_days))){
@@ -622,7 +624,7 @@ class User {
         foreach($params as $key => $val) {
             $$key = $val;
         }
-        global $CFG, $USER, $PAGE;
+        global $CFG, $USER, $PAGE, $_SESSION;
         checkCapabilities('menu:readuserImport', $USER->role_id);
         $row = 1;   //row counter
         ini_set("auto_detect_line_endings", true);
@@ -643,7 +645,10 @@ class User {
                         if ($data[$c] == "state_id")   { $state_position          = $c; }
                         if ($data[$c] == "country_id") { $country_position        = $c; }
                         if ($data[$c] == "avatar_id")  { $avatar_position         = $c; }
-                        if ($data[$c] == "group_id")   { $group_position          = $c;  }
+                        if ($data[$c] == "group_id")   { $group_id_position       = $c; }
+                        if ($data[$c] == "group")      { $group_position          = $c; }
+                        if ($data[$c] == "grade_id")   { $grade_id_position       = $c; }
+                        if ($data[$c] == "semester_id"){ $semester_id_position    = $c; }          
                     }    
                 }
                 $row++; //Tielzeile überspringen
@@ -664,7 +669,41 @@ class User {
                     } else { 
                         $this->role_id    = $data[$role_id_position]; // security check moved to institution enrolmenT                        
                     }
-                    if (!isset($group_position))          { $current_group_id = $group_id; }                  else { $current_group_id = $data[$group_position]; }
+                    if (!isset($group_position)){       // if no group is set check if group_id is set -> if this is also not set, use $group_id
+                        if (!isset($group_id_position))  { $current_group_id = $group_id; }                  else { $current_group_id = $data[$group_id_position]; }
+                    } else {
+                        //check if group exists in db
+                        $gp = new Group();
+                        if ($data[$group_position] != ''){
+                            $gp->group = $data[$group_position];
+                        } else {
+                            $gp->group = 'New Group';
+                        }
+                        if (!isset($semester_id_position)) { 
+                            $gp->semester_id = $_SESSION['USER']->semester_id;  //if semester_id is not set use current semester_id
+                        } else { 
+                            $gp->semester_id = $data[$semester_id_position]; 
+                        } 
+                        /* institution */
+                        $gp->institution_id = $institution_id;
+                        /* grade */
+                        if (!isset($grade_id_position)) {
+                            $gr = new Grade();
+                            $gr->load('institution_id', $gr->institution_id);
+                            if ($gr->id == false){ // no grades in this institution --> use global grades
+                                $gr->load('institution_id', 0);  
+                            }
+                            $gp->grade_id = $gr->id; //get a grade_id of institution --> todo: user should chose grade if not set
+                        } else { 
+                            $gp->grade_id = $data[$grade_id_position]; 
+                        }
+                        
+                        if ($gp->add()){        
+                            $current_group_id = $gp->id; //get new group_id
+                        } else {
+                            $current_group_id = $gp->id; //get existing group_id
+                        }
+                    }
                     if (!isset($confirmed_position))      { $this->confirmed  = '3'; }                        else { $this->confirmed  = $data[$confirmed_position]; } 
 
                     $validated_data = $this->validate();
