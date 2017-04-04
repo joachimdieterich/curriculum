@@ -78,7 +78,7 @@ if($validated_data === false) {/* validation failed */
                             if ($assumeUsers){ 
                                 $group->changeSemester(); 
                             } 
-                            $_SESSION['PAGE']->message[] = array('message' => 'Semester geändert', 'icon' => 'fa-calendar text-success');
+                            $_SESSION['PAGE']->message[] = array('message' => 'Lernzeitraum geändert', 'icon' => 'fa-calendar text-success');
                          }
             break;
 
