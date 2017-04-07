@@ -28,8 +28,13 @@
                       </div>
                     </div><!-- /.box-header -->
                 <div class="box-body" style="overflow: scroll; width: 100%; max-height: 300px;">
+                {if isset($stat_user_all)}
+                    {if $stat_user_all > 0}
+                        Du hast schon <strong>{$stat_user_all}</strong> Ziele erreicht.<br><br>
+                    {/if}
+                {/if}    
                 {if isset($enabledObjectives)} 
-                Ziele die in den vergangenen <strong>{$my_acc_days}</strong> Tagen den Status geändert haben.
+                In den vergangenen <strong>{$my_acc_days}</strong> Tagen haben die folgende Ziele den Status geändert.
                     {foreach key=enaid item=ena from=$enabledObjectives}
                         <div class="callout bg-{$box_bg[$ena->accomplished_status_id]}">
                             <p><strong>{$ena->curriculum}</strong><span class="badge pull-right" data-toggle="tooltip" title="Lernstand gesetzt von ...">{$ena->accomplished_teacher}</span></p>
