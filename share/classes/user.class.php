@@ -948,10 +948,11 @@ class User {
                                                 AND ie.status = 1
                                                 AND ge.group_id = ?                                                      
                                                 AND ge.status = 1 
+                                                AND ie.role_id = (SELECT id FROM roles where role = ?)
                                                 AND gr.institution_id = ie.institution_id
                                                 AND gr.id = ge.group_id
                                                 '.$order_param);
-                            $db->execute(array($id, $group)); 
+                            $db->execute(array($id, $group, 'Schüler')); 
                             while($result = $db->fetchObject()) {  
                                     $this->id           = $result->id;
                                     $this->username     = $result->username;
