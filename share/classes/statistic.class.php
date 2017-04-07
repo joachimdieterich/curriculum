@@ -34,6 +34,7 @@ class Statistic {
      * @return boolean 
      */
     public function getAccomplishedObjectives($dependency = 'all'){
+        global $USER;
         switch ($dependency) {
             case 'all':     $db = DB::prepare('SELECT count(id) as max FROM user_accomplished WHERE context_id = 12 AND (status_id = "x1" OR status_id = "x2" 
                                                                                                                       OR status_id = "11" OR status_id = "12"
@@ -48,6 +49,15 @@ class Statistic {
                                                                                                                       OR status_id = "21" OR status_id = "22"
                                                                                                                       OR status_id = "31" OR status_id = "32")');
                             $db->execute();
+                            $result = $db->fetchObject();
+                            return $result->max;
+                break;
+            case 'user_all':   $db = DB::prepare('SELECT count(id) as max FROM user_accomplished WHERE context_id = 12 AND user_id = ? 
+                                                                                                                   AND (status_id = "x1" OR status_id = "x2" 
+                                                                                                                      OR status_id = "11" OR status_id = "12"
+                                                                                                                      OR status_id = "21" OR status_id = "22"
+                                                                                                                      OR status_id = "31" OR status_id = "32")');
+                            $db->execute(array($USER->id));
                             $result = $db->fetchObject();
                             return $result->max;
                 break;
