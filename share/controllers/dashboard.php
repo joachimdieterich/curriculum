@@ -47,6 +47,7 @@ $statistics = new Statistic();
 $TEMPLATE->assign('stat_acc_all',       $statistics->getAccomplishedObjectives('all'));  
 $TEMPLATE->assign('stat_acc_today',     $statistics->getAccomplishedObjectives('today'));  
 $TEMPLATE->assign('stat_users_today',   $statistics->getUsersOnline('today'));  
+$TEMPLATE->assign('stat_user_all',      $statistics->getAccomplishedObjectives('user_all'));  
 
 /* Load blocks*/
 $blocks         = new Block();
