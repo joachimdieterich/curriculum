@@ -249,7 +249,6 @@ class User {
         if ($enrolments){    // Die folgenden Daten nur laden wenn benötigt --> Geschwindigkeit
             $this->enrolments    = $this->get_curriculum_enrolments();
             $this->institutions  = $this->get_instiution_enrolments();
-        
             if ($this->semester_id == NULL AND $this->enrolments != false){
                $this->semester_id    = $this->enrolments[0]->semester_id;
                $semester             = new Semester($this->semester_id);

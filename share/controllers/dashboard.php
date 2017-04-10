@@ -25,22 +25,22 @@ global $USER, $PAGE, $TEMPLATE, $LOG;
 $TEMPLATE->assign('page_title', 'Startseite'); 
 $TEMPLATE->assign('breadcrumb',  array('Startseite' => 'index.php?action=dashboard'));
 
-$acc_obj        = new EnablingObjective();
-$TEMPLATE->assign('enabledObjectives', $acc_obj->getObjectiveStatusChanges()); /* Load last accomplished Objectives */
+$acc_obj         = new EnablingObjective();
+$TEMPLATE->assign('enabledObjectives',  $acc_obj->getObjectiveStatusChanges()); /* Load last accomplished Objectives */
 
-$institution    = new Institution();
-$TEMPLATE->assign('myInstitutions', $institution->getStatistic($USER->id)); /* Institution / Schulen laden */
+$institution     = new Institution();
+$TEMPLATE->assign('myInstitutions',     $institution->getStatistic($USER->id)); /* Institution / Schulen laden */
 $institution->id = $USER->institution_id;
-$TEMPLATE->assign('bulletinBoard', $institution->getBulletinBoard());
+$TEMPLATE->assign('bulletinBoard',      $institution->getBulletinBoard());
 
-$groups         = new Group(); 
-$TEMPLATE->assign('myClasses', $groups->getGroups('user', $USER->id));
+$groups          = new Group(); 
+$TEMPLATE->assign('myClasses',          $groups->getGroups('user', $USER->id));
 
 /*get upcoming events*/
 $upcoming_events = new Event();
-$TEMPLATE->assign('upcoming_events', $upcoming_events->get('upcoming', $USER->id, '', 5));
+$TEMPLATE->assign('upcoming_events',    $upcoming_events->get('upcoming', $USER->id, '', 5));
 $upcoming_tasks  = new Task();
-$TEMPLATE->assign('upcoming_tasks', $upcoming_tasks->get('upcoming', $USER->id));
+$TEMPLATE->assign('upcoming_tasks',     $upcoming_tasks->get('upcoming', $USER->id));
 /*get statistic*/
 $TEMPLATE->assign('stat_users_online',  $USER->usersOnline($USER->institutions));  
 $statistics = new Statistic();

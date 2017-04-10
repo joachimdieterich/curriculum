@@ -121,10 +121,11 @@ function login($user){
 
     $_SESSION['username']   = $user->username;
     $_SESSION['timein']     = time();
-    $user->load('username', $user->username, true);
+    
+    $user->load('username', $user->username, false); //no need to load enrolments -> this will be done in session_reload_user();
     $user->setLastLogin();
     session_reload_user();
-
+    
     //Nutzungsbedingungen akzeptiert?
     if (($user->checkTermsOfUse() == false) OR ($user->username == $CFG->guest_usr)){
        header('Location:index.php?action=terms'); exit();
