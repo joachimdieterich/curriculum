@@ -41,6 +41,7 @@ class Context {
     
     
     public function get($id = NULL){
+        global $USER;
         $context = array();
         if ($id != NULL){
             $db = DB::prepare('SELECT * FROM file_context WHERE id = ?');
@@ -50,10 +51,12 @@ class Context {
             $db->execute();   
         } 
         while($result = $db->fetchObject()) {
-            $this->id          = $result->id;
-            $this->context     = $result->context;
-            $this->description = $result->description;
-            $context[$result->context]         = clone $this;   
+            if (checkCapabilities('file:uploadContext'.ucfirst($result->context), $USER->role_id, false) OR $result->context == 'user'){
+                $this->id          = $result->id;
+                $this->context     = $result->context;
+                $this->description = $result->description;
+                $context[$result->context]         = clone $this;
+            }
         }
         return $context;
         
