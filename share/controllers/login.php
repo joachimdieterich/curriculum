@@ -76,8 +76,9 @@ if(filter_input(INPUT_POST, 'guest', FILTER_UNSAFE_RAW) AND $CFG->guest_login ==
     }
     $PAGE->message[] = array('message' => 'Ihr Passwort wird durch den Administrator zurückgesetzt.', 'icon' => 'fa-key text-success'); 
 } else if(filter_input(INPUT_POST, 'login', FILTER_UNSAFE_RAW)) {
-    $user->username = (filter_input(INPUT_POST,     'username', FILTER_UNSAFE_RAW));     
+    $user->username = (filter_input(INPUT_POST, 'username', FILTER_UNSAFE_RAW));     
     $user->password = (md5(filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW)));
+    
     
     $TEMPLATE->assign('username', $user->username);                 // Benutzername bei falschem Passwort automatisch einsetzen.
     
@@ -89,7 +90,12 @@ if(filter_input(INPUT_POST, 'guest', FILTER_UNSAFE_RAW) AND $CFG->guest_login ==
             $user->set('confirmed', 1); 
         }
         login($user);
-        
+    } else if (isset($CFG->settings->auth)){  /* TEST LDAP*/
+           $auth     = get_plugin('auth', $CFG->settings->auth);
+           $user_id  = $auth->user_login($_POST['username'], $_POST['password']);
+           $user->load('id', $user_id, false);
+           login($user);
+    /* END TEST LDAP*/
     } else { 
         $PAGE->message[] = array('message' => 'Benutzername bzw. Passwort falsch.', 'icon' => 'fa-key text-warning');     
     }  

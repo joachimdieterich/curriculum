@@ -1,13 +1,13 @@
 <?php
 /**
-* Log class can add, update, delete and get data from log db
+* Base class for authentication plugins
 * 
 * @abstract This file is part of curriculum - http://www.joachimdieterich.de
 * @package plugin
-* @filename plugin.class.php
+* @filename auth_plugin_Base.class.php
 * @copyright 2016 Joachim Dieterich
 * @author Joachim Dieterich
-* @date 2016.06.12 13:57
+* @date 2017.04.24 17:08
 * @license: 
 *
 * The MIT License (MIT)
@@ -24,6 +24,19 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-class plugin_base {
+class auth_plugin_base {
+    
+    function add_user($user){
+        /* load Superuser to get work done ---> todo use ldap system users*/
+        global $USER;
+        $USER = new User();
+        $USER->load('username', 'admin');             // Benutzer aus DB laden
+        $USER->password         = '';                 // Passwort aus Session löschen
+        $_SESSION['USER']       =& $USER;
+        /* end */
+        
+        return $user->add($user->institutions); //enrol to all given institutions / role (from LDAP)
+    }
+    
     
 }

@@ -618,23 +618,24 @@ class Render {
         /*************** Footer ***************/
         $html  .= '  <div class="boxfooter">';
                         if ($objective->description != ''){
-                            $html  .='<span class="fa fa-info pull-right box-sm-icon text-primary" style="padding-top:2px; margin-right:3px;" data-toggle="tooltip" title="Beschreibung" onclick="formloader(\'description\', \''.$type.'\', '.$objective->id.');"></span>';
+                            $html  .='<span class="fa fa-info pull-right box-sm-icon text-primary" style=" margin-right:3px;" data-toggle="tooltip" title="Beschreibung" onclick="formloader(\'description\', \''.$type.'\', '.$objective->id.');"></span>';
                         }
                         $html  .='<span class="pull-left" style="margin-right:10px;">';
                         if (checkCapabilities('file:loadMaterial', $USER->role_id, false) AND $objective->files != '0'){
-                            $html  .='<span class="fa fa-briefcase box-sm-icon text-primary" style="cursor:pointer;" data-toggle="tooltip" title="'.$objective->files.' Materialien verfügbar" onclick="formloader(\'material\',\''.$type.'\','.$objective->id.')"></span>';
+                            $html  .='<span class="fa fa-briefcase box-sm-icon text-primary margin-r-5" style="cursor:pointer;" data-toggle="tooltip" title="'.$objective->files.' Materialien verfügbar" onclick="formloader(\'material\',\''.$type.'\','.$objective->id.')"></span>';
                         } else {
-                            $html  .='<span class="fa fa-briefcase box-sm-icon deactivate text-gray" style="cursor:not-allowed;" data-toggle="tooltip" title="Keine Materialien verfügbar"></span>';
+                            $html  .='<span class="fa fa-briefcase box-sm-icon deactivate text-gray margin-r-5" style="cursor:not-allowed;" data-toggle="tooltip" title="Keine Materialien verfügbar"></span>';
                         }
+                        if (checkCapabilities('file:upload', $USER->role_id, false)){
+                                $html  .='<a href="../share/templates/AdminLTE-2.3.7/renderer/uploadframe.php?context='.$type.'&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal"><span class="fa fa-plus box-sm-icon" data-toggle="tooltip" title="Material hinzufügen"></span></a>';
+                            } 
                         $html  .='</span>';
                         if ($edit){
                             if ($type != 'terminal_objective'){
                                 $html  .= '<span class="fa fa-check-square-o pull-right box-sm-icon text-primary" onclick=\'formloader("addQuiz", "enabling_objective", "'.$objective->id.'");\'></span>';
                             }
-                            if (checkCapabilities('file:upload', $USER->role_id, false)){
-                                $html  .='<a href="../share/templates/AdminLTE-2.3.7/renderer/uploadframe.php?context='.$type.'&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal"><span class="fa fa-plus pull-right box-sm-icon"></span></a>';
-                            } 
                         } else {
+                            
                             if (checkCapabilities('course:selfAssessment', $USER->role_id, false) AND $type != 'terminal_objective'){
                                 if (is_array($user_id)){
                                     $user_id = implode(',',$user_id);

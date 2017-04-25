@@ -1,14 +1,15 @@
 <?php
-/** 
-* This file is part of curriculum - http://www.joachimdieterich.de
+/**
+* Base class for repository plugins
 * 
-* @package core
-* @filename include.php
-* @copyright 2013 Joachim Dieterich
+* @abstract This file is part of curriculum - http://www.joachimdieterich.de
+* @package plugin
+* @filename repository_plugin_base.class.php
+* @copyright 2016 Joachim Dieterich
 * @author Joachim Dieterich
-* @date 2013.07.25 22:37
-* @license
-* 
+* @date 2016.06.12 13:57
+* @license: 
+*
 * The MIT License (MIT)
 * Copyright (c) 2012 Joachim Dieterich http://www.curriculumonline.de
 * 
@@ -23,27 +24,6 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-
-/* Klassen laden */
-/* Autoloader for classes */
-spl_autoload_register(function ($className) {
-    $base_dir = dirname(__FILE__). DIRECTORY_SEPARATOR;
-    $extensions = array(".php", ".class.php");
-    $paths = array('classes');
-    foreach ($paths as $path) {
-        $filename = $path . DIRECTORY_SEPARATOR . strtolower($className);
-        foreach ($extensions as $ext) {
-            if (is_readable($base_dir .$filename . $ext)) {
-                include ($base_dir . $filename . $ext);
-                break;
-           }
-       }
-    } 
-});
-global $LOG;
-$LOG = new Log(); 
-
-require 'classes/video_stream.class.php';                                   //Videostream
-require 'libs/htmlpurifier-4.7.0-standalone/HTMLPurifier.standalone.php';   //HTML Purifier
-require 'libs/rtf-html-php-master/rtf-html-php.php';
-require 'libs/PHPMailer-5.2.22/PHPMailerAutoload.php';
+class repository_plugin_base {
+    
+}

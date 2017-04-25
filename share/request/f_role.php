@@ -40,8 +40,7 @@ switch ($func) {
                     $capabilities     = $role_obj->getCapabilities($CFG->standard_role);     
         break;
     case 'edit':    $edit_role        = new Roles();
-                    $edit_role->id    = filter_input(INPUT_GET, 'id', FILTER_UNSAFE_RAW); // kein INT da Systemrolle -1
-                    $edit_role->load(true);                                     //load capabilities
+                    $edit_role->load('id', filter_input(INPUT_GET, 'id', FILTER_UNSAFE_RAW), true);                                     //load capabilities // INPUT_GET kein INT da Systemrolle -1
                     $role_id          = $edit_role->id;
                     foreach ($edit_role as $key => $value){
                         $$key = $value;

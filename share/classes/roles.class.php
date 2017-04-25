@@ -141,9 +141,10 @@ class Roles {
     /**
      * Load user-role with id $this->id 
      */
-    public function load($capabilities = false){
-        $db     = DB::prepare('SELECT * FROM roles WHERE id = ?');
-        $db->execute(array($this->id)); 
+    public function load($dependency = 'id', $value = null, $capabilities = false) {
+        if (isset($value)){ $v = $value; } else { $v = $this->id; }
+        $db     = DB::prepare('SELECT * FROM roles WHERE '.$dependency.' = ?');
+        $db->execute(array($v)); 
         $result = $db->fetchObject();
         if ($result){
             $this->id           = $result->id;

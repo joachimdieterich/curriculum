@@ -173,6 +173,13 @@ class User {
      */
     public $token;
     /**
+     * authentication method 
+     * default = manuell
+     * @var string
+     */
+    public $auth = 'manual';
+    
+    /**
      * percentage of curriculum completion
      * @var int 
      */
@@ -287,6 +294,7 @@ class User {
         } else {
             $this->token             = $result->token;   
         }
+        $this->auth                 = $result->auth;
     }
     public function set($dependency, $value, $id = NULL){
         if ($id == null){ $id = $this->id; }
@@ -315,16 +323,20 @@ class User {
         } else {
             if (!isset($this->paginator_limit)){ $this->paginator_limit = $CFG->paginator_limit; } //fallback
             if (!isset($this->acc_days))       { $this->acc_days        = $CFG->acc_days; }        //fallback
-            $db = DB::prepare('INSERT INTO users (username,firstname,lastname,email,postalcode,city,state_id,country_id,avatar_id,password,confirmed,creator_id,paginator_limit,acc_days) 
-                                            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
-            if($db->execute(array($this->username,$this->firstname,$this->lastname,$this->email,$this->postalcode,$this->city,$this->state_id,$this->country_id,intval($this->avatar_id),md5($this->password),$this->confirmed,$USER->id,$this->paginator_limit,$this->acc_days))){
-                $this->id = DB::lastInsertId();                                 
-                $this->enroleToInstitution($institution_id);                    // enrol to institution
-                if (is_int($group_id)){                                         // enrol to group if id is set
-                    $db_01 = DB::prepare('SELECT COUNT(id) FROM groups WHERE id = ? AND institution_id = ?'); //check if group is enroled to given institution
-                    $db_01->execute(array($group_id, $institution_id));
-                    if($db_01->fetchColumn() >= 1) {
-                        $this->enroleToGroup(array($group_id));
+            $db = DB::prepare('INSERT INTO users (username,firstname,lastname,email,postalcode,city,state_id,country_id,avatar_id,password,confirmed,creator_id,paginator_limit,acc_days,auth) 
+                                            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
+            if($db->execute(array($this->username,$this->firstname,$this->lastname,$this->email,$this->postalcode,$this->city,$this->state_id,$this->country_id,intval($this->avatar_id),md5($this->password),$this->confirmed,$USER->id,$this->paginator_limit,$this->acc_days,$this->auth))){
+                $this->id = DB::lastInsertId();  
+                if (is_array($institution_id)){                                     
+                    $this->enroleToInstitutions($institution_id);                    //enrol to multiple Institutions
+                } else {
+                    $this->enroleToInstitution($institution_id);                    // enrol to one Institution
+                    if (is_int($group_id)){                                         // enrol to group if id is set
+                        $db_01 = DB::prepare('SELECT COUNT(id) FROM groups WHERE id = ? AND institution_id = ?'); //check if group is enroled to given institution
+                        $db_01->execute(array($group_id, $institution_id));
+                        if($db_01->fetchColumn() >= 1) {
+                            $this->enroleToGroup(array($group_id));
+                        }
                     }
                 }
                 $PAGE->message[] = array('message' => 'Der Benutzer <strong>'.$this->username.'</strong> wurde erfolgreich angelegt.', 'icon' => 'fa fa-user text-success');// Schließen und speichern
@@ -502,6 +514,17 @@ class User {
         } else {
             return false;   
         }   //keine neuen Benutzer
+    }
+    
+    /**
+     * enrol user to multiple institutions
+     * @param array $institution_enrolments
+     */
+    public function enroleToInstitutions($institution_enrolments){
+        foreach ($institution_enrolments AS $value) {
+            $this->role_id = $value['role_id'];
+            $this->enroleToInstitution($value['institution_id']);
+        }
     }
     
     /**
@@ -947,11 +970,11 @@ class User {
                                                 AND ie.status = 1
                                                 AND ge.group_id = ?                                                      
                                                 AND ge.status = 1 
-                                                AND ie.role_id = (SELECT id FROM roles where role = ?)
+                                                AND ie.role_id = (SELECT id FROM roles where id = ?)
                                                 AND gr.institution_id = ie.institution_id
                                                 AND gr.id = ge.group_id
                                                 '.$order_param);
-                            $db->execute(array($id, $group, 'Schüler')); 
+                            $db->execute(array($id, $group, 0)); 
                             while($result = $db->fetchObject()) {  
                                     $this->id           = $result->id;
                                     $this->username     = $result->username;

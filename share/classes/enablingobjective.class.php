@@ -192,6 +192,7 @@ class EnablingObjective {
             $db_02 = DB::prepare('SELECT COUNT(*) AS MAX FROM files AS fi WHERE ena_id = ? AND context_id = 2');
             $db_02->execute(array($result->id));
             $res_02 = $db_02->fetchObject();
+            $ext = '';
             if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
                 $ext = $CFG->repository->count(1,$result->id);
             } 
@@ -251,6 +252,7 @@ class EnablingObjective {
                                     $db_03 = DB::prepare('SELECT COUNT(*) AS MAX FROM files AS fi WHERE ena_id = ? AND context_id = 2');
                                     $db_03->execute(array($result->id));
                                     $res_03 = $db_03->fetchObject();
+                                    $ext = '';
                                     if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
                                         $ext = $CFG->repository->count(1,$result->id);
                                     } 

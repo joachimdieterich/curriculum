@@ -711,7 +711,7 @@ function PHPArrayObjectSorter($array,$sortBy,$direction='asc'){
  *
  * @param string $type type of plugin
  * @param string $plugin name of plugin
- * @return plugin_base An instance of the required  plugin.
+ * @return An instance of the required  plugin.
  */
 function get_plugin($type, $plugin) {
     global $CFG;
@@ -722,7 +722,8 @@ function get_plugin($type, $plugin) {
 
     // Return plugin instance.
     require_once("{$CFG->plugins_root}$type/$plugin/plugin.php");
-    $class = "plugin_$plugin";
+    $class = $type.'_plugin_'.$plugin;
+    
     return new $class;
 }
 

@@ -95,10 +95,12 @@ class Institution {
     /**
      * load  institution from db depending on id
      */
-    public function load() {
-        $db = DB::prepare('SELECT * FROM institution WHERE id = ?');
-        if ($db->execute(array($this->id))) {
+    public function load($dependency = 'id', $value = null) {
+        if (isset($value)){ $v = $value; } else { $v = $this->id; }
+        $db = DB::prepare('SELECT * FROM institution WHERE '.$dependency.' = ?');
+        if ($db->execute(array($v))) {
           $result = $db->fetchObject();
+          $this->id                 = $result->id;
           $this->confirmed          = $result->confirmed;
           $this->institution        = $result->institution; 
           $this->description        = $result->description; 
