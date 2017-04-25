@@ -328,7 +328,7 @@ class Render {
                 case 'thumb':   if ($icon == true){
                                     $html .=   '<i class="'.resolveFileType($file->type).' info-box-icon"></i>';
                                 } else {
-                                    $html .=   '<div style="height: 90px;width: 100%; background: url(\''.$url.'\') center; background-size: cover; background-repeat: no-repeat;"></div>';
+                                    $html .=   '<div style="height: 90px;width: 90px; float:left; background: url(\''.$url.'\') center; background-size: cover; background-repeat: no-repeat;"></div>';
                                     //$html .=   '<div class="info-box-icon" style="background: url(\''.$url.'\') center; background-size: cover; background-repeat: no-repeat;"></div>';
                                 }
                     break;
