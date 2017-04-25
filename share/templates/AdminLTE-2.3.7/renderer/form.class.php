@@ -409,11 +409,11 @@ class Form {
             $$key = $val;
         }
         $html  = ' <div id="material_'.$id.'" class="info-box">';
-        if (isset($preview)){
+        /*if (isset($preview)){
             $html .= '<span class="info-box-icon bg-aqua"><div id="modal-preview" style="height:100%;width:100%;background: url(\''.$preview.'\') center ;background-size: cover; background-repeat: no-repeat;"></div></span>'; //pull-left --> overrides align: center to top
-        } else {
+        } else {*/
            $html .= RENDER::thumb($id, null, null, 'thumb');
-        }
+        //}
         /* Box content */
         $html .= '<div class="info-box-content">';
         
