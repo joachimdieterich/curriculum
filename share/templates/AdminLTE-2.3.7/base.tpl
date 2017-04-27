@@ -63,7 +63,7 @@
     </body>
     {else}
     
-    <body class="hold-transition skin-blue sidebar-mini" data-spy="scroll" data-target=".modal-body"> 
+    <body class="hold-transition skin-blue sidebar-mini" data-spy="scroll" data-target=".modal-body" style=" -webkit-overflow-scrolling:touch; overflow:auto;" > 
         <div class="wrapper"> 
             <header class="main-header">
               <!-- Logo -->
