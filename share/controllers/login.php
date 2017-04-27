@@ -90,11 +90,13 @@ if(filter_input(INPUT_POST, 'guest', FILTER_UNSAFE_RAW) AND $CFG->guest_login ==
             $user->set('confirmed', 1); 
         }
         login($user);
-    } else if (isset($CFG->settings->auth)){  /* TEST LDAP*/
-           $auth     = get_plugin('auth', $CFG->settings->auth);
-           $user_id  = $auth->user_login($_POST['username'], $_POST['password']);
-           $user->load('id', $user_id, false);
-           login($user);
+    } else if (isset($CFG->settings->auth)){ 
+        /* TEST LDAP*/
+        $auth     = get_plugin('auth', $CFG->settings->auth);
+        $user_id  = $auth->user_login($_POST['username'], $_POST['password']);
+        $user->load('id', $user_id, false);
+        $auth->sync_update_ldap();
+        login($user);
     /* END TEST LDAP*/
     } else { 
         $PAGE->message[] = array('message' => 'Benutzername bzw. Passwort falsch.', 'icon' => 'fa-key text-warning');     
@@ -129,6 +131,7 @@ function login($user){
     $_SESSION['timein']     = time();
     
     $user->load('username', $user->username, false); //no need to load enrolments -> this will be done in session_reload_user();
+    //todo if user->auth != manual check if user has updated entries
     $user->setLastLogin();
     session_reload_user();
     

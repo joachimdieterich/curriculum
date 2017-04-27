@@ -25,6 +25,30 @@
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 class auth_plugin_base {
+    /**
+     * Config Data from config_plugin table
+     * @var object 
+     */
+    var $config;
+
+    /**
+     * Authentication plugin type - the same as db field.
+     * @var string
+     */
+    var $authtype;
+    /*
+     * The fields we can lock and update from/to external authentication backends
+     * @var array
+     */
+    var $userfields = array(
+        'username',
+        'firstname',
+        'lastname',
+        'email',
+        'poastalcode',
+        'city',
+        'country'
+    );
     
     function add_user($user){
         /* load Superuser to get work done ---> todo use ldap system users*/

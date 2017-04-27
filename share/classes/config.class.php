@@ -45,6 +45,16 @@ class Config {
         return $config;
     }
     
+    public function load_plugin_config($plugin){
+        $db = DB::prepare('SELECT * FROM config_plugins WHERE plugin = ?'); //load std values
+        $db->execute(array($plugin));
+        $config = new stdClass();
+        while($result = $db->fetchObject()) { 
+            $config->{$result->name} = $result->value;
+        }
+        return $config;
+    }
+    
     public function set(){
         $db = DB::prepare('SELECT id FROM config WHERE name = ? AND context_id = ? AND reference_id = ?');
         $db->execute(array($this->name, $this->context_id, $this->reference_id));
