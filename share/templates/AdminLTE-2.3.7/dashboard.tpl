@@ -46,7 +46,7 @@
             </div>  
         </div>
         {if isset($upcoming_events)}
-        <div class="col-md-8 col-sm-12 col-xs-12">
+        <div class="col-md-8 ">
             {foreach item=ue from=$upcoming_events} 
             <div class="alert alert-warning alert-dismissible" ><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     <h4><i class="fa fa-calendar"></i> {$ue->event}</h4>
@@ -57,7 +57,7 @@
         </div>
         {/if}
         {if checkCapabilities('dashboard:editBulletinBoard', $my_role_id, false) || $bulletinBoard} 
-        <div class="col-md-8 col-sm-12 col-xs-12">
+        <div class="col-md-8 ">
             <div class="box bottom-buffer-20">
                 <div class="box-header with-border">
                   <h3 class="box-title">Pinnwand</h3>
@@ -85,7 +85,7 @@
             <div class="col-md-4 ">
                 <div class="box box-widget widget-user bottom-buffer-20">
                   <div class="widget-user-header bg-green">
-                    <i class="pull-right fa fa-tasks" style="font-size: 90px;"></i>
+                    <i class="pull-right fa fa-tasks" style="font-size: 70px;"></i>
                     <h3 class="widget-user-username">Aufgaben</h3>
                     <h5 class="widget-user-desc"></h5>
                   </div>
@@ -105,47 +105,15 @@
                 </div><!-- /.widget-user -->
             </div><!-- /.col -->  
         {/if}
-   
-        {*if isset($myInstitutions)}     
-        {foreach key=insid item=ins from=$myInstitutions}
-            <div class="col-md-4">
-                <div class="box box-widget widget-user bottom-buffer-20">
-                  <!-- Add the bg color to the header using any of the bg-* classes -->
-                    <div class="widget-user-header bg-aqua-active" style="background: linear-gradient(rgba(0,0,0,0.5),rgba(100,100,100,0.5)), url('{$access_file}{$ins->file_id|resolve_file_id:"l"}') center right;background-size: cover; background-repeat: no-repeat;">   
-                    <h3 class="widget-user-username" style="text-shadow: 1px 1px #ff0000;text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">{$ins->institution}</h3>
-                    <h5 class="widget-user-desc" style="text-shadow: 1px 1px #ff0000;text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">{$ins->description}</h5>
-                    <div class="row " style="padding-top:10px;padding-left: 5px;">
-                        <div class="col-xs-4">
-                            <i class="fa fa-user" data-toggle="tooltip" title="Schüler">{if isset($ins->statistic.$institution_std_role)}
-                                                            {$ins->statistic.$institution_std_role}
-                                                    {else}0 
-                                                    {/if}</i>
-                        </div>
-                        <div class="col-xs-4"><i class="fa fa-check-circle-o" data-toggle="tooltip" title="Erreichte Ziele">{if isset($ins->statistic.accomplished)}
-                                                            {$ins->statistic.accomplished}
-                                                         {else}0 
-                                                         {/if}</i>
-                        </div>
-                        <div class="col-xs-4"><i class="fa fa-graduation-cap" data-toggle="tooltip" title="Lehrer">{if isset($ins->statistic.7)}
-                                                            {$ins->statistic.7}
-                                                         {else}0 
-                                                         {/if}</i>
-                        </div>
-                    </div>
-                  </div>
-                </div><!-- /.widget-user -->
-           </div><!-- /.col -->
-        {/foreach}
-        {/if*}
-        
-        {if isset($myInstitutions)}
+
+        {if isset($myInstitutions)}  
         <div class="col-md-4 ">
             <!-- Widget: user widget style 1 -->
             <div class="box box-widget widget-user bottom-buffer-20">
               <!-- Add the bg color to the header using any of the bg-* classes -->
               <div class="widget-user-header bg-yellow">
-                <i class="pull-right fa fa-university" style="font-size: 90px;"></i>
-                <h3 class="widget-user-username">Meine Institution(en)</h3>
+                <i class="pull-right fa fa-university" style="font-size: 70px;"></i>
+                <h4 class="widget-user-username">Meine Institution(en)</h4>
               </div>
               <div class="box-footer no-padding">
                 <ul class="nav nav-stacked" style="overflow: scroll; width: 100%; max-height: 200px;">
@@ -193,7 +161,7 @@
             <div class="box box-widget widget-user bottom-buffer-20">
               <!-- Add the bg color to the header using any of the bg-* classes -->
               <div class="widget-user-header bg-yellow">
-                <i class="pull-right fa fa-group" style="font-size: 90px;"></i>
+                <i class="pull-right fa fa-group" style="font-size: 70px;"></i>
                 <h3 class="widget-user-username">{$cla->group}</h3>
                 <h5 class="widget-user-desc">{$cla->institution_id|truncate:50}</h5>
               </div>
@@ -216,7 +184,7 @@
         
         
         {if isset($stat_users_online) && checkCapabilities('user:userListComplete', $my_role_id, false)}
-        <div class="col-md-4 col-sm-12 col-xs-12">
+        <div class="col-md-4">
             <div class="box bottom-buffer-20">
                 <div class="box-header with-border">
                   <h3 class="box-title">Statistik</h3>
