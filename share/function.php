@@ -393,8 +393,9 @@ function getOrientedImage($imagePath){
   * @param string $context
   */   
 function saveThumbnail($saveToDir, $imageName, $max_x, $max_y, $size = '') {  
+
     $ext = array(); //preg_matches
-    preg_match("'^(.*)\.(gif|jpe?g|png)$'i", $imageName, $ext);
+    preg_match("'^(.*)\.(gif|jpe?g|png|pdf)$'i", $imageName, $ext);
     if (isset($ext[2])){
         switch (strtolower($ext[2])) {
             case 'jpg' : 
@@ -404,6 +405,13 @@ function saveThumbnail($saveToDir, $imageName, $max_x, $max_y, $size = '') {
                          break;
             case 'png' : $im    = imagecreatefrompng($saveToDir.$imageName);
                          break;
+                         
+            case 'pdf' : global $CFG;
+                         if (exec($CFG->ghostscript_path.'gs -version') != null) { //ghostscript not available
+                            exec($CFG->ghostscript_path.'gs -dFirstPage=1 -dLastPage=1 -sDEVICE=pngalpha -sOutputFile='.$saveToDir.basename($imageName, '.pdf').'_t.png -r144 '.$saveToDir.$imageName);  
+                         }
+                         $stop  = true;
+                break;
             default    : $stop  = true;
                          break;
         }
