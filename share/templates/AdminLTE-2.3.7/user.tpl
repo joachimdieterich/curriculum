@@ -79,7 +79,7 @@
                                         {Form::info(['id' => 'pw_info', 'content' => 'Neues Passwort für markierte Benutzer festlegen. Passwort muss mind. 6 Zeichen lang sein.'])}
                                         {Form::input_text('pwchange', 'Passwort', '', null, '', 'password')}
                                         {Form::input_checkbox('showpassword', 'Passwort anzeigen', '', null, 'checkbox', 'unmask(\'pwchange\', this.checked);')}
-                                        {Form::input_checkbox('confirm', 'Passwortänderung', '', null)}
+                                        {Form::input_checkbox('confirmed', 'Passwortänderung', '', null)}
                                         {Form::input_button(['id' => 'resetPassword', 'label' => 'Passwort zurücksetzen', 'icon' => 'fa fa-lock', 'class' => 'btn btn-default pull-right'])}
                                         </div>
                                     </div>
