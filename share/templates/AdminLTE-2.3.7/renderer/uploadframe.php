@@ -28,7 +28,7 @@ global $CFG, $PAGE, $USER, $LOG;
 include('../../../login-check.php');  //check login status and reset idletimer
 if (!isset($_SESSION['USER'])){ die(); }    // logged in?
 $USER = $_SESSION['USER'];                  // $USER not defined but required on 
-$template_path = '../share/templates/AdminLTE-2.3.7/renderer/';
+$template_path = $CFG->smarty_template_dir_url.'renderer/';
 /* set defaults */
 $file       = new File();
 $ref_id     = null;         //todo: only use ref_id

@@ -35,7 +35,7 @@ $description    = null;
 $category       = null;
 $object         = file_get_contents("php://input");
 $data           = json_decode($object, true);
-$file_id        = $CFG->standard_avatar_id;
+$file_id        = $CFG->settings->standard_avatar_id;
 $error          = null;
 if (is_array($data)) {
     foreach ($data as $key => $value){

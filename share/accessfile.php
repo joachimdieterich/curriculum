@@ -59,7 +59,7 @@ if (isset($id)){
     }
     // if file does not exist
     if (!file_exists($path)){
-        $path = $CFG->curriculumdata_root.$CFG->standard_avatar;
+        $path = $CFG->curriculumdata_root.$CFG->settings->standard_avatar;
     }
 } else {
     $path   = realpath($CFG->curriculumdata_root.filter_input(INPUT_GET, 'file'));

@@ -169,10 +169,10 @@ if ($_POST){
                             $TEMPLATE->assign('schooltype_description', null);
                             $sch     = new Schooltype();
                             $TEMPLATE->assign('schooltypes', $sch->getSchooltypes());
-                            $countries = new State($CFG->standard_country);
-                            $TEMPLATE->assign('state_id', $CFG->standard_state);
+                            $countries = new State($CFG->settings->standard_country);
+                            $TEMPLATE->assign('state_id', $CFG->settings->standard_state);
                             $TEMPLATE->assign('states', $countries->getStates());
-                            $TEMPLATE->assign('country_id', $CFG->standard_country);
+                            $TEMPLATE->assign('country_id', $CFG->settings->standard_country);
                             $TEMPLATE->assign('countries', $countries->getCountries());
                             $TEMPLATE->assign('step', 3);                            
                         }
@@ -224,10 +224,10 @@ if ($_POST){
                                                 $TEMPLATE->assign('password', null);  
                                                 $TEMPLATE->assign('show_pw', false);  
                                                 
-                                                $countries = new State($CFG->standard_country);
-                                                $TEMPLATE->assign('state_id', $CFG->standard_state);
+                                                $countries = new State($CFG->settings->standard_country);
+                                                $TEMPLATE->assign('state_id', $CFG->settings->standard_state);
                                                 $TEMPLATE->assign('states', $countries->getStates());
-                                                $TEMPLATE->assign('country_id', $CFG->standard_country);
+                                                $TEMPLATE->assign('country_id', $CFG->settings->standard_country);
                                                 $TEMPLATE->assign('countries', $countries->getCountries());
                                                 $TEMPLATE->assign('step', 4);
                                             }  

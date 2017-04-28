@@ -51,7 +51,7 @@ $TEMPLATE->assign('roles',      $roles);
 $group     = new Group();
 $groups    = $group->getGroups('institution', $USER->institution_id);
 $TEMPLATE->assign('groups',     $groups   );
-$TEMPLATE->assign('role_id',    $CFG->standard_role);
+$TEMPLATE->assign('role_id',    $CFG->settings->standard_role);
 $TEMPLATE->assign('delimiter',  ';');
 $PAGE->group_table = array('header' => array('id'    => 'group_id', 
                                              'group' => 'Lerngruppe (group)'), 

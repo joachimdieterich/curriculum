@@ -321,8 +321,8 @@ class User {
         if($db->fetchColumn() >= 1) { 
             $PAGE->message[] = array('message' => 'Benutzer '.$this->firstname.' '.$this->lastname.'('.$this->username.') existiert bereits', 'icon' => 'fa fa-user text-warning');// Schließen und speichern
         } else {
-            if (!isset($this->paginator_limit)){ $this->paginator_limit = $CFG->paginator_limit; } //fallback
-            if (!isset($this->acc_days))       { $this->acc_days        = $CFG->acc_days; }        //fallback
+            if (!isset($this->paginator_limit)){ $this->paginator_limit = $CFG->settings->paginator_limit; } //fallback
+            if (!isset($this->acc_days))       { $this->acc_days        = $CFG->settings->acc_days; }        //fallback
             $db = DB::prepare('INSERT INTO users (username,firstname,lastname,email,postalcode,city,state_id,country_id,avatar_id,password,confirmed,creator_id,paginator_limit,acc_days,auth) 
                                             VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
             if($db->execute(array($this->username,$this->firstname,$this->lastname,$this->email,$this->postalcode,$this->city,$this->state_id,$this->country_id,intval($this->avatar_id),md5($this->password),$this->confirmed,$USER->id,$this->paginator_limit,$this->acc_days,$this->auth))){
@@ -543,7 +543,7 @@ class User {
         $role = new Roles();
         if ($role->checkRoleOrder($this->role_id) === null) {
             $PAGE->message[] = array('message' => 'Rolle für '.$this->username.' wurde wegen fehlender Berechtigung auf die Standard-Rolle zurückgesetzt.', 'icon' => 'fa fa-group text-warning');// Schließen und speichern
-            $this->role_id    = $CFG->standard_role; 
+            $this->role_id    = $CFG->settings->standard_role; 
         } 
         
         if($this->checkInstitutionEnrolment($institution_id) > 0) {
@@ -675,19 +675,19 @@ class User {
                 }
                 $row++; //Tielzeile überspringen
                 if ($row > 2) {	
-                    $this->role_id = $CFG->standard_role; //reset role id to avoid wrong permissions 
+                    $this->role_id = $CFG->settings->standard_role; //reset role id to avoid wrong permissions 
                     if (!isset($username_position))       { $this->username   = ''; }                         else { $this->username   = $data[$username_position]; }
                     if (!isset($firstname_position))      { $this->firstname  = ''; }                         else { $this->firstname  = $data[$firstname_position]; }
                     if (!isset($lastname_position))       { $this->lastname   = ''; }                         else { $this->lastname   = $data[$lastname_position]; }
                     if (!isset($email_position))          { $this->email      = ''; }                         else { $this->email      = trim($data[$email_position]); } //trim da sonst bei Leerzeichen die Validierung fehlschlägt!
                     if (!isset($postalcode_position))     { $this->postalcode = ''; }                         else { $this->postalcode = $data[$postalcode_position]; }
                     if (!isset($city_position))           { $this->city       = ''; }                         else { $this->city       = $data[$city_position]; }
-                    if (!isset($state_position))          { $this->state_id   = $CFG->standard_state; }       else { $this->state_id   = $data[$state_position]; }
-                    if (!isset($country_position))        { $this->country_id = $CFG->standard_country; }     else { $this->country_id = $data[$country_position]; }
-                    if (!isset($avatar_position))         { $this->avatar_id  = $CFG->standard_avatar_id; }   else { $this->avatar_id  = $data[$avatar_position]; }
+                    if (!isset($state_position))          { $this->state_id   = $CFG->settings->standard_state; }       else { $this->state_id   = $data[$state_position]; }
+                    if (!isset($country_position))        { $this->country_id = $CFG->settings->standard_country; }     else { $this->country_id = $data[$country_position]; }
+                    if (!isset($avatar_position))         { $this->avatar_id  = $CFG->settings->standard_avatar_id; }   else { $this->avatar_id  = $data[$avatar_position]; }
                     if (!isset($password_position))       { $this->password   = 'password'; }                 else { $this->password   = $data[$password_position]; } //todo: besser Fehlermeldung, wenn Passwort nicht gesetzt
                     if (!isset($role_id_position))        { 
-                        if (isset($role_id)){ $this->role_id  = $role_id; } else { $this->role_id  = $CFG->standard_role; }
+                        if (isset($role_id)){ $this->role_id  = $role_id; } else { $this->role_id  = $CFG->settings->standard_role; }
                     } else { 
                         $this->role_id    = $data[$role_id_position]; // security check moved to institution enrolmenT                        
                     }
@@ -988,7 +988,7 @@ class User {
                                     // get online status 
                                     if (checkCapabilities('dashboard:globalAdmin', $USER->role_id, FALSE)){ //todo add capability for online status
                                         $timestamp = (time()-strtotime($result->last_action));
-                                        $timeout   = ($CFG->timeout)*60;
+                                        $timeout   = ($CFG->settings->timeout)*60;
                                         if (intval($timestamp) <= intval($timeout)){
                                             $this->online       = 'online';
                                         } else {
@@ -1087,7 +1087,7 @@ class User {
         $db->execute(array($this->id));
         //get users online
         $db = DB::prepare('SELECT COUNT(id) FROM users WHERE TIMESTAMPDIFF(MINUTE,last_action,NOW()) < ?');
-        $db->execute(array($CFG->timeout));
+        $db->execute(array($CFG->settings->timeout));
         return $db->fetchColumn();
     }
     
@@ -1097,7 +1097,7 @@ class User {
         $db->execute(array($this->id));
         $this->last_action = $db->fetchColumn();
         //set last_action
-        $min= intval($CFG->timeout);
+        $min= intval($CFG->settings->timeout);
         $db = DB::prepare("UPDATE users SET last_action = TIMESTAMPADD(MINUTE,-$min, ?) WHERE id = ?");
         $db->execute(array($this->last_action, $this->id));
    }
@@ -1212,7 +1212,7 @@ class User {
         if (isset($file->filename)){
            return $file->full_path;
         } else {
-            return $CFG->standard_avatar;
+            return $CFG->settings->standard_avatar;
         }
     }
     

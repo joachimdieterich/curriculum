@@ -35,9 +35,9 @@ if (isset($_SESSION['USER'])){                                                  
     $institution                = new Institution();
     $timeout                    = $institution->getTimeout($USER->institution_id);
     if ($timeout){
-        $CFG->timeout = $timeout;
+        $CFG->settings->timeout = $timeout;
     }
-    $TEMPLATE->assign('global_timeout', $CFG->timeout);
+    $TEMPLATE->assign('global_timeout', $CFG->settings->timeout);
 } else {                                                                        // ... anderenfalls $USER aus db laden
     $_SESSION['USER']           =  new User();  
     session_reload_user();

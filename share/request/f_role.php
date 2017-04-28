@@ -37,7 +37,7 @@ $func           = $_GET['func'];
 switch ($func) {
     case 'new':     $header           = 'Benutzerrolle hinzufügen';
                     $role_obj         = new Capability();
-                    $capabilities     = $role_obj->getCapabilities($CFG->standard_role);     
+                    $capabilities     = $role_obj->getCapabilities($CFG->settings->standard_role);     
         break;
     case 'edit':    $edit_role        = new Roles();
                     $edit_role->load('id', filter_input(INPUT_GET, 'id', FILTER_UNSAFE_RAW), true);                                     //load capabilities // INPUT_GET kein INT da Systemrolle -1

@@ -15,7 +15,7 @@
 {content_header p_title=$page_title pages=$breadcrumb help='http://docs.joachimdieterich.de/index.php?title=Startseite'}
 
 <!-- Main content -->
-<section class="content">
+<section class="content" >
     <!-- Info boxes -->
     <div class="row" >
          <div class="col-md-4">
@@ -90,7 +90,7 @@
                     <h5 class="widget-user-desc"></h5>
                   </div>
                   <div class="box-footer no-padding">
-                    <ul class="nav nav-stacked" style="overflow: scroll; width: 100%; max-height: 200px;">
+                    <ul class="nav nav-stacked" style="overflow: scroll;  width: 100%; max-height: 200px;">
                         {foreach item=tsk from=$upcoming_tasks} 
                             <li><a><strong>{$tsk->task}</strong><input type="checkbox" class="pull-right" onchange="processor('accomplish','task', {$tsk->id});" {if isset($tsk->accomplished->status_id)}{if $tsk->accomplished->status_id eq 2}checked{/if}{/if}><p>{$tsk->timestart} - {$tsk->timeend}</p>
                                 {if isset($tsk->accomplished->status_id)}{if  $tsk->accomplished->status_id eq 2}

@@ -41,9 +41,9 @@ if (filter_input(INPUT_GET, 'username', FILTER_UNSAFE_RAW) AND filter_input(INPU
         $PAGE->message[] = array('message' => 'Benutzername bzw. Passwort falsch.', 'icon' => 'fa-key text-warning');     
     } 
 }
-if(filter_input(INPUT_POST, 'guest', FILTER_UNSAFE_RAW) AND $CFG->guest_login == true) {
-    $user->username = $CFG->guest_usr;
-    $user->password = md5($CFG->guest_pwd);
+if(filter_input(INPUT_POST, 'guest', FILTER_UNSAFE_RAW) AND $CFG->settings->guest_login == true) {
+    $user->username = $CFG->settings->guest_usr;
+    $user->password = md5($CFG->settings->guest_pwd);
     if($user->checkLoginData()) {
         login($user);
     }

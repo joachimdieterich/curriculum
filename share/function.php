@@ -118,9 +118,9 @@ function setPaginator($instance, $template, $data, $returnVar, $currentURL, $con
     global $CFG, $USER;
     $SmartyPaginate         = new SmartyPaginate(); 
     $SmartyPaginate->connect($instance);
-    $CFG->paginator_name    = &$instance;  
+    //$CFG->paginator_name    = &$instance;  
     if ($instance == 'inboxPaginator' || $instance == 'outboxPaginator'){       // Mail Paginatoren haben anderes Limit, evtl. für jeden Paginator indiv. machen
-        $SmartyPaginate->setLimit($CFG->mail_paginator_limit, $instance);
+        $SmartyPaginate->setLimit($CFG->settings->mail_paginator_limit, $instance);
     } else {          
         if (filter_input(INPUT_GET, 'paginator_limit', FILTER_UNSAFE_RAW) && filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW)){
             SmartyPaginate::setLimit(filter_input(INPUT_GET, 'paginator_limit', FILTER_UNSAFE_RAW), filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW));
@@ -407,8 +407,8 @@ function saveThumbnail($saveToDir, $imageName, $max_x, $max_y, $size = '') {
                          break;
                          
             case 'pdf' : global $CFG;
-                         if (exec($CFG->ghostscript_path.'gs -version') != null) { //ghostscript not available
-                            exec($CFG->ghostscript_path.'gs -dFirstPage=1 -dLastPage=1 -sDEVICE=pngalpha -sOutputFile='.$saveToDir.basename($imageName, '.pdf').'_t.png -r144 '.$saveToDir.$imageName);  
+                         if (exec($CFG->settings->ghostscript_path.'gs -version') != null) { //ghostscript not available
+                            exec($CFG->settings->ghostscript_path.'gs -dFirstPage=1 -dLastPage=1 -sDEVICE=pngalpha -sOutputFile='.$saveToDir.basename($imageName, '.pdf').'_t.png -r144 '.$saveToDir.$imageName);  
                          }
                          $stop  = true;
                 break;
@@ -764,9 +764,9 @@ function session_reload_user(){
     $semester = new Semester();                                                 // akt. Semester /Lernzeitraum  laden
     $_SESSION['SEMESTER']   = $semester->getMySemesters($USER->id);             // .todo. akt. Semester der Institution laden, da sonst bei neu angelegten Benutzern semester_id evtl. nicht stimmt (wenn Benutzer in anderer Institution angelegt wurden)
     
-    $institution = new Institution();   
-    $CFG->timeout = $institution->getTimeout($USER->institution_id);            // Set timeout based on Institution
-    $TEMPLATE->assign('global_timeout', $CFG->timeout);
+    $institution            = new Institution();   
+    $CFG->settings->timeout = $institution->getTimeout($USER->institution_id);            // Set timeout based on Institution
+    $TEMPLATE->assign('global_timeout', $CFG->settings->timeout);
 }
 
 /**

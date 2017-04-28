@@ -41,8 +41,8 @@ $user->postalcode     = $_POST['postalcode'];
 $user->city           = $_POST['city']; 
 $user->country_id     = $_POST['country_id']; 
 $user->state_id       = $_POST['state_id']; 
-$user->paginator_limit  = $CFG->paginator_limit;
-$user->acc_days         = $CFG->acc_days;
+$user->paginator_limit  = $CFG->settings->paginator_limit;
+$user->acc_days         = $CFG->settings->acc_days;
 
 if (isset($_POST['confirm'])){
     $user->confirmed= 3; //Passwortänderung wird gesetzt == 3 //Wird bei der Anmeldung überprüft
@@ -58,7 +58,7 @@ if (isset($_POST['show_pw'])){
 if ($_POST['avatar_id']){ 
     $user->avatar_id    =  filter_input(INPUT_POST, 'avatar_id',   FILTER_VALIDATE_INT);
 } else {
-    $user->avatar_id    =  $CFG->standard_avatar_id;
+    $user->avatar_id    =  $CFG->settings->standard_avatar_id;
 }
 
 switch ($_POST['func']) {

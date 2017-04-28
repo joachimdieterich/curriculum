@@ -592,7 +592,7 @@ class Render {
                     }
                 }
                 if (checkCapabilities('file:upload', $USER->role_id, false)){
-                    $html  .= '<a href="../share/templates/AdminLTE-2.3.7/renderer/uploadframe.php?context=solution&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal ">
+                    $html  .= '<a href="'.$CFG->smarty_template_dir_url.'renderer/uploadframe.php?context=solution&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal ">
                     <span class="fa ';
                     if ($sol_btn == $objective->id){
                         $html  .= 'fa-check-circle-o ';
@@ -630,7 +630,7 @@ class Render {
                             $html  .='<span class="fa fa-briefcase box-sm-icon deactivate text-gray margin-r-5 pull-left" style="cursor:not-allowed;" data-toggle="tooltip" title="Keine Materialien verfügbar"></span>';
                         }
                         if (checkCapabilities('file:upload', $USER->role_id, false)){
-                                $html  .='<a href="../share/templates/AdminLTE-2.3.7/renderer/uploadframe.php?context='.$type.'&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal pull-right margin-r-5"><span class="fa fa-plus box-sm-icon" data-toggle="tooltip" title="Material hinzufügen"></span></a>';
+                                $html  .='<a href="'.$CFG->smarty_template_dir_url.'renderer/uploadframe.php?context='.$type.'&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal pull-right margin-r-5"><span class="fa fa-plus box-sm-icon" data-toggle="tooltip" title="Material hinzufügen"></span></a>';
                             } 
                         $html  .='</span>';
                         if ($edit){
@@ -1113,7 +1113,7 @@ class Render {
         foreach($params['blockdata'] as $key => $val) {
             $$key = $val;
         }
-        if ($USER->role_id === $role_id OR $role_id == $CFG->standard_role){
+        if ($USER->role_id === $role_id OR $role_id == $CFG->settings->standard_role){
         $html  = '<div class="'.$width.'">
                     <div class="box '.$status.' bottom-buffer-20">
                         <div class="box-header with-border">
@@ -1158,7 +1158,7 @@ class Render {
         foreach($params['blockdata'] as $key => $val) {
             $$key = $val;
         }
-        if ($USER->role_id === $role_id OR $role_id == $CFG->standard_role){
+        if ($USER->role_id === $role_id OR $role_id == $CFG->settings->standard_role){
             $html  = '<div class="'.$width.'">
                         <div class="box '.$status.' bottom-buffer-20">
                             <div class="box-header with-border">

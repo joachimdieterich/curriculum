@@ -527,7 +527,7 @@ class Render {
     }
     /* add all possible options (ter and ena) to this objective function*/
     public static function objective($params){
-       global $USER;
+       global $CFG, $USER;
        $type        = 'terminal_objective'; 
        $edit        = false;
        //
@@ -572,7 +572,7 @@ class Render {
                         }
                         if ($edit){
                             if (checkCapabilities('file:upload', $USER->role_id, false)){
-                                $html  .='<a href="../share/templates/Bootflat-2.0.4/renderer/uploadframe.php?context='.$type.'&ref_id='.$objective->id.'{$tb_param}" class="nyroModal"><span class="fa fa-plus pull-right box-sm-icon"></span></a>';
+                                $html  .='<a href="'.$CFG->smarty_template_dir_url.'renderer/uploadframe.php?context='.$type.'&ref_id='.$objective->id.'{$tb_param}" class="nyroModal"><span class="fa fa-plus pull-right box-sm-icon"></span></a>';
                             } 
                         }
                         $html  .='<span class="pull-left" style="margin-right:10px;">';

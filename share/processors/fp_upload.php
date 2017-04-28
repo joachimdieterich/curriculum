@@ -129,7 +129,7 @@ if ($my_upload->upload() OR filter_var($fileURL, FILTER_VALIDATE_URL)) {//in dat
                         $file->path        = $folders;
                         $file->id          = $file->add();
                         $href_mail         = $CFG->access_file_url.'solutions/'.$folders.''.rawurlencode(str_replace(' ', '_', $my_upload->the_file));
-                        if ($CFG->thumbnails){ // Generate Thumbs // todo: var to define thumbs (sizes)
+                        if ($CFG->settings->thumbnails){ // Generate Thumbs // todo: var to define thumbs (sizes)
                            generateThumbnail($my_upload->upload_dir, $my_upload->the_file, $context);
                         }
             break;

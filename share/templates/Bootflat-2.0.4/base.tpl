@@ -315,7 +315,7 @@
                                             <a href="#" class="pull-left" onclick="formloader('profile', 'edit');" data-toggle="tooltip" title="Profil bearbeiten"><i class="fa fa-user"></i></a>
                                         {/if}
                                         {if checkCapabilities('file:upload', $my_role_id, false)}
-                                            <a href="../share/templates/Bootflat-2.0.4/renderer/uploadframe.php?context=userFiles{$tb_param}" data-toggle="tooltip" title="Meine Dateien" class="pull-left nyroModal">
+                                            <a href="{$template_url}renderer/uploadframe.php?context=userFiles{$tb_param}" data-toggle="tooltip" title="Meine Dateien" class="pull-left nyroModal">
                                                 <i class="fa fa-folder-open"></i>
                                             </a>
                                         {/if} 

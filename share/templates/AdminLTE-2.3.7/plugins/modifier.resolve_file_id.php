@@ -21,7 +21,7 @@
 function smarty_modifier_resolve_file_id($id, $size= false, $alt=false)
 {   if ($alt == false){
     global $CFG;
-    $alt = $CFG->standard_avatar;
+    $alt = $CFG->settings->standard_avatar;
 }
     $file       = new File();
     $file->id   = $id;

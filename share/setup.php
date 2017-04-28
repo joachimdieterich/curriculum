@@ -38,33 +38,10 @@ global $TEMPLATE;                                                   // Smarty TE
 
 session_start();                                                    // Starte Sesseion
 
-$TEMPLATE = new Smarty();
-
-$TEMPLATE->assign('tb_param',       $CFG->tb_param);
-$TEMPLATE->assign('global_timeout', $CFG->timeout);
-$TEMPLATE->assign('message_timeout',$CFG->message_timeout);
-$TEMPLATE->assign('post_max_size',  $CFG->post_max_size);
-$TEMPLATE->assign('base_url',       $CFG->base_url);
-$TEMPLATE->assign('request_url',    $CFG->request_url);
-$TEMPLATE->assign('media_url',      $CFG->media_url);
-$TEMPLATE->assign('lib_url',        $CFG->lib_url);
-$TEMPLATE->assign('access_file',    $CFG->access_file);
-$TEMPLATE->assign('access_file_id', $CFG->access_id_url);
-$TEMPLATE->assign('avatar_path',    $CFG->avatar_path);
-$TEMPLATE->assign('support_path',   $CFG->support_path);
-$TEMPLATE->assign('subjects_path',  $CFG->subjects_path);
-$TEMPLATE->assign('solutions_path', $CFG->solutions_path);
-
-$TEMPLATE->assign('app_title',      $CFG->app_title);
-$TEMPLATE->assign('app_version',    $CFG->version);
-$TEMPLATE->assign('app_footer',     $CFG->app_footer);
-
-$TEMPLATE->assign('cfg_shibboleth', $CFG->shibboleth);
-
 /* Load Plugins */
 $config = new Config();
 if (isset($CFG->db_configured)){
-    $CFG->settings = $config->load();
+    $CFG->settings = $config->load(); //load additional settings from db
     if (isset($CFG->settings->repository)){
         $CFG->repository = get_plugin('repository',$CFG->settings->repository);
     }
@@ -81,6 +58,31 @@ if (isset($CFG->db_configured)){
         $CFG->auth = get_plugin('auth',$CFG->settings->auth);
     }*/
 }
+
+$TEMPLATE = new Smarty();
+
+$TEMPLATE->assign('tb_param',       $CFG->tb_param);
+$TEMPLATE->assign('global_timeout', $CFG->settings->timeout);
+$TEMPLATE->assign('message_timeout',$CFG->settings->message_timeout);
+$TEMPLATE->assign('post_max_size',  $CFG->post_max_size);
+$TEMPLATE->assign('base_url',       $CFG->base_url);
+$TEMPLATE->assign('request_url',    $CFG->request_url);
+$TEMPLATE->assign('media_url',      $CFG->media_url);
+$TEMPLATE->assign('lib_url',        $CFG->lib_url);
+$TEMPLATE->assign('access_file',    $CFG->access_file);
+$TEMPLATE->assign('access_file_id', $CFG->access_id_url);
+$TEMPLATE->assign('avatar_path',    $CFG->avatar_path);
+$TEMPLATE->assign('support_path',   $CFG->support_path);
+$TEMPLATE->assign('subjects_path',  $CFG->subjects_path);
+$TEMPLATE->assign('solutions_path', $CFG->solutions_path);
+
+$TEMPLATE->assign('app_title',      $CFG->app_title);
+$TEMPLATE->assign('app_version',    $CFG->version);
+$TEMPLATE->assign('app_footer',     $CFG->app_footer);
+
+$TEMPLATE->assign('cfg_shibboleth', $CFG->settings->shibboleth);
+
+
 
 if (!isset($CFG->settings->template)){ 
     $CFG->settings           = new stdClass();
