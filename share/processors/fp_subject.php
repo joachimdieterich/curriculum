@@ -59,6 +59,7 @@ if($validated_data === false) {/* validation failed */
         $_SESSION['PAGE']->message[] = array('message' => 'Fach aktualisiert', 'icon' => 'fa-language text-success');
     } else {
         $subject->add(); 
+        $_SESSION['PAGE']->target_url = SmartyPaginate::getLastPageIndexURL('subjectP'); //jump to new entry in list
         $_SESSION['PAGE']->message[] = array('message' => 'Fach hinzugefügt', 'icon' => 'fa-language text-success');
     }
     $_SESSION['FORM']            = null;                     // reset Session Form object
