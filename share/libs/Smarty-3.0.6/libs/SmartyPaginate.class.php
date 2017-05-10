@@ -150,7 +150,6 @@ class SmartyPaginate {
             if (isset($_SESSION['SmartyPaginate'][$id]['pagi_orderby'])) {
                 $_SESSION['SmartyPaginate'][$id]['pagi_updown'] = $so;
             }
-            
     }
     static function setOrder($porder, $id = 'default') {
         $_SESSION['SmartyPaginate'][$id]['pagi_orderby'] = $porder;
@@ -410,7 +409,18 @@ class SmartyPaginate {
         $_limit = SmartyPaginate::getLimit($id);
         $_last = SmartyPaginate::getCurrentItem($id) + $_limit - 1;
         return ($_last <= $_total) ? $_last : $_total; 
-    }    
+    } 
+    
+    /**
+     * Reset sort/order and get index of last page to jumpt to that page after adding a new entry
+     * @param string $id the pagination id
+     */
+    static function getLastPageIndexURL($id = 'default', $sort = 'id', $order = 'ASC'){
+        SmartyPaginate::setSort($sort, $order, $id); //set sort/order of paginator to show new entry at the end / the begin of the list.
+        $_total = SmartyPaginate::getTotal($id);
+        $_limit = SmartyPaginate::getLimit($id);
+        return removeUrlParameter($_SESSION['PAGE']->target_url, $id).'&'.$id.'='.(($_total % $_limit > 0) ? $_total - ( $_total % $_limit ) + 1 : $_total - $_limit + 1); 
+    }
     
     /**
      * assign $paginate var values
