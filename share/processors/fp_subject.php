@@ -38,7 +38,7 @@ $subject->subject          = $_POST['subject'];
 $subject->subject_short    = $_POST['subject_short'];
 $subject->description      = $_POST['description'];
 $subject->institution_id   = $_POST['institution_id'];
-//$subject->creator_id       = $USER->id; // now set in add function
+//$subject->creator_d       = $USER->id; // now set in add function
 
 $gump->validation_rules(array(
 'subject'             => 'required'

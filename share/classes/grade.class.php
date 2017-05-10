@@ -139,7 +139,8 @@ class Grade {
      */
     public function getGrades($dependency = 'all', $id = null, $paginator = '' ){
         global $USER;
-        $order_param = orderPaginator($paginator, array('grade'         => 'gr',
+        $order_param = orderPaginator($paginator, array('id'            => 'gr',
+                                                        'grade'         => 'gr',
                                                         'description'   => 'gr',
                                                         'institution'   => 'ins')); 
         $grades = array();                      //Array of grades

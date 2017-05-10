@@ -128,7 +128,8 @@ class Certificate {
      */
     public function getCertificates($paginator = ''){
         global $USER;
-        $order_param    = orderPaginator($paginator,array('certificate' => 'ce',
+        $order_param    = orderPaginator($paginator,array('id' => 'ce',
+                                                          'certificate' => 'ce',
                                                           'description' => 'ce',
                                                           'template'    => 'ce',
                                                           'creation_time' => 'ce',

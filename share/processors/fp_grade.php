@@ -55,6 +55,7 @@ if($validated_data === false) {/* validation failed */
 } else {
     switch ($_POST['func']) {
         case 'new':      if ($grade->add()){
+                            $_SESSION['PAGE']->target_url = SmartyPaginate::getLastPageIndexURL('gradeP'); //jump to new entry in list
                             $_SESSION['PAGE']->message[] = array('message' => 'Klassenstufe hinzufgefügt', 'icon' => 'fa-signal text-success');
                          }               
             

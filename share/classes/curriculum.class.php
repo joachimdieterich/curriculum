@@ -211,7 +211,8 @@ class Curriculum {
     public function getCurricula($dependency = null, $id = null, $paginator = ''){
         global $USER;
         
-        $order_param = orderPaginator($paginator, array('curriculum' => 'cu',
+        $order_param = orderPaginator($paginator, array('id' => 'cu',
+                                                        'curriculum' => 'cu',
                                                         'description' => 'cu',
                                                         'de'         => 'co',
                                                         'state'      => 'st',

@@ -78,8 +78,6 @@ if(filter_input(INPUT_POST, 'guest', FILTER_UNSAFE_RAW) AND $CFG->settings->gues
 } else if(filter_input(INPUT_POST, 'login', FILTER_UNSAFE_RAW)) {
     $user->username = (filter_input(INPUT_POST, 'username', FILTER_UNSAFE_RAW));     
     $user->password = (md5(filter_input(INPUT_POST, 'password', FILTER_UNSAFE_RAW)));
-    
-    
     $TEMPLATE->assign('username', $user->username);                 // Benutzername bei falschem Passwort automatisch einsetzen.
     
     if($user->checkLoginData()) { 
@@ -95,7 +93,7 @@ if(filter_input(INPUT_POST, 'guest', FILTER_UNSAFE_RAW) AND $CFG->settings->gues
         $auth     = get_plugin('auth', $CFG->settings->auth);
         $user_id  = $auth->user_login($_POST['username'], $_POST['password']);
         $user->load('id', $user_id, false);
-        $auth->sync_update_ldap();
+        //$auth->sync_update_ldap(); // Get existing data to ldap
         login($user);
     /* END TEST LDAP*/
     } else { 
@@ -136,7 +134,7 @@ function login($user){
     session_reload_user();
     
     //Nutzungsbedingungen akzeptiert?
-    if (($user->checkTermsOfUse() == false) OR ($user->username == $CFG->guest_usr)){
+    if (($user->checkTermsOfUse() == false) OR ($user->username == $CFG->settings->guest_usr)){
        header('Location:index.php?action=terms'); exit();
     }
     route($user);

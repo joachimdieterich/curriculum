@@ -66,6 +66,7 @@ if($validated_data === false) {/* validation failed */
         $_SESSION['PAGE']->message[] = array('message' => 'Zertifikat aktualisiert', 'icon' => 'fa-files-o text-success');
     }  else {
         $certificate->id = $certificate->add(); 
+        $_SESSION['PAGE']->target_url = SmartyPaginate::getLastPageIndexURL('certificateP'); //jump to new entry in list
         $_SESSION['PAGE']->message[] = array('message' => 'Zertifikat hinzugefügt', 'icon' => 'fa-files-o text-success');
     }
     $_SESSION['FORM']            = null;                     // reset Session Form object 

@@ -754,7 +754,8 @@ class User {
      */
     public function userList($dependency = 'institution', $paginator = '', $lost = false){
         global $USER;
-        $order_param = orderPaginator($paginator, array('username'  => 'us',
+        $order_param = orderPaginator($paginator, array('id'        => 'us',
+                                                        'username'  => 'us',
                                                         'firstname' => 'us',
                                                         'lastname'  => 'us',
                                                         'email'     => 'us', 
@@ -934,7 +935,8 @@ class User {
      */
     public function getUsers($dependency = null, $paginator = '', $id = null, $group = null){
         global $USER, $CFG;
-        $order_param = orderPaginator($paginator, array('username'  => 'us', 
+        $order_param = orderPaginator($paginator, array('id'  => 'us', 
+                                                        'username'  => 'us', 
                                                         'firstname' => 'us', 
                                                         'lastname'  => 'us'
                                                     ));

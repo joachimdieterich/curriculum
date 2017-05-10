@@ -187,11 +187,14 @@ function orderPaginator($instance, $table=null){
             }
         } 
         $order  = SmartyPaginate::_getOrder($instance);
-        if ($order != '') {
+        
+        if ($order != '' AND isset($table[$order])) {
             $order = ' ORDER BY '. $table[$order].'.'.$order; 
+        } else {
+            $order = ' ORDER BY id'.$order; //hack to prevent blank pages if $table[$order !isset]
         }
         $sort   = SmartyPaginate::getSort('sort', $instance) ;
-        //error_log($search.' '.$order.' '.$sort);
+        
         return $search.' '.$order.' '.$sort;      
     } else {
        return '';

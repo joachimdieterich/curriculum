@@ -165,7 +165,8 @@ class Roles {
      */
     public function get($paginator = '', $all = false){
         global $USER;
-        $order_param = orderPaginator($paginator,array('role' => 'ro',
+        $order_param = orderPaginator($paginator,array('id' => 'ro',
+                                                        'role' => 'ro',
                                                         'description'    => 'ro')); 
         if ($all){
             $db          = DB::prepare('SELECT ro.* FROM roles AS ro '.$order_param); // get all roles

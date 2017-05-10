@@ -58,7 +58,8 @@ if($validated_data === false) {/* validation failed */
     $role->role           = $_POST['role']; 
     $role->description    = $_POST['description'];  
     switch ($_POST['func']) {
-        case 'new':      if ($role->add()){    
+        case 'new':      if ($role->add()){  
+                            $_SESSION['PAGE']->target_url = SmartyPaginate::getLastPageIndexURL('roleP'); //jump to new entry in list
                             $_SESSION['PAGE']->message[] = array('message' => 'Rolle hinzufgefügt', 'icon' => 'fa-key text-success');
                          }               
             break;

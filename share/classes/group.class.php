@@ -254,7 +254,8 @@ class Group {
      */
     public function getGroups($dependency = null, $id = null, $paginator = ''){
         global $USER;
-        $order_param = orderPaginator($paginator, array('groups'        => 'gp',
+        $order_param = orderPaginator($paginator, array('id'            => 'gp',
+                                                        'groups'        => 'gp',
                                                         'description'   => 'gp', 
                                                         'creation_time' => 'gp', 
                                                         'grade'         => 'gr',

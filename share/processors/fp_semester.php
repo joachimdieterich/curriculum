@@ -59,6 +59,7 @@ if($validated_data === false) {/* validation failed */
         $_SESSION['PAGE']->message[] = array('message' => 'Semester aktualisiert', 'icon' => 'fa-history text-success');
     } else {
         $semester->add(); 
+        $_SESSION['PAGE']->target_url = SmartyPaginate::getLastPageIndexURL('semesterP'); //jump to new entry in list
         $_SESSION['PAGE']->message[] = array('message' => 'Semester hinzufgefügt', 'icon' => 'fa-history text-success');
     }
     $_SESSION['FORM']            = null;                     // reset Session Form object
