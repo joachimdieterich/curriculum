@@ -71,7 +71,7 @@ class Subject {
                                                         'description'    => 'sub',
                                                         'subject_short'  => 'sub',
                                                         'institution'    => 'ins')); 
-        error_log('params'.$order_param);
+       
         $subjects       = array();
         $db             = DB::prepare('SELECT sub.*, ins.institution 
                                        FROM subjects AS sub, institution AS ins 
