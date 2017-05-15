@@ -35,9 +35,11 @@
               <input id="login" type="submit" name="login" class="btn btn-primary btn-block btn-flat visible" value="Anmelden" ></input>
               <input id="reset" type="submit" name="reset" class="btn btn-primary btn-block btn-flat hidden" value="Passwort vergessen" ></input>
             </div><!-- /.col -->
+            {if $cfg_guest_login}
             <div class="col-xs-5 pull-left">{*!pull-left to not submit guest login on return, when entering regular user accounts*}
                 <input id="guest" type="submit" name="guest" class="btn btn-primary btn-block btn-flat visible" value="Gastzugang" ></input>
             </div><!-- /.col -->
+            {/if}
           </div>
         </form>
         {if $cfg_shibboleth}

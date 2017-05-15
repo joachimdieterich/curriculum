@@ -1122,7 +1122,7 @@ class Render {
                                 if (checkCapabilities('block:add', $USER->role_id, false)){
                                     $html  .= '<button class="btn btn-box-tool" data-widget="edit" onclick="formloader(\'block\',\'edit\','.$id.');"><i class="fa fa-edit"></i></button>';
                                 }
-                                $html  .= '<button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+                                $html  .= '<button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>
                                 <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
                               </div>
                         </div><!-- /.box-header -->
@@ -1167,7 +1167,7 @@ class Render {
                                     if (checkCapabilities('block:add', $USER->role_id, false)){
                                         $html  .= '<button class="btn btn-box-tool" data-widget="edit" onclick="formloader(\'block\',\'edit\','.$id.');"><i class="fa fa-edit"></i></button>';
                                     }
-                                    $html  .= '<button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+                                    $html  .= '<button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>
                                     <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
                                   </div>
                             </div><!-- /.box-header -->
@@ -1182,6 +1182,79 @@ class Render {
             }
         }
     }
+    
+    public static function blog_block($params){ 
+        global $USER,$CFG;
+        $width  = 'col-md-8';
+        $height = '400px';
+        $status = '';
+        foreach($params['blockdata'] as $key => $val) {
+            $$key = $val;
+        }
+        $blog = new Blog();
+        $blog->load($id);
+        if ($USER->role_id === $role_id OR $role_id == $CFG->settings->standard_role){
+            $html  = '<div class="'.$width.'">
+                        <div class="box '.$status.' bottom-buffer-20">
+                            <div class="box-header with-border">
+                                  <h3 class="box-title">'.$name.'</h3>
+                                  <div class="box-tools pull-right">';
+                                    $html  .= '<button class="btn btn-box-tool" onclick=\'formloader("content", "new", null,{"context_id":"21", "reference_id":'.$id.'});\'><i class="fa fa-plus"></i></button>';
+                                    if (checkCapabilities('block:add', $USER->role_id, false)){
+                                        $html  .= '<button class="btn btn-box-tool" data-widget="edit" onclick="formloader(\'block\',\'edit\','.$id.');"><i class="fa fa-edit"></i></button>';
+                                    }
+                                    $html  .= '<button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>
+                                    <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                  </div>
+                            </div><!-- /.box-header -->
+                            <div class="box-body" style="overflow: scroll; width: 100%; max-height: '.$height.';">';
+                                    foreach ($blog->content as $value) {
+                                        $comments = new Comment();
+                                        $comments->context = 'content';
+                                        $comments->reference_id = $value->id;
+                                        $c = $comments->get('reference');
+                                        $c_max = count($c);
+                                        $html  .=  '<div class="post">
+                                                        <div class="user-block">
+                                                          <img class="img-circle img-bordered-sm" src="'.$CFG->access_id_url.$USER->avatar_id.'" alt="user image">
+                                                              <span class="username">
+                                                                <a href="#">'.$value->creator.'</a>
+                                                                <a href="#" class="pull-right btn-box-tool"></a>
+                                                              </span>
+                                                          <span class="description">'.$value->timecreated.'</span>
+                                                        </div>
+                                                        <!-- /.user-block -->
+                                                        <b>'.$value->title.'</b>
+                                                        '.$value->content.'
+                                                        <ul class="list-inline">
+                                                          <li><a href="#" class="link-black text-sm"><i class="fa fa-share margin-r-5"></i> Share</a></li>
+                                                          <li><a href="#" class="link-black text-sm"><i class="fa fa-thumbs-o-up margin-r-5"></i> Like</a>
+                                                          </li>
+                                                          <li class="pull-right">
+                                                            <a class="link-black text-sm" onclick="toggle([\'comments_'.$value->id.'\'])"><i class="fa fa-comments-o margin-r-5"></i> Kommentare
+                                                              ('.$c_max.')</a></li>
+                                                        </ul>
+                                                        <div class="bottom-buffer-20 hidden" id="comments_'.$value->id.'"><b>Kommentare</b>';
+                                        $html  .=       RENDER::comments(["comments" => $c, "permission" => '1']); //todo permission over rolecheck
+                                        $html  .=     '<textarea id="comment" name="comment"  style="width:100%;"></textarea>
+                                                       <p><button type="submit" class="btn btn-primary pull-right" onclick="comment(\'new\','.$value->id.', 15, document.getElementById(\'comment\').value);">
+                                                           <i class="fa fa-commenting-o margin-r-10"></i>Kommentar abschicken</button></p><br>
+                                                       </div>
+                                                    </div>';
+                                    }    
+             $html  .= '     </div>
+                        </div>
+                   </div>';
+
+            if ($visible == 1){
+                return $html; 
+            }
+        }
+    }
+    
+    
+    
+    
     /*Simple table - example see userImport.tpl*/
     public static function table($params){
         $width_class     = 'col-md-6';

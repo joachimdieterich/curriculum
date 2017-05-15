@@ -106,11 +106,10 @@ class Comment {
             case 'id':          $db = DB::prepare('SELECT cm.id FROM comments AS cm WHERE cm.id = ?');
                                 $db->execute(array($id));
                 break;
-            case 'reference':   $db = DB::prepare('SELECT cm.id FROM comments AS cm, context AS co '
-                                                . 'WHERE cm.reference_id = ? '
-                                                . 'AND cm.context_id = co.context_id AND co.context = ? AND cm.parent_id IS NULL ORDER BY creation_time');
+            case 'reference':   $db = DB::prepare('SELECT cm.id FROM comments AS cm, context AS co 
+                                                   WHERE cm.reference_id = ? 
+                                                   AND cm.context_id = co.context_id AND co.context = ? AND cm.parent_id IS NULL ORDER BY creation_time');
                                 $db->execute(array($this->reference_id, $this->context));
-            
             default:
                 break;
         }
@@ -120,7 +119,6 @@ class Comment {
             $this->load($result->id); 
             $this->comment = $this->getSubComment($this->id); 
             $r[]           = clone $this;
-           
         } 
         
         return $r;     

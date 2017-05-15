@@ -79,7 +79,7 @@ $TEMPLATE->assign('solutions_path', $CFG->solutions_path);
 $TEMPLATE->assign('app_title',      $CFG->app_title);
 $TEMPLATE->assign('app_version',    $CFG->version);
 $TEMPLATE->assign('app_footer',     $CFG->app_footer);
-
+$TEMPLATE->assign('cfg_guest_login',$CFG->settings->guest_login);
 $TEMPLATE->assign('cfg_shibboleth', $CFG->settings->shibboleth);
 
 

@@ -18,11 +18,7 @@
         <div class="col-xs-12">
             <div class="box box-default">
                 <div class="box-header with-border">
-                  <h3 class="box-title">Nutzerkonten per CSV-Datei hochladen</h3>
-                  {*<div class="box-tools pull-right">
-                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                    <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                  </div>*}
+                    <h3 class="box-title">Nutzerkonten per CSV-Datei hochladen</h3>
                 </div><!-- /.box-header -->
                 <form name="file" enctype="multipart/form-data" action="index.php?action=userImport" method="post">                 
                     <div class="box-body">
@@ -69,7 +65,7 @@
                 <div class="box-header with-border">
                   <h3 class="box-title">Neue Nutzer</h3>
                   <div class="box-tools pull-right">
-                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-compress"></i></button>
                     <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
                   </div>
                 </div><!-- /.box-header -->

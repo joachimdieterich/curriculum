@@ -26,7 +26,7 @@
                 <div class="box-header with-border">
                   <h3 class="box-title">Postfächer</h3>
                   <div class="box-tools">
-                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-compress"></i></button>
                   </div>
                 </div>
                 
@@ -58,7 +58,7 @@
                 <div class="box-header with-border">
                   <h3 class="box-title">{if $box eq 'inbox'}Posteingang{else if $box eq 'outbox'}Postausgang{/if}</h3>
                   <div class="box-tools">
-                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-compress"></i></button>
                   </div>
                 </div>
                 <div class="box-body no-padding" style="height: 600px;overflow:auto">
