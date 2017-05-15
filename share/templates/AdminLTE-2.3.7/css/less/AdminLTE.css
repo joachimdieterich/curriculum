@@ -231,6 +231,11 @@ a:focus {
 .wallet-content:hover {
   border: 1px dashed #f00;
 }
+.text-ellipse {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
 /*
  * Component: Main Header
  * ----------------------
