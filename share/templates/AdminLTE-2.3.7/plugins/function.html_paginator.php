@@ -66,13 +66,13 @@ function smarty_function_html_paginator($params, $template) {
     if (!isset($config['p_search'])){$config['p_search'] = '';} //fallback
     SmartyPaginate::setSearchField($config['p_search'], $id);
     if (!isset($values) AND !SmartyPaginate::_getSearch($id)){ return 'Keine Datensätze vorhanden.'; } 
-    $html  = '<div class="row"><div class="'.$width.' top-buffer" >';
+    $html  = '<div id="container_'.$id.'" class="row"><div class="'.$width.' top-buffer" >';
     if (null !== SmartyPaginate::_getSearch($id)){
         $html .= '<div class="btn-group pull-left">
                     <button type="button" class="btn btn-default fa fa-times-circle-o"  onclick="processor(\'config\',\'paginator_reset\',\''.$id.'\');"> Suche: <i>'.SmartyPaginate::_getSearch($id).'</i></button>
                   </div>';
     } else {
-        $html .= '<div class="col-sm-3 col-xs-8 btn-group pull-left" style="padding:0;"><div class="input-group">
+        $html .= '<div class="col-sm-34 col-xs-9 btn-group pull-left" ><div class="input-group">
           <input type="text" name="q" id="q" class="form-control" placeholder="Suche..." onkeydown="if (event.keyCode == 13) {event.preventDefault(); processor(\'config\',\'paginator_search\',\''.$id.'\',{\'order\':\'\',\'search\':this.value});}">
               <span class="input-group-btn">
                 <button type="submit" name="search" id="search-btn" class="btn btn-flat" onclick="processor(\'config\',\'paginator_search\',\''.$id.'\',{\'order\':\'\',\'search\':document.getElementById(\'q\').value});"><i class="fa fa-search"></i>
@@ -168,7 +168,7 @@ function smarty_function_html_paginator($params, $template) {
                         if (isset($checkbox['onclick'])){
                             $html .= 'onclick="'.str_replace('__id__', $_val->$k_key, $checkbox['onclick']).'"';   
                         } else {
-                            $html .= 'onclick="checkrow(\''.$_val->$k_key.'\', \''.$id.'\', \'true\');"';
+                            $html .= 'onclick="checkrow(\''.$_val->$k_key.'\', \''.$id.'\', \'false\');"';
                         }
                         $html .= ' ><input class="checkbox" type="checkbox" id="'.$id.'_'.$_val->$k_key.'" name="id[]" value="'.$_val->$k_key.'"';
                         if (isset($selected_id) && in_array($_val->$k_key, $selected_id)) {

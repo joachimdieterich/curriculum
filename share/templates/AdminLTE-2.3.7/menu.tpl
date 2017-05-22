@@ -3,6 +3,7 @@
         <!-- sidebar: style can be found in sidebar.less -->
         <section class="sidebar">
           <!-- sidebar menu: : style can be found in sidebar.less -->
+          <div id="menu_top_placeholder"></div>
           <ul class="sidebar-menu">
             <li class="header">Lehrpläne</li>
             {if $my_enrolments != ''}

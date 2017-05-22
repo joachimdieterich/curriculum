@@ -158,7 +158,7 @@ class Form {
                       <select id="'.$id.'" name="'.$id.'" class="select2 form-control" onchange="'.$onchange.'" '.$disabled.'>';
                        if (count($select_data) > 0){
                              if ($placeholder != '---'){
-                                $form .= '<option>'.$placeholder.'</option>';
+                                $form .= '<option value="false">'.$placeholder.'</option>';
                              }
                             foreach ($select_data as $value) {
                                 if (strpos($select_label, ',')){ // more than one field in select_label
@@ -173,7 +173,7 @@ class Form {
                                 $form .= '<option label="'.$label.'" value="'.$value->$select_value.'"'; if ($input == $value->$select_value){ $form .= 'selected="selected"'; } $form .= '>'.$label.'</option>';
                             }
                        } else {
-                           $form .= '<option label="'.$placeholder.'">'.$placeholder.'</option>';
+                           $form .= '<option label="'.$placeholder.'" value="false">'.$placeholder.'</option>';
                        }
         $form .= '</select> ';
         $form .= '</div></div>';

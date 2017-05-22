@@ -52,7 +52,7 @@ if (isset($_POST['printCertificate'])){
     $TEMPLATE->assign('sel_curriculum',                 $_POST['sel_curriculum']);
     $TEMPLATE->assign('sel_group_id',                   $_POST['sel_group_id']); 
     $TEMPLATE->assign('selected_certificate_template',  $_POST['certificate_template']); 
-    if ($_POST['certificate_template'] != '-1'){
+    if ($_POST['certificate_template'] != '-1' AND $selected_user_id != '' AND isset($selected_user_id[0])){
         $pdf = new Pdf();
         $pdf->user_id       =  $selected_user_id;
         $pdf->curriculum_id =  $_POST['sel_curriculum'];
@@ -67,7 +67,7 @@ if (isset($_POST['printCertificate'])){
 } 
   
 // load user list
-if ($selected_curriculum_id != '') {  
+if ($selected_curriculum_id != '' AND !isset($_GET['ajax'])) {  
     $course_user        = new User();
     $course_user->id    = $USER->id;
     $users              = $course_user->getUsers('course', 'userPaginator', $selected_curriculum_id, $selected_group);
@@ -87,7 +87,7 @@ if ($selected_curriculum_id != '') {
                            'page'      => array('onclick'    => 'checkrow(\'page\', \'userPaginator\', \'false\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&certificate_template=\'+document.getElementById(\'certificate_template\').value);'),
                            'all'       => array('onclick'    => 'checkrow(\'all\', \'userPaginator\', \'false\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&certificate_template=\'+document.getElementById(\'certificate_template\').value);'),
                            'checkbox'  => array('onclick'    => 'checkrow(\'__id__\', \'userPaginator\', \'false\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&certificate_template=\'+document.getElementById(\'certificate_template\').value);'),
-                           'td'        => array('onclick'    => 'checkrow(\'__id__\', \'userPaginator\', \'false\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&p_select=__id__&certificate_template=\'+document.getElementById(\'certificate_template\').value);'));
+                           'td'        => array('onclick'    => 'checkrow(\'__id__\', \'userPaginator\', \'true\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&p_select=__id__&certificate_template=\'+document.getElementById(\'certificate_template\').value);'));
     if(checkCapabilities('dashboard:globalAdmin', $USER->role_id, false)){
     $p_config      = array('id'        => 'checkbox',
                            'username'  => 'Benutzername', 
@@ -115,10 +115,13 @@ if ($selected_curriculum_id != '') {
     $sel_course     = $courses->getCourseId($selected_curriculum_id, $selected_group);
     $coursebook     = new CourseBook();
     $TEMPLATE->assign('coursebook',      $coursebook->get('course', $sel_course->id) );
+    $certificate                 = new Certificate();                               // Load certificate_templates
+    $certificate->institution_id = $USER->institutions;
+    $certificate->curriculum_id  = $selected_curriculum_id;
+    $TEMPLATE->assign('certificate_templates', $certificate->getCertificates());
 }
 
 // load curriculum of actual user 
-//error_log(json_encode($selected_user_id));
 if ($selected_curriculum_id != '' AND $selected_user_id != '' AND isset($selected_user_id[0])) {
     if (count($selected_user_id) > 1){
         $terminal_objectives = new TerminalObjective();         //load terminal objectives
@@ -139,10 +142,6 @@ if ($selected_curriculum_id != '' AND $selected_user_id != '' AND isset($selecte
         $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('user', $selected_user_id[0]));
         $show_course         = true; // setzen    
     }     
-    $certificate                 = new Certificate();                               // Load certificate_templates
-    $certificate->institution_id = $USER->institutions;
-    $certificate->curriculum_id  = $selected_curriculum_id;
-    $TEMPLATE->assign('certificate_templates', $certificate->getCertificates());
 }  
 /*******************************************************************************
  * END POST / GET  

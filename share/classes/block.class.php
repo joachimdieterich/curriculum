@@ -65,8 +65,15 @@ class Block {
     }
     
     public function load(){
-        $db = DB::prepare('SELECT bi.*, bl.block, bl.visible FROM block_instances AS bi, block AS bl WHERE bi.block_id = bl.id AND bi.id = ?'); //0 == all institutions
-        $db->execute(array($this->id));
+        global $USER;
+        //$db = DB::prepare('SELECT bi.*, bl.block, bl.visible FROM block_instances AS bi, block AS bl WHERE bi.block_id = bl.id AND bi.id = ?');
+        $db = DB::prepare('SELECT bi.id, bi.block_id, bi.name, bi.context_id, bi.configdata, bi.institution_id, bi.role_id,
+                                  ifnull(ck.region, bi.region) AS region, ifnull(ck.weight, bi.weight) AS weight,
+                                  ifnull(ck.visible, bl.visible) AS visible, ifnull(ck.status, bl.status) AS status, bl.block
+                            FROM block AS bl,block_instances AS bi
+                            LEFT JOIN config_blocks AS ck ON bi.id =  ck.block_instance_id
+                                WHERE bi.block_id = bl.id AND bi.id = ? AND (ck.user_id = ? OR ck.user_id IS NULL)');
+        $db->execute(array($this->id, $USER->id));
         while($result = $db->fetchObject()) { 
             $this->id              = $result->id;
             $this->block           = $result->block; 
@@ -79,15 +86,26 @@ class Block {
             $this->configdata      = $result->configdata; 
             $this->institution_id  = $result->institution_id;
             $this->role_id         = $result->role_id;
-            $this->status          = 'collapsed-box'; //todo: load status based on userconfig
+            if ($result->status === null){
+                $this->status          = 'collapsed-box'; // fallback
+            } else {
+                $this->status          = $result->status;
+            }
         }
     }
     
     public function get(){
-        $db = DB::prepare('SELECT bi.*, bl.block, bl.visible FROM block_instances AS bi, block AS bl 
-                                        WHERE bi.block_id = bl.id
-                                        AND context_id = ? AND (institution_id = ? OR institution_id = 0) ORDER BY bi.weight'); //0 == all institutions
-        $db->execute(array($this->context_id, $this->institution_id));
+        global $USER;
+        $db = DB::prepare('SELECT bi.id, bi.block_id, bi.name, bi.context_id, bi.configdata, bi.institution_id, bi.role_id,
+                                  ifnull(ck.region, bi.region) AS region, ifnull(ck.weight, bi.weight) AS weight,
+                                  ifnull(ck.visible, bl.visible) AS visible, ifnull(ck.status, bl.status) AS status, bl.block
+                            FROM block AS bl,block_instances AS bi
+                            LEFT JOIN config_blocks AS ck ON bi.id =  ck.block_instance_id
+                                WHERE bi.block_id = bl.id
+                                AND bi.context_id = ? AND (bi.institution_id = ? OR bi.institution_id = 0) 
+                                AND (ck.user_id = ? OR ck.user_id IS NULL)
+                            ORDER BY weight'); //0 == all institutions
+        $db->execute(array($this->context_id, $this->institution_id, $USER->id));
         $blocks = array();
         while($result = $db->fetchObject()) { 
             $this->id              = $result->id;
@@ -101,7 +119,12 @@ class Block {
             $this->configdata      = $result->configdata; 
             $this->institution_id  = $result->institution_id;
             $this->role_id         = $result->role_id;
-            $this->status          = 'collapsed-box'; //todo: load status based on userconfig
+            
+            if ($result->status === null){
+                $this->status          = 'collapsed-box'; // fallback
+            } else {
+                $this->status          = $result->status;
+            }
             $blocks[]              = clone $this;
         }
         return $blocks;
@@ -122,4 +145,26 @@ class Block {
         return $type_list;
     }
     
-}
+    public function config($dependency = 'sort'){
+        global $USER;
+        switch ($dependency) {
+            case 'sort':    $db = DB::prepare('SELECT COUNT(id) FROM config_blocks WHERE block_instance_id = ? AND user_id = ?');
+                            $db->execute(array($this->id, $USER->id));
+                            if($db->fetchColumn() >= 1) { 
+                                $db = DB::prepare('UPDATE config_blocks SET region = ?, weight = ? WHERE block_instance_id = ? AND user_id = ?');
+                                return $db->execute(array($this->region, $this->weight, $this->id, $USER->id));
+                            } else {
+                                $db = DB::prepare('INSERT INTO config_blocks (block_instance_id,visible,region,weight,status,user_id) VALUES (?,?,?,?,?,?)');
+                                return $db->execute(array($this->id, $this->visible, $this->region, $this->weight, $this->status, $USER->id));
+                            }
+
+
+                break;
+
+            default:
+                break;
+        }
+        
+    }
+    
+}   

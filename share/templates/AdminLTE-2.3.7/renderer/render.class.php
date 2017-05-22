@@ -1108,13 +1108,13 @@ class Render {
     /* Todo: add more config options*/
     public static function moodle_block($params){ 
         global $USER, $CFG;
-        $width  = 'col-md-4';
+        $width  = '';//'col-md-4';
         $status = '';
         foreach($params['blockdata'] as $key => $val) {
             $$key = $val;
         }
         if ($USER->role_id === $role_id OR $role_id == $CFG->settings->standard_role){
-        $html  = '<div class="'.$width.'">
+        $html  = '<div id="block_instance_'.$id.'" class="'.$width.' sortable">
                     <div class="box '.$status.' bottom-buffer-20">
                         <div class="box-header with-border">
                               <h3 class="box-title">'.$name.'</h3>
@@ -1122,8 +1122,13 @@ class Render {
                                 if (checkCapabilities('block:add', $USER->role_id, false)){
                                     $html  .= '<button class="btn btn-box-tool" data-widget="edit" onclick="formloader(\'block\',\'edit\','.$id.');"><i class="fa fa-edit"></i></button>';
                                 }
-                                $html  .= '<button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>
-                                <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                $html  .= '<button class="btn btn-box-tool" data-widget="collapse">';
+                                        if ($status == ''){
+                                            $html  .= '<i class="fa fa-compress"></i></button>';
+                                        } else {
+                                            $html  .= '<i class="fa fa-expand"></i></button>';
+                                        }
+                                    $html  .= '<button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
                               </div>
                         </div><!-- /.box-header -->
                         <div class="box-body text-center">
@@ -1153,13 +1158,13 @@ class Render {
     
     public static function html_block($params){ 
         global $USER,$CFG;
-        $width  = 'col-md-4';
+        $width  = '';//'col-md-4';
         $status = '';
         foreach($params['blockdata'] as $key => $val) {
             $$key = $val;
         }
         if ($USER->role_id === $role_id OR $role_id == $CFG->settings->standard_role){
-            $html  = '<div class="'.$width.'">
+            $html  = '<div id="block_instance_'.$id.'" class="'.$width.' sortable">
                         <div class="box '.$status.' bottom-buffer-20">
                             <div class="box-header with-border">
                                   <h3 class="box-title">'.$name.'</h3>
@@ -1167,8 +1172,13 @@ class Render {
                                     if (checkCapabilities('block:add', $USER->role_id, false)){
                                         $html  .= '<button class="btn btn-box-tool" data-widget="edit" onclick="formloader(\'block\',\'edit\','.$id.');"><i class="fa fa-edit"></i></button>';
                                     }
-                                    $html  .= '<button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>
-                                    <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                    $html  .= '<button class="btn btn-box-tool" data-widget="collapse">';
+                                        if ($status == ''){
+                                            $html  .= '<i class="fa fa-compress"></i></button>';
+                                        } else {
+                                            $html  .= '<i class="fa fa-expand"></i></button>';
+                                        }
+                                    $html  .= '<button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
                                   </div>
                             </div><!-- /.box-header -->
                             <div class="box-body">
@@ -1182,10 +1192,305 @@ class Render {
             }
         }
     }
+    public static function event_block($params){ 
+        global $USER,$CFG;
+        $width  = '';//'col-md-4';
+        $status = '';
+        foreach($params['blockdata'] as $key => $val) {
+            $$key = $val;
+        }
+        /*get upcoming events*/
+        $events = new Event();
+        $upcoming_events = $events->get('upcoming', $USER->id, '', 5);
+        if ($USER->role_id === $role_id OR $role_id == $CFG->settings->standard_role){
+            if (isset($upcoming_events)){
+                $html ='';
+                foreach ($upcoming_events AS $ue){
+                $html  .= '<div id="block_instance_'.$id.'" class="alert alert-warning alert-dismissible sortable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        <h4 class="alert-heading"><i class="fa fa-calendar"></i> '.$ue->event.'</h4>
+                        <p>'.$ue->timestart.' - '. $ue->timeend.'</p>
+                        <p>'.$ue->description.'</p><br>    
+                </div>';
+                }
+            }
+
+            if ($visible == 1){
+                return $html; 
+            }
+        }
+    }
+    public static function task_block($params){ 
+        global $USER,$CFG;
+        $width  = '';//'col-md-4';
+        $status = '';
+        foreach($params['blockdata'] as $key => $val) {
+            $$key = $val;
+        }
+        /*get upcoming events*/
+        $task          = new Task();
+        $upcoming_tasks = $task->get('upcoming', $USER->id);
+        if ($USER->role_id === $role_id OR $role_id == $CFG->settings->standard_role){
+            if (!empty($upcoming_tasks)){
+                $html ='<div id="block_instance_'.$id.'" class="box box-widget widget-user bottom-buffer-20 sortable">
+                  <div class="widget-user-header bg-green">
+                    <i class="pull-right fa fa-tasks" style="font-size: 70px;"></i>
+                    <h3 class="widget-user-username">'.$name.'</h3>
+                    <h5 class="widget-user-desc"></h5>
+                  </div>
+                  <div class="box-footer no-padding">
+                    <ul class="nav nav-stacked" style="overflow: scroll;  width: 100%; max-height: 200px;">';
+                        foreach ($upcoming_tasks AS $tsk){
+                            $html  .= '<li><a><strong>'.$tsk->task.'</strong>
+                                       <input type="checkbox" class="pull-right" onchange="processor(\'accomplish\',\'task\', '.$tsk->id.');" ';
+                                        if (isset($tsk->accomplished->status_id)){
+                                            if ($tsk->accomplished->status_id == 2){
+                                                $html  .= 'checked';
+                                            }
+                                        }
+                                        $html  .= '><p>'.$tsk->timestart.' - '.$tsk->timeend.'</p>';
+                                     
+                                if (isset($tsk->accomplished->status_id)){
+                                    if ($tsk->accomplished->status_id == 2){
+                                        $html  .= '<p class="text-green">Erledigt am '.$tsk->accomplished->accomplished_time.'</p>';
+                                    }
+                                }
+                                $html  .= '<div>'.$tsk->description.'</div>
+                                </a>
+                            </li>';
+                        }
+                    $html  .= '</ul>
+                  </div>
+                </div>';
+            }
+
+            if ($visible == 1){
+                return $html; 
+            }
+        }
+    }
+    
+    public static function statistic_block($params){ 
+        global $USER,$CFG;
+        $width  = '';//'col-md-4';
+        $status = '';
+        foreach($params['blockdata'] as $key => $val) {
+            $$key = $val;
+        }
+        /*get upcoming events*/
+        $stat_users_online   =  $USER->usersOnline($USER->institutions);  
+        $statistics         = new Statistic();
+        $stat_acc_all       = $statistics->getAccomplishedObjectives('all');  
+        $stat_acc_today     = $statistics->getAccomplishedObjectives('today');  
+        $stat_users_today   = $statistics->getUsersOnline('today');  
+        if ($USER->role_id === $role_id OR $role_id == $CFG->settings->standard_role){
+            if (isset($stat_users_online)){
+                $html ='<div id="block_instance_'.$id.'" class="box bottom-buffer-20 sortable">
+                <div class="box-header with-border">
+                  <h3 class="box-title">'.$name.'</h3>
+                  <div class="box-tools pull-right">
+                    <button class="btn btn-box-tool" data-widget="collapse">';
+                                        if ($status == ''){
+                                            $html  .= '<i class="fa fa-compress"></i></button>';
+                                        } else {
+                                            $html  .= '<i class="fa fa-expand"></i></button>';
+                                        }
+                                    $html  .= '<button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                  </div>
+                </div><!-- /.box-header -->
+                <div class="box-footer no-padding">
+                  <ul class="nav nav-pills nav-stacked" style="overflow: scroll; width: 100%; max-height: 400px;">
+                    <li><a href="#"><strong>Erreichte Ziele</strong></a></li>
+                    <li><a href="#">Gesamt <span class="pull-right text-green">'.$stat_acc_all.'</span></a></li>
+                    <li><a href="#">davon Heute <span class="pull-right text-green">'.$stat_acc_today.'</span></a></li>
+                  </ul>';
+                  
+                  if (checkCapabilities('page:showCronjob', $USER->role_id, false)){
+                    $html .=  '<ul class="nav nav-pills nav-stacked">
+                          <li><a href="#"><strong>Wiederholungen</strong></a></li>
+                          <li><a href="#">Ziele die Wiederholt werden müssen<span class="pull-right text-red">0 (deaktiviert)</span></a></li>
+                      </ul>';
+                  }
+                  $html .=  '<ul class="nav nav-pills nav-stacked">
+                    <li><a href="#"><strong>Online</strong></a></li>
+                    <li><a href="#">Jetzt online <span class="pull-right"> '.$stat_users_online.'</span></a></li>
+                    <li><a href="#">Heute <span class="pull-right"> '.$stat_users_today.'</span></a></li>
+                  </ul>
+                  
+                </div><!-- /.footer -->
+            </div><!-- /.box --> ';
+            }
+
+            if ($visible == 1){
+                return $html; 
+            }
+        }
+    }
+    
+    
+    public static function accomplishedObjectives_block($params){ 
+        global $USER,$CFG, $BOX_BG;
+        $width  = '';//'col-md-4';
+        $status = '';
+        foreach($params['blockdata'] as $key => $val) {
+            $$key = $val;
+        }
+        $acc_obj            = new EnablingObjective();
+        $enabledObjectives  = $acc_obj->getObjectiveStatusChanges(); /* Load last accomplished Objectives */
+        $statistics         = new Statistic();
+        $stat_user_all      = $statistics->getAccomplishedObjectives('user_all');
+        if ($USER->role_id === $role_id OR $role_id == $CFG->settings->standard_role){
+            $html  = '<div id="block_instance_'.$id.'" class="'.$width.' sortable">
+                        <div class="box '.$status.' bottom-buffer-20">
+                            <div class="box-header with-border">
+                            <h3 class="box-title">'.$name.'</h3>
+                            <div class="box-tools pull-right">
+                              <button class="btn btn-box-tool" data-widget="collapse">';
+                                        if ($status == ''){
+                                            $html  .= '<i class="fa fa-compress"></i></button>';
+                                        } else {
+                                            $html  .= '<i class="fa fa-expand"></i></button>';
+                                        }
+                                    $html  .= '<button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                          </div><!-- /.box-header -->
+                      <div class="box-body" style="overflow: scroll; width: 100%; max-height: 300px;">';
+                      if (isset($stat_user_all)){
+                        if ($stat_user_all > 0){
+                                $html  .= "Du hast schon <strong>$stat_user_all</strong> Ziele erreicht.<br><br>";
+                        }
+                      }    
+                      if (isset($enabledObjectives)){
+                      $html  .= 'In den vergangenen <strong>'.$USER->acc_days.'</strong> Tagen haben die folgende Ziele den Status geändert.';
+                          foreach ($enabledObjectives AS $enaid => $ena){
+                              $html  .= '<div class="callout bg-'.$ena->accomplished_status_id.'">
+                                  <p><strong>'.$ena->curriculum.'</strong><span class="badge pull-right" data-toggle="tooltip" title="Lernstand gesetzt von ...">'.$ena->accomplished_teacher.'</span></p>
+                                  '.strip_tags($ena->enabling_objective).'
+                              </div>';
+                          }
+                      } else {
+                          $html  .= '<p>In den letzten <strong>{$my_acc_days}</strong> Tagen hast du keine Ziele abgeschlossen.</p>';
+                      }
+                      $html  .= '</div>
+                        </div>
+                   </div>';
+
+            if ($visible == 1){
+                return $html; 
+            }
+        }
+    }
+    
+    public static function my_institution_block($params){ 
+        global $USER,$CFG;
+        $width  = '';//'col-md-4';
+        $status = '';
+        foreach($params['blockdata'] as $key => $val) {
+            $$key = $val;
+        }
+        $institution        = new Institution();
+        $myInstitutions     = $institution->getStatistic($USER->id); /* Institution / Schulen laden */
+        if ($USER->role_id === $role_id OR $role_id == $CFG->settings->standard_role){
+            $html  = '<div id="block_instance_'.$id.'"  class="box box-widget widget-user bottom-buffer-20 sortable">
+                      <!-- Add the bg color to the header using any of the bg-* classes -->
+                      <div class="widget-user-header bg-yellow">
+                        <i class="pull-right fa fa-university" style="font-size: 70px;"></i>
+                        <h4 class="widget-user-username">'.$name.'</h4>
+                      </div>
+                      <div class="box-footer no-padding">
+                        <ul class="nav nav-stacked" style="overflow: scroll; width: 100%; max-height: 200px;">';
+                            if ($USER->enrolments){
+                                foreach ($myInstitutions AS $insid => $ins){
+                                    $html  .= '<li><a>'.$ins->institution.'
+                                        <small class="label pull-right bg-primary">
+                                            <i class="fa fa-user" data-toggle="tooltip" title="Schüler">';
+                                                if (isset($ins->statistic['$institution_std_role'])){
+                                                    $html  .= $ins->statistic['$institution_std_role'];
+                                                } else {
+                                                    $html  .= '0';
+                                                }
+                                            $html  .= '</i>
+                                        </small>
+                                        <small class="label pull-right bg-primary margin-r-5">
+                                            <i class="fa fa-check-circle-o" data-toggle="tooltip" title="Erreichte Ziele">';
+                                                if (isset($ins->statistic['accomplished'])){
+                                                    $html  .= $ins->statistic['accomplished'];
+                                                } else {
+                                                    $html  .= '0';
+                                                }
+                                            $html  .= '</i>
+                                        </small>
+                                        <small class="label pull-right bg-primary margin-r-5">
+                                            <i class="fa fa-graduation-cap" data-toggle="tooltip" title="Lehrer">';
+                                                if (isset($ins->statistic['7'])){
+                                                    $html  .= $ins->statistic['7'];
+                                                } else {
+                                                    $html  .= '0';
+                                                }
+                                            $html  .= '</i>
+                                        </small>
+                                        <br><small>'.$ins->description.'</small>
+                                    </a></li>';
+                                }
+                            }
+                        $html  .= '</ul>
+                      </div>
+                    </div>';
+
+            if ($visible == 1){
+                return $html; 
+            }
+        }
+    }
+    
+    public static function my_class_block($params){ 
+        global $USER,$CFG;
+        $width  = '';//'col-md-4';
+        $status = '';
+        foreach($params['blockdata'] as $key => $val) {
+            $$key = $val;
+        }
+        $groups          = new Group(); 
+        $myClasses       = $groups->getGroups('user', $USER->id);
+        if ($USER->role_id === $role_id OR $role_id == $CFG->settings->standard_role){
+            $html = ''; 
+            if (isset($myClasses)){
+                
+                    $html .= '<div id="block_instance_'.$id.'" class="box box-widget widget-user bottom-buffer-20 sortable">
+                                <div class="widget-user-header bg-yellow">
+                                  <i class="pull-right fa fa-group" style="font-size: 70px;"></i>
+                                  <h3 class="widget-user-username">'.$name.'</h3>
+                                  <h5 class="widget-user-desc"></h5>
+                                </div>
+                                <div class="box-footer no-padding" id="groups_accordion">
+                                  <ul class="nav nav-stacked" style="overflow: scroll; width: 100%; max-height: 200px;">';
+                                    foreach ($myClasses AS $claid => $cla){
+                                        $html .= '<li class="panel"><a data-toggle="collapse" data-parent="#groups_accordion" href="#collapse_'.$cla->id.'">'.$cla->group. '<br><small>'.$cla->institution_id.'</small> </a>';
+                                                    if ($USER->enrolments){
+                                                        $html .= '<ul id="collapse_'.$cla->id.'" class="panel-collapse collapse">';
+                                                        foreach ($USER->enrolments AS $cur_menu){
+                                                            if ($cur_menu->group_id == $cla->id){
+                                                                $html .= '<li><a href="index.php?action=view&curriculum_id='.$cur_menu->id.'&group='.$cur_menu->group_id.'">'.$cur_menu->curriculum.' </a></li>';
+                                                            }
+                                                        }
+                                                        $html .= '</ul>';
+                                                    }
+                                        $html .= '</li>';
+                                    }    
+                                  $html .= '</ul>
+                                </div>
+                              </div>';     
+                  
+            }
+
+            if ($visible == 1){
+                return $html; 
+            }
+        }
+    }
     
     public static function blog_block($params){ 
         global $USER,$CFG;
-        $width  = 'col-md-8';
+        $width  = '';//'col-md-8';
         $height = '400px';
         $status = '';
         foreach($params['blockdata'] as $key => $val) {
@@ -1194,7 +1499,7 @@ class Render {
         $blog = new Blog();
         $blog->load($id);
         if ($USER->role_id === $role_id OR $role_id == $CFG->settings->standard_role){
-            $html  = '<div class="'.$width.'">
+            $html  = '<div id="block_instance_'.$id.'" class="'.$width.' sortable">
                         <div class="box '.$status.' bottom-buffer-20">
                             <div class="box-header with-border">
                                   <h3 class="box-title">'.$name.'</h3>
@@ -1203,8 +1508,13 @@ class Render {
                                     if (checkCapabilities('block:add', $USER->role_id, false)){
                                         $html  .= '<button class="btn btn-box-tool" data-widget="edit" onclick="formloader(\'block\',\'edit\','.$id.');"><i class="fa fa-edit"></i></button>';
                                     }
-                                    $html  .= '<button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>
-                                    <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                    $html  .= '<button class="btn btn-box-tool" data-widget="collapse">';
+                                        if ($status == ''){
+                                            $html  .= '<i class="fa fa-compress"></i></button>';
+                                        } else {
+                                            $html  .= '<i class="fa fa-expand"></i></button>';
+                                        }
+                                    $html  .= '<button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
                                   </div>
                             </div><!-- /.box-header -->
                             <div class="box-body" style="overflow: scroll; width: 100%; max-height: '.$height.';">';

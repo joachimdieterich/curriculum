@@ -55,9 +55,9 @@ switch ($func) {
                         
     case "paginator_order": SmartyPaginate::setSort(filter_input(INPUT_GET, 'order', FILTER_SANITIZE_STRING),filter_input(INPUT_GET, 'sort', FILTER_SANITIZE_STRING), filter_input(INPUT_GET, 'paginator', FILTER_SANITIZE_STRING));
         break;
-    case "paginator_checkrow":  /*if (filter_input(INPUT_GET, 'reset', FILTER_UNSAFE_RAW) == true){
+    case "paginator_checkrow":  if (filter_input(INPUT_GET, 'reset', FILTER_UNSAFE_RAW) == 'true'){
                                     SmartyPaginate::setSelection('none', filter_input(INPUT_GET, 'paginator', FILTER_SANITIZE_STRING));
-                                } */
+                                } 
                               
                                 echo json_encode(SmartyPaginate::setSelection(filter_input(INPUT_GET, 'val', FILTER_SANITIZE_STRING), filter_input(INPUT_GET, 'paginator', FILTER_SANITIZE_STRING)));
         break;
@@ -78,6 +78,28 @@ switch ($func) {
         break;
     case "paginator_view": SmartyPaginate::setView(filter_input(INPUT_GET, 'view', FILTER_UNSAFE_RAW),filter_input(INPUT_GET, 'val', FILTER_UNSAFE_RAW));
         break;
+    case "sortable":    $sortable_elements = array();
+                        foreach ($_GET['element_weight'] as $id => $weight) {
+                              $element = explode('=',$weight);
+                              $sortable_elements[substr($element[0], strrpos($element[0], '_')+1)]['weight'] = $element[1];
+                        }
+                        foreach ($_GET['element_region'] as $id => $region) {
+                              $element = explode('=',$region);
+                              $sortable_elements[substr($element[0], strrpos($element[0], '_')+1)]['region'] = $element[1];
+                        }
+                        
+                        error_log(json_encode($sortable_elements));
+                        
+                        foreach ($sortable_elements AS $key => $value){
+                            $block_config = new Block();
+                            $block_config->id       = $key;
+                            $block_config->load();
+                            $block_config->weight   = $value['weight'];
+                            $block_config->region   = $value['region'];
+                            $block_config->config('sort');
+                        }
+                        //todo write new positions to db
+                        break;
                             
     default: break;
 }

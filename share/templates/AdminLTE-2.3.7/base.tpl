@@ -48,6 +48,8 @@
         <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
         <link rel="stylesheet" href="{$template_url}css/less/skins/_all-skins.css">
         <!--link rel="stylesheet" href="{$template_url}css/skins/skin-blue-light.min.css"-->
+          <!-- Pace style -->
+        <link rel="stylesheet" href="{$template_url}plugins/pace/pace.min.css">
         <!-- Bootstrap Color Picker -->
         <link rel="stylesheet" href="{$template_url}plugins/colorpicker/bootstrap-colorpicker.min.css">
         <!-- Custom styles for this template -->
@@ -63,8 +65,8 @@
     </body>
     {else}
     
-    <body class="hold-transition skin-blue sidebar-mini" data-spy="scroll" data-target=".modal-body" style=" -webkit-overflow-scrolling:touch; overflow:auto;" > 
-        <div class="wrapper"> 
+    <body class="hold-transition fixed skin-blue sidebar-mini" data-spy="scroll" data-target=".modal-body" style=" -webkit-overflow-scrolling:touch; overflow:auto;" > 
+        <div id="body-wrapper" class="wrapper"> 
             <header class="main-header">
               <!-- Logo -->
               <a href="index.php?action=dashboard" class="logo">
@@ -259,6 +261,7 @@
     <script src="{$template_url}bootstrap/js/bootstrap.min.js"></script><!-- Bootstrap 3.3.5 -->
     <script src="{$template_url}js/app.min.js"></script><!-- AdminLTE App -->
     <script src="{$template_url}plugins/slimScroll/jquery.slimscroll.min.js"></script><!-- SlimScroll 1.3.0 -->
+    <script src="{$template_url}plugins/pace/pace.min.js"></script>
     <script src="{$media_url}scripts/curriculum.min.js"></script><!-- curriculum settings (sidebar) -->
     <script src="{$media_url}jquery.nyroModal/js/jquery.nyroModal.custom.js"></script> <!-- jquery.nyroModal -->
     <script src="{$media_url}scripts/script.min.js"></script> 
