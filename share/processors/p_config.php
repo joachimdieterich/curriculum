@@ -78,6 +78,7 @@ switch ($func) {
         break;
     case "paginator_view": SmartyPaginate::setView(filter_input(INPUT_GET, 'view', FILTER_UNSAFE_RAW),filter_input(INPUT_GET, 'val', FILTER_UNSAFE_RAW));
         break;
+    /* write positions of sortable elements to config_blocks table in db */
     case "sortable":    $sortable_elements = array();
                         foreach ($_GET['element_weight'] as $id => $weight) {
                               $element = explode('=',$weight);
@@ -88,8 +89,6 @@ switch ($func) {
                               $sortable_elements[substr($element[0], strrpos($element[0], '_')+1)]['region'] = $element[1];
                         }
                         
-                        error_log(json_encode($sortable_elements));
-                        
                         foreach ($sortable_elements AS $key => $value){
                             $block_config = new Block();
                             $block_config->id       = $key;
@@ -98,7 +97,6 @@ switch ($func) {
                             $block_config->region   = $value['region'];
                             $block_config->config('sort');
                         }
-                        //todo write new positions to db
                         break;
                             
     default: break;
