@@ -97,7 +97,17 @@ switch ($func) {
                             $block_config->region   = $value['region'];
                             $block_config->config('sort');
                         }
-                        break;
+        break;
+    case "collapse":    $block_config               = new Block();
+                        $block_config->id           = filter_input(INPUT_GET, 'val', FILTER_UNSAFE_RAW);
+                        $block_config->load();
+                        if ($block_config->status == 'collapsed-box'){
+                            $block_config->status   = '' ;
+                        } else {
+                            $block_config->status   = 'collapsed-box';
+                        }
+                        $block_config->config('collapse');
+        break;
                             
     default: break;
 }
