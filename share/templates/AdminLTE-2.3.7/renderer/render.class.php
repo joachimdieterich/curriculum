@@ -1223,6 +1223,7 @@ class Render {
         global $USER,$CFG;
         $width  = '';//'col-md-4';
         $status = '';
+        
         foreach($params['blockdata'] as $key => $val) {
             $$key = $val;
         }
@@ -1263,7 +1264,7 @@ class Render {
                 </div>';
             }
 
-            if ($visible == 1){
+            if ($visible == 1 AND isset($html)){
                 return $html; 
             }
         }
