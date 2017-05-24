@@ -46,7 +46,7 @@
         <!-- Theme style -->
         <link rel="stylesheet" href="{$template_url}css/less/AdminLTE.min.css">
         <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
-        <link rel="stylesheet" href="{$template_url}css/less/skins/_all-skins.min.css">
+        <link rel="stylesheet" href="{$template_url}css/less/skins/_all-skins.css">
         <!--link rel="stylesheet" href="{$template_url}css/skins/skin-blue-light.min.css"-->
           <!-- Pace style -->
         <link rel="stylesheet" href="{$template_url}plugins/pace/pace.min.css">
@@ -254,7 +254,7 @@
         </div><!-- ./wrapper -->
     {/if}    
 <!-- SCRIPTS-->  
-    <script src="{$lib_url}ckeditor/ckeditor.min.js"></script><!-- CK Editor -->
+    <script src="{$lib_url}ckeditor/ckeditor.js"></script><!-- CK Editor -->
     <script src="{$template_url}plugins/moment/moment.min.js"></script><!-- moment -->
     <script src="{$media_url}scripts/jquery-2.2.1.min.js"></script> <!-- jQuery 2.2.1 -->
     <script src="{$media_url}scripts/alterClass.min.js"></script> <!-- jQuery 2.2.1 -->
