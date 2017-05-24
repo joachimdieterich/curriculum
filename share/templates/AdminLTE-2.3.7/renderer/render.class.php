@@ -1538,9 +1538,8 @@ class Render {
                                                         <b>'.$value->title.'</b>
                                                         '.$value->content.'
                                                         <ul class="list-inline">
-                                                          <li><a href="#" class="link-black text-sm"><i class="fa fa-share margin-r-5"></i> Share</a></li>
-                                                          <li><a href="#" class="link-black text-sm"><i class="fa fa-thumbs-o-up margin-r-5"></i> Like</a>
-                                                          </li>
+                                                          <!--<li><a href="#" class="link-black text-sm"><i class="fa fa-share margin-r-5"></i> Share</a></li>
+                                                          <li><a href="#" class="link-black text-sm"><i class="fa fa-thumbs-o-up margin-r-5"></i> Like</a></li>-->
                                                           <li class="pull-right">
                                                             <a class="link-black text-sm" onclick="toggle([\'comments_'.$value->id.'\'])"><i class="fa fa-comments-o margin-r-5"></i> Kommentare
                                                               ('.$c_max.')</a></li>
