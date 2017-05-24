@@ -1499,7 +1499,7 @@ class Render {
         }
         $blog = new Blog();
         $blog->load($id);
-        if ($USER->role_id === $role_id OR $role_id == $CFG->settings->standard_role){
+        if ($USER->role_id === $role_id OR $role_id == $CFG->settings->standard_role OR $USER->role_id == '1'){
             $html  = '<div id="block_instance_'.$id.'" class="'.$width.' sortable">
                         <div class="box '.$status.' bottom-buffer-20">
                             <div class="box-header with-border">
