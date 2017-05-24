@@ -51,7 +51,21 @@
          {*statistic Block *}
         
         
-        {*if checkCapabilities('dashboard:editBulletinBoard', $my_role_id, false) || $bulletinBoard} 
+
+        
+       
+      
+        <!-- Additional Blocks -->   
+            {foreach key=blockid item=block from=$blocks}
+                {*html_block block=$block->block configdata=$block->configdata visible=$block->visible*}
+                {if $block->region == 'left'}
+                    {html_block blockdata=$block}
+                {/if}
+            {/foreach}  
+        </section>
+        
+        <section id="right" class="col-md-4 connectedSortable">
+            {if checkCapabilities('dashboard:editBulletinBoard', $my_role_id, false) || $bulletinBoard} 
             <div class="box bottom-buffer-20">
                 <div class="box-header with-border">
                   <h3 class="box-title">Pinnwand</h3>
@@ -72,20 +86,7 @@
                 {/if}
                 </div>
             </div>   
-        {/if*}
-        
-       
-      
-        <!-- Additional Blocks -->   
-            {foreach key=blockid item=block from=$blocks}
-                {*html_block block=$block->block configdata=$block->configdata visible=$block->visible*}
-                {if $block->region == 'left'}
-                    {html_block blockdata=$block}
-                {/if}
-            {/foreach}  
-        </section>
-        
-        <section id="right" class="col-md-4 connectedSortable">
+        {/if}
                 {*myinstitutions Block *}
                 {*myclasses Block *}
             <!-- Additional Blocks -->   

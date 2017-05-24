@@ -1122,7 +1122,7 @@ class Render {
                                 if (checkCapabilities('block:add', $USER->role_id, false)){
                                     $html  .= '<button class="btn btn-box-tool" data-widget="edit" onclick="formloader(\'block\',\'edit\','.$id.');"><i class="fa fa-edit"></i></button>';
                                 }
-                                $html  .= '<button class="btn btn-box-tool" data-widget="collapse">';
+                                $html  .= '<button class="btn btn-box-tool" data-widget="collapse" onclick="processor(\'config\',\'collapse\',\''.$id.'\');">';
                                         if ($status == ''){
                                             $html  .= '<i class="fa fa-compress"></i></button>';
                                         } else {

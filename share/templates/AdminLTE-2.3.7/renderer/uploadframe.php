@@ -66,13 +66,13 @@ if (isset($paginator) AND isset($paginator_search) AND isset($order)) {
 
 <!-- HTML -->
 <div class="uploadframeClose" onclick="self.parent.tb_remove();"></div>    
-<div class="modal-content">
+<div class="modal-content ">
     <div class="modal-header">
         <button type="button" class="close nyroModalClose" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">×</span></button>
         <h4 class="modal-title"><i class="fa fa-bars" onclick="toggle_sidebar('modal_sidebar')"></i> Dateiauswahl</h4>
     </div>
-    <div id="modal_sidebar" class="modal-body sidebar-mini" style="min-height: 450px !important;padding-left: 0px; padding-top: 0px;"> <!-- to do recalc nyroModal on changes--> 
-        <aside class="main-sidebar" style="padding-top:0px !important;">
+    <div id="modal_sidebar" class="modal-body sidebar" style="min-height: 450px !important;padding-left: 0px; padding-top: 0px; position:relative;"> <!-- to do recalc nyroModal on changes--> 
+        <aside class="main-sidebar" style="padding-top:0px !important;position: absolute !important;">
           <!-- sidebar: style can be found in sidebar.less -->
           <section class="sidebar">
             <!-- sidebar menu: : style can be found in sidebar.less -->
@@ -105,7 +105,7 @@ if (isset($paginator) AND isset($paginator_search) AND isset($order)) {
           </section>
         </aside>
       
-        <div class="content-wrapper">
+        <div class="content-wrapper" >
             <div class="bg-white">
           <?php if ($action == 'upload' OR $action == 'url'){ ?>
             <form id="uploadform" class="form-horizontal" style="padding-top:10px;padding-left: 10px;" role="form" method="post" enctype="multipart/form-data">
