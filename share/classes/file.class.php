@@ -441,19 +441,19 @@ class File {
                 break;
             case 'terminal_objective':  $db = DB::prepare('SELECT DISTINCT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                             WHERE fl.ter_id = ? AND ISNULL(fl.ena_id) AND fl.context_id = 2 AND fl.context_id = ct.context_id
-                                                            AND( fl.file_context = 1 /*Global Material*/
-                                                            OR ( fl.file_context = 2 AND fl.creator_id = ANY (SELECT user_id from institution_enrolments WHERE institution_id = ? )) /*Institutional Material*/
-                                                            OR ( fl.file_context = 3 AND fl.creator_id = ANY (SELECT user_id from groups_enrolments WHERE group_id = ANY (Select group_id from groups_enrolments WHERE user_id = ?))) /*Group Material*/
-                                                            OR ( fl.file_context = 4 AND fl.creator_id = ?)) /*My Material*/
+                                                            AND( fl.file_context = 1 
+                                                            OR ( fl.file_context = 2 AND fl.creator_id = ANY (SELECT user_id from institution_enrolments WHERE institution_id = ? )) 
+                                                            OR ( fl.file_context = 3 AND fl.creator_id = ANY (SELECT user_id from groups_enrolments WHERE group_id = ANY (Select group_id from groups_enrolments WHERE user_id = ?))) 
+                                                            OR ( fl.file_context = 4 AND fl.creator_id = ?)) 
                                                             ORDER BY fl.file_context ASC');
                 $db->execute(array($id, $USER->institution_id, $USER->id, $USER->id));
                 break;
             case 'enabling_objective':  $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                             WHERE fl.ena_id = ? AND fl.context_id = 2 AND fl.context_id = ct.context_id 
-                                                              AND( fl.file_context = 1 /*Global Material*/
-                                                              OR ( fl.file_context = 2 AND fl.creator_id = ANY (SELECT user_id from institution_enrolments WHERE institution_id = ? )) /*Institutional Material*/
-                                                              OR ( fl.file_context = 3 AND fl.creator_id = ANY (SELECT user_id from groups_enrolments WHERE group_id = ANY (SELECT group_id FROM groups_enrolments WHERE user_id = ?))) /*Group Material*/
-                                                              OR ( fl.file_context = 4 AND fl.creator_id = ?)) /*My Material*/
+                                                              AND( fl.file_context = 1 
+                                                              OR ( fl.file_context = 2 AND fl.creator_id = ANY (SELECT user_id from institution_enrolments WHERE institution_id = ? )) 
+                                                              OR ( fl.file_context = 3 AND fl.creator_id = ANY (SELECT user_id from groups_enrolments WHERE group_id = ANY (SELECT group_id FROM groups_enrolments WHERE user_id = ?))) 
+                                                              OR ( fl.file_context = 4 AND fl.creator_id = ?)) 
                                                          ORDER BY fl.file_context ASC');
                 $db->execute(array($id, $USER->institution_id, $USER->id, $USER->id));
                 break;                  
