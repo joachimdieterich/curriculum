@@ -42,11 +42,11 @@
         <link rel="stylesheet" href="{$lib_url}/font-awesome/css/font-awesome.min.css">
         <link rel="stylesheet" href="{$template_url}css/google-fonts.min.css" >
         <!-- daterangepicker -->
-        <link rel="stylesheet" href="{$template_url}plugins/daterangepicker/daterangepicker.css">
+        <link rel="stylesheet" href="{$template_url}plugins/daterangepicker/daterangepicker.min.css">
         <!-- Theme style -->
-        <link rel="stylesheet" href="{$template_url}css/less/AdminLTE.css">
+        <link rel="stylesheet" href="{$template_url}css/less/AdminLTE.min.css">
         <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
-        <link rel="stylesheet" href="{$template_url}css/less/skins/_all-skins.css">
+        <link rel="stylesheet" href="{$template_url}css/less/skins/_all-skins.min.css">
         <!--link rel="stylesheet" href="{$template_url}css/skins/skin-blue-light.min.css"-->
           <!-- Pace style -->
         <link rel="stylesheet" href="{$template_url}plugins/pace/pace.min.css">
@@ -55,7 +55,7 @@
         <!-- Custom styles for this template -->
         <!-- <link rel="stylesheet" href="{$template_url}css/all-bs.min.css">-->
         <link rel="stylesheet" href="{$template_url}css/buttons.min.css">
-        <link rel="stylesheet" href="{$media_url}jquery.nyroModal/styles/nyroModal.css" media="all">
+        <link rel="stylesheet" href="{$media_url}jquery.nyroModal/styles/nyroModal.min.css" media="all">
         {block name=additional_stylesheets}{/block}
     </head>
     
@@ -254,7 +254,7 @@
         </div><!-- ./wrapper -->
     {/if}    
 <!-- SCRIPTS-->  
-    <script src="{$lib_url}ckeditor/ckeditor.js"></script><!-- CK Editor -->
+    <script src="{$lib_url}ckeditor/ckeditor.min.js"></script><!-- CK Editor -->
     <script src="{$template_url}plugins/moment/moment.min.js"></script><!-- moment -->
     <script src="{$media_url}scripts/jquery-2.2.1.min.js"></script> <!-- jQuery 2.2.1 -->
     <script src="{$media_url}scripts/alterClass.min.js"></script> <!-- jQuery 2.2.1 -->
@@ -269,9 +269,9 @@
     <script src="{$media_url}scripts/file.min.js"></script>
     <script src="{$media_url}scripts/dragndrop.min.js"></script>
     <!-- Select2 -->
-    <link rel="stylesheet" href="{$template_url}plugins/select2/select2.css">
+    <link rel="stylesheet" href="{$template_url}plugins/select2/select2.min.css">
     <script src="{$template_url}plugins/select2/select2.min.js" type="text/javascript"></script>
-    <link rel="stylesheet" href="{$template_url}css/less/select2.css">
+    <link rel="stylesheet" href="{$template_url}css/less/select2.min.css">
 
     {block name=additional_scripts} 
     <!-- Logout - Timer  -->
