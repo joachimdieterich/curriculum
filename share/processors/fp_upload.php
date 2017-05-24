@@ -136,7 +136,7 @@ if ($my_upload->upload() OR filter_var($fileURL, FILTER_VALIDATE_URL)) {//in dat
         case 'url':     $file->filename    = $fileURL; //todo: doppelt gespeichert... muss noch optimiert werden
                         $file->path        = $fileURL; //todo: doppelt gespeichert... muss noch optimiert werden
                         $file->type        = '.url';
-                        $file->add();
+                        $file->id          = $file->add();
                         $href_mail         = $file->path;
             break;
         default:
