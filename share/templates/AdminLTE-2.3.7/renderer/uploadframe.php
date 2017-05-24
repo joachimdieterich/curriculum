@@ -129,7 +129,7 @@ if (isset($paginator) AND isset($paginator_search) AND isset($order)) {
               if ($action == 'url') { ?> 
               <span id="div_fileURLbtn" >     <!-- URLupload--><?php
                   echo Form::input_text('fileURL', 'URL', $fileURL, $error, 'http://www.curriculumonline.de'); 
-                  echo '<button name="update" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="uploadURL();"> URL hinzufügen</button><br>';
+                  echo '<button name="update_btn" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="uploadURL();" > URL hinzufügen</button><br>';
                   ?>
               </span>
               <?php } ?>
