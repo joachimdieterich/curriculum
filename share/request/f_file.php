@@ -81,7 +81,7 @@ $c        = new Context();
 $content .= Form::input_select('file_context', 'Freigabe-Level', $c->get(), 'description', 'id', $file_context , $error);
 $content .= '</form></div>';
 $content .= '<div class="col-sm-3">';
-$content .= RENDER::thumb(array('id' => $id),null,'div');
+$content .= RENDER::thumb(array('file_list' => array('id' => $id), 'tag' => 'div'));
 $content .= '</div>';
 $footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_file\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button> ';
   

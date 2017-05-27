@@ -217,7 +217,7 @@ class Render {
             default:        if (checkCapabilities('plugin:useEmbeddableGoogleDocumentViewer', $USER->role_id, false) AND !is_array(getimagesize($CFG->curriculumdata_root.$file->full_path))){
                                 $content = '<iframe src="http://docs.google.com/gview?url='.$CFG->access_token_url .$file->addFileToken($file->id).'&embedded=true" style="width:100%; height:500px;" frameborder="0"></iframe>';
                             } else {
-                                $content = RENDER::thumb(array($file->id), null, 'div');
+                                $content = RENDER::thumb(array('file_list' => array($file->id), 'tag' => 'div'));
                             }
                 break;
         }
@@ -239,7 +239,6 @@ class Render {
         
         foreach($params as $key => $val) {
             $$key = $val;
-            error_log($$key.':'.$val);
         }
         if (!is_array($file_list)){
             $file_list = array($file_list);
@@ -337,7 +336,7 @@ class Render {
                 case 'thumb':   if ($icon == true){
                                     $html .=   '<i class="'.resolveFileType($file->type).' info-box-icon"></i>';
                                 } else {
-                                    $html .=   '<div style="height: 90px;width: 90px; float:left; background: url(\''.$url.'\') center; background-size: cover; background-repeat: no-repeat;"></div>';
+                                    $html .=   '<div style="height: '.$height.';width:'.$width.'; float:left; background: url(\''.$url.'\') center; background-size: cover; background-repeat: no-repeat;"></div>';
                                     //$html .=   '<div class="info-box-icon" style="background: url(\''.$url.'\') center; background-size: cover; background-repeat: no-repeat;"></div>';
                                 }
                     break;
@@ -355,7 +354,7 @@ class Render {
         $html =   '<div class="col-lg-3 col-md-6 col-xs-12">';
                     $html .= '<a href="#" onclick="formloader(\'preview\',\'help\','.$help->id.')">
                               <div class="info-box">';
-                    $html .= RENDER::thumb(array('file_list' => $help->file_id, 'format'=> 'thumb'));  
+                    $html .= RENDER::thumb(array('file_list' => $help->file_id, 'format'=> 'thumb', 'width' => '90px', 'height' => '90px'));  
                     if (checkCapabilities('help:update', $USER->role_id, false)){
                         $html .='<a><span class="pull-right" onclick="formloader(\'help\',\'edit\','.$help->id.');"><i class="fa fa-edit margin"></i></span></a>';
                     }
@@ -386,7 +385,7 @@ class Render {
                     $html .= '<div class="thumbnail">
                                 <div class="row">
                                 <div class="col-xs-12" >';
-                    $html .= RENDER::thumb($wallet->file_id, null, null, $format='thumb');      
+                    $html .= RENDER::thumb(array('file_list' => $wallet->file_id, 'format' => 'thumb', 'height' => '90px', 'width' => '100%'));      
                     $html .= '  </div>
                                 </div>';
                     if (checkCapabilities('help:update', $USER->role_id, false)){
@@ -942,7 +941,7 @@ class Render {
     public static function thumblist($files, $target){
         $content = '<ul class="mailbox-attachments clearfix">'; //<!--onclick="processor(\'config\',\'paginator_order\',\'null\',{\'order\':\'filename\',\'sort\':\'DESC\',\'paginator\':\''.$postfix.'\'});" -->
         foreach ($files as $f) {
-            $content .= RENDER::thumb(array('id' => $f->id), $target); 
+            $content .= RENDER::thumb(array('file_list' => array('id' => $f->id), 'target' => $target)); 
         }
         $content .= '</ul>';
         return $content;
@@ -1000,7 +999,7 @@ class Render {
     public static function flist($files, $target ){
         $content = '';
         foreach ($files as $f) {
-            $content .= RENDER::thumb(array('id' => $f->id),$target,'div','xs'); 
+            $content .= RENDER::thumb(array('file_list' => array('id' => $f->id), 'target' => $target,'tag' => 'div', 'format' => 'xs')); 
         }
         //$content .= '</div>';
         return $content;

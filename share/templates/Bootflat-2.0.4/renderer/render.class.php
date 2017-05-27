@@ -253,6 +253,7 @@ class Render {
                     break;
             }
             
+            
             switch ($format) {
                 case 'normal': $html .= '<'.$tag.' id="thumb_'.$file->id.'" style="width:'.$width.'px !important; height:'.$height.'px !important;">';
                                 if ($icon == true){

@@ -62,7 +62,7 @@
                                         Du hast folgende Daten zum Lernziel {$art->title} eingereicht.
                                         <div class="box-footer">
                                             <ul class="mailbox-attachments clearfix">
-                                                {Render::thumb(array($art->id))}    
+                                                {Render::thumb(['file_list'=>$art->id])}    
                                             </ul>
                                         </div>
                                     </div>
@@ -85,7 +85,7 @@
                                         Du hast folgendes Profilbild hochgeladen.
                                         <div class="box-footer">
                                             <ul class="mailbox-attachments clearfix">
-                                                {Render::thumb(array($art->id))}    
+                                                {Render::thumb(['file_list'=>$art->id])}    
                                             </ul>
                                         </div>
                                     </div>
@@ -108,7 +108,7 @@
                                         Du hast die folgende Datei hochgeladen.
                                         <div class="box-footer">
                                             <ul class="mailbox-attachments clearfix">
-                                                {Render::thumb(array($art->id))}    
+                                                {Render::thumb(['file_list'=>$art->id])}    
                                             </ul>
                                         </div>
                                     </div>
@@ -131,7 +131,7 @@
                                         Du hast die folgende Datei für den Lehrplan "{$art->curriculum}", Lernziel: {$art->title} hochgeladen.
                                         <div class="box-footer">
                                             <ul class="mailbox-attachments clearfix">
-                                                {Render::thumb(array($art->id))}    
+                                                {Render::thumb(['file_list'=>$art->id])}    
                                             </ul>
                                         </div>
                                     </div>
@@ -154,7 +154,7 @@
                                         Du hast ein Backup des Lehrplans "{$art->curriculum}" erstellt.
                                         <div class="box-footer">
                                             <ul class="mailbox-attachments clearfix">
-                                                {Render::thumb(array($art->id))}    
+                                                {Render::thumb(['file_list'=>$art->id])}    
                                             </ul>
                                         </div>
                                     </div>
@@ -176,7 +176,7 @@
                                         Du hast Logo für eine Institution hochgeladen.
                                         <div class="box-footer">
                                             <ul class="mailbox-attachments clearfix">
-                                                {Render::thumb(array($art->id))}    
+                                                {Render::thumb(['file_list'=>$art->id])}    
                                             </ul>
                                         </div>
                                     </div>
@@ -198,7 +198,7 @@
                                         Du folgende Nachricht von <b>{$art->accomplished_teacher}</b> erhalten.<br>
                                         {$art->description}
                                         <ul class="mailbox-attachments clearfix">
-                                        {Render::thumb(Render::link($art->description, 'message'))}
+                                        {Render::thumb(['file_list'=>Render::link($art->description, 'message')])}
                                         </ul>
                                         
                                     </div>
@@ -220,7 +220,7 @@
                                         Du folgende Nachricht an {$art->accomplished_teacher} geschrieben.<br>
                                         {$art->description}
                                         <ul class="mailbox-attachments clearfix">
-                                        {Render::thumb(Render::link($art->description, 'message'))}
+                                        {Render::thumb(['file_list'=>Render::link($art->description, 'message')])}
                                         </ul>
                                     </div>
                                     {*<div class="timeline-footer">

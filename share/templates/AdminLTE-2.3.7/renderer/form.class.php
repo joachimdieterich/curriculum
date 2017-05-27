@@ -412,7 +412,7 @@ class Form {
         if (isset($preview)){
             $html .= '<span class="info-box-icon bg-aqua"><div id="modal-preview" style="height:100%;width:100%;background: url(\''.$preview.'\') center ;background-size: cover; background-repeat: no-repeat;"></div></span>'; //pull-left --> overrides align: center to top
         } else {
-           $html .= RENDER::thumb($id, null, null, 'thumb');
+           $html .= RENDER::thumb(array('file_list' => $id, 'format' => 'thumb', 'width' => '90px', 'height' => '90px'));
         }
         /* Box content */
         $html .= '<div class="info-box-content">';
