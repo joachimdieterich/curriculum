@@ -209,7 +209,7 @@
                                   {/if}
                                   {if checkCapabilities('menu:readFiles', $my_role_id, false)}
                                       <a href="{$template_url}renderer/uploadframe.php?context=userFiles{$tb_param}" data-toggle="tooltip" title="Meine Dateien" class="btn btn-default btn-flat  nyroModal">
-                                          <i class="fa fa-folder-open"></i>
+                                         <i class="fa fa-folder-open"></i>
                                       </a>
                                   {/if} 
                               </div>
