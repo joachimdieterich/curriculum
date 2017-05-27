@@ -103,7 +103,7 @@ class Block {
                             LEFT JOIN config_blocks AS ck ON bi.id =  ck.block_instance_id
                                 WHERE bi.block_id = bl.id
                                 AND bi.context_id = ? AND (bi.institution_id = ? OR bi.institution_id = 0) 
-                                AND (ck.user_id = ? OR ck.user_id IS NULL))
+                                AND (ck.user_id = ? OR ck.user_id IS NULL)
                             ORDER BY weight'); //0 == all institutions
         $db->execute(array($this->context_id, $this->institution_id, $USER->id));
         $blocks = array();
