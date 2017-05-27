@@ -96,7 +96,7 @@ class Block {
     
     public function get(){
         global $USER;
-        $db = DB::prepare('SELECT bi.id, bi.block_id, bi.name, bi.context_id, bi.configdata, bi.institution_id, bi.role_id,
+        $db = DB::prepare('SELECT DISTINCT bi.id, bi.block_id, bi.name, bi.context_id, bi.configdata, bi.institution_id, bi.role_id,
                                   ifnull(ck.region, bi.region) AS region, ifnull(ck.weight, bi.weight) AS weight,
                                   ifnull(ck.visible, bl.visible) AS visible, ifnull(ck.status, bl.status) AS status, bl.block
                             FROM block AS bl,block_instances AS bi
