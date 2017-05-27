@@ -1508,6 +1508,7 @@ class Render {
         }
         $blog = new Blog();
         $blog->load($id);
+        $author = new User();
         if ($USER->role_id === $role_id OR $role_id == $CFG->settings->standard_role OR $USER->role_id == '1'){
             $html  = '<div id="block_instance_'.$id.'" class="'.$width.' sortable">
                         <div class="box '.$status.' bottom-buffer-20">
@@ -1529,6 +1530,7 @@ class Render {
                             </div><!-- /.box-header -->
                             <div class="box-body" style="overflow: scroll; width: 100%; max-height: '.$height.';">';
                                     foreach ($blog->content as $value) {
+                                        $author->load('id', $value->creator_id);
                                         $comments = new Comment();
                                         $comments->context = 'content';
                                         $comments->reference_id = $value->id;
@@ -1536,7 +1538,7 @@ class Render {
                                         $c_max = count($c);
                                         $html  .=  '<div class="post">
                                                         <div class="user-block">
-                                                          <img class="img-circle img-bordered-sm" src="'.$CFG->access_id_url.$USER->avatar_id.'" alt="user image">
+                                                          <img class="img-circle img-bordered-sm" src="'.$CFG->access_id_url.$author->avatar_id.'" alt="user image">
                                                               <span class="username">
                                                                 <a href="#">'.$value->creator.'</a>
                                                                 <a href="#" class="pull-right btn-box-tool"></a>
