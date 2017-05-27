@@ -225,14 +225,22 @@ class Render {
         return $content;
     }
     
-    public static function thumb($file_list, $target = null, $tag = 'li', $format='normal'){
+    public static function thumb($params){/*$file_list, $target = null, $tag = 'li', $format='normal'*/
         global $USER;
-        $height   = 187;
-        $width    = 133;
-        $truncate = 15;
-        $file     = new File();
-        $html     = '';
-        $icon     = false;
+        $target     = null;
+        $tag        = 'li';
+        $format     = 'normal';
+        $height     = 187;
+        $width      = 133;
+        $truncate   = 15;
+        $file       = new File();
+        $html       = '';
+        $icon       = false;
+        
+        foreach($params as $key => $val) {
+            $$key = $val;
+            error_log($$key.':'.$val);
+        }
         if (!is_array($file_list)){
             $file_list = array($file_list);
         }
@@ -347,14 +355,14 @@ class Render {
         $html =   '<div class="col-lg-3 col-md-6 col-xs-12">';
                     $html .= '<a href="#" onclick="formloader(\'preview\',\'help\','.$help->id.')">
                               <div class="info-box">';
-                    $html .= RENDER::thumb($help->file_id, null, null, $format='thumb');  
+                    $html .= RENDER::thumb(array('file_list' => $help->file_id, 'format'=> 'thumb'));  
                     if (checkCapabilities('help:update', $USER->role_id, false)){
                         $html .='<a><span class="pull-right" onclick="formloader(\'help\',\'edit\','.$help->id.');"><i class="fa fa-edit margin"></i></span></a>';
                     }
                     if (checkCapabilities('help:add', $USER->role_id, false)){
                         $html .='<a><span class="pull-right" onclick="del(\'help\','.$help->id.');"><i class="fa fa-trash top-buffer"></i></span></a>';
                     }
-                    $html .= '<p style="padding-left:10px;">
+                    $html .= '<p style="padding-left:100px;">
                               <span class="info-box-text text-black">'.$help->category.'</span>
                               <span class="info-box-number text-black text-ellipse">'.$help->title.'</span>
                               <span class="info-box-more text-primary text-ellipse">'.$help->description.'</span>
