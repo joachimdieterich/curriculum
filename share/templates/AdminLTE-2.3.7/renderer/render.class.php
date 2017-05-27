@@ -241,13 +241,14 @@ class Render {
             $file->load();
             /* check if img*/ 
             switch ($file->type) {
-                case '.pdf': 
                 case '.bmp':    
                 case '.gif':       
                 case '.png':    
                 case '.svg':    
                 case '.jpeg':    
-                case '.jpg':    if ($file->getThumb() == false){ $url = $file->getFileUrl(); } else { $url = $file->getThumb(); }
+                case '.jpg':    if ($file->getThumb() == false){ $url = $file->getFileUrl(); } else { $url = $file->getThumb(); }          
+                    break;
+                case '.pdf':    if ($file->getThumb() == false){ $icon = true; } else { $url = $file->getThumb(); }          
                     break;
                 case '.url':    
                 default:        $icon = true;
@@ -256,7 +257,7 @@ class Render {
             
             switch ($format) {
                 case 'normal': $html .= '<'.$tag.' id="thumb_'.$file->id.'" style="width:'.$width.'px !important; height:'.$height.'px !important;">';
-                                if ($icon == true){
+                                if ($icon == true ){
                                     $html .= '<h6 class="pull-right" style="padding: 0 10px 0 5px; background-color:rgba(244, 244, 244, 0.8)" ><a href="#" data-toggle="tooltip" title="Dateigröße">'.$file->getHumanFileSize().'</a></h6>
                                               <h6 class="pull-left" style="padding: 0px 10px 0 5px; background-color:rgba(244, 244, 244, 0.8)"><a href="#" data-toggle="tooltip" title="Dateiaufrufe (Aus einem Lehrhplan)">'.$file->hits.'</a></h6>
                                               <span class="mailbox-attachment-icon" style="height:'.$width.'px"><i class="'.resolveFileType($file->type).'"></i></span>';
