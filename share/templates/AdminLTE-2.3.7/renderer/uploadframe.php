@@ -89,11 +89,6 @@ if (isset($paginator) AND isset($paginator_search) AND isset($order)) {
                   );
                   foreach($values as $value){
                       if (checkCapabilities($value['capabilities'], $USER->role_id, false)){ //don't throw exeption!
-                            if ($value['action'] != 'upload' AND !isset($first_entry)){ // don't show upload functions to users without permission
-                                $action = $value['action'];
-                                $first_entry = true;
-                            }
-                          
                           if (($value['action'] == 'curriculum' AND ($context != 'terminal_objective' AND $context != 'enabling_objective')) OR ($value['action'] == 'solution' AND $context != 'solution'))  { 
                               // do nothing
                           } else { ?>
@@ -144,7 +139,9 @@ if (isset($paginator) AND isset($paginator_search) AND isset($order)) {
               <div class="uploadframe_footer"><?php echo $copy_link; ?></div>
 
           <?php 
-          } 
+          } else {
+              echo Form::info(array('id' => 'info', 'label' => '', 'content' => 'Bitte links die gewünschte Datei-Liste wählen.'));
+          }
           ?>
               <input id="target" name="target" type="hidden" value="<?php  echo $target; ?>" />
               <input id="context" name="context" type="hidden" value="<?php echo $context; ?>" />
