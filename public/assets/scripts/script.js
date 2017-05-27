@@ -866,6 +866,7 @@ function closePopup(id){
     document.getElementById(popup).style.zIndex = 3000; // reset zIndex;
     document.getElementById(popup).innerHTML    = '<div class="modal-dialog"><div class="box"><div class="box-header"><h3 class="box-title">Loading...</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div></div>';    
 }
+
 /**
  * 
  * @param {string} id

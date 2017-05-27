@@ -412,6 +412,7 @@ function saveThumbnail($saveToDir, $imageName, $max_x, $max_y, $size = '') {
             case 'pdf' : global $CFG;
                          if (exec($CFG->settings->ghostscript_path.'gs -version') != null) { //ghostscript not available
                             exec($CFG->settings->ghostscript_path.'gs -dFirstPage=1 -dLastPage=1 -sDEVICE=pngalpha -sOutputFile='.$saveToDir.basename($imageName, '.pdf').'_t.png -r144 '.$saveToDir.$imageName);  
+                            //error_log('generate pdf thumb:'.$saveToDir.basename($imageName, '.pdf').' from'.$saveToDir.$imageName);
                          }
                          $stop  = true;
                 break;
@@ -457,7 +458,9 @@ function generateThumbnail($upload_dir, $filename, $context){
             case "userFiles":   break;
             case "curriculum":
             case "institution":
-            case "solution":    saveThumbnail($upload_dir, $filename, 150, 225,'xs');
+            case "solution":
+            case "generate_certificate":
+                                saveThumbnail($upload_dir, $filename, 150, 225,'xs');
                                 saveThumbnail($upload_dir, $filename, 534, 800,'l');
                                 break;  
             case "subjectIcon": break;
@@ -518,7 +521,6 @@ function validate_msg($v_error, $field, $return_status = false){
 function str_lreplace($search, $replace, $subject)
 {
     $pos = strrpos($subject, $search);
-
     if($pos !== false)
     {
         $subject = substr_replace($subject, $replace, $pos, strlen($search));

@@ -40,7 +40,7 @@ class Pdf {
     public $content        = ''; 
     
     
-    public function generate_certificate_from_template(){
+    public function generate_certificate_from_template($deliver = false){
         global $USER, $CFG;
         include(dirname(__FILE__).'/../libs/MPDF57/mpdf.php');
         
@@ -154,7 +154,36 @@ class Pdf {
             }
             $mpdf->WriteHTML($s_3, 2); // Print footer
             silent_mkdir($CFG->curriculumdata_root.'user/'.$USER->id.'/pdf/');
-            $mpdf->Output($CFG->curriculumdata_root.'user/'.$USER->id.'/pdf/Zertifikat_'.$user->lastname.'_'.$user->firstname.'.pdf', 'F');
+            $date = date("Y-m-d_H-i-s");
+            $mpdf->Output($CFG->curriculumdata_root.'user/'.$USER->id.'/pdf/'.$date.'_Zertifikat_'.$user->lastname.'_'.$user->firstname.'.pdf', 'F');
+            
+            if ($deliver){      //copy file to users folder
+                $file    = $CFG->curriculumdata_root.'user/'.$USER->id.'/pdf/'.$date.'_Zertifikat_'.$user->lastname.'_'.$user->firstname.'.pdf';
+                silent_mkdir($CFG->curriculumdata_root.'user/'.$user->id.'/certificates/');
+                $copy    = $CFG->curriculumdata_root.'user/'.$user->id.'/certificates/'.$date.'_Zertifikat_'.$user->lastname.'_'.$user->firstname.'.pdf';
+
+                if (!copy($file, $copy)) {
+                    error_log("error while copying $file");
+                } else {
+                    $f               = new File();
+                    $f->title        = 'Zertifikat_'.$user->lastname.'_'.$user->firstname;
+                    $f->filename     = $date.'_Zertifikat_'.$user->lastname.'_'.$user->firstname.'.pdf';
+                    $f->description  = '';
+                    $f->author       = $USER->username;
+                    $f->license      = 2;
+                    $f->type         = '.pdf';
+                    $f->path         = $user->id.'/certificates/';
+                    $f->reference_id = $user->id;
+                    $f->context_id   = 22;
+                    $f->file_context = 4;
+                    $f->creator_id   = $USER->id;
+                    
+                    if ($f->add()){
+                        generateThumbnail($CFG->curriculumdata_root.'user/'.$user->id.'/certificates/', $f->filename , $f->context_id);
+                    }
+                }
+            }
+            
             set_time_limit(30);
         }
         

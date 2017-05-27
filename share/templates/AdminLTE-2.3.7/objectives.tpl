@@ -59,7 +59,12 @@
                                             {Form::input_select('course', '', $courses, 'group, curriculum', 'id', $selected_curriculum_id, null, "window.location.assign('index.php?action=objectives&reset=true&course='+this.value);", 'Kurs / Klasse wählen...', '', 'col-sm-12')}
                                         </div>
                                         {*if $show_course != '' and $terminalObjectives != false*}{*Zertifikat*}
-                                        {if isset($certificate_templates)}{*Zertifikat*}
+                                        <div class="col-md-4 col-sm-12">
+                                            <div class='btn btn-default' onclick="formloader('generate_certificate','',{$sel_curriculum});">
+                                                <span class="fa fa-files-o" aria-hidden="true"></span> {if count($selected_user_id) > 1} Zertifikate erstellen{else} Zertifikat erstellen{/if}
+                                            </div>
+                                        </div>
+                                        {*if isset($certificate_templates)}
                                             <div id="div_print_certificate" class="hidden">
                                                 <div class="col-md-4 col-sm-12 ">
                                                     {Form::input_select('certificate_template', '', $certificate_templates, 'certificate, description', 'id', $selected_certificate_template, null, 'float-left', 'Zertifikatvorlage wählen...', '', 'col-sm-12')}   
@@ -72,7 +77,7 @@
                                                     </button>
                                                 </div>
                                            </div>
-                                        {else}<input id="certificate_template" class="hidden" value="false"/>{* hack to get js working if no user is selected *}{/if}
+                                        {else}{/if*}<input id="certificate_template" class="hidden" value="false"/>{* hack to get js working if no user is selected, todo: remve certificate_template in js not used any more *}
                                     </div>
                                 </div>
                             </form>

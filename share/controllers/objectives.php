@@ -48,7 +48,7 @@ list ($selected_curriculum_id, $selected_group) = explode('_', $selected_curricu
 $TEMPLATE->assign('sel_curriculum', $selected_curriculum_id); //only selected curriculum without group
 $TEMPLATE->assign('sel_group_id',   $selected_group); //only selected group without curriculum
  
-if (isset($_POST['printCertificate'])){
+/*if (isset($_POST['printCertificate'])){
     $TEMPLATE->assign('sel_curriculum',                 $_POST['sel_curriculum']);
     $TEMPLATE->assign('sel_group_id',                   $_POST['sel_group_id']); 
     $TEMPLATE->assign('selected_certificate_template',  $_POST['certificate_template']); 
@@ -64,7 +64,7 @@ if (isset($_POST['printCertificate'])){
     } else {
         $PAGE->message[]    = array('message' => 'Zertifikatvorlage muss gewählt werden', 'icon' => 'fa-files-o text-warning');
     }
-} 
+} */
   
 // load user list
 if ($selected_curriculum_id != '' AND !isset($_GET['ajax'])) {  
@@ -115,10 +115,10 @@ if ($selected_curriculum_id != '' AND !isset($_GET['ajax'])) {
     $sel_course     = $courses->getCourseId($selected_curriculum_id, $selected_group);
     $coursebook     = new CourseBook();
     $TEMPLATE->assign('coursebook',      $coursebook->get('course', $sel_course->id) );
-    $certificate                 = new Certificate();                               // Load certificate_templates
+    /*$certificate                 = new Certificate();                               // Load certificate_templates
     $certificate->institution_id = $USER->institutions;
     $certificate->curriculum_id  = $selected_curriculum_id;
-    $TEMPLATE->assign('certificate_templates', $certificate->getCertificates());
+    $TEMPLATE->assign('certificate_templates', $certificate->getCertificates());*/
 }
 
 // load curriculum of actual user 

@@ -84,7 +84,8 @@ if (isset($paginator) AND isset($paginator_search) AND isset($order)) {
                                    3 => array('capabilities' =>  'file:curriculumFiles',  'id' =>  'curriculumfilesbtn',  'name' => 'Aktueller Lehrplan',   'class' => 'fa  fa fa-th',     'action' => 'curriculum'), 
                                    4 => array('capabilities' =>  'file:solution',         'id' =>  'solutionfilesbtn',    'name' => 'Meine Abgaben',        'class' => 'fa  fa-clipboard', 'action' => 'solution'), 
                                    5 => array('capabilities' =>  'file:myFiles',          'id' =>  'myfilesbtn',          'name' => 'Meine Dateien',        'class' => 'fa  fa-user',      'action' => 'userfiles'), 
-                                   6 => array('capabilities' =>  'file:myAvatars',        'id' =>  'avatarfilesbtn',      'name' => 'Meine Profilbilder',   'class' => 'fa  fa-user',      'action' => 'avatar')
+                                   6 => array('capabilities' =>  'file:myAvatars',        'id' =>  'avatarfilesbtn',      'name' => 'Meine Profilbilder',   'class' => 'fa  fa-user',      'action' => 'avatar'),
+                                   7 => array('capabilities' =>  'file:myCertificates',   'id' =>  'certifiatefilesbtn',  'name' => 'Meine Zertifikate',    'class' => 'fa  fa-certificate','action' => 'certificate')
                   );
                   foreach($values as $value){
                       if (checkCapabilities($value['capabilities'], $USER->role_id, false)){ //don't throw exeption!
@@ -143,7 +144,7 @@ if (isset($paginator) AND isset($paginator_search) AND isset($order)) {
               <input id="target" name="target" type="hidden" value="<?php  echo $target; ?>" />
               <input id="context" name="context" type="hidden" value="<?php echo $context; ?>" />
               <?php
-              if (in_array($action, array('user','curriculum','userfiles','avatar'))){ 
+              if (in_array($action, array('user','curriculum','userfiles','avatar', 'certificate'))){ 
               ?>
               <div class="box-header">
                   <div class="btn-group">
@@ -206,7 +207,8 @@ if (isset($paginator) AND isset($paginator_search) AND isset($order)) {
               switch ($action) {
                   case 'user':
                   case 'userfiles':
-                  case 'avatar':      echo RENDER::filelist('uploadframe.php?action='.$action.'&context='.$context, $action, $list_format, $target, $USER->id);
+                  case 'avatar':      
+                  case 'certificate': echo RENDER::filelist('uploadframe.php?action='.$action.'&context='.$context, $action, $list_format, $target, $USER->id);
                       break;
                   case 'curriculum':
                   case 'solution':    echo RENDER::filelist('uploadframe.php?action='.$action.'&context='.$context, $action, $list_format, $target, $ref_id);
