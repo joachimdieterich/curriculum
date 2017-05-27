@@ -51,7 +51,7 @@ class Pdf {
         $enabling_objectives->curriculum_id = $this->curriculum_id;
        
         foreach($this->user_id as $key=>$member){
-            $this->content  = $this->template;
+            $this->content  = str_replace("../", "../../", $this->template); //hack to get path working --> todo: store fiele-ids in templates
             $mpdf           = new mPDF($this->font_encoding, 'A4', $this->font_size, $this->font_name);
             $stylesheet     = file_get_contents(dirname(__FILE__).'/../../public/assets/stylesheets/certificate.min.css');
             $mpdf->WriteHTML($stylesheet,1);
