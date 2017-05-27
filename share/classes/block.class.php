@@ -72,7 +72,7 @@ class Block {
                                   ifnull(ck.visible, bl.visible) AS visible, ifnull(ck.status, bl.status) AS status, bl.block
                             FROM block AS bl,block_instances AS bi
                             LEFT JOIN config_blocks AS ck ON bi.id =  ck.block_instance_id
-                                WHERE bi.block_id = bl.id AND bi.id = ? AND (ck.user_id = ? OR ck.user_id IS NULL)');
+                                WHERE bi.block_id = bl.id AND bi.id = ? AND (IFNULL(ck.user_id,?))');
         $db->execute(array($this->id, $USER->id));
         while($result = $db->fetchObject()) { 
             $this->id              = $result->id;
@@ -103,9 +103,9 @@ class Block {
                             LEFT JOIN config_blocks AS ck ON bi.id =  ck.block_instance_id
                                 WHERE bi.block_id = bl.id
                                 AND bi.context_id = ? AND (bi.institution_id = ? OR bi.institution_id = 0) 
-                                AND (ck.user_id = ? OR ck.user_id IS NULL)
+                                AND (ck.user_id = ? OR NOT EXISTS (SELECT user_id FROM config_blocks WHERE user_id = ?))
                             ORDER BY weight'); //0 == all institutions
-        $db->execute(array($this->context_id, $this->institution_id, $USER->id));
+        $db->execute(array($this->context_id, $this->institution_id, $USER->id, $USER->id));
         $blocks = array();
         while($result = $db->fetchObject()) { 
             $this->id              = $result->id;
