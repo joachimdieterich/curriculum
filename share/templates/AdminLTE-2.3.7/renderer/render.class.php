@@ -907,8 +907,9 @@ class Render {
         global $TEMPLATE;
         $file    = new File();
         $files   = $file->getFiles($dependency, $id, 'filelist_'.$dependency);
+        
         setPaginator('filelist_'.$dependency, $TEMPLATE, $files, 'fi_val', $url); //set Paginator for filelist
-        $content = '<div class="box-body scroll_list" style="overflow:auto;"><form name="'.$url.'" action="'.$url.'" method="post" enctype="multipart/form-data" >';
+        $content = '<div class="box-body scroll_list" style="overflow:auto;" ><form name="'.$url.'" action="'.$url.'" method="post" enctype="multipart/form-data" >';
                     
         switch ($view) {
                     case 'thumbs': $content .= RENDER::thumblist($files, $target);
@@ -1369,7 +1370,7 @@ class Render {
                               </div>';
                           }
                       } else {
-                          $html  .= '<p>In den letzten <strong>{$my_acc_days}</strong> Tagen hast du keine Ziele abgeschlossen.</p>';
+                          $html  .= '<p>In den letzten <strong>'.$USER->acc_days.'</strong> Tagen hast du keine Ziele abgeschlossen.</p>';
                       }
                       $html  .= '</div>
                         </div>
