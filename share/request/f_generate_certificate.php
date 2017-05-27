@@ -66,7 +66,7 @@ if (isset($_SESSION['FORM'])){
 $content   ='<form id="form_generate_certificate" class="form-horizontal" role="form" method="post" action="../share/processors/fp_generate_certificate.php"';
 if (isset($currentUrlId)){ $content .= $currentUrlId; }
 $content  .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
-$content  .= '<input type="hidden" name="curriculum_id" id="cert_id" value="'.$certificate->curriculum_id.'"/> ';
+$content  .= '<input type="hidden" name="curriculum_id" id="curriculum_id" value="'.$certificate->curriculum_id.'"/> ';
 $content  .= Form::input_select('certificate_id', 'Zertifikat', $certificates , 'certificate', 'id', $certificate_id , $error);
 $content  .= Form::info(array('id' => 'info', 'label' => 'Hinweis', 'content' => 'Wen Sie die folgende Checkbox aktivieren, wird das Zertifikat  dem Schüler / Student zusätzlich im PDF bereitgestellt und kann von diesem heruntergeladen werden.'));
 $content  .= Form::input_checkbox('deliver', 'Datei für Lerner bereitstellen?', $deliver, $error);
