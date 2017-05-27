@@ -89,9 +89,15 @@ if (isset($paginator) AND isset($paginator_search) AND isset($order)) {
                   );
                   foreach($values as $value){
                       if (checkCapabilities($value['capabilities'], $USER->role_id, false)){ //don't throw exeption!
+                          
                           if (($value['action'] == 'curriculum' AND ($context != 'terminal_objective' AND $context != 'enabling_objective')) OR ($value['action'] == 'solution' AND $context != 'solution'))  { 
                               // do nothing
-                          } else { ?>
+                          } else { 
+                              if (!isset($_GET['action']) AND !isset($setaction)){
+                                $setaction  = true;
+                                $action     = $value['action'];   
+                              }
+                              ?>
                               <li class="treeview <?php if ($action == $value['action']){echo 'active';}?>" >
                                   <a id="<?php echo $value['id']?>" 
                                      href="<?php echo $template_path.'uploadframe.php?action='.$value['action'].'&context='.$context.'&ref_id='.$ref_id.'&target='.$target.'&format='.$format;?>" 
@@ -106,7 +112,7 @@ if (isset($paginator) AND isset($paginator_search) AND isset($order)) {
           </section>
         </aside>
       
-        <div class="content-wrapper" >
+        <div class="content-wrapper" style="padding-top:0px !important; min-width:400px;" >
             <div class="bg-white">
           <?php if (($action == 'upload' AND checkCapabilities('file:upload', $USER->role_id, false)) OR ($action == 'url' AND checkCapabilities('file:uploadURL', $USER->role_id, false))){ ?>
             <form id="uploadform" class="form-horizontal" style="padding-top:10px;padding-left: 10px;" role="form" method="post" enctype="multipart/form-data">
@@ -137,11 +143,8 @@ if (isset($paginator) AND isset($paginator_search) AND isset($order)) {
               </form>    
               <p class="text ">&nbsp;<?php echo $error; ?></p>
               <div class="uploadframe_footer"><?php echo $copy_link; ?></div>
-
           <?php 
-          } else {
-              echo Form::info(array('id' => 'info', 'label' => '', 'content' => 'Bitte links die gewünschte Datei-Liste wählen.'));
-          }
+          } 
           ?>
               <input id="target" name="target" type="hidden" value="<?php  echo $target; ?>" />
               <input id="context" name="context" type="hidden" value="<?php echo $context; ?>" />
