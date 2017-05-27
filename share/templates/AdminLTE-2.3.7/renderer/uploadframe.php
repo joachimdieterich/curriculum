@@ -89,6 +89,11 @@ if (isset($paginator) AND isset($paginator_search) AND isset($order)) {
                   );
                   foreach($values as $value){
                       if (checkCapabilities($value['capabilities'], $USER->role_id, false)){ //don't throw exeption!
+                            if ($value['action'] != 'upload' AND !isset($first_entry)){ // don't show upload functions to users without permission
+                                $action = $value['action'];
+                                $first_entry = true;
+                            }
+                          
                           if (($value['action'] == 'curriculum' AND ($context != 'terminal_objective' AND $context != 'enabling_objective')) OR ($value['action'] == 'solution' AND $context != 'solution'))  { 
                               // do nothing
                           } else { ?>
@@ -108,7 +113,7 @@ if (isset($paginator) AND isset($paginator_search) AND isset($order)) {
       
         <div class="content-wrapper" >
             <div class="bg-white">
-          <?php if ($action == 'upload' OR $action == 'url'){ ?>
+          <?php if (($action == 'upload' AND checkCapabilities('file:upload', $USER->role_id, false)) OR ($action == 'url' AND checkCapabilities('file:uploadURL', $USER->role_id, false))){ ?>
             <form id="uploadform" class="form-horizontal" style="padding-top:10px;padding-left: 10px;" role="form" method="post" enctype="multipart/form-data">
               <input id="context" name="context" type="hidden" value="<?php echo $context; ?>" /> <!-- context = von wo wird das Uploadfenster aufgerufen-->
               <input id="action"  name="action"  type="hidden" value="<?php echo $action; ?>" />
