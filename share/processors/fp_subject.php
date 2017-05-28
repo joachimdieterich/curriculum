@@ -58,7 +58,8 @@ if($validated_data === false) {/* validation failed */
         $subject->update();
         $_SESSION['PAGE']->message[] = array('message' => 'Fach aktualisiert', 'icon' => 'fa-language text-success');
     } else {
-        $subject->add(); 
+        $subject->add();
+        SmartyPaginate::setTotal(SmartyPaginate::getTotal('subjectP')+1, 'subjectP');
         $_SESSION['PAGE']->target_url = SmartyPaginate::getLastPageIndexURL('subjectP'); //jump to new entry in list
         $_SESSION['PAGE']->message[] = array('message' => 'Fach hinzugefügt', 'icon' => 'fa-language text-success');
     }
