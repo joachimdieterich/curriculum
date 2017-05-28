@@ -425,7 +425,7 @@ class Render {
 
            default:         $f = new File();
                             $f->load($wallet_content->reference_id);
-                            $html  .=Render::file($f);
+                            $html  .= Render::file($f);
                break;
        }
        $html .=   '</span></div>';

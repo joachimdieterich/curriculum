@@ -112,8 +112,7 @@ $content .= Form::input_select('subject_id', 'Fach', $subjects->getSubjects(), '
 $content .= Form::input_date(array('id'=>'timerange', 'label' => 'Zeitraum' , 'time' => $timerange, 'error' => $error, 'placeholder' => '', $type = 'date'));
 $ena      = new EnablingObjective();
 $ena->curriculum_id = $curriculum_id;
-$content .= Form::input_select_multiple(array('id' => 'objective_id', 'label' => 'Kompetenzen/ Lernziele', 'select_data' => $ena->getObjectives('curriculum', $curriculum_id), 'select_label' => 'enabling_objective', 'select_value' => 'id', 'input' => $objectives, 'error' => $error));
-
+$content .= Form::input_select_multiple(array('id' => 'objective_id', 'label' => 'Kompetenzen/ Lernziele', 'select_data' => $ena->getObjectives('curriculum', $curriculum_id), 'select_label' => 'enabling_objective', 'select_value' => 'id', 'input' => $objectives, 'error' => $error)); 
 $content .= '</form>';
 $footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_wallet\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>'; 
 
