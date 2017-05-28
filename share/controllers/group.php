@@ -29,7 +29,7 @@ $TEMPLATE->assign('breadcrumb',  array('Lerngruppen' => 'index.php?action=group'
 
 $selectedCurriculum = (isset($_GET['curriculum']) && $_GET['curriculum'] != '' ? $_GET['curriculum'] : '_'); //'_' ist das Trennungszeichen 
 $TEMPLATE->assign('selectedCurriculum', $selectedCurriculum);
-$curriculum = new Curriculum();
+$curriculum         = new Curriculum();
 
 if($_POST ){ 
     $group = new Group();
@@ -44,9 +44,9 @@ if($_POST ){
                                             } else {
                                                 $cur_array = $_POST['curriculum'];
                                                 foreach($cur_array as $c) {
-                                                    $curriculum->id         = $c;
+                                                    $curriculum->id = $c;
                                                     $curriculum->load();
-                                                    $group->id = $check;
+                                                    $group->id      = $check;
                                                     $group->load();
                                                     if (isset($_POST['enrol'])){
                                                         if($group->checkEnrolment($curriculum->id ) > 0) { 
@@ -70,8 +70,6 @@ if($_POST ){
                                            
         default: break;      
     }
-    //session_reload_user(); // --> get the changes immediately  
-    
 }
 /*******************************************************************************
  * END POST / GET 

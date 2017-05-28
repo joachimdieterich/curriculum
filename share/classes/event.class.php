@@ -84,8 +84,7 @@ class Event {
         global $USER, $LOG;
         checkCapabilities('event:delete', $USER->role_id);
         $this->load();
-        $co = new Context();
-        if ($co->resolve('context', 'userFiles')->context_id == $this->context_id){ // only delete user events yet 
+        if ($_SESSION['CONTEXT']['userFiles']->context_id == $this->context_id){ // only delete user events yet 
             $LOG->add($USER->id, 'event.class.php', dirname(__FILE__), 'Delete event: '.$this->event.', creator_id: '.$this->creator_id);
             $db = DB::prepare('DELETE FROM event WHERE id = ?');
             return $db->execute(array($this->id));

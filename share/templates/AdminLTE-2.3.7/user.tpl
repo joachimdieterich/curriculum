@@ -42,7 +42,7 @@
                     {if checkCapabilities('user:userListComplete', $my_role_id, false)}
                     <div class="btn-group pull-right" role="group" aria-label="...">
                         <button type="button" class="btn btn-default" onclick="location.href='index.php?action=user&lost=true';"><a  href="#">
-                                <span class="fa fa-group" aria-hidden="true"></span> Nicht zugeordnete Benutzer</a>
+                            <span class="fa fa-group" aria-hidden="true"></span> Nicht zugeordnete Benutzer</a>
                         </button>
                     </div>
                     {/if}
@@ -79,7 +79,7 @@
                                         {Form::info(['id' => 'pw_info', 'content' => 'Neues Passwort für markierte Benutzer festlegen. Passwort muss mind. 6 Zeichen lang sein.'])}
                                         {Form::input_text('pwchange', 'Passwort', '', null, '', 'password')}
                                         {Form::input_checkbox('showpassword', 'Passwort anzeigen', '', null, 'checkbox', 'unmask(\'pwchange\', this.checked);')}
-                                        {Form::input_checkbox('confirm', 'Passwortänderung', '', null)}
+                                        {Form::input_checkbox('confirmed', 'Passwortänderung', '', null)}
                                         {Form::input_button(['id' => 'resetPassword', 'label' => 'Passwort zurücksetzen', 'icon' => 'fa fa-lock', 'class' => 'btn btn-default pull-right'])}
                                         </div>
                                     </div>

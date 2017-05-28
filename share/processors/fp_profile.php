@@ -41,8 +41,8 @@ $user->postalcode     = $_POST['postalcode'];
 $user->city           = $_POST['city']; 
 $user->country_id     = $_POST['country_id']; 
 $user->state_id       = $_POST['state_id']; 
-$user->paginator_limit  = $CFG->paginator_limit;
-$user->acc_days         = $CFG->acc_days;
+$user->paginator_limit  = $CFG->settings->paginator_limit;
+$user->acc_days         = $CFG->settings->acc_days;
 
 if (isset($_POST['confirm'])){
     $user->confirmed= 3; //Passwortänderung wird gesetzt == 3 //Wird bei der Anmeldung überprüft
@@ -58,7 +58,7 @@ if (isset($_POST['show_pw'])){
 if ($_POST['avatar_id']){ 
     $user->avatar_id    =  filter_input(INPUT_POST, 'avatar_id',   FILTER_VALIDATE_INT);
 } else {
-    $user->avatar_id    =  $CFG->standard_avatar_id;
+    $user->avatar_id    =  $CFG->settings->standard_avatar_id;
 }
 
 switch ($_POST['func']) {
@@ -103,6 +103,8 @@ if($validated_data === false) {/* validation failed */
     switch ($_POST['func']) {
         case 'new':      if ($user->add(filter_input(INPUT_POST, 'institution_id', FILTER_VALIDATE_INT), filter_input(INPUT_POST, 'group_id', FILTER_VALIDATE_INT))){
                             $_SESSION['PAGE']->message[] = array('message' => 'Benutzer hinzufgefügt', 'icon' => 'fa-user text-success');
+                            SmartyPaginate::setTotal(SmartyPaginate::getTotal('userP')+1, 'userP');
+                            $_SESSION['PAGE']->target_url = SmartyPaginate::getLastPageIndexURL('userP'); //jump to new entry in list
                          }               
             break;
         case 'editUser': 

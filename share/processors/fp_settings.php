@@ -49,15 +49,11 @@ if($validated_data === false) {/* validation failed */
     $_SESSION['FORM']->func      = $_POST['func']; 
 } else {
     switch (isset($_POST)) {
-        case isset($_POST['user_template_save']):   $context              = new Context();
-                                                    $context->resolve('context', 'userFiles');
-                                                    $config->name         = 'template';
+        case isset($_POST['user_template_save']):   $config->name         = 'template';
                                                     $config->value        = filter_input(INPUT_POST, 'template',    FILTER_UNSAFE_RAW);
-                                                    $config->context_id   = $context->context_id;
+                                                    $config->context_id   = $_SESSION['CONTEXT']['userFiles']->context_id;
                                                     $config->reference_id = $USER->id;
-
                                                     $config->set();
-        
             break;
         default:
             break;
@@ -88,9 +84,7 @@ if($validated_data === false) {/* validation failed */
                 $content->update();
             } else {
                 $content->title         = 'Signatur '.$USER->lastname;
-                $co                     = new Context();
-                $co->resolve('context', 'signature');
-                $content->context_id    = $co->context_id;
+                $content->context_id    = $_SESSION['CONTEXT']['signature']->context_id;
                 $content->file_context  = '1'; //global
                 $content->reference_id  = $USER->id;
                 $content->add();

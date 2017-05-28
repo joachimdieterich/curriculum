@@ -79,9 +79,7 @@ class WalletContent {
             foreach ($result as $key => $value) {
                 $this->$key = $value; 
             }
-            $ct     = new Context();
-            $ct->resolve('context_id', $this->context_id);
-            $this->context = $ct->context;
+            $this->context = $_SESSION['CONTEXT'][$this->context_id]->context;
                     
             return true;                                                        
         } else { 

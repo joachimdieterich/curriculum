@@ -24,8 +24,6 @@
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-include('classes/plugin.class.php');   // load plugin_base first to prevent errors in autoloader
-
 /* Klassen laden */
 /* Autoloader for classes */
 spl_autoload_register(function ($className) {

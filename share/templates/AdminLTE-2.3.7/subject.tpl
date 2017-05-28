@@ -18,8 +18,8 @@
                 <div class="box-body">
                 {if !isset($showForm) && checkCapabilities('subject:add', $my_role_id, false)}
                     <div class="btn-group" role="group" aria-label="...">
-                        <button type="button" class="btn btn-default" onclick="formloader('subject','new')"><a >
-                                <span class="fa fa-plus-circle" aria-hidden="true"></span> Fach hinzufügen</a>
+                        <button type="button" class="btn btn-default" onclick="formloader('subject','new');"><a >
+                            <span class="fa fa-plus-circle" aria-hidden="true"></span> Fach hinzufügen</a>
                         </button>
                     </div>
                 {/if}
@@ -28,8 +28,7 @@
             </div>
         </div>
     </div>
-</section>
-    
+</section>  
 {/block}
 
 {block name=sidebar}{$smarty.block.parent}{/block}

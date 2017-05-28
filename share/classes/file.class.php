@@ -119,6 +119,11 @@ class File {
      * @var int
      */
     public $enabling_objective_id; 
+    /**
+     * todo: this should replace cur_id, ter_id and ena_id in a later version. Now used for certificates
+     * @var int
+     */
+    public $reference_id;
     public $hits;
     /**
      * add file
@@ -126,14 +131,14 @@ class File {
      */
     public function add(){
         global $USER, $LOG;
-        if (checkCapabilities('file:upload', $USER->role_id, false) OR checkCapabilities('file:uploadAvatar', $USER->role_id, false));
+        if (checkCapabilities('file:upload', $USER->role_id, false) OR checkCapabilities('file:uploadAvatar', $USER->role_id, false) OR debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1) == 'generate_certificate_from_template'); //using debug_backtrace to give roles without file:upload permission the ability to deliver certificates to students
         /* SET cur_id, ter_id and ena_id NULL if not int > 0*/
         if ($this->curriculum_id < 1)        { $this->curriculum_id         = NULL; }
         if ($this->terminal_objective_id < 1){ $this->terminal_objective_id = NULL; }
         if ($this->enabling_objective_id < 1){ $this->enabling_objective_id = NULL; }
-        $db             = DB::prepare('INSERT INTO files (title, filename, description, author, license, type, path, context_id, file_context, creator_id, cur_id, ter_id, ena_id) 
-                            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)');
-        if($db->execute(array($this->title, $this->filename, $this->description, $this->author, $this->license, $this->type, $this->path, $this->context_id, $this->file_context, $USER->id, $this->curriculum_id, $this->terminal_objective_id, $this->enabling_objective_id))){
+        $db             = DB::prepare('INSERT INTO files (title, filename, description, author, license, type, path, context_id, file_context, creator_id, cur_id, ter_id, ena_id, reference_id) 
+                            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
+        if($db->execute(array($this->title, $this->filename, $this->description, $this->author, $this->license, $this->type, $this->path, $this->context_id, $this->file_context, $USER->id, $this->curriculum_id, $this->terminal_objective_id, $this->enabling_objective_id, $this->reference_id))){
             $lastInsertId = DB::lastInsertId();                 //get last insert id bevor using db again!
             $LOG->add($USER->id, 'uploadframe.php', dirname(__FILE__), 'Context: '.$this->context_id.' Upload: '.$this->path.''.$this->filename);
             $_SESSION['PAGE']->message[] = array('message' => 'Datei erfolgreich hochgeladen', 'icon' => 'fa-file text-success');
@@ -164,10 +169,7 @@ class File {
         $this->load();
         $db = DB::prepare('DELETE FROM files WHERE id=?');
         if ($db->execute(array($this->id))){/* unlink file*/
-            $co = new Context();
-            $co->resolve('id', $this->context_id);
-            $path = $CFG->curriculumdata_root.$co->path;
-
+            $path = $CFG->curriculumdata_root.$_SESSION['CONTEXT'][$this->context_id]->path;
             if ($path) {
                 $LOG->add($USER->id, 'uploadframe.php', dirname(__FILE__), 'Context: '.$this->context_id.' Delete: '.$this->path.''.$this->filename);
                 if ($this->type == ".url"){ // bei urls muss keine Datei gelöscht werden 
@@ -420,7 +422,8 @@ class File {
         foreach($params as $key => $val) {
             $$key = $val;
         }
-        $order_param = orderPaginator($paginator, array('filename'      => 'fl',
+        $order_param = orderPaginator($paginator, array('id'            => 'fl',
+                                                        'filename'      => 'fl',
                                                         'title'         => 'fl', 
                                                         'description'   => 'fl',
                                                         'creation_time' => 'fl',
@@ -440,19 +443,19 @@ class File {
                 break;
             case 'terminal_objective':  $db = DB::prepare('SELECT DISTINCT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                             WHERE fl.ter_id = ? AND ISNULL(fl.ena_id) AND fl.context_id = 2 AND fl.context_id = ct.context_id
-                                                            AND( fl.file_context = 1 /*Global Material*/
-                                                            OR ( fl.file_context = 2 AND fl.creator_id = ANY (SELECT user_id from institution_enrolments WHERE institution_id = ? )) /*Institutional Material*/
-                                                            OR ( fl.file_context = 3 AND fl.creator_id = ANY (SELECT user_id from groups_enrolments WHERE group_id = ANY (Select group_id from groups_enrolments WHERE user_id = ?))) /*Group Material*/
-                                                            OR ( fl.file_context = 4 AND fl.creator_id = ?)) /*My Material*/
+                                                            AND( fl.file_context = 1 
+                                                            OR ( fl.file_context = 2 AND fl.creator_id = ANY (SELECT user_id from institution_enrolments WHERE institution_id = ? )) 
+                                                            OR ( fl.file_context = 3 AND fl.creator_id = ANY (SELECT user_id from groups_enrolments WHERE group_id = ANY (Select group_id from groups_enrolments WHERE user_id = ?))) 
+                                                            OR ( fl.file_context = 4 AND fl.creator_id = ?)) 
                                                             ORDER BY fl.file_context ASC');
                 $db->execute(array($id, $USER->institution_id, $USER->id, $USER->id));
                 break;
             case 'enabling_objective':  $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                             WHERE fl.ena_id = ? AND fl.context_id = 2 AND fl.context_id = ct.context_id 
-                                                              AND( fl.file_context = 1 /*Global Material*/
-                                                              OR ( fl.file_context = 2 AND fl.creator_id = ANY (SELECT user_id from institution_enrolments WHERE institution_id = ? )) /*Institutional Material*/
-                                                              OR ( fl.file_context = 3 AND fl.creator_id = ANY (SELECT user_id from groups_enrolments WHERE group_id = ANY (SELECT group_id FROM groups_enrolments WHERE user_id = ?))) /*Group Material*/
-                                                              OR ( fl.file_context = 4 AND fl.creator_id = ?)) /*My Material*/
+                                                              AND( fl.file_context = 1 
+                                                              OR ( fl.file_context = 2 AND fl.creator_id = ANY (SELECT user_id from institution_enrolments WHERE institution_id = ? )) 
+                                                              OR ( fl.file_context = 3 AND fl.creator_id = ANY (SELECT user_id from groups_enrolments WHERE group_id = ANY (SELECT group_id FROM groups_enrolments WHERE user_id = ?))) 
+                                                              OR ( fl.file_context = 4 AND fl.creator_id = ?)) 
                                                          ORDER BY fl.file_context ASC');
                 $db->execute(array($id, $USER->institution_id, $USER->id, $USER->id));
                 break;                  
@@ -476,7 +479,11 @@ class File {
             case 'backup':              $db = DB::prepare('SELECT DISTINCT fl.*, ct.path AS context_path FROM files AS fl, context AS ct, curriculum_enrolments AS ce
                                                         WHERE fl.context_id = 8 AND fl.context_id = ct.context_id AND fl.cur_id = ce.curriculum_id
                                                         AND ce.group_id = ANY (SELECT gr.group_id FROM groups_enrolments AS gr WHERE gr.user_id =  ?) '.$order_param);  
-                $db->execute(array($id));
+                                        $db->execute(array($id));
+                break;
+            case 'certificate':         $db = DB::prepare('SELECT DISTINCT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+                                                            WHERE fl.context_id = 22 AND fl.context_id = ct.context_id AND fl.reference_id = ? '.$order_param);  
+                                        $db->execute(array($id));
                 break;
 
             default : break; 

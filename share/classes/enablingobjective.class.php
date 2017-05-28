@@ -192,6 +192,7 @@ class EnablingObjective {
             $db_02 = DB::prepare('SELECT COUNT(*) AS MAX FROM files AS fi WHERE ena_id = ? AND context_id = 2');
             $db_02->execute(array($result->id));
             $res_02 = $db_02->fetchObject();
+            $ext = '';
             if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
                 $ext = $CFG->repository->count(1,$result->id);
             } 
@@ -251,6 +252,7 @@ class EnablingObjective {
                                     $db_03 = DB::prepare('SELECT COUNT(*) AS MAX FROM files AS fi WHERE ena_id = ? AND context_id = 2');
                                     $db_03->execute(array($result->id));
                                     $res_03 = $db_03->fetchObject();
+                                    $ext = '';
                                     if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
                                         $ext = $CFG->repository->count(1,$result->id);
                                     } 
@@ -303,7 +305,7 @@ class EnablingObjective {
                                                         ORDER by en.terminal_objective_id, en.order_id');
                                 $db->execute(array($USER->id, $id));
                                 while($result = $db->fetchObject()) { //Prozentberechnung - Wie viele Teilnehmer (in %) waren erfolgreich
-                                    $db_01 = DB::prepare('SELECT COUNT(ge.user_id) AS cntEnroled
+                                    $db_01 = DB::prepare('SELECT COUNT(DISTINCT ge.user_id) AS cntEnroled
                                                         FROM groups_enrolments AS ge, groups AS gp, role_capabilities AS rc, institution_enrolments AS ie
                                                         WHERE ge.status = 1
                                                         AND ge.group_id = ?
@@ -314,7 +316,7 @@ class EnablingObjective {
                                     $db_01->execute(array($group, 'course:setAccomplishedStatus'));
                                     $cntEnroled = $db_01->fetchObject();
                                     //Anzahl der Teilnehmer, die das Ziel erfolgreich abgeschlossen haben. 
-                                    $db_02 = DB::prepare('SELECT COUNT(ua.user_id) AS anzAccomplished
+                                    $db_02 = DB::prepare('SELECT COUNT(DISTINCT ua.user_id) AS anzAccomplished
                                                         FROM role_capabilities AS rc,institution_enrolments AS ie, groups AS gp, groups_enrolments AS gr, user_accomplished AS ua
                                                         WHERE gr.user_id = ua.user_id 
                                                         AND ua.reference_id = ?
@@ -379,7 +381,7 @@ class EnablingObjective {
                                 while($result = $db->fetchObject()) { //Prozentberechnung - Wie viele der ausgewählten Teilnehmer (in %) waren erfolgreich
                                     $cntEnroled = count($group);
                                     //Anzahl der Teilnehmer, die das Ziel erfolgreich abgeschlossen haben. Status 01
-                                    $db_02 = DB::prepare('SELECT COUNT(ua.user_id) AS anzAccomplished
+                                    $db_02 = DB::prepare('SELECT COUNT(DISTINCT ua.user_id) AS anzAccomplished
                                                         FROM role_capabilities AS rc, groups AS gp, groups_enrolments AS ge, institution_enrolments AS ie, user_accomplished AS ua
                                                         INNER JOIN users AS us ON ua.user_id = us.id
                                                         WHERE ua.reference_id = ?
@@ -396,7 +398,7 @@ class EnablingObjective {
                                     $anz_status_01 = $res_01->anzAccomplished;
                                     
                                     //Anzahl der Teilnehmer, die das Ziel erfolgreich abgeschlossen haben. Status 02
-                                    $db_03 = DB::prepare('SELECT COUNT(ua.user_id) AS anzAccomplished
+                                    $db_03 = DB::prepare('SELECT COUNT(DISTINCT ua.user_id) AS anzAccomplished
                                                         FROM role_capabilities AS rc, groups AS gp, groups_enrolments AS ge, institution_enrolments AS ie, user_accomplished AS ua
                                                         INNER JOIN users AS us ON ua.user_id = us.id
                                                         WHERE ua.reference_id = ?
@@ -412,7 +414,7 @@ class EnablingObjective {
                                     $res_02 = $db_03->fetchObject();
                                     $anz_status_02 = $res_02->anzAccomplished;
                                     
-                                    $db_04 = DB::prepare('SELECT COUNT(ua.user_id) AS anzAccomplished
+                                    $db_04 = DB::prepare('SELECT COUNT(DISTINCT ua.user_id) AS anzAccomplished
                                                         FROM role_capabilities AS rc,  groups AS gp, groups_enrolments AS ge, institution_enrolments AS ie, user_accomplished AS ua
                                                         INNER JOIN users AS us ON ua.user_id = us.id
                                                         WHERE ua.reference_id = ?

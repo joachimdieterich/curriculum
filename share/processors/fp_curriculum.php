@@ -78,6 +78,8 @@ if($validated_data === false) {/* validation failed */
 } else {
     switch ($_POST['func']) {
         case 'new':     if ($curriculum->add()){
+                            SmartyPaginate::setTotal(SmartyPaginate::getTotal('curriculumP')+1, 'curriculumP');
+                            $_SESSION['PAGE']->target_url = SmartyPaginate::getLastPageIndexURL('curriculumP'); //jump to new entry in list
                             $_SESSION['PAGE']->message[] = array('message' => 'Lehrplan hinzufgefügt', 'icon' => 'fa-th text-success');
                          }               
             break;
@@ -89,6 +91,8 @@ if($validated_data === false) {/* validation failed */
         case 'import':  if (isset($_POST['importFileName'])){
                             $file = $CFG->backup_root.''. filter_input(INPUT_POST, 'importFileName', FILTER_UNSAFE_RAW);
                             if ($curriculum->import($file)){
+                                SmartyPaginate::setTotal(SmartyPaginate::getTotal('curriculumP')+1, 'curriculumP');
+                                $_SESSION['PAGE']->target_url = SmartyPaginate::getLastPageIndexURL('curriculumP'); //jump to new entry in list
                                 $_SESSION['PAGE']->message[] = array('message' => 'Lehrplan erfolgreich importiert', 'icon' => 'fa-th text-success');
                             }
                         } 

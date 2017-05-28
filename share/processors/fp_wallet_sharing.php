@@ -54,12 +54,10 @@ if($validated_data === false) {/* validation failed */
     $wallet_sharing->wallet_id   = filter_input(INPUT_POST, 'id',          FILTER_VALIDATE_INT);
     $wallet_sharing->permission  = filter_input(INPUT_POST, 'permission',  FILTER_VALIDATE_INT);    
     $wallet_sharing->timerange   = filter_input(INPUT_POST, 'timerange',   FILTER_UNSAFE_RAW); // copy timestart and timeend from timerage
-    $context = new Context();
     
     /* Sharing wallet with user(s)*/
     if (isset($_POST['user_list'])){
-        $context->resolve('context', 'userFiles');
-        $wallet_sharing->context_id = $context->context_id;
+        $wallet_sharing->context_id = $_SESSION['CONTEXT']['userFiles']->context_id;
         foreach ($_POST['user_list'] as $wallet_sharing->reference_id) {
             if ($wallet_sharing->add()){
             $_SESSION['PAGE']->message[] = array('message' => 'Sammelmappe geteilt', 'icon' => 'fa-share-alt text-success');
@@ -68,17 +66,10 @@ if($validated_data === false) {/* validation failed */
     }
     
     /* Sharing wallet with groups(s)*/
-    if (isset($_POST['group_list'])){
-        $context->resolve('context', 'group');
-        $wallet_sharing->context_id = $context->context_id;
-    }
+    if (isset($_POST['group_list'])){       $wallet_sharing->context_id = $_SESSION['CONTEXT']['group']->context_id; }
     
     /* Sharing wallet with institution(s)*/
-    if (isset($_POST['institution_list'])){
-        $context->resolve('context', 'institution');
-        $wallet_sharing->context_id = $context->context_id;
-        
-    }
+    if (isset($_POST['institution_list'])){ $wallet_sharing->context_id = $_SESSION['CONTEXT']['institution']->context_id; }
     
     $_SESSION['FORM']            = null;                     // reset Session Form object 
 }

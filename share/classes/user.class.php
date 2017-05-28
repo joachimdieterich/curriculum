@@ -173,6 +173,13 @@ class User {
      */
     public $token;
     /**
+     * authentication method 
+     * default = manuell
+     * @var string
+     */
+    public $auth = 'manual';
+    
+    /**
      * percentage of curriculum completion
      * @var int 
      */
@@ -209,6 +216,9 @@ class User {
             $db = DB::prepare('SELECT * FROM users WHERE '.$key.' = ?');
             $db->execute(array($user_value));
             $result = $db->fetchObject();
+        }
+        if (!$result){                                                          // return if $result is empty
+            return false;
         }
         $this->id                = $result->id;
         $this->username          = $result->username;
@@ -249,7 +259,6 @@ class User {
         if ($enrolments){    // Die folgenden Daten nur laden wenn benötigt --> Geschwindigkeit
             $this->enrolments    = $this->get_curriculum_enrolments();
             $this->institutions  = $this->get_instiution_enrolments();
-        
             if ($this->semester_id == NULL AND $this->enrolments != false){
                $this->semester_id    = $this->enrolments[0]->semester_id;
                $semester             = new Semester($this->semester_id);
@@ -288,6 +297,7 @@ class User {
         } else {
             $this->token             = $result->token;   
         }
+        $this->auth                 = $result->auth;
     }
     public function set($dependency, $value, $id = NULL){
         if ($id == null){ $id = $this->id; }
@@ -307,23 +317,29 @@ class User {
     * @return mixed 
     */
     public function add($institution_id, $group_id = null){ 
-        global $USER, $PAGE; 
+        global $USER, $PAGE, $CFG; 
         checkCapabilities('user:addUser', $USER->role_id);
         $db = DB::prepare('SELECT COUNT(id) FROM users WHERE UPPER(username) = UPPER(?)');
         $db->execute(array($this->username));
         if($db->fetchColumn() >= 1) { 
             $PAGE->message[] = array('message' => 'Benutzer '.$this->firstname.' '.$this->lastname.'('.$this->username.') existiert bereits', 'icon' => 'fa fa-user text-warning');// Schließen und speichern
         } else {
-            $db = DB::prepare('INSERT INTO users (username,firstname,lastname,email,postalcode,city,state_id,country_id,avatar_id,password,confirmed,creator_id,paginator_limit,acc_days) 
-                                            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
-            if($db->execute(array($this->username,$this->firstname,$this->lastname,$this->email,$this->postalcode,$this->city,$this->state_id,$this->country_id,intval($this->avatar_id),md5($this->password),$this->confirmed,$USER->id,$this->paginator_limit,$this->acc_days))){
-                $this->id = DB::lastInsertId();                                 
-                $this->enroleToInstitution($institution_id);                    // enrol to institution
-                if (is_int($group_id)){                                         // enrol to group if id is set
-                    $db_01 = DB::prepare('SELECT COUNT(id) FROM groups WHERE id = ? AND institution_id = ?'); //check if group is enroled to given institution
-                    $db_01->execute(array($group_id, $institution_id));
-                    if($db_01->fetchColumn() >= 1) {
-                        $this->enroleToGroup(array($group_id));
+            if (!isset($this->paginator_limit)){ $this->paginator_limit = $CFG->settings->paginator_limit; } //fallback
+            if (!isset($this->acc_days))       { $this->acc_days        = $CFG->settings->acc_days; }        //fallback
+            $db = DB::prepare('INSERT INTO users (username,firstname,lastname,email,postalcode,city,state_id,country_id,avatar_id,password,confirmed,creator_id,paginator_limit,acc_days,auth) 
+                                            VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
+            if($db->execute(array($this->username,$this->firstname,$this->lastname,$this->email,$this->postalcode,$this->city,$this->state_id,$this->country_id,intval($this->avatar_id),md5($this->password),$this->confirmed,$USER->id,$this->paginator_limit,$this->acc_days,$this->auth))){
+                $this->id = DB::lastInsertId();  
+                if (is_array($institution_id)){                                     
+                    $this->enroleToInstitutions($institution_id);                    //enrol to multiple Institutions
+                } else {
+                    $this->enroleToInstitution($institution_id);                    // enrol to one Institution
+                    if (is_int($group_id)){                                         // enrol to group if id is set
+                        $db_01 = DB::prepare('SELECT COUNT(id) FROM groups WHERE id = ? AND institution_id = ?'); //check if group is enroled to given institution
+                        $db_01->execute(array($group_id, $institution_id));
+                        if($db_01->fetchColumn() >= 1) {
+                            $this->enroleToGroup(array($group_id));
+                        }
                     }
                 }
                 $PAGE->message[] = array('message' => 'Der Benutzer <strong>'.$this->username.'</strong> wurde erfolgreich angelegt.', 'icon' => 'fa fa-user text-success');// Schließen und speichern
@@ -504,6 +520,17 @@ class User {
     }
     
     /**
+     * enrol user to multiple institutions
+     * @param array $institution_enrolments
+     */
+    public function enroleToInstitutions($institution_enrolments){
+        foreach ($institution_enrolments AS $value) {
+            $this->role_id = $value['role_id'];
+            $this->enroleToInstitution($value['institution_id']);
+        }
+    }
+    
+    /**
      * enrole user to institution
      * @global object $USER
      * @param int $institution_id
@@ -519,7 +546,7 @@ class User {
         $role = new Roles();
         if ($role->checkRoleOrder($this->role_id) === null) {
             $PAGE->message[] = array('message' => 'Rolle für '.$this->username.' wurde wegen fehlender Berechtigung auf die Standard-Rolle zurückgesetzt.', 'icon' => 'fa fa-group text-warning');// Schließen und speichern
-            $this->role_id    = $CFG->standard_role; 
+            $this->role_id    = $CFG->settings->standard_role; 
         } 
         
         if($this->checkInstitutionEnrolment($institution_id) > 0) {
@@ -622,7 +649,7 @@ class User {
         foreach($params as $key => $val) {
             $$key = $val;
         }
-        global $CFG, $USER, $PAGE;
+        global $CFG, $USER, $PAGE, $_SESSION;
         checkCapabilities('menu:readuserImport', $USER->role_id);
         $row = 1;   //row counter
         ini_set("auto_detect_line_endings", true);
@@ -643,28 +670,65 @@ class User {
                         if ($data[$c] == "state_id")   { $state_position          = $c; }
                         if ($data[$c] == "country_id") { $country_position        = $c; }
                         if ($data[$c] == "avatar_id")  { $avatar_position         = $c; }
-                        if ($data[$c] == "group_id")   { $group_position          = $c;  }
+                        if ($data[$c] == "group_id")   { $group_id_position       = $c; }
+                        if ($data[$c] == "group")      { $group_position          = $c; }
+                        if ($data[$c] == "grade_id")   { $grade_id_position       = $c; }
+                        if ($data[$c] == "semester_id"){ $semester_id_position    = $c; }          
                     }    
                 }
                 $row++; //Tielzeile überspringen
                 if ($row > 2) {	
-                    $this->role_id = $CFG->standard_role; //reset role id to avoid wrong permissions 
+                    $this->role_id = $CFG->settings->standard_role; //reset role id to avoid wrong permissions 
                     if (!isset($username_position))       { $this->username   = ''; }                         else { $this->username   = $data[$username_position]; }
                     if (!isset($firstname_position))      { $this->firstname  = ''; }                         else { $this->firstname  = $data[$firstname_position]; }
                     if (!isset($lastname_position))       { $this->lastname   = ''; }                         else { $this->lastname   = $data[$lastname_position]; }
                     if (!isset($email_position))          { $this->email      = ''; }                         else { $this->email      = trim($data[$email_position]); } //trim da sonst bei Leerzeichen die Validierung fehlschlägt!
                     if (!isset($postalcode_position))     { $this->postalcode = ''; }                         else { $this->postalcode = $data[$postalcode_position]; }
                     if (!isset($city_position))           { $this->city       = ''; }                         else { $this->city       = $data[$city_position]; }
-                    if (!isset($state_position))          { $this->state_id   = $CFG->standard_state; }       else { $this->state_id   = $data[$state_position]; }
-                    if (!isset($country_position))        { $this->country_id = $CFG->standard_country; }     else { $this->country_id = $data[$country_position]; }
-                    if (!isset($avatar_position))         { $this->avatar_id  = $CFG->standard_avatar_id; }   else { $this->avatar_id  = $data[$avatar_position]; }
+                    if (!isset($state_position))          { $this->state_id   = $CFG->settings->standard_state; }       else { $this->state_id   = $data[$state_position]; }
+                    if (!isset($country_position))        { $this->country_id = $CFG->settings->standard_country; }     else { $this->country_id = $data[$country_position]; }
+                    if (!isset($avatar_position))         { $this->avatar_id  = $CFG->settings->standard_avatar_id; }   else { $this->avatar_id  = $data[$avatar_position]; }
                     if (!isset($password_position))       { $this->password   = 'password'; }                 else { $this->password   = $data[$password_position]; } //todo: besser Fehlermeldung, wenn Passwort nicht gesetzt
                     if (!isset($role_id_position))        { 
-                        if (isset($role_id)){ $this->role_id  = $role_id; } else { $this->role_id  = $CFG->standard_role; }
+                        if (isset($role_id)){ $this->role_id  = $role_id; } else { $this->role_id  = $CFG->settings->standard_role; }
                     } else { 
                         $this->role_id    = $data[$role_id_position]; // security check moved to institution enrolmenT                        
                     }
-                    if (!isset($group_position))          { $current_group_id = $group_id; }                  else { $current_group_id = $data[$group_position]; }
+                    if (!isset($group_position)){       // if no group is set check if group_id is set -> if this is also not set, use $group_id
+                        if (!isset($group_id_position))  { $current_group_id = $group_id; }                  else { $current_group_id = $data[$group_id_position]; }
+                    } else {
+                        //check if group exists in db
+                        $gp = new Group();
+                        if ($data[$group_position] != ''){
+                            $gp->group = $data[$group_position];
+                        } else {
+                            $gp->group = 'New Group';
+                        }
+                        if (!isset($semester_id_position)) { 
+                            $gp->semester_id = $_SESSION['USER']->semester_id;  //if semester_id is not set use current semester_id
+                        } else { 
+                            $gp->semester_id = $data[$semester_id_position]; 
+                        } 
+                        /* institution */
+                        $gp->institution_id = $institution_id;
+                        /* grade */
+                        if (!isset($grade_id_position)) {
+                            $gr = new Grade();
+                            $gr->load('institution_id', $gr->institution_id);
+                            if ($gr->id == false){ // no grades in this institution --> use global grades
+                                $gr->load('institution_id', 0);  
+                            }
+                            $gp->grade_id = $gr->id; //get a grade_id of institution --> todo: user should chose grade if not set
+                        } else { 
+                            $gp->grade_id = $data[$grade_id_position]; 
+                        }
+                        
+                        if ($gp->add()){        
+                            $current_group_id = $gp->id; //get new group_id
+                        } else {
+                            $current_group_id = $gp->id; //get existing group_id
+                        }
+                    }
                     if (!isset($confirmed_position))      { $this->confirmed  = '3'; }                        else { $this->confirmed  = $data[$confirmed_position]; } 
 
                     $validated_data = $this->validate();
@@ -693,7 +757,8 @@ class User {
      */
     public function userList($dependency = 'institution', $paginator = '', $lost = false){
         global $USER;
-        $order_param = orderPaginator($paginator, array('username'  => 'us',
+        $order_param = orderPaginator($paginator, array('id'        => 'us',
+                                                        'username'  => 'us',
                                                         'firstname' => 'us',
                                                         'lastname'  => 'us',
                                                         'email'     => 'us', 
@@ -873,7 +938,8 @@ class User {
      */
     public function getUsers($dependency = null, $paginator = '', $id = null, $group = null){
         global $USER, $CFG;
-        $order_param = orderPaginator($paginator, array('username'  => 'us', 
+        $order_param = orderPaginator($paginator, array('id'  => 'us', 
+                                                        'username'  => 'us', 
                                                         'firstname' => 'us', 
                                                         'lastname'  => 'us'
                                                     ));
@@ -909,10 +975,11 @@ class User {
                                                 AND ie.status = 1
                                                 AND ge.group_id = ?                                                      
                                                 AND ge.status = 1 
+                                                AND ie.role_id = (SELECT id FROM roles where id = ?)
                                                 AND gr.institution_id = ie.institution_id
                                                 AND gr.id = ge.group_id
                                                 '.$order_param);
-                            $db->execute(array($id, $group)); 
+                            $db->execute(array($id, $group, 0)); 
                             while($result = $db->fetchObject()) {  
                                     $this->id           = $result->id;
                                     $this->username     = $result->username;
@@ -926,7 +993,7 @@ class User {
                                     // get online status 
                                     if (checkCapabilities('dashboard:globalAdmin', $USER->role_id, FALSE)){ //todo add capability for online status
                                         $timestamp = (time()-strtotime($result->last_action));
-                                        $timeout   = ($CFG->timeout)*60;
+                                        $timeout   = ($CFG->settings->timeout)*60;
                                         if (intval($timestamp) <= intval($timeout)){
                                             $this->online       = 'online';
                                         } else {
@@ -1025,7 +1092,7 @@ class User {
         $db->execute(array($this->id));
         //get users online
         $db = DB::prepare('SELECT COUNT(id) FROM users WHERE TIMESTAMPDIFF(MINUTE,last_action,NOW()) < ?');
-        $db->execute(array($CFG->timeout));
+        $db->execute(array($CFG->settings->timeout));
         return $db->fetchColumn();
     }
     
@@ -1035,7 +1102,7 @@ class User {
         $db->execute(array($this->id));
         $this->last_action = $db->fetchColumn();
         //set last_action
-        $min= intval($CFG->timeout);
+        $min= intval($CFG->settings->timeout);
         $db = DB::prepare("UPDATE users SET last_action = TIMESTAMPADD(MINUTE,-$min, ?) WHERE id = ?");
         $db->execute(array($this->last_action, $this->id));
    }
@@ -1150,7 +1217,7 @@ class User {
         if (isset($file->filename)){
            return $file->full_path;
         } else {
-            return $CFG->standard_avatar;
+            return $CFG->settings->standard_avatar;
         }
     }
     

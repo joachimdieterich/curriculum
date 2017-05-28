@@ -46,7 +46,7 @@ if ($user->exists('username', $_SERVER[$shib_config->username])){
 
     $_SESSION['username']   = $_SERVER[$shib_config->username];
     $_SESSION['timein']     = time();
-    $user->load('username', $_SERVER[$shib_config->username], true);
+    $user->load('username', $_SERVER[$shib_config->username], false);
 
     $user->setLastLogin();
     session_reload_user();

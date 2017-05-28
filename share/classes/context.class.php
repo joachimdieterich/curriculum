@@ -38,26 +38,50 @@ class Context {
     public $context_id; 
     
     public $description; 
+    public $path;
     
     
-    public function get($id = NULL){
+    public function get($depedency = 'file_context', $id = NULL){
+        global $USER;
         $context = array();
-        if ($id != NULL){
-            $db = DB::prepare('SELECT * FROM file_context WHERE id = ?');
-            $db->execute(array($id));
-        } else {
-            $db = DB::prepare('SELECT * FROM file_context');
-            $db->execute();   
-        } 
-        while($result = $db->fetchObject()) {
-            $this->id          = $result->id;
-            $this->context     = $result->context;
-            $this->description = $result->description;
-            $context[$result->context]         = clone $this;   
+        switch ($depedency) {
+            case 'file_context':    if ($id != NULL){
+                                        $db = DB::prepare('SELECT * FROM file_context WHERE id = ?');
+                                        $db->execute(array($id));
+                                    } else {
+                                        $db = DB::prepare('SELECT * FROM file_context');
+                                        $db->execute();   
+                                    } 
+                                    while($result = $db->fetchObject()) {
+                                        if (checkCapabilities('file:uploadContext'.ucfirst($result->context), $USER->role_id, false) OR $result->context == 'user'){
+                                            $this->id          = $result->id;
+                                            $this->context     = $result->context;
+                                            $this->description = $result->description;
+                                            $context[$result->context]         = clone $this;
+                                        }
+                                    }
+                break;
+            case 'context':         $db = DB::prepare('SELECT * FROM context');
+                                    $db->execute();   
+                                    while($result = $db->fetchObject()) {
+                                            $this->id            = $result->id;
+                                            $this->context       = $result->context;
+                                            $this->context_id    = $result->context_id;
+                                            $this->path          = $result->path;
+                                            $context[$result->context] = clone $this; 
+                                            $context[$result->id]      = clone $this; // double saved to be able to resolve by context and id
+                                    }             
+                break;
+
+            default:
+                break;
         }
+           
         return $context;
         
     }
+    
+   
     
     public function resolve($dependency = 'context', $id){
         $db = DB::prepare('SELECT * FROM context WHERE '.$dependency.' = ?');

@@ -42,18 +42,20 @@
         <link rel="stylesheet" href="{$lib_url}/font-awesome/css/font-awesome.min.css">
         <link rel="stylesheet" href="{$template_url}css/google-fonts.min.css" >
         <!-- daterangepicker -->
-        <link rel="stylesheet" href="{$template_url}plugins/daterangepicker/daterangepicker.css">
+        <link rel="stylesheet" href="{$template_url}plugins/daterangepicker/daterangepicker.min.css">
         <!-- Theme style -->
-        <link rel="stylesheet" href="{$template_url}css/less/AdminLTE.css">
+        <link rel="stylesheet" href="{$template_url}css/less/AdminLTE.min.css">
         <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
         <link rel="stylesheet" href="{$template_url}css/less/skins/_all-skins.css">
         <!--link rel="stylesheet" href="{$template_url}css/skins/skin-blue-light.min.css"-->
+          <!-- Pace style -->
+        <link rel="stylesheet" href="{$template_url}plugins/pace/pace.min.css">
         <!-- Bootstrap Color Picker -->
         <link rel="stylesheet" href="{$template_url}plugins/colorpicker/bootstrap-colorpicker.min.css">
         <!-- Custom styles for this template -->
         <!-- <link rel="stylesheet" href="{$template_url}css/all-bs.min.css">-->
         <link rel="stylesheet" href="{$template_url}css/buttons.min.css">
-        <link rel="stylesheet" href="{$media_url}jquery.nyroModal/styles/nyroModal.css" media="all">
+        <link rel="stylesheet" href="{$media_url}jquery.nyroModal/styles/nyroModal.min.css" media="all">
         {block name=additional_stylesheets}{/block}
     </head>
     
@@ -63,8 +65,8 @@
     </body>
     {else}
     
-    <body class="hold-transition skin-blue sidebar-mini" data-spy="scroll" data-target=".modal-body"> 
-        <div class="wrapper"> 
+    <body class="hold-transition fixed skin-blue sidebar-mini" data-spy="scroll" data-target=".modal-body" style=" -webkit-overflow-scrolling:touch; overflow:auto;" > 
+        <div id="body-wrapper" class="wrapper"> 
             <header class="main-header">
               <!-- Logo -->
               <a href="index.php?action=dashboard" class="logo">
@@ -205,9 +207,9 @@
                                   {if checkCapabilities('user:update', $my_role_id, false)}
                                       <a href="#" class="btn btn-default btn-flat  pull-left" onclick="formloader('profile', 'edit');" data-toggle="tooltip" title="Profil bearbeiten"><i class="fa fa-user"></i></a>
                                   {/if}
-                                  {if checkCapabilities('file:upload', $my_role_id, false)}
-                                      <a href="../share/templates/AdminLTE-2.3.7/renderer/uploadframe.php?context=userFiles{$tb_param}" data-toggle="tooltip" title="Meine Dateien" class="btn btn-default btn-flat  nyroModal">
-                                          <i class="fa fa-folder-open"></i>
+                                  {if checkCapabilities('menu:readFiles', $my_role_id, false)}
+                                      <a href="{$template_url}renderer/uploadframe.php?context=userFiles{$tb_param}" data-toggle="tooltip" title="Meine Dateien" class="btn btn-default btn-flat  nyroModal">
+                                         <i class="fa fa-folder-open"></i>
                                       </a>
                                   {/if} 
                               </div>
@@ -259,6 +261,7 @@
     <script src="{$template_url}bootstrap/js/bootstrap.min.js"></script><!-- Bootstrap 3.3.5 -->
     <script src="{$template_url}js/app.min.js"></script><!-- AdminLTE App -->
     <script src="{$template_url}plugins/slimScroll/jquery.slimscroll.min.js"></script><!-- SlimScroll 1.3.0 -->
+    <script src="{$template_url}plugins/pace/pace.min.js"></script>
     <script src="{$media_url}scripts/curriculum.min.js"></script><!-- curriculum settings (sidebar) -->
     <script src="{$media_url}jquery.nyroModal/js/jquery.nyroModal.custom.js"></script> <!-- jquery.nyroModal -->
     <script src="{$media_url}scripts/script.min.js"></script> 
@@ -266,9 +269,9 @@
     <script src="{$media_url}scripts/file.min.js"></script>
     <script src="{$media_url}scripts/dragndrop.min.js"></script>
     <!-- Select2 -->
-    <link rel="stylesheet" href="{$template_url}plugins/select2/select2.css">
+    <link rel="stylesheet" href="{$template_url}plugins/select2/select2.min.css">
     <script src="{$template_url}plugins/select2/select2.min.js" type="text/javascript"></script>
-    <link rel="stylesheet" href="{$template_url}css/less/select2.css">
+    <link rel="stylesheet" href="{$template_url}css/less/select2.min.css">
 
     {block name=additional_scripts} 
     <!-- Logout - Timer  -->
@@ -277,12 +280,13 @@
         idleMax = {$global_timeout};
         idleTime = 0;
         $(document).ready(function () {
-            var idleInterval = setInterval("timerIncrement()", 60000); 
+            var idleInterval = setInterval(timerIncrement(), 60000);
             $(document.getElementById('popup')).attr('class', 'modal');
             $(".select2").select2();
         });
+        
         function timerIncrement() {
-            idleTime = idleTime + 1;
+            idleTime++;
             if (idleTime === idleMax) { 
                 window.location="index.php?action=logout&timout=true";
             }
@@ -308,7 +312,6 @@
             }
         });
         $('#popup_generate').nyroModal();
-        
     });
     
     </script>

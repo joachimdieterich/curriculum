@@ -217,7 +217,7 @@ class Render {
             default:        if (checkCapabilities('plugin:useEmbeddableGoogleDocumentViewer', $USER->role_id, false) AND !is_array(getimagesize($CFG->curriculumdata_root.$file->full_path))){
                                 $content = '<iframe src="http://docs.google.com/gview?url='.$CFG->access_token_url .$file->addFileToken($file->id).'&embedded=true" style="width:100%; height:500px;" frameborder="0"></iframe>';
                             } else {
-                                $content = RENDER::thumb(array($file->id), null, 'div');
+                                $content = RENDER::thumb(array('file_list' => array($file->id), 'tag' => 'div'));
                             }
                 break;
         }
@@ -225,14 +225,21 @@ class Render {
         return $content;
     }
     
-    public static function thumb($file_list, $target = null, $tag = 'li', $format='normal'){
+    public static function thumb($params){/*$file_list, $target = null, $tag = 'li', $format='normal'*/
         global $USER;
-        $height   = 187;
-        $width    = 133;
-        $truncate = 15;
-        $file     = new File();
-        $html     = '';
-        $icon     = false;
+        $target     = null;
+        $tag        = 'li';
+        $format     = 'normal';
+        $height     = 187;
+        $width      = 133;
+        $truncate   = 15;
+        $file       = new File();
+        $html       = '';
+        $icon       = false;
+        
+        foreach($params as $key => $val) {
+            $$key = $val;
+        }
         if (!is_array($file_list)){
             $file_list = array($file_list);
         }
@@ -241,13 +248,14 @@ class Render {
             $file->load();
             /* check if img*/ 
             switch ($file->type) {
-                case '.pdf': 
                 case '.bmp':    
                 case '.gif':       
                 case '.png':    
                 case '.svg':    
                 case '.jpeg':    
-                case '.jpg':    if ($file->getThumb() == false){ $url = $file->getFileUrl(); } else { $url = $file->getThumb(); }
+                case '.jpg':    if ($file->getThumb() == false){ $url = $file->getFileUrl(); } else { $url = $file->getThumb(); }          
+                    break;
+                case '.pdf':    if ($file->getThumb() == false){ $icon = true; } else { $url = $file->getThumb(); }          
                     break;
                 case '.url':    
                 default:        $icon = true;
@@ -256,7 +264,7 @@ class Render {
             
             switch ($format) {
                 case 'normal': $html .= '<'.$tag.' id="thumb_'.$file->id.'" style="width:'.$width.'px !important; height:'.$height.'px !important;">';
-                                if ($icon == true){
+                                if ($icon == true ){
                                     $html .= '<h6 class="pull-right" style="padding: 0 10px 0 5px; background-color:rgba(244, 244, 244, 0.8)" ><a href="#" data-toggle="tooltip" title="Dateigröße">'.$file->getHumanFileSize().'</a></h6>
                                               <h6 class="pull-left" style="padding: 0px 10px 0 5px; background-color:rgba(244, 244, 244, 0.8)"><a href="#" data-toggle="tooltip" title="Dateiaufrufe (Aus einem Lehrhplan)">'.$file->hits.'</a></h6>
                                               <span class="mailbox-attachment-icon" style="height:'.$width.'px"><i class="'.resolveFileType($file->type).'"></i></span>';
@@ -328,7 +336,7 @@ class Render {
                 case 'thumb':   if ($icon == true){
                                     $html .=   '<i class="'.resolveFileType($file->type).' info-box-icon"></i>';
                                 } else {
-                                    $html .=   '<div style="height: 90px;width: 100%; background: url(\''.$url.'\') center; background-size: cover; background-repeat: no-repeat;"></div>';
+                                    $html .=   '<div style="height: '.$height.';width:'.$width.'; float:left; background: url(\''.$url.'\') center; background-size: cover; background-repeat: no-repeat;"></div>';
                                     //$html .=   '<div class="info-box-icon" style="background: url(\''.$url.'\') center; background-size: cover; background-repeat: no-repeat;"></div>';
                                 }
                     break;
@@ -346,14 +354,14 @@ class Render {
         $html =   '<div class="col-lg-3 col-md-6 col-xs-12">';
                     $html .= '<a href="#" onclick="formloader(\'preview\',\'help\','.$help->id.')">
                               <div class="info-box">';
-                    $html .= RENDER::thumb($help->file_id, null, null, $format='thumb');  
+                    $html .= RENDER::thumb(array('file_list' => $help->file_id, 'format'=> 'thumb', 'width' => '90px', 'height' => '90px'));  
                     if (checkCapabilities('help:update', $USER->role_id, false)){
                         $html .='<a><span class="pull-right" onclick="formloader(\'help\',\'edit\','.$help->id.');"><i class="fa fa-edit margin"></i></span></a>';
                     }
                     if (checkCapabilities('help:add', $USER->role_id, false)){
                         $html .='<a><span class="pull-right" onclick="del(\'help\','.$help->id.');"><i class="fa fa-trash top-buffer"></i></span></a>';
                     }
-                    $html .= '<p style="padding-left:10px;">
+                    $html .= '<p style="padding-left:100px;">
                               <span class="info-box-text text-black">'.$help->category.'</span>
                               <span class="info-box-number text-black text-ellipse">'.$help->title.'</span>
                               <span class="info-box-more text-primary text-ellipse">'.$help->description.'</span>
@@ -377,7 +385,7 @@ class Render {
                     $html .= '<div class="thumbnail">
                                 <div class="row">
                                 <div class="col-xs-12" >';
-                    $html .= RENDER::thumb($wallet->file_id, null, null, $format='thumb');      
+                    $html .= RENDER::thumb(array('file_list' => $wallet->file_id, 'format' => 'thumb', 'height' => '90px', 'width' => '100%'));      
                     $html .= '  </div>
                                 </div>';
                     if (checkCapabilities('help:update', $USER->role_id, false)){
@@ -458,7 +466,6 @@ class Render {
                               }
                               $html .='<textarea id="comment_'.$cm->id.'" name="comment"  class="hidden" style="width:100%;"></textarea>
                                         <button id="cmbtn_'.$cm->id.'" type="submit" class="btn btn-primary pull-right hidden" onclick="comment(\'new\','.$cm->reference_id.', '.$cm->context_id.', document.getElementById(\'comment_'.$cm->id.'\').value, '.$cm->id.');"><i class="fa fa-commenting-o margin-r-10"></i>Kommentar abschicken</button>';
-
             /* sub comments */
             if (!empty($cm->comment)){
               $html .= RENDER::sub_comments(array('comment' => $cm->comment));
@@ -546,7 +553,7 @@ class Render {
             if ($type == 'enabling_objective'){
                 $html  .= '<div id="ena_header_'.$objective->id.'" class="boxheader bg-'.$objective->accomplished_status_id.'" >';
             } else {
-                $html  .= '<div class="boxheader >';
+                $html  .= '<div class="boxheader" >';
             }
             if (checkCapabilities('groups:showAccomplished', $USER->role_id, false)){
                 if (isset($objective->accomplished_users) AND isset($objective->enroled_users) AND isset($objective->accomplished_percent)){
@@ -573,13 +580,16 @@ class Render {
                     $html  .= '<span class="fa fa-arrow-'.$icon_down.' pull-left box-sm-icon text-primary" onclick=\'processor("orderObjective", "'.$type.'", "'.$objective->id.'", {"order":"down"});\'></span>';
                 }
             } else {
-                if (checkCapabilities('course:setAccomplishedStatus', $USER->role_id, false) AND $type != 'terminal_objective' ){
-                    $html  .= '<span class="fa fa-bar-chart-o pull-right invert box-sm-icon text-primary" onclick=\'formloader("compare","group", '.$objective->id.',  {"group_id":"'.$group_id.'"});\'></span>
+               
+                if (checkCapabilities('course:setAccomplishedStatus', $USER->role_id, false) AND $type != 'terminal_objective' AND isset($group_id)){
+                    $html  .= '<span class="fa fa-bar-chart-o pull-right invert box-sm-icon text-primary margin-r-5" onclick=\'formloader("compare","group", '.$objective->id.', {"group_id":"'.$group_id.'"});\'></span>
                                <span class="fa fa-files-o pull-right invert box-sm-icon text-primary margin-r-5" onclick=\'formloader("material","solution", '.$objective->id.', {"group_id":"'.$group_id.'", "curriculum_id": "'.$objective->curriculum_id.'"});\'></span>';
+                    
                 }
-                if (checkCapabilities('user:getHelp', $USER->role_id, false) AND $type != 'terminal_objective'){
-                    $html  .= '<span class="fa fa-support pull-right box-sm-icon text-primary"  data-toggle="tooltip" title="Gruppenmitglied kontaktieren" onclick=\'formloader("support","random", '.$objective->id.', {"group_id":"'.$group_id.'"});\'></span>';
+                 if (checkCapabilities('user:getHelp', $USER->role_id, false) AND $type != 'terminal_objective' AND isset($group_id)){
+                    $html  .= ' <span class="fa fa-support pull-right invert box-sm-icon text-primary margin-r-5" onclick=\'formloader("support","random", '.$objective->id.', {"group_id":"'.$group_id.'"});\'></span>';
                 }
+                
                 if (checkCapabilities('file:solutionUpload', $USER->role_id, false) AND $type != 'terminal_objective' AND isset($soutions)){
                     foreach ($solutions AS $s){
                         if (($USER->id == $s->creator_id) AND ($s->enabling_objective_id == $objective->id) AND ($sol_btn != $objective->id)){
@@ -589,14 +599,14 @@ class Render {
                     }
                 }
                 if (checkCapabilities('file:upload', $USER->role_id, false)){
-                    $html  .= '<a href="../share/templates/AdminLTE-2.3.7/renderer/uploadframe.php?context=solution&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal">
+                    $html  .= '<a href="'.$CFG->smarty_template_dir_url.'renderer/uploadframe.php?context=solution&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal ">
                     <span class="fa ';
                     if ($sol_btn == $objective->id){
                         $html  .= 'fa-check-circle-o ';
                     } else {
                         $html  .= 'fa-upload ';
                     } 
-                        $html  .= 'pull-right text-primary" data-toggle="tooltip"';
+                        $html  .= 'pull-right box-sm-icon text-primary" data-toggle="tooltip"';
                     if ($sol_btn == $objective->id){
                         $html  .= ' title="Lösung eingereicht"';
                     } else {
@@ -618,23 +628,24 @@ class Render {
         /*************** Footer ***************/
         $html  .= '  <div class="boxfooter">';
                         if ($objective->description != ''){
-                            $html  .='<span class="fa fa-info pull-right box-sm-icon text-primary" style="padding-top:2px; margin-right:3px;" data-toggle="tooltip" title="Beschreibung" onclick="formloader(\'description\', \''.$type.'\', '.$objective->id.');"></span>';
+                            $html  .='<span class="fa fa-info pull-right box-sm-icon text-primary" style=" margin-right:3px;" data-toggle="tooltip" title="Beschreibung" onclick="formloader(\'description\', \''.$type.'\', '.$objective->id.');"></span>';
                         }
-                        $html  .='<span class="pull-left" style="margin-right:10px;">';
+                        $html  .='<span class="pull-left margin-r-10">';
                         if (checkCapabilities('file:loadMaterial', $USER->role_id, false) AND $objective->files != '0'){
-                            $html  .='<span class="fa fa-briefcase box-sm-icon text-primary" style="cursor:pointer;" data-toggle="tooltip" title="'.$objective->files.' Materialien verfügbar" onclick="formloader(\'material\',\''.$type.'\','.$objective->id.')"></span>';
+                            $html  .='<span class="fa fa-briefcase box-sm-icon text-primary margin-r-5 pull-left" style="cursor:pointer;" data-toggle="tooltip" title="'.$objective->files.' Materialien verfügbar" onclick="formloader(\'material\',\''.$type.'\','.$objective->id.')"></span>';
                         } else {
-                            $html  .='<span class="fa fa-briefcase box-sm-icon deactivate text-gray" style="cursor:not-allowed;" data-toggle="tooltip" title="Keine Materialien verfügbar"></span>';
+                            $html  .='<span class="fa fa-briefcase box-sm-icon deactivate text-gray margin-r-5 pull-left" style="cursor:not-allowed;" data-toggle="tooltip" title="Keine Materialien verfügbar"></span>';
                         }
+                        if (checkCapabilities('file:upload', $USER->role_id, false)){
+                                $html  .='<a href="'.$CFG->smarty_template_dir_url.'renderer/uploadframe.php?context='.$type.'&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal pull-right margin-r-5"><span class="fa fa-plus box-sm-icon" data-toggle="tooltip" title="Material hinzufügen"></span></a>';
+                            } 
                         $html  .='</span>';
                         if ($edit){
                             if ($type != 'terminal_objective'){
                                 $html  .= '<span class="fa fa-check-square-o pull-right box-sm-icon text-primary" onclick=\'formloader("addQuiz", "enabling_objective", "'.$objective->id.'");\'></span>';
                             }
-                            if (checkCapabilities('file:upload', $USER->role_id, false)){
-                                $html  .='<a href="../share/templates/AdminLTE-2.3.7/renderer/uploadframe.php?context='.$type.'&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal"><span class="fa fa-plus pull-right box-sm-icon"></span></a>';
-                            } 
                         } else {
+                            
                             if (checkCapabilities('course:selfAssessment', $USER->role_id, false) AND $type != 'terminal_objective'){
                                 if (is_array($user_id)){
                                     $user_id = implode(',',$user_id);
@@ -903,8 +914,9 @@ class Render {
         global $TEMPLATE;
         $file    = new File();
         $files   = $file->getFiles($dependency, $id, 'filelist_'.$dependency);
+        
         setPaginator('filelist_'.$dependency, $TEMPLATE, $files, 'fi_val', $url); //set Paginator for filelist
-        $content = '<div class="box-body scroll_list" style="overflow:auto;"><form name="'.$url.'" action="'.$url.'" method="post" enctype="multipart/form-data" >';
+        $content = '<div class="box-body scroll_list" style="overflow:auto;" ><form name="'.$url.'" action="'.$url.'" method="post" enctype="multipart/form-data" >';
                     
         switch ($view) {
                     case 'thumbs': $content .= RENDER::thumblist($files, $target);
@@ -928,7 +940,7 @@ class Render {
     public static function thumblist($files, $target){
         $content = '<ul class="mailbox-attachments clearfix">'; //<!--onclick="processor(\'config\',\'paginator_order\',\'null\',{\'order\':\'filename\',\'sort\':\'DESC\',\'paginator\':\''.$postfix.'\'});" -->
         foreach ($files as $f) {
-            $content .= RENDER::thumb(array('id' => $f->id), $target); 
+            $content .= RENDER::thumb(array('file_list' => array('id' => $f->id), 'target' => $target)); 
         }
         $content .= '</ul>';
         return $content;
@@ -986,7 +998,7 @@ class Render {
     public static function flist($files, $target ){
         $content = '';
         foreach ($files as $f) {
-            $content .= RENDER::thumb(array('id' => $f->id),$target,'div','xs'); 
+            $content .= RENDER::thumb(array('file_list' => array('id' => $f->id), 'target' => $target,'tag' => 'div', 'format' => 'xs')); 
         }
         //$content .= '</div>';
         return $content;
@@ -1104,13 +1116,13 @@ class Render {
     /* Todo: add more config options*/
     public static function moodle_block($params){ 
         global $USER, $CFG;
-        $width  = 'col-md-4';
+        $width  = '';//'col-md-4';
         $status = '';
         foreach($params['blockdata'] as $key => $val) {
             $$key = $val;
         }
-        if ($USER->role_id === $role_id OR $role_id == $CFG->standard_role){
-        $html  = '<div class="'.$width.'">
+        if ($USER->role_id === $role_id OR $role_id == $CFG->settings->standard_role){
+        $html  = '<div id="block_instance_'.$id.'" class="'.$width.' sortable">
                     <div class="box '.$status.' bottom-buffer-20">
                         <div class="box-header with-border">
                               <h3 class="box-title">'.$name.'</h3>
@@ -1118,8 +1130,13 @@ class Render {
                                 if (checkCapabilities('block:add', $USER->role_id, false)){
                                     $html  .= '<button class="btn btn-box-tool" data-widget="edit" onclick="formloader(\'block\',\'edit\','.$id.');"><i class="fa fa-edit"></i></button>';
                                 }
-                                $html  .= '<button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
-                                <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                $html  .= '<button class="btn btn-box-tool" data-widget="collapse" onclick="processor(\'config\',\'collapse\',\''.$id.'\');">';
+                                        if ($status == ''){
+                                            $html  .= '<i class="fa fa-compress"></i></button>';
+                                        } else {
+                                            $html  .= '<i class="fa fa-expand"></i></button>';
+                                        }
+                                    $html  .= '<button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
                               </div>
                         </div><!-- /.box-header -->
                         <div class="box-body text-center">
@@ -1149,13 +1166,13 @@ class Render {
     
     public static function html_block($params){ 
         global $USER,$CFG;
-        $width  = 'col-md-4';
+        $width  = '';//'col-md-4';
         $status = '';
         foreach($params['blockdata'] as $key => $val) {
             $$key = $val;
         }
-        if ($USER->role_id === $role_id OR $role_id == $CFG->standard_role){
-            $html  = '<div class="'.$width.'">
+        if ($USER->role_id === $role_id OR $role_id == $CFG->settings->standard_role){
+            $html  = '<div id="block_instance_'.$id.'" class="'.$width.' sortable">
                         <div class="box '.$status.' bottom-buffer-20">
                             <div class="box-header with-border">
                                   <h3 class="box-title">'.$name.'</h3>
@@ -1163,8 +1180,13 @@ class Render {
                                     if (checkCapabilities('block:add', $USER->role_id, false)){
                                         $html  .= '<button class="btn btn-box-tool" data-widget="edit" onclick="formloader(\'block\',\'edit\','.$id.');"><i class="fa fa-edit"></i></button>';
                                     }
-                                    $html  .= '<button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
-                                    <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                    $html  .= '<button class="btn btn-box-tool" data-widget="collapse">';
+                                        if ($status == ''){
+                                            $html  .= '<i class="fa fa-compress"></i></button>';
+                                        } else {
+                                            $html  .= '<i class="fa fa-expand"></i></button>';
+                                        }
+                                    $html  .= '<button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
                                   </div>
                             </div><!-- /.box-header -->
                             <div class="box-body">
@@ -1178,6 +1200,381 @@ class Render {
             }
         }
     }
+    public static function event_block($params){ 
+        global $USER,$CFG;
+        $width  = '';//'col-md-4';
+        $status = '';
+        foreach($params['blockdata'] as $key => $val) {
+            $$key = $val;
+        }
+        /*get upcoming events*/
+        $events = new Event();
+        $upcoming_events = $events->get('upcoming', $USER->id, '', 5);
+        if ($USER->role_id === $role_id OR $role_id == $CFG->settings->standard_role){
+            if (isset($upcoming_events)){
+                $html ='';
+                foreach ($upcoming_events AS $ue){
+                $html  .= '<div id="block_instance_'.$id.'" class="alert alert-warning alert-dismissible sortable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        <h4 class="alert-heading"><i class="fa fa-calendar"></i> '.$ue->event.'</h4>
+                        <p>'.$ue->timestart.' - '. $ue->timeend.'</p>
+                        <p>'.$ue->description.'</p><br>    
+                </div>';
+                }
+            }
+
+            if ($visible == 1){
+                return $html; 
+            }
+        }
+    }
+    public static function task_block($params){ 
+        global $USER,$CFG;
+        $width  = '';//'col-md-4';
+        $status = '';
+        
+        foreach($params['blockdata'] as $key => $val) {
+            $$key = $val;
+        }
+        /*get upcoming events*/
+        $task          = new Task();
+        $upcoming_tasks = $task->get('upcoming', $USER->id);
+        if ($USER->role_id === $role_id OR $role_id == $CFG->settings->standard_role){
+            if (!empty($upcoming_tasks)){
+                $html ='<div id="block_instance_'.$id.'" class="box box-widget widget-user bottom-buffer-20 sortable">
+                  <div class="widget-user-header bg-green">
+                    <i class="pull-right fa fa-tasks" style="font-size: 70px;"></i>
+                    <h3 class="widget-user-username">'.$name.'</h3>
+                    <h5 class="widget-user-desc"></h5>
+                  </div>
+                  <div class="box-footer no-padding">
+                    <ul class="nav nav-stacked" style="overflow: scroll;  width: 100%; max-height: 200px;">';
+                        foreach ($upcoming_tasks AS $tsk){
+                            $html  .= '<li><a><strong>'.$tsk->task.'</strong>
+                                       <input type="checkbox" class="pull-right" onchange="processor(\'accomplish\',\'task\', '.$tsk->id.');" ';
+                                        if (isset($tsk->accomplished->status_id)){
+                                            if ($tsk->accomplished->status_id == 2){
+                                                $html  .= 'checked';
+                                            }
+                                        }
+                                        $html  .= '><p>'.$tsk->timestart.' - '.$tsk->timeend.'</p>';
+                                     
+                                if (isset($tsk->accomplished->status_id)){
+                                    if ($tsk->accomplished->status_id == 2){
+                                        $html  .= '<p class="text-green">Erledigt am '.$tsk->accomplished->accomplished_time.'</p>';
+                                    }
+                                }
+                                $html  .= '<div>'.$tsk->description.'</div>
+                                </a>
+                            </li>';
+                        }
+                    $html  .= '</ul>
+                  </div>
+                </div>';
+            }
+
+            if ($visible == 1 AND isset($html)){
+                return $html; 
+            }
+        }
+    }
+    
+    public static function statistic_block($params){ 
+        global $USER,$CFG;
+        $width  = '';//'col-md-4';
+        $status = '';
+        foreach($params['blockdata'] as $key => $val) {
+            $$key = $val;
+        }
+        /*get upcoming events*/
+        $stat_users_online   =  $USER->usersOnline($USER->institutions);  
+        $statistics         = new Statistic();
+        $stat_acc_all       = $statistics->getAccomplishedObjectives('all');  
+        $stat_acc_today     = $statistics->getAccomplishedObjectives('today');  
+        $stat_users_today   = $statistics->getUsersOnline('today');  
+        if ($USER->role_id === $role_id OR $role_id == $CFG->settings->standard_role){
+            if (isset($stat_users_online)){
+                $html ='<div id="block_instance_'.$id.'" class="box bottom-buffer-20 sortable">
+                <div class="box-header with-border">
+                  <h3 class="box-title">'.$name.'</h3>
+                  <div class="box-tools pull-right">
+                    <button class="btn btn-box-tool" data-widget="collapse">';
+                                        if ($status == ''){
+                                            $html  .= '<i class="fa fa-compress"></i></button>';
+                                        } else {
+                                            $html  .= '<i class="fa fa-expand"></i></button>';
+                                        }
+                                    $html  .= '<button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                  </div>
+                </div><!-- /.box-header -->
+                <div class="box-footer no-padding">
+                  <ul class="nav nav-pills nav-stacked" style="overflow: scroll; width: 100%; max-height: 400px;">
+                    <li><a href="#"><strong>Erreichte Ziele</strong></a></li>
+                    <li><a href="#">Gesamt <span class="pull-right text-green">'.$stat_acc_all.'</span></a></li>
+                    <li><a href="#">davon Heute <span class="pull-right text-green">'.$stat_acc_today.'</span></a></li>
+                  </ul>';
+                  
+                  if (checkCapabilities('page:showCronjob', $USER->role_id, false)){
+                    $html .=  '<ul class="nav nav-pills nav-stacked">
+                          <li><a href="#"><strong>Wiederholungen</strong></a></li>
+                          <li><a href="#">Ziele die Wiederholt werden müssen<span class="pull-right text-red">0 (deaktiviert)</span></a></li>
+                      </ul>';
+                  }
+                  $html .=  '<ul class="nav nav-pills nav-stacked">
+                    <li><a href="#"><strong>Online</strong></a></li>
+                    <li><a href="#">Jetzt online <span class="pull-right"> '.$stat_users_online.'</span></a></li>
+                    <li><a href="#">Heute <span class="pull-right"> '.$stat_users_today.'</span></a></li>
+                  </ul>
+                  
+                </div><!-- /.footer -->
+            </div><!-- /.box --> ';
+            }
+
+            if ($visible == 1){
+                return $html; 
+            }
+        }
+    }
+    
+    
+    public static function accomplishedObjectives_block($params){ 
+        global $USER,$CFG, $BOX_BG;
+        $width  = '';//'col-md-4';
+        $status = '';
+        foreach($params['blockdata'] as $key => $val) {
+            $$key = $val;
+        }
+        $acc_obj            = new EnablingObjective();
+        $enabledObjectives  = $acc_obj->getObjectiveStatusChanges(); /* Load last accomplished Objectives */
+        $statistics         = new Statistic();
+        $stat_user_all      = $statistics->getAccomplishedObjectives('user_all');
+        if ($USER->role_id === $role_id OR $role_id == $CFG->settings->standard_role){
+            $html  = '<div id="block_instance_'.$id.'" class="'.$width.' sortable">
+                        <div class="box '.$status.' bottom-buffer-20">
+                            <div class="box-header with-border">
+                            <h3 class="box-title">'.$name.'</h3>
+                            <div class="box-tools pull-right">
+                              <button class="btn btn-box-tool" data-widget="collapse">';
+                                        if ($status == ''){
+                                            $html  .= '<i class="fa fa-compress"></i></button>';
+                                        } else {
+                                            $html  .= '<i class="fa fa-expand"></i></button>';
+                                        }
+                                    $html  .= '<button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                            </div>
+                          </div><!-- /.box-header -->
+                      <div class="box-body" style="overflow: scroll; width: 100%; max-height: 300px;">';
+                      if (isset($stat_user_all)){
+                        if ($stat_user_all > 0){
+                                $html  .= "Du hast schon <strong>$stat_user_all</strong> Ziele erreicht.<br><br>";
+                        }
+                      }    
+                      if (isset($enabledObjectives)){
+                      $html  .= 'In den vergangenen <strong>'.$USER->acc_days.'</strong> Tagen haben die folgende Ziele den Status geändert.';
+                          foreach ($enabledObjectives AS $enaid => $ena){
+                              $html  .= '<div class="callout bg-'.$ena->accomplished_status_id.'">
+                                  <p><strong>'.$ena->curriculum.'</strong><span class="badge pull-right" data-toggle="tooltip" title="Lernstand gesetzt von ...">'.$ena->accomplished_teacher.'</span></p>
+                                  '.strip_tags($ena->enabling_objective).'
+                              </div>';
+                          }
+                      } else {
+                          $html  .= '<p>In den letzten <strong>'.$USER->acc_days.'</strong> Tagen hast du keine Ziele abgeschlossen.</p>';
+                      }
+                      $html  .= '</div>
+                        </div>
+                   </div>';
+
+            if ($visible == 1){
+                return $html; 
+            }
+        }
+    }
+    
+    public static function my_institution_block($params){ 
+        global $USER,$CFG;
+        $width  = '';//'col-md-4';
+        $status = '';
+        foreach($params['blockdata'] as $key => $val) {
+            $$key = $val;
+        }
+        $institution        = new Institution();
+        $myInstitutions     = $institution->getStatistic($USER->id); /* Institution / Schulen laden */
+        if ($USER->role_id === $role_id OR $role_id == $CFG->settings->standard_role){
+            $html  = '<div id="block_instance_'.$id.'"  class="box box-widget widget-user bottom-buffer-20 sortable">
+                      <!-- Add the bg color to the header using any of the bg-* classes -->
+                      <div class="widget-user-header bg-yellow">
+                        <i class="pull-right fa fa-university" style="font-size: 70px;"></i>
+                        <h4 class="widget-user-username">'.$name.'</h4>
+                      </div>
+                      <div class="box-footer no-padding">
+                        <ul class="nav nav-stacked" style="overflow: scroll; width: 100%; max-height: 200px;">';
+                            if ($USER->enrolments){
+                                foreach ($myInstitutions AS $insid => $ins){
+                                    $html  .= '<li><a>'.$ins->institution.'
+                                        <small class="label pull-right bg-primary">
+                                            <i class="fa fa-user" data-toggle="tooltip" title="Schüler">';
+                                                if (isset($ins->statistic['$institution_std_role'])){
+                                                    $html  .= $ins->statistic['$institution_std_role'];
+                                                } else {
+                                                    $html  .= '0';
+                                                }
+                                            $html  .= '</i>
+                                        </small>
+                                        <small class="label pull-right bg-primary margin-r-5">
+                                            <i class="fa fa-check-circle-o" data-toggle="tooltip" title="Erreichte Ziele">';
+                                                if (isset($ins->statistic['accomplished'])){
+                                                    $html  .= $ins->statistic['accomplished'];
+                                                } else {
+                                                    $html  .= '0';
+                                                }
+                                            $html  .= '</i>
+                                        </small>
+                                        <small class="label pull-right bg-primary margin-r-5">
+                                            <i class="fa fa-graduation-cap" data-toggle="tooltip" title="Lehrer">';
+                                                if (isset($ins->statistic['7'])){
+                                                    $html  .= $ins->statistic['7'];
+                                                } else {
+                                                    $html  .= '0';
+                                                }
+                                            $html  .= '</i>
+                                        </small>
+                                        <br><small>'.$ins->description.'</small>
+                                    </a></li>';
+                                }
+                            }
+                        $html  .= '</ul>
+                      </div>
+                    </div>';
+
+            if ($visible == 1){
+                return $html; 
+            }
+        }
+    }
+    
+    public static function my_class_block($params){ 
+        global $USER,$CFG;
+        $width  = '';//'col-md-4';
+        $status = '';
+        foreach($params['blockdata'] as $key => $val) {
+            $$key = $val;
+        }
+        $groups          = new Group(); 
+        $myClasses       = $groups->getGroups('user', $USER->id);
+        if ($USER->role_id === $role_id OR $role_id == $CFG->settings->standard_role){
+            $html = ''; 
+            if (isset($myClasses)){
+                
+                    $html .= '<div id="block_instance_'.$id.'" class="box box-widget widget-user bottom-buffer-20 sortable">
+                                <div class="widget-user-header bg-yellow">
+                                  <i class="pull-right fa fa-group" style="font-size: 70px;"></i>
+                                  <h3 class="widget-user-username">'.$name.'</h3>
+                                  <h5 class="widget-user-desc"></h5>
+                                </div>
+                                <div class="box-footer no-padding" id="groups_accordion">
+                                  <ul class="nav nav-stacked" style="overflow: scroll; width: 100%; max-height: 200px;">';
+                                    foreach ($myClasses AS $claid => $cla){
+                                        $html .= '<li class="panel"><a data-toggle="collapse" data-parent="#groups_accordion" href="#collapse_'.$cla->id.'">'.$cla->group. '<br><small>'.$cla->institution_id.'</small> </a>';
+                                                    if ($USER->enrolments){
+                                                        $html .= '<ul id="collapse_'.$cla->id.'" class="panel-collapse collapse">';
+                                                        foreach ($USER->enrolments AS $cur_menu){
+                                                            if ($cur_menu->group_id == $cla->id){
+                                                                $html .= '<li><a href="index.php?action=view&curriculum_id='.$cur_menu->id.'&group='.$cur_menu->group_id.'">'.$cur_menu->curriculum.' </a></li>';
+                                                            }
+                                                        }
+                                                        $html .= '</ul>';
+                                                    }
+                                        $html .= '</li>';
+                                    }    
+                                  $html .= '</ul>
+                                </div>
+                              </div>';     
+                  
+            }
+
+            if ($visible == 1){
+                return $html; 
+            }
+        }
+    }
+    
+    public static function blog_block($params){ 
+        global $USER,$CFG;
+        $width  = '';//'col-md-8';
+        $height = '400px';
+        $status = '';
+        foreach($params['blockdata'] as $key => $val) {
+            $$key = $val;
+        }
+        $blog = new Blog();
+        $blog->load($id);
+        $author = new User();
+        if ($USER->role_id === $role_id OR $role_id == $CFG->settings->standard_role OR $USER->role_id == '1'){
+            $html  = '<div id="block_instance_'.$id.'" class="'.$width.' sortable">
+                        <div class="box '.$status.' bottom-buffer-20">
+                            <div class="box-header with-border">
+                                  <h3 class="box-title">'.$name.'</h3>
+                                  <div class="box-tools pull-right">';
+                                    $html  .= '<button class="btn btn-box-tool" onclick=\'formloader("content", "new", null,{"context_id":"21", "reference_id":'.$id.'});\'><i class="fa fa-plus"></i></button>';
+                                    if (checkCapabilities('block:add', $USER->role_id, false)){
+                                        $html  .= '<button class="btn btn-box-tool" data-widget="edit" onclick="formloader(\'block\',\'edit\','.$id.');"><i class="fa fa-edit"></i></button>';
+                                    }
+                                    $html  .= '<button class="btn btn-box-tool" data-widget="collapse">';
+                                        if ($status == ''){
+                                            $html  .= '<i class="fa fa-compress"></i></button>';
+                                        } else {
+                                            $html  .= '<i class="fa fa-expand"></i></button>';
+                                        }
+                                    $html  .= '<button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                  </div>
+                            </div><!-- /.box-header -->
+                            <div class="box-body" style="overflow: scroll; width: 100%; max-height: '.$height.';">';
+                                    foreach ($blog->content as $value) {
+                                        $author->load('id', $value->creator_id);
+                                        $comments = new Comment();
+                                        $comments->context = 'content';
+                                        $comments->reference_id = $value->id;
+                                        $c = $comments->get('reference');
+                                        $c_max = count($c);
+                                        $html  .=  '<div class="post">
+                                                        <div class="user-block">
+                                                          <img class="img-circle img-bordered-sm" src="'.$CFG->access_id_url.$author->avatar_id.'" alt="user image">
+                                                              <span class="username">
+                                                                <a href="#">'.$value->creator.'</a>
+                                                                <a href="#" class="pull-right btn-box-tool"></a>
+                                                              </span>
+                                                          <span class="description">'.$value->timecreated.'</span>
+                                                        </div>
+                                                        <!-- /.user-block -->
+                                                        <b>'.$value->title.'</b>
+                                                        '.$value->content.'
+                                                        <ul class="list-inline">
+                                                          <!--<li><a href="#" class="link-black text-sm"><i class="fa fa-share margin-r-5"></i> Share</a></li>
+                                                          <li><a href="#" class="link-black text-sm"><i class="fa fa-thumbs-o-up margin-r-5"></i> Like</a></li>-->
+                                                          <li class="pull-right">
+                                                            <a class="link-black text-sm" onclick="toggle([\'comments_'.$value->id.'\'])"><i class="fa fa-comments-o margin-r-5"></i> Kommentare
+                                                              ('.$c_max.')</a></li>
+                                                        </ul>
+                                                        <div class="bottom-buffer-20 hidden" id="comments_'.$value->id.'"><b>Kommentare</b>';
+                                        $html  .=       RENDER::comments(["comments" => $c, "permission" => '1']); //todo permission over rolecheck
+                                        $html  .=     '<textarea id="comment" name="comment"  style="width:100%;"></textarea>
+                                                       <p><button type="submit" class="btn btn-primary pull-right" onclick="comment(\'new\','.$value->id.', 15, document.getElementById(\'comment\').value);">
+                                                           <i class="fa fa-commenting-o margin-r-10"></i>Kommentar abschicken</button></p><br>
+                                                       </div>
+                                                    </div>';
+                                    }    
+             $html  .= '     </div>
+                        </div>
+                   </div>';
+
+            if ($visible == 1){
+                return $html; 
+            }
+        }
+    }
+    
+    
+    
+    
     /*Simple table - example see userImport.tpl*/
     public static function table($params){
         $width_class     = 'col-md-6';

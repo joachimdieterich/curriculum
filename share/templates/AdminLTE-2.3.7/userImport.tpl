@@ -18,11 +18,7 @@
         <div class="col-xs-12">
             <div class="box box-default">
                 <div class="box-header with-border">
-                  <h3 class="box-title">Nutzerkonten per CSV-Datei hochladen</h3>
-                  {*<div class="box-tools pull-right">
-                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                    <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                  </div>*}
+                    <h3 class="box-title">Nutzerkonten per CSV-Datei hochladen</h3>
                 </div><!-- /.box-header -->
                 <form name="file" enctype="multipart/form-data" action="index.php?action=userImport" method="post">                 
                     <div class="box-body">
@@ -31,9 +27,11 @@
                                 <p>Die CSV-Datei muss folgendes Format haben:<br/>
                                 - Die ersten Zeile muss die Schlüsselwerte enthalten (z.B.:username, password, firstname, lastname, email, role_id, confirmed, postalcode, city, state, country)<br/>
                                 - Die Schüsselwerte <strong>username, password, firstname, lastname </strong>und <strong>email</strong> müssen gesetzt werden. <br/>
-                                - Zusätzlich kann das Feld <strong>group_id</strong> definiert werden. Mögliche ID-Werte für <strong>group_id</strong> und <strong>role_id</strong> finden Sie in den Tabellen.<br/>
+                                - Zusätzlich kann das Feld <strong>group_id oder group</strong> definiert werden. Mögliche ID-Werte für <strong>group_id / group</strong> und <strong>role_id</strong> finden Sie in den Tabellen. Wird eine neue Lerngruppe eingegeben, erstellt curriculum diese beim Import.<br/>
                                 - Die maximale Dateigröße liegt bei {$filesize}MB und kann im Adminstrationsbereich festgelegt werden.<br/>
-                                - Die Datei muss im utf-8 Format gespeichert werden, sonst werden Umlaute und Sonderzeichen nicht korrekt importiert</p>
+                                - Die Datei muss im utf-8 Format gespeichert werden, sonst werden Umlaute und Sonderzeichen nicht korrekt importiert<br/>
+                                <br/>
+                                <strong>- Achtung: Die Institution in die importiert werden soll muss ausgewählt werden. </strong></p>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-5">
                                 <h4>CSV-Vorlagen</h4>
@@ -67,7 +65,7 @@
                 <div class="box-header with-border">
                   <h3 class="box-title">Neue Nutzer</h3>
                   <div class="box-tools pull-right">
-                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-compress"></i></button>
                     <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
                   </div>
                 </div><!-- /.box-header -->

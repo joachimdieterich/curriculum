@@ -118,9 +118,9 @@ function setPaginator($instance, $template, $data, $returnVar, $currentURL, $con
     global $CFG, $USER;
     $SmartyPaginate         = new SmartyPaginate(); 
     $SmartyPaginate->connect($instance);
-    $CFG->paginator_name    = &$instance;  
+    //$CFG->paginator_name    = &$instance;  
     if ($instance == 'inboxPaginator' || $instance == 'outboxPaginator'){       // Mail Paginatoren haben anderes Limit, evtl. für jeden Paginator indiv. machen
-        $SmartyPaginate->setLimit($CFG->mail_paginator_limit, $instance);
+        $SmartyPaginate->setLimit($CFG->settings->mail_paginator_limit, $instance);
     } else {          
         if (filter_input(INPUT_GET, 'paginator_limit', FILTER_UNSAFE_RAW) && filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW)){
             SmartyPaginate::setLimit(filter_input(INPUT_GET, 'paginator_limit', FILTER_UNSAFE_RAW), filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW));
@@ -187,11 +187,14 @@ function orderPaginator($instance, $table=null){
             }
         } 
         $order  = SmartyPaginate::_getOrder($instance);
-        if ($order != '') {
+        
+        if ($order != '' AND isset($table[$order])) {
             $order = ' ORDER BY '. $table[$order].'.'.$order; 
+        } else {
+            $order = ' ORDER BY id'.$order; //hack to prevent blank pages if $table[$order !isset]
         }
         $sort   = SmartyPaginate::getSort('sort', $instance) ;
-        //error_log($search.' '.$order.' '.$sort);
+        
         return $search.' '.$order.' '.$sort;      
     } else {
        return '';
@@ -393,8 +396,9 @@ function getOrientedImage($imagePath){
   * @param string $context
   */   
 function saveThumbnail($saveToDir, $imageName, $max_x, $max_y, $size = '') {  
+
     $ext = array(); //preg_matches
-    preg_match("'^(.*)\.(gif|jpe?g|png)$'i", $imageName, $ext);
+    preg_match("'^(.*)\.(gif|jpe?g|png|pdf)$'i", $imageName, $ext);
     if (isset($ext[2])){
         switch (strtolower($ext[2])) {
             case 'jpg' : 
@@ -404,6 +408,14 @@ function saveThumbnail($saveToDir, $imageName, $max_x, $max_y, $size = '') {
                          break;
             case 'png' : $im    = imagecreatefrompng($saveToDir.$imageName);
                          break;
+                         
+            case 'pdf' : global $CFG;
+                         if (exec($CFG->settings->ghostscript_path.'gs -version') != null) { //ghostscript not available
+                            exec($CFG->settings->ghostscript_path.'gs -dFirstPage=1 -dLastPage=1 -sDEVICE=pngalpha -sOutputFile='.$saveToDir.basename($imageName, '.pdf').'_t.png -r144 '.$saveToDir.$imageName);  
+                            //error_log('generate pdf thumb:'.$saveToDir.basename($imageName, '.pdf').' from'.$saveToDir.$imageName);
+                         }
+                         $stop  = true;
+                break;
             default    : $stop  = true;
                          break;
         }
@@ -446,7 +458,9 @@ function generateThumbnail($upload_dir, $filename, $context){
             case "userFiles":   break;
             case "curriculum":
             case "institution":
-            case "solution":    saveThumbnail($upload_dir, $filename, 150, 225,'xs');
+            case "solution":
+            case "generate_certificate":
+                                saveThumbnail($upload_dir, $filename, 150, 225,'xs');
                                 saveThumbnail($upload_dir, $filename, 534, 800,'l');
                                 break;  
             case "subjectIcon": break;
@@ -507,7 +521,6 @@ function validate_msg($v_error, $field, $return_status = false){
 function str_lreplace($search, $replace, $subject)
 {
     $pos = strrpos($subject, $search);
-
     if($pos !== false)
     {
         $subject = substr_replace($subject, $replace, $pos, strlen($search));
@@ -711,7 +724,7 @@ function PHPArrayObjectSorter($array,$sortBy,$direction='asc'){
  *
  * @param string $type type of plugin
  * @param string $plugin name of plugin
- * @return plugin_base An instance of the required  plugin.
+ * @return An instance of the required  plugin.
  */
 function get_plugin($type, $plugin) {
     global $CFG;
@@ -722,7 +735,8 @@ function get_plugin($type, $plugin) {
 
     // Return plugin instance.
     require_once("{$CFG->plugins_root}$type/$plugin/plugin.php");
-    $class = "plugin_$plugin";
+    $class = $type.'_plugin_'.$plugin;
+    
     return new $class;
 }
 
@@ -746,6 +760,7 @@ function exists_plugin($type, $plugin) {
 function session_reload_user(){
     global $USER, $CFG, $TEMPLATE;
     $USER = new User();
+    
     $USER->load('username', $_SESSION['username']);                             // Benutzer aus DB laden
     $USER->password         = '';                                               // Passwort aus Session löschen
     $_SESSION['USER']       =& $USER;
@@ -754,9 +769,9 @@ function session_reload_user(){
     $semester = new Semester();                                                 // akt. Semester /Lernzeitraum  laden
     $_SESSION['SEMESTER']   = $semester->getMySemesters($USER->id);             // .todo. akt. Semester der Institution laden, da sonst bei neu angelegten Benutzern semester_id evtl. nicht stimmt (wenn Benutzer in anderer Institution angelegt wurden)
     
-    $institution = new Institution();   
-    $CFG->timeout = $institution->getTimeout($USER->institution_id);            // Set timeout based on Institution
-    $TEMPLATE->assign('global_timeout', $CFG->timeout);
+    $institution            = new Institution();   
+    $CFG->settings->timeout = $institution->getTimeout($USER->institution_id);            // Set timeout based on Institution
+    $TEMPLATE->assign('global_timeout', $CFG->settings->timeout);
 }
 
 /**

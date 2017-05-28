@@ -28,7 +28,7 @@ global $CFG, $PAGE, $USER, $LOG;
 include('../../../login-check.php');  //check login status and reset idletimer
 if (!isset($_SESSION['USER'])){ die(); }    // logged in?
 $USER = $_SESSION['USER'];                  // $USER not defined but required on 
-$template_path = '../share/templates/AdminLTE-2.3.7/renderer/';
+$template_path = $CFG->smarty_template_dir_url.'renderer/';
 /* set defaults */
 $file       = new File();
 $ref_id     = null;         //todo: only use ref_id
@@ -66,13 +66,13 @@ if (isset($paginator) AND isset($paginator_search) AND isset($order)) {
 
 <!-- HTML -->
 <div class="uploadframeClose" onclick="self.parent.tb_remove();"></div>    
-<div class="modal-content">
+<div class="modal-content ">
     <div class="modal-header">
         <button type="button" class="close nyroModalClose" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">×</span></button>
         <h4 class="modal-title"><i class="fa fa-bars" onclick="toggle_sidebar('modal_sidebar')"></i> Dateiauswahl</h4>
     </div>
-    <div id="modal_sidebar" class="modal-body sidebar-mini" style="min-height: 450px !important;padding-left: 0px; padding-top: 0px;"> <!-- to do recalc nyroModal on changes--> 
-        <aside class="main-sidebar" style="padding-top:0px !important;">
+    <div id="modal_sidebar" class="modal-body sidebar" style="min-height: 450px !important;padding-left: 0px; padding-top: 0px; position:relative;"> <!-- to do recalc nyroModal on changes--> 
+        <aside class="main-sidebar" style="padding-top:0px !important;position: absolute !important;">
           <!-- sidebar: style can be found in sidebar.less -->
           <section class="sidebar">
             <!-- sidebar menu: : style can be found in sidebar.less -->
@@ -84,13 +84,20 @@ if (isset($paginator) AND isset($paginator_search) AND isset($order)) {
                                    3 => array('capabilities' =>  'file:curriculumFiles',  'id' =>  'curriculumfilesbtn',  'name' => 'Aktueller Lehrplan',   'class' => 'fa  fa fa-th',     'action' => 'curriculum'), 
                                    4 => array('capabilities' =>  'file:solution',         'id' =>  'solutionfilesbtn',    'name' => 'Meine Abgaben',        'class' => 'fa  fa-clipboard', 'action' => 'solution'), 
                                    5 => array('capabilities' =>  'file:myFiles',          'id' =>  'myfilesbtn',          'name' => 'Meine Dateien',        'class' => 'fa  fa-user',      'action' => 'userfiles'), 
-                                   6 => array('capabilities' =>  'file:myAvatars',        'id' =>  'avatarfilesbtn',      'name' => 'Meine Profilbilder',   'class' => 'fa  fa-user',      'action' => 'avatar')
+                                   6 => array('capabilities' =>  'file:myAvatars',        'id' =>  'avatarfilesbtn',      'name' => 'Meine Profilbilder',   'class' => 'fa  fa-user',      'action' => 'avatar'),
+                                   7 => array('capabilities' =>  'file:myCertificates',   'id' =>  'certifiatefilesbtn',  'name' => 'Meine Zertifikate',    'class' => 'fa  fa-certificate','action' => 'certificate')
                   );
                   foreach($values as $value){
                       if (checkCapabilities($value['capabilities'], $USER->role_id, false)){ //don't throw exeption!
+                          
                           if (($value['action'] == 'curriculum' AND ($context != 'terminal_objective' AND $context != 'enabling_objective')) OR ($value['action'] == 'solution' AND $context != 'solution'))  { 
                               // do nothing
-                          } else { ?>
+                          } else { 
+                              if (!isset($_GET['action']) AND !isset($setaction)){
+                                $setaction  = true;
+                                $action     = $value['action'];   
+                              }
+                              ?>
                               <li class="treeview <?php if ($action == $value['action']){echo 'active';}?>" >
                                   <a id="<?php echo $value['id']?>" 
                                      href="<?php echo $template_path.'uploadframe.php?action='.$value['action'].'&context='.$context.'&ref_id='.$ref_id.'&target='.$target.'&format='.$format;?>" 
@@ -105,9 +112,9 @@ if (isset($paginator) AND isset($paginator_search) AND isset($order)) {
           </section>
         </aside>
       
-        <div class="content-wrapper">
+        <div class="content-wrapper" style="padding-top:0px !important; min-width:400px;" >
             <div class="bg-white">
-          <?php if ($action == 'upload' OR $action == 'url'){ ?>
+          <?php if (($action == 'upload' AND checkCapabilities('file:upload', $USER->role_id, false)) OR ($action == 'url' AND checkCapabilities('file:uploadURL', $USER->role_id, false))){ ?>
             <form id="uploadform" class="form-horizontal" style="padding-top:10px;padding-left: 10px;" role="form" method="post" enctype="multipart/form-data">
               <input id="context" name="context" type="hidden" value="<?php echo $context; ?>" /> <!-- context = von wo wird das Uploadfenster aufgerufen-->
               <input id="action"  name="action"  type="hidden" value="<?php echo $action; ?>" />
@@ -129,21 +136,20 @@ if (isset($paginator) AND isset($paginator_search) AND isset($order)) {
               if ($action == 'url') { ?> 
               <span id="div_fileURLbtn" >     <!-- URLupload--><?php
                   echo Form::input_text('fileURL', 'URL', $fileURL, $error, 'http://www.curriculumonline.de'); 
-                  echo '<button name="update" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="uploadURL();"> URL hinzufügen</button><br>';
+                  echo '<div name="update_btn" class="btn btn-primary glyphicon glyphicon-saved pull-right" onclick="uploadURL();"> URL hinzufügen</div><br>';
                   ?>
               </span>
               <?php } ?>
               </form>    
               <p class="text ">&nbsp;<?php echo $error; ?></p>
               <div class="uploadframe_footer"><?php echo $copy_link; ?></div>
-
           <?php 
           } 
           ?>
               <input id="target" name="target" type="hidden" value="<?php  echo $target; ?>" />
               <input id="context" name="context" type="hidden" value="<?php echo $context; ?>" />
               <?php
-              if (in_array($action, array('user','curriculum','userfiles','avatar'))){ 
+              if (in_array($action, array('user','curriculum','userfiles','avatar', 'certificate'))){ 
               ?>
               <div class="box-header">
                   <div class="btn-group">
@@ -206,7 +212,8 @@ if (isset($paginator) AND isset($paginator_search) AND isset($order)) {
               switch ($action) {
                   case 'user':
                   case 'userfiles':
-                  case 'avatar':      echo RENDER::filelist('uploadframe.php?action='.$action.'&context='.$context, $action, $list_format, $target, $USER->id);
+                  case 'avatar':      
+                  case 'certificate': echo RENDER::filelist('uploadframe.php?action='.$action.'&context='.$context, $action, $list_format, $target, $USER->id);
                       break;
                   case 'curriculum':
                   case 'solution':    echo RENDER::filelist('uploadframe.php?action='.$action.'&context='.$context, $action, $list_format, $target, $ref_id);

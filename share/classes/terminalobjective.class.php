@@ -212,10 +212,10 @@ class TerminalObjective {
                                     $db_02 = DB::prepare('SELECT COUNT(*) AS MAX FROM files WHERE ter_id = ? AND ISNULL(ena_id) AND context_id = 2');
                                     $db_02->execute(array($result->id));
                                     $res_02 = $db_02->fetchObject();
-                                    
+                                    $ext = '';
                                     if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
                                         $ext = $CFG->repository->count(0,$result->id);
-                                    } else { $ext = ''; }
+                                    } 
                                     $this->files                = $res_02->MAX.$ext; //nummer of materials*/
                                     
                                     $objectives[]               = clone $this; 

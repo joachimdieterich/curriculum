@@ -101,7 +101,7 @@ class Printer {
                   </div><!-- /.mailbox-read-message -->
                 
                   <ul class="mailbox-attachments clearfix">';
-                    $content .= Render::thumb($thumbs).' </ul>';
+                    $content .= Render::thumb(array('file_list' => $thumbs)).' </ul>';
         }
         return $content; 
     }

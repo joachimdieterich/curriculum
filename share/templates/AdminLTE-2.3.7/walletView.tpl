@@ -110,7 +110,7 @@
                         {/if}
                     {/if}
                 
-                    <h4>Kommentare</h4>
+                    <h4>Kommentare <small>| Achtung! Kommentare sind für alle sichtbar, die diese Sammelmappe bearbeiten sollen.</small></h4>
                     {RENDER::comments(["comments" => $wallet->comments, "permission" => $wallet->permission])}
 
                     {if $wallet->permission > 0}
@@ -120,8 +120,7 @@
                     {/if}
                 </div>
             </div>
-        </div>
-        
+        </div>  
     </div>
 </section>
 {/block}

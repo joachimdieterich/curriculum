@@ -67,6 +67,8 @@ if($validated_data === false) {/* validation failed */
 } else {
     switch ($_POST['func']) {
         case 'new':      if ($group->add()){
+                            SmartyPaginate::setTotal(SmartyPaginate::getTotal('groupP')+1, 'groupP');
+                            $_SESSION['PAGE']->target_url = SmartyPaginate::getLastPageIndexURL('groupP'); //jump to new entry in list
                             $_SESSION['PAGE']->message[] = array('message' => 'Gruppe hinzufgefügt', 'icon' => 'fa-group text-success');
                          }               
             break;
@@ -78,7 +80,9 @@ if($validated_data === false) {/* validation failed */
                             if ($assumeUsers){ 
                                 $group->changeSemester(); 
                             } 
-                            $_SESSION['PAGE']->message[] = array('message' => 'Semester geändert', 'icon' => 'fa-calendar text-success');
+                            SmartyPaginate::setTotal(SmartyPaginate::getTotal('groupP')+1, 'groupP');
+                            $_SESSION['PAGE']->target_url = SmartyPaginate::getLastPageIndexURL('groupP'); //jump to new entry in list
+                            $_SESSION['PAGE']->message[] = array('message' => 'Lernzeitraum geändert', 'icon' => 'fa-calendar text-success');
                          }
             break;
 

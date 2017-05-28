@@ -63,7 +63,7 @@ if (isset($_SESSION['FORM'])){
 }
 
 $content = '<form id="form_subject" method="post" action="../share/processors/fp_subject.php">
-<input type="hidden" name="subject_id" id="subjectr_id" value="'.$subject_id.'"/>
+<input type="hidden" name="subject_id" id="subject_id" value="'.$subject_id.'"/>
 <input type="hidden" name="func" id="func" value="'.$func.'"/>'; 
 $content .= Form::input_text('subject', 'Fach', $subject, $error, 'z. B. Mathematik');
 $content .= Form::input_text('subject_short', 'Kürzel', $subject_short, $error, 'z. B. MA');

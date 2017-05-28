@@ -3,7 +3,7 @@
 * This file is part of curriculum - http://www.joachimdieterich.de
 * 
 * @package core
-* @filename Walletview.php
+* @filename walletView.php
 * @copyright  2013 Joachim Dieterich  {@link http://www.joachimdieterich.de}
 * @date 2016.12.28 08:03
 * @license: 

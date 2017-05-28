@@ -3,6 +3,7 @@
         <!-- sidebar: style can be found in sidebar.less -->
         <section class="sidebar">
           <!-- sidebar menu: : style can be found in sidebar.less -->
+          <div id="menu_top_placeholder"></div>
           <ul class="sidebar-menu">
             <li class="header">Lehrpläne</li>
             {if $my_enrolments != ''}
@@ -127,7 +128,7 @@
                 {if checkCapabilities('menu:readCertificate', $my_role_id, false)}   
                     <li class="treeview {if $page_action eq 'certificate'}active{/if}">
                         <a href="index.php?action=certificate">
-                            <i class="fa fa-files-o"></i><span>Zertifikate</span>
+                            <i class="fa fa-certificate"></i><span>Zertifikate</span>
                         </a>
                     </li>
                 {/if}
@@ -153,9 +154,3 @@
         </section>
         <!-- /.sidebar -->
       </aside>
-
-
-
-
-
-

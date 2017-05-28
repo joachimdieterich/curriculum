@@ -24,7 +24,7 @@ function smarty_function_html_block($params, $template) {
                                     case 'moodle':  $width  = 'col-md-4';
                                                     $status = '';
                                                     foreach($params['blockdata'] as $key => $val) { $$key = $val; }
-                                                    if ($USER->role_id === $role_id OR $role_id == $CFG->standard_role){
+                                                    if ($USER->role_id === $role_id OR $role_id == $CFG->settings->standard_role){
                                                     $html  = '<div class="'.$width.'">
                                                                 <div class="panel panel-default '.$status.' dashbox">
                                                                     <div class="panel-heading">
@@ -61,7 +61,7 @@ function smarty_function_html_block($params, $template) {
                                     case 'html':    $width  = 'col-md-4';
                                                     $status = '';
                                                     foreach($params['blockdata'] as $key => $val) { $$key = $val; }
-                                                    if ($USER->role_id === $role_id OR $role_id == $CFG->standard_role){
+                                                    if ($USER->role_id === $role_id OR $role_id == $CFG->settings->standard_role){
                                                         $html  = '<div class="'.$width.'">
                                                                     <div class="panel panel-default '.$status.' dashbox" >
                                                                         <div class="panel-heading">

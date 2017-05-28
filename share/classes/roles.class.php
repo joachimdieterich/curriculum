@@ -141,9 +141,10 @@ class Roles {
     /**
      * Load user-role with id $this->id 
      */
-    public function load($capabilities = false){
-        $db     = DB::prepare('SELECT * FROM roles WHERE id = ?');
-        $db->execute(array($this->id)); 
+    public function load($dependency = 'id', $value = null, $capabilities = false) {
+        if (isset($value)){ $v = $value; } else { $v = $this->id; }
+        $db     = DB::prepare('SELECT * FROM roles WHERE '.$dependency.' = ?');
+        $db->execute(array($v)); 
         $result = $db->fetchObject();
         if ($result){
             $this->id           = $result->id;
@@ -164,7 +165,8 @@ class Roles {
      */
     public function get($paginator = '', $all = false){
         global $USER;
-        $order_param = orderPaginator($paginator,array('role' => 'ro',
+        $order_param = orderPaginator($paginator,array('id' => 'ro',
+                                                        'role' => 'ro',
                                                         'description'    => 'ro')); 
         if ($all){
             $db          = DB::prepare('SELECT ro.* FROM roles AS ro '.$order_param); // get all roles

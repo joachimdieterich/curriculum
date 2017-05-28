@@ -8,9 +8,7 @@
   <!-- Tab panes -->
   <div class="tab-content">
     <!-- Home tab content -->
-    <div class="tab-pane active" id="control-sidebar-home-tab">
-      
-    </div><!-- /.tab-pane -->
+    <div class="tab-pane active" id="control-sidebar-home-tab"></div><!-- /.tab-pane -->
 
     <!-- Settings tab content -->
     <div class="tab-pane" id="control-sidebar-settings-tab">

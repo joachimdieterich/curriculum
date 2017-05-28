@@ -36,7 +36,7 @@ $position       = null;
 $row_id         = null; 
 $order_id       = null; 
 $html           = null;
-$file_id        = $CFG->standard_avatar_id;
+$file_id        = $CFG->settings->standard_avatar_id;
 $error          = null;
 $object         = file_get_contents("php://input");
 $data           = json_decode($object, true);
@@ -55,8 +55,7 @@ if (isset($_GET['func'])){
                             $wc         = $walletc->get('wallet_id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
                             $wallet_id  = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
                             $row_id     = filter_input(INPUT_GET, 'row_id', FILTER_VALIDATE_INT);
-                            $order_id   = filter_input(INPUT_GET, 'order_id', FILTER_VALIDATE_INT);
-                            
+                            $order_id   = filter_input(INPUT_GET, 'order_id', FILTER_VALIDATE_INT);             
             break;
         case "new_content": $header     = 'Text hinzufügen'; 
                             $type       = 'html';
@@ -65,11 +64,7 @@ if (isset($_GET['func'])){
                             $wallet_id  = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
                             $row_id     = filter_input(INPUT_GET, 'row_id', FILTER_VALIDATE_INT);
                             $order_id   = filter_input(INPUT_GET, 'order_id', FILTER_VALIDATE_INT);
-                            $ct         = new Context();
-                            $ct->resolve('context','content');
-                            $context_id = $ct->context_id;
-                            
-                            
+                            $context_id = $_SESSION['CONTEXT']['content']->context_id;      
             break;
         case "edit":        $header     = 'Medium bearbeiten';
                             $edit       = true; 

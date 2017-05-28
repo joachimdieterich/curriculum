@@ -27,13 +27,13 @@ global $USER, $PAGE, $TEMPLATE;
 
 $groups      = new Group();
 $institution = new Institution();
-//error_log(json_encode(SmartyPaginate::_getSelection('userP')));
+
 if (isset($_POST) ){
     $edit_user = new User(); 
-    $sel_id    = SmartyPaginate::_getSelection('userP'); //use selection from paginator (don't use form data) to get selections on all pages of paginator
+    $sel_id    = SmartyPaginate::_getSelection('userP');    //use selection from paginator (don't use form data) to get selections on all pages of paginator
     if (is_array($sel_id)){
-        foreach ($sel_id as $edit_user->id ) { //Array per schleife abarbeiten	
-            $edit_user->load('id',$edit_user->id);      // load current user 
+        foreach ($sel_id as $edit_user->id ) {              //Array per schleife abarbeiten	
+            $edit_user->load('id',$edit_user->id);          // load current user 
             switch ($_POST) {
                 case isset($_POST['resetPassword']):
                                     if (isset($_POST['confirmed'])) {
@@ -94,7 +94,7 @@ $TEMPLATE->assign('groups_array', $group_list);
 $TEMPLATE->assign('myInstitutions', $institution->getInstitutions('user', null, $USER->id));
 
 $users      = new USER();
-$p_options  = array('delete' => array('onclick'      => "del('user',__id__);", 
+$p_options  = array('delete' => array('onclick'     => "del('user',__id__);", 
                                      'capability'   => checkCapabilities('user:delete', $USER->role_id, false),
                                      'icon'         => 'fa fa-trash',
                                      'tooltip'      => 'löschen'),
@@ -106,11 +106,11 @@ $p_options  = array('delete' => array('onclick'      => "del('user',__id__);",
                                      'capability'   => checkCapabilities('user:getGroups', $USER->role_id, false),  //todo: use extra capability?
                                      'icon'         => 'fa fa-list-alt',
                                      'tooltip'      => 'Überblick'));
-$p_widget  = array('header'     => 'username',
-                   'subheader01'=> 'firstname, lastname',
-                   'subheader02'=> 'email',
-                   'file_id'    => 'avatar_id',
-                   'circle_image' => 'file_id'); 
+$p_widget  = array('header'      => 'username',
+                   'subheader01' => 'firstname, lastname',
+                   'subheader02' => 'email',
+                   'file_id'     => 'avatar_id',
+                   'circle_image'=> 'file_id'); 
 $p_config   = array('id'         => 'checkbox',
                     'username'   => 'Benutzername', 
                     'firstname'  => 'Vorname', 
@@ -118,10 +118,10 @@ $p_config   = array('id'         => 'checkbox',
                     'email'      => 'Email', 
                     'postalcode' => 'PLZ', 
                     'city'       => 'Ort', 
-                    /*'state'   => 'Bundesland', 
-                    'country' => 'Land', */
-                    ''    => 'Rolle', 
-                    'p_search'    => array('username','firstname','lastname','email','postalcode','city'),
-                    'p_widget'    => $p_widget,
-                    'p_options'    => $p_options);
+                    /*'state'    => 'Bundesland', 
+                    'country'    => 'Land', */
+                    ''           => 'Rolle', 
+                    'p_search'   => array('username','firstname','lastname','email','postalcode','city'),
+                    'p_widget'   => $p_widget,
+                    'p_options'  => $p_options);
 setPaginator('userP', $TEMPLATE, $users->userList('institution', 'userP', filter_input(INPUT_GET, 'lost', FILTER_VALIDATE_BOOLEAN)), 'us_val', 'index.php?action=user', $p_config); //set Paginator    

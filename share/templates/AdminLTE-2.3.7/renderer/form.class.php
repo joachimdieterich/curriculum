@@ -158,7 +158,7 @@ class Form {
                       <select id="'.$id.'" name="'.$id.'" class="select2 form-control" onchange="'.$onchange.'" '.$disabled.'>';
                        if (count($select_data) > 0){
                              if ($placeholder != '---'){
-                                $form .= '<option>'.$placeholder.'</option>';
+                                $form .= '<option value="false">'.$placeholder.'</option>';
                              }
                             foreach ($select_data as $value) {
                                 if (strpos($select_label, ',')){ // more than one field in select_label
@@ -173,7 +173,7 @@ class Form {
                                 $form .= '<option label="'.$label.'" value="'.$value->$select_value.'"'; if ($input == $value->$select_value){ $form .= 'selected="selected"'; } $form .= '>'.$label.'</option>';
                             }
                        } else {
-                           $form .= '<option label="'.$placeholder.'">'.$placeholder.'</option>';
+                           $form .= '<option label="'.$placeholder.'" value="false">'.$placeholder.'</option>';
                        }
         $form .= '</select> ';
         $form .= '</div></div>';
@@ -412,7 +412,7 @@ class Form {
         if (isset($preview)){
             $html .= '<span class="info-box-icon bg-aqua"><div id="modal-preview" style="height:100%;width:100%;background: url(\''.$preview.'\') center ;background-size: cover; background-repeat: no-repeat;"></div></span>'; //pull-left --> overrides align: center to top
         } else {
-           $html .= RENDER::thumb($id, null, null, 'thumb');
+           $html .= RENDER::thumb(array('file_list' => $id, 'format' => 'thumb', 'width' => '90px', 'height' => '90px'));
         }
         /* Box content */
         $html .= '<div class="info-box-content">';

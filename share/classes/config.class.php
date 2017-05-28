@@ -40,6 +40,18 @@ class Config {
         $db->execute(array('config'));
         $config = new stdClass();
         while($result = $db->fetchObject()) { 
+            settype($result->value, $result->type); //store var with proper type ! for PHP < 4.2.0 change type "bool" to "boolean" and "int" to "integer"
+            //error_log($result->name.': '.json_encode(gettype($result->value)).' -> '.$result->value);
+            $config->{$result->name} = $result->value;
+        }
+        return $config;
+    }
+    
+    public function load_plugin_config($plugin){
+        $db = DB::prepare('SELECT * FROM config_plugins WHERE plugin = ?'); //load std values
+        $db->execute(array($plugin));
+        $config = new stdClass();
+        while($result = $db->fetchObject()) { 
             $config->{$result->name} = $result->value;
         }
         return $config;

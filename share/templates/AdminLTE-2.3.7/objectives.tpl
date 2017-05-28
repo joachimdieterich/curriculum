@@ -6,11 +6,31 @@
 
 {block name=additional_scripts}{$smarty.block.parent}
 {if isset($userPaginator)} 
+    {literal}
     <script type="text/javascript" > 
         $(document).ready(
                 resizeBlocks('row_objectives_userlist', ['coursebook'])
         );
+        $(document).ready(function () {
+            function findTopPos(obj) {
+                var curleft = curtop = 0;
+                if (obj.offsetParent) {
+                  curtop = obj.offsetTop
+                  while (obj = obj.offsetParent) {
+                    curtop += obj.offsetTop
+                  }
+                }
+                return curtop;
+            }
+            defaultTop  = findTopPos($("#container_userPaginator")[0]);  
+            small       = false;
+            if ($('#f_userlist').hasClass('active')){
+                floating_table('body-wrapper', defaultTop, 'userPaginator', ['username', 'role_name', 'completed', 'online'], 'menu_top_placeholder', 'container_userPaginator', 'default_userPaginator_position');
+            }
+        });
     </script>
+    
+    {/literal}
 {/if} 
 {/block}
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
@@ -19,19 +39,19 @@
 <!-- Content Header (Page header) -->
 {content_header p_title=$page_title pages=$breadcrumb help='http://docs.joachimdieterich.de/index.php?title=Lernstand'}   
 
-<!-- Main content -->
-<section class="content">
-    <div class="row ">
+<!-- Main content, id section_content used to reload content with ajax-->
+<section id="section_content" class="content">
+    <div id="row_content" class="row">
         <div class="col-sm-12">
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
-                    <li class="active"><a href="#f_userlist" data-toggle="tab">Kursliste</a></li>
+                    <li {if isset($f_userlist)}class="active"{/if}><a href="#f_userlist" data-toggle="tab" onclick='processor("config","page", "config",{["tab"=>"f_userlist"]|@json_encode nofilter});'>Kursliste</a></li>
                     {if isset($coursebook)} 
-                        <li><a href="#f_coursebook" data-toggle="tab">Kursbuch</a></li>
+                        <li {if isset($f_coursebook)}class="active"{/if}><a href="#f_coursebook" data-toggle="tab" onclick='processor("config","page", "config",{["tab"=>"f_coursebook"]|@json_encode nofilter});'>Kursbuch</a></li>
                     {/if}
                 </ul>
                 <div class="tab-content">
-                    <div class="tab-pane active" id="f_userlist">
+                    <div class="tab-pane {if isset($f_userlist)}active{/if}" id="f_userlist">
                         {if isset($courses)}
                             <form method='post' action='index.php?action=objectives&course={$selected_curriculum_id}{*&userID={implode(',',$selected_user_id)}&next={$currentUrlId}*}'>        
                                 <div class="form-horizontal">
@@ -39,19 +59,26 @@
                                         <div class="col-md-4 col-sm-12">
                                             {Form::input_select('course', '', $courses, 'group, curriculum', 'id', $selected_curriculum_id, null, "window.location.assign('index.php?action=objectives&reset=true&course='+this.value);", 'Kurs / Klasse wählen...', '', 'col-sm-12')}
                                         </div>
-                                        {*if $show_course != '' and $terminalObjectives != false*}{*Zertifikat*}
-                                        {if isset($certificate_templates)}{*Zertifikat*}
-                                            <div class="col-md-4 col-sm-12">
-                                                {Form::input_select('certificate_template', '', $certificate_templates, 'certificate, description', 'id', $selected_certificate_template, null, 'float-left', 'Zertifikatvorlage wählen...', '', 'col-sm-12')}   
+                                        {*Zertifikat*}
+                                        <div class="col-md-4 col-sm-12">
+                                            <div class='btn btn-default' onclick="formloader('generate_certificate','',{$sel_curriculum});">
+                                                <span class="fa fa-files-o" aria-hidden="true"></span> {if count($selected_user_id) > 1} Zertifikate erstellen{else} Zertifikat erstellen{/if}
                                             </div>
-                                            <input type='hidden' name='sel_curriculum' value='{$sel_curriculum}'/>
-                                            <input type='hidden' name='sel_group_id' value='{$sel_group_id}'/>
-                                            <div class="col-md-4 col-sm-12">
-                                                <button type='submit' name='printCertificate' value='' class='btn btn-default'>
-                                                    <span class="fa fa-files-o" aria-hidden="true"></span> {if count($selected_user_id) > 1} Zertifikate erstellen{else} Zertifikat erstellen{/if}
-                                                </button>
-                                            </div>
-                                        {else}<input id="certificate_template" class="hidden" value="false"/>{* hack to get js working if no user is selected *}{/if}
+                                        </div>
+                                        {*if isset($certificate_templates)}
+                                            <div id="div_print_certificate" class="hidden">
+                                                <div class="col-md-4 col-sm-12 ">
+                                                    {Form::input_select('certificate_template', '', $certificate_templates, 'certificate, description', 'id', $selected_certificate_template, null, 'float-left', 'Zertifikatvorlage wählen...', '', 'col-sm-12')}   
+                                                </div>
+                                                <input type='hidden' name='sel_curriculum' value='{$sel_curriculum}'/>
+                                                <input type='hidden' name='sel_group_id' value='{$sel_group_id}'/>
+                                                <div class="col-md-4 col-sm-12">
+                                                    <button type='submit' name='printCertificate' value='' class='btn btn-default'>
+                                                        <span class="fa fa-files-o" aria-hidden="true"></span> {if count($selected_user_id) > 1} Zertifikate erstellen{else} Zertifikat erstellen{/if}
+                                                    </button>
+                                                </div>
+                                           </div>
+                                        {else}{/if*}<input id="certificate_template" class="hidden" value="false"/>{* hack to get js working if no user is selected, todo: remve certificate_template in js not used any more *}
                                     </div>
                                 </div>
                             </form>
@@ -59,11 +86,13 @@
                         {/if}
                         {if isset($userPaginator)}   
                             <p> Bitte  Schüler aus der Liste auswählen um den Lernstand einzugeben.</p>
+                            <div id="default_userPaginator_position" >
                                     {html_paginator id='userPaginator' title='Kurs'} 
+                            </div>
                         {elseif $showuser eq true}Keine eingeschriebenen Benutzer{/if}
                     </div>
                     {if isset($coursebook)} 
-                    <div class="tab-pane" id="f_coursebook">
+                    <div class="tab-pane {if isset($f_coursebook)}active{/if}" id="f_coursebook">
                         {Render::courseBook($coursebook)}
                     </div>
                     {/if}
@@ -72,8 +101,11 @@
         </div>
     </div>
     
-    {if isset($userPaginator)} 
-    <div class="row ">
+    {*if isset($userPaginator)*}
+    
+    <div>
+    <div id="curriculum_content" class="row ">
+    {if $show_course != '' and isset($terminalObjectives)}    
         <div class="col-xs-12">
             <div class="box box-default">
                 <div class="box-header ">
@@ -123,8 +155,10 @@
                 </div>
             </div>
         </div>
-    </div>
     {/if}
+    </div>
+    </div>
+    
 </section>
 {/block}
 

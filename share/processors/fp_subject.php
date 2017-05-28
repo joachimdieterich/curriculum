@@ -38,7 +38,7 @@ $subject->subject          = $_POST['subject'];
 $subject->subject_short    = $_POST['subject_short'];
 $subject->description      = $_POST['description'];
 $subject->institution_id   = $_POST['institution_id'];
-//$subject->creator_id       = $USER->id; // now set in add function
+//$subject->creator_d       = $USER->id; // now set in add function
 
 $gump->validation_rules(array(
 'subject'             => 'required'
@@ -58,7 +58,9 @@ if($validated_data === false) {/* validation failed */
         $subject->update();
         $_SESSION['PAGE']->message[] = array('message' => 'Fach aktualisiert', 'icon' => 'fa-language text-success');
     } else {
-        $subject->add(); 
+        $subject->add();
+        SmartyPaginate::setTotal(SmartyPaginate::getTotal('subjectP')+1, 'subjectP');
+        $_SESSION['PAGE']->target_url = SmartyPaginate::getLastPageIndexURL('subjectP'); //jump to new entry in list
         $_SESSION['PAGE']->message[] = array('message' => 'Fach hinzugefügt', 'icon' => 'fa-language text-success');
     }
     $_SESSION['FORM']            = null;                     // reset Session Form object

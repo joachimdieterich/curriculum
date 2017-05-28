@@ -55,4 +55,5 @@ THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 required librarys
 =================
-- php5-gd       : to generate Thumbnails
+- php5-gd       : to generate thumbnails
+- ghostscript   : to generate thumbnails from pdf

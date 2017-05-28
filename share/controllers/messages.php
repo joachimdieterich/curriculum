@@ -50,11 +50,9 @@ if (isset($_GET['function'])){
 }
 
 if ($_POST){
-    if(isset($_POST['showInbox']))      { $TEMPLATE->assign('showInbox', true);     inbox($mailbox);}
-    if(isset($_POST['showOutbox']))     { $TEMPLATE->assign('showOutbox', true);    outbox($mailbox);}
-    if(isset($_POST['shownewMessage'])) { 
-        $TEMPLATE->assign('shownewMessage',       true); 
-    }
+    if(isset($_POST['showInbox']))      { $TEMPLATE->assign('showInbox',        true);     inbox($mailbox);}
+    if(isset($_POST['showOutbox']))     { $TEMPLATE->assign('showOutbox',       true);    outbox($mailbox);}
+    if(isset($_POST['shownewMessage'])) { $TEMPLATE->assign('shownewMessage',   true); }
     if(isset($_POST['sendMessage'])) {
         $newMail = new Mail();
         $newMail->receiver_id   = filter_input(INPUT_POST, 'receiver_id',           FILTER_VALIDATE_INT);
@@ -88,11 +86,6 @@ if ($_POST){
  */
 
 $TEMPLATE->assign('page_title', 'Nachrichten');    
-
-/**
- * Load userlist 
- */
-$TEMPLATE->assign('class_members', $USER->getGroupMembers()); //'class:members' ist eigentlich überflüssig --> es wird default benutzt
 
 /**
  * Gesendete Nachrichten laden

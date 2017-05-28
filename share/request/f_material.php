@@ -163,12 +163,12 @@ if (!$files){
             case 'external':  $m_url = $files[$i]->filename;
                 break;
             case '.mp3':    /* Player*/  
-                            $m_player =  '<audio width="100%" controls preload="none">
+                            $m_player =  '<audio width="100%" controls preload="none" onplay="updateFileHits('.$files[$i]->id.')">
                                             <source src="'.$CFG->access_file.$files[$i]->context_path.$files[$i]->path.$files[$i]->filename.'" type="audio/mpeg" />
                                         Your browser does not support the audio element.</audio>';
                 break;
             case '.mp4':    /* Player*/ 
-            case '.mov':    $m_player =  '<video width="100%" controls>
+            case '.mov':    $m_player =  '<video width="100%" controls onplay="updateFileHits('.$files[$i]->id.')">
                                             <source src="'.$CFG->access_file.$files[$i]->context_path.$files[$i]->path.$files[$i]->filename.'&video=true"  type="video/mp4"/>
                                           Your browser does not support the video element.</video>';
                 break;

@@ -116,6 +116,13 @@ class Content {
                                                         AND cts.content_id = ct.id');
                                 $db->execute(array($id));
                 break;
+            case 'blog':        $db = DB::prepare('SELECT ct.id FROM content AS ct, content_subscriptions AS cts, context AS co
+                                                        WHERE  co.context = "'.$dependency.'"
+                                                        AND co.context_id = cts.context_id
+                                                        AND cts.reference_id = ?
+                                                        AND cts.content_id = ct.id ORDER by ct.timecreated DESC');
+                                $db->execute(array($id));
+                break;
             
             default:
                 break;

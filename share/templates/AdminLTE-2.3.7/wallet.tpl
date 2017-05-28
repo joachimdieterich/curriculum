@@ -26,7 +26,7 @@
         </div>
         {if checkCapabilities('wallet:add', $my_role_id, false)}    
             <div class="pull-left" style="padding: 0 0 10px 15px;">
-                <button type="button" class="btn btn-default " onclick="formloader('wallet','new')" ><i class="fa fa-plus"></i> Sammelmappe hinzufügen</button>
+                <button type="button" class="btn btn-default " onclick="formloader('wallet','new');" ><i class="fa fa-plus"></i> Sammelmappe hinzufügen</button>
             </div>
         {/if}
     </div>

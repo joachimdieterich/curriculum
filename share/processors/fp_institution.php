@@ -90,7 +90,9 @@ if($validated_data === false) {/* validation failed */
                         if (isset($institution_id)){
                             $_SESSION['PAGE']->message[] = array('message' => 'Institution hinzufgefügt', 'icon' => 'fa-university text-success');
                             session_reload_user(); //reload session to get changes to current session (my enrolments)
-                        }               
+                        }     
+                        SmartyPaginate::setTotal(SmartyPaginate::getTotal('institutionP')+1, 'institutionP');
+                        $_SESSION['PAGE']->target_url = SmartyPaginate::getLastPageIndexURL('institutionP'); //jump to new entry in list
             
             break;
         case 'edit':    if ($new_institution->update()){

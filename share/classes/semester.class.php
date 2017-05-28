@@ -87,7 +87,8 @@ class Semester {
      */
     public function getSemesters($dependency = 'all', $id = null, $paginator = ''){
         global $USER;
-        $order_param = orderPaginator($paginator, array('semester'      => 'se',
+        $order_param = orderPaginator($paginator, array('id'            => 'se',
+                                                        'semester'      => 'se',
                                                         'description'   => 'se', 
                                                         'begin'         => 'se', 
                                                         'end'           => 'se', 

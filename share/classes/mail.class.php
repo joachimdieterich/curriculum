@@ -108,13 +108,13 @@ class Mail {
         if ($CFG->settings->messaging == 'email'){
             $this->email              = new PHPMailer();
             $this->email->isSMTP();                                      // Set mailer to use SMTP
-            $this->email->Host        = $CFG->email_Host;                // Specify main and backup SMTP servers
-            $this->email->SMTPAuth    = $CFG->email_SMTPAuth;            // Enable SMTP authentication
-            $this->email->Username    = $CFG->email_Username;            // SMTP username
-            $this->email->Password    = $CFG->email_Password;            // SMTP password
-            $this->email->SMTPSecure  = $CFG->email_SMTPSecure;          // Enable TLS encryption, `ssl` also accepted
-            $this->email->Port        = $CFG->email_Port;                // TCP port to connect to
-            $this->email->setFrom($CFG->email_Username, $CFG->app_title);
+            $this->email->Host        = $CFG->settings->email_Host;                // Specify main and backup SMTP servers
+            $this->email->SMTPAuth    = $CFG->settings->email_SMTPAuth;            // Enable SMTP authentication
+            $this->email->Username    = $CFG->settings->email_Username;            // SMTP username
+            $this->email->Password    = $CFG->settings->email_Password;            // SMTP password
+            $this->email->SMTPSecure  = $CFG->settings->email_SMTPSecure;          // Enable TLS encryption, `ssl` also accepted
+            $this->email->Port        = $CFG->settings->email_Port;                // TCP port to connect to
+            $this->email->setFrom($CFG->settings->email_Username, $CFG->app_title);
         }
     }
     

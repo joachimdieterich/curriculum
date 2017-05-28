@@ -172,22 +172,77 @@ function checkrow(/*rowNr,link*/) {
         req.send(null);
     }
     
-    if (arguments.length === 4) { //reload with given url
-        window.location.assign(arguments[3]);        
+    if (arguments.length === 4) { //reload with given url 
+        $(document).ajaxStart(function() { Pace.restart(); });
+        $("#curriculum_content").parent().load(arguments[3] + "&ajax=true #curriculum_content"); //.parent to replace #curriculum_content
+        $(document.getElementById("div_print_certificate")).removeClass("hidden");
+        //window.location.assign(arguments[3]);        
     }
 }
+/*  Function without fixed layout
+function floating_table(wrapper, defaultTop, headerHeight, main_sidebar_class, paginator, field_array, target, source, default_position){
+    $("#"+wrapper).scroll(function(e) {
+            var scrollTop = $(e.target).scrollTop();
+            
+            if ((scrollTop > defaultTop) && (small === false)){
+                for(var i = 0, j = field_array.length; i < j; ++i) {
+                    $('td[name='+paginator+'_col_'+field_array[i]+']').addClass("hidden");
+                }
+                
+                $("#"+source).appendTo("#"+target);
+                $("#"+target).css({'background-color': '#ecf0f5', 'webkit-transform':'translate3d(0,0,0)'});
+                $('.'+main_sidebar_class).css({'top': scrollTop - headerHeight});
+                small    = true;
+            } 
+            if ((scrollTop > defaultTop) && (small === true)){
+                $('.'+main_sidebar_class).css({'top': scrollTop - headerHeight});
+            } 
+            
+            if ((scrollTop < defaultTop) && (small === true)){
+                small = false;
+                $("#"+source).appendTo("#"+default_position);
+                for(var i = 0, j = field_array.length; i < j; ++i) {
+                    $('td[name='+paginator+'_col_'+field_array[i]+']').removeClass("hidden");
+                }
+                $('.'+main_sidebar_class).css({'top': 0});
+            }
+        });
+}*/
 
+/* floating_table with fixed header */
+function floating_table(wrapper, defaultTop, paginator, field_array, target, source, default_position){
+    $("#"+wrapper).scroll(function(e) {
+            var scrollTop = $(e.target).scrollTop();
+            
+            if ((scrollTop > defaultTop-50) && (small === false)){
+                for(var i = 0, j = field_array.length; i < j; ++i) {
+                    $('td[name='+paginator+'_col_'+field_array[i]+']').addClass("hidden");
+                }
+                $("#"+source).appendTo("#"+target);
+                $("#"+target).css({'background-color': '#ecf0f5', 'webkit-transform':'translate3d(0,0,0)'});
+                small    = true;
+            } 
+             
+            if ((scrollTop < defaultTop-50) && (small === true)){
+                small = false;
+                $("#"+source).appendTo("#"+default_position);
+                for(var i = 0, j = field_array.length; i < j; ++i) {
+                    $('td[name='+paginator+'_col_'+field_array[i]+']').removeClass("hidden");
+                }
+            }
+        });
+}
 function checkfile(file){
     var ch = document.getElementById(file);
     if(ch) {
-            if (ch.checked === false){
-                ch.checked = true;
-                document.getElementById('row'+file).className = 'filelist activefilenail';
-            } else {
-                ch.checked = false;
-                document.getElementById('row'+file).className = 'filelist filenail';
-            }  
-        }
+        if (ch.checked === false){
+            ch.checked = true;
+            document.getElementById('row'+file).className = 'filelist activefilenail';
+        } else {
+            ch.checked = false;
+            document.getElementById('row'+file).className = 'filelist filenail';
+        }  
+    }
 }
 
 function raiseEvent (eventType, elementID){ 
@@ -603,8 +658,6 @@ function setValues() {
                     if ($('#'+arguments[0]).hasClass("select2")){
                         $('#'+arguments[0]).select2();
                     }
-                    
-                    
                 }  
             }
         }
@@ -813,6 +866,7 @@ function closePopup(id){
     document.getElementById(popup).style.zIndex = 3000; // reset zIndex;
     document.getElementById(popup).innerHTML    = '<div class="modal-dialog"><div class="box"><div class="box-header"><h3 class="box-title">Loading...</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div></div>';    
 }
+
 /**
  * 
  * @param {string} id
