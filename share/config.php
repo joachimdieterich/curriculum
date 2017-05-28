@@ -27,14 +27,14 @@ $CFG = new stdClass();
 
 /* Application !IMPORTANT! Do not change manually*/
 $CFG->app_title='curriculum';
-$CFG->version='0.9.3';
+$CFG->version='0.9.4';
 $CFG->app_footer='<a href="http://www.curriculumonline.de" target="_blank">© Copyright 2014 - Joachim Dieterich</a>'; 
 
 /* DB Settings */
-$CFG->db_host='';
-$CFG->db_user='';
-$CFG->db_password ='';
-$CFG->db_name='';
+$CFG->db_host='127.0.0.1';
+$CFG->db_user='DBUSER';
+$CFG->db_password ='DBPASS';
+$CFG->db_name='DBNAME';
 if ($CFG->db_name != ''){
     try {
         $DB = new PDO('mysql:host='.$CFG->db_host.';dbname='.$CFG->db_name.';charset=utf8', $CFG->db_user, $CFG->db_password ); 
@@ -45,11 +45,11 @@ if ($CFG->db_name != ''){
         exit($e->getMessage());
     }
 }
-$CFG->ip=filter_input(INPUT_SERVER, 'SERVER_NAME', FILTER_UNSAFE_RAW);
-$CFG->protocol= 'http://'; //'https://';
-$CFG->base_folder=implode('/', array_slice(explode('/',filter_input(INPUT_SERVER, 'REQUEST_URI', FILTER_UNSAFE_RAW)), 1, 1)).'/';
-$CFG->base_url= $CFG->protocol.$CFG->ip.'/'.$CFG->base_folder;         //--> ! darf nicht localhost sein, da sonst probleme bei der Bilddarstellung bei Zugriff von extern
-$CFG->curriculumdata_root= '';
+$CFG->ip= 'localhost';
+$CFG->protocol                      = 'http://'; //'https://';
+$CFG->base_folder                   = 'curriculum/';
+$CFG->base_url                      = $CFG->protocol.$CFG->ip.'/'.$CFG->base_folder;         //--> ! darf nicht localhost sein, da sonst probleme bei der Bilddarstellung bei Zugriff von extern
+$CFG->curriculumdata_root           = '[PATH TO CURRICULUMDATA]';
 /*  Paths - do not edit */
 $CFG->share_root                    = dirname(__FILE__).'/';
 $CFG->document_root                 = dirname(__FILE__).'/../public/';
@@ -65,6 +65,8 @@ $CFG->backup_root                   = $CFG->curriculumdata_root.'backups/';//URL
 $CFG->sql_backup_root               = $CFG->curriculumdata_root.'backups/sql/';
 $CFG->lib_root                      = dirname(__FILE__).'/libs/';
 $CFG->demo_root                     = $CFG->curriculumdata_root.'support/';//URL for backups 
+//$CFG->salt                        = md5('loYfaz5r4w/ChAR1sJUw09sYkMaALLsOlKKpYb28LAcmFclAM3upsgwjDZ2tNsX2aVB6ZDJkIK6aO0DursPrqg==');
+//$CFG->access_file                 = '../share/accessfile.php?file='.$CFG->salt.'|';
 $CFG->access_file                   = '../share/accessfile.php?file=';
 $CFG->access_file_url               = $CFG->base_url.'share/accessfile.php?file=';
 $CFG->access_token_url              = $CFG->base_url.'share/accessfile.php?token=';
@@ -82,46 +84,8 @@ $CFG->lib_url                       = $CFG->request_url.'../share/libs/';
 
 /* Parameter for uploadframe */
 $CFG->tb_param                      = '&modal=true&format=1'; 
-
-/* Files */
-$CFG->thumbnails                    = true;                                     //generate Thumbnails
-
-;/* Standard Values */
-$CFG->acc_days                      = 7; 
-$CFG->paginator_limit               = 30; 
-$CFG->standard_role                 = 0;  // Schüler!
-$CFG->standard_country              = 56; 
-$CFG->standard_state                = 11;
-$CFG->csv_size                      = 1048576;
-$CFG->avatar_size                   = 1048576;
-$CFG->material_size                 = 1048576;
-$CFG->timeout                       = 30;
-$CFG->message_timeout               = 4000; //in millisec.
-$CFG->standard_avatar               = 'user/noprofile.jpg';
-$CFG->standard_avatar_id            = 0;
-$CFG->standard_ins_logo_id          = 1;
-$CFG->mail_paginator_limit          = 10;                                       // Limit for mail paginators
-/* Paginators - do not edit */
-$CFG->paginator_name                = '';                                       // Paginatoren die benutzt wurden
-$CFG->paginator_id                  = '';                                       // Paginator-IDs 
-
-$CFG->shibboleth                    = true;                                     // show shibboleth Button in Login.tpl
-
-/* Guest Login*/
-$CFG->guest_login                   = true;
-$CFG->guest_usr                     = 'gast';
-$CFG->guest_pwd                     = 'GastPW!';
-
 /* Get php_info('post_max_size') */
 $CFG->post_max_size                 = ini_get('post_max_size');
-
-/* email settings for PHPMailer() */
-$CFG->email_Host                    = '';
-$CFG->email_SMTPAuth                = true;
-$CFG->email_Username                = '';
-$CFG->email_Password                = '';
-$CFG->email_SMTPSecure              = 'tls';
-$CFG->email_Port                    = '587';
 
 /*  Smarty template engine --> now configured in setup.php */
 

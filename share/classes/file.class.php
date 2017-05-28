@@ -207,6 +207,7 @@ class File {
      * Load file with id $this->id 
      */
     public function load($id = null){
+        global $CFG;
         if ($id == null) { $id = $this->id; }
         $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct WHERE fl.context_id = ct.context_id AND fl.id = ?');
         $db->execute(array($id));
@@ -229,7 +230,10 @@ class File {
                 $this->context_path      = $result->context_path;
             }
             $this->file_version          = $this->getFileVersions(); // muss unter context_path stehen!
-            $this->full_path             = $this->context_path.$this->path.$this->filename;    
+            $this->full_path             = $this->context_path.$this->path.$this->filename;  
+            if (!file_exists($CFG->curriculumdata_root.$this->full_path)){ //only return existing files
+                return false;
+            }
             $this->curriculum_id         = $result->cur_id;
             $this->terminal_objective_id = $result->ter_id;
             $this->enabling_objective_id = $result->ena_id;
