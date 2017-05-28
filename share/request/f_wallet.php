@@ -111,6 +111,7 @@ $subjects->institution_id   = $USER->institutions;
 $content .= Form::input_select('subject_id', 'Fach', $subjects->getSubjects(), 'subject, institution', 'id', $subject_id , $error);
 $content .= Form::input_date(array('id'=>'timerange', 'label' => 'Zeitraum' , 'time' => $timerange, 'error' => $error, 'placeholder' => '', $type = 'date'));
 $ena      = new EnablingObjective();
+$ena->curriculum_id = $curriculum_id;
 $content .= Form::input_select_multiple(array('id' => 'objective_id', 'label' => 'Kompetenzen/ Lernziele', 'select_data' => $ena->getObjectives('curriculum', $curriculum_id), 'select_label' => 'enabling_objective', 'select_value' => 'id', 'input' => $objectives, 'error' => $error));
 
 $content .= '</form>';
