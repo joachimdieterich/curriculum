@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Project:     SmartyPaginate: Pagination for the Smarty Template Engine
  * File:        SmartyPaginate.class.php
@@ -416,7 +415,7 @@ class SmartyPaginate {
      * Reset sort/order and get index of last page to jumpt to that page after adding a new entry
      * @param string $id the pagination id
      */
-    static function getLastPageIndexURL($id = 'default', $sort = 'id', $order = 'ASC'){ 
+    static function getLastPageIndexURL($id = 'default', $sort = 'id', $order = 'ASC'){
         $_total = SmartyPaginate::getTotal($id);
         $_limit = SmartyPaginate::getLimit($id);
         unset($_SESSION['SmartyPaginate'][$id]['pagi_search']);

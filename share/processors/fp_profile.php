@@ -103,6 +103,7 @@ if($validated_data === false) {/* validation failed */
     switch ($_POST['func']) {
         case 'new':      if ($user->add(filter_input(INPUT_POST, 'institution_id', FILTER_VALIDATE_INT), filter_input(INPUT_POST, 'group_id', FILTER_VALIDATE_INT))){
                             $_SESSION['PAGE']->message[] = array('message' => 'Benutzer hinzufgefügt', 'icon' => 'fa-user text-success');
+                            SmartyPaginate::setTotal(SmartyPaginate::getTotal('userP')+1, 'userP');
                             $_SESSION['PAGE']->target_url = SmartyPaginate::getLastPageIndexURL('userP'); //jump to new entry in list
                          }               
             break;
