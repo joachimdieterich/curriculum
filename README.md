@@ -1,4 +1,20 @@
-curriculum BETA Version 0.9.3
+curriculum BETA Version 0.9.4
+
+Verion 0.9.4
+=================
+- div. bugfixes and enhancements
+- certificates (pdf files) now can be delivered to students file folder
+- adding wallet
+- context based Comments (yet on blog/wallet) 
+- sortable dashboard blocks
+- move most config vars to db
+- thumbs from pdf (ghostscript needed)
+- smooth scrolling on tablets
+- email function (messages / set objective status over external link provided by mail) using PHPMailer
+- first LDAP experiments
+- adding more statistic charts
+- install (work in progress)
+
 
 Version 0.9.3
 =================
