@@ -18,8 +18,8 @@
                 <div class="box-body">   
                 {if checkCapabilities('certificate:add', $my_role_id, false)}
                     <div class="btn-group" role="group" aria-label="...">
-                        <button type="button" class="btn btn-default" onclick="formloader('certificate','new')"><a>
-                                <span class="fa fa-plus-circle" aria-hidden="true"></span> Zertifikat hinzufügen</a>
+                        <button type="button" class="btn btn-default" onclick="formloader('certificate','new');"><a>
+                            <span class="fa fa-plus-circle" aria-hidden="true"></span> Zertifikat hinzufügen</a>
                         </button>
                     </div>
                 {/if}    

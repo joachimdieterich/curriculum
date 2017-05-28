@@ -35,6 +35,7 @@ global $PAGE;                                                       // Daten der
 global $COURSE;                                                     // Daten des aktuelle Kurses
 global $INSTITUTION;                                                // Daten der (letzten --> laut DB-Abfrage) Institution des aktuellen Nutzers --> Es können mehr als eine Institution gegeben sein... optimieren!
 global $TEMPLATE;                                                   // Smarty TEMPLATE object
+global $CONTEXT;                                                    // Array of contexts objects. You can use $CONTEXT[ID] or $CONTEXT[context] to get the matching context
 
 session_start();                                                    // Starte Sesseion
 

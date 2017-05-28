@@ -217,6 +217,9 @@ class User {
             $db->execute(array($user_value));
             $result = $db->fetchObject();
         }
+        if (!$result){                                                          // return if $result is empty
+            return false;
+        }
         $this->id                = $result->id;
         $this->username          = $result->username;
         $this->password          = $result->password;

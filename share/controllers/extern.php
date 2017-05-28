@@ -23,7 +23,6 @@
 */
 global $CFG, $TEMPLATE, $PAGE; 
 
-
 $user       = new User();
 $message    = '';
 if(isset($_GET['teacher']) AND isset($_GET['student']) AND isset($_GET['ena_id']) AND isset($_GET['status']) AND isset($_GET['token'])) {

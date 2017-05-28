@@ -33,12 +33,11 @@ $TEMPLATE->assign('accomplished_status', '');
 if (isset($_GET['chart'])){
     $chart  = $_GET['chart'];
 }
-$s     = array(
-                array('id' => 0, 'status' => 'alle Einträge', 'db' => ''),
+$s     = array( array('id' => 0, 'status' => 'alle Einträge',        'db' => ''),
                 array('id' => 1, 'status' => 'selbständig erreicht', 'db' => '"01","1","x1","11","21","31"'),
-                array('id' => 2, 'status' => 'mit Hilfe erreicht', 'db' => '"02","2","x2","12","22","32"'),
-                array('id' => 3, 'status' => 'nicht bearbeitet', 'db' => '"03","3","x3","13","23","33"'),
-                array('id' => 4, 'status' => 'nicht erreicht', 'db' => '"04","4","x4","14","24","34"'),
+                array('id' => 2, 'status' => 'mit Hilfe erreicht',   'db' => '"02","2","x2","12","22","32"'),
+                array('id' => 3, 'status' => 'nicht bearbeitet',     'db' => '"03","3","x3","13","23","33"'),
+                array('id' => 4, 'status' => 'nicht erreicht',       'db' => '"04","4","x4","14","24","34"')
               );
 
 
@@ -48,7 +47,7 @@ $s_array      = array();
 foreach ($s as $value) {
     foreach ($value as $k => $v) {
         switch ($k) {
-            case 'id':      $status->id       = $v;
+            case 'id':      $status->id        = $v;
                             if (isset($_GET['status'])){
                                 if ($_GET['status'] == $v){
                                     $TEMPLATE->assign('accomplished_status', $v); 
@@ -69,5 +68,5 @@ foreach ($s as $value) {
 }
 $map        = new Statistic();
 $TEMPLATE->assign('status', $s_array);  
-$TEMPLATE->assign('chart', $chart);  
-$TEMPLATE->assign('map', $map->map($chart,$dependency));  
+$TEMPLATE->assign('chart',  $chart);  
+$TEMPLATE->assign('map',    $map->map($chart,$dependency));  

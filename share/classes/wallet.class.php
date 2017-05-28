@@ -110,10 +110,8 @@ class Wallet {
     
     public function addObjectives($objective_id){
         global $USER;
-        $c  = new Context();
-        $c->resolve('context', 'enabling_objective');
         $db_obj = DB::prepare('INSERT INTO wallet_objectives(wallet_id, context_id, reference_id,creator_id) VALUES (?,?,?,?)');
-        return $db_obj->execute(array($this->id, $c->context_id, $objective_id, $USER->id));
+        return $db_obj->execute(array($this->id, $_SESSION['CONTEXT']['enabling_objective']->context_id, $objective_id, $USER->id));
         
     }
     public function getObjectives(){
@@ -136,11 +134,9 @@ class Wallet {
                                                AND wo.context_id = co.context_id 
                                                AND co.context = ?');
         $db->execute(array($objective->id, $this->id, 'enabling_objective'));
-        $c  = new Context();
-        $c->resolve('context', 'enabling_objective');
         if($db->fetchColumn() >= 1) {
             $db = DB::prepare('DELETE FROM wallet_objectives WHERE reference_id = ? AND wallet_id = ? AND context_id = ?');
-            return $db->execute(array($objective->id, $this->id, $c->context_id));
+            return $db->execute(array($objective->id, $this->id, $_SESSION['CONTEXT']['enabling_objective']->context_id));
         } 
     }
     

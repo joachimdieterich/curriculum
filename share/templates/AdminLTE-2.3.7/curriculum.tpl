@@ -8,9 +8,8 @@
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
 {block name=content}
-    <!-- Content Header (Page header) -->
+<!-- Content Header (Page header) -->
 {content_header p_title=$page_title pages=$breadcrumb help='http://docs.joachimdieterich.de/index.php?title=Lehrplan_anlegen'} 
- 
 <!-- Main content -->
 <section class="content">
     <div class="row">
@@ -25,13 +24,12 @@
                         </div>
                     {/if}
                     <span class="clearfix"></span>
-                        {html_paginator id='curriculumP' title='Lehrpläne'}
+                    {html_paginator id='curriculumP' title='Lehrpläne'}
                 </div>
             </div>
         </div>
     </div>
 </section>
-
 {/block}
 
 {block name=sidebar}{$smarty.block.parent}{/block}

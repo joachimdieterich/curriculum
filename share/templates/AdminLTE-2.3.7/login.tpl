@@ -50,7 +50,6 @@
         {/if}
         <p  id="pw_reset"><a  href="#" onclick="toggle(['reset', 'reset_info'], ['login', 'password', 'pw_reset']);">Passwort vergessen</a></p>
         <a href="#" class="text-center" onclick="alert('Funktion noch nicht verfügbar');">Registrieren</a>
-
       </div><!-- /.login-box-body -->
 </div><!-- /.login-box -->
 {/block}

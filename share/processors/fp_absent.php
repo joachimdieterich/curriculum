@@ -81,9 +81,7 @@ if($validated_data === false) {/* validation failed */
         }
        /* $task->id = $task->add(); 
         if (filter_input(INPUT_POST, 'reference_id', FILTER_VALIDATE_INT)){
-            $context = new Context();
-            $context->resolve('context', $_POST['func']);
-            $task->enrol($context->context_id, filter_input(INPUT_POST, 'reference_id', FILTER_VALIDATE_INT)); 
+            $task->enrol($_SESSION['CONTEXT'][$_POST['func']]->context_id, filter_input(INPUT_POST, 'reference_id', FILTER_VALIDATE_INT)); 
         }*/
     }
     $_SESSION['FORM']            = null;                     // reset Session Form object 

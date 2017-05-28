@@ -280,12 +280,13 @@
         idleMax = {$global_timeout};
         idleTime = 0;
         $(document).ready(function () {
-            var idleInterval = setInterval("timerIncrement()", 60000); 
+            var idleInterval = setInterval(timerIncrement(), 60000);
             $(document.getElementById('popup')).attr('class', 'modal');
             $(".select2").select2();
         });
+        
         function timerIncrement() {
-            idleTime = idleTime + 1;
+            idleTime++;
             if (idleTime === idleMax) { 
                 window.location="index.php?action=logout&timout=true";
             }
@@ -311,7 +312,6 @@
             }
         });
         $('#popup_generate').nyroModal();
-        
     });
     
     </script>

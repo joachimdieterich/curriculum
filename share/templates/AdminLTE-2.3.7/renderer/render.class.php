@@ -466,7 +466,6 @@ class Render {
                               }
                               $html .='<textarea id="comment_'.$cm->id.'" name="comment"  class="hidden" style="width:100%;"></textarea>
                                         <button id="cmbtn_'.$cm->id.'" type="submit" class="btn btn-primary pull-right hidden" onclick="comment(\'new\','.$cm->reference_id.', '.$cm->context_id.', document.getElementById(\'comment_'.$cm->id.'\').value, '.$cm->id.');"><i class="fa fa-commenting-o margin-r-10"></i>Kommentar abschicken</button>';
-
             /* sub comments */
             if (!empty($cm->comment)){
               $html .= RENDER::sub_comments(array('comment' => $cm->comment));

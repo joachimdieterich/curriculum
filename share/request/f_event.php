@@ -53,7 +53,7 @@ $timestart         = null;
 $timeend           = null;
 $timerange         = null;
 $status            = null;
-
+$footer             = '';
 $func              = $_GET['func'];
 $error             =   null;
 $object            = file_get_contents("php://input");

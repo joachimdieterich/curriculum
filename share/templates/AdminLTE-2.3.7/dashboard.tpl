@@ -5,38 +5,36 @@
 {block name=nav}{$smarty.block.parent}{/block}
 
 {block name=additional_scripts}{$smarty.block.parent}
-    <!-- jQuery UI used by sortable -->
+<!-- jQuery UI used by sortable -->
 <script src="{$media_url}scripts/jquery-ui.min.js"></script>
     {literal}<script>
-   //Make the dashboard widgets sortable Using jquery UI
-  $(".connectedSortable").sortable({
-    placeholder         : "sort-highlight",
-    connectWith         : ".connectedSortable",
-    handle              : ".box-header, .alert-heading, .widget-user-header, .nav-tabs",
-    forcePlaceholderSize: true,
-    zIndex              : 999999,
-    stop: function(e, ui) {
-                var element_weight = $.map($(".sortable"), function(el) {
-                    return $(el).attr('id') + '=' + $(el).index();
-                });
-                var element_region = $.map($(".sortable"), function(el) {
-                    return $(el).attr('id') + '=' + $(el).closest('section').attr('id');
-                })
-                processor('config','sortable', 'dashboard', {'element_weight': element_weight, 'element_region': element_region});
-                /*alert($.map($(".sortable"), function(el) {
-                    return $(el).attr('id') + ' = ' + $(el).index();
-                }));*/
-            }
-                    
-  });
-  $(".connectedSortable .box-header, .alert-heading, .widget-user-header, .connectedSortable .nav-tabs-custom").css("cursor", "move");
-      </script>
-    {/literal}
+    //Make the dashboard widgets sortable Using jquery UI
+        $(".connectedSortable").sortable({
+          placeholder         : "sort-highlight",
+          connectWith         : ".connectedSortable",
+          handle              : ".box-header, .alert-heading, .widget-user-header, .nav-tabs",
+          forcePlaceholderSize: true,
+          zIndex              : 999999,
+          stop: function(e, ui) {
+                      var element_weight = $.map($(".sortable"), function(el) {
+                          return $(el).attr('id') + '=' + $(el).index();
+                      });
+                      var element_region = $.map($(".sortable"), function(el) {
+                          return $(el).attr('id') + '=' + $(el).closest('section').attr('id');
+                      })
+                      processor('config','sortable', 'dashboard', {'element_weight': element_weight, 'element_region': element_region});
+                      /*alert($.map($(".sortable"), function(el) {
+                          return $(el).attr('id') + ' = ' + $(el).index();
+                      }));*/
+                  }
+
+        });
+        $(".connectedSortable .box-header, .alert-heading, .widget-user-header, .connectedSortable .nav-tabs-custom").css("cursor", "move");
+    </script>{/literal}
 {/block}
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
 {block name=content}
-    
 <!-- Content Header (Page header) -->
 {content_header p_title=$page_title pages=$breadcrumb help='http://docs.joachimdieterich.de/index.php?title=Startseite'}
 
@@ -45,19 +43,8 @@
     <!-- Info boxes -->
     <div class="row" >
         <section id="left" class="col-md-8 connectedSortable">
-         {*accomplishedObject Block *}
-         {*event Block *}
-         {*task Block *}
-         {*statistic Block *}
-        
-        
-
-        
-       
-      
-        <!-- Additional Blocks -->   
+            <!-- Additional Blocks -->   
             {foreach key=blockid item=block from=$blocks}
-                {*html_block block=$block->block configdata=$block->configdata visible=$block->visible*}
                 {if $block->region == 'left'}
                     {html_block blockdata=$block}
                 {/if}
@@ -86,9 +73,8 @@
                 {/if}
                 </div>
             </div>   
-        {/if}
-                {*myinstitutions Block *}
-                {*myclasses Block *}
+            {/if}
+
             <!-- Additional Blocks -->   
             {foreach key=blockid item=block from=$blocks}
                 {*html_block block=$block->block configdata=$block->configdata visible=$block->visible*}

@@ -28,8 +28,7 @@ $TEMPLATE->assign('page_title', 'Kalender');
 $TEMPLATE->assign('breadcrumb',  array('Kalender' => 'index.php?action=calendar'));
 $LOG->add($USER->id, 'view', $PAGE->url, 'calendar'); 
 
-$e = new Event();
-
+$e      = new Event();
 $events = array();
 $ev     = new stdClass();
 foreach ($e->get('user', $USER->id) as $value) {

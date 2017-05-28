@@ -31,7 +31,7 @@ $TEMPLATE->assign('bulletinBoard',      $institution->getBulletinBoard());
 /* Load blocks*/
 /*accomplished_obj/institutions/groups/upcoming events/statistic --> now realized as blocks*/
 $blocks                 = new Block();
-$blocks->context_id     = $CONTEXT['dashboard']->id; //== dashboard todo get value from context table
+$blocks->context_id     = $CONTEXT['dashboard']->id;
 $blocks->institution_id = $USER->institution_id;
 $TEMPLATE->assign('blocks', $blocks->get());
 /*$cron                 = new Cron(); 

@@ -27,7 +27,7 @@ global $USER;
 
 if (filter_input(INPUT_GET, 'timout', FILTER_VALIDATE_BOOLEAN)){ 
     if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+        session_start();
     }
 }
 session_destroy();

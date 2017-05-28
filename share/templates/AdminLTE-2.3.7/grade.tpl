@@ -19,7 +19,7 @@
                 <div class="box-body">  
                 {if checkCapabilities('grade:add', $my_role_id, false)}
                 <div class="btn-group" role="group" aria-label="...">
-                    <button type="button" class="btn btn-default" onclick="formloader('grade','new')"><a href="#">
+                    <button type="button" class="btn btn-default" onclick="formloader('grade','new');"><a href="#">
                         <span class="fa fa-plus-circle" aria-hidden="true"></span> Klassenstufe hinzufügen</a>
                     </button>
                 </div>

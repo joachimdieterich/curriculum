@@ -169,10 +169,7 @@ class File {
         $this->load();
         $db = DB::prepare('DELETE FROM files WHERE id=?');
         if ($db->execute(array($this->id))){/* unlink file*/
-            $co = new Context();
-            $co->resolve('id', $this->context_id);
-            $path = $CFG->curriculumdata_root.$co->path;
-
+            $path = $CFG->curriculumdata_root.$_SESSION['CONTEXT'][$this->context_id]->path;
             if ($path) {
                 $LOG->add($USER->id, 'uploadframe.php', dirname(__FILE__), 'Context: '.$this->context_id.' Delete: '.$this->path.''.$this->filename);
                 if ($this->type == ".url"){ // bei urls muss keine Datei gelöscht werden 

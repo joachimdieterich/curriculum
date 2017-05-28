@@ -47,27 +47,15 @@ $TEMPLATE->assign('selected_certificate_template',  filter_input(INPUT_GET, 'cer
 list ($selected_curriculum_id, $selected_group) = explode('_', $selected_curriculum_id); //$selected_curriculum_id enthält curriculumid_groupid (zb. 32_24) wenn nur '_' gesetzt ist werden beide variabeln ''
 $TEMPLATE->assign('sel_curriculum', $selected_curriculum_id); //only selected curriculum without group
 $TEMPLATE->assign('sel_group_id',   $selected_group); //only selected group without curriculum
- 
-/*if (isset($_POST['printCertificate'])){
-    $TEMPLATE->assign('sel_curriculum',                 $_POST['sel_curriculum']);
-    $TEMPLATE->assign('sel_group_id',                   $_POST['sel_group_id']); 
-    $TEMPLATE->assign('selected_certificate_template',  $_POST['certificate_template']); 
-    if ($_POST['certificate_template'] != '-1' AND $selected_user_id != '' AND isset($selected_user_id[0])){
-        $pdf = new Pdf();
-        $pdf->user_id       =  $selected_user_id;
-        $pdf->curriculum_id =  $_POST['sel_curriculum'];
-        $certificate        =  new Certificate();
-        $certificate->id    = $_POST['certificate_template'];
-        $certificate->load();
-        $pdf->template      = $certificate->template;
-        $pdf->generate_certificate_from_template('from_template');
-    } else {
-        $PAGE->message[]    = array('message' => 'Zertifikatvorlage muss gewählt werden', 'icon' => 'fa-files-o text-warning');
-    }
-} */
   
+
+if(isset($_SESSION['PAGE']->config['tab']) AND $selected_curriculum_id != '' AND !isset($_GET['ajax'])){
+    $TEMPLATE->assign($_SESSION['PAGE']->config['tab'],  true);
+} else {
+    $TEMPLATE->assign('f_userlist',  true);
+}
 // load user list
-if ($selected_curriculum_id != '' AND !isset($_GET['ajax'])) {  
+if ($selected_curriculum_id != '' AND !isset($_GET['ajax'])) {    
     $course_user        = new User();
     $course_user->id    = $USER->id;
     $users              = $course_user->getUsers('course', 'userPaginator', $selected_curriculum_id, $selected_group);
@@ -115,11 +103,7 @@ if ($selected_curriculum_id != '' AND !isset($_GET['ajax'])) {
     $sel_course     = $courses->getCourseId($selected_curriculum_id, $selected_group);
     $coursebook     = new CourseBook();
     $TEMPLATE->assign('coursebook',      $coursebook->get('course', $sel_course->id) );
-    /*$certificate                 = new Certificate();                               // Load certificate_templates
-    $certificate->institution_id = $USER->institutions;
-    $certificate->curriculum_id  = $selected_curriculum_id;
-    $TEMPLATE->assign('certificate_templates', $certificate->getCertificates());*/
-}
+} 
 
 // load curriculum of actual user 
 if ($selected_curriculum_id != '' AND $selected_user_id != '' AND isset($selected_user_id[0])) {
@@ -130,10 +114,10 @@ if ($selected_curriculum_id != '' AND $selected_user_id != '' AND isset($selecte
         $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('group', $selected_curriculum_id, $selected_user_id));
         $show_course         = true; // setzen
     } else {
-        $user   = new User(); 
+        $user                = new User(); 
         $user->load('id', $selected_user_id[0], false);
         $TEMPLATE->assign('user', $user);
-        $group  = new Group();   
+        $group               = new Group();   
         $TEMPLATE->assign('group', $group->getGroups('course', $selected_group));
         $terminal_objectives = new TerminalObjective();         //load terminal objectives
         $TEMPLATE->assign('terminalObjectives', $terminal_objectives->getObjectives('curriculum', $selected_curriculum_id));

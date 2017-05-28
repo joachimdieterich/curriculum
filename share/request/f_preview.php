@@ -49,10 +49,8 @@ switch ($func) {
         break;
 
     case 'file':    $file->load(filter_input(INPUT_GET, 'id',   FILTER_SANITIZE_STRING));
-                    $title      = $file->title;
-                    $context    = new Context();
-                    $context->resolve('context_id', $file->context_id);                
-                    $category   = $context->context;
+                    $title      = $file->title;               
+                    $category   = $_SESSION['CONTEXT'][$file->context_id]->context;
                     $padding    = 'padding:0px;';
                     if ($file->type != '.url'){
                         $options    = '<a href="'.$file->getFileUrl().'" class="btn btn-default btn-xs pull-right" style="margin-right:20px;"><i class="fa fa-cloud-download"></i></a>';

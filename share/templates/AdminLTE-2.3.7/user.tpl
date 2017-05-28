@@ -42,7 +42,7 @@
                     {if checkCapabilities('user:userListComplete', $my_role_id, false)}
                     <div class="btn-group pull-right" role="group" aria-label="...">
                         <button type="button" class="btn btn-default" onclick="location.href='index.php?action=user&lost=true';"><a  href="#">
-                                <span class="fa fa-group" aria-hidden="true"></span> Nicht zugeordnete Benutzer</a>
+                            <span class="fa fa-group" aria-hidden="true"></span> Nicht zugeordnete Benutzer</a>
                         </button>
                     </div>
                     {/if}

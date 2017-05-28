@@ -53,12 +53,12 @@ $groups    = $group->getGroups('institution', $USER->institution_id);
 $TEMPLATE->assign('groups',     $groups   );
 $TEMPLATE->assign('role_id',    $CFG->settings->standard_role);
 $TEMPLATE->assign('delimiter',  ';');
-$PAGE->group_table = array('header' => array('id'    => 'group_id', 
-                                             'group' => 'Lerngruppe (group)'), 
-                                             'data' => $groups,
-                                             'width_class'   => 'row col-xs-12 col-sm-6 col-md-3 col-lg-3',
-                                             'style'         => 'padding-left: 20px; padding-right: 20px;',
-                                             'table_class'   => 'table table-striped');
+$PAGE->group_table = array('header' => array('id'           => 'group_id', 
+                                             'group'        => 'Lerngruppe (group)'), 
+                                             'data'         => $groups,
+                                             'width_class'  => 'row col-xs-12 col-sm-6 col-md-3 col-lg-3',
+                                             'style'        => 'padding-left: 20px; padding-right: 20px;',
+                                             'table_class'  => 'table table-striped');
 $TEMPLATE->assign('group_table_params', $PAGE->group_table);
 $PAGE->role_table = array(  'header' => array('id'   => 'role_id', 
                                               'role' => 'Rolle (role)'), 

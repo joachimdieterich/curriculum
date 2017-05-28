@@ -120,8 +120,7 @@
                     {/if}
                 </div>
             </div>
-        </div>
-        
+        </div>  
     </div>
 </section>
 {/block}

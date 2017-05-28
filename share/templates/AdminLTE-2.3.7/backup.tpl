@@ -18,8 +18,8 @@
                 <div class="box-body">        
                 {if checkCapabilities('backup:add', $my_role_id, false)}
                 <div class="btn-group" role="group" aria-label="...">
-                    <button type="button" class="btn btn-default" onclick="formloader('backup','new')"><a>
-                            <span class="fa fa-plus-circle" aria-hidden="true"></span> Backup erstellen</a>
+                    <button type="button" class="btn btn-default" onclick="formloader('backup','new');"><a>
+                        <span class="fa fa-plus-circle" aria-hidden="true"></span> Backup erstellen</a>
                     </button>
                 </div>
                 {/if} 

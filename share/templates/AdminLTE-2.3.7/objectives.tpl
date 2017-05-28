@@ -24,8 +24,9 @@
             }
             defaultTop  = findTopPos($("#container_userPaginator")[0]);  
             small       = false;
-            
-            floating_table('body-wrapper', defaultTop, 'userPaginator', ['username', 'role_name', 'completed', 'online'], 'menu_top_placeholder', 'container_userPaginator', 'default_userPaginator_position');
+            if ($('#f_userlist').hasClass('active')){
+                floating_table('body-wrapper', defaultTop, 'userPaginator', ['username', 'role_name', 'completed', 'online'], 'menu_top_placeholder', 'container_userPaginator', 'default_userPaginator_position');
+            }
         });
     </script>
     
@@ -44,13 +45,13 @@
         <div class="col-sm-12">
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
-                    <li class="active"><a href="#f_userlist" data-toggle="tab">Kursliste</a></li>
+                    <li {if isset($f_userlist)}class="active"{/if}><a href="#f_userlist" data-toggle="tab" onclick='processor("config","page", "config",{["tab"=>"f_userlist"]|@json_encode nofilter});'>Kursliste</a></li>
                     {if isset($coursebook)} 
-                        <li><a href="#f_coursebook" data-toggle="tab">Kursbuch</a></li>
+                        <li {if isset($f_coursebook)}class="active"{/if}><a href="#f_coursebook" data-toggle="tab" onclick='processor("config","page", "config",{["tab"=>"f_coursebook"]|@json_encode nofilter});'>Kursbuch</a></li>
                     {/if}
                 </ul>
                 <div class="tab-content">
-                    <div class="tab-pane active" id="f_userlist">
+                    <div class="tab-pane {if isset($f_userlist)}active{/if}" id="f_userlist">
                         {if isset($courses)}
                             <form method='post' action='index.php?action=objectives&course={$selected_curriculum_id}{*&userID={implode(',',$selected_user_id)}&next={$currentUrlId}*}'>        
                                 <div class="form-horizontal">
@@ -58,7 +59,7 @@
                                         <div class="col-md-4 col-sm-12">
                                             {Form::input_select('course', '', $courses, 'group, curriculum', 'id', $selected_curriculum_id, null, "window.location.assign('index.php?action=objectives&reset=true&course='+this.value);", 'Kurs / Klasse wählen...', '', 'col-sm-12')}
                                         </div>
-                                        {*if $show_course != '' and $terminalObjectives != false*}{*Zertifikat*}
+                                        {*Zertifikat*}
                                         <div class="col-md-4 col-sm-12">
                                             <div class='btn btn-default' onclick="formloader('generate_certificate','',{$sel_curriculum});">
                                                 <span class="fa fa-files-o" aria-hidden="true"></span> {if count($selected_user_id) > 1} Zertifikate erstellen{else} Zertifikat erstellen{/if}
@@ -91,7 +92,7 @@
                         {elseif $showuser eq true}Keine eingeschriebenen Benutzer{/if}
                     </div>
                     {if isset($coursebook)} 
-                    <div class="tab-pane" id="f_coursebook">
+                    <div class="tab-pane {if isset($f_coursebook)}active{/if}" id="f_coursebook">
                         {Render::courseBook($coursebook)}
                     </div>
                     {/if}

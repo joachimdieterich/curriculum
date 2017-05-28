@@ -108,6 +108,9 @@ switch ($func) {
                         }
                         $block_config->config('collapse');
         break;
+    case "page":        $val = filter_input(INPUT_GET, 'val', FILTER_UNSAFE_RAW);
+                        $_SESSION['PAGE']->$val = $_GET;
+        break;
                             
     default: break;
 }

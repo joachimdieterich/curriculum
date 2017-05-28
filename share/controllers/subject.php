@@ -36,15 +36,15 @@ $p_options = array('delete' => array('onclick'    => "del('subject',__id__);",
                                      'capability' => checkCapabilities('subject:update', $USER->role_id, false),
                                      'icon'       => 'fa fa-edit',
                                      'tooltip'    => 'bearbeiten'));
-$p_widget  = array('header'     => 'subject',
-                   'subheader01'=> 'description',
-                   'subheader02'=> 'institution'); //false ==> don't show icon on widget
+$p_widget  = array('header'      => 'subject',
+                   'subheader01' => 'description',
+                   'subheader02' => 'institution'); //false ==> don't show icon on widget
 $p_config =   array('id'         => 'checkbox',
-                    'subject'       => 'Fach', 
+                    'subject'     => 'Fach', 
                   'subject_short' => 'Kürzel',
                   'description'   => 'Beschreibung', 
                   'institution'   => 'Institution', 
-                  'p_search'    => array('subject','description','subject_short','institution'),
-                  'p_widget' => $p_widget, 
+                  'p_search'      => array('subject','description','subject_short','institution'),
+                  'p_widget'      => $p_widget, 
                   'p_options'     => $p_options);
 setPaginator('subjectP', $TEMPLATE, $subject->getSubjects('subjectP'), 'su_val', 'index.php?action=subject', $p_config); 

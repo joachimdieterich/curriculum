@@ -26,7 +26,7 @@
         </div>
         {if checkCapabilities('help:add', $my_role_id, false)}    
             <div class="pull-left" style="padding: 0 0 10px 15px;">
-                <button type="button" class="btn btn-default " onclick="formloader('help','new')" ><i class="fa fa-plus"></i> Datei hinzufügen</button>
+                <button type="button" class="btn btn-default " onclick="formloader('help','new');" ><i class="fa fa-plus"></i> Datei hinzufügen</button>
             </div>
         {/if}
     </div>

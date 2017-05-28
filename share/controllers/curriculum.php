@@ -46,7 +46,7 @@ $p_options = array('delete' => array('onclick'      => "del('curriculum',__id__)
                                      'capability'   => true, 
                                      'icon'         => 'fa fa-list-alt',
                                      'tooltip'      => 'Überblick'),
-                   'description'  => array('onclick'      => "formloader('description','curriculum',__id__);", 
+                   'description'  => array('onclick'=> "formloader('description','curriculum',__id__);", 
                                      'capability'   => true,  //free for all
                                      'icon'         => 'fa fa-info',
                                      'tooltip'      => 'Beschreibung'));
@@ -54,10 +54,10 @@ $p_widget  = array('header'     => 'curriculum',
                    'subheader01'=> 'grade, schooltype',
                    'subheader02'=> 'state',
                    'file_id'    => 'icon_id',
-                   'bg_image' => 'file_id',
+                   'bg_image'   => 'file_id',
                    'expand'     => 'description',
                    'description'=> false); //false ==> don't show icon on widget
-$t_config      = array('td'        => array('onclick'         => "location.href='index.php?action=view&function=addObjectives&curriculum_id=__id__'"));
+$t_config      = array('td'     => array('onclick'         => "location.href='index.php?action=view&function=addObjectives&curriculum_id=__id__'"));
 $p_config  = array('id'         => 'checkbox',
                    'curriculum'  => 'Lehrplan', 
                    /*'description' => 'Beschreibung', */
