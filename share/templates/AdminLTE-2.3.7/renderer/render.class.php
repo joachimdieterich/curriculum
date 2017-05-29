@@ -598,7 +598,7 @@ class Render {
                         }
                     }
                 }
-                if (checkCapabilities('file:upload', $USER->role_id, false) OR checkCapabilities('file:url', $USER->role_id, false)){
+                if (checkCapabilities('file:upload', $USER->role_id, false) OR checkCapabilities('file:uploadURL', $USER->role_id, false)){
                     $html  .= '<a href="'.$CFG->smarty_template_dir_url.'renderer/uploadframe.php?context=solution&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal ">
                     <span class="fa ';
                     if ($sol_btn == $objective->id){
