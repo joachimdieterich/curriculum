@@ -88,6 +88,11 @@ if (!isset($CFG->settings->template)){
     $CFG->settings           = new stdClass();
     $CFG->settings->template = 'Bootflat-2.0.4'; // fallback for installation process
 } 
+if (isset($CFG->settings->guest_usr)){ 
+  $TEMPLATE->assign('cfg_guest_usr',$CFG->settings->guest_usr);
+} else {
+  $TEMPLATE->assign('cfg_guest_usr', false);  
+}
 $TEMPLATE->template_dir           = dirname(__FILE__).'/templates/'.$CFG->settings->template.'/';
 $TEMPLATE->compile_dir            = $TEMPLATE->template_dir.'compiled';
 $TEMPLATE->cache_dir              = $TEMPLATE->template_dir.'cached';

@@ -14,7 +14,7 @@
 {content_header p_title="{$page_title}: {$course[0]->curriculum} ({$course[0]->grade}: {$course[0]->subject})" pages=$breadcrumb help= $help}       
 
 <!-- Main content -->
-<section class="content" >   
+<section class="content " >   
     <div class="row ">
         <div class="col-xs-12" >
             <div class="pull-right">
@@ -44,7 +44,7 @@
              {assign var="sol_btn" value="false"}  
              {*Thema Row*}
              {foreach name=foreach_ter key=terid item=ter from=$terminal_objectives}   
-             <div class="row" >
+             <div class="row " >
                  <div class="col-xs-12"> 
                      {*Thema Row*}
                      {if isset($showaddObjectives)}
