@@ -1412,8 +1412,8 @@ class Render {
                                     $html  .= '<li><a>'.$ins->institution.'
                                         <small class="label pull-right bg-primary">
                                             <i class="fa fa-user" data-toggle="tooltip" title="Schüler">';
-                                                if (isset($ins->statistic['$institution_std_role'])){
-                                                    $html  .= $ins->statistic['$institution_std_role'];
+                                                if (isset($ins->statistic[$CFG->standard_role])){
+                                                    $html  .= $ins->statistic[$CFG->standard_role];
                                                 } else {
                                                     $html  .= '0';
                                                 }
