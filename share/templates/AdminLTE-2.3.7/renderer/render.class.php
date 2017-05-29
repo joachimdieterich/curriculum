@@ -1412,19 +1412,19 @@ class Render {
                                     $html  .= '<li><a>'.$ins->institution.'
                                         <small class="label pull-right bg-primary">
                                             <i class="fa fa-user" data-toggle="tooltip" title="Schüler">';
-                                                if (isset($ins->statistic[$CFG->standard_role])){
-                                                    $html  .= $ins->statistic[$CFG->standard_role];
+                                                if (isset($ins->statistic[$CFG->settings->standard_role])){
+                                                    $html .= $ins->statistic[$CFG->settings->standard_role];
                                                 } else {
-                                                    $html  .= '0';
+                                                    $html .= '0';
                                                 }
                                             $html  .= '</i>
                                         </small>
                                         <small class="label pull-right bg-primary margin-r-5">
                                             <i class="fa fa-check-circle-o" data-toggle="tooltip" title="Erreichte Ziele">';
                                                 if (isset($ins->statistic['accomplished'])){
-                                                    $html  .= $ins->statistic['accomplished'];
+                                                    $html .= $ins->statistic['accomplished'];
                                                 } else {
-                                                    $html  .= '0';
+                                                    $html .= '0';
                                                 }
                                             $html  .= '</i>
                                         </small>
