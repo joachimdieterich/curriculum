@@ -590,7 +590,7 @@ class Render {
                     $html  .= ' <span class="fa fa-support pull-right invert box-sm-icon text-primary margin-r-5" onclick=\'formloader("support","random", '.$objective->id.', {"group_id":"'.$group_id.'"});\'></span>';
                 }
                 
-                if (checkCapabilities('file:solutionUpload', $USER->role_id, false) AND $type != 'terminal_objective' AND isset($soutions)){
+                if (checkCapabilities('file:solutionUpload', $USER->role_id, false) AND $type != 'terminal_objective' AND isset($solutions)){
                     foreach ($solutions AS $s){
                         if (($USER->id == $s->creator_id) AND ($s->enabling_objective_id == $objective->id) AND ($sol_btn != $objective->id)){
                             $sol_btn = $objective->id;
@@ -598,7 +598,7 @@ class Render {
                         }
                     }
                 }
-                if (checkCapabilities('file:upload', $USER->role_id, false) OR checkCapabilities('file:uploadURL', $USER->role_id, false)){
+                if (checkCapabilities('file:solutionUpload', $USER->role_id, false) AND (checkCapabilities('file:upload', $USER->role_id, false) OR checkCapabilities('file:uploadURL', $USER->role_id, false))){
                     $html  .= '<a href="'.$CFG->smarty_template_dir_url.'renderer/uploadframe.php?context=solution&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal ">
                     <span class="fa ';
                     if ($sol_btn == $objective->id){
