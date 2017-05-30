@@ -632,12 +632,12 @@ class Render {
                         }
                         $html  .='<span class="pull-left margin-r-10">';
                         if (checkCapabilities('file:loadMaterial', $USER->role_id, false) AND $objective->files != '0'){
-                            $html  .='<span class="fa fa-briefcase box-sm-icon text-primary margin-r-5 pull-left" style="cursor:pointer;" data-toggle="tooltip" title="'.$objective->files.' Materialien verfügbar" onclick="formloader(\'material\',\''.$type.'\','.$objective->id.')"></span>';
+                            $html  .='<span class="fa fa-briefcase box-sm-icon text-primary margin-r-5 pull-left" style="cursor:pointer; padding-top:3px;" data-toggle="tooltip" title="'.$objective->files.' Materialien verfügbar" onclick="formloader(\'material\',\''.$type.'\','.$objective->id.')"></span>';
                         } else {
-                            $html  .='<span class="fa fa-briefcase box-sm-icon deactivate text-gray margin-r-5 pull-left" style="cursor:not-allowed;" data-toggle="tooltip" title="Keine Materialien verfügbar"></span>';
+                            $html  .='<span class="fa fa-briefcase box-sm-icon deactivate text-gray margin-r-5 pull-left" style="cursor:not-allowed;padding-top:3px;" data-toggle="tooltip" title="Keine Materialien verfügbar"></span>';
                         }
                         if (checkCapabilities('file:upload', $USER->role_id, false) OR checkCapabilities('file:uploadURL', $USER->role_id, false)){
-                                $html  .='<a href="'.$CFG->smarty_template_dir_url.'renderer/uploadframe.php?context='.$type.'&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal pull-right margin-r-5"><span class="fa fa-plus box-sm-icon" data-toggle="tooltip" title="Material hinzufügen"></span></a>';
+                                $html  .='<a href="'.$CFG->smarty_template_dir_url.'renderer/uploadframe.php?context='.$type.'&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal pull-right margin-r-5"><span class="fa fa-plus box-sm-icon" style="padding-top:3px;data-toggle="tooltip" title="Material hinzufügen"></span></a>';
                             } 
                         $html  .='</span>';
                         if ($edit){
