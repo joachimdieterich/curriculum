@@ -1736,7 +1736,7 @@ class Render {
         if (count($user_id) == 1 AND isset($content[0]->content)){ 
             $s_2        = $content[0]->content;
             $enabling_objectives = new EnablingObjective();
-            //Bereiche //evtl. besser über regex realisieren z.B. /<bereich value="[(\d+),]+">.+<\/bereich>/g
+            //Bereiche // evtl. besser über regex realisieren z.B. /<bereich value="[(\d+),]+">.+<\/bereich>/g
             $anz_bereiche           = substr_count($s_2, '<!--Bereich');
             $offset                 = 0;
             $user_id = $user_id[0];
