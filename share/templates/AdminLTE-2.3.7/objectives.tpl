@@ -115,6 +115,8 @@
                         <img src="{$access_file}{$user->avatar}" style="height:40px;"class="user-image pull-left margin-r-5" alt="User Image">
                         {*/if*}
                     {/if}
+                    {Render::badge_preview(["reference_id" => $sel_curriculum, "user_id" => $selected_user_id])}
+
                     <p class="pull-right">Farb-Legende:
                     <button class="btn btn-success btn-flat" style="cursor:default">selbständig erreicht</button>
                     <button class="btn btn-warning btn-flat" style="cursor:default">mit Hilfe erreicht</button>

@@ -1723,4 +1723,42 @@ class Render {
         }
         return $html;
     }
+    
+    public static function badge_preview($params){ 
+        $s_2        = '';
+        foreach($params as $key => $val) {
+            $$key   = $val;
+        }
+        $c          = new Content();
+        
+        $content    = $c->get('badge_preview', $reference_id);
+        
+        if (count($user_id) == 1 AND isset($content[0]->content)){ 
+            $s_2        = $content[0]->content;
+            $enabling_objectives = new EnablingObjective();
+            //Bereiche //evtl. besser über regex realisieren z.B. /<bereich value="[(\d+),]+">.+<\/bereich>/g
+            $anz_bereiche           = substr_count($s_2, '<!--Bereich');
+            $offset                 = 0;
+            $user_id = $user_id[0];
+             for ($i = 1; $i <= $anz_bereiche; $i++){    //todo doublicate in pdf.class.php --> make function to get bereichs-content
+                $bereich_begin      = stripos($s_2, "<!--Bereich"     ); // besser über regex lösen
+                $bereich_end        = stripos($s_2, "<!--/Bereich-->");
+                $offset             = $bereich_end+15;   
+                $bereich_content    = substr($s_2, $bereich_begin, $offset-$bereich_begin);
+                $bereich_id_begin   = stripos($bereich_content, "{")+1; 
+                $bereich_id_end     = stripos($bereich_content, "}"); 
+                $bereich_id         = substr($bereich_content, $bereich_id_begin, $bereich_id_end-$bereich_id_begin); 
+                if ($enabling_objectives->calcTerminalPercentage($bereich_id, $user_id) <= 0.6){// wenn nicht genügend Ziele erreicht wurden (hier 60 %) dann wird dieser Bereich ausgelassen
+                    $s_2 = substr($s_2, 0, $bereich_begin) . substr($s_2, $offset); // Wenn Bedingung nicht erfüllt ist, wird Bereich ausgeschnitten  
+                } else {
+                    $s_2 = substr($s_2, 0, $bereich_begin) . substr($bereich_content, $bereich_id_end+4, -15) . substr($s_2, $offset);
+                }
+            } 
+        return $s_2; 
+        } else {
+            
+        }
+        
+       
+    }
 }

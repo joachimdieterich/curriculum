@@ -100,10 +100,10 @@ class Block {
                                   ifnull(ck.region, bi.region) AS region, ifnull(ck.weight, bi.weight) AS weight,
                                   ifnull(ck.visible, bl.visible) AS visible, ifnull(ck.status, bl.status) AS status, bl.block
                             FROM block AS bl,block_instances AS bi
-                            LEFT JOIN config_blocks AS ck ON bi.id =  ck.block_instance_id
+                            LEFT JOIN config_blocks AS ck ON bi.id = ck.block_instance_id
                                 WHERE bi.block_id = bl.id
                                 AND bi.context_id = ? AND (bi.institution_id = ? OR bi.institution_id = 0) 
-                                AND (ck.user_id = ? OR NOT EXISTS (SELECT user_id FROM config_blocks WHERE user_id = ?))
+                                 AND (ck.user_id = ? OR NOT EXISTS (SELECT user_id FROM config_blocks WHERE user_id = ?))
                             ORDER BY weight'); //0 == all institutions
         $db->execute(array($this->context_id, $this->institution_id, $USER->id, $USER->id));
         $blocks = array();
