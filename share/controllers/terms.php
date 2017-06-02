@@ -23,7 +23,7 @@
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 $TEMPLATE->assign('page_title', 'Nutzungsbedingungen'); 
-
+$_SESSION['accept_terms'] = false; // Var to close security gap. If var is set login is impossible
 $terms = new Content();
 $TEMPLATE->assign('terms', $terms->get('terms')); 
 $LOG->add($USER->id, 'terms', $PAGE->url, 'Nutzungsbedingungen'); 
