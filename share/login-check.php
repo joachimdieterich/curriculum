@@ -23,9 +23,10 @@
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.   
 */
 global $CFG, $USER, $PAGE; 
+
 if(isset($_SESSION['USER']->id)) {                          // Angemeldet?
     $session_life       = time() - $_SESSION['timein'];     // Errechne vergangene Zeit seit letzter Aktion    
-    if($session_life > ($CFG->settings->timeout)*60){                 // *60 = Minuten
+    if($session_life > ($CFG->settings->timeout)*60 OR isset($_SESSION['accept_terms'])){                 // *60 = Minuten or terms not accepted
         logout();                                           // Session abgelaufen
     }
     $_SESSION['timein'] = time();                           // Session nicht abgelaufen -> neue Zeitsignatur setzen
@@ -35,8 +36,9 @@ if(isset($_SESSION['USER']->id)) {                          // Angemeldet?
 }
 
 function logout(){                                          // Benutzer abmelden
-    global $USER;
+    global $USER, $CFG;
     $USER->userLogout();                                    // Schreibt Zeitsignatur 
+    
     //session_destroy();                                    // Session löschen
     header('Location:index.php?action=login');              // Nicht angemeldet --> login zeigen.
 }
