@@ -101,16 +101,17 @@ if(filter_input(INPUT_POST, 'guest', FILTER_UNSAFE_RAW) AND $CFG->settings->gues
     }  
     
 } else if (filter_input(INPUT_POST, 'terms', FILTER_UNSAFE_RAW)){
-    switch (filter_input(INPUT_POST, 'Submit', FILTER_UNSAFE_RAW)) {
-        case 'Ja':  $user->load('username', $_SESSION['username'], true);
+    switch (filter_input(INPUT_POST, 'Submit', FILTER_UNSAFE_RAW)) { 
+        case 'Ja':  unset($_SESSION['accept_terms']); //security var to prevent login without accepting terms, if var is set login is not possible
+                    $user->load('username', $_SESSION['username'], true);
                     $user->acceptTerms();
                     route($user);
             break;
         case 'Nein':header('Location:index.php?action=logout'); 
             break;
-        default:
+        default:    
             break;
-    }
+    } 
 } 
 
 $TEMPLATE->assign('page_title',  'Login');
@@ -134,8 +135,8 @@ function login($user){
     session_reload_user();
     
     //Nutzungsbedingungen akzeptiert?
-    if (($user->checkTermsOfUse() == false) OR ($user->username == $CFG->settings->guest_usr)){
-       header('Location:index.php?action=terms'); exit();
+    if (($user->checkTermsOfUse() == false) OR ($user->username == $CFG->settings->guest_usr)){   
+        header('Location:index.php?action=terms'); exit();
     }
     route($user);
 }
