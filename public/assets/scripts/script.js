@@ -507,7 +507,9 @@ function curriculumdocs(link) {
  * @returns {undefined}
  */
 function formloader(/*form, func, id, []*/){
-    if (typeof(arguments[3]) !== 'undefined'){
+    if (typeof(arguments[4]) !== 'undefined'){
+        getRequest("../share/plugins/"+ arguments[4] +"/request/f_"+ arguments[0] +".php?func="+ arguments[1] +"&id="+ arguments[2]+"&"+jQuery.param(arguments[3]));
+    } else if (typeof(arguments[3]) !== 'undefined'){
         getRequest("../share/request/f_"+ arguments[0] +".php?func="+ arguments[1] +"&id="+ arguments[2]+"&"+jQuery.param(arguments[3]));        
     } else {
         getRequest("../share/request/f_"+ arguments[0] +".php?func="+ arguments[1] +"&id="+ arguments[2]);
@@ -515,7 +517,9 @@ function formloader(/*form, func, id, []*/){
 }
 
 function processor(/*proc, func, val, []*/){
-    if (typeof(arguments[3]) !== 'undefined'){
+    if (typeof(arguments[4]) !== 'undefined'){
+        getRequest("../share/plugins/"+ arguments[4] +"/processors/p_"+ arguments[0] +".php?func="+ arguments[1] +"&val="+ arguments[2]+"&"+jQuery.param(arguments[3]));
+    } else if (typeof(arguments[3]) !== 'undefined'){
         var url = "../share/processors/p_"+ arguments[0] +".php?func="+ arguments[1] +"&val="+ arguments[2]+"&"+jQuery.param(arguments[3]);
     } else {
         var url = "../share/processors/p_"+ arguments[0] +".php?func="+ arguments[1] +"&val="+ arguments[2];
@@ -626,7 +630,9 @@ function getMultipleValues(){
  * argument[4] = id of selection
  */
 function getValues(){      
-    if (arguments[3]){
+    if (typeof(arguments[5]) !== 'undefined'){
+        var url = "../share/plugins/"+ arguments[5] +"/get_"+ arguments[0] +".php?dependency_id="+ arguments[1] +"&name="+ arguments[2] +"&format="+ arguments[3] +"&select_id="+ arguments[4];
+    } else if (typeof(arguments[4]) !== 'undefined'){
         var url = "../share/request/get_"+ arguments[0] +".php?dependency_id="+ arguments[1] +"&name="+ arguments[2] +"&format="+ arguments[3] +"&select_id="+ arguments[4];
     } else {
         var url = "../share/request/get_"+ arguments[0] +".php?dependency_id="+ arguments[1] +"&name="+ arguments[2] +"&format="+ arguments[3] ;
