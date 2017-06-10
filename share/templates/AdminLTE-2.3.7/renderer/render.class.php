@@ -598,7 +598,7 @@ class Render {
                         }
                     }
                 }
-                if (checkCapabilities('file:solutionUpload', $USER->role_id, false) AND (checkCapabilities('file:upload', $USER->role_id, false) OR checkCapabilities('file:uploadURL', $USER->role_id, false))){
+                if ($type == 'enabling_objective' AND checkCapabilities('file:solutionUpload', $USER->role_id, false) AND (checkCapabilities('file:upload', $USER->role_id, false) OR checkCapabilities('file:uploadURL', $USER->role_id, false))){
                     $html  .= '<a href="'.$CFG->smarty_template_dir_url.'renderer/uploadframe.php?context=solution&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal ">
                     <span class="fa ';
                     if ($sol_btn == $objective->id){
@@ -615,11 +615,13 @@ class Render {
                     $html  .= '></span></a>'; 
                 }
             }
+         if ($type == 'terminal_objective'){
+            $html  .=' <a class="collapse_btn" data-toggle="collapse" data-target="#collaps_ter_'.$objective->id.'" data-toggle="tooltip" title="Kompetenzen einklappen bzw. ausklappen"><i class="fa fa-compress box-sm-icon text-primary" style="padding-left:5px;"></i></a>';   
+         }
          $html  .='  </div>';    
         /*************** ./Header ***************/
         /*************** Body ***************/    
-        $html  .='  <div id="'.$type.'_'.$objective->id.'" class="panel-body boxwrap" data-toggle="collapse" data-target="#collaps_ter_'.$objective->id.'">
-                        
+        $html  .='  <div id="'.$type.'_'.$objective->id.'" class="panel-body boxwrap" >
                         <div class="boxscroll" style="background: '.$objective->color.'">
                             <div class="boxcontent '.$text_class.'">'.$objective->$type.'</div>
                         </div>
