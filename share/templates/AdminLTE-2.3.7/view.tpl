@@ -4,7 +4,19 @@
 {block name=description}{$smarty.block.parent}{/block}
 {block name=nav}{$smarty.block.parent}{/block}
 
-{block name=additional_scripts}{$smarty.block.parent}{/block}
+{block name=additional_scripts}{$smarty.block.parent}
+{literal}<script type="text/javascript">
+    $(document).ready(function () {
+        $('a[data-toggle="collapse"]').click(function () {
+                $(this).find('i.fa').toggleClass('fa-compress fa-expand');
+        });
+    });
+    function toggleAll(){
+        return (this.tog^=1) ? $('.collapse').collapse('hide') : $('.collapse').collapse('show');
+    };
+    
+</script>{/literal}        
+{/block}
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
 {block name=content}
@@ -22,12 +34,15 @@
                     <form id="view_search" method="post" action="../share/processors/fp_search.php">
                     <input type="hidden" name="func" id="func" value="view_highlight"/>
                     <input type="hidden" name="id" id="id" value="{$course[0]->curriculum_id}"/>
-                    <input type="text" name="search" class="form-control input-sm" placeholder="Lehrplan durchsuchen">
+                    <input type="text" name="search" class="form-control " placeholder="Lehrplan durchsuchen">
                     <span class="glyphicon glyphicon-search form-control-feedback"></span>
                     </form>
                 </div>
             </div>
             <div class="btn-group pull-left margin-r-5">
+                <button type="button" class="btn btn-default" data-toggle="tooltip" title="Kompetenzen einklappen bzw. ausklappen"  onclick="toggleAll(); $(this).find('i.fa').toggleClass('fa-compress fa-expand');">
+                    <i class="fa fa-compress"></i>
+                </button>
                 <button type="button" class="btn btn-default" onclick="formloader('description','curriculum',{$course[0]->curriculum_id});">
                     <i class="fa fa-info"></i>
                 </button>
