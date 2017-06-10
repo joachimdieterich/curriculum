@@ -657,6 +657,13 @@ class Render {
                                     $html  .='<span class="fa fa-check-square-o pull-right box-sm-icon text-primary" onclick=\'formloader("quiz","enabling_objective","'.$objective->id.'");\'></span>';
                                 }
                             }
+                            if (checkCapabilities('webservice:linkModule', $USER->role_id, false) AND $type != 'terminal_objective' AND $PAGE->action == 'view'){
+                                $html  .='<span class="fa fa-external-link-square pull-right box-sm-icon text-primary" onclick=\'formloader("link_module","enabling_objective","'.$objective->id.'","","webservice/moodle");\'></span>';
+                            } else if (checkCapabilities('webservice:linkModuleResults', $USER->role_id, false) AND $type != 'terminal_objective' AND $PAGE->action == 'view'){
+                                $html  .='<span class="box-sm-icon text-primary" onclick=\'processor("link_module_result","enabling_objective","'.$objective->id.'","","webservice/moodle");\'><i class="fa fa-external-link-square  fa-rotate-180"></i></span>';
+                            }
+                            
+                            
                         }  
                         
         $html  .=' </div>';
@@ -1548,8 +1555,8 @@ class Render {
                                                         <b>'.$value->title.'</b>
                                                         '.$value->content.'
                                                         <ul class="list-inline">
-                                                          <!--<li><a href="#" class="link-black text-sm"><i class="fa fa-share margin-r-5"></i> Share</a></li>
-                                                          <li><a href="#" class="link-black text-sm"><i class="fa fa-thumbs-o-up margin-r-5"></i> Like</a></li>-->
+                                                          <li><!-- a href="#" class="link-black text-sm"><i class="fa fa-share margin-r-5"></i> Share</a --></li>
+                                                          <li><!-- a href="#" class="link-black text-sm"><i class="fa fa-thumbs-o-up margin-r-5"></i> Like</a --></li>
                                                           <li class="pull-right">
                                                             <a class="link-black text-sm" onclick="toggle([\'comments_'.$value->id.'\'])"><i class="fa fa-comments-o margin-r-5"></i> Kommentare
                                                               ('.$c_max.')</a></li>
