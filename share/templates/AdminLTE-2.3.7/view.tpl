@@ -44,9 +44,10 @@
              {assign var="sol_btn" value="false"}  
              {*Thema Row*}
              {foreach name=foreach_ter key=terid item=ter from=$terminal_objectives}   
-             <div class="row " >
+             <div class="row" >
                  <div class="col-xs-12"> 
                      {*Thema Row*}
+                     
                      {if isset($showaddObjectives)}
                          {assign var="orderup" value=false}
                          {if isset($terminal_objectives[{$terid+1}])}
@@ -60,12 +61,14 @@
                          {/if}
                          {RENDER::objective(["type" =>"terminal_objective", "objective" => $ter , "user_id" => $my_id, "edit" => true, "orderup" => $orderup, "orderdown" => $orderdown, "highlight" => $highlight])}
                      {else}
-                         {RENDER::objective(["type" =>"terminal_objective", "objective" => $ter , "user_id" => $my_id, "highlight" => $highlight])}
+                           {RENDER::objective(["type" =>"terminal_objective", "objective" => $ter , "user_id" => $my_id, "highlight" => $highlight])}
                      {/if}
+                     
                      {*Ende Thema*}
 
                      {*Ziele*}
                      {if $enabledObjectives != false}
+                         <span id="collaps_ter_{$ter->id}" class="collapse in">
                          {foreach key=enaid item=ena from=$enabledObjectives}
                          {if $ena->terminal_objective_id eq $ter->id}
                              {if isset($showaddObjectives)}
@@ -81,10 +84,12 @@
                                  {/if}
                                  {RENDER::objective(["type" =>"enabling_objective", "objective" => $ena , "user_id" => $my_id, "solutions" => $solutions, "edit" => true, "orderup" => $orderup, "orderdown" => $orderdown, "border_color" => $ter->color, "highlight" => $highlight])}
                              {else}
+                                 
                                  {RENDER::objective(["type" =>"enabling_objective", "objective" => $ena , "user_id" => $my_id, "solutions" => $solutions, "group_id" => $page_group, "border_color" => $ter->color, "highlight" => $highlight])}
                              {/if}
                          {/if}
                          {/foreach}
+                         </span>
                      {/if}
 
                  {if isset($showaddObjectives)}  
