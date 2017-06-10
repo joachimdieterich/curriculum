@@ -48,12 +48,13 @@
                     {/if}
                 </div><!-- /.box-header -->
                 <div class="box-body">
-                    <form id='userlist'   method='post' action="index.php?action=user&next={$currentUrlId}">
-                        {html_paginator id='userP' title='Benutzerliste'} 
-                        <input class="invisible" type="checkbox" name="id[]" value="none" checked /><!--Hack - nothing selected-->  
+                    {html_paginator id='userP' title='Benutzerliste'} 
+                    <!--<input class="invisible" type="checkbox" name="id[]" value="none" checked /><!--Hack - nothing selected-->  
                 </div>  
             </div>
+                        
             {* Function Tabs *}
+            <form id='userlist'   method='post' action="index.php?action=user&next={$currentUrlId}">
             <div class="row ">
                     <div class="col-sm-12">
                         <div class="nav-tabs-custom">
@@ -134,9 +135,9 @@
                             </div><!-- ./tab-content -->
                         </div><!-- ./nav-tabs-custom -->
                     </div><!-- ./col-xs-12 -->  
-                </form>     
+                 
             </div>
-    
+            </form>   
         {if !isset($groups_array)}<p>Sie können noch keine Benutzer verwalten, da sie entweder nicht über die nötigen Rechte verfügen, oder keine Benutzer in ihrer Institution vorhanden sind.</p><p>&nbsp;</p>{/if}
    </div> 
 </section>
