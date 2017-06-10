@@ -546,14 +546,14 @@ class Render {
             if (isset($highlight)){
                 if (in_array($type.'_'.$objective->id, $highlight)){
                     $html  .= 'highlight';
-                }
+                } 
             }
-            $html  .= '" style="background: '.$objective->color.'; border: 1px solid '.$border_color.'">';
+            $html  .= '" style="padding-top: 0 !important; background: '.$objective->color.'; border: 1px solid '.$border_color.'">';
             /*************** Header ***************/
             if ($type == 'enabling_objective'){
                 $html  .= '<div id="ena_header_'.$objective->id.'" class="boxheader bg-'.$objective->accomplished_status_id.'" >';
             } else {
-                $html  .= '<div class="boxheader" >';
+                $html  .= '<div class="boxheader">';
             }
             if (checkCapabilities('groups:showAccomplished', $USER->role_id, false)){
                 if (isset($objective->accomplished_users) AND isset($objective->enroled_users) AND isset($objective->accomplished_percent)){
@@ -618,7 +618,7 @@ class Render {
          $html  .='  </div>';    
         /*************** ./Header ***************/
         /*************** Body ***************/    
-        $html  .='  <div id="'.$type.'_'.$objective->id.'" class="panel-body boxwrap" >
+        $html  .='  <div id="'.$type.'_'.$objective->id.'" class="panel-body boxwrap" data-toggle="collapse" data-target="#collaps_ter_'.$objective->id.'">
                         
                         <div class="boxscroll" style="background: '.$objective->color.'">
                             <div class="boxcontent '.$text_class.'">'.$objective->$type.'</div>
