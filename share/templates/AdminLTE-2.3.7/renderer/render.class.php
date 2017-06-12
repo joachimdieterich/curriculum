@@ -1325,13 +1325,13 @@ class Render {
                   if (checkCapabilities('page:showCronjob', $USER->role_id, false)){
                     $html .=  '<ul class="nav nav-pills nav-stacked">
                           <li><a href="#"><strong>Wiederholungen</strong></a></li>
-                          <li><a href="#">Ziele die Wiederholt werden müssen<span class="pull-right text-red">0 (deaktiviert)</span></a></li>
+                          <li><a href="#">Ziele die wiederholt werden müssen<span class="pull-right text-red">0 (deaktiviert)</span></a></li>
                       </ul>';
                   }
                   $html .=  '<ul class="nav nav-pills nav-stacked">
-                    <li><a href="#"><strong>Online</strong></a></li>
-                    <li><a href="#">Jetzt online <span class="pull-right"> '.$stat_users_online.'</span></a></li>
-                    <li><a href="#">Heute <span class="pull-right"> '.$stat_users_today.'</span></a></li>
+                    <li><a href="#"><strong>online</strong></a></li>
+                    <li><a href="#">jetzt online <span class="pull-right"> '.$stat_users_online.'</span></a></li>
+                    <li><a href="#">heute <span class="pull-right"> '.$stat_users_today.'</span></a></li>
                   </ul>
                   
                 </div><!-- /.footer -->
@@ -1522,7 +1522,7 @@ class Render {
                         <div class="box '.$status.' bottom-buffer-20">
                             <div class="box-header with-border">
                                   <h3 class="box-title">'.$name.'</h3>
-                                  <div class="box-tools pull-right">';
+                                  <div class="box-tools pull-right"><input id="block_instance_'.$id.'_search" type="text" name="search"  placeholder="Blog durchsuchen" onchange="search(document.getElementById(\'block_instance_'.$id.'_search\').value, \'block_instance_'.$id.'_body\');">';
                                     $html  .= '<button class="btn btn-box-tool" onclick=\'formloader("content", "new", null,{"context_id":"21", "reference_id":'.$id.'});\'><i class="fa fa-plus"></i></button>';
                                     if (checkCapabilities('block:add', $USER->role_id, false)){
                                         $html  .= '<button class="btn btn-box-tool" data-widget="edit" onclick="formloader(\'block\',\'edit\','.$id.');"><i class="fa fa-edit"></i></button>';
@@ -1534,9 +1534,9 @@ class Render {
                                             $html  .= '<i class="fa fa-expand"></i></button>';
                                         }
                                     $html  .= '<button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                                  </div>
+                                                </div>
                             </div><!-- /.box-header -->
-                            <div class="box-body" style="overflow: scroll; width: 100%; max-height: '.$height.';">';
+                            <div id="block_instance_'.$id.'_body" class="box-body" style="overflow: scroll; width: 100%; max-height: '.$height.';">';
                                     foreach ($blog->content as $value) {
                                         $author->load('id', $value->creator_id);
                                         $comments = new Comment();
