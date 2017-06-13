@@ -433,8 +433,12 @@ class Form {
         if (!isset($url)){
             $url = '';
         }
-        $html .= '<a href="'.$url.'" target="_blank" onclick="formloader(\'preview\',\'file\','.$id.');'.$onclick.';">'.$title.'</a></span>
-                  <span>'.$description;
+        $html .= '<a href="'.$url.'" target="_blank" ';
+        if ($onclick != false){
+            $html .= 'onclick="formloader(\'preview\',\'file\','.$id.');'.$onclick.';"';
+        }
+        $html .= '>'.$title.'</a></span>
+                      <span>'.$description;
         
         $html .='</span> ';
         $html .= $footer;
