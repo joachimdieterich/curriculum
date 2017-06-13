@@ -359,7 +359,11 @@ class EnablingObjective {
                                     if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
                                         $ext = $CFG->repository->count(1,$result->id);
                                     } else { $ext = ''; }
-                                    $this->files                = $res_03->MAX.$ext; //nummer of materials
+                                    if (isset($CFG->settings->webservice)){ // prüfen, ob webservice Plugin vorhanden ist.
+                                        $ws     = get_plugin('webservice', $CFG->settings->webservice);
+                                        $ext_ws = $ws->count($_SESSION['CONTEXT']['enabling_objective']->id,$result->id);
+                                    } else { $ext_ws = ''; } 
+                                    $this->files                = $res_03->MAX.' lokale Materialien, '.$ext.$ext_ws; //nummer of materials
                                     
                                     /* Check if Quiz is available for this enabling objective*/
                                     $db_05       = DB::prepare('SELECT COUNT(*) AS MAX FROM quiz_questions WHERE objective_id = ? AND objective_type = 1');
