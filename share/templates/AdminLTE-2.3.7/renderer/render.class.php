@@ -633,8 +633,8 @@ class Render {
                             $html  .='<span class="fa fa-info pull-right box-sm-icon text-primary" style=" margin-right:3px;" data-toggle="tooltip" title="Beschreibung" onclick="formloader(\'description\', \''.$type.'\', '.$objective->id.');"></span>';
                         }
                         $html  .='<span class="pull-left margin-r-10">';
-                        if (checkCapabilities('file:loadMaterial', $USER->role_id, false) AND $objective->files != '0'){
-                            $html  .='<span class="fa fa-briefcase box-sm-icon text-primary margin-r-5 pull-left" style="cursor:pointer; padding-top:3px;" data-toggle="tooltip" title="'.$objective->files.' Materialien verfügbar" onclick="formloader(\'material\',\''.$type.'\','.$objective->id.')"></span>';
+                        if (checkCapabilities('file:loadMaterial', $USER->role_id, false) AND ($objective->files['local'] != '0' OR $objective->files['repository'] != '' OR $objective->files['webservice'] != '' )){
+                            $html  .='<span class="fa fa-briefcase box-sm-icon text-primary margin-r-5 pull-left" style="cursor:pointer; padding-top:3px;" data-toggle="tooltip" title="Materialien und Aufgaben" onclick="formloader(\'material\',\''.$type.'\','.$objective->id.')"></span>';
                         } else {
                             $html  .='<span class="fa fa-briefcase box-sm-icon deactivate text-gray margin-r-5 pull-left" style="cursor:not-allowed;padding-top:3px;" data-toggle="tooltip" title="Keine Materialien verfügbar"></span>';
                         }
@@ -645,9 +645,17 @@ class Render {
                         if ($edit){
                             if ($type != 'terminal_objective'){
                                 $html  .= '<span class="fa fa-check-square-o pull-right box-sm-icon text-primary" onclick=\'formloader("addQuiz", "enabling_objective", "'.$objective->id.'");\'></span>';
+                                if (checkCapabilities('webservice:linkModule', $USER->role_id, false) AND $PAGE->action == 'view'){
+                                    $html  .='<span class="fa fa-puzzle-piece ';
+                                    if ($objective->files['webservice'] == ""){ 
+                                        $html .= 'deactivate text-gray ';
+                                    } else {
+                                        $html  .='text-primary ';
+                                    }
+                                    $html  .='pull-right" onclick=\'formloader("link_module","enabling_objective","'.$objective->id.'","","webservice/moodle");\'></span>';
+                                }   
                             }
                         } else {
-                            
                             if (checkCapabilities('course:selfAssessment', $USER->role_id, false) AND $type != 'terminal_objective'){
                                 if (is_array($user_id)){
                                     $user_id = implode(',',$user_id);
@@ -659,9 +667,7 @@ class Render {
                                     $html  .='<span class="fa fa-check-square-o pull-right box-sm-icon text-primary" onclick=\'formloader("quiz","enabling_objective","'.$objective->id.'");\'></span>';
                                 }
                             }
-                            if (checkCapabilities('webservice:linkModule', $USER->role_id, false) AND $type != 'terminal_objective' AND $PAGE->action == 'view'){
-                                $html  .='<span class="fa fa-external-link-square pull-right box-sm-icon text-primary" onclick=\'formloader("link_module","enabling_objective","'.$objective->id.'","","webservice/moodle");\'></span>';
-                            } else if (checkCapabilities('webservice:linkModuleResults', $USER->role_id, false) AND $type != 'terminal_objective' AND $PAGE->action == 'view'){
+                            if (checkCapabilities('webservice:linkModuleResults', $USER->role_id, false) AND $type != 'terminal_objective' AND $PAGE->action == 'view' AND $objective->files['webservice'] != ''){
                                 $html  .='<span class="box-sm-icon text-primary" onclick=\'processor("link_module_result","enabling_objective","'.$objective->id.'","","webservice/moodle");\'><i class="fa fa-external-link-square  fa-rotate-180"></i></span>';
                             }
                             
@@ -1189,7 +1195,7 @@ class Render {
                                     if (checkCapabilities('block:add', $USER->role_id, false)){
                                         $html  .= '<button class="btn btn-box-tool" data-widget="edit" onclick="formloader(\'block\',\'edit\','.$id.');"><i class="fa fa-edit"></i></button>';
                                     }
-                                    $html  .= '<button class="btn btn-box-tool" data-widget="collapse">';
+                                    $html  .= '<button class="btn btn-box-tool" data-widget="collapse" onclick="processor(\'config\',\'collapse\', '.$id.');">';
                                         if ($status == ''){
                                             $html  .= '<i class="fa fa-compress"></i></button>';
                                         } else {
@@ -1306,7 +1312,7 @@ class Render {
                 <div class="box-header with-border">
                   <h3 class="box-title">'.$name.'</h3>
                   <div class="box-tools pull-right">
-                    <button class="btn btn-box-tool" data-widget="collapse">';
+                    <button class="btn btn-box-tool" data-widget="collapse" onclick="processor(\'config\',\'collapse\', '.$id.');">';
                                         if ($status == ''){
                                             $html  .= '<i class="fa fa-compress"></i></button>';
                                         } else {
@@ -1362,7 +1368,7 @@ class Render {
                             <div class="box-header with-border">
                             <h3 class="box-title">'.$name.'</h3>
                             <div class="box-tools pull-right">
-                              <button class="btn btn-box-tool" data-widget="collapse">';
+                              <button class="btn btn-box-tool" data-widget="collapse" onclick="processor(\'config\',\'collapse\', '.$id.');">';
                                         if ($status == ''){
                                             $html  .= '<i class="fa fa-compress"></i></button>';
                                         } else {
@@ -1527,7 +1533,7 @@ class Render {
                                     if (checkCapabilities('block:add', $USER->role_id, false)){
                                         $html  .= '<button class="btn btn-box-tool" data-widget="edit" onclick="formloader(\'block\',\'edit\','.$id.');"><i class="fa fa-edit"></i></button>';
                                     }
-                                    $html  .= '<button class="btn btn-box-tool" data-widget="collapse">';
+                                    $html  .= '<button class="btn btn-box-tool" data-widget="collapse" onclick="processor(\'config\',\'collapse\', );">';
                                         if ($status == ''){
                                             $html  .= '<i class="fa fa-compress"></i></button>';
                                         } else {
