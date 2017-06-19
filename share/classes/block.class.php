@@ -164,10 +164,26 @@ class Block {
                                 $db = DB::prepare('UPDATE config_blocks SET status = ? WHERE block_instance_id = ? AND user_id = ?');
                                 return $db->execute(array($this->status, $this->id, $USER->id));
                             } else {
+                                $status = $this->status; //store status bevor loading defaults
+                                $this->load($this->id, $USER->id);
                                 $db = DB::prepare('INSERT INTO config_blocks (block_instance_id,visible,region,weight,status,user_id) VALUES (?,?,?,?,?,?)');
-                                return $db->execute(array($this->id, $this->visible, $this->region, $this->weight, $this->status, $USER->id));
+                                return $db->execute(array($this->id, $this->visible, $this->region, $this->weight, $status, $USER->id));
                             }
                 break;
+            case 'remove':  $db = DB::prepare('SELECT COUNT(id) FROM config_blocks WHERE block_instance_id = ? AND user_id = ?');
+                            $db->execute(array($this->id, $USER->id));
+                            if($db->fetchColumn() >= 1) { 
+                                $db = DB::prepare('UPDATE config_blocks SET visible = ? WHERE block_instance_id = ? AND user_id = ?');
+                                return $db->execute(array($this->status, $this->id, $USER->id));
+                            } else {
+                                $status = $this->status; //store status bevor loading defaults
+                                $this->load($this->id, $USER->id);
+                                $db = DB::prepare('INSERT INTO config_blocks (block_instance_id,visible,region,weight,status,user_id) VALUES (?,?,?,?,?,?)');
+                                return $db->execute(array($this->id, $this->visible, $this->region, $this->weight, $status, $USER->id));
+                            }
+                break;
+                
+            
 
             default:
                 break;
