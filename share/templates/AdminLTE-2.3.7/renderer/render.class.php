@@ -1151,7 +1151,7 @@ class Render {
                                         } else {
                                             $html  .= '<i class="fa fa-expand"></i></button>';
                                         }
-                                    $html  .= '<button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                    $html  .= '<button class="btn btn-box-tool" data-widget="remove" onclick="processor(\'config\',\'remove\', '.$id.');"><i class="fa fa-times"></i></button>
                               </div>
                         </div><!-- /.box-header -->
                         <div class="box-body text-center">
@@ -1201,7 +1201,7 @@ class Render {
                                         } else {
                                             $html  .= '<i class="fa fa-expand"></i></button>';
                                         }
-                                    $html  .= '<button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                    $html  .= '<button class="btn btn-box-tool" data-widget="remove" onclick="processor(\'config\',\'remove\', '.$id.');"><i class="fa fa-times"></i></button>
                                   </div>
                             </div><!-- /.box-header -->
                             <div class="box-body">
@@ -1318,7 +1318,7 @@ class Render {
                                         } else {
                                             $html  .= '<i class="fa fa-expand"></i></button>';
                                         }
-                                    $html  .= '<button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                    $html  .= '<button class="btn btn-box-tool" data-widget="remove" onclick="processor(\'config\',\'remove\', '.$id.');"><i class="fa fa-times"></i></button>
                   </div>
                 </div><!-- /.box-header -->
                 <div class="box-footer no-padding">
@@ -1374,7 +1374,7 @@ class Render {
                                         } else {
                                             $html  .= '<i class="fa fa-expand"></i></button>';
                                         }
-                                    $html  .= '<button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                    $html  .= '<button class="btn btn-box-tool" data-widget="remove" onclick="processor(\'config\',\'remove\', '.$id.');"><i class="fa fa-times"></i></button>
                             </div>
                           </div><!-- /.box-header -->
                       <div class="box-body" style="overflow: scroll; width: 100%; max-height: 300px;">';
@@ -1539,7 +1539,7 @@ class Render {
                                         } else {
                                             $html  .= '<i class="fa fa-expand"></i></button>';
                                         }
-                                    $html  .= '<button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                    $html  .= '<button class="btn btn-box-tool"  onclick="processor(\'config\',\'remove\', '.$id.');"><i class="fa fa-times"></i></button>
                                                 </div>
                             </div><!-- /.box-header -->
                             <div id="block_instance_'.$id.'_body" class="box-body" style="overflow: scroll; width: 100%; max-height: '.$height.';">';
