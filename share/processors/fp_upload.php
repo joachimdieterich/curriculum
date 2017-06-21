@@ -152,7 +152,7 @@ if ($my_upload->upload() OR filter_var($fileURL, FILTER_VALIDATE_URL)) {//in dat
         $token                  = getToken();
         $enabling_objective->setAccomplishedStatus('student', $USER->id, $USER->id, '1x', $token);     //set setAccomplishedStatus with token    
         $mail = new Mail();
-        for($i = 0; $i < count($teachers); ++$i) {
+        for($i = 0; $i < count($teachers); $i++) {
             $mail->sender_id    = $USER->id;
             $mail->receiver_id  = $teachers[$i]; //current Teacher
             $mail->subject      = $CFG->app_title.': '.$USER->firstname.' '.$USER->lastname.' ('.$USER->username.') hat eine Lösung eingereicht';
