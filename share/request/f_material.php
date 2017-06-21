@@ -168,9 +168,9 @@ if (!$files){
         $m_description  = $files[$i]->description;
         
         switch ($files[$i]->type) {
-            case '.url':      $m_url = $CFG->access_id_url.$files[$i]->id;       
+            case '.url':      $m_url = $files[$i]->path;       
                 break;
-            case 'external':  $m_url = $CFG->access_id_url.$files[$i]->id;
+            case 'external':  $m_url = $files[$i]->filename;
                 break;
             case '.mp3':    /* Player*/  
                             $m_player =  '<audio width="100%" controls preload="none" onplay="updateFileHits('.$files[$i]->id.')">
