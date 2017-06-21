@@ -1016,7 +1016,7 @@ class User {
 
                             while($result = $db->fetchObject()) { 
                                 $this->id           = $result->id;
-                                $this->load('id', $this->id, false, 'user');
+                                $this->load('id', $this->id, false);
                                 $users[] = clone $this; 
                             }
 
@@ -1264,6 +1264,11 @@ class User {
         }
     }
     
+    public function rejectTerms(){ // important for guest users
+        $db = DB::prepare('Delete FROM accept_terms WHERE user_id = ?');//Status 1 == accepted
+        return $db->execute(array($this->id));
+    }
+    
     public function exists($key, $value){
         $db = DB::prepare('SELECT count(id) FROM users WHERE '.$key.' = ?');
         $db->execute(array($value));
@@ -1328,6 +1333,18 @@ class User {
             $c_backup->temp_path = $CFG->backup_root.'tmp/'.$this->username.'/';
             $c_backup->generateXML($c, $value, 'xml');
         }   
+    }
+    
+    public function getChildren(){
+        $db     = DB::prepare('SELECT child_id FROM parental_authority WHERE parent_id = ?');
+        $db->execute(array($this->id));
+        $users  = array();
+        while($result = $db->fetchObject()) { 
+            $this->id   = $result->child_id;
+            $this->load('id', $this->id, true);
+            $users[]    = clone $this; 
+        }
+        return $users;
     }
     /**
     * function used during the install process to set up creator id to new admin

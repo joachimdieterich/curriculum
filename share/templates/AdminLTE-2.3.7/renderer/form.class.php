@@ -197,7 +197,7 @@ class Form {
         $form = '<div class="form-group '.validate_msg($error, $id, true).'">
                     <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
                     <div class="'.$class_right.'">
-                        <select multiple id="'.$id.'[]" name="'.$id.'[]" class="select2 form-control" style="height:'.$height.';" onchange="'.$onchange.'">';
+                        <select multiple id="'.$id.'" name="'.$id.'[]" class="select2 form-control" style="height:'.$height.';" onchange="'.$onchange.'">';
                         if (count($select_data) > 0){
                             foreach ($select_data as $value) {
                                 if (strpos($select_label, ',')){ // more than one field in select_label                   
@@ -425,7 +425,6 @@ class Form {
             $html .= '<button class="btn btn-box-tool" onclick="removeMaterial('.$id.')"><i class="fa fa-trash"></i></button>';
         }
         $html .= '</div>';
-        
         $html .= '<span class="info-box-text">';
         if (isset($player)){
             $html .= $player.'<br>';

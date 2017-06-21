@@ -174,7 +174,7 @@ class Block {
                             $db->execute(array($this->id, $USER->id));
                             if($db->fetchColumn() >= 1) { 
                                 $db = DB::prepare('UPDATE config_blocks SET visible = ? WHERE block_instance_id = ? AND user_id = ?');
-                                return $db->execute(array($this->status, $this->id, $USER->id));
+                                return $db->execute(array($this->visible, $this->id, $USER->id));
                             } else {
                                 $status = $this->status; //store status bevor loading defaults
                                 $this->load($this->id, $USER->id);

@@ -2,10 +2,10 @@
 /** This file is part of curriculum - http://www.joachimdieterich.de
 * 
 * @package core
-* @filename get_group.php
-* @copyright 2015 Joachim Dieterich
+* @filename get_modules.php
+* @copyright 2017 Joachim Dieterich
 * @author Joachim Dieterich
-* @date 2015.11.24 10:12
+* @date 2017.06.97 20:54
 * @license: 
 *
 * The MIT License (MIT)
@@ -22,29 +22,31 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-$base_url   = dirname(__FILE__).'/../';
+$base_url  = dirname(__FILE__).'/../../../../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
-include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
-global $USER, $PAGE;
-$USER   = $_SESSION['USER'];
-$PAGE   = $_SESSION['PAGE'];
+include($base_url.'login-check.php');  //check login status and reset idletimer
 
-$group  = new Group();
-$groups = $group->getGroups('institution', filter_input(INPUT_GET, 'dependency_id', FILTER_VALIDATE_INT));
-$html   = '';
-switch (filter_input(INPUT_GET, 'format', FILTER_UNSAFE_RAW)) {
-    case 'table':   $PAGE->group_table['data'] = $groups;
-                    $html .= RENDER::table($PAGE->group_table);
-        break;
+global $CFG;
+$web  = get_plugin('webservice', $CFG->settings->webservice);
+$obj2 = json_decode($web->core_course_get_contents(filter_input(INPUT_GET, 'dependency_id', FILTER_VALIDATE_INT)));
+//error_log(json_encode($obj2));
+foreach ($obj2 AS  $value) {
+    foreach($value->modules AS $module){
+        if (isset($module->id)){
+            $modules[] = $module;
+        }
+    }
+}
 
-    default:        foreach ($groups as $value) {
-                        $html  .= '<option label="'.$value->group.'" value="'.$value->id.'"'; 
-                        if (filter_input(INPUT_GET, 'select_id', FILTER_VALIDATE_INT) == $value->id) { 
-                            $html  .= ' selected="selected"';
-                        } 
-                        $html  .= '>'.$value->group.'</option>';
-                    }
-        break;
+$html      = '';
+foreach ($modules as $value) {
+    if($value->modname == 'quiz'){ //todo make quiz as var
+        $html  .=  '<option label="'.$value->name.'" value="'.$value->id.'"'; 
+        if (filter_input(INPUT_GET, 'select_id', FILTER_VALIDATE_INT) == $value->id) { 
+            $html  .= ' selected="selected"';    
+        } 
+        $html  .= '>'.$value->name.'</option>';
+    }
 }
 
 echo json_encode(array('html'=>$html));

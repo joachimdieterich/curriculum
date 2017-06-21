@@ -899,3 +899,7 @@ function printById(id) {
     }, 500);
     return false;
 }
+
+function search(search_string, element_id, highlight){
+    $('#'+element_id).mark(search_string, { "acrossElements": true });
+}

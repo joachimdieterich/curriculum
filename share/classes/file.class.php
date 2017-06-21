@@ -531,12 +531,16 @@ class File {
         }
            
         if (isset($CFG->repository) AND $externalFiles == true){
-           $repo     = get_plugin('repository', $CFG->settings->repository);
-           $allfiles = $repo->getFiles($dependency, $id, $files);
-           return $allfiles; 
-        } else {
-            return $files;
-        }
+           $repo  = get_plugin('repository', $CFG->settings->repository);
+           $files = $repo->getFiles($dependency, $id, $files); 
+        } 
+        
+        if (isset($CFG->settings->webservice)){
+           $ws   = get_plugin('webservice', $CFG->settings->webservice);
+           $files = $ws->getFiles_link_module($dependency, $id, $files); 
+        } 
+        
+        return $files; 
     }
 
      /**

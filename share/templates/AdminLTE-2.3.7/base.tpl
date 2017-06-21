@@ -262,6 +262,7 @@
     <script src="{$template_url}js/app.min.js"></script><!-- AdminLTE App -->
     <script src="{$template_url}plugins/slimScroll/jquery.slimscroll.min.js"></script><!-- SlimScroll 1.3.0 -->
     <script src="{$template_url}plugins/pace/pace.min.js"></script>
+    <script src="{$template_url}plugins/mark/jquery.mark.min.js"></script>
     <script src="{$media_url}scripts/curriculum.min.js"></script><!-- curriculum settings (sidebar) -->
     <script src="{$media_url}jquery.nyroModal/js/jquery.nyroModal.custom.js"></script> <!-- jquery.nyroModal -->
     <script src="{$media_url}scripts/script.min.js"></script> 

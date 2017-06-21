@@ -5,6 +5,10 @@
           <!-- sidebar menu: : style can be found in sidebar.less -->
           <div id="menu_top_placeholder"></div>
           <ul class="sidebar-menu">
+            {if isset($myChildren)}
+                <li class="header">Meine Kinder</li>
+                {Form::input_select('my_children', '', $myChildren, 'firstname, lastname', 'id', $my_child_id, '',"window.location.assign('index.php?action=children&reset=true&child_id='+this.value);" ,'Bitte auswählen...','col-xs-0', 'col-xs-12')}
+            {/if}  
             <li class="header">Lehrpläne</li>
             {if $my_enrolments != ''}
                 {if $cfg_guest_usr == $my_username}

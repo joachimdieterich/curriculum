@@ -73,7 +73,10 @@ try { // Error handling
             $pdf->filename = 'print.pdf';
             $pdf->generate(); 
             unset($_SESSION['PAGE']->print);
-        }    
+        }   
+        //Test elternlogin
+        setChildren();
+        //Test elternlogin
     }
     $TEMPLATE->assign('random_bg', $CFG->request_url.'assets/images/backgrounds/'.random_file($CFG->document_root .'assets/images/backgrounds/')); //get random bg-image
     

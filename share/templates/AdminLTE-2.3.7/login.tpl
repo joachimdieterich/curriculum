@@ -20,7 +20,7 @@
         {if isset($page_message)}
             <strong>{FORM::info('error', '',$page_message[0]['message'], '','col-sm-12 text-red')}</strong>
         {/if}
-        <form id="form_login" action="index.php?action=login" method="post">
+        <form id="form_login" action="{$base_url}public/index.php?action=login" method="post">
           <div class="form-group has-feedback {if isset($page_message)}has-error{/if}">
             <input type="text" class="form-control" id="username" name="username" {if isset($username)}value="{$username}"{/if} placeholder="Benutzername">
             <span class="glyphicon glyphicon-user form-control-feedback"></span>

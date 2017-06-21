@@ -5,7 +5,9 @@
 {block name=nav}{$smarty.block.parent}{/block}
 
 {block name=additional_scripts}{$smarty.block.parent}
-{literal}<script type="text/javascript">
+{literal}
+    <script type="text/javascript">
+    
     $(document).ready(function () {
         $('a[data-toggle="collapse"]').click(function () {
                 $(this).find('i.fa').toggleClass('fa-compress fa-expand');
@@ -54,7 +56,7 @@
                 {/if}
             </div>
         </div>
-        <div class="col-xs-12 top-buffer" >
+        <div id="search_curriculum_{$course[0]->curriculum_id}" class="col-xs-12 top-buffer" >
          {if $terminal_objectives != false}
              {assign var="sol_btn" value="false"}  
              {*Thema Row*}

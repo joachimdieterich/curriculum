@@ -192,11 +192,14 @@ class EnablingObjective {
             $db_02 = DB::prepare('SELECT COUNT(*) AS MAX FROM files AS fi WHERE ena_id = ? AND context_id = 2');
             $db_02->execute(array($result->id));
             $res_02 = $db_02->fetchObject();
-            $ext = '';
+            $this->files['local']       = $res_02->MAX;
             if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
-                $ext = $CFG->repository->count(1,$result->id);
+                $this->files['repository']  = $CFG->repository->count(1,$result->id);
             } 
-            $this->files                = $res_02->MAX.$ext; //nummer of materials
+            if (isset($CFG->settings->webservice)){ // prüfen, ob webservice Plugin vorhanden ist.
+                $ws     = get_plugin('webservice', $CFG->settings->webservice);
+                $this->files['webservice']  = $ws->count($_SESSION['CONTEXT']['enabling_objective']->id,$result->id);
+            }
         }   
     }
     /**
@@ -252,11 +255,14 @@ class EnablingObjective {
                                     $db_03 = DB::prepare('SELECT COUNT(*) AS MAX FROM files AS fi WHERE ena_id = ? AND context_id = 2');
                                     $db_03->execute(array($result->id));
                                     $res_03 = $db_03->fetchObject();
-                                    $ext = '';
+                                    $this->files['local'] = $res_03->MAX; //nummer of materials
                                     if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
-                                        $ext = $CFG->repository->count(1,$result->id);
+                                        $this->files['repository']  = $CFG->repository->count(1,$result->id);
                                     } 
-                                    $this->files                = $res_03->MAX.$ext; //nummer of materials
+                                    if (isset($CFG->settings->webservice)){ // prüfen, ob webservice Plugin vorhanden ist.
+                                        $ws     = get_plugin('webservice', $CFG->settings->webservice);
+                                        $this->files['webservice']  = $ws->count($_SESSION['CONTEXT']['enabling_objective']->id,$result->id);
+                                    }
                                     $objectives[]               = clone $this; 
                                 }  
                 break;   
@@ -356,14 +362,14 @@ class EnablingObjective {
                                     $db_03 = DB::prepare('SELECT COUNT(*) AS MAX FROM files AS fi WHERE ena_id = ? AND context_id = 2');
                                     $db_03->execute(array($result->id));
                                     $res_03 = $db_03->fetchObject();
+                                    $this->files['local'] = $res_03->MAX; //nummer of materials
                                     if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
-                                        $ext = $CFG->repository->count(1,$result->id);
-                                    } else { $ext = ''; }
+                                        $this->files['repository']  = $CFG->repository->count(1,$result->id);
+                                    } 
                                     if (isset($CFG->settings->webservice)){ // prüfen, ob webservice Plugin vorhanden ist.
                                         $ws     = get_plugin('webservice', $CFG->settings->webservice);
-                                        $ext_ws = $ws->count($_SESSION['CONTEXT']['enabling_objective']->id,$result->id);
-                                    } else { $ext_ws = ''; } 
-                                    $this->files                = $res_03->MAX.' lokale Materialien, '.$ext.$ext_ws; //nummer of materials
+                                        $this->files['webservice']  = $ws->count($_SESSION['CONTEXT']['enabling_objective']->id,$result->id);
+                                    }
                                     
                                     /* Check if Quiz is available for this enabling objective*/
                                     $db_05       = DB::prepare('SELECT COUNT(*) AS MAX FROM quiz_questions WHERE objective_id = ? AND objective_type = 1');

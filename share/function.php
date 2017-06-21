@@ -840,6 +840,25 @@ function random_file($dir, $type = 'jpg'){
     return basename($files[$file]);
 }
 
+function setChildren(){
+    global $TEMPLATE, $USER;
+    if (isset($_GET['child_id'])){
+        $_SESSION['USER']->child_selected = $_GET['child_id'];
+    } 
+    $user = new User();
+    $user->id = $USER->id;
+    $children = $user->getChildren();
+    if (!empty($children)){
+        $TEMPLATE->assign('myChildren', $children); 
+        if (isset($_SESSION['USER']->child_selected)){
+            $TEMPLATE->assign('my_child_id', $_SESSION['USER']->child_selected); 
+        }
+        else {
+            $TEMPLATE->assign('my_child_id', ''); 
+        }
+    }
+}
+
 /*
 function element_functions($string, $prefix, $object){
     global $$prefix;        //defines object with dynamic obj name

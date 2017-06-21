@@ -212,11 +212,14 @@ class TerminalObjective {
                                     $db_02 = DB::prepare('SELECT COUNT(*) AS MAX FROM files WHERE ter_id = ? AND ISNULL(ena_id) AND context_id = 2');
                                     $db_02->execute(array($result->id));
                                     $res_02 = $db_02->fetchObject();
-                                    $ext = '';
+                                    $this->files['local']       = $res_02->MAX;
                                     if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
-                                        $ext = $CFG->repository->count(0,$result->id);
+                                        $this->files['repository'] = $CFG->repository->count(0,$result->id);
                                     } 
-                                    $this->files                = $res_02->MAX.$ext; //nummer of materials*/
+                                    if (isset($CFG->settings->webservice)){ // prüfen, ob webservice Plugin vorhanden ist.
+                                        $ws     = get_plugin('webservice', $CFG->settings->webservice);
+                                        $this->files['webservice']  = '';//$ws->count($_SESSION['CONTEXT']['terminal_objective']->id,$result->id);
+                                    }
                                     
                                     $objectives[]               = clone $this; 
                                 }
