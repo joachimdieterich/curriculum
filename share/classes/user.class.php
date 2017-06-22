@@ -799,7 +799,6 @@ class User {
         }
 
         while($result = $db->fetchObject()) { 
-            error_log(json_encode($result));
             $this->id           = $result->id; 
             $this->username     = $result->username;
             $this->firstname    = $result->firstname;
