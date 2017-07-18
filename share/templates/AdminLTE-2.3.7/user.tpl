@@ -37,15 +37,20 @@
                                 <span class="fa fa-plus-circle" aria-hidden="true"></span> Benutzerliste importieren</a>
                             </button>
                         {/if}
-                    </div>
-                    {/if}
-                    {if checkCapabilities('user:userListComplete', $my_role_id, false)}
-                    <div class="btn-group pull-right" role="group" aria-label="...">
+                        {if checkCapabilities('user:userListComplete', $my_role_id, false)}
                         <button type="button" class="btn btn-default" onclick="location.href='index.php?action=user&lost=true';"><a  href="#">
                             <span class="fa fa-group" aria-hidden="true"></span> Nicht zugeordnete Benutzer</a>
                         </button>
+                        {/if}
                     </div>
                     {/if}
+                    <div class="pull-right">
+                        {if isset($myInstitutions)}
+                            {Form::input_select('institution_filter', null, $myInstitutions, 'institution', 'id', $filter_institution_id, null, "location.href='index.php?action=user&filter_institution='+this.value", 'Nach Institution filtern', 'col-sm-0', 'col-sm-12')}
+                        {/if}
+                    </div>
+                    
+                    
                 </div><!-- /.box-header -->
                 <div class="box-body">
                     {html_paginator id='userP' title='Benutzerliste'} 

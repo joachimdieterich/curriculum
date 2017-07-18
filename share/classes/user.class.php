@@ -755,7 +755,7 @@ class User {
      * @param int $id
      * @return array of object 
      */
-    public function userList($dependency = 'institution', $paginator = '', $lost = false){
+    public function userList($dependency = 'institution', $paginator = '', $lost = false, $id = false){
         global $USER;
         $order_param = orderPaginator($paginator, array('id'        => 'us',
                                                         'username'  => 'us',
@@ -795,6 +795,24 @@ class User {
                                     $db->execute(array($USER->institution_id, $USER->role_id, $USER->id));  
                                 }                       
             break;
+            case 'filter_institution':if (checkCapabilities('user:userListInstitution', $USER->role_id,false)) { //Manager
+                                    $db = DB::prepare('SELECT us.* FROM users AS us WHERE us.id = ANY (SELECT user_id FROM institution_enrolments 
+                                                    WHERE institution_id = ? AND status = 1 AND role_id <> 1) '.$order_param); // HACK to prevent edit of super user
+                                    $db->execute(array($id)); 
+                                } else if (checkCapabilities('user:userListGroup', $USER->role_id,false)) { //Kursersteller
+                                    $db = DB::prepare('SELECT DISTINCT us.* FROM users AS us, groups_enrolments AS ge, institution_enrolments AS ie, roles AS ro 
+                                                        WHERE ie.institution_id = ? AND ie.status = 1
+                                                        AND ie.role_id <> 1 /* HACK to prevent edit of super user*/
+                                                        AND ro.id = ie.role_id 
+                                                        AND ro.order_id > (SELECT order_id FROM roles WHERE id = ?)
+                                                        AND ie.user_id = us.id 
+                                                        AND ge.user_id = ie.user_id
+                                                        AND ge.status = 1
+                                                        AND ge.group_id = ANY (SELECT group_id FROM groups_enrolments 
+                                                                                               WHERE user_id = ? AND status =  1)  '.$order_param);
+                                    $db->execute(array($id, $USER->role_id, $USER->id));  
+                                }
+                break;
             default:  break;
         }
 

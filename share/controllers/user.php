@@ -124,4 +124,15 @@ $p_config   = array('id'         => 'checkbox',
                     'p_search'   => array('username','firstname','lastname','email','postalcode','city'),
                     'p_widget'   => $p_widget,
                     'p_options'  => $p_options);
-setPaginator('userP', $TEMPLATE, $users->userList('institution', 'userP', filter_input(INPUT_GET, 'lost', FILTER_VALIDATE_BOOLEAN)), 'us_val', 'index.php?action=user', $p_config); //set Paginator    
+if (isset($_GET['filter_institution'])){
+    if ($_GET['filter_institution'] == 'false'){
+        error_log('test');
+        $u = $users->userList('institution', 'userP', filter_input(INPUT_GET, 'lost', FILTER_VALIDATE_BOOLEAN));
+    } else {
+        $u = $users->userList('filter_institution', 'userP', filter_input(INPUT_GET, 'lost', FILTER_VALIDATE_BOOLEAN), $_GET['filter_institution']);
+        $TEMPLATE->assign('filter_institution_id', $_GET['filter_institution']);
+    }
+} else {
+    $u = $users->userList('institution', 'userP', filter_input(INPUT_GET, 'lost', FILTER_VALIDATE_BOOLEAN));
+}
+setPaginator('userP', $TEMPLATE, $u, 'us_val', 'index.php?action=user', $p_config); //set Paginator    
