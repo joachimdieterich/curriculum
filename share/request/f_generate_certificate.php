@@ -68,6 +68,8 @@ if (isset($currentUrlId)){ $content .= $currentUrlId; }
 $content  .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
 $content  .= '<input type="hidden" name="curriculum_id" id="curriculum_id" value="'.$certificate->curriculum_id.'"/> ';
 $content  .= Form::input_select('certificate_id', 'Zertifikat', $certificates , 'certificate', 'id', $certificate_id , $error);
+$content  .= Form::info(array('id' => 'info', 'label' => 'Hinweis', 'content' => 'Im folgenden Feld kann ein Ausgabedatum eingegeben werden. Bei leerem Feld wird das heutige Datum verwendet.'));
+$content  .= Form::input_text('date', 'Ausgabedatum', $date, $error, 'z. B. 22.01.2017');
 $content  .= Form::info(array('id' => 'info', 'label' => 'Hinweis', 'content' => 'Wen Sie die folgende Checkbox aktivieren, wird das Zertifikat  dem Schüler / Student zusätzlich im PDF bereitgestellt und kann von diesem heruntergeladen werden.'));
 $content  .= Form::input_checkbox('deliver', 'Datei für Lerner bereitstellen?', $deliver, $error);
 $content  .= '</form>';

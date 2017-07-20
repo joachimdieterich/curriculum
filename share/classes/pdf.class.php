@@ -40,7 +40,7 @@ class Pdf {
     public $content        = ''; 
     
     
-    public function generate_certificate_from_template($deliver = false){
+    public function generate_certificate_from_template($deliver = false, $date = false){
         global $USER, $CFG;
         include(dirname(__FILE__).'/../libs/MPDF57/mpdf.php');
         
@@ -61,7 +61,11 @@ class Pdf {
             //Textblöcke ersetzen
             $this->content = str_replace("<!--Vorname-->", $user->firstname, $this->content);
             $this->content = str_replace("<!--Nachname-->", $user->lastname, $this->content);
-            $this->content = str_replace("<!--Datum-->", date("d.m.Y"), $this->content);
+            if ($date == false){
+                $this->content = str_replace("<!--Datum-->", date("d.m.Y"), $this->content);
+            } else {
+                $this->content = str_replace("<!--Datum-->", $date, $this->content);            //use Date defined in certificate dialog
+            }
             $this->content = str_replace("<!--Ort-->", '---', $this->content);
             $this->content = str_replace("<!--Unterschrift-->", $USER->firstname.' '.$USER->lastname, $this->content);
 

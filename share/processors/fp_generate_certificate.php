@@ -39,12 +39,13 @@ if ($_POST['certificate_id'] != '-1' AND $selected_user_id != '' AND isset($sele
     $certificate->load();
     $pdf->template      = $certificate->template;
     
+    $date               = false; //set default
+    $deliver            = false; //set default
+    if (isset($_POST['date']))      { $date     = $_POST['date']; } 
+    if (isset($_POST['deliver']))   { $deliver  = $_POST['deliver']; }  // save template to users folder
     
-    if (isset($_POST['deliver'])){                      // save template to users folder
-        $pdf->generate_certificate_from_template($_POST['deliver']);
-    }  else {
-        $pdf->generate_certificate_from_template();
-    }
+    $pdf->generate_certificate_from_template($deliver, $date);
+    
 } 
 $_SESSION['FORM']            = new stdClass();
 $_SESSION['FORM']->form      = 'generate_certificate';
