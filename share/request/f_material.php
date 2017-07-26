@@ -222,7 +222,7 @@ if (!$files){
                     <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
                       <div id="sparkline-1"></div><div class="knob-label">';
             if (isset($license->license)){ 
-                if (isset($license->file_id)){
+                if (isset($license->file_id)){ 
                     $m_footer .= '<img src="'.$CFG->access_id_url.$license->file_id.'" height="30"/>'; 
                 } else {
                     $m_footer .= $license->license; 
