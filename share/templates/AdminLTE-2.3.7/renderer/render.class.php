@@ -235,7 +235,7 @@ class Render {
     }
     
     public static function thumb($params){/*$file_list, $target = null, $tag = 'li', $format='normal'*/
-        global $USER;
+        global $USER,$CFG;
         $target     = null;
         $tag        = 'li';
         $format     = 'normal';
@@ -343,9 +343,19 @@ class Render {
                                 $html .=   '</ul></div>';
                     break;
                 case 'thumb':   if ($icon == true){
-                                    $html .=   '<i class="'.resolveFileType($file->type).' info-box-icon"></i>';
+                                    $html .=   '<div style="position:relative; height: '.$height.';width:'.$width.'; float:left;"><i class="'.resolveFileType($file->type).' info-box-icon"></i>';
+                                        if (isset($_SESSION['LICENSE'][$file->license]->file_id)){
+                                            $html .= '<img style="position:absolute;bottom:0px; right:0px;" src="'.$CFG->access_id_url.$_SESSION['LICENSE'][$file->license]->file_id.'" height="25"/>';
+                                        }
+                                    $html .=   '</div>';
+                                    
+                                    
                                 } else {
-                                    $html .=   '<div style="height: '.$height.';width:'.$width.'; float:left; background: url(\''.$url.'\') center; background-size: cover; background-repeat: no-repeat;"></div>';
+                                    $html .=   '<div style="height: '.$height.';width:'.$width.'; float:left; background: url(\''.$url.'\') center; background-size: cover; background-repeat: no-repeat;">';
+                                        if (isset($_SESSION['LICENSE'][$file->license]->file_id)){
+                                            $html .= '<img style="position:absolute;bottom:0px; right:0px;" src="'.$CFG->access_id_url.$_SESSION['LICENSE'][$file->license]->file_id.'" height="25"/>';
+                                        }
+                                    $html .=   '</div>';
                                     //$html .=   '<div class="info-box-icon" style="background: url(\''.$url.'\') center; background-size: cover; background-repeat: no-repeat;"></div>';
                                 }
                     break;
