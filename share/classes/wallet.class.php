@@ -195,7 +195,7 @@ class Wallet {
                                 $db->execute(array($USER->id));
                             }
                 break;
-            case 'shared':  $db = DB::prepare('SELECT wa.id FROM wallet AS wa, wallet_sharing AS ws, context AS co
+            case 'shared':  $db = DB::prepare('SELECT DISTINCT wa.id FROM wallet AS wa, wallet_sharing AS ws, context AS co
                                                             WHERE co.context = ? 
                                                             AND co.context_id = ws.context_id 
                                                             AND wa.id = ws.wallet_id
