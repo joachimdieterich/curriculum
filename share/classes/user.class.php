@@ -956,7 +956,7 @@ class User {
      * @param int $id
      * @return array of object|boolean 
      */
-    public function getUsers($dependency = null, $paginator = '', $id = null, $group = null){
+    public function getUsers($dependency = null, $paginator = '', $id = null, $group = null, $wallet_id = null){
         global $USER, $CFG;
         $order_param = orderPaginator($paginator, array('id'  => 'us', 
                                                         'username'  => 'us', 
@@ -977,6 +977,31 @@ class User {
                                                 AND gr.institution_id = ie.institution_id
                                                 AND gr.id = ge.group_id '.$order_param);
                                 $db->execute(array($id)); 
+                                while($result = $db->fetchObject()) {  
+                                    $this->id           = $result->id;
+                                    $this->username     = $result->username;
+                                    $this->firstname    = $result->firstname; 
+                                    $this->lastname     = $result->lastname; 
+                                    $this->role_id      = $result->role_id; 
+                                    $users[]            = clone $this; 
+                                }               
+                break;
+            case 'wallet_shared':  $db = DB::prepare('SELECT us.*, ie.role_id FROM users AS us, groups_enrolments AS ge, curriculum_enrolments AS ce, institution_enrolments as ie, groups as gr
+                                                WHERE us.id = ge.user_id 
+                                                AND ce.curriculum_id = ?
+                                                AND ce.status = 1
+                                                AND ce.group_id = ge.group_id
+                                                AND ie.user_id = us.id
+                                                AND us.id IN (SELECT ws.reference_id FROM wallet AS wa, wallet_sharing AS ws, context AS co
+                                                            WHERE co.context = ? 
+                                                            AND co.context_id = ws.context_id 
+                                                            AND wa.id = ws.wallet_id
+                                                            AND ws.wallet_id = ?)
+                                                AND ie.status = 1                                                      
+                                                AND ge.status = 1 
+                                                AND gr.institution_id = ie.institution_id
+                                                AND gr.id = ge.group_id '.$order_param);
+                                $db->execute(array($id, 'userFiles', $wallet_id)); 
                                 while($result = $db->fetchObject()) {  
                                     $this->id           = $result->id;
                                     $this->username     = $result->username;
