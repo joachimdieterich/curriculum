@@ -24,6 +24,7 @@
                                             <strong>{FORM::info('error', '',$page_message[0]['message'], '','col-sm-12 text-red')}</strong>
                                         {/if}
                                         <form id="form_login" action="index.php?action=login" method="post">
+                                            <p><strong>Einloggen</strong></p>
                                           <div class="form-group has-feedback {if isset($page_message)}has-error{/if}">
                                             <input type="text" class="form-control" id="username" name="username" {if isset($username)}value="{$username}"{/if} placeholder="Benutzername">
                                           </div>
@@ -31,24 +32,38 @@
                                             <input type="password" class="form-control" name="password" placeholder="Passwort">
                                           </div>
                                           <div class="row">
-                                            <div class="col-xs-7 pull-right">
-                                              <input id="login" type="submit" name="login" class="btn btn-primary btn-block btn-flat visible" value="Anmelden" ></input>
-                                              <input id="reset" type="submit" name="reset" class="btn btn-primary btn-block btn-flat hidden" value="Passwort vergessen" ></input>
+                                             <div class="col-xs-6 pull-left">
+                                              <input id="pw_reset" name="reset" class="btn btn-primary btn-block btn-flat " value="Passwort vergessen" onclick="toggle(['reset', 'reset_info'], ['login', 'password', 'pw_reset']);"></input>
                                             </div><!-- /.col -->
-                                            <div class="col-xs-5 pull-left">{*!pull-left to not submit guest login on return, when entering regular user accounts*}
-                                                <input id="guest" type="submit" name="guest" class="btn btn-primary btn-block btn-flat visible" value="Gastzugang" ></input>
+                                            <div class="col-xs-6 pull-right">
+                                              <input id="login" type="submit" name="login" class="btn btn-primary btn-block btn-flat visible" value="Einloggen" ></input>
+                                              <input id="reset" type="submit" name="reset" class="btn btn-primary btn-block btn-flat hidden" value="Passwort vergessen" ></input>
                                             </div><!-- /.col -->
                                           </div>
                                         </form>
-                                        {if $cfg_shibboleth}
-                                        <div class="">
-                                          <p>- ODER -</p>
-                                          <a href="../share/plugins/auth/shibboleth/index.php" class="btn btn-block btn-flat btn-warning"><img src="assets/images/icons/shibboleth-web.png" style="height:24px;"></img> Über Shibboleth anmelden</a>
+                                        <div class="top-buffer">
+                                            <p><strong>- ODER -</strong></p>    
+                                        {*if $cfg_shibboleth}
+                                        
+                                          <div class="row">
+                                              <div class="col-xs-7 pull-right">
+                                              <a href="../share/plugins/auth/shibboleth/index.php" class="btn btn-block btn-flat btn-warning"><img src="assets/images/icons/shibboleth-web.png" style="height:24px;"></img> Mit Shibboleth anmelden</a>
+                                              </div>
+                                          </div>
+                                        {/if*}
                                         </div>
-                                        {/if}
-                                        <p  id="pw_reset"><a  href="#" onclick="toggle(['reset', 'reset_info'], ['login', 'password', 'pw_reset']);">Passwort vergessen</a></p>
-                                        <a href="#" class="text-center" onclick="alert('Funktion noch nicht verfügbar');">Registrieren</a>
-
+                                        <div class="row top-buffer">
+                                            <div class="col-xs-7 pull-left">Noch nicht registriert?</div>
+                                            <div class="col-xs-5 pull-right">{*!pull-left to not submit guest login on return, when entering regular user accounts*}
+                                                <input id="register" type="submit" name="register" class="btn btn-primary btn-block btn-flat visible" value="jetzt Registrieren" data-toggle="tooltip" title="Noch nicht registriert?"></input>
+                                            </div><!-- /.col -->
+                                        </div>
+                                        <div class="row top-buffer">
+                                            <div class="col-xs-7 pull-left">Als Gast einen Einblick bekommen</div>
+                                            <div class="col-xs-5 pull-right">{*!pull-left to not submit guest login on return, when entering regular user accounts*}
+                                                <input id="guest" type="submit" name="guest" class="btn btn-primary btn-block btn-flat visible" value="Gastzugang nutzen" data-toggle="tooltip" title="Als Gast einen Einblick bekommen"></input>
+                                            </div><!-- /.col -->
+                                        </div>
                                 </div>
                                 <div class="price-foot">
                                     <div class="">
