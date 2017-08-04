@@ -40,7 +40,6 @@
                                               <input id="reset" type="submit" name="reset" class="btn btn-primary btn-block btn-flat hidden" value="Passwort vergessen" ></input>
                                             </div><!-- /.col -->
                                           </div>
-                                        </form>
                                         <div class="top-buffer">
                                             <p><strong>- ODER -</strong></p>    
                                         {*if $cfg_shibboleth}
@@ -64,6 +63,7 @@
                                                 <input id="guest" type="submit" name="guest" class="btn btn-primary btn-block btn-flat visible" value="Gastzugang nutzen" data-toggle="tooltip" title="Als Gast einen Einblick bekommen"></input>
                                             </div><!-- /.col -->
                                         </div>
+                                        </form>        
                                 </div>
                                 <div class="price-foot">
                                     <div class="">
