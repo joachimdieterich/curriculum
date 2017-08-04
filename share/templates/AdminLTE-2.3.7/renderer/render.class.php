@@ -351,7 +351,7 @@ class Render {
                                     
                                     
                                 } else {
-                                    $html .=   '<div style="height: '.$height.';width:'.$width.'; float:left; background: url(\''.$url.'\') center; background-size: cover; background-repeat: no-repeat;">';
+                                    $html .=   '<div style="position:relative; height: '.$height.';width:'.$width.'; float:left; background: url(\''.$url.'\') center; background-size: cover; background-repeat: no-repeat;">';
                                         if (isset($_SESSION['LICENSE'][$file->license]->file_id)){
                                             $html .= '<img style="position:absolute;bottom:0px; right:0px;" src="'.$CFG->access_id_url.$_SESSION['LICENSE'][$file->license]->file_id.'" height="25"/>';
                                         }
@@ -423,9 +423,10 @@ class Render {
         return $html;                                    
     }
     public static function wallet_content($wallet_content, $edit){
-       $html  =   '<div class="'.$wallet_content->width_class;
+       
+       $html  =   '<div class="sortable" style="width:100%;height:100%;"><div class="'.$wallet_content->width_class;
        if ($edit == true){
-           $html  .=   ' wallet-content"><span style="position: absolute; right:15px;" ><button type="button" onclick="formloader(\'wallet_content\',\'edit\','.$wallet_content->id.');"><i class="fa fa-edit"></i></button>'
+           $html  .=   ' sortable wallet-content"><span style="position: absolute; right:15px;" ></button><button type="button" onclick="formloader(\'wallet_content\',\'edit\','.$wallet_content->id.');"><i class="fa fa-edit"></i></button>'
                       . '<button type="button"  onclick="del(\'wallet_content\','.$wallet_content->id.');"><i class="fa fa-trash"></i></button>'
                       . '<button type="button"  onclick=\'processor("orderWalletContent","left",'.$wallet_content->id.', {"order":"left"});\'><i class="fa fa-arrow-left"></i></button>'
                    . '<button type="button"  onclick=\'processor("orderWalletContent","right",'.$wallet_content->id.', {"order":"right"});\'><i class="fa fa-arrow-right"></i></button>'
@@ -447,7 +448,7 @@ class Render {
                             $html  .= Render::file($f);
                break;
        }
-       $html .=   '</span></div>';
+       $html .=   '</span></div></div>';
         return $html;  
     }
     
@@ -641,8 +642,11 @@ class Render {
         /*************** ./Header ***************/
         /*************** Body ***************/    
         $html  .='  <div id="'.$type.'_'.$objective->id.'" class="panel-body boxwrap" >
-                        <div class="boxscroll" style="background: '.$objective->color.'">
-                            <div class="boxcontent '.$text_class.'">'.$objective->$type.'</div>
+                        <div class="boxscroll" ';
+                            if ($type == 'terminal_objective'){
+                                $html  .='style="background: '.$objective->color.'"';
+                            }
+                            $html  .='><div class="boxcontent '.$text_class.'">'.$objective->$type.'</div>
                         </div>
                     </div>';
         /*************** ./Body ***************/
