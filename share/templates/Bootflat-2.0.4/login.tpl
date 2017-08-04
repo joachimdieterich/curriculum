@@ -33,7 +33,7 @@
                                           </div>
                                           <div class="row">
                                              <div class="col-xs-6 pull-left">
-                                              <input id="pw_reset" name="reset" class="btn btn-primary btn-block btn-flat " value="Passwort vergessen" onclick="toggle(['reset', 'reset_info'], ['login', 'password', 'pw_reset']);"></input>
+                                              <input id="pw_reset" class="btn btn-primary btn-block btn-flat " value="Passwort vergessen" onclick="toggle(['reset', 'reset_info'], ['login', 'password', 'pw_reset']);"></input>
                                             </div><!-- /.col -->
                                             <div class="col-xs-6 pull-right">
                                               <input id="login" type="submit" name="login" class="btn btn-primary btn-block btn-flat visible" value="Einloggen" ></input>
@@ -54,7 +54,7 @@
                                         <div class="row top-buffer">
                                             <div class="col-xs-7 pull-left">Noch nicht registriert?</div>
                                             <div class="col-xs-5 pull-right">{*!pull-left to not submit guest login on return, when entering regular user accounts*}
-                                                <input id="register" type="submit" name="register" class="btn btn-primary btn-block btn-flat visible" value="jetzt Registrieren" data-toggle="tooltip" title="Noch nicht registriert?"></input>
+                                                <input id="register" {*type="submit"*} onclick="alert('Funktion noch nicht verfügbar');" name="register" class="btn btn-primary btn-block btn-flat visible" value="jetzt Registrieren" data-toggle="tooltip" title="Noch nicht registriert?"></input>
                                             </div><!-- /.col -->
                                         </div>
                                         <div class="row top-buffer">
