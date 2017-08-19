@@ -66,7 +66,7 @@ if (isset($paginator) AND isset($paginator_search) AND isset($order)) {
 
 <!-- HTML -->
 <div class="uploadframeClose" onclick="self.parent.tb_remove();"></div>    
-<div class="modal-content ">
+<div id="modal" class="modal-content ">
     <div class="modal-header">
         <button type="button" class="close nyroModalClose" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">×</span></button>
         <h4 class="modal-title"><i class="fa fa-bars" onclick="toggle_sidebar('modal_sidebar')"></i> Dateiauswahl</h4>
