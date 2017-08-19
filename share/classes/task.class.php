@@ -119,7 +119,7 @@ class Task {
                                                 WHERE ct.context = ? 
                                                 AND ct.context_id = te.context_id
                                                 AND te.reference_id = ?
-                                                AND te.task_id = ta.id '.$order_param );
+                                                AND te.task_id = ta.id ORDER BY ta.timeend' );
                                     $db->execute(array('institution', $id));
                 break;
             case 'coursebook':      $db = DB::prepare('SELECT ta.id
