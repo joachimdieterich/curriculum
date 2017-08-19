@@ -779,6 +779,19 @@ function popupFunction(e){
     for (var selector in config) {
         $(selector).chosen(config[selector]);
     }*/
+    $(function(){
+        $(document).click(function(){
+            //alert('document is clicked');
+            closePopup('popup');
+        });
+
+        $('#modal').click(function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            //alert('modal is clicked');
+        });
+    });
+
 }
 
 /**
