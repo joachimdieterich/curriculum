@@ -784,8 +784,14 @@ function popupFunction(e){
     $("body").click(function(e) {
         if (e.target.id == "modal" || $(e.target).parents("#modal").size()) { 
             /* do nothing */
+        } else if (e.target.id == "daterangepicker" || $(e.target).parents("#daterangepicker").size()) {
+            /* do nothing */
         } else { 
-           closePopup('popup'); 
+            if ($("#daterangepicker").is(':visible')) {
+                /* don't close if daterangepicker is visible!*/
+            } else {
+                closePopup('popup'); 
+            }
         }
     });
 })
