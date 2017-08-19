@@ -779,18 +779,16 @@ function popupFunction(e){
     for (var selector in config) {
         $(selector).chosen(config[selector]);
     }*/
-    $(function(){
-        $(document).click(function(){
-            //alert('document is clicked');
-            closePopup('popup');
-        });
-
-        $('#modal').click(function(e){
-            e.preventDefault();
-            e.stopPropagation();
-            //alert('modal is clicked');
-        });
+    /*close popup when clicking outside modal*/
+    $(function() {
+    $("body").click(function(e) {
+        if (e.target.id == "modal" || $(e.target).parents("#modal").size()) { 
+            /* do nothing */
+        } else { 
+           closePopup('popup'); 
+        }
     });
+})
 
 }
 
