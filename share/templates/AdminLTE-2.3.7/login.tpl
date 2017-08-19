@@ -38,8 +38,9 @@
               <input id="reset" type="submit" name="reset" class="btn btn-primary btn-block btn-flat hidden" value="Passwort vergessen" ></input>
             </div><!-- /.col -->
           </div>
-        
-            <p class="text-center top-buffer"><strong>- ODER -</strong></p>   
+            {if $cfg_guest_login eq '1' OR  $cfg_shibboleth eq '1'}      
+                <p class="text-center top-buffer"><strong>- ODER -</strong></p>  
+            {/if}
             {if $cfg_guest_login}
                 <div class="row">
                     <div class="col-xs-6 pull-left">{*!pull-left to not submit guest login on return, when entering regular user accounts*}
