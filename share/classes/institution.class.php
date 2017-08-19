@@ -301,13 +301,22 @@ class Institution {
         return $value;
     }
     
-    public function getStatistic($id){
-        $db =DB::prepare('SELECT ins.id, ins.institution, ins.description, ins.file_id
-                            FROM institution AS ins, institution_enrolments AS ie
-                            WHERE ie.institution_id = ins.id
-                            AND ie.user_id = ? AND ie.status = 1 ');
-                        $db->execute(array($id));
-        
+    public function getStatistic($id, $institution_id = false){
+        if ($institution_id != false){
+            $db =DB::prepare('SELECT ins.id, ins.institution, ins.description, ins.file_id
+                                FROM institution AS ins, institution_enrolments AS ie
+                                WHERE ie.institution_id = ins.id
+                                AND ie.user_id = ? 
+                                AND ie.institution_id = ? 
+                                AND ie.status = 1 ');
+                            $db->execute(array($id, $institution_id));
+        } else {
+            $db =DB::prepare('SELECT ins.id, ins.institution, ins.description, ins.file_id
+                                FROM institution AS ins, institution_enrolments AS ie
+                                WHERE ie.institution_id = ins.id
+                                AND ie.user_id = ? AND ie.status = 1 ');
+                            $db->execute(array($id));
+        }
         while($result = $db->fetchObject()) { 
             $this->id          = $result->id;
             $this->institution = $result->institution;

@@ -26,6 +26,7 @@ $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER, $PAGE, $CFG;
+
 $USER       = $_SESSION['USER'];
 $edit       = checkCapabilities('file:editMaterial',    $USER->role_id, false); // DELETE / edit anzeigen
 $header     = 'Material';
@@ -216,14 +217,14 @@ if (!$files){
         /* Material footer */
         /* End Material footer*/
         if ($files[$i]->type != 'external'){
-
             $m_footer .= '<div class="info-box-text" style="padding-top:10px;white-space:normal; text-transform:none; display:block;">
                            <div class="row">
                     <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
                       <div id="sparkline-1"></div><div class="knob-label">';
             if (isset($license->license)){ 
                 if (isset($license->file_id)){ 
-                    $m_footer .= '<img src="'.$CFG->access_id_url.$license->file_id.'" height="30"/>'; 
+                    $m_license_icon = $CFG->access_id_url.$license->file_id;
+                    $m_footer .= '<img src="'.$CFG->access_id_url.$_SESSION['LICENSE'][$files[$i]->license]->file_id.'" height="30"/>'; 
                 } else {
                     $m_footer .= $license->license; 
                 }
@@ -259,6 +260,7 @@ if (!$files){
         
         $m_boxes .= Form::info_box(array('id'          => $m_id,
                                          'preview'     => $m_preview,
+                                         'license_icon'=> $m_license_icon,
                                          'icon_class'  => $m_icon_class,
                                          'delete'      => $m_delete,
                                          'url'         => $m_url,

@@ -800,7 +800,7 @@ class User {
                                                     WHERE institution_id = ? AND status = 1 AND role_id <> 1) '.$order_param); // HACK to prevent edit of super user
                                     $db->execute(array($id)); 
                                 } else if (checkCapabilities('user:userListGroup', $USER->role_id,false)) { //Kursersteller
-                                    $db = DB::prepare('SELECT DISTINCT us.* FROM users AS us, groups_enrolments AS ge, institution_enrolments AS ie, roles AS ro 
+                                    $db = DB::prepare('SELECT DISTINCT us.*, ro.role AS role_name FROM users AS us, groups_enrolments AS ge, institution_enrolments AS ie, roles AS ro 
                                                         WHERE ie.institution_id = ? AND ie.status = 1
                                                         AND ie.role_id <> 1 /* HACK to prevent edit of super user*/
                                                         AND ro.id = ie.role_id 
@@ -813,6 +813,15 @@ class User {
                                     $db->execute(array($id, $USER->role_id, $USER->id));  
                                 }
                 break;
+            case 'institution_overview':$db = DB::prepare('SELECT DISTINCT us.*, ro.role AS role_name FROM users AS us, groups_enrolments AS ge, institution_enrolments AS ie, roles AS ro 
+                                                        WHERE ie.institution_id = ? AND ie.status = 1
+                                                        AND ro.id = ie.role_id 
+                                                        AND ie.user_id = us.id 
+                                                        AND ge.user_id = ie.user_id
+                                                        AND ge.status = 1');
+                                    $db->execute(array($id)); 
+                
+                break; 
             default:  break;
         }
 
@@ -825,7 +834,9 @@ class User {
             $this->postalcode   = $result->postalcode;
             $this->city         = $result->city;
             $this->avatar_id    = $result->avatar_id;
-            
+            if (isset($result->role_name)){
+                $this->role_name    = $result->role_name;
+            }
             $users[] = clone $this;
         } 
             return $users;

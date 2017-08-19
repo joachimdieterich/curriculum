@@ -114,6 +114,14 @@ class Task {
                                     $db->execute(array($USER->id));
                 break;
 
+            case 'institution':      $db = DB::prepare('SELECT ta.id
+                                                FROM task AS ta, task_enrolments AS te, context AS ct
+                                                WHERE ct.context = ? 
+                                                AND ct.context_id = te.context_id
+                                                AND te.reference_id = ?
+                                                AND te.task_id = ta.id '.$order_param );
+                                    $db->execute(array('institution', $id));
+                break;
             case 'coursebook':      $db = DB::prepare('SELECT ta.id
                                                 FROM task AS ta, task_enrolments AS te, context AS ct
                                                 WHERE ct.context = ? 

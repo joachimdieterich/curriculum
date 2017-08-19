@@ -68,9 +68,10 @@ try { // Error handling
         }   
         
         if (isset($_SESSION['PAGE']->print)){
-            $pdf = new Pdf();
-            $pdf->content = $_SESSION['PAGE']->print->content;
-            $pdf->filename = 'print.pdf';
+            $pdf            = new Pdf();
+            $pdf->content   = $_SESSION['PAGE']->print->content;
+            $pdf->filename  = 'print.pdf';
+            $pdf->path      = 'user/'.$USER->id.'/';
             $pdf->generate(); 
             unset($_SESSION['PAGE']->print);
         }   

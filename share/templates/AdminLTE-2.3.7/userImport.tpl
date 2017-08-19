@@ -25,13 +25,14 @@
                         <div class="row">
                             <div class="col-xs-12 col-sm-12 col-md-8 col-lg-7">
                                 <p>Die CSV-Datei muss folgendes Format haben:<br/>
-                                - Die ersten Zeile muss die Schlüsselwerte enthalten (z.B.:username, password, firstname, lastname, email, role_id, confirmed, postalcode, city, state, country)<br/>
-                                - Die Schüsselwerte <strong>username, password, firstname, lastname </strong>und <strong>email</strong> müssen gesetzt werden. <br/>
-                                - Zusätzlich kann das Feld <strong>group_id oder group</strong> definiert werden. Mögliche ID-Werte für <strong>group_id / group</strong> und <strong>role_id</strong> finden Sie in den Tabellen. Wird eine neue Lerngruppe eingegeben, erstellt curriculum diese beim Import.<br/>
-                                - Die maximale Dateigröße liegt bei {$filesize}MB und kann im Adminstrationsbereich festgelegt werden.<br/>
-                                - Die Datei muss im utf-8 Format gespeichert werden, sonst werden Umlaute und Sonderzeichen nicht korrekt importiert<br/>
-                                <br/>
-                                <strong>- Achtung: Die Institution in die importiert werden soll muss ausgewählt werden. </strong></p>
+                                <ul>
+                                    <li>Die ersten Zeile muss die Schlüsselwerte enthalten (z.B.:username, password, firstname, lastname, email, role_id, confirmed, postalcode, city, state, country).</li>
+                                    <li>Die Schüsselwerte <strong>username, password, firstname, lastname </strong>und <strong>email</strong> müssen gesetzt werden.</li>
+                                    <li>Zusätzlich kann das Feld <strong>group_id, group </strong>oder <strong>role_id</strong> definiert werden. Mögliche ID-Werte für <strong>group_id / group</strong> und <strong>role_id</strong> finden Sie in den Tabellen. Wird eine neue Lerngruppe eingegeben, erstellt curriculum diese beim Import.</li>
+                                    <li>Die maximale Dateigröße liegt bei {$filesize}MB und kann im Adminstrationsbereich festgelegt werden.</li>
+                                    <li>Die Datei muss im utf-8 Format gespeichert werden, sonst werden Umlaute und Sonderzeichen nicht korrekt importiert.</li>
+                                </ul>
+                                <strong>Achtung: Die Institution in die importiert werden soll muss ausgewählt werden. </strong></p>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-4 col-lg-5">
                                 <h4>CSV-Vorlagen</h4>

@@ -31,20 +31,21 @@ if (!isset($_SESSION['PAGE']->target_url)){     //if target_url is not set -> us
 }
 $selected_user_id       = SmartyPaginate::_getSelection('userPaginator');
 if ($_POST['certificate_id'] != '-1' AND $selected_user_id != '' AND isset($selected_user_id[0])){
-    $pdf = new Pdf();
-    $pdf->user_id       = $selected_user_id; 
-    $pdf->curriculum_id = $_POST['curriculum_id'];
     $certificate        = new Certificate();
     $certificate->id    = $_POST['certificate_id'];
     $certificate->load();
-    $pdf->template      = $certificate->template;
+    $certificate->curriculum_id = $_POST['curriculum_id'];
     
     $date               = false; //set default
     $deliver            = false; //set default
     if (isset($_POST['date']))      { $date     = $_POST['date']; } 
     if (isset($_POST['deliver']))   { $deliver  = $_POST['deliver']; }  // save template to users folder
     
-    $pdf->generate_certificate_from_template($deliver, $date);
+    if ($certificate->template == 'overview'){
+        $certificate->test_group_list($selected_user_id);
+    } else {
+        $certificate->generate_from_template('user', $selected_user_id, $date, $deliver);
+    }
     
 } 
 $_SESSION['FORM']            = new stdClass();

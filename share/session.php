@@ -26,7 +26,7 @@
 /**
  * Setup global $USER 
  */
-global $CFG, $USER, $_SESSION, $PAGE, $INSTITUTION, $TEMPLATE, $CONTEXT;
+global $CFG, $USER, $_SESSION, $PAGE, $INSTITUTION, $TEMPLATE, $CONTEXT, $LICENSE;
 
 if (isset($_SESSION['CONTEXT'])){                                               //global $CONTEXT array --> lesser db calls
     $CONTEXT                    = $_SESSION['CONTEXT'];
@@ -35,6 +35,15 @@ if (isset($_SESSION['CONTEXT'])){                                               
     $CONTEXT                    = $ctx->get('context');
     $_SESSION['CONTEXT']        = $CONTEXT;
 }
+
+if (isset($_SESSION['LICENSE'])){                                               //global $LICENSE array --> lesser db calls
+    $LICENSE                    = $_SESSION['LICENSE'];
+} else {
+    $fl                        = new License();
+    $LICENSE                    = $fl->get();
+    $_SESSION['LICENSE']        = $LICENSE;
+}
+
 
 $USER = new User();
 if (isset($_SESSION['USER'])){                                                  // Wenn $USER Object uin Session existiert diesen übernehmen

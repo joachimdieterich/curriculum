@@ -4,7 +4,34 @@
 {block name=description}{$smarty.block.parent}{/block}
 {block name=nav}{$smarty.block.parent}{/block}
 
-{block name=additional_scripts}{$smarty.block.parent}{/block}
+{block name=additional_scripts}{$smarty.block.parent}
+<!-- jQuery UI used by sortable -->
+<script src="{$media_url}scripts/jquery-ui.min.js"></script>
+    {literal}<script>
+    //Make the dashboard widgets sortable Using jquery UI
+        $(".connectedSortable").sortable({
+          placeholder         : "sort-highlight",
+          connectWith         : ".connectedSortable",
+          handle              : ".wallet-content",
+          forcePlaceholderSize: true,
+          zIndex              : 999999,
+          stop: function(e, ui) {
+                      var element_weight = $.map($(".sortable"), function(el) {
+                          return $(el).attr('id') + '=' + $(el).index();
+                      });
+                      var element_region = $.map($(".sortable"), function(el) {
+                          return $(el).attr('id') + '=' + $(el).closest('section').attr('id');
+                      })
+                      //processor('config','sortable', 'dashboard', {'element_weight': element_weight, 'element_region': element_region});
+                      /*alert($.map($(".sortable"), function(el) {
+                          return $(el).attr('id') + ' = ' + $(el).index();
+                      }));*/
+                  }
+
+        });
+        $(".connectedSortable .wallet-content").css("cursor", "move");
+    </script>{/literal}
+{/block}
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
 {block name=content}
@@ -69,26 +96,33 @@
                         {/foreach}
                     </div>
                     {assign var="row_id" value="-1"} 
+                    
                     {foreach key=wcid item=wc from=$wallet->content}
                         {if $row_id neq $wc->row_id}
-                            {if $row_id neq "-1"}                                
+                            {if $row_id neq "-1"}    
+                            </section>
                             </div><!-- ./row_x-->
                             </div><!-- ./panel-->
+                            
                             {/if}
                             {assign var="row_id" value=$wc->row_id}
-                            <div class="col-xs-12 panel">
-                                <div id="row_{$wc->row_id}" class="row panel-default">  
+                            
+                            <div class="col-xs-12 panel ">
+                                <div id="row_{$wc->row_id}" class="row panel-default ">  
                                 {if $edit eq true}
-                                  <div class="panel-heading">Block {$wc->row_id+1}
-                                      <div class="box-tools pull-right" > Elemente hinzufügen
-                                          <span class="fa fa-file-o margin-r-10" onclick='formloader("wallet_content", "new_file", {$wallet->id}, {["row_id" => $row_id]|@json_encode nofilter});'></span>
-                                          <span class="fa fa-align-left" onclick='formloader("wallet_content", "new_content", {$wallet->id}, {["row_id" => $row_id]|@json_encode nofilter});'></span>
-                                      </div>
-                                  </div>
-                              {/if}
+                                    <div class="panel-heading ">Block {$wc->row_id+1}
+                                        <div class="box-tools pull-right" > Elemente hinzufügen
+                                            <span class="fa fa-file-o margin-r-10" onclick='formloader("wallet_content", "new_file", {$wallet->id}, {["row_id" => $row_id]|@json_encode nofilter});'></span>
+                                            <span class="fa fa-align-left" onclick='formloader("wallet_content", "new_content", {$wallet->id}, {["row_id" => $row_id]|@json_encode nofilter});'></span>
+                                        </div>
+                                    </div>
+                                {/if}
+                                    <section id="section_{$wc->row_id}" class="connectedSortable">
                         {/if}
                         {RENDER::wallet_content($wc,$edit)}
-                    {/foreach}
+                            
+                        
+                    {/foreach}                    
                     {if !empty($wallet->content)}{* if bocks exist: close last block if *}
                             </div>
                         </div>

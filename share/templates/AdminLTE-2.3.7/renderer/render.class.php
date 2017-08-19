@@ -786,7 +786,7 @@ class Render {
     
     public static function popup($titel, $content, $url = false, $btn = 'OK') {
         $html= '<div class="modal-dialog">
-                <div class="modal-content">
+                <div id="modal" class="modal-content">
                   <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close" ';
                     if ($btn == 'OK') {
@@ -1103,7 +1103,8 @@ class Render {
                       </span>
                       <input type="checkbox" value="" name=""-->
                       <span class="text">'.$tsk->task.'</span>
-                      <small class="label label-primary pull-right"><i class="fa fa-clock-o"></i>'.$tsk->timeend.'</small>
+                      <span class="label label-primary pull-right"><i class="fa fa-clock-o"></i> '.$tsk->timeend.'</span> 
+                      <span class="label label-primary pull-right"><i class="fa fa-user"></i> '.$tsk->creator.'</span> 
                       <br><span class="text small">'.$tsk->description.'</span>';
                         if (checkCapabilities('task:update', $USER->role_id, false)){
                             $r   .= '<div class="tools">
@@ -1692,7 +1693,7 @@ class Render {
                         
                       </div>
                       <div class="box-footer no-padding">
-                        <ul class="nav nav-stacked">';
+                        <ul class="nav nav-stacked" style="max-height:250px;overflow:auto;">';
                         foreach($data AS $value){
                             if (strpos($label, ',')){ // more than one field in label
                             list ($field1, $field2) = explode(', ', $label);

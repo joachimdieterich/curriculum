@@ -35,7 +35,12 @@ $p_options = array('delete' => array('onclick'    => "del('institution',__id__);
                     'edit'  => array('onclick'    => "formloader('institution', 'edit',__id__);",
                                      'capability' => checkCapabilities('institution:update', $USER->role_id, false),
                                      'icon'       => 'fa fa-edit',
-                                     'tooltip'    => 'bearbeiten'));
+                                     'tooltip'    => 'bearbeiten'),
+                    'overview'  => array('onclick'   => "formloader('preview_institution','full',__id__);", 
+                                     'capability'   => checkCapabilities('task:add', $USER->role_id, false),  //todo: use extra capability?
+                                     'icon'         => 'fa fa-list-alt',
+                                     'tooltip'      => 'Überblick')
+                    );
 $p_widget  = array('header'     => 'institution',
                    'subheader01'=> 'description',
                    'subheader02'=> 'state_id',

@@ -144,8 +144,6 @@ $content  ='<div class="nav-tabs-custom">
                                 </div><!-- /.tab-content -->
                               </div><!-- /.nav-tab-custom -->';
 
-
-
 $html         = Form::modal(array('title'     => $header,
                                   'content'   => $content, 
                                   'f_content' => ''));

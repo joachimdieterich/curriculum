@@ -224,6 +224,24 @@ class TerminalObjective {
                                     $objectives[]               = clone $this; 
                                 }
                                 break;
+            case 'certificate': 
+                                $db = DB::prepare('SELECT * FROM terminalObjectives
+                                                    WHERE curriculum_id = ? ORDER by curriculum_id ASC, order_id ASC, id ASC');
+                                $db->execute(array($id));  
+                                while($result = $db->fetchObject()) { 
+                                    $this->id                   = $result->id;
+                                    $this->terminal_objective   = $result->terminal_objective;
+                                    $this->description          = $result->description;
+                                    $this->curriculum_id        = $result->curriculum_id;
+                                    $this->color                = $result->color;
+                                    $this->order_id             = $result->order_id;
+                                    $this->repeat_interval      = $result->repeat_interval;
+                                    $this->creation_time        = $result->creation_time;
+                                    $this->creator_id           = $result->creator_id;
+                                    $objectives[]               = clone $this; 
+                                }
+                                break;
+            
             default:            break;
         }
          

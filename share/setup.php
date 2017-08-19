@@ -35,7 +35,8 @@ global $PAGE;                                                       // Daten der
 global $COURSE;                                                     // Daten des aktuelle Kurses
 global $INSTITUTION;                                                // Daten der (letzten --> laut DB-Abfrage) Institution des aktuellen Nutzers --> Es können mehr als eine Institution gegeben sein... optimieren!
 global $TEMPLATE;                                                   // Smarty TEMPLATE object
-global $CONTEXT;                                                    // Array of contexts objects. You can use $CONTEXT[ID] or $CONTEXT[context] to get the matching context
+global $CONTEXT;                                                    // Array of contexts objects. You can use $CONTEXT[ID] or $CONTEXT[context] ($_SESSION['CONTEXT'][ID/context] in modals) to get the matching context
+global $LICENSE;                                                    // Array of file_context objects. You cna use $LICENSE[ID] (or $_SESSION['LICENSE'] in modals) to get the matching file_context. used for license_icons
 
 session_start();                                                    // Starte Sesseion
 
