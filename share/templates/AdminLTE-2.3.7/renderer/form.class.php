@@ -370,7 +370,7 @@ class Form {
         }
 
         $html = '<div id="'.$target.'" class="modal-dialog" style="overflow-y: initial !important;" >
-                    <div class="modal-content" ><!-- height is dynamic set by popupFunction() -->
+                    <div id="modal" class="modal-content" ><!-- height is dynamic set by popupFunction() -->
                         <div class="modal-header">';
                         if (isset($h_content)){
                             $html .= $h_content;
@@ -405,12 +405,18 @@ class Form {
     }
     
     public static function info_box($params){
+        global $CFG;
         foreach($params as $key => $val) {
             $$key = $val;
         }
+       
         $html  = ' <div id="material_'.$id.'" class="info-box">';
         if (isset($preview)){
-            $html .= '<span class="info-box-icon bg-aqua"><div id="modal-preview" style="height:100%;width:100%;background: url(\''.$preview.'\') center ;background-size: cover; background-repeat: no-repeat;"></div></span>'; //pull-left --> overrides align: center to top
+            $html .= '<span class="info-box-icon bg-aqua"><div id="modal-preview" style="position:relative;height:100%;width:100%;background: url(\''.$preview.'\') center ;background-size: cover; background-repeat: no-repeat;">';
+            if (isset($license_icon)){
+                $html .= '<img style="position:absolute;bottom:0px; right:0px;" src="'.$license_icon.'" height="25"/>';
+            }
+            $html .= '</div></span>'; //pull-left --> overrides align: center to top
         } else {
            $html .= RENDER::thumb(array('file_list' => $id, 'format' => 'thumb', 'width' => '90px', 'height' => '90px'));
         }
