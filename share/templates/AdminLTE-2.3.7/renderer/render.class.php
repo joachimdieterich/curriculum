@@ -1094,6 +1094,7 @@ class Render {
     
     public static function todoList($task, $context, $reference_id, $add=true, $checkbox=false, $onclick=false, $show_description=true){
         global $USER;
+        $usr     = new User();
         $r       = '<ul class="todo-list ui-sortable">';
                  foreach ($task as $tsk) {
         $r       .= ' <li>
@@ -1118,7 +1119,7 @@ class Render {
                       }
                       
                       $r       .=  '</span>
-                      <img src="../share/accessfile.php?file=user/102/pl_foto-1_xs.png" class="img-responsive img-circle img-sm pull-right" data-toggle="tooltip" title="'.$tsk->creator.'" style="margin-top:-5px;" alt="User Image">    
+                      <img src="../share/accessfile.php?id='.$usr->resolveUserId($tsk->creator_id, 'avatar').'" class="img-responsive img-circle img-sm pull-right" data-toggle="tooltip" title="'.$tsk->creator.'" style="margin-top:-5px;" alt="User Image">    
                       <span class="label label-primary pull-right margin-r-5"><i class="fa fa-clock-o"></i> '.$tsk->timeend.'</span>';
                       
                       if ($show_description){

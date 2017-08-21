@@ -1278,7 +1278,7 @@ class User {
     }
     
     function resolveUserId($id, $dependency = 'full'){
-        $db = DB::prepare('SELECT firstname, lastname, username FROM users WHERE id =?');
+        $db = DB::prepare('SELECT firstname, lastname, username, avatar_id FROM users WHERE id =?');
         $db->execute(array($id));
         if ($result = $db->fetchObject()){
             switch ($dependency) {
@@ -1287,6 +1287,9 @@ class User {
                 case 'name':     return $result->firstname.' '.$result->lastname;
                     break;
                 case 'username': return $result->username;
+                    break;
+                case 'avatar':   return $result->avatar_id;
+                    break;
                 default:
                     break;
             }
