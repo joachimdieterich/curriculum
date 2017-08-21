@@ -150,7 +150,7 @@
                     {if $wallet->permission > 0}
                         Neuen Kommentar hinzufügen
                         <textarea id="comment" name="comment"  style="width:100%;"></textarea>
-                        <button type="submit" class="btn btn-primary pull-right" onclick="comment('new',{$wallet->id}, 18, document.getElementById('comment').value);"><i class="fa fa-commenting-o margin-r-10"></i>Kommentar abschicken</button>
+                        <button type="submit" class="btn btn-primary pull-right" onclick="comment('new',{$wallet->id}, 18, document.getElementById('comment').value);"><i class="fa fa-commenting-o margin-r-10"></i> Kommentar abschicken</button>
                     {/if}
                 </div>
             </div>

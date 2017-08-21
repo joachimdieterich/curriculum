@@ -116,7 +116,7 @@ class CourseBook {
      * Get all availible Grades of current institution
      * @return array of Grade objects 
      */
-    public function get($dependency = 'user', $id = null, $date= null){
+    public function get($dependency = 'user', $id = null, $date= null, $load_entries = true){
         global $USER;
         /*$order_param = orderPaginator($paginator, array('topic'         => 'cb',
                                                         'description'   => 'cb')); */
@@ -148,7 +148,9 @@ class CourseBook {
         
         while($result = $db->fetchObject()) { 
                 $this->id            = $result->cb_id;
-                $this->load();
+                if ($load_entries){
+                    $this->load();
+                }
                 $entrys[]            = clone $this;        //it has to be clone, to get the object and not the reference
         } 
         return $entrys;

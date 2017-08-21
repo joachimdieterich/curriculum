@@ -1092,7 +1092,7 @@ class Render {
                 
     }
     
-    public static function todoList($task, $context, $reference_id){
+    public static function todoList($task, $context, $reference_id, $add=true, $checkbox=false, $onclick=false, $show_description=true){
         global $USER;
         $r       = '<ul class="todo-list ui-sortable">';
                  foreach ($task as $tsk) {
@@ -1100,12 +1100,30 @@ class Render {
                       <!--span class="handle ui-sortable-handle">
                         <i class="fa fa-ellipsis-v"></i>
                         <i class="fa fa-ellipsis-v"></i>
-                      </span>
-                      <input type="checkbox" value="" name=""-->
-                      <span class="text">'.$tsk->task.'</span>
-                      <span class="label label-primary pull-right"><i class="fa fa-clock-o"></i> '.$tsk->timeend.'</span> 
-                      <span class="label label-primary pull-right"><i class="fa fa-user"></i> '.$tsk->creator.'</span> 
-                      <br><span class="text small">'.$tsk->description.'</span>';
+                      </span-->';
+                      if ($checkbox == true AND checkCapabilities('task:accomplish', $USER->role_id, false)){
+                      $r       .= '<input type="checkbox" value="" name="" onchange="processor(\'accomplish\',\'task\', '.$tsk->id.');"';
+                                if (isset($tsk->accomplished->status_id)){
+                                    if ($tsk->accomplished->status_id == 2){
+                                        $r  .= 'checked';
+                                    }
+                                }
+                      $r       .= '>';
+                      }
+                      $r       .= '<span class="text">';
+                      if ($onclick){ 
+                          $r   .= '<a onclick="loadhtml(\'task\', '.$tsk->id.', \'task_left_col\', \'task_right_col\', \'col-xs-6\', \'col-xs-6\');">'.$tsk->task.'</a>';
+                      } else {
+                          $r   .= $tsk->task;
+                      }
+                      
+                      $r       .=  '</span>
+                      <img src="../share/accessfile.php?file=user/102/pl_foto-1_xs.png" class="img-responsive img-circle img-sm pull-right" data-toggle="tooltip" title="'.$tsk->creator.'" style="margin-top:-5px;" alt="User Image">    
+                      <span class="label label-primary pull-right margin-r-5"><i class="fa fa-clock-o"></i> '.$tsk->timeend.'</span>';
+                      
+                      if ($show_description){
+                            $r .=  '<br><span class="text small">'.$tsk->description.'</span>';
+                      }
                         if (checkCapabilities('task:update', $USER->role_id, false)){
                             $r   .= '<div class="tools">
                                         <i class="fa fa-edit" onclick="formloader(\'task\',\'edit\', '.$tsk->id.')"></i>
@@ -1115,9 +1133,22 @@ class Render {
         $r       .= '</li>';
                  }
                  
-        if (checkCapabilities('task:add', $USER->role_id, false)){            
+        if (checkCapabilities('task:add', $USER->role_id, false) AND $add == true){            
             $r   .= '<li><a class="btn btn-primary btn-xs" onclick="formloader(\'task\',\''.$context.'\', '.$reference_id.')"><i class="fa fa-plus"></i> Aufgabe hinzufügen</a></li> </ul>';
         }
+        return $r;
+    }
+    
+    public static function taskList($dependency, $id, $heading){
+        $t      = new Task();
+        $tasks  = $t->get($dependency, $id);
+        $r = '';
+        if (!empty($tasks)){
+            $r .= "<h4>{$heading}</h4>";
+            $r .= Render::todoList($tasks, $dependency, $id, false, true, true, false);
+            $r .= '<hr>';
+        }
+        
         return $r;
     }
     

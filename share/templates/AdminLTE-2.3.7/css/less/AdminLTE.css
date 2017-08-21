@@ -2019,7 +2019,7 @@ a:focus {
 }
 .todo-list > li .label {
   margin-left: 10px;
-  font-size: 9px;
+  font-size: 10px;
 }
 .todo-list > li .tools {
   display: none;

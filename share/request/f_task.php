@@ -27,8 +27,9 @@ include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $CFG, $USER, $COURSE;
 $USER           = $_SESSION['USER'];
+if (isset($_SESSION['COURSE'])){
 $COURSE         = $_SESSION['COURSE'];
-
+}
 /*Variablen anlegen -> vermeidet unnötige if-Abfragen im Formular*/
 $task_id        = null;
 $task           = null; 
@@ -51,10 +52,14 @@ if (is_array($data)) {
             
 if (isset($_GET['func'])){
     switch ($_GET['func']) {
-        case "institution": $reference_id =  filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-                            checkCapabilities('task:add',    $USER->role_id);
-                            $header     = 'Aufgabe / Notiz hinzufügen';      
+        case "course": 
+        case "userFiles": 
+        case "institution": 
+        case "group":   $reference_id =  filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+                        checkCapabilities('task:add',    $USER->role_id);
+                        $header     = 'Aufgabe / Notiz hinzufügen';      
             break;
+        
         case "coursebook":  $reference_id =  filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
         case "new":         checkCapabilities('task:add',    $USER->role_id);
                             $header     = 'Aufgabe hinzufügen';             

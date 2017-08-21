@@ -124,6 +124,38 @@ function mail(mail_id, mailbox) {
     }   
 }
 
+function loadhtml(dependency, id, source, target, source_width, target_width){
+    document.getElementById(target).innerHTML = '<div class="box"><div class="box-header"><h3 class="box-title">Loading...</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div>';    
+    var url = "../share/request/get_"+dependency+".php?id="+ id; 
+
+    req = XMLobject();
+        if(req) {        
+            req.onreadystatechange = function(){
+                sethtml(dependency, id, source, target, source_width, target_width);
+            };
+            req.open("GET", url, true);
+            req.send(null);
+        }
+}
+function sethtml(dependency, id, source, target, source_width, target_width) {
+    if (req.readyState === 4) {  
+        if (req.status === 200) {
+            if (req.responseText.length !== 1){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen
+                $('#'+source).removeClass('col-*');
+                $('#'+source).addClass(source_width);
+                $('#'+target).removeClass('hidden');
+                $('#'+target).removeClass('col-*');
+                $('#'+target).addClass(source_width);
+                
+                document.getElementById(target).innerHTML = req.responseText;
+            } else {
+                window.location.reload();
+            } 
+        }
+    }   
+}
+
+
 function update_paginator(paginator){
     if (req.readyState === 4) {  
         if (req.status === 200) {

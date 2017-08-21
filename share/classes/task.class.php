@@ -114,13 +114,16 @@ class Task {
                                     $db->execute(array($USER->id));
                 break;
 
-            case 'institution':      $db = DB::prepare('SELECT ta.id
+            case 'course':
+            case 'userFiles':
+            case 'institution':
+            case 'group':           $db = DB::prepare('SELECT ta.id
                                                 FROM task AS ta, task_enrolments AS te, context AS ct
                                                 WHERE ct.context = ? 
                                                 AND ct.context_id = te.context_id
                                                 AND te.reference_id = ?
                                                 AND te.task_id = ta.id ORDER BY ta.timeend' );
-                                    $db->execute(array('institution', $id));
+                                    $db->execute(array($dependency, $id));
                 break;
             case 'coursebook':      $db = DB::prepare('SELECT ta.id
                                                 FROM task AS ta, task_enrolments AS te, context AS ct
@@ -149,7 +152,7 @@ class Task {
                 $this->id            = $result->id;
                 $this->load();
                 
-                if ($dependency == 'upcoming'){
+                //if ($dependency == 'upcoming'){
                     $db1 = DB::prepare('SELECT ua.* FROM user_accomplished AS ua, context AS co 
                                                    WHERE ua.context_id = co.context_id
                                                    AND co.context = ?
@@ -163,7 +166,7 @@ class Task {
                         $this->accomplished = null;
                     }
                     
-                }
+                //}
                 $entrys[]            = clone $this;        //it has to be clone, to get the object and not the reference
         } 
         
@@ -182,7 +185,7 @@ class Task {
     
     public function enrol($context_id, $reference_id){
         global $USER;
-        checkCapabilities('task:enrol', $USER->role_id);
+        error_log('ctx '.$context_id.' ref '.$reference_id);
         if ($this->checkEnrolment($context_id, $reference_id, 0)) {
             $db = DB::prepare('UPDATE task_enrolments SET status = 1, creator_id = ?, creation_time = NOW()
                                 WHERE context_id = ? AND reference_id = ? AND task_id = ?'); //Status 1 == eingeschrieben
