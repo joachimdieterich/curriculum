@@ -23,6 +23,7 @@
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 global $PAGE, $USER, $TEMPLATE;
+checkCapabilities('menu:readTasks', $USER->role_id);
 $TEMPLATE->assign('breadcrumb',  array('Aufgaben' => 'index.php?action=task'));
 $TEMPLATE->assign('page_title', 'Aufgaben');  
 $institution = new Institution();
