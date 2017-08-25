@@ -303,7 +303,7 @@ class Render {
                                                 if (checkCapabilities('file:update', $USER->role_id, false)){
                                                     $html .= '<a href="#" class="btn btn-default btn-xs" data-toggle="tooltip" title="bearbeiten" onclick="formloader(\'file\',\'edit\','.$file->id.');"><i class="fa fa-edit"></i></a>';
                                                 }
-                                                if (checkCapabilities('file:delete', $USER->role_id, false)){
+                                                if (checkCapabilities('file:delete', $USER->role_id, false) AND $file->creator_id == $USER->id){
                                                     $html .= '<a href="#" class="btn btn-default btn-xs pull-right" data-toggle="tooltip" title="löschen" onclick="del(\'file\','.$file->id.');"><i class="fa fa-trash"></i></a>';
                                                 }
                                 $html .= '</span></div></'.$tag.'>'; 
@@ -619,7 +619,7 @@ class Render {
                     }
                 }
                 if ($type == 'enabling_objective' AND checkCapabilities('file:solutionUpload', $USER->role_id, false) AND (checkCapabilities('file:upload', $USER->role_id, false) OR checkCapabilities('file:uploadURL', $USER->role_id, false))){
-                    $html  .= '<a href="'.$CFG->smarty_template_dir_url.'renderer/uploadframe.php?context=solution&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal ">
+                    $html  .= '<a href="'.$CFG->smarty_template_dir_url.'renderer/uploadframe.php?context=solution&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal">
                     <span class="fa ';
                     if ($sol_btn == $objective->id){
                         $html  .= 'fa-check-circle-o ';
@@ -1113,7 +1113,7 @@ class Render {
                       }
                       $r       .= '<span class="text">';
                       if ($onclick){ 
-                          $r   .= '<a onclick="loadhtml(\'task\', '.$tsk->id.', \'task_left_col\', \'task_right_col\', \'col-xs-6\', \'col-xs-6\');">'.$tsk->task.'</a>';
+                          $r   .= '<a onclick="loadhtml(\'task\', '.$tsk->id.', \'task_left_col\', \'task_right_col\', \'col-xs-12 col-lg-6\', \'col-xs-12 col-lg-6\');">'.$tsk->task.'</a>';
                       } else {
                           $r   .= $tsk->task;
                       }
@@ -1585,8 +1585,8 @@ class Render {
                             <div class="box-header with-border">
                                   <h3 class="box-title">'.$name.'</h3>
                                   <div class="box-tools pull-right"><input id="block_instance_'.$id.'_search" type="text" name="search"  placeholder="Blog durchsuchen" onchange="search(document.getElementById(\'block_instance_'.$id.'_search\').value, \'block_instance_'.$id.'_body\');">';
-                                    $html  .= '<button class="btn btn-box-tool" onclick=\'formloader("content", "new", null,{"context_id":"21", "reference_id":'.$id.'});\'><i class="fa fa-plus"></i></button>';
                                     if (checkCapabilities('block:add', $USER->role_id, false)){
+                                        $html  .= '<button class="btn btn-box-tool" onclick=\'formloader("content", "new", null,{"context_id":"21", "reference_id":'.$id.'});\'><i class="fa fa-plus"></i></button>';
                                         $html  .= '<button class="btn btn-box-tool" data-widget="edit" onclick="formloader(\'block\',\'edit\','.$id.');"><i class="fa fa-edit"></i></button>';
                                     }
                                     $html  .= '<button class="btn btn-box-tool" data-widget="collapse" onclick="processor(\'config\',\'collapse\', '.$id.');">';
@@ -1680,13 +1680,14 @@ class Render {
     
     public static function split_button($params){
         $label  = 'Auswahl';
+        $btn_type = 'btn btn-default btn-flat';
         
         foreach($params as $key => $val) {
             $$key = $val;
         }
         if (count($entrys) > 0){ // only show if entrys exists
             $html   =  '<div class="btn-group">
-                            <button type="button" class="btn btn-default btn-flat dropdown-toggle" data-toggle="dropdown">'.$label.' </button>
+                            <button type="button" class="'.$btn_type.' dropdown-toggle" data-toggle="dropdown">'.$label.' </button>
                             <ul class="dropdown-menu" role="menu">';
                             foreach($entrys as $key => $val) {
                                 $html .= '<li><a onclick="formloader(\'content\', \'show\','.$val->id.');">'.$val->title.'</span></a></li>';
