@@ -7,7 +7,7 @@
 {block name=additional_scripts}{$smarty.block.parent}
 <!-- jQuery UI used by sortable -->
 <script src="{$media_url}scripts/jquery-ui.min.js"></script>
-    {literal}<script>
+    {*literal}<script>
     //Make the dashboard widgets sortable Using jquery UI
         $(".connectedSortable").sortable({
           placeholder         : "sort-highlight",
@@ -30,7 +30,7 @@
 
         });
         $(".connectedSortable .box-header, .alert-heading, .widget-user-header, .connectedSortable .nav-tabs-custom").css("cursor", "move");
-    </script>{/literal}
+    </script>{/literal*}
 {/block}
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
