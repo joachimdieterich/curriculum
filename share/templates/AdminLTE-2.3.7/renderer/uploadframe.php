@@ -71,7 +71,7 @@ if (isset($paginator) AND isset($paginator_search) AND isset($order)) {
         <button type="button" class="close nyroModalClose" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">×</span></button>
         <h4 class="modal-title"><i class="fa fa-bars" onclick="toggle_sidebar('modal_sidebar')"></i> Dateiauswahl</h4>
     </div>
-    <div id="modal_sidebar" class="modal-body sidebar" style="min-height: 450px !important;padding-left: 0px; padding-top: 0px; position:relative;"> <!-- to do recalc nyroModal on changes--> 
+    <div id="modal_sidebar" class="modal-body" style="min-height: 450px !important;padding-left: 0px; padding-top: 0px; position:relative;"> <!-- to do recalc nyroModal on changes--> 
         <aside class="main-sidebar" style="padding-top:0px !important;position: absolute !important;">
           <!-- sidebar: style can be found in sidebar.less -->
           <section class="sidebar">
