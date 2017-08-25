@@ -108,7 +108,7 @@ if (isset($_FILES['upload'])){
     //////////////// Todo Errorhandling ?
     $my_upload->http_error = $_FILES['upload']['error'];    
 }
-
+error_log(json_encode($my_upload));
 if ($my_upload->upload() OR filter_var($fileURL, FILTER_VALIDATE_URL)) {//in datenbank eintragen
     $file->title                 = $title; 
     $file->description           = $description;
