@@ -131,7 +131,7 @@ if (isset($paginator) AND isset($paginator_search) AND isset($order)) {
               <?php 
               if ($action == 'upload') { ?> 
               <span id="div_fileuplbtn">    <!-- Fileupload-->
-                  <?php echo Form::info(array('label' => 'Max. Dateigröße','content'=> $CFG->post_max_size));
+                  <?php echo Form::info(array('label' => 'Max. Dateigröße','content'=> ini_get('upload_max_filesize')));
                         echo Form::upload_form('uploadbtn', 'Datei hochladen', '', $error); 
                   ?>
               </span><?php } 
