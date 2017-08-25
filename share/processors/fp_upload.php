@@ -83,9 +83,8 @@ case "terminal_objective":  $to      = new EnablingObjective();
                             break;                 
 case "curriculum":          // see case enabling_objective and terminal_objective
                             //break;
-
-case "badge":               $folders = '/';                                  // siehe unten                        
-    break;  
+case "task":
+case "badge":               
 case "backup":              $folders = '/';                                  // siehe unten                        
     break;  
 case "institution":         $folders = $ref_id.'/';                          //ref_id == institution_id
