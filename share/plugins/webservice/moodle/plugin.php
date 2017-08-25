@@ -94,6 +94,9 @@ class webservice_plugin_moodle extends webservice_plugin_base {
     
     function getFiles_link_module($dependency, $id, $files){
         $link_module = $this->link_module_results($_SESSION['CONTEXT'][$dependency]->id, $id);
+        if (!isset($link_module->config_data)){
+            return $files;
+        }
         $config_data = json_decode($link_module->config_data);
         $course_cont = json_decode($this->core_course_get_contents($config_data->moodle_course_id)); 
         $tmp_file    = new File();

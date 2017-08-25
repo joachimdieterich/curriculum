@@ -131,7 +131,7 @@ function uploadFile(form, func, fSelector, fName, fProgress, fPercent)
                 document.getElementById(target).value       = client.responseText;
                 $("#"+target).trigger('change');
              }
-             if (document.getElementById('context').value === 'terminal_objective' || document.getElementById('context').value === 'enabling_objective'){
+             if (document.getElementById('context').value === 'terminal_objective' || document.getElementById('context').value === 'enabling_objective' || document.getElementById('context').value === 'task'){
                 parent.window.location.reload();
              }
         }
@@ -183,7 +183,8 @@ function setTarget(file_id){
        document.getElementById(target).value    = file_id;
        $("#"+target).trigger('change');
     }
-    if (document.getElementById('context').value === 'terminal_objective' || document.getElementById('context').value === 'enabling_objective'){
+    
+    if (document.getElementById('context').value === 'terminal_objective' || document.getElementById('context').value === 'enabling_objective' || document.getElementById('context').value === 'task'){
         parent.window.location.reload();
     }
 }

@@ -288,6 +288,7 @@
         idleMax = {$global_timeout};
         idleTime = 0;
         $(document).ready(function () {
+            InitScripts();
             var idleInterval = setInterval(timerIncrement(), 60000);
             $(document.getElementById('popup')).attr('class', 'modal');
             $(".select2").select2();
@@ -302,28 +303,7 @@
     </script>
     {/if}
     <!-- end Logout - Timer  -->
-
-    <!-- Nyromodal  -->
     
-    <script type="text/javascript">
-    $(function() {
-        $('.nyroModal').nyroModal({
-            callbacks: {
-                beforeShowBg: function(){
-                    $('body').css('overflow', 'hidden');  
-                },
-                afterHideBg: function(){
-                    $('body').css('overflow', '');
-                },
-                afterShowCont: function(nm) {
-                    $('.scroll_list').height($('.modal').height()-150);
-                }   
-            }
-        });
-        $('#popup_generate').nyroModal();
-    });
-    
-    </script>
     {if isset($smarty.session.FORM->form)}
         <script type="text/javascript">
             {if isset($smarty.session.FORM->id)}

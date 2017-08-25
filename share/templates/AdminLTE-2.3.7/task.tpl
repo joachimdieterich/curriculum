@@ -26,7 +26,7 @@ $(window).on("popstate", function() {
 </script>
 {if isset($smarty.session.PAGE->show_reference_id)}
     <script type="text/javascript">
-        loadhtml('task', {$smarty.session.PAGE->show_reference_id}, 'task_left_col', 'task_right_col', 'col-xs-6', 'col-xs-6');
+        loadhtml('task', {$smarty.session.PAGE->show_reference_id}, 'task_left_col', 'task_right_col', 'col-xs-12 col-lg-6', 'col-xs-12 col-lg-6');
     </script>
 {/if} 
 
@@ -55,7 +55,7 @@ $(window).on("popstate", function() {
                     <div class="nav-tabs-custom"> 
                         <ul class="nav nav-tabs">
                             <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">Persönlich</a></li>
-                            <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">Kursbuch (Aufgaben)</a></li>
+                            {*<li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">Kursbuch (Aufgaben)</a></li>*}
                             <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false">Gruppen</a></li>
                             <li class=""><a href="#tab_4" data-toggle="tab" aria-expanded="false">Institution</a></li>
                             {*<button type="button" class="btn btn-default pull-right" style="margin-right:10px;"><i class="fa fa-plus"></i> Aufgabe hinzufügen</button>*}
@@ -67,20 +67,27 @@ $(window).on("popstate", function() {
                                     {Form::input_button(['id' => 'addUserTask', 'label' => 'Aufgabe / Notiz hinzufügen', 'icon' => 'fa fa-plus-circle', 'class' => 'btn btn-default pull-right', 'onclick' => "formloader('task', 'userFiles', $my_id);"])}
                                 {/if}
                                 <br><br>
-                                {Render::taskList('userFiles', $my_id, '')}
+                                <div style="overflow: scroll;  width: 100%; max-height: 400px;">{Render::taskList('userFiles', $my_id, '')}</div>
+                                
                                 </div>
                             </div><!-- /.tab-pane -->
                             
                             <!-- Coursebook -->
+                            {*if isset($course_tasks)}
                             <div class="tab-pane row" id="tab_2">
                                 <div class="form-horizontal col-xs-12">
-                                    {Form::input_select('course', 'Kurs', $courses, 'group, curriculum', 'id', null, null)}
-                                    <br>
-                                    {foreach item=cb from=$coursbook}                                    
+                                    <div class="pull-right">
+                                        {Form::input_select('course_filter', null, $courses, 'group, curriculum', 'course_id', $filter_course_id, null, "location.href='index.php?action=task&filter_course='+this.value+'#tab_2'", 'Nach Kurs filtern', 'col-sm-0', 'col-sm-12')}
+                                    </div>
+                                    
+                                    <div style="overflow: scroll;  width: 100%; max-height: 400px;">
+                                    {foreach item=cb from=$course_tasks}                                    
                                         {Render::taskList('coursebook', $cb->id, $cb->curriculum)}
                                     {/foreach}
+                                    </div>
                                 </div>
                             </div><!-- /.tab-pane -->
+                            {/if*}
                             <!-- Groups -->
                             <div class="tab-pane row" id="tab_3">
                                 <div class="form-horizontal col-xs-12">
@@ -94,17 +101,25 @@ $(window).on("popstate", function() {
                                     {Form::input_button(['id' => 'addGroupTask', 'label' => 'Aufgabe hinzufügen', 'icon' => 'fa fa-plus-circle', 'class' => 'btn btn-default pull-right', 'onclick' => "formloader('task', 'group', document.getElementById('groups').value);"])}
                                 {/if}
                                 <br>
+                                <div style="overflow: scroll;  width: 100%; max-height: 400px;">
                                 {foreach item=gr from=$groups_array}                                    
                                     {Render::taskList('group', $gr->id, $gr->group)}
                                 {/foreach}
-                                
+                                </div>
                                 </div>
                             </div><!-- /.tab-pane -->
                             
                             <div class="tab-pane" id="tab_4">
-                                {foreach item=ins from=$myInstitutions}                                    
+                                <div class="pull-right">
+                                    {if isset($myInstitutions)}
+                                        {Form::input_select('institution_filter', null, $myInstitutions, 'institution', 'id', $filter_institution_id, null, "location.href='index.php?action=task&filter_institution='+this.value+'#tab_4'", 'Nach Institution filtern', 'col-sm-0', 'col-sm-12')}
+                                    {/if}
+                                </div>
+                                <div style="overflow: scroll;  width: 100%; max-height: 400px;">
+                                {foreach item=ins from=$institution_tasks}                                    
                                     {Render::taskList('institution', $ins->id, $ins->institution)}
                                 {/foreach}
+                                </div>
                             </div><!-- /.tab-pane -->
                         </div><!-- /.tab-content -->
                     </div><!-- /.nav-tab-custom -->    

@@ -94,46 +94,12 @@ class Content {
     public function get($dependency = 'curriculum', $id = null){
         $entrys = array();                      //Array of content
         
-        switch ($dependency) {
-            case 'curriculum':  $db = DB::prepare('SELECT ct.id FROM content AS ct, content_subscriptions AS cts, context AS co
-                                                        WHERE  co.context = "curriculum" 
-                                                        AND co.context_id = cts.context_id
-                                                        AND cts.reference_id = ?
-                                                        AND cts.content_id = ct.id');
-                                $db->execute(array($id));
-                break;
-            
-            case 'terms':       $db = DB::prepare('SELECT ct.id FROM content AS ct, content_subscriptions AS cts, context AS co
-                                                        WHERE  co.context = "terms"
-                                                        AND co.context_id = cts.context_id
-                                                        AND cts.content_id = ct.id');
-                                $db->execute();
-                break;
-            case 'signature':   $db = DB::prepare('SELECT ct.id FROM content AS ct, content_subscriptions AS cts, context AS co
-                                                        WHERE  co.context = "'.$dependency.'"
-                                                        AND co.context_id = cts.context_id
-                                                        AND cts.reference_id = ?
-                                                        AND cts.content_id = ct.id');
-                                $db->execute(array($id));
-                break;
-            case 'blog':        $db = DB::prepare('SELECT ct.id FROM content AS ct, content_subscriptions AS cts, context AS co
+        $db = DB::prepare('SELECT ct.id FROM content AS ct, content_subscriptions AS cts, context AS co
                                                         WHERE  co.context = "'.$dependency.'"
                                                         AND co.context_id = cts.context_id
                                                         AND cts.reference_id = ?
                                                         AND cts.content_id = ct.id ORDER by ct.timecreated DESC');
-                                $db->execute(array($id));
-                break;
-            case 'badge_preview':  $db = DB::prepare('SELECT ct.id FROM content AS ct, content_subscriptions AS cts, context AS co
-                                                        WHERE  co.context = "'.$dependency.'"
-                                                        AND co.context_id = cts.context_id
-                                                        AND cts.reference_id = ?
-                                                        AND cts.content_id = ct.id ORDER by ct.timecreated DESC');
-                                $db->execute(array($id));
-                break;
-            
-            default:
-                break;
-        }
+        $db->execute(array($id));
         
         while($result = $db->fetchObject()) { 
             $this->id            = $result->id;

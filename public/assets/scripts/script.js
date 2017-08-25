@@ -151,6 +151,7 @@ function sethtml(dependency, id, source, target, source_width, target_width) {
             } else {
                 window.location.reload();
             } 
+            InitScripts(); //Load scripts
         }
     }   
 }
@@ -952,3 +953,23 @@ function printById(id) {
 function search(search_string, element_id, highlight){
     $('#'+element_id).mark(search_string, { "acrossElements": true });
 }
+
+function InitScripts(){
+        $(function() {
+            //Nyromodal
+            $('.nyroModal').nyroModal({
+                callbacks: {
+                    beforeShowBg: function(){
+                        $('body').css('overflow', 'hidden');  
+                    },
+                    afterHideBg: function(){
+                        $('body').css('overflow', '');
+                    },
+                    afterShowCont: function(nm) {
+                        $('.scroll_list').height($('.modal').height()-150);
+                    }   
+                }
+            });
+            $('#popup_generate').nyroModal();
+        });
+    }

@@ -126,7 +126,6 @@ $p_config   = array('id'         => 'checkbox',
                     'p_options'  => $p_options);
 if (isset($_GET['filter_institution'])){
     if ($_GET['filter_institution'] == 'false'){
-        error_log('test');
         $u = $users->userList('institution', 'userP', filter_input(INPUT_GET, 'lost', FILTER_VALIDATE_BOOLEAN));
     } else {
         $u = $users->userList('filter_institution', 'userP', filter_input(INPUT_GET, 'lost', FILTER_VALIDATE_BOOLEAN), $_GET['filter_institution']);
