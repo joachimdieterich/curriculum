@@ -250,6 +250,27 @@ function convertKbyteToByte($kbyte){
 function convertByteToKbyte($byte){
     return $byte/1024;
 }
+
+function return_bytes($val) {
+    $val = trim($val);
+    $last = strtolower($val[strlen($val)-1]);
+    switch($last) {
+        // The 'G' modifier is available since PHP 5.1.0
+        case 'g':
+            $val *= (1024 * 1024 * 1024); //1073741824
+            break;
+        case 'm':
+            $val *= (1024 * 1024); //1048576
+            break;
+        case 'k':
+            $val *= 1024;
+            break;
+    }
+
+    return $val;
+}
+
+
   
 /**
  * Die Funktion detect_reload() wird über die index.php aufgerufen und verhindert, dass Formulare mit identischem Inhalt 2x abgeschickt werden. 
