@@ -5279,6 +5279,7 @@ fieldset[disabled] .btn-yahoo.active {
 .bg-red,
 .bg-yellow,
 .bg-aqua,
+.bg-light-aqua,
 .bg-blue,
 .bg-light-blue,
 .bg-green,
@@ -5294,6 +5295,7 @@ fieldset[disabled] .btn-yahoo.active {
 .bg-red-active,
 .bg-yellow-active,
 .bg-aqua-active,
+.bg-light-aqua-active,
 .bg-blue-active,
 .bg-light-blue-active,
 .bg-green-active,
@@ -5368,6 +5370,9 @@ fieldset[disabled] .btn-yahoo.active {
 .label-info,
 .modal-info .modal-body {
   background-color: #00c0ef !important;
+}
+.bg-light-aqua {
+  background-color: #ecf0f5 !important;
 }
 .bg-blue {
   background-color: #0073b7 !important;

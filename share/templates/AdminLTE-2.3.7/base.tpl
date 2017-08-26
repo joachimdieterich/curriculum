@@ -285,18 +285,24 @@
     <!-- Logout - Timer  -->
     {if isset($institution_timeout)}
     <script type="text/javascript">
-        idleMax = {$global_timeout};
         idleTime = 0;
         $(document).ready(function () {
             InitScripts();
-            var idleInterval = setInterval(timerIncrement(), 60000);
+            
+            /*Increment the idle time counter every minute.*/
+            var idleInterval = setInterval(timerIncrement, 60000); /*1 minute*/
+
+            /*Zero the idle timer on mouse movement.*/
+            $(this).mousemove(function (e) { idleTime = 0; });
+            $(this).keypress(function (e) { idleTime = 0; });
+            
             $(document.getElementById('popup')).attr('class', 'modal');
             $(".select2").select2();
         });
         
         function timerIncrement() {
             idleTime++;
-            if (idleTime === idleMax) { 
+            if (idleTime === {$global_timeout}) { 
                 window.location="index.php?action=logout&timout=true";
             }
         }     

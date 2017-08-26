@@ -38,3 +38,6 @@ $TEMPLATE->assign('blocks', $blocks->get());
 $cron->detectExpiredObjective();      // Überprüft einmal pro Tag ob Ziele abgelaufen sind.
 $TEMPLATE->assign('cronjob', 'Es wurde zuletzt am '.$cron->check_cronjob().' geprüft, ob Ziele abgelaufen sind.');*/
 $LOG->add($USER->id, 'view', $PAGE->url,  'Browser: '.$PAGE->browser); /* add log */
+
+global $INSTITUTION;
+error_log(json_encode($INSTITUTION));
