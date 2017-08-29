@@ -820,7 +820,7 @@ function popupFunction(e){
         } else if (e.target.id == "daterangepicker" || $(e.target).parents("#daterangepicker").size()) {
             /* do nothing */
         } else { 
-            if ($("#daterangepicker").is(':visible')) {
+            if ($("#daterangepicker").is(':visible') || $("#colorpicker").is(':visible')) {
                 /* don't close if daterangepicker is visible!*/
             } else {
                 closePopup('popup'); 
