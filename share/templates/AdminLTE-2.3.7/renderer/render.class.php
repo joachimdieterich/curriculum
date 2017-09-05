@@ -563,7 +563,7 @@ class Render {
             $border_color = $objective->color; 
         }
        $html  =   '<div ';
-       if ($type == 'enabling_objective'){ //id is important to get scroll-to function while creating curriculum
+       if ($type == 'enabling_objective'){ //id is important to get scroll-to function while creating 
            $html  .= 'id="ena_'.$objective->id.'"';
        } else {
            $html  .= 'id="ter_'.$objective->id.'"';

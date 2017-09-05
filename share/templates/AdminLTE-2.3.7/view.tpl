@@ -5,21 +5,30 @@
 {block name=nav}{$smarty.block.parent}{/block}
 
 {block name=additional_scripts}{$smarty.block.parent}
-{literal}
-    <script type="text/javascript">
-    
-    $(document).ready(function () {
-        $('a[data-toggle="collapse"]').click(function () {
-                $(this).find('i.fa').toggleClass('fa-compress fa-expand');
-        });
+    <script src="{$media_url}scripts/glossarizer/jquery.glossarize.min.js"></script>
+    <script src="{$media_url}scripts/glossarizer/tooltip/tooltip.min.js"></script>
+
+  <script>
+
+  $(function(){
+
+    $('.boxcontent').glossarizer({
+      sourceURL: {$glossar_json},
+      callback: function(){
+        new tooltip();
+      }
     });
-    function toggleAll(){
-        return (this.tog^=1) ? $('.collapse').collapse('hide') : $('.collapse').collapse('show');
-    };
-    
-</script>{/literal}        
+
+
+  });
+
+  </script>
+    {literal}
+{/literal}        
 {/block}
-{block name=additional_stylesheets}{$smarty.block.parent}{/block}
+{block name=additional_stylesheets}
+<link rel="stylesheet" href="{$media_url}scripts/glossarizer/tooltip/tooltip.min.css">
+{$smarty.block.parent}{/block}
 
 {block name=content}
 <!-- Content Header (Page header) -->
@@ -54,6 +63,14 @@
                         <i class="fa fa-plus"></i>
                     </button>
                 {/if}
+            </div>
+            <div class="btn-group pull-left margin-r-5">
+                {Render::split_button($glossar_content)}
+                {if isset($showaddObjectives)}
+                    <button type="button" class="btn btn-default" onclick='formloader("content", "new", null,{["label_title"=>"Begriff", "label_content"=>"Definition", "label_header"=>"Glossar hinzufügen","label_save"=>"Glossareintrag speichern", "context"=>"glossar", "reference_id"=>$course[0]->curriculum_id]|@json_encode nofilter});'>
+                        <i class="fa fa-list-alt "></i>
+                    </button>
+                {/if} 
             </div>
         </div>
         <div id="search_curriculum_{$course[0]->curriculum_id}" class="col-xs-12 top-buffer" >

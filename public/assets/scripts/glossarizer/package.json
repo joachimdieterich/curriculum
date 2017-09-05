@@ -1,0 +1,29 @@
+{
+  "name": "glossarizer",
+  "version": "1.5.2",
+  "description": "A small jquery plugin that automatically marks up glossary terms on a page. The glossary terms can be read from an external json file. When users hover over the link (dashed line), they get to see the glossary definition as a tooltip.",
+  "main": "jquery.glossarize.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PebbleRoad/glossarizer.git"
+  },
+  "keywords": [
+    "glossary",
+    "glossarizr"
+  ],
+  "author": "Vinay M <rmdort@gmail.com> (http://gitlab.com/rmdort)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PebbleRoad/glossarizer/issues"
+  },
+  "homepage": "https://github.com/PebbleRoad/glossarizer#readme",
+  "dependencies": {
+    "jquery": "^3.2.1"
+  }
+}
