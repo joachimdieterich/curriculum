@@ -562,7 +562,13 @@ class Render {
        if (!isset($border_color)){
             $border_color = $objective->color; 
         }
-       $html  =   '<div class="box box-objective ';
+       $html  =   '<div ';
+       if ($type == 'enabling_objective'){ //id is important to get scroll-to function while creating curriculum
+           $html  .= 'id="ena_'.$objective->id.'"';
+       } else {
+           $html  .= 'id="ter_'.$objective->id.'"';
+       }
+       $html  .=   'class="box box-objective ';
             if (isset($highlight)){
                 if (in_array($type.'_'.$objective->id, $highlight)){
                     $html  .= 'highlight';
