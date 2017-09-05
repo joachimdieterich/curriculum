@@ -108,6 +108,16 @@ switch ($func) {
                         }
                         $block_config->config('collapse');
         break;
+    case "remove":      $block_config               = new Block();
+                        $block_config->id           = filter_input(INPUT_GET, 'val', FILTER_UNSAFE_RAW);
+                        $block_config->load();
+                        if ($block_config->visible == 1){
+                            $block_config->visible   = 0 ;
+                        } else {
+                            $block_config->visible   = 1;
+                        }
+                        $block_config->config('remove');
+        break;
     case "page":        $val = filter_input(INPUT_GET, 'val', FILTER_UNSAFE_RAW);
                         $_SESSION['PAGE']->$val = $_GET;
         break;

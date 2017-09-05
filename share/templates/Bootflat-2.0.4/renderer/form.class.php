@@ -179,9 +179,9 @@ class Form {
                     <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
                     <div class="'.$class_right.'">
                         <select multiple id="'.$id.'[]" name="'.$id.'[]" class="select2 form-control" style="height:'.$height.';" onchange="'.$onchange.'">';
-                        if (count($select_data) > 0){
-                            foreach ($select_data as $value) {
-                                if (strpos($select_label, ',')){ // more than one field in select_label                   
+                        if (count($select_data) > 0 AND gettype($select_data) != "boolean"){
+                             foreach ($select_data as $value) {
+                                 if (strpos($select_label, ',')){ // more than one field in select_label                   
                                     foreach (explode(', ', $select_label) as $f) {
                                         $fields[]  = $value->$f;
                                     }

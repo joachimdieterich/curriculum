@@ -212,15 +212,36 @@ class TerminalObjective {
                                     $db_02 = DB::prepare('SELECT COUNT(*) AS MAX FROM files WHERE ter_id = ? AND ISNULL(ena_id) AND context_id = 2');
                                     $db_02->execute(array($result->id));
                                     $res_02 = $db_02->fetchObject();
-                                    $ext = '';
+                                    $this->files['local']       = $res_02->MAX;
                                     if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
-                                        $ext = $CFG->repository->count(0,$result->id);
+                                        $this->files['repository'] = $CFG->repository->count(0,$result->id);
                                     } 
-                                    $this->files                = $res_02->MAX.$ext; //nummer of materials*/
+                                    if (isset($CFG->settings->webservice)){ // prüfen, ob webservice Plugin vorhanden ist.
+                                        $ws     = get_plugin('webservice', $CFG->settings->webservice);
+                                        $this->files['webservice']  = '';//$ws->count($_SESSION['CONTEXT']['terminal_objective']->id,$result->id);
+                                    }
                                     
                                     $objectives[]               = clone $this; 
                                 }
                                 break;
+            case 'certificate': 
+                                $db = DB::prepare('SELECT * FROM terminalObjectives
+                                                    WHERE curriculum_id = ? ORDER by curriculum_id ASC, order_id ASC, id ASC');
+                                $db->execute(array($id));  
+                                while($result = $db->fetchObject()) { 
+                                    $this->id                   = $result->id;
+                                    $this->terminal_objective   = $result->terminal_objective;
+                                    $this->description          = $result->description;
+                                    $this->curriculum_id        = $result->curriculum_id;
+                                    $this->color                = $result->color;
+                                    $this->order_id             = $result->order_id;
+                                    $this->repeat_interval      = $result->repeat_interval;
+                                    $this->creation_time        = $result->creation_time;
+                                    $this->creator_id           = $result->creator_id;
+                                    $objectives[]               = clone $this; 
+                                }
+                                break;
+            
             default:            break;
         }
          

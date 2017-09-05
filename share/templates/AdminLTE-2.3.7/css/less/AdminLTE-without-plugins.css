@@ -236,6 +236,9 @@ a:focus {
   white-space: nowrap;
   overflow: hidden;
 }
+.pointer_hand {
+  cursor: pointer !important;
+}
 /*
  * Component: Main Header
  * ----------------------
@@ -2016,7 +2019,7 @@ a:focus {
 }
 .todo-list > li .label {
   margin-left: 10px;
-  font-size: 9px;
+  font-size: 10px;
 }
 .todo-list > li .tools {
   display: none;
@@ -2227,6 +2230,14 @@ a:focus {
     /*for Firefox only*/
     overflow: auto;
     height: 150px!important;
+    background: linear-gradient(white 30%, rgba(255, 255, 255, 0)), linear-gradient(rgba(255, 255, 255, 0), white 70%) 0 100%, /* Shadows */ radial-gradient(50% 0, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)), radial-gradient(50% 100%, farthest-side, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)) 0 100%;
+    background: linear-gradient(white 30%, rgba(255, 255, 255, 0)), linear-gradient(rgba(255, 255, 255, 0), white 70%) 0 100%, /* Shadows */ radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)), radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)) 0 100%;
+    background-repeat: no-repeat;
+    background-color: white;
+    background-size: 100% 40px, 100% 40px, 100% 14px, 100% 14px;
+    /* Opera doesn't support this in the shorthand */
+    background-attachment: local, local, scroll, scroll;
+    height: 140px !important;
   }
   .box .boxwrap {
     width: 100%;
@@ -3631,6 +3642,7 @@ table.text-center th {
 .bg-red,
 .bg-yellow,
 .bg-aqua,
+.bg-light-aqua,
 .bg-blue,
 .bg-light-blue,
 .bg-green,
@@ -3646,6 +3658,7 @@ table.text-center th {
 .bg-red-active,
 .bg-yellow-active,
 .bg-aqua-active,
+.bg-light-aqua-active,
 .bg-blue-active,
 .bg-light-blue-active,
 .bg-green-active,
@@ -3720,6 +3733,9 @@ table.text-center th {
 .label-info,
 .modal-info .modal-body {
   background-color: #00c0ef !important;
+}
+.bg-light-aqua {
+  background-color: #ecf0f5 !important;
 }
 .bg-blue {
   background-color: #0073b7 !important;

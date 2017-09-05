@@ -15,7 +15,7 @@
  * -------------------------------------------------------------
  * 
  */
-
+global $PAGE;
 function smarty_function_html_timeline($params, $template) {
     global $USER;
     require_once(dirname(__FILE__) . '/function.paginate_first.php');
@@ -127,9 +127,10 @@ $_html_result .= '<div class="row"><div class="clearfix"><br><ul class="timeline
         $_html_result     .= ' </div>
                                 </li>';
     }       
-    
-    $_html_result .= '<li><i class="fa fa-calendar-plus-o bg-gray" onclick="formloader(\'courseBook\',\'new\');"></i></li>'
-                  .  '</ul><!-- ./timeline --></div></div>';
+    if (checkCapabilities('coursebook:add', $USER->role_id, false) AND $PAGE->action == 'objectives'){
+        $_html_result .= '<li><i class="fa fa-calendar-plus-o bg-gray" onclick="formloader(\'courseBook\',\'new\');"></i></li>';
+    }        
+    $_html_result .= '</ul><!-- ./timeline --></div></div>';
     $_html_result .= '<div class="btn-group pull-right" role="group" aria-label="...">'
         .smarty_function_paginate_first(array('id' => $id), $template, true).' '
         .smarty_function_paginate_prev(array('id' => $id), $template, true).' '

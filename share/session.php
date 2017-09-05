@@ -26,7 +26,7 @@
 /**
  * Setup global $USER 
  */
-global $CFG, $USER, $_SESSION, $PAGE, $INSTITUTION, $TEMPLATE, $CONTEXT;
+global $CFG, $USER, $_SESSION, $PAGE, $INSTITUTION, $TEMPLATE, $CONTEXT, $LICENSE;
 
 if (isset($_SESSION['CONTEXT'])){                                               //global $CONTEXT array --> lesser db calls
     $CONTEXT                    = $_SESSION['CONTEXT'];
@@ -35,6 +35,15 @@ if (isset($_SESSION['CONTEXT'])){                                               
     $CONTEXT                    = $ctx->get('context');
     $_SESSION['CONTEXT']        = $CONTEXT;
 }
+
+if (isset($_SESSION['LICENSE'])){                                               //global $LICENSE array --> lesser db calls
+    $LICENSE                    = $_SESSION['LICENSE'];
+} else {
+    $fl                        = new License();
+    $LICENSE                    = $fl->get();
+    $_SESSION['LICENSE']        = $LICENSE;
+}
+
 
 $USER = new User();
 if (isset($_SESSION['USER'])){                                                  // Wenn $USER Object uin Session existiert diesen übernehmen
@@ -71,6 +80,7 @@ if (isset($_SESSION['PAGE'])){
     }
     if ($PAGE->action          != filter_input(INPUT_GET, 'action')){           //previous action represents the action parameter of the last url
         $PAGE->previous_action  = $PAGE->action;
+        $PAGE->show_reference_id = null;
         if (isset($_SESSION['lock'])){
             if ($_SESSION['lock']  != true){                                    // check if session is locked
                 $PAGE->action       = filter_input(INPUT_GET, 'action'); 

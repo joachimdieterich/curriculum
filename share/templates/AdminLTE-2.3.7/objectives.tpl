@@ -60,25 +60,12 @@
                                             {Form::input_select('course', '', $courses, 'group, curriculum', 'id', $selected_curriculum_id, null, "window.location.assign('index.php?action=objectives&reset=true&course='+this.value);", 'Kurs / Klasse wählen...', '', 'col-sm-12')}
                                         </div>
                                         {*Zertifikat*}
-                                        <div class="col-md-4 col-sm-12">
+                                        <div class="col-md-2 col-sm-12">
                                             <div class='btn btn-default' onclick="formloader('generate_certificate','',{$sel_curriculum});">
                                                 <span class="fa fa-files-o" aria-hidden="true"></span> {if count($selected_user_id) > 1} Zertifikate erstellen{else} Zertifikat erstellen{/if}
                                             </div>
                                         </div>
-                                        {*if isset($certificate_templates)}
-                                            <div id="div_print_certificate" class="hidden">
-                                                <div class="col-md-4 col-sm-12 ">
-                                                    {Form::input_select('certificate_template', '', $certificate_templates, 'certificate, description', 'id', $selected_certificate_template, null, 'float-left', 'Zertifikatvorlage wählen...', '', 'col-sm-12')}   
-                                                </div>
-                                                <input type='hidden' name='sel_curriculum' value='{$sel_curriculum}'/>
-                                                <input type='hidden' name='sel_group_id' value='{$sel_group_id}'/>
-                                                <div class="col-md-4 col-sm-12">
-                                                    <button type='submit' name='printCertificate' value='' class='btn btn-default'>
-                                                        <span class="fa fa-files-o" aria-hidden="true"></span> {if count($selected_user_id) > 1} Zertifikate erstellen{else} Zertifikat erstellen{/if}
-                                                    </button>
-                                                </div>
-                                           </div>
-                                        {else}{/if*}<input id="certificate_template" class="hidden" value="false"/>{* hack to get js working if no user is selected, todo: remve certificate_template in js not used any more *}
+                                        <input id="certificate_template" class="hidden" value="false"/>{* hack to get js working if no user is selected, todo: remve certificate_template in js not used any more *}
                                     </div>
                                 </div>
                             </form>
@@ -115,6 +102,8 @@
                         <img src="{$access_file}{$user->avatar}" style="height:40px;"class="user-image pull-left margin-r-5" alt="User Image">
                         {*/if*}
                     {/if}
+                    {Render::badge_preview(["reference_id" => $sel_curriculum, "user_id" => $selected_user_id])}
+
                     <p class="pull-right">Farb-Legende:
                     <button class="btn btn-success btn-flat" style="cursor:default">selbständig erreicht</button>
                     <button class="btn btn-warning btn-flat" style="cursor:default">mit Hilfe erreicht</button>

@@ -48,9 +48,10 @@ class License {
         }
             
         while($result = $db->fetchObject()) {
-            $this->id         = $result->id;
-            $this->license    = $result->license;
-            $license[]        = clone $this;
+            $this->id               = $result->id;
+            $this->license          = $result->license;
+            $this->file_id          = $result->file_id;
+            $license[$result->id]   = clone $this;
         }
         return $license;
     }

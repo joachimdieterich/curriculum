@@ -26,6 +26,7 @@ $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER, $PAGE, $CFG;
+
 $USER       = $_SESSION['USER'];
 $edit       = checkCapabilities('file:editMaterial',    $USER->role_id, false); // DELETE / edit anzeigen
 $header     = 'Material';
@@ -66,12 +67,13 @@ if (!$files){
     $file_context_count[2] = 0; // counter for file_context 2
     $file_context_count[3] = 0; // counter for file_context 3
     $file_context_count[4] = 0; // counter for file_context 4
-    $file_context_count[5] = 0; // counter for file_context 5
+    $file_context_count[5] = 0; // counter for file_context 5 --> external reference
+    $file_context_count[6] = 0; // counter for file_context 6 --> external webservice ressource
     for($i = 0; $i < count($files); $i++) {
         $file_context_count[$files[$i]->file_context]++;
     }
     $content .= '<div class="nav-tabs-custom">';
-    $active   = array( '1' => '', '2' => '', '3' => '','4' => '','5' => '');
+    $active   = array( '1' => '', '2' => '', '3' => '','4' => '','5' => '','6' => '');
     foreach ($file_context_count as $key => $value) { // mark first tab with files as "active"
         if ($value > 0){
             $active[$key] = 'active';
@@ -96,6 +98,9 @@ if (!$files){
     if ($file_context_count[5] != 0){
         $content .= '<li class="'.$active[5].'"><a href="#f_context_5" data-toggle="tab" >Externe Medien <span class="label label-primary">'.$file_context_count[5].'</span></a></li>';
     }
+    if ($file_context_count[6] != 0){
+        $content .= '<li class="'.$active[6].'"><a href="#f_context_6" data-toggle="tab" >Externe Aufgaben <span class="label label-primary">'.$file_context_count[6].'</span></a></li>';
+    }
     $content .='</ul>';
     /* tab content*/
     $content .='<div class="tab-content">';
@@ -117,6 +122,7 @@ if (!$files){
                 case 3: $level_header = 'Dateien meiner Gruppe(n)'; break;
                 case 4: $level_header = 'Meine Dateien'; break;
                 case 5: $level_header = 'Externe Medien'; break;
+                case 6: $level_header = 'Externe Aufgaben'; break;
                 default: break;
             } $file_context       = $files[$i]->file_context+1; //file_context auf nächstes Level setzen
         }
@@ -148,7 +154,12 @@ if (!$files){
         }
         /* . Icon */
 
-        if ($files[$i]->type != 'external'){ $m_onclick      = 'updateFileHits('.$files[$i]->id.')'; }
+        if ($files[$i]->type != 'external'){ 
+            $m_onclick      = 'updateFileHits('.$files[$i]->id.')'; 
+        
+        } else { 
+            $m_onclick = false; //deactivate onclick ! 
+        }
         
         if ($func == 'solution'){
             $m_title = $files[$i]->author.': '.$m_title;
@@ -164,15 +175,16 @@ if (!$files){
                 break;
             case '.mp3':    /* Player*/  
                             $m_player =  '<audio width="100%" controls preload="none" onplay="updateFileHits('.$files[$i]->id.')">
-                                            <source src="'.$CFG->access_file.$files[$i]->context_path.$files[$i]->path.$files[$i]->filename.'" type="audio/mpeg" />
+                                            <source src="'.$CFG->access_id_url.$files[$i]->id.'" type="audio/mpeg" />
                                         Your browser does not support the audio element.</audio>';
                 break;
             case '.mp4':    /* Player*/ 
             case '.mov':    $m_player =  '<video width="100%" controls onplay="updateFileHits('.$files[$i]->id.')">
-                                            <source src="'.$CFG->access_file.$files[$i]->context_path.$files[$i]->path.$files[$i]->filename.'&video=true"  type="video/mp4"/>
+                                            <source src="'.$CFG->access_id_url.$files[$i]->id.'&video=true"  type="video/mp4"/>
                                           Your browser does not support the video element.</video>';
                 break;
-            default:        $m_url = $CFG->access_file.$files[$i]->context_path.$files[$i]->path. $files[$i]->filename;
+            //default:        $m_url = $CFG->access_file.$files[$i]->context_path.$files[$i]->path. $files[$i]->filename;
+            default:        $m_url = $CFG->access_id_url.$files[$i]->id;
                 break;
         }
         
@@ -205,12 +217,18 @@ if (!$files){
         /* Material footer */
         /* End Material footer*/
         if ($files[$i]->type != 'external'){
-
             $m_footer .= '<div class="info-box-text" style="padding-top:10px;white-space:normal; text-transform:none; display:block;">
                            <div class="row">
                     <div class="col-xs-4 text-center" style="border-right: 1px solid #f4f4f4">
                       <div id="sparkline-1"></div><div class="knob-label">';
-            if (isset($license->license)){ $m_footer .= $license->license; }
+            if (isset($license->license)){ 
+                if (isset($license->file_id)){ 
+                    $m_license_icon = $CFG->access_id_url.$license->file_id;
+                    $m_footer .= '<img src="'.$CFG->access_id_url.$_SESSION['LICENSE'][$files[$i]->license]->file_id.'" height="30"/>'; 
+                } else {
+                    $m_footer .= $license->license; 
+                }
+            }
             $m_footer .= '</div></div><!-- ./col -->
                 
                     <div class="col-xs-3 text-center" style="border-right: 1px solid #f4f4f4">
@@ -242,6 +260,7 @@ if (!$files){
         
         $m_boxes .= Form::info_box(array('id'          => $m_id,
                                          'preview'     => $m_preview,
+                                         'license_icon'=> $m_license_icon,
                                          'icon_class'  => $m_icon_class,
                                          'delete'      => $m_delete,
                                          'url'         => $m_url,

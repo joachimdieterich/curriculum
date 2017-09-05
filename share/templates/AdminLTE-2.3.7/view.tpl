@@ -4,7 +4,21 @@
 {block name=description}{$smarty.block.parent}{/block}
 {block name=nav}{$smarty.block.parent}{/block}
 
-{block name=additional_scripts}{$smarty.block.parent}{/block}
+{block name=additional_scripts}{$smarty.block.parent}
+{literal}
+    <script type="text/javascript">
+    
+    $(document).ready(function () {
+        $('a[data-toggle="collapse"]').click(function () {
+                $(this).find('i.fa').toggleClass('fa-compress fa-expand');
+        });
+    });
+    function toggleAll(){
+        return (this.tog^=1) ? $('.collapse').collapse('hide') : $('.collapse').collapse('show');
+    };
+    
+</script>{/literal}        
+{/block}
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
 {block name=content}
@@ -14,7 +28,7 @@
 {content_header p_title="{$page_title}: {$course[0]->curriculum} ({$course[0]->grade}: {$course[0]->subject})" pages=$breadcrumb help= $help}       
 
 <!-- Main content -->
-<section class="content" >   
+<section class="content " >   
     <div class="row ">
         <div class="col-xs-12" >
             <div class="pull-right">
@@ -22,12 +36,15 @@
                     <form id="view_search" method="post" action="../share/processors/fp_search.php">
                     <input type="hidden" name="func" id="func" value="view_highlight"/>
                     <input type="hidden" name="id" id="id" value="{$course[0]->curriculum_id}"/>
-                    <input type="text" name="search" class="form-control input-sm" placeholder="Lehrplan durchsuchen">
+                    <input type="text" name="search" class="form-control " placeholder="Lehrplan durchsuchen">
                     <span class="glyphicon glyphicon-search form-control-feedback"></span>
                     </form>
                 </div>
             </div>
             <div class="btn-group pull-left margin-r-5">
+                <button type="button" class="btn btn-default" data-toggle="tooltip" title="Kompetenzen einklappen bzw. ausklappen"  onclick="toggleAll(); $(this).find('i.fa').toggleClass('fa-compress fa-expand');">
+                    <i class="fa fa-compress"></i>
+                </button>
                 <button type="button" class="btn btn-default" onclick="formloader('description','curriculum',{$course[0]->curriculum_id});">
                     <i class="fa fa-info"></i>
                 </button>
@@ -39,7 +56,7 @@
                 {/if}
             </div>
         </div>
-        <div class="col-xs-12 top-buffer" >
+        <div id="search_curriculum_{$course[0]->curriculum_id}" class="col-xs-12 top-buffer" >
          {if $terminal_objectives != false}
              {assign var="sol_btn" value="false"}  
              {*Thema Row*}
@@ -47,6 +64,7 @@
              <div class="row" >
                  <div class="col-xs-12"> 
                      {*Thema Row*}
+                     
                      {if isset($showaddObjectives)}
                          {assign var="orderup" value=false}
                          {if isset($terminal_objectives[{$terid+1}])}
@@ -60,12 +78,14 @@
                          {/if}
                          {RENDER::objective(["type" =>"terminal_objective", "objective" => $ter , "user_id" => $my_id, "edit" => true, "orderup" => $orderup, "orderdown" => $orderdown, "highlight" => $highlight])}
                      {else}
-                         {RENDER::objective(["type" =>"terminal_objective", "objective" => $ter , "user_id" => $my_id, "highlight" => $highlight])}
+                           {RENDER::objective(["type" =>"terminal_objective", "objective" => $ter , "user_id" => $my_id, "highlight" => $highlight])}
                      {/if}
+                     
                      {*Ende Thema*}
 
                      {*Ziele*}
                      {if $enabledObjectives != false}
+                         <span id="collaps_ter_{$ter->id}" class="collapse in">
                          {foreach key=enaid item=ena from=$enabledObjectives}
                          {if $ena->terminal_objective_id eq $ter->id}
                              {if isset($showaddObjectives)}
@@ -81,10 +101,12 @@
                                  {/if}
                                  {RENDER::objective(["type" =>"enabling_objective", "objective" => $ena , "user_id" => $my_id, "solutions" => $solutions, "edit" => true, "orderup" => $orderup, "orderdown" => $orderdown, "border_color" => $ter->color, "highlight" => $highlight])}
                              {else}
+                                 
                                  {RENDER::objective(["type" =>"enabling_objective", "objective" => $ena , "user_id" => $my_id, "solutions" => $solutions, "group_id" => $page_group, "border_color" => $ter->color, "highlight" => $highlight])}
                              {/if}
                          {/if}
                          {/foreach}
+                         </span>
                      {/if}
 
                  {if isset($showaddObjectives)}  

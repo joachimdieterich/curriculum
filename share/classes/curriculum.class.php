@@ -255,8 +255,8 @@ class Curriculum {
                                                 AND cu.subject_id = su.id AND cu.icon_id = fl.id '.$order_param);
                                 $db->execute(array());
                             } else {
-                                $db = DB::prepare('SELECT DISTINCT cu.*, co.de, st.state, sc.schooltype, gr.grade, su.subject, fl.filename  
-                                    FROM curriculum AS cu, groups_enrolments AS ce, curriculum_enrolments AS cure, countries AS co, state AS st, schooltype AS sc, grade AS gr, subjects AS su, files AS fl
+                                $db = DB::prepare(' SELECT DISTINCT cu.*, co.de, st.state, sc.schooltype, gr.grade, su.subject, fl.filename  
+                                    FROM curriculum AS cu, countries AS co, state AS st, schooltype AS sc, grade AS gr, subjects AS su, files AS fl
                                                 WHERE  (cu.country_id = co.id AND cu.state_id = st.id 
                                                 AND cu.schooltype_id = sc.id AND cu.grade_id = gr.id 
                                                 AND cu.subject_id = su.id AND cu.icon_id = fl.id 
@@ -264,10 +264,8 @@ class Curriculum {
                                                 cu.country_id = co.id AND cu.state_id = st.id 
                                                 AND cu.schooltype_id = sc.id AND cu.grade_id = gr.id 
                                                 AND cu.subject_id = su.id AND cu.icon_id = fl.id 
-                                                AND cu.id = cure.curriculum_id
-                                                AND cure.group_id = ce.group_id
-                                                AND ce.status = 1
-                                                AND ce.user_id = ?) '.$order_param);
+                                                AND cu.id IN (SELECT cure.curriculum_id 
+                                                FROM curriculum_enrolments AS cure WHERE cure.group_id IN (SELECT ge.group_id FROM groups_enrolments AS ge WHERE ge.status = 1 AND ge.user_id = ?))) '.$order_param);
                                 $db->execute(array($id, $id));
                             }
                             while($result = $db->fetchObject()) {

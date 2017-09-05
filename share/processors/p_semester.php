@@ -31,3 +31,4 @@ $us = new User();                                                               
 $us->id = $_SESSION['USER']->id;
 $us->setSemester($_SESSION['USER']->semester_id);
 $_SESSION['USER'] = NULL;                                                                             // Beim Wechsel des Lerzeitraumes muss Session neu geladen werden, damit die entsprechende Rolle geladen wird.
+session_reload_user();

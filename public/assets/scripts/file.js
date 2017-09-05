@@ -33,24 +33,30 @@ function fileChange(form, fSelector, fName, fSize, fType, fUpload, fProgress, fP
     if (typeof(fUpload)==='undefined')      fUpload     = form+'_fUpload';
     if (typeof(fProgress)==='undefined')    fProgress   = form+'_fProgress';
     if (typeof(fPercent)==='undefined')     fPercent    = form+'_fPercent';
+    
     var fileList = document.getElementById(fSelector).files;                            //FileList Objekt aus dem Input Element mit der ID "fileSelector"
     var file = fileList[0];                                                     //File Objekt (erstes Element der FileList)    
  
     if(!file)                                                                   //File Objekt nicht vorhanden = keine Datei ausgewählt oder vom Browser nicht unterstützt
         return;
     
-    document.getElementById(fSelector).style.visibility = 'hidden'; 
-    document.getElementById(fName).innerHTML            = file.name;
-    document.getElementById(fSize).innerHTML            = 'Dateigröße: ' + formatBytes(file.size, 1);
-    document.getElementById(fType).innerHTML            = 'Dateityp: ' + file.type;
     
-    $(document.getElementById(fName)).removeClass("hidden");
-    $(document.getElementById(fSize)).removeClass("hidden");
-    $(document.getElementById(fType)).removeClass("hidden");
-    $(document.getElementById(fUpload)).removeClass("hidden");
-    $(document.getElementById(fProgress)).removeClass("hidden");
-    document.getElementById(fProgress+'_bar').style.width      = "0%";
-    document.getElementById(fPercent).innerHTML         = "0%";
+    if (document.getElementById('max_size').value < formatBytes(file.size, 1)){
+        alert('Die Datei darf maximal '+(document.getElementById('max_size').value/1048576)+' groß sein.');
+    } else {
+        document.getElementById(fSelector).style.visibility = 'hidden'; 
+        document.getElementById(fName).innerHTML            = file.name;
+        document.getElementById(fSize).innerHTML            = 'Dateigröße: ' + formatBytes(file.size, 1);
+        document.getElementById(fType).innerHTML            = 'Dateityp: ' + file.type;
+
+        $(document.getElementById(fName)).removeClass("hidden");
+        $(document.getElementById(fSize)).removeClass("hidden");
+        $(document.getElementById(fType)).removeClass("hidden");
+        $(document.getElementById(fUpload)).removeClass("hidden");
+        $(document.getElementById(fProgress)).removeClass("hidden");
+        document.getElementById(fProgress+'_bar').style.width      = "0%";
+        document.getElementById(fPercent).innerHTML         = "0%";
+    }
 }
 
 var client = null;
@@ -131,7 +137,7 @@ function uploadFile(form, func, fSelector, fName, fProgress, fPercent)
                 document.getElementById(target).value       = client.responseText;
                 $("#"+target).trigger('change');
              }
-             if (document.getElementById('context').value === 'terminal_objective' || document.getElementById('context').value === 'enabling_objective'){
+             if (document.getElementById('context').value === 'terminal_objective' || document.getElementById('context').value === 'enabling_objective' || document.getElementById('context').value === 'task'){
                 parent.window.location.reload();
              }
         }
@@ -183,7 +189,8 @@ function setTarget(file_id){
        document.getElementById(target).value    = file_id;
        $("#"+target).trigger('change');
     }
-    if (document.getElementById('context').value === 'terminal_objective' || document.getElementById('context').value === 'enabling_objective'){
+    
+    if (document.getElementById('context').value === 'terminal_objective' || document.getElementById('context').value === 'enabling_objective' || document.getElementById('context').value === 'task'){
         parent.window.location.reload();
     }
 }

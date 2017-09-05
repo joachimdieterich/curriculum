@@ -124,6 +124,39 @@ function mail(mail_id, mailbox) {
     }   
 }
 
+function loadhtml(dependency, id, source, target, source_width, target_width){
+    document.getElementById(target).innerHTML = '<div class="box"><div class="box-header"><h3 class="box-title">Loading...</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div>';    
+    var url = "../share/request/get_"+dependency+".php?id="+ id; 
+
+    req = XMLobject();
+        if(req) {        
+            req.onreadystatechange = function(){
+                sethtml(dependency, id, source, target, source_width, target_width);
+            };
+            req.open("GET", url, true);
+            req.send(null);
+        }
+}
+function sethtml(dependency, id, source, target, source_width, target_width) {
+    if (req.readyState === 4) {  
+        if (req.status === 200) {
+            if (req.responseText.length !== 1){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen
+                $('#'+source).removeClass('col-*');
+                $('#'+source).addClass(source_width);
+                $('#'+target).removeClass('hidden');
+                $('#'+target).removeClass('col-*');
+                $('#'+target).addClass(source_width);
+                
+                document.getElementById(target).innerHTML = req.responseText;
+            } else {
+                window.location.reload();
+            } 
+            InitScripts(); //Load scripts
+        }
+    }   
+}
+
+
 function update_paginator(paginator){
     if (req.readyState === 4) {  
         if (req.status === 200) {
@@ -507,7 +540,9 @@ function curriculumdocs(link) {
  * @returns {undefined}
  */
 function formloader(/*form, func, id, []*/){
-    if (typeof(arguments[3]) !== 'undefined'){
+    if (typeof(arguments[4]) !== 'undefined'){
+        getRequest("../share/plugins/"+ arguments[4] +"/request/f_"+ arguments[0] +".php?func="+ arguments[1] +"&id="+ arguments[2]+"&"+jQuery.param(arguments[3]));
+    } else if (typeof(arguments[3]) !== 'undefined'){
         getRequest("../share/request/f_"+ arguments[0] +".php?func="+ arguments[1] +"&id="+ arguments[2]+"&"+jQuery.param(arguments[3]));        
     } else {
         getRequest("../share/request/f_"+ arguments[0] +".php?func="+ arguments[1] +"&id="+ arguments[2]);
@@ -515,7 +550,9 @@ function formloader(/*form, func, id, []*/){
 }
 
 function processor(/*proc, func, val, []*/){
-    if (typeof(arguments[3]) !== 'undefined'){
+    if (typeof(arguments[4]) !== 'undefined'){
+        getRequest("../share/plugins/"+ arguments[4] +"/processors/p_"+ arguments[0] +".php?func="+ arguments[1] +"&val="+ arguments[2]+"&"+jQuery.param(arguments[3]));
+    } else if (typeof(arguments[3]) !== 'undefined'){
         var url = "../share/processors/p_"+ arguments[0] +".php?func="+ arguments[1] +"&val="+ arguments[2]+"&"+jQuery.param(arguments[3]);
     } else {
         var url = "../share/processors/p_"+ arguments[0] +".php?func="+ arguments[1] +"&val="+ arguments[2];
@@ -626,7 +663,9 @@ function getMultipleValues(){
  * argument[4] = id of selection
  */
 function getValues(){      
-    if (arguments[3]){
+    if (typeof(arguments[5]) !== 'undefined'){
+        var url = "../share/plugins/"+ arguments[5] +"/get_"+ arguments[0] +".php?dependency_id="+ arguments[1] +"&name="+ arguments[2] +"&format="+ arguments[3] +"&select_id="+ arguments[4];
+    } else if (typeof(arguments[4]) !== 'undefined'){
         var url = "../share/request/get_"+ arguments[0] +".php?dependency_id="+ arguments[1] +"&name="+ arguments[2] +"&format="+ arguments[3] +"&select_id="+ arguments[4];
     } else {
         var url = "../share/request/get_"+ arguments[0] +".php?dependency_id="+ arguments[1] +"&name="+ arguments[2] +"&format="+ arguments[3] ;
@@ -773,6 +812,23 @@ function popupFunction(e){
     for (var selector in config) {
         $(selector).chosen(config[selector]);
     }*/
+    /*close popup when clicking outside modal*/
+    $(function() {
+    $("body").click(function(e) {
+        if (e.target.id == "modal" || $(e.target).parents("#modal").size()) { 
+            /* do nothing */
+        } else if (e.target.id == "daterangepicker" || $(e.target).parents("#daterangepicker").size()) {
+            /* do nothing */
+        } else { 
+            if ($("#daterangepicker").is(':visible') || $("#colorpicker").is(':visible')) {
+                /* don't close if daterangepicker is visible!*/
+            } else {
+                closePopup('popup'); 
+            }
+        }
+    });
+})
+
 }
 
 /**
@@ -893,3 +949,27 @@ function printById(id) {
     }, 500);
     return false;
 }
+
+function search(search_string, element_id, highlight){
+    $('#'+element_id).mark(search_string, { "acrossElements": true });
+}
+
+function InitScripts(){
+        $(function() {
+            //Nyromodal
+            $('.nyroModal').nyroModal({
+                callbacks: {
+                    beforeShowBg: function(){
+                        $('body').css('overflow', 'hidden');  
+                    },
+                    afterHideBg: function(){
+                        $('body').css('overflow', '');
+                    },
+                    afterShowCont: function(nm) {
+                        $('.scroll_list').height($('.modal').height()-150);
+                    }   
+                }
+            });
+            $('#popup_generate').nyroModal();
+        });
+    }

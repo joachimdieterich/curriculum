@@ -261,7 +261,8 @@ class File {
         if ($this->type == '.url'){
             return false;
         }
-        return $CFG->access_file_url.''.$this->context_path.''.$this->path.''.rawurlencode($this->filename);
+        return $CFG->access_id_url.$this->id;
+        //return $CFG->access_file_url.''.$this->context_path.''.$this->path.''.rawurlencode($this->filename);
     }
     
     public function getFileID($fileToken){
@@ -476,6 +477,10 @@ class File {
                                                         WHERE fl.cur_id = ? AND fl.context_id = 4 AND fl.context_id = ct.context_id '.$order_param);
                 $db->execute(array($id));
                 break;
+            case 'task':                $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+                                                        WHERE fl.reference_id = ? AND fl.context_id = '.$_SESSION['CONTEXT'][$dependency]->context_id.' AND fl.context_id = ct.context_id '.$order_param);
+                $db->execute(array($id));
+                break;
             case 'user':                $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                         WHERE fl.creator_id = ? AND fl.context_id = ct.context_id '.$order_param);             
                 $db->execute(array($id));
@@ -531,12 +536,16 @@ class File {
         }
            
         if (isset($CFG->repository) AND $externalFiles == true){
-           $repo     = get_plugin('repository', $CFG->settings->repository);
-           $allfiles = $repo->getFiles($dependency, $id, $files);
-           return $allfiles; 
-        } else {
-            return $files;
-        }
+           $repo  = get_plugin('repository', $CFG->settings->repository);
+           $files = $repo->getFiles($dependency, $id, $files); 
+        } 
+        
+        if (isset($CFG->settings->webservice)){
+           $ws   = get_plugin('webservice', $CFG->settings->webservice);
+           $files = $ws->getFiles_link_module($dependency, $id, $files); 
+        } 
+        
+        return $files; 
     }
 
      /**

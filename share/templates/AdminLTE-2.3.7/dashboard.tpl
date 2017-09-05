@@ -7,7 +7,7 @@
 {block name=additional_scripts}{$smarty.block.parent}
 <!-- jQuery UI used by sortable -->
 <script src="{$media_url}scripts/jquery-ui.min.js"></script>
-    {literal}<script>
+    {*literal}<script>
     //Make the dashboard widgets sortable Using jquery UI
         $(".connectedSortable").sortable({
           placeholder         : "sort-highlight",
@@ -30,7 +30,7 @@
 
         });
         $(".connectedSortable .box-header, .alert-heading, .widget-user-header, .connectedSortable .nav-tabs-custom").css("cursor", "move");
-    </script>{/literal}
+    </script>{/literal*}
 {/block}
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
 
@@ -52,7 +52,7 @@
         </section>
         
         <section id="right" class="col-md-4 connectedSortable">
-            {if checkCapabilities('dashboard:editBulletinBoard', $my_role_id, false) || $bulletinBoard} 
+            {*if checkCapabilities('dashboard:editBulletinBoard', $my_role_id, false) || $bulletinBoard} 
             <div class="box bottom-buffer-20">
                 <div class="box-header with-border">
                   <h3 class="box-title">Pinnwand</h3>
@@ -73,7 +73,7 @@
                 {/if}
                 </div>
             </div>   
-            {/if}
+            {/if*}
 
             <!-- Additional Blocks -->   
             {foreach key=blockid item=block from=$blocks}

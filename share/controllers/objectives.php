@@ -39,6 +39,7 @@ if (isset($_GET['p_select'])){
     unset($_SESSION['SmartyPaginate']['userPaginator']['pagi_selection']);
     SmartyPaginate::setSelection($_GET['p_select'], 'userPaginator');
 }
+
 $selected_user_id           = SmartyPaginate::_getSelection('userPaginator'); 
 $TEMPLATE->assign('selected_user_id',               $selected_user_id);
 $TEMPLATE->assign('selected_curriculum_id',         $selected_curriculum_id); 

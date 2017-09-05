@@ -46,4 +46,5 @@ switch (filter_input(INPUT_GET, 'format', FILTER_UNSAFE_RAW)) {
                     }
         break;
 }
+
 echo json_encode(array('html'=>$html));

@@ -37,23 +37,29 @@
                                 <span class="fa fa-plus-circle" aria-hidden="true"></span> Benutzerliste importieren</a>
                             </button>
                         {/if}
-                    </div>
-                    {/if}
-                    {if checkCapabilities('user:userListComplete', $my_role_id, false)}
-                    <div class="btn-group pull-right" role="group" aria-label="...">
+                        {if checkCapabilities('user:userListComplete', $my_role_id, false)}
                         <button type="button" class="btn btn-default" onclick="location.href='index.php?action=user&lost=true';"><a  href="#">
                             <span class="fa fa-group" aria-hidden="true"></span> Nicht zugeordnete Benutzer</a>
                         </button>
+                        {/if}
                     </div>
                     {/if}
+                    <div class="pull-right">
+                        {if isset($myInstitutions)}
+                            {Form::input_select('institution_filter', null, $myInstitutions, 'institution', 'id', $filter_institution_id, null, "location.href='index.php?action=user&filter_institution='+this.value", 'Nach Institution filtern', 'col-sm-0', 'col-sm-12')}
+                        {/if}
+                    </div>
+                    
+                    
                 </div><!-- /.box-header -->
                 <div class="box-body">
-                    <form id='userlist'   method='post' action="index.php?action=user&next={$currentUrlId}">
-                        {html_paginator id='userP' title='Benutzerliste'} 
-                        <input class="invisible" type="checkbox" name="id[]" value="none" checked /><!--Hack - nothing selected-->  
+                    {html_paginator id='userP' title='Benutzerliste'} 
+                    <!--<input class="invisible" type="checkbox" name="id[]" value="none" checked /><!--Hack - nothing selected-->  
                 </div>  
             </div>
+                        
             {* Function Tabs *}
+            <form id='userlist'   method='post' action="index.php?action=user&next={$currentUrlId}">
             <div class="row ">
                     <div class="col-sm-12">
                         <div class="nav-tabs-custom">
@@ -87,7 +93,10 @@
                                 {if checkCapabilities('user:enroleToGroup', $my_role_id, false) OR checkCapabilities('user:expelFromGroup', $my_role_id, false)}
                                     <div id="f_group" class="tab-pane row" >
                                         <div class="form-horizontal col-xs-12">
-                                            {Form::info(['id' => 'group_info', 'content' => 'Markierte Benutzer in Lerngruppe ein bzw. ausschreiben.'])}
+                                            {Form::info(['id' => 'group_info', 'content' => 'Markierte Benutzer in Lerngruppe ein bzw. ausschreiben.<br> <strong>Benutzer muss an der entsprechenden Institution eingeschrieben sein, damit  die Lerngruppe angezeigt wird.</strong>'])}
+                                            {if isset($myInstitutions)}
+                                                {Form::input_select('institution_group', 'Institution', $myInstitutions, 'institution', 'id', $my_institution_id, null, "getValues('group', this.value, 'groups');")}
+                                            {/if} 
                                         {if isset($groups_array)}
                                             {Form::input_select_multiple(['id' => 'groups', 'label' => 'Lerngruppe', 'select_data' => $groups_array, 'select_label' => 'group, semester', 'select_value' => 'id', 'input' => null, 'error' => null, 'limiter' => ', ' ])}
                                             <div class="btn-group pull-right" role="group" aria-label="...">
@@ -134,9 +143,9 @@
                             </div><!-- ./tab-content -->
                         </div><!-- ./nav-tabs-custom -->
                     </div><!-- ./col-xs-12 -->  
-                </form>     
+                 
             </div>
-    
+            </form>   
         {if !isset($groups_array)}<p>Sie können noch keine Benutzer verwalten, da sie entweder nicht über die nötigen Rechte verfügen, oder keine Benutzer in ihrer Institution vorhanden sind.</p><p>&nbsp;</p>{/if}
    </div> 
 </section>

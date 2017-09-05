@@ -100,6 +100,13 @@
                             <i class="fa fa-graduation-cap"></i>
                           </a>
                         </li>
+                        {if checkCapabilities('menu:readTasks', $my_role_id, false)}  
+                        <li>     
+                        <a href="index.php?action=task" style="padding: 15px 8px 15px 8px;">
+                            <i class="fa fa-tasks"></i>
+                          </a>
+                        </li>
+                        {/if}
                          {if isset($mySemester) AND count($mySemester) > 1}
                              {Form::input_dropdown('semester_id', '', $mySemester, 'semester, institution', 'id', $my_semester_id, null, "processor('semester','set',this.getAttribute('data-id'));")}
                          {else if isset($my_institutions) AND count($my_institutions) > 1}
@@ -262,6 +269,7 @@
     <script src="{$template_url}js/app.min.js"></script><!-- AdminLTE App -->
     <script src="{$template_url}plugins/slimScroll/jquery.slimscroll.min.js"></script><!-- SlimScroll 1.3.0 -->
     <script src="{$template_url}plugins/pace/pace.min.js"></script>
+    <script src="{$template_url}plugins/mark/jquery.mark.min.js"></script>
     <script src="{$media_url}scripts/curriculum.min.js"></script><!-- curriculum settings (sidebar) -->
     <script src="{$media_url}jquery.nyroModal/js/jquery.nyroModal.custom.js"></script> <!-- jquery.nyroModal -->
     <script src="{$media_url}scripts/script.min.js"></script> 
@@ -277,44 +285,31 @@
     <!-- Logout - Timer  -->
     {if isset($institution_timeout)}
     <script type="text/javascript">
-        idleMax = {$global_timeout};
         idleTime = 0;
         $(document).ready(function () {
-            var idleInterval = setInterval(timerIncrement(), 60000);
+            InitScripts();
+            
+            /*Increment the idle time counter every minute.*/
+            var idleInterval = setInterval(timerIncrement, 60000); /*1 minute*/
+
+            /*Zero the idle timer on mouse movement.*/
+            $(this).mousemove(function (e) { idleTime = 0; });
+            $(this).keypress(function (e) { idleTime = 0; });
+            
             $(document.getElementById('popup')).attr('class', 'modal');
             $(".select2").select2();
         });
         
         function timerIncrement() {
             idleTime++;
-            if (idleTime === idleMax) { 
+            if (idleTime === {$global_timeout}) { 
                 window.location="index.php?action=logout&timout=true";
             }
         }     
     </script>
     {/if}
     <!-- end Logout - Timer  -->
-
-    <!-- Nyromodal  -->
-    <script type="text/javascript">
-    $(function() {
-        $('.nyroModal').nyroModal({
-            callbacks: {
-                beforeShowBg: function(){
-                    $('body').css('overflow', 'hidden');  
-                },
-                afterHideBg: function(){
-                    $('body').css('overflow', '');
-                },
-                afterShowCont: function(nm) {
-                    $('.scroll_list').height($('.modal').height()-150);
-                }   
-            }
-        });
-        $('#popup_generate').nyroModal();
-    });
     
-    </script>
     {if isset($smarty.session.FORM->form)}
         <script type="text/javascript">
             {if isset($smarty.session.FORM->id)}

@@ -20,7 +20,7 @@
         {if isset($page_message)}
             <strong>{FORM::info('error', '',$page_message[0]['message'], '','col-sm-12 text-red')}</strong>
         {/if}
-        <form id="form_login" action="index.php?action=login" method="post">
+        <form id="form_login" action="{$base_url}public/index.php?action=login" method="post">
           <div class="form-group has-feedback {if isset($page_message)}has-error{/if}">
             <input type="text" class="form-control" id="username" name="username" {if isset($username)}value="{$username}"{/if} placeholder="Benutzername">
             <span class="glyphicon glyphicon-user form-control-feedback"></span>
@@ -30,26 +30,33 @@
             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
           </div>
           <div class="row">
-            
-            <div class="col-xs-7 pull-right">
-              <input id="login" type="submit" name="login" class="btn btn-primary btn-block btn-flat visible" value="Anmelden" ></input>
+                <div class="col-xs-6 pull-left">{*!pull-left to not submit guest login on return, when entering regular user accounts*}
+                    <input id="pw_reset" class="btn btn-primary btn-block btn-flat visible" onclick="toggle(['reset', 'reset_info'], ['login', 'password', 'pw_reset']);" value="Passwort vergessen"></input>
+                </div><!-- /.col -->
+            <div class="col-xs-6 pull-right">
+              <input id="login" type="submit" name="login" class="btn btn-primary btn-block btn-flat visible" value="Einloggen" ></input>
               <input id="reset" type="submit" name="reset" class="btn btn-primary btn-block btn-flat hidden" value="Passwort vergessen" ></input>
             </div><!-- /.col -->
-            {if $cfg_guest_login}
-            <div class="col-xs-5 pull-left">{*!pull-left to not submit guest login on return, when entering regular user accounts*}
-                <input id="guest" type="submit" name="guest" class="btn btn-primary btn-block btn-flat visible" value="Gastzugang" ></input>
-            </div><!-- /.col -->
-            {/if}
           </div>
+            {if $cfg_guest_login eq '1' OR  $cfg_shibboleth eq '1'}      
+                <p class="text-center top-buffer"><strong>- ODER -</strong></p>  
+            {/if}
+            {if $cfg_guest_login}
+                <div class="row">
+                    <div class="col-xs-6 pull-left">{*!pull-left to not submit guest login on return, when entering regular user accounts*}
+                        <input id="register" {*type="submit"*} onclick="alert('Funktion noch nicht verfügbar');"  name="register" class="btn btn-primary btn-block btn-flat visible" value="jetzt Registrieren" data-toggle="tooltip" title="Noch nicht registriert?"></input>
+                    </div><!-- /.col -->
+                    <div class="col-xs-6 pull-right">{*!pull-left to not submit guest login on return, when entering regular user accounts*}
+                        <input id="guest" type="submit" name="guest" class="btn btn-primary btn-block btn-flat visible" value="Gastzugang" data-toggle="tooltip" title="Als Gast einen Einblick bekommen"></input>
+                    </div><!-- /.col -->
+                </div>
+            {/if}    
+            {if $cfg_shibboleth}
+            <div class="social-auth-links text-center">
+              <a href="../share/plugins/auth/shibboleth/index.php" class="btn btn-block btn-social btn-openid"><img src="assets/images/icons/shibboleth-web.png"></img> Über Shibboleth anmelden</a>
+            </div>
+            {/if}
         </form>
-        {if $cfg_shibboleth}
-        <div class="social-auth-links text-center">
-          <p>- ODER -</p>
-          <a href="../share/plugins/auth/shibboleth/index.php" class="btn btn-block btn-social btn-openid"><img src="assets/images/icons/shibboleth-web.png"></img> Über Shibboleth anmelden</a>
-        </div>
-        {/if}
-        <p  id="pw_reset"><a  href="#" onclick="toggle(['reset', 'reset_info'], ['login', 'password', 'pw_reset']);">Passwort vergessen</a></p>
-        <a href="#" class="text-center" onclick="alert('Funktion noch nicht verfügbar');">Registrieren</a>
       </div><!-- /.login-box-body -->
 </div><!-- /.login-box -->
 {/block}

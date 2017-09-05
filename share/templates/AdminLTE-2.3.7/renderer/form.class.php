@@ -197,8 +197,8 @@ class Form {
         $form = '<div class="form-group '.validate_msg($error, $id, true).'">
                     <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
                     <div class="'.$class_right.'">
-                        <select multiple id="'.$id.'[]" name="'.$id.'[]" class="select2 form-control" style="height:'.$height.';" onchange="'.$onchange.'">';
-                        if (count($select_data) > 0){
+                        <select multiple id="'.$id.'" name="'.$id.'[]" class="select2 form-control" style="height:'.$height.';" onchange="'.$onchange.'">';
+                        if (count($select_data) > 0 AND gettype($select_data) != "boolean"){
                             foreach ($select_data as $value) {
                                 if (strpos($select_label, ',')){ // more than one field in select_label                   
                                     foreach (explode(', ', $select_label) as $f) {
@@ -370,7 +370,7 @@ class Form {
         }
 
         $html = '<div id="'.$target.'" class="modal-dialog" style="overflow-y: initial !important;" >
-                    <div class="modal-content" ><!-- height is dynamic set by popupFunction() -->
+                    <div id="modal" class="modal-content" ><!-- height is dynamic set by popupFunction() -->
                         <div class="modal-header">';
                         if (isset($h_content)){
                             $html .= $h_content;
@@ -405,12 +405,18 @@ class Form {
     }
     
     public static function info_box($params){
+        global $CFG;
         foreach($params as $key => $val) {
             $$key = $val;
         }
+       
         $html  = ' <div id="material_'.$id.'" class="info-box">';
         if (isset($preview)){
-            $html .= '<span class="info-box-icon bg-aqua"><div id="modal-preview" style="height:100%;width:100%;background: url(\''.$preview.'\') center ;background-size: cover; background-repeat: no-repeat;"></div></span>'; //pull-left --> overrides align: center to top
+            $html .= '<span class="info-box-icon bg-aqua"><div id="modal-preview" style="position:relative;height:100%;width:100%;background: url(\''.$preview.'\') center ;background-size: cover; background-repeat: no-repeat;">';
+            if (isset($license_icon)){
+                $html .= '<img style="position:absolute;bottom:0px; right:0px;" src="'.$license_icon.'" height="25"/>';
+            }
+            $html .= '</div></span>'; //pull-left --> overrides align: center to top
         } else {
            $html .= RENDER::thumb(array('file_list' => $id, 'format' => 'thumb', 'width' => '90px', 'height' => '90px'));
         }
@@ -425,7 +431,6 @@ class Form {
             $html .= '<button class="btn btn-box-tool" onclick="removeMaterial('.$id.')"><i class="fa fa-trash"></i></button>';
         }
         $html .= '</div>';
-        
         $html .= '<span class="info-box-text">';
         if (isset($player)){
             $html .= $player.'<br>';
@@ -433,8 +438,12 @@ class Form {
         if (!isset($url)){
             $url = '';
         }
-        $html .= '<a href="'.$url.'" target="_blank" onclick="formloader(\'preview\',\'file\','.$id.');'.$onclick.';">'.$title.'</a></span>
-                  <span>'.$description;
+        $html .= '<a href="'.$url.'" target="_blank" ';
+        if ($onclick != false){
+            $html .= 'onclick="formloader(\'preview\',\'file\','.$id.');'.$onclick.';"';
+        }
+        $html .= '>'.$title.'</a></span>
+                      <span>'.$description;
         
         $html .='</span> ';
         $html .= $footer;

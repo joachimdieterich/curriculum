@@ -66,12 +66,12 @@ if (isset($paginator) AND isset($paginator_search) AND isset($order)) {
 
 <!-- HTML -->
 <div class="uploadframeClose" onclick="self.parent.tb_remove();"></div>    
-<div class="modal-content ">
+<div id="modal" class="modal-content ">
     <div class="modal-header">
         <button type="button" class="close nyroModalClose" data-dismiss="modal" aria-label="Close" ><span aria-hidden="true">×</span></button>
         <h4 class="modal-title"><i class="fa fa-bars" onclick="toggle_sidebar('modal_sidebar')"></i> Dateiauswahl</h4>
     </div>
-    <div id="modal_sidebar" class="modal-body sidebar" style="min-height: 450px !important;padding-left: 0px; padding-top: 0px; position:relative;"> <!-- to do recalc nyroModal on changes--> 
+    <div id="modal_sidebar" class="modal-body" style="min-height: 450px !important;padding-left: 0px; padding-top: 0px; position:relative; background-color: #ecf0f5 !important;"> <!-- to do recalc nyroModal on changes--> 
         <aside class="main-sidebar" style="padding-top:0px !important;position: absolute !important;">
           <!-- sidebar: style can be found in sidebar.less -->
           <section class="sidebar">
@@ -118,7 +118,8 @@ if (isset($paginator) AND isset($paginator_search) AND isset($order)) {
             <form id="uploadform" class="form-horizontal" style="padding-top:10px;padding-left: 10px;" role="form" method="post" enctype="multipart/form-data">
               <input id="context" name="context" type="hidden" value="<?php echo $context; ?>" /> <!-- context = von wo wird das Uploadfenster aufgerufen-->
               <input id="action"  name="action"  type="hidden" value="<?php echo $action; ?>" />
-              <input id="ref_id"  name="ref_id"  type="hidden" value="<?php echo $ref_id; ?>" /><?php
+              <input id="ref_id"  name="ref_id"  type="hidden" value="<?php echo $ref_id; ?>" />
+              <input id="max_size" name="max_size" type="hidden" value="<?php echo return_bytes(ini_get('upload_max_filesize')); ?>" /><?php
               echo Form::input_text('title', 'Titel', $title, $error, 'z. B. Diagramm eLearning'); 
               echo Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung'); 
               echo Form::input_text('author', 'Autor', $author, $error, 'Max Mustermann'); 
@@ -131,7 +132,7 @@ if (isset($paginator) AND isset($paginator_search) AND isset($order)) {
               <?php 
               if ($action == 'upload') { ?> 
               <span id="div_fileuplbtn">    <!-- Fileupload-->
-                  <?php echo Form::upload_form('uploadbtn', 'Datei hochladen', '', $error); ?>
+                  <?php echo Form::upload_form('uploadbtn', 'Datei hochladen', '', $error);?>
               </span><?php } 
               if ($action == 'url') { ?> 
               <span id="div_fileURLbtn" >     <!-- URLupload--><?php

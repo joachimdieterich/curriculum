@@ -250,6 +250,27 @@ function convertKbyteToByte($kbyte){
 function convertByteToKbyte($byte){
     return $byte/1024;
 }
+
+function return_bytes($val) {
+    $val = trim($val);
+    $last = strtolower($val[strlen($val)-1]);
+    switch($last) {
+        // The 'G' modifier is available since PHP 5.1.0
+        case 'g':
+            $val *= (1024 * 1024 * 1024); //1073741824
+            break;
+        case 'm':
+            $val *= (1024 * 1024); //1048576
+            break;
+        case 'k':
+            $val *= 1024;
+            break;
+    }
+
+    return $val;
+}
+
+
   
 /**
  * Die Funktion detect_reload() wird über die index.php aufgerufen und verhindert, dass Formulare mit identischem Inhalt 2x abgeschickt werden. 
@@ -838,6 +859,25 @@ function random_file($dir, $type = 'jpg'){
     $files = glob($dir . '/*.'.$type);
     $file = array_rand($files);
     return basename($files[$file]);
+}
+
+function setChildren(){
+    global $TEMPLATE, $USER;
+    if (isset($_GET['child_id'])){
+        $_SESSION['USER']->child_selected = $_GET['child_id'];
+    } 
+    $user = new User();
+    $user->id = $USER->id;
+    $children = $user->getChildren();
+    if (!empty($children)){
+        $TEMPLATE->assign('myChildren', $children); 
+        if (isset($_SESSION['USER']->child_selected)){
+            $TEMPLATE->assign('my_child_id', $_SESSION['USER']->child_selected); 
+        }
+        else {
+            $TEMPLATE->assign('my_child_id', ''); 
+        }
+    }
 }
 
 /*

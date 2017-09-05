@@ -98,7 +98,7 @@ $curriculum    = $curriculum->getCurricula('user', $USER->id);
 
 if ($id == null) {
     $curriculum_id = $curriculum[0]->id;        
-    $content .= Form::input_select('curriculum_id', 'Lehrplan', $curriculum, 'curriculum', 'id', $curriculum_id , $error, 'getValues(\'objectives\', this.value, \'objective_id[]\');');
+    $content .= Form::input_select('curriculum_id', 'Lehrplan', $curriculum, 'curriculum', 'id', $curriculum_id , $error, 'getValues(\'objectives\', this.value, \'objective_id\');');
 } else {
     $content .= Form::input_select('curriculum_id', 'Lehrplan', $curriculum, 'curriculum', 'id', $curriculum_id , $error, '','', 'col-sm-3', 'col-sm-9', 'disabled="disabled"');
 }

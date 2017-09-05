@@ -43,7 +43,8 @@ if (isset($_GET['user_id'])){
 $course_user        = new User();
 $course_user->id    = $USER->id;
 
-$TEMPLATE->assign('userlist', $course_user->getUsers('curriculum', 'walletPaginator', $wallet->curriculum_id));
+//$TEMPLATE->assign('userlist', $course_user->getUsers('curriculum', 'walletPaginator', $wallet->curriculum_id));
+$TEMPLATE->assign('userlist', $course_user->getUsers('wallet_shared', 'walletPaginator', $wallet->curriculum_id, null, $wallet->id));
 //error_log(json_encode($wallet->comments));
 $TEMPLATE->assign('wallet', $wallet); 
 $TEMPLATE->assign('course', $wallet); 
