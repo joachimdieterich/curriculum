@@ -91,15 +91,27 @@ class Content {
         }
     }
        
-    public function get($dependency = 'curriculum', $id = null){
+    public function get($dependency = 'curriculum', $id = null, $order = 'ASC'){
         $entrys = array();                      //Array of content
         
-        $db = DB::prepare('SELECT ct.id FROM content AS ct, content_subscriptions AS cts, context AS co
+        switch ($entrys) {
+            case 'blog':    $db = DB::prepare('SELECT ct.id FROM content AS ct, content_subscriptions AS cts, context AS co
                                                         WHERE  co.context = "'.$dependency.'"
                                                         AND co.context_id = cts.context_id
                                                         AND cts.reference_id = ?
                                                         AND cts.content_id = ct.id ORDER by ct.timecreated DESC');
-        $db->execute(array($id));
+                            $db->execute(array($id));
+                break;
+
+            default:        $db = DB::prepare('SELECT ct.id FROM content AS ct, content_subscriptions AS cts, context AS co
+                                                        WHERE  co.context = "'.$dependency.'"
+                                                        AND co.context_id = cts.context_id
+                                                        AND cts.reference_id = ?
+                                                        AND cts.content_id = ct.id ORDER by ct.timecreated ASC');
+                            $db->execute(array($id));
+                break;
+        }
+        
         
         while($result = $db->fetchObject()) { 
             $this->id            = $result->id;
