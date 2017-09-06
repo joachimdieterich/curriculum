@@ -91,23 +91,25 @@ class Content {
         }
     }
        
-    public function get($dependency = 'curriculum', $id = null){
+    public function get($dependency = 'curriculum', $id = null, $order = "ORDER by ct.timecreated ASC"){
         $entrys = array();                      //Array of content
         
         switch ($entrys) {
-            case 'blog':    $db = DB::prepare('SELECT ct.id FROM content AS ct, content_subscriptions AS cts, context AS co
+            case 'blog':    $order =  'ORDER by ct.timecreated DESC';
+                            $db = DB::prepare('SELECT ct.id FROM content AS ct, content_subscriptions AS cts, context AS co
                                                         WHERE  co.context = "'.$dependency.'"
                                                         AND co.context_id = cts.context_id
                                                         AND cts.reference_id = ?
-                                                        AND cts.content_id = ct.id ORDER by ct.timecreated DESC');
+                                                        AND cts.content_id = ct.id '.$order);
                             $db->execute(array($id));
                 break;
 
-            default:        $db = DB::prepare('SELECT ct.id FROM content AS ct, content_subscriptions AS cts, context AS co
+            default:        
+                            $db = DB::prepare('SELECT ct.id FROM content AS ct, content_subscriptions AS cts, context AS co
                                                         WHERE  co.context = "'.$dependency.'"
                                                         AND co.context_id = cts.context_id
                                                         AND cts.reference_id = ?
-                                                        AND cts.content_id = ct.id ORDER by ct.timecreated ASC');
+                                                        AND cts.content_id = ct.id '.$order);
                             $db->execute(array($id));
                 break;
         }
