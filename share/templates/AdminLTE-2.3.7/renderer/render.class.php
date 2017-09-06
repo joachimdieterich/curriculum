@@ -1701,7 +1701,7 @@ class Render {
                                         $html .= '<li><a onclick="formloader(\'content\', \'show\','.$val->id.');">'.$val->title.'</span></a></li>';
                                     break;
                                     case 'file':
-                                        $html .= '<li><a onclick="formloader(\'preview\',\'curriculum\','.$val->id.');">'.$val->title.'</span></a></li>';
+                                        $html .= '<li><a onclick="formloader(\'preview\',\'file\','.$val->id.');">'.$val->title.'</span></a></li>';
                                     break;
                                     
                                     default:
