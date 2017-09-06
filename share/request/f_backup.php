@@ -75,6 +75,18 @@ $content  = '<form id="form_backup"  class="form-horizontal" role="form" method=
 if (isset($currentUrlId)){ $content .= $currentUrlId; }
 $content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
 $content .= Form::input_select('curriculum_id', 'Lehrplan', $options, 'course', 'curriculum_id', null , $error);
+/* Format selector*/
+$format_array = array('IMSCC Moodle' => 'imscc',
+                'XML RLP Digitale Lehrpläne' => 'xml-rlp',
+                'XML curriculum' => 'xml'
+               );
+$format_obj = new stdClass();
+foreach ($format_array as $key => $value) {
+    $format_obj->name  = $key;
+    $format_obj->fomat = $value;
+    $f_list[] = clone $format_obj;
+}
+$content     .= Form::input_select('export_format', 'Export-Format', $f_list, 'name', 'format', $export_format , $error);
 $content .= '</form>';
 $footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_backup\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';  
 $html     = Form::modal(array('title'     => $header,
