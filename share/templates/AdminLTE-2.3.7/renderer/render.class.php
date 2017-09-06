@@ -563,7 +563,7 @@ class Render {
             $border_color = $objective->color; 
         }
        $html  =   '<div ';
-       if ($type == 'enabling_objective'){ //id is important to get scroll-to function while creating 
+       if ($type == 'enabling_objective'){ //id is important to get scroll-to function while creating
            $html  .= 'id="ena_'.$objective->id.'"';
        } else {
            $html  .= 'id="ter_'.$objective->id.'"';
@@ -1685,9 +1685,9 @@ class Render {
     }
     
     public static function split_button($params){
-        $label  = 'Auswahl';
-        $btn_type = 'btn btn-default btn-flat';
-        
+        $label      = 'Auswahl';
+        $btn_type   = 'btn btn-default btn-flat';
+        $type       = 'content';
         foreach($params as $key => $val) {
             $$key = $val;
         }
@@ -1696,7 +1696,18 @@ class Render {
                             <button type="button" class="'.$btn_type.' dropdown-toggle" data-toggle="dropdown">'.$label.' </button>
                             <ul class="dropdown-menu" role="menu">';
                             foreach($entrys as $key => $val) {
-                                $html .= '<li><a onclick="formloader(\'content\', \'show\','.$val->id.');">'.$val->title.'</span></a></li>';
+                                switch ($type) {
+                                    case 'content':
+                                        $html .= '<li><a onclick="formloader(\'content\', \'show\','.$val->id.');">'.$val->title.'</span></a></li>';
+                                    break;
+                                    case 'file':
+                                        $html .= '<li><a onclick="formloader(\'preview\',\'curriculum\','.$val->id.');">'.$val->title.'</span></a></li>';
+                                    break;
+                                    
+                                    default:
+                                        break;
+                                }
+                                
                             }
             $html  .=      '</ul>
                         </div>';
