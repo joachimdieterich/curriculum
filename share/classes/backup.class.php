@@ -82,12 +82,11 @@ class Backup {
     * @param int id  curriculum id
     * @return string filename of backup file
     */
-    function add($id, $xmlbackup = true, $imscc = false){
+    function add($id, $schema = 'xml'){
         global $CFG, $USER;
-        $file = new File();
         
-        $this->curriculum_id = $id;        
-
+        $file                   = new File();
+        $this->curriculum_id    = $id;        
         checkCapabilities('backup:add', $USER->role_id);                                    // Benutzerrechte überprüfen
         $c                      = new Curriculum();
         $c->id                  = $this->curriculum_id;
@@ -95,56 +94,172 @@ class Backup {
         $timestamp_folder       = date("Y-m-d_H-i-s").'_curriculum_nr_'.$this->curriculum_id;       // Generiere Verzeichnisname
         $this->temp_path        = $CFG->backup_root.'tmp/'.$timestamp_folder;                       // Speichere in /tmp/[timestamp]_curriculum_nr_[cur_id] Verzeichnis
         mkdir($this->temp_path, 0700);                                                              // Lese- und Schreibrechte nur für den Besitzer
-        /*Start xml export*/
-        if ($xmlbackup){
-            $this->generateXML($c, $timestamp_folder);                                              // generate xml Backup
-            $file->filename         = $timestamp_folder.'.curriculum';
-            $file->title            = 'Backup '.$c->curriculum; 
-            $file->description      = 'Backup vom '.$timestamp_folder;
-            $file->author           = $USER->firstname.' '.$USER->lastname.' ('.$USER->username.')';
-            $file->license          = 2;                                                                // --> alle Rechte vorbehalten
-            $file->type             = '.curriculum';
-            $file->path             = $c->id.'/';
-            $file->context_id       = 8;
-            $file->file_context     = 1;
-            $file->creator_id       = $USER->id;
-            $file->curriculum_id    = $this->curriculum_id;
-            $file->terminal_objective_id = NULL;
-            $file->enabling_objective_id = NULL;
-            $file->add();
-        }
-        /*End XML export*/
-        /*Start imscc export todo: fix bugs--> see php error log */
-        if ($imscc){
-            include (dirname(__FILE__).'../../libs/Backup/cc_constants.php');                           // Konstanten laden
-            
-            mkdir($this->temp_path, 0700);                                                              // Lese- und Schreibrechte nur für den Besitzer
-            $this->manifest();                                                                          // Manifest (Backup) erzeugen
+        
+        switch ($schema) {
+            case 'xml':     $this->generateXML($c, $timestamp_folder);                          // generate xml Backup
+                            $file->filename         = $timestamp_folder.'.curriculum';
+                            $file->type             = '.curriculum';
+                            $zip                    = true;
+                break;
+            case 'xml-rlp': $this->generate($c, $timestamp_folder);                             // schema http://bsbb.eu fachtype.xsd     
+                            $file->filename         = $timestamp_folder.'.zip';
+                            $file->type             = '.zip';
+                            $zip                    = true;
+                break;
 
-            $file->filename         = $timestamp_folder.'.imscc';
-            $file->title            = 'Backup '.$c->curriculum; 
-            $file->description      = 'Backup vom '.$timestamp_folder;
-            $file->author           = $USER->firstname.' '.$USER->lastname.' ('.$USER->username.')';
-            $file->license          = 2;                                                                // --> alle Rechte vorbehalten
-            $file->type             = '.imscc';
-            $file->path             = $c->id.'/';
-            $file->context_id       = 8;
-            $file->file_context     = 1;
-            $file->creator_id       = $USER->id;
-            $file->curriculum_id    = $this->curriculum_id;
-            $file->terminal_objective_id = NULL;
-            $file->enabling_objective_id = NULL;
-            $file->add();
-            $this->zipBackup($file->path, $file->filename);                                            //$path = curriculum_id/
+            case 'imscc':   include (dirname(__FILE__).'../../libs/Backup/cc_constants.php');   // Konstanten laden
+                            mkdir($this->temp_path, 0700);                                      // Lese- und Schreibrechte nur für den Besitzer
+                            $this->manifest();                                                  // Manifest (Backup) erzeugen
+                            $file->filename         = $timestamp_folder.'.imscc';
+                            $file->type             = '.imscc';
+                            $zip                    = true;
+                break;
+
+            default:        
+                break;
         }
-        /*End imscc export*/
+
+        $file->title            = 'Backup '.$c->curriculum; 
+        $file->description      = 'Backup vom '.$timestamp_folder;
+        $file->author           = $USER->firstname.' '.$USER->lastname.' ('.$USER->username.')';
+        $file->license          = 2;                                                                // --> alle Rechte vorbehalten
+        $file->path             = $c->id.'/';
+        $file->context_id       = 8;
+        $file->file_context     = 1;
+        $file->creator_id       = $USER->id;
+        $file->curriculum_id    = $this->curriculum_id;
+        $file->terminal_objective_id = NULL;
+        $file->enabling_objective_id = NULL;
+        $file->add();
+ 
+        if ($zip == true){
+            $this->zipBackup($file->path, $file->filename);          //$path = curriculum_id/
+        }
+        
         return $file->filename;
     }
     
-    public function generateXML($c, $filename, $format = 'zip'){
+    public function generate($c, $filename){
         global $CFG; 
 
-        $xml = new DOMDocument("1.0", "UTF-8");
+        $xml = new DOMDocument("1.0", "UTF-8"); 
+        /* root */
+        $root = $xml->createElement('fach');
+        $root->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
+        $root->setAttribute('xmlns', 'http://bsbb.eu');
+        $root->setAttribute('xsi:schemaLocation', 'http://bsbb.eu fachtype.xsd');
+            /* curriculum Attributes (c1)*/
+            $c1     = $xml->createElement("c1");
+            $c1_id  = $xml->createElement("id",       $c->id);    
+            $c1->appendChild($c1_id);
+            $c1_title = $xml->createElement("title",    $c->curriculum);
+            $c1->appendChild($c1_title);
+                /* (multiple subtexts) */
+                $subtext = $xml->createElement("subtext");
+                    $subtext_id     = $xml->createElement("id",       $c->id.'-1-1');
+                    $subtext->appendChild($subtext_id);
+                    $subtext_title  = $xml->createElement("title",    'Beschreibung');
+                    $subtext->appendChild($subtext_title);
+                    $subtext_content= $xml->createElement("content",  $c->description);
+                    $subtext->appendChild($subtext_content);
+                $c1->appendChild($subtext);
+            $root->appendChild($c1);
+            /* curriculum Attributes (c2)*/
+            $c2 = $xml->createElement("c2");
+                $c2_vorwort = $xml->createElement("vorwort");    
+                    $c2_vorwort_id      = $xml->createElement("id", $c->id.'-2');
+                    $c2_vorwort->appendChild($c2_vorwort_id);
+                    $c2_vorwort_titel   = $xml->createElement("id", 'Regelungen für das Land Rheinland-Pfalz');
+                    $c2_vorwort->appendChild($c2_vorwort_titel);
+                    $c2_vorwort_content = $xml->createElement("content", 'Die Elemente Vorwort unter c2 werden in RLP aus meiner Sicht nicht gebraucht, in Berlin-Brandenburg werden hier die unterschiedlichen Regelungen zw. Berlin und Brandenburg hinterlegt.');
+                    $c2_vorwort->appendChild($c2_vorwort_content);
+                $c2->appendChild($c2_vorwort);
+                
+                /* area --> Terminal Objectives */
+                foreach($c->terminal_objectives as $ter_value){ 
+                    $c2_area = $xml->createElement("area");   
+                        $c2_area_id     = $xml->createElement("id", $c->id.'-'.$ter_value->id);
+                        $c2_area->appendChild($c2_area_id);
+                        $c2_area_name   = $xml->createElement("name", $ter_value->terminal_objective);
+                        $c2_area->appendChild($c2_area_name);
+                        /* subarea --> enabling objectives */
+                        $c2_subarea     = $xml->createElement("subarea");
+                            $c2_subarea_id  = $xml->createElement("id", $c->id.'-'.$ter_value->id.'-1');
+                            $c2_subarea->appendChild($c2_subarea_id);
+                            $c2_subarea_name= $xml->createElement("name", $ter_value->terminal_objective);
+                            $c2_subarea->appendChild($c2_subarea_name);
+                            /* competence --> enabling objectives */
+                            if (count($ter_value->enabling_objectives) >= 1 AND $ter_value->enabling_objectives != false){
+                                foreach($ter_value->enabling_objectives as $ena_value){ 
+                                    $c2_subarea_competence  = $xml->createElement("competence");
+                                        $c2_subarea_competence_id   = $xml->createElement("id", $c->id.'-'.$ter_value->id.'-1'.$ena_value->id);
+                                        $c2_subarea->appendChild($c2_subarea_competence_id);
+                                        $c2_subarea_competence_name = $xml->createElement("name", $ena_value->enabling_objective);
+                                        $c2_subarea->appendChild($c2_subarea_competence_name);
+                                        $c2_subarea_competence_stufe= $xml->createElement("stufe");
+                                            $c2_subarea_competence_stufe_id = $xml->createElement("id", $c->id.'-'.$ter_value->id.'-1'.$ena_value->id.'-EFGH');
+                                            $c2_subarea_competence_stufe->appendChild($c2_subarea_competence_stufe_id);
+                                            $c2_subarea_competence_stufe_level      = $xml->createElement("id", 'EFGH');
+                                            $c2_subarea_competence_stufe->appendChild($c2_subarea_competence_stufe_level);
+                                            $c2_subarea_competence_stufe_standard   = $xml->createElement("standard");
+                                                $c2_subarea_competence_stufe_standard_id        = $xml->createElement("id", $c->id.'-'.$ter_value->id.'-1'.$ena_value->id.'-EFGH-1');
+                                                $c2_subarea_competence_stufe_standard->appendChild($c2_subarea_competence_stufe_standard_id);
+                                                $c2_subarea_competence_stufe_standard_content   = $xml->createElement("content", $ena_value->enabling_objective);
+                                                $c2_subarea_competence_stufe_standard->appendChild($c2_subarea_competence_stufe_standard_content);
+                                            $c2_subarea_competence_stufe->appendChild($c2_subarea_competence_stufe_standard);    
+                                        $c2_subarea->appendChild($c2_subarea_competence_stufe);
+                                    $c2_subarea->appendChild($c2_subarea_competence);
+                                }
+                            }
+                        $c2_area->appendChild($c2_subarea);
+                    $c2->appendChild($c2_area);
+                }  
+            $root->appendChild($c2);
+            
+            $c3 = $xml->createElement("c3");
+                $c3_id      = $xml->createElement("id", $c->id.'-3');
+                $c3->appendChild($c3_id);
+                $c3_name    = $xml->createElement("title", 'Themen und Inhalte');
+                $c3->appendChild($c3_id);
+                $c3_name    = $xml->createElement("vortext", 'Hier muss überlegt werden, welche Stuktur wir in RLP hinterlegen wollen. In diesem Beispiel werden die dem Lehrplan zugeordneten Datensätze aus der content tabelle zugeordnet und . Es handlt sich dabei um die Texte des Lehrplans, die nicht im Raster hinterlegt sind.');
+                $c3->appendChild($c3_name);
+                $c3_themeninhalt = $xml->createElement("themeninhalt");
+                    $c3_themeninhalt_id     = $xml->createElement("id", $c->id.'-3-1');
+                    $c3_themeninhalt->appendChild($c3_themeninhalt_id);
+                    $c3_themeninhalt_titel  = $xml->createElement("titel", 'Es sind mehrere Themeninhalte möglich.');
+                    $c3_themeninhalt->appendChild($c3_themeninhalt_titel);
+                    $c3_themeninhalt_content= $xml->createElement("content", 'In diesem Fall werden die content-Blöcke als untergeordnete Inhalt-Element ausgegeben.');
+                    $c3_themeninhalt->appendChild($c3_themeninhalt_content);
+                    /* content */
+                    $content            = new Content();
+                    $content_entries    = $content->get('curriculum', $c->id );
+                    $i = 0;
+                    foreach($content_entries as $con_value){ 
+                        $i++;
+                        $c3_themeninhalt_inhalt = $xml->createElement("inhalt");
+                            $c3_themeninhalt_inhalt_id      = $xml->createElement("id", $c->id.'-3-1'.$i);
+                            $c3_themeninhalt_inhalt->appendChild($c3_themeninhalt_inhalt_id);
+                            $c3_themeninhalt_inhalt_title   = $xml->createElement("title", $con_value->title);
+                            $c3_themeninhalt_inhalt->appendChild($c3_themeninhalt_inhalt_title);
+                            $c3_themeninhalt_inhalt_content = $xml->createElement("content", $con_value->content);
+                            $c3_themeninhalt_inhalt->appendChild($c3_themeninhalt_inhalt_content);   
+                        $c3_themeninhalt->appendChild($c3_themeninhalt_inhalt);
+                    }
+                $c3->appendChild($c3_themeninhalt);
+            $root->appendChild($c3);
+        $xml->appendChild($root);
+        
+        $xml->preserveWhiteSpace = false; 
+        $xml->formatOutput = true; 
+        
+        $file = $this->temp_path.'/'.$filename.'.xml'; // Backup / [cur_id] / 
+        file_put_contents($file, $xml->saveXML());
+    }
+    
+    public function generateXML($c, $filename){
+        global $CFG; 
+
+        $xml = new DOMDocument("1.0", "UTF-8"); 
         /* curriculum */
         $cur = $xml->createElement("curriculum");
         $cur->setAttribute("id",            $c->id);
@@ -235,9 +350,6 @@ class Backup {
         
         $file = $this->temp_path.'/'.$filename.'.xml'; // Backup / [cur_id] / 
         file_put_contents($file, $xml->saveXML());
-        if ($format == 'zip'){
-            $this->zipBackup($c->id.'/', $filename.'.curriculum');          //$path = curriculum_id/
-        }
     }
     
     private function array_to_Attribute($node, $var){
@@ -260,7 +372,7 @@ class Backup {
 
         $fileContent[]  = CC_HEADER;                                                 // header in fileContent-Variable schreiben
         array_push($fileContent, '<manifest '.CC_XMLNS.' '.CC_LOMIMSCC.' '.CC_XSI.' identifier="C_'.$this->curriculum_id.'" '.CC_SCHEMALOCATION.'>');               // add openingManifestTag
-        array_push($fileContent, implode("\n",$this->mMetadata(strtolower($c->language_code), $c->curriculum, $c->description, $c->subject)));    //Add openingManifestTag
+        array_push($fileContent, implode("\n",$this->mMetadata(strtolower($c->language_code), $c->curriculum, strip_tags($c->description), $c->subject)));    //Add openingManifestTag
         array_push($fileContent, '<organizations><organization identifier="O_joachimdieterich.de" structure="rooted-hierarchy">');
         //Objectives
         array_push($fileContent, implode("\n",$this->manifestItems($c)));
@@ -293,15 +405,15 @@ class Backup {
         $metadataTag[] = '<lomimscc:lom>';
         $metadataTag[] = '<lomimscc:general>';
         $metadataTag[] = '<lomimscc:title>';
-        $metadataTag[] = '<lomimscc:string language="'.$language.'">'.$curriculum.'</lomimscc:string>';
+        $metadataTag[] = '<lomimscc:string language="'.$language.'">'.strip_tags($curriculum).'</lomimscc:string>';
         $metadataTag[] = '</lomimscc:title>';
         $metadataTag[] = '<lomimscc:language>'.$language.'</lomimscc:language>';
         $metadataTag[] = '<lomimscc:description>';
-        $metadataTag[] = '<lomimscc:string language="'.$language.'">'.$description.'</lomimscc:string>';
+        $metadataTag[] = '<lomimscc:string language="'.$language.'">'.strip_tags($description).'</lomimscc:string>';
         $metadataTag[] = '</lomimscc:description>';
         $metadataTag[] = '<lomimscc:identifier>';
         $metadataTag[] = '<lomimscc:catalog>category</lomimscc:catalog>';
-        $metadataTag[] = '<lomimscc:entry>'.$subject.'</lomimscc:entry>';
+        $metadataTag[] = '<lomimscc:entry>'.strip_tags($subject).'</lomimscc:entry>';
         $metadataTag[] = '</lomimscc:identifier>';
         $metadataTag[] = '</lomimscc:general>';
         $metadataTag[] = '</lomimscc:lom>';
@@ -331,7 +443,7 @@ class Backup {
        //Schleife ab Thema 1, da bei Moodle im Thema 0 das Nachrichtenforum liegt.
        for($i = 0;$i < count($c->terminal_objectives); $i++){
            $manifestItems[] = '<item identifier="I_'.$c->terminal_objectives[$i]->id.'">';
-           $manifestItems[] = '<title>'.$c->terminal_objectives[$i]->terminal_objective.'</title>';
+           $manifestItems[] = '<title>'.strip_tags($c->terminal_objectives[$i]->terminal_objective).'</title>';
            // Add Topic Resources
            for ($l = 0; $l < count($c->terminal_objectives[$i]->files); $l++){
             $manifestItems[] = implode("\n", $this->addRessource($c->terminal_objectives[$i], $l));
@@ -339,7 +451,7 @@ class Backup {
            for($j = 0;$j < count($c->terminal_objectives[$i]->enabling_objectives);$j++){
                if ($c->terminal_objectives[$i]->enabling_objectives[$j]){
                    $manifestItems[] = '<item identifier="I_'.$c->terminal_objectives[$i]->enabling_objectives[$j]->id.'">'; 
-                   $manifestItems[] = '<title>'.$c->terminal_objectives[$i]->enabling_objectives[$j]->enabling_objective.'</title>';
+                   $manifestItems[] = '<title>'.strip_tags($c->terminal_objectives[$i]->enabling_objectives[$j]->enabling_objective).'</title>';
                    $manifestItems[] = '</item>';
                    //If available - add ressources
                    for ($k = 0; $k < count($c->terminal_objectives[$i]->enabling_objectives[$j]->files); $k++){
@@ -365,7 +477,7 @@ class Backup {
        global $CFG;
        if ($obj->files[$k]){ // wenn Material vorhanden
         $manifestItems[]    = '<item identifier="I_'.$obj->id.''.$obj->files[$k]->id.'" identifierref="I_'.$obj->id.''.$obj->files[$k]->id.'_'.$k.'_R">'; 
-        $manifestItems[]    = '<title>'.$obj->files[$k]->description.'</title>';         
+        $manifestItems[]    = '<title>'.strip_tags($obj->files[$k]->description).'</title>';         
         $manifestItems[]    = '</item>';
 
         //Add item ressource Tag 
@@ -375,9 +487,9 @@ class Backup {
        
         $resourceFolderName = "/i_".$obj->id."".$obj->files[$k]->id.'_'.$k."_FURL"; // Create new Ressource Folder and File
         if ($obj->files[$k]->type == '.url'){ // URL
-            $this->newUrlResource($resourceFolderName , $obj->files[$k]->description, $obj->files[$k]->filename); 
+            $this->newUrlResource($resourceFolderName , strip_tags($obj->files[$k]->description), $obj->files[$k]->filename); 
         } else {// sonstige Dateien
-            $this->newUrlResource($resourceFolderName , $obj->files[$k]->description, $CFG->request_url.$CFG->access_file.$obj->files[$k]->full_path); // Dateien sollen in einer späteren Version in das Backup integriert werden
+            $this->newUrlResource($resourceFolderName , strip_tags($obj->files[$k]->description), $CFG->request_url.$CFG->access_file.$obj->files[$k]->full_path); // Dateien sollen in einer späteren Version in das Backup integriert werden
         }    
     }
     return $manifestItems;
@@ -485,7 +597,6 @@ class Backup {
         $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->temp_path));    // initialize an iterator // pass it the directory to be processed
         foreach ($iterator as $key=>$value) {                                                           // iterate over the directory // add each file found to the archive
             if (substr($key, -2) != '/.' AND substr($key, -3) != '/..'){                                // exclude . and ..
-                //$zip->addFile(realpath($key), str_replace($CFG->backup_root, '/', $key)) or die ("ERROR: Could not add file: $key"); // --> geändert auf $this->temp_path damit unnötige Ordner im zip vermieden werden
                 $zip->addFile(realpath($key), str_replace($this->temp_path, '/', $key)) or die ("ERROR: Could not add file: $key"); //str_replace: $url abschneiden, da sonst der komplette Pfad als Ordnerstuktur in der zip erscheint
             }
         }
@@ -495,16 +606,15 @@ class Backup {
             $PAGE->message[] = array('message' => 'Backup fehlgeschlagen.', 'icon' => 'fa fa-cloud-download text-danger');// Schließen und speichern
         }
         
-        delete_folder($this->temp_path);                                        // Löscht temporäre Dateien
-        /*$files      = new RecursiveIteratorIterator(                                                    // Lösche temporäre Dateien
+        // Clean up temp
+        delete_folder($this->temp_path);                                                                
+        /*$files      = new RecursiveIteratorIterator(                                                    
         new RecursiveDirectoryIterator($this->temp_path, RecursiveDirectoryIterator::SKIP_DOTS),
-        RecursiveIteratorIterator::CHILD_FIRST);                                                        // CHILD_FIRST wichtig, damit erst die unterordner/Dateien gelöscht werden
+        RecursiveIteratorIterator::CHILD_FIRST);                                                        // CHILD_FIRST !, to delete subfolders first
         foreach ($files as $fileinfo) {
             $todo   = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
             $todo($fileinfo->getRealPath());
-        }
-        rmdir($this->temp_path);                                                                        // Grundfolder löschen
-         * 
-         */
+        }*/
+        //rmdir($this->temp_path);                                                                        // Delete root folder
     } 
 }

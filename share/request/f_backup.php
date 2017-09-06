@@ -76,17 +76,17 @@ if (isset($currentUrlId)){ $content .= $currentUrlId; }
 $content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
 $content .= Form::input_select('curriculum_id', 'Lehrplan', $options, 'course', 'curriculum_id', null , $error);
 /* Format selector*/
-$format_array = array('IMSCC Moodle' => 'imscc',
+$format_array = array('XML curriculum' => 'xml',
                 'XML RLP Digitale Lehrpläne' => 'xml-rlp',
-                'XML curriculum' => 'xml'
+                'IMSCC Moodle' => 'imscc'
                );
 $format_obj = new stdClass();
 foreach ($format_array as $key => $value) {
     $format_obj->name  = $key;
-    $format_obj->fomat = $value;
+    $format_obj->format = $value;
     $f_list[] = clone $format_obj;
 }
-$content     .= Form::input_select('export_format', 'Export-Format', $f_list, 'name', 'format', $export_format , $error);
+$content     .= Form::input_select('export_format', 'Export-Format', $f_list, 'name', 'format', null , $error);
 $content .= '</form>';
 $footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_backup\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';  
 $html     = Form::modal(array('title'     => $header,

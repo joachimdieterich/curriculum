@@ -107,8 +107,9 @@ $content .= '<div class="tab-content">
                 <div class="form-group clearfix">
                   <div class="pull-left">
                     <span id="curriculum_upload_fName" class="hidden"></span><br>
-                    <span id="curriculum_upload_fSize" class="hidden"></span><br>
-                    <span id="curriculum_upload_fType" class="hidden"></span>
+                    <span id="curriculum_upload_fSize" class="hidden"></span><br>';
+$content .= '<input id="max_size" name="max_size" type="hidden" value="<?php echo return_bytes(ini_get(\'upload_max_filesize\')); ?>" />';
+$content .= '       <span id="curriculum_upload_fType" class="hidden"></span>
                     <div id="curriculum_upload_fProgress" class="progress">
                         <div id="curriculum_upload_fProgress_bar" class="progress-bar progress-bar-primary progress-bar-striped" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" >
                           <span class="sr-only" id="curriculum_upload_fPercent"></span>
