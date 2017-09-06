@@ -87,4 +87,9 @@ $content = new Content();
 $TEMPLATE->assign('cur_content', array('label'=>'Hinweise zum Lehrplan', 'entrys'=> $content->get('curriculum', $enabling_objectives->curriculum_id )));
 $glossar = $content->get('glossar', $enabling_objectives->curriculum_id );
 $TEMPLATE->assign('glossar_content', array('label'=>'Glossar', 'entrys'=> $glossar));
-$TEMPLATE->assign('glossar_json',json_encode($glossar)); //
+if (!empty($glossar)){    
+    foreach($glossar as $gl){
+        $term_def[] = array('title' => $gl->title, 'content' => $gl->content); 
+    }
+    $TEMPLATE->assign('glossar_json',json_encode($term_def)); //
+} 

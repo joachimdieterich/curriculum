@@ -91,7 +91,7 @@ class Content {
         }
     }
        
-    public function get($dependency = 'curriculum', $id = null, $order = 'ASC'){
+    public function get($dependency = 'curriculum', $id = null){
         $entrys = array();                      //Array of content
         
         switch ($entrys) {

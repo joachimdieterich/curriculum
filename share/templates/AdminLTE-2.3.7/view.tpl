@@ -5,26 +5,21 @@
 {block name=nav}{$smarty.block.parent}{/block}
 
 {block name=additional_scripts}{$smarty.block.parent}
-    <script src="{$media_url}scripts/glossarizer/jquery.glossarize.min.js"></script>
-    <script src="{$media_url}scripts/glossarizer/tooltip/tooltip.min.js"></script>
+    {if isset($glossar_json)}
+        <script src="{$media_url}scripts/glossarizer/jquery.glossarize.min.js"></script>
+        <script src="{$media_url}scripts/glossarizer/tooltip/tooltip.min.js"></script>
 
-  <script>
-
-  $(function(){
-
-    $('.boxcontent').glossarizer({
-      sourceURL: {$glossar_json},
-      callback: function(){
-        new tooltip();
-      }
-    });
-
-
-  });
-
-  </script>
-    {literal}
-{/literal}        
+        <script>
+        $(function(){
+          $('.boxcontent').glossarizer({
+            sourceURL: {$glossar_json},
+            callback: function(){
+              new tooltip();
+            }
+          });
+        });
+        </script>
+    {/if}
 {/block}
 {block name=additional_stylesheets}
 <link rel="stylesheet" href="{$media_url}scripts/glossarizer/tooltip/tooltip.min.css">
