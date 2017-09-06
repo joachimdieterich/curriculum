@@ -85,7 +85,7 @@ $TEMPLATE->assign('solutions', $files->getSolutions('course', $USER->id, $PAGE->
 
 $content = new Content();
 $TEMPLATE->assign('cur_content', array('label'=>'Hinweise zum Lehrplan', 'entrys'=> $content->get('curriculum', $enabling_objectives->curriculum_id )));
-$glossar = $content->get('glossar', $enabling_objectives->curriculum_id );
+$glossar = $content->get('glossar', $enabling_objectives->curriculum_id , 'ORDER by ct.title ASC');
 $TEMPLATE->assign('glossar_content', array('label'=>'Glossar', 'entrys'=> $glossar));
 if (!empty($glossar)){    
     foreach($glossar as $gl){
