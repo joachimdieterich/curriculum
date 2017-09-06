@@ -67,6 +67,16 @@
                     </button>
                 {/if} 
             </div>
+            <div class="btn-group pull-left margin-r-5">
+                {Render::split_button($cur_files)}
+                {if isset($showaddObjectives)}
+                    <button type="button" class="btn btn-default" >
+                        <a href="{$template_url}renderer/uploadframe.php?context=curriculum&ref_id={$course[0]->curriculum_id}&modal=true&format=1" class="nyroModal">
+                            <i class="fa fa-upload text-black"></i>
+                        </a>
+                    </button>
+                {/if} 
+            </div>
         </div>
         <div id="search_curriculum_{$course[0]->curriculum_id}" class="col-xs-12 top-buffer" >
          {if $terminal_objectives != false}

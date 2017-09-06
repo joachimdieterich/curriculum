@@ -82,9 +82,14 @@ switch ($function) {
 
 $files = new File(); 
 $TEMPLATE->assign('solutions', $files->getSolutions('course', $USER->id, $PAGE->curriculum));  // load solutions
+/* curriculum files */
+$cur_files =  $files->getFiles('curriculum', $PAGE->curriculum, '', array('cur'=> true));  // load cur_files
+error_log('-'.json_encode($cur_files));
+$TEMPLATE->assign('cur_files', array('label'=>'Dateien zum Lehrplan', 'entrys'=> $cur_files, 'type' => 'file'));
 
 $content = new Content();
 $TEMPLATE->assign('cur_content', array('label'=>'Hinweise zum Lehrplan', 'entrys'=> $content->get('curriculum', $enabling_objectives->curriculum_id )));
+/* curriculum glossar */
 $glossar = $content->get('glossar', $enabling_objectives->curriculum_id , 'ORDER by ct.title ASC');
 $TEMPLATE->assign('glossar_content', array('label'=>'Glossar', 'entrys'=> $glossar));
 if (!empty($glossar)){    

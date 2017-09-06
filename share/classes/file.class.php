@@ -442,9 +442,17 @@ class File {
                                                         WHERE fl.creator_id = ? AND fl.context_id = ct.context_id '.$order_param);
                 $db->execute(array($id));
                 break;
-            case 'curriculum':          $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
-                                                        WHERE fl.cur_id = ? AND fl.context_id = 2 AND fl.context_id = ct.context_id '.$order_param);
-                $db->execute(array($id));
+            case 'curriculum':          if (isset($cur)){ // if param cur is set, load only files for cur 'level'
+                                            $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+                                                                                    WHERE fl.cur_id = ? AND fl.context_id = 2 AND fl.context_id = ct.context_id 
+                                                                                    AND ena_id IS NULL AND ter_id IS NULL '.$order_param);
+                                            $db->execute(array($id));
+                                        } else {
+                                            $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+                                                                                    WHERE fl.cur_id = ? AND fl.context_id = 2 AND fl.context_id = ct.context_id '.$order_param);
+                                            $db->execute(array($id));
+                                        }
+                
                 break;
             case 'terminal_objective':  $db = DB::prepare('SELECT DISTINCT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                             WHERE fl.ter_id = ? AND ISNULL(fl.ena_id) AND fl.context_id = 2 AND fl.context_id = ct.context_id
