@@ -42,6 +42,7 @@ function fileChange(form, fSelector, fName, fSize, fType, fUpload, fProgress, fP
     
     
     if (document.getElementById('max_size').value < formatBytes(file.size, 1)){
+        alert('filesize: '+file.size+ ' formatBytes: '+formatBytes(file.size, 1)+ ' byte max size: ' +(document.getElementById('max_size').value/1048576)+ 'file byte size: ' +(formatBytes(file.size, 1)/1048576));
         alert('Die Datei darf maximal '+(document.getElementById('max_size').value/1048576)+' groß sein. Dateigröße: '+(formatBytes(file.size, 1)/1048576));
     } else {
         document.getElementById(fSelector).style.visibility = 'hidden'; 
