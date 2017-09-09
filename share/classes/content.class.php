@@ -93,8 +93,8 @@ class Content {
        
     public function get($dependency = 'curriculum', $id = null, $order = "ORDER by ct.timecreated ASC"){
         $entrys = array();                      //Array of content
-        
-        switch ($entrys) {
+         
+        switch ($dependency) {
             case 'blog':    $order =  'ORDER by ct.timecreated DESC';
                             $db = DB::prepare('SELECT ct.id FROM content AS ct, content_subscriptions AS cts, context AS co
                                                         WHERE  co.context = "'.$dependency.'"
@@ -107,7 +107,7 @@ class Content {
                                                         WHERE  co.context = "terms"
                                                         AND co.context_id = cts.context_id
                                                         AND cts.content_id = ct.id');
-                                $db->execute();
+                                $db->execute();          
                 break;
 
             default:        
