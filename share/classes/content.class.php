@@ -103,6 +103,12 @@ class Content {
                                                         AND cts.content_id = ct.id '.$order);
                             $db->execute(array($id));
                 break;
+            case 'terms':       $db = DB::prepare('SELECT ct.id FROM content AS ct, content_subscriptions AS cts, context AS co
+                                                        WHERE  co.context = "terms"
+                                                        AND co.context_id = cts.context_id
+                                                        AND cts.content_id = ct.id');
+                                $db->execute();
+                break;
 
             default:        
                             $db = DB::prepare('SELECT ct.id FROM content AS ct, content_subscriptions AS cts, context AS co
