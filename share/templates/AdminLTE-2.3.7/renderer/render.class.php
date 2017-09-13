@@ -1764,18 +1764,8 @@ class Render {
                                     }, $href);
                                 
                             $html   .= '<li><a href="'.$href_regex.'">'.$l;
-                            if (isset($badge)){ //add badge on userlist to expel user todo: global solution
-                                $html   .= '<span class="pull-right badge '.$bg_badge.'" ';
-                                switch ($onclick_badge) {
-                                    case 'expelUser': $html   .= 'onclick="expelUser('.$group_id.', '.$value->id.')"';
-                                        break;
-
-                                    default:          $html   .= 'onclick="'.$onclick_badge.'"';
-                                        break;
-                                }
-                                $html   .= '>';
-                                if (isset($value->$badge)){ $html   .= $value->$badge; } else { $html   .= $badge; }        
-                                $html   .= '</span>';          
+                            if (isset($badge)){
+                                $html   .= '<span class="pull-right badge '.$bg_badge.'" onclick="'.$onclick_badge.'">'.$value->$badge.'</span>';          
                             }
                             $html   .= '</a></li>';           
                         } 
