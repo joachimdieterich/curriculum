@@ -689,7 +689,9 @@ class Render {
                             }
                         } else {
                             if ($type != 'terminal_objective'){
-                                $html  .= '<span class="fa fa-link text-primary box-sm-icon pull-right" data-toggle="tooltip" title="Lehr- /Rahmenplanbezüge" onclick=\'formloader("reference_view", "'.$type.'", "'.$objective->id.'");\'></span>';
+                                if (checkCapabilities('reference:show', $USER->role_id, false)){
+                                    $html  .= '<span class="fa fa-link text-primary box-sm-icon pull-right" data-toggle="tooltip" title="Lehr- /Rahmenplanbezüge" onclick=\'formloader("reference_view", "'.$type.'", "'.$objective->id.'");\'></span>';
+                                }
                                 if (checkCapabilities('course:selfAssessment', $USER->role_id, false)){
                                     if (is_array($user_id)){
                                         $user_id = implode(',',$user_id);
