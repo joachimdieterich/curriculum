@@ -200,6 +200,7 @@ function checkrow(/*rowNr,link*/) {
     if(req) {  
         req.onreadystatechange = function(){
             update_paginator(paginator);
+            InitScripts();
         };
         req.open("GET", url, false); //false --> important for print function
         req.send(null);
