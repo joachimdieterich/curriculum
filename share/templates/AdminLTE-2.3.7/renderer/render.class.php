@@ -673,6 +673,7 @@ class Render {
                         $html  .='</span>';
                         if ($edit){
                             if ($type != 'terminal_objective'){
+                                $html  .= '<span class="box-sm-icon pull-right text-primary" data-toggle="tooltip" title="Lehr- /Rahmenplanbezug hinzufügen" onclick=\'formloader("reference", "new", "'.$objective->id.'", {"context":"enabling_objective"});\'><i class="fa fa-link text-primary box-sm-icon"><i class="fa fa-plus fa-xs"></i></i></span>';
                                 $html  .= '<span class="fa fa-check-square-o pull-right box-sm-icon text-primary" onclick=\'formloader("addQuiz", "enabling_objective", "'.$objective->id.'");\'></span>';
                                 if (checkCapabilities('webservice:linkModule', $USER->role_id, false) AND $PAGE->action == 'view'){
                                     $html  .='<span class="fa fa-puzzle-piece ';
@@ -685,22 +686,25 @@ class Render {
                                 }   
                             }
                         } else {
-                            if (checkCapabilities('course:selfAssessment', $USER->role_id, false) AND $type != 'terminal_objective'){
-                                if (is_array($user_id)){
-                                    $user_id = implode(',',$user_id);
+                            if ($type != 'terminal_objective'){
+                                $html  .= '<span class="fa fa-link text-primary box-sm-icon pull-right" data-toggle="tooltip" title="Lehr- /Rahmenplanbezüge" onclick=\'formloader("reference_view", "'.$type.'", "'.$objective->id.'");\'></span>';
+                                if (checkCapabilities('course:selfAssessment', $USER->role_id, false)){
+                                    if (is_array($user_id)){
+                                        $user_id = implode(',',$user_id);
+                                    }
+                                    $html  .='<span class="pull-left">'.Render::accCheckboxes(array('id' => $objective->id, 'student' => $user_id, 'teacher' => $USER->id, 'link' => false)).'</span>';
                                 }
-                                $html  .='<span class="pull-left">'.Render::accCheckboxes(array('id' => $objective->id, 'student' => $user_id, 'teacher' => $USER->id, 'link' => false)).'</span>';
-                            }
-                            if (checkCapabilities('quiz:showQuiz', $USER->role_id, false) AND $type != 'terminal_objective' AND $PAGE->action == 'view'){
-                                if ($objective->quiz != '0'){
-                                    $html  .='<span class="fa fa-check-square-o pull-right box-sm-icon text-primary" onclick=\'formloader("quiz","enabling_objective","'.$objective->id.'");\'></span>';
+                                if (checkCapabilities('quiz:showQuiz', $USER->role_id, false) AND isset($PAGE->action)){
+                                    if ($objective->quiz != '0' AND $PAGE->action == 'view'){
+                                        $html  .='<span class="fa fa-check-square-o pull-right box-sm-icon text-primary" onclick=\'formloader("quiz","enabling_objective","'.$objective->id.'");\'></span>';
+                                    }
+                                }
+                                if (checkCapabilities('webservice:linkModuleResults', $USER->role_id, false) AND isset($PAGE->action) AND $objective->files['webservice'] != ''){
+                                    if ($PAGE->action == 'view'){
+                                        $html  .='<span class="box-sm-icon text-primary" onclick=\'processor("link_module_result","enabling_objective","'.$objective->id.'","","webservice/moodle");\'><i class="fa fa-external-link-square  fa-rotate-180"></i></span>';
+                                    }
                                 }
                             }
-                            if (checkCapabilities('webservice:linkModuleResults', $USER->role_id, false) AND $type != 'terminal_objective' AND $PAGE->action == 'view' AND $objective->files['webservice'] != ''){
-                                $html  .='<span class="box-sm-icon text-primary" onclick=\'processor("link_module_result","enabling_objective","'.$objective->id.'","","webservice/moodle");\'><i class="fa fa-external-link-square  fa-rotate-180"></i></span>';
-                            }
-                            
-                            
                         }  
                         
         $html  .=' </div>';
@@ -1760,8 +1764,18 @@ class Render {
                                     }, $href);
                                 
                             $html   .= '<li><a href="'.$href_regex.'">'.$l;
-                            if (isset($badge)){
-                                $html   .= '<span class="pull-right badge '.$bg_badge.'">'.$value->$badge.'</span>';          
+                            if (isset($badge)){ //add badge on userlist to expel user todo: global solution
+                                $html   .= '<span class="pull-right badge '.$bg_badge.'" ';
+                                switch ($onclick_badge) {
+                                    case 'expelUser': $html   .= 'onclick="expelUser('.$group_id.', '.$value->id.')"';
+                                        break;
+
+                                    default:          $html   .= 'onclick="'.$onclick_badge.'"';
+                                        break;
+                                }
+                                $html   .= '>';
+                                if (isset($value->$badge)){ $html   .= $value->$badge; } else { $html   .= $badge; }        
+                                $html   .= '</span>';          
                             }
                             $html   .= '</a></li>';           
                         } 
