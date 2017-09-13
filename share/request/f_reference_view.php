@@ -49,6 +49,9 @@ switch ($func) {
                                     $reference = new Reference();
                                     $references = $reference->get('reference_id', $_SESSION['CONTEXT']['enabling_objective']->context_id, $ena->id);
                                     $content    .= 'Zum Lernziel / Zur Kompetenz <strong>'.$ena->enabling_objective.'</strong> wurden die folgenden Bezüge gefunden:<br><hr>';
+                                    if (count($references) == 0){
+                                        $content    .= 'Keine Bezüge vorhanden.';
+                                    }
                                     foreach ($references as $ref) {
                                         $e = new EnablingObjective();
                                         if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id){
