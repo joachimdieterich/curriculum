@@ -55,9 +55,13 @@ foreach($u_list AS $ul){
 }
 $content   .= Render::box_widget(array('widget_title' => 'Benutzer',
                                        'data'         => $list,
+                                       'group_id'     => $g->id,
                                        'label'        => 'firstname, lastname', 
                                        'widget_desc'  => 'Mitglieder der Lerngruppe',
-                                       'bg_icon'      => 'fa fa-user'));
+                                       'bg_icon'      => 'fa fa-user',
+                                       'badge'        => 'ausschreiben',
+                                       'bg_badge'     => 'bg-gray',
+                                       'onclick_badge'=> 'expelUser'));
 
 $html       = Form::modal(array('title'   => 'Überblick Lerngruppe <strong>'.$g->group.'</strong>',
                                 'content' => $content));
