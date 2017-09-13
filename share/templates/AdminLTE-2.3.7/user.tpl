@@ -44,12 +44,14 @@
                         {/if}
                     </div>
                     {/if}
-                    <div class="pull-right">
-                        {if isset($myInstitutions)}
-                            {Form::input_select('institution_filter', null, $myInstitutions, 'institution', 'id', $filter_institution_id, null, "location.href='index.php?action=user&filter_institution='+this.value", 'Nach Institution filtern', 'col-sm-0', 'col-sm-12')}
+                    {if isset($myInstitutions)}
+                        {if count(myInstitutions) >= 1}
+                        <div class="pull-right">
+                            {Form::input_select('institution_filter', null, $myInstitutions, 'institution', 'id', $filter_institution_id, null, "location.href='index.php?action=user&filter_institution='+this.value", 'Nach Institution filtern', 'col-sm-0', 'col-sm-12')}      
+                        </div>
                         {/if}
-                    </div>
-                    
+                   {/if}
+
                     
                 </div><!-- /.box-header -->
                 <div class="box-body">
