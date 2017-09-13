@@ -230,7 +230,9 @@
                         {if checkCapabilities('template:change', $my_role_id, false)}
                             <!-- Control Sidebar Toggle Button -->
                             <li>
-                              <a href="#" onclick="formloader('settings', 'edit');"><i class="fa fa-gears"></i></a>
+                              <a href="#" onclick="formloader('settings', 'edit');"><i class="fa fa-gears"></i>
+                                  {if checkCapabilities('system:update', $my_role_id, false) AND isset($system_update)}<span class="label label-danger">Update</span>{/if}
+                              </a>
                             </li>
                         {/if}
                       </ul>

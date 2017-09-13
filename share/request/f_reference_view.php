@@ -2,10 +2,10 @@
 /** This file is part of curriculum - http://www.joachimdieterich.de
 * 
 * @package core
-* @filename f_description.php
-* @copyright 2015 Joachim Dieterich
+* @filename f_reference_view.php
+* @copyright 2017 Joachim Dieterich
 * @author Joachim Dieterich
-* @date 2015.05.31 19:51
+* @date 2017.09.10 08:42
 * @license: 
 *
 * The MIT License (MIT)
@@ -29,19 +29,10 @@ global $USER;
 $USER       = $_SESSION['USER'];
 $func       = $_GET['func'];
 
-$ter        = new TerminalObjective();
 switch ($func) {
-    case 'curriculum':          $cur        = new Curriculum();
-                                $cur->id    = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-                                $cur->load(false);
-        break;
-    case 'terminal_objective':  
-                                $ter->id    = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-        break;
     case 'enabling_objective':  $ena        = new EnablingObjective();
                                 $ena->id    = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-                                $ena->load();  
-                                $ter->id    = $ena->terminal_objective_id;                       
+                                $ena->load();                         
         break;
 
     default:
@@ -50,19 +41,14 @@ switch ($func) {
 
 $content    = '';
 switch ($func) {
-    case 'curriculum':          $content .= $cur->description;
-        break;
-    case 'terminal_objective':
-    case 'enabling_objective':  $ter->load();
-                                if ($ter->description AND $ter->description != ''){         $content .= $ter->description; } 
-                                if (isset($ena->description)){  $content .= '<br>'.$ena->description; } 
+    case 'enabling_objective':   
                                 if (!isset($ena->description) && !isset($ter->description)){    
                                   $content .= 'Keine Beschreibung vorhanden';
                                 }
                                 if ($func == 'enabling_objective'){
                                     $reference = new Reference();
                                     $references = $reference->get('reference_id', $_SESSION['CONTEXT']['enabling_objective']->context_id, $ena->id);
-                                     $content .= '<br><h4><strong>Bezüge zu anderen Lehr- /Rahmenplänen</strong></h4><hr>';
+                                    $content    .= 'Zum Lernziel / Zur Kompetenz <strong>'.$ena->enabling_objective.'</strong> wurden die folgenden Bezüge gefunden:<br><hr>';
                                     foreach ($references as $ref) {
                                         $e = new EnablingObjective();
                                         if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id){
@@ -76,13 +62,12 @@ switch ($func) {
                                             $c->load();
                                             $sc     = new Schooltype();
                                             $sc->load('id', $c->schooltype_id);
-                                            $content .= '<div class="row">'
+                                            $content .= '<div class="row">' 
                                                       . '<div class="col-xs-12 col-sm-6 pull-left"><dt>Ausbildungsrichtung<dd>'.$sc->schooltype.'</dd></dt>';
                                             $content .= '<br><dt>Fach<dd>'.$c->subject.'</dd></dt>';
-                                            $content .= '<br><dt>Lehrplan<dd>'.$c->curriculum.'</dd></dt><br></div>'
-                                                      . '<div class="col-xs-12 col-sm-3 float-right">'
-                                                        . '<dt>Lernziel/Kompetenz</dt>'.Render::objective(array('type' => 'enabling_objective', 'objective' => $e)).'</div>';
-                                            $content .= '<div class="col-xs-12 col-sm-3 float-right"><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('objective' => $t)).'</div>';
+                                            $content .= '<br><dt>Lehrplan<dd>'.$c->curriculum.'</dd></dt><br></div>';
+                                            $content .= '<div class="col-xs-12 col-sm-3 ""><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('objective' => $t, 'color')).'</div>';
+                                            $content .= '<div class="col-xs-12 col-sm-3 "><dt>Lernziel/Kompetenz</dt>'.Render::objective(array('type' => 'enabling_objective', 'objective' => $e, 'border_color' => $t->color)).'</div>';
                                             $content .= '</div><hr style="clear:both;">';
                                         }
                                     }
@@ -93,7 +78,7 @@ switch ($func) {
 
 
 $html = Form::modal(array('target' => 'null',
-                          'title'   => 'Beschreibung',
+                          'title'   => 'Bezüge zu anderen Lehr- /Rahmenplänen',
                           'content' => $content));
 
 echo json_encode(array('html'=>$html));

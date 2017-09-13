@@ -64,9 +64,33 @@ try { // Error handling
             $mail->loadNewMessages($USER->id);
             if (isset($mail->inbox)){
                 $TEMPLATE->assign('mails', $mail->inbox);
-            }    
+            }
         }   
-        
+        if (checkCapabilities('system:update', $USER->role_id, false)){
+            /*$update          = new Update();
+            $update_db       = $update->load();
+            
+            $update_files    = scandir($CFG->share_root.'update');              // get update files
+            if (count($update_files) == 2){ 
+                $last_update = false; // no update file available
+            } else {
+                $last_update = array_values(array_slice($update_files, -1))[0]; // readl last update file
+            }
+            
+            if ($update_db == false){
+                if (!$last_update == false){
+                    //* do ALL update and write filename to config db
+                }
+            } else {
+                if (in_array($update->value, $update_files)){
+                   //iterate array and do update and write filename to config 
+                }
+            }
+            
+            
+            error_log($last_update);*/
+            $TEMPLATE->assign('system_update', true);
+        }
         if (isset($_SESSION['PAGE']->print)){
             $pdf            = new Pdf();
             $pdf->content   = $_SESSION['PAGE']->print->content;
