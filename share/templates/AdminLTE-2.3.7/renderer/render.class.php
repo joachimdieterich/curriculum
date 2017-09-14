@@ -673,9 +673,7 @@ class Render {
                         $html  .='</span>';
                         if ($edit){
                             if ($type != 'terminal_objective'){
-                                if (checkCapabilities('reference:add', $USER->role_id, false)){
-                                    $html  .= '<span class="box-sm-icon pull-right text-primary" data-toggle="tooltip" title="Lehr- /Rahmenplanbezug hinzufügen" onclick=\'formloader("reference", "new", "'.$objective->id.'", {"context":"enabling_objective"});\'><i class="fa fa-link text-primary box-sm-icon"><i class="fa fa-plus fa-xs"></i></i></span>';
-                                }
+                                
                                 $html  .= '<span class="fa fa-check-square-o pull-right box-sm-icon text-primary" onclick=\'formloader("addQuiz", "enabling_objective", "'.$objective->id.'");\'></span>';
                                 if (checkCapabilities('webservice:linkModule', $USER->role_id, false) AND $PAGE->action == 'view'){
                                     $html  .='<span class="fa fa-puzzle-piece ';
@@ -690,7 +688,10 @@ class Render {
                         } else {
                             if ($type != 'terminal_objective'){
                                 if (checkCapabilities('reference:show', $USER->role_id, false)){
-                                    $html  .= '<span class="fa fa-link text-primary box-sm-icon pull-right" data-toggle="tooltip" title="Lehr- /Rahmenplanbezüge" onclick=\'formloader("reference_view", "'.$type.'", "'.$objective->id.'");\'></span>';
+                                    $html  .= '<span class="fa fa-link text-primary box-sm-icon pull-left" data-toggle="tooltip" title="Lehr- /Rahmenplanbezüge" onclick=\'formloader("reference_view", "'.$type.'", "'.$objective->id.'");\'></span>';
+                                }
+                                if (checkCapabilities('reference:add', $USER->role_id, false)){
+                                    $html  .= '<span class="box-sm-icon pull-right text-primary" data-toggle="tooltip" title="Lehr- /Rahmenplanbezug hinzufügen" onclick=\'formloader("reference", "new", "'.$objective->id.'", {"context":"enabling_objective"});\'><i class="fa fa-link text-primary box-sm-icon"><i class="fa fa-plus fa-xs"></i></i></span>';
                                 }
                                 if (checkCapabilities('course:selfAssessment', $USER->role_id, false)){
                                     if (is_array($user_id)){
@@ -1725,13 +1726,15 @@ class Render {
     
     public static function box_widget($params){
         /*default params*/
-        $class_width     = 'col-md-6';
+        $class_width    = 'col-md-6';
         $widget_type    = 'user';
         $bg_color       = '';
         $widget_title   = 'Titel';
         $widget_desc    = 'desc';
         $bg_badge       = 'bg-green';
         $href           = '#';
+        $onclick_badge  = '';
+        
         // $data        == data array;
         // more params: $label, $badge, $bg_icon 
         
