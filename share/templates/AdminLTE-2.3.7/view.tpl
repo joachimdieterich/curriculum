@@ -18,8 +18,22 @@
             }
           });
         });
+        function toggleAll(){
+            return (this.tog^=1) ? $('.collapse').collapse('hide') : $('.collapse').collapse('show');
+        };
         </script>
     {/if}
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $('a[data-toggle="collapse"]').click(function () {
+                $(this).find('i.fa').toggleClass('fa-compress fa-expand');
+        });
+    });
+    function toggleAll(){
+        return (this.tog^=1) ? $('.collapse').collapse('hide') : $('.collapse').collapse('show');
+    };
+    
+</script>
 {/block}
 {block name=additional_stylesheets}
 <link rel="stylesheet" href="{$media_url}scripts/glossarizer/tooltip/tooltip.min.css">
