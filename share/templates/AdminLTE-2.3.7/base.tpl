@@ -124,43 +124,45 @@
                           </a>
                         </li> 
                         {/if}
-                        {if isset($mails)}  
-                        <!-- Messages: style can be found in dropdown.less-->
-                        <li class="dropdown messages-menu">
-                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 15px 8px 15px 8px;">
-                            <i class="fa fa-envelope-o"></i>
-                            <span class="label label-success">{count($mails)}</span>
-                          </a>
-                          <ul class="dropdown-menu">
-                            <li class="header">Sie haben {count($mails)} neue Nachrichten</li>
-                            <li>
-                              <!-- inner menu: contains the actual data -->
-                              <ul class="menu">
-                                  {section name=mes loop=$mails}
-                                      <li><!-- start message -->
-                                          <a href="index.php?action=messages&function=showInbox&id={$mails[mes]->id}">
-                                            <div class="pull-left">
-                                              <img src="{$access_file}{$mails[mes]->sender_file_id|resolve_file_id:"xs"}" class="img-circle" alt="User Image">
-                                            </div>
-                                            <h4>
-                                              {$mails[mes]->sender_username}
-                                              <small><i class="fa fa-calendar-times-o"></i> {$mails[mes]->creation_time}</small>
-                                            </h4>
-                                            <p>{$mails[mes]->subject}</p>
-                                          </a>
-                                      </li>
-                                  {/section}
-                                <!-- end message -->
+                        {if checkCapabilities('menu:readMessages', $my_role_id, false)}
+                            {if isset($mails)}  
+                            <!-- Messages: style can be found in dropdown.less-->
+                            <li class="dropdown messages-menu">
+                              <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 15px 8px 15px 8px;">
+                                <i class="fa fa-envelope-o"></i>
+                                <span class="label label-success">{count($mails)}</span>
+                              </a>
+                              <ul class="dropdown-menu">
+                                <li class="header">Sie haben {count($mails)} neue Nachrichten</li>
+                                <li>
+                                  <!-- inner menu: contains the actual data -->
+                                  <ul class="menu">
+                                      {section name=mes loop=$mails}
+                                          <li><!-- start message -->
+                                              <a href="index.php?action=messages&function=showInbox&id={$mails[mes]->id}">
+                                                <div class="pull-left">
+                                                  <img src="{$access_file}{$mails[mes]->sender_file_id|resolve_file_id:"xs"}" class="img-circle" alt="User Image">
+                                                </div>
+                                                <h4>
+                                                  {$mails[mes]->sender_username}
+                                                  <small><i class="fa fa-calendar-times-o"></i> {$mails[mes]->creation_time}</small>
+                                                </h4>
+                                                <p>{$mails[mes]->subject}</p>
+                                              </a>
+                                          </li>
+                                      {/section}
+                                    <!-- end message -->
+                                  </ul>
+                                </li>
+                                <li class="footer"><a href="index.php?action=messages&function=showInbox">Alle Nachrichten</a></li>
                               </ul>
                             </li>
-                            <li class="footer"><a href="index.php?action=messages&function=showInbox">Alle Nachrichten</a></li>
-                          </ul>
-                        </li>
-                        {elseif checkCapabilities('mail:loadInbox', $my_role_id, false)}
-                        <li class=" messages-menu">   
-                            <a href="index.php?action=messages&function=showInbox" style="padding: 15px 8px 15px 8px;"><i class="fa fa-envelope-o"></i></a>
-                        </li>
-                        {/if} 
+                            {else}
+                            <li class=" messages-menu">   
+                                <a href="index.php?action=messages&function=showInbox" style="padding: 15px 8px 15px 8px;"><i class="fa fa-envelope-o"></i></a>
+                            </li>
+                            {/if} 
+                        {/if}
 
                         {if isset($page_message)}
                         <!-- Notifications: style can be found in dropdown.less -->
