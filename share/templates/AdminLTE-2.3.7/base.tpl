@@ -117,11 +117,13 @@
                             <i class="fa fa-calendar"></i>
                           </a>
                         </li>  
+                        {if checkCapabilities('menu:readTimeline', $my_role_id, false)}  
                         <li class="timeline-menu">   
                         <a href="index.php?action=portfolio" style="padding: 15px 8px 15px 8px;">
                             <i class="fa fa-cubes"></i>
                           </a>
-                        </li>  
+                        </li> 
+                        {/if}
                         {if isset($mails)}  
                         <!-- Messages: style can be found in dropdown.less-->
                         <li class="dropdown messages-menu">
@@ -154,7 +156,7 @@
                             <li class="footer"><a href="index.php?action=messages&function=showInbox">Alle Nachrichten</a></li>
                           </ul>
                         </li>
-                        {else}
+                        {elseif checkCapabilities('mail:loadInbox', $my_role_id, false)}
                         <li class=" messages-menu">   
                             <a href="index.php?action=messages&function=showInbox" style="padding: 15px 8px 15px 8px;"><i class="fa fa-envelope-o"></i></a>
                         </li>
