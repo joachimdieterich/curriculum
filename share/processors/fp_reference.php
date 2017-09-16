@@ -32,11 +32,20 @@ if (!isset($_SESSION['PAGE']->target_url)){     //if target_url is not set -> us
 
 $reference = new Reference(); 
 
+$purify                                 = HTMLPurifier_Config::createDefault();
+$purify->set('Core.Encoding', 'UTF-8'); // replace with your encoding
+$purify->set('HTML.Doctype', 'HTML 4.01 Transitional'); // replace with your doctype
+$purifier                               = new HTMLPurifier($purify);
+
+$reference->description = $purifier->purify(filter_input(INPUT_POST, 'description', FILTER_UNSAFE_RAW));
+
 $gump                  = new Gump();    /* Validation */
 $_POST                 = $gump->sanitize($_POST);       //sanitize $_POST
 // todo alle Regeln definieren
 $gump->validation_rules(array(  
-'objective_id'  => 'required'
+'terminal_objective_id'  => 'required',
+/*'enabling_objective_id'  => 'required', */
+'grade_id'      => 'required'
 ));
 
 $validated_data  = $gump->run($_POST);
@@ -52,13 +61,33 @@ if($validated_data === false) {/* validation failed */
     if (isset($_POST['id'])){
         $reference->id              = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
     } 
-    $reference->context_id          = $_SESSION['CONTEXT']['enabling_objective']->context_id; //$_POST['context_id']
+    
+    $reference->grade_id            = filter_input(INPUT_POST, 'grade_id', FILTER_VALIDATE_INT);
+    $reference->file_context        = filter_input(INPUT_POST, 'file_context', FILTER_VALIDATE_INT);
+    
     $reference->source_context_id   = $reference->context_id;
     $reference->source_reference_id = $_POST['reference_id'];
-    $reference->target_context_id   = $reference->context_id;
-    $reference->target_reference_id = $_POST['objective_id'][0];
     
-    switch ($_POST['func']) {
+    if (isset($_POST['enabling_objective_id'])){
+        $reference->context_id          = $_SESSION['CONTEXT']['enabling_objective']->context_id; 
+        $reference->target_context_id   = $reference->context_id;
+        foreach ($_POST['enabling_objective_id'] as $ena_id) { 
+            $reference->target_reference_id = $ena_id; 
+            if ($reference->add()){
+                $_SESSION['PAGE']->message[] = array('message' => 'Referenz hinzufgefügt', 'icon' => 'fa-link text-success');
+            } 
+        }
+         
+    } else if (isset($_POST['terminal_objective_id'])){
+        $reference->context_id          = $_SESSION['CONTEXT']['terminal_objective']->context_id; 
+        $reference->target_context_id   = $reference->context_id;
+        $reference->target_reference_id = $_POST['terminal_objective_id'];
+        if ($reference->add()){
+            $_SESSION['PAGE']->message[] = array('message' => 'Referenz hinzufgefügt', 'icon' => 'fa-link text-success');
+        } 
+    }
+    
+    /*switch ($_POST['func']) {
         case 'new':     if ($reference->add()){
                             $_SESSION['PAGE']->message[] = array('message' => 'Referenz hinzufgefügt', 'icon' => 'fa-link text-success');
                         }               
@@ -70,7 +99,7 @@ if($validated_data === false) {/* validation failed */
 
         default:
             break;
-    }
+    }*/
     $_SESSION['FORM']            = null;                     // reset Session Form object 
 }
 
