@@ -27,16 +27,47 @@ include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER;
 $USER      = $_SESSION['USER'];
-$cur_id    = filter_input(INPUT_GET, 'dependency_id', FILTER_VALIDATE_INT);
-$ena       = new EnablingObjective();
-$ena->curriculum_id = $cur_id;
-$obj       = $ena->getObjectives('curriculum', $cur_id);
+$ref_id    = filter_input(INPUT_GET, 'dependency_id', FILTER_VALIDATE_INT);
+
+switch (filter_input(INPUT_GET, 'format', FILTER_UNSAFE_RAW)) { //format is used to get case
+    case 'terminal_objective':  $ter                = new TerminalObjective();
+                                $obj                = $ter->getObjectives('curriculum', $ref_id);
+                                $objective          = 'terminal_objective';
+        break;  
+    case 'enabling_objective_from_curriculum':  //! only enabling_objectives of the first terminal objective are returned --> to fill enabling_obj pulldown if terminal_obj pulldown is loaded over ajax                                
+                                $ter                = new TerminalObjective();
+                                $ter_obj            = $ter->getObjectives('curriculum', $ref_id);
+                                $ena                = new EnablingObjective();
+                                $obj                = $ena->getObjectives('terminal_objective', $ter_obj[0]->id);
+                                $objective          = 'enabling_objective';
+        break;
+    case 'enabling_objective_from_terminal_objective':  
+                                $ena                = new EnablingObjective();
+                                $obj                = $ena->getObjectives('terminal_objective', $ref_id);
+                                $objective          = 'enabling_objective';
+        break;
+
+    case 'enabling_objective':  $ena                = new EnablingObjective();
+                                $ena->curriculum_id = $ref_id;
+                                $obj                = $ena->getObjectives('curriculum', $ref_id);
+                                
+                                if (isset($only_first_terminal_objective)){
+                                    $first_terminal_obj = $obj[0]->terminal_objective_id;
+                                }
+                                $objective          = 'enabling_objective';
+    default:
+        break;
+}
+
+
+
 $html      = '';
+
 foreach ($obj as $value) {
-    $html  .=  '<option label="'.strip_tags($value->enabling_objective).'" value="'.$value->id.'"'; 
+    $html  .=  '<option label="'.strip_tags($value->$objective).'" value="'.$value->id.'"'; 
     if (filter_input(INPUT_GET, 'select_id', FILTER_VALIDATE_INT) == $value->id) { 
         $html  .= ' selected="selected"';    
     } 
-    $html  .= '><span>'.strip_tags($value->enabling_objective).'<span></option>';
+    $html  .= '><span>'.strip_tags($value->$objective).'<span></option>';
 }
 echo json_encode(array('html'=>$html));

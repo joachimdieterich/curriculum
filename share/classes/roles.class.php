@@ -35,6 +35,7 @@ class Roles {
      * @var string
      */
     public $role; 
+    public $order_id;
     /**
      * Description of role
      * @var string
@@ -149,6 +150,7 @@ class Roles {
         if ($result){
             $this->id           = $result->id;
             $this->role         = $result->role;
+            $this->order_id     = $result->order_id;
             $this->description  = $result->description;
             $this->creation_time= $result->creation_time;
             $this->creator_id   = $result->creator_id;  

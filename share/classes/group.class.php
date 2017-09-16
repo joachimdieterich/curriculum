@@ -252,7 +252,7 @@ class Group {
      * @param type $id
      * @return array of groups objects 
      */
-    public function getGroups($dependency = null, $id = null, $paginator = ''){
+    public function getGroups($dependency = null, $id = null, $paginator = '', $institution_id = null){
         global $USER;
         $order_param = orderPaginator($paginator, array('id'            => 'gp',
                                                         'groups'        => 'gp',
@@ -291,6 +291,17 @@ class Group {
                                                 AND gp.id = ANY (SELECT group_id FROM groups_enrolments WHERE user_id = ? AND status = 1) 
                                                 '.$order_param);
                             $db->execute(array($id));
+                 break; 
+            case 'user_institution':    $db = DB::prepare('SELECT gp.*, gr.grade, se.semester, ins.institution AS institution_id, usr.username AS creator_id
+                                                FROM groups AS gp, semester AS se, institution AS ins, users AS usr, grade AS gr
+                                                WHERE se.id = gp.semester_id
+                                                AND gp.grade_id = gr.id
+                                                AND ins.id = gp.institution_id
+                                                AND ins.id = ?
+                                                AND usr.id = gp.creator_id
+                                                AND gp.id = ANY (SELECT group_id FROM groups_enrolments WHERE user_id = ? AND status = 1) 
+                                                '.$order_param);
+                            $db->execute(array($institution_id, $id));
                  break; 
             case 'institution':   $db = DB::prepare('SELECT gp.*, gr.grade, se.semester FROM groups AS gp, grade AS gr, semester AS se
                                                      WHERE se.id = gp.semester_id

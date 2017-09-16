@@ -396,22 +396,33 @@ class User {
         checkCapabilities('user:delete', $USER->role_id);
         $this->load('id', $this->id, false);
         $LOG->add($USER->id, 'user.class.php', dirname(__FILE__), 'Delete user: ('.$this->resolveUserId($this->id).'), creator_id: '.$this->creator_id);
+        $role_check             = new Roles();
+        $role_check->load('id', $this->role_id);
+        $delete_user_order_id   = $role_check->order_id;
+        $role_check->load('id', $USER->role_id);
+        $user_order_id          = $role_check->order_id;
+        error_log ($delete_user_order_id.'< target  user >'.$user_order_id);
         if ($this->id != $USER->id){
-            $db = DB::prepare('DELETE FROM users WHERE id = ?');
-            if ($db->execute(array($this->id))) {
-                $db1 = DB::prepare('DELETE FROM user_accomplished WHERE user_id = ?'); 
-                $db1->execute(array($this->id));
-                $db1 = DB::prepare('DELETE FROM accept_terms WHERE user_id = ?'); 
-                $db1->execute(array($this->id));
-                $db1 = DB::prepare('DELETE FROM groups_enrolments WHERE user_id = ?'); 
-                $db1->execute(array($this->id));
-                $db1 = DB::prepare('DELETE FROM log WHERE user_id = ?'); //todo: maybe log should not be deleted
-                $db1->execute(array($this->id));
-                /* Hier sollte alles gelöscht werden, was der Benutzer angelegt hat, evtl. auch Daten archivieren*/
-                $db2 = DB::prepare('DELETE FROM institution_enrolments WHERE user_id = ?');
-                $_SESSION['PAGE']->message[] = array('message' => 'Benutzerkonten wurden erfolgreich gelöscht!', 'icon' => 'fa-user text-success');
-                return $db2->execute(array($this->id));
-            } else {return false;}   
+            //if ($delete_user_order_id >= $user_order_id){ //user can only delete other user who has a higher role_order_id 
+            
+                $db = DB::prepare('DELETE FROM users WHERE id = ?');
+                if ($db->execute(array($this->id))) {
+                    $db1 = DB::prepare('DELETE FROM user_accomplished WHERE user_id = ?'); 
+                    $db1->execute(array($this->id));
+                    $db1 = DB::prepare('DELETE FROM accept_terms WHERE user_id = ?'); 
+                    $db1->execute(array($this->id));
+                    $db1 = DB::prepare('DELETE FROM groups_enrolments WHERE user_id = ?'); 
+                    $db1->execute(array($this->id));
+                    $db1 = DB::prepare('DELETE FROM log WHERE user_id = ?'); //todo: maybe log should not be deleted
+                    $db1->execute(array($this->id));
+                    /* Hier sollte alles gelöscht werden, was der Benutzer angelegt hat, evtl. auch Daten archivieren*/
+                    $db2 = DB::prepare('DELETE FROM institution_enrolments WHERE user_id = ?');
+                    $_SESSION['PAGE']->message[] = array('message' => 'Benutzerkonten wurden erfolgreich gelöscht!', 'icon' => 'fa-user text-success');
+                    return $db2->execute(array($this->id));
+                } else {return false;}   
+            /*} else {
+                $_SESSION['PAGE']->message[] = array('message' => 'Sie können keine Nutzer mit einer übergeordneter Rollen löschen!', 'icon' => 'fa-user text-warning');
+            }*/
         } else {
             $_SESSION['PAGE']->message[] = array('message' => 'Man kann sich nicht selbst löschen!', 'icon' => 'fa-user text-warning');
         }
@@ -755,7 +766,7 @@ class User {
      * @param int $id
      * @return array of object 
      */
-    public function userList($dependency = 'institution', $paginator = '', $lost = false, $id = false){
+    public function userList($dependency = 'institution', $paginator = '', $lost = false, $institution_id = 'false', $role_id = 'false', $group_id = 'false' ){
         global $USER;
         $order_param = orderPaginator($paginator, array('id'        => 'us',
                                                         'username'  => 'us',
@@ -795,22 +806,51 @@ class User {
                                     $db->execute(array($USER->institution_id, $USER->role_id, $USER->id));  
                                 }                       
             break;
-            case 'filter_institution':if (checkCapabilities('user:userListInstitution', $USER->role_id,false)) { //Manager
-                                    $db = DB::prepare('SELECT us.* FROM users AS us WHERE us.id = ANY (SELECT user_id FROM institution_enrolments 
-                                                    WHERE institution_id = ? AND status = 1 AND role_id <> 1) '.$order_param); // HACK to prevent edit of super user
-                                    $db->execute(array($id)); 
-                                } else if (checkCapabilities('user:userListGroup', $USER->role_id,false)) { //Kursersteller
+            case 'filter_institution':
+                                if (checkCapabilities('user:userListInstitution', $USER->role_id,false)) { //Schuladmin
+                                    if ($role_id == 'false'){ 
+                                        $role_filter = ' '; 
+                                    } else { 
+                                        $role_filter = 'AND ro.id = '.intval($role_id); 
+                                    }
+                                    if ($group_id  == 'false'){ 
+                                        $group_filter = 'ANY (SELECT group_id FROM groups_enrolments WHERE user_id = '.intval($USER->id).' AND status =  1)'; 
+                                    } else { 
+                                        $group_filter = intval($group_id); 
+                                    }
+                            
+                                    $db = DB::prepare('SELECT DISTINCT us.* FROM users AS us, groups_enrolments AS ge 
+                                                        WHERE us.id = ANY (SELECT ie.user_id FROM institution_enrolments AS ie,roles AS ro
+                                                            WHERE ie.institution_id = ? 
+                                                            AND ie.status = 1 
+                                                            AND ie.role_id <> 1
+                                                            AND ro.id = ie.role_id '.$role_filter.'
+                                                            AND ro.order_id > (SELECT order_id FROM roles WHERE id = ?))
+                                                        AND ge.user_id = us.id 
+                                                        AND ge.status = 1
+                                                        AND ge.group_id = '.$group_filter.' '.$order_param); // HACK to prevent edit of super user
+                                    $db->execute(array($institution_id, $USER->role_id)); 
+                                } else if (checkCapabilities('user:userListGroup', $USER->role_id,false)) { //Teacher
+                                    if ($role_id == 'false'){ 
+                                        $role_filter = ' '; 
+                                    } else { 
+                                        $role_filter = 'AND ro.id = '.intval($role_id); 
+                                    }
+                                    if ($group_id  == 'false'){ 
+                                        $group_filter = 'ANY (SELECT group_id FROM groups_enrolments WHERE user_id = '.intval($USER->id).' AND status =  1)'; 
+                                    } else { 
+                                        $group_filter = intval($group_id); 
+                                    }
                                     $db = DB::prepare('SELECT DISTINCT us.*, ro.role AS role_name FROM users AS us, groups_enrolments AS ge, institution_enrolments AS ie, roles AS ro 
                                                         WHERE ie.institution_id = ? AND ie.status = 1
                                                         AND ie.role_id <> 1 /* HACK to prevent edit of super user*/
-                                                        AND ro.id = ie.role_id 
+                                                        AND ro.id = ie.role_id '.$role_filter.'  
                                                         AND ro.order_id > (SELECT order_id FROM roles WHERE id = ?)
                                                         AND ie.user_id = us.id 
                                                         AND ge.user_id = ie.user_id
                                                         AND ge.status = 1
-                                                        AND ge.group_id = ANY (SELECT group_id FROM groups_enrolments 
-                                                                                               WHERE user_id = ? AND status =  1)  '.$order_param);
-                                    $db->execute(array($id, $USER->role_id, $USER->id));  
+                                                        AND ge.group_id = '.$group_filter.' '.$order_param);
+                                    $db->execute(array($institution_id, $USER->role_id));  
                                 }
                 break;
             case 'institution_overview':$db = DB::prepare('SELECT DISTINCT us.*, ro.role AS role_name FROM users AS us, groups_enrolments AS ge, institution_enrolments AS ie, roles AS ro 
@@ -819,7 +859,7 @@ class User {
                                                         AND ie.user_id = us.id 
                                                         AND ge.user_id = ie.user_id
                                                         AND ge.status = 1');
-                                    $db->execute(array($id)); 
+                                    $db->execute(array($institution_id)); 
                 
                 break; 
             default:  break;

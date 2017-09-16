@@ -624,21 +624,23 @@ class Render {
                         }
                     }
                 }
-                if ($PAGE->action == 'view' AND $type == 'enabling_objective' AND checkCapabilities('file:solutionUpload', $USER->role_id, false) AND (checkCapabilities('file:upload', $USER->role_id, false) OR checkCapabilities('file:uploadURL', $USER->role_id, false))){
-                    $html  .= '<a href="'.$CFG->smarty_template_dir_url.'renderer/uploadframe.php?context=solution&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal">
-                    <span class="fa ';
-                    if ($sol_btn == $objective->id){
-                        $html  .= 'fa-check-circle-o ';
-                    } else {
-                        $html  .= 'fa-upload ';
-                    } 
-                        $html  .= 'pull-right box-sm-icon text-primary" data-toggle="tooltip"';
-                    if ($sol_btn == $objective->id){
-                        $html  .= ' title="Lösung eingereicht"';
-                    } else {
-                        $html  .= ' title="Lösung einreichen"';
+                if (isset($PAGE->action) AND $type == 'enabling_objective' AND checkCapabilities('file:solutionUpload', $USER->role_id, false) AND (checkCapabilities('file:upload', $USER->role_id, false) OR checkCapabilities('file:uploadURL', $USER->role_id, false))){
+                    if($PAGE->action == 'view'){
+                        $html  .= '<a href="'.$CFG->smarty_template_dir_url.'renderer/uploadframe.php?context=solution&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal">
+                        <span class="fa ';
+                        if ($sol_btn == $objective->id){
+                            $html  .= 'fa-check-circle-o ';
+                        } else {
+                            $html  .= 'fa-upload ';
+                        } 
+                            $html  .= 'pull-right box-sm-icon text-primary" data-toggle="tooltip"';
+                        if ($sol_btn == $objective->id){
+                            $html  .= ' title="Lösung eingereicht"';
+                        } else {
+                            $html  .= ' title="Lösung einreichen"';
+                        }
+                        $html  .= '></span></a>';
                     }
-                    $html  .= '></span></a>'; 
                 }
             }
          if ($type == 'terminal_objective'){
@@ -667,9 +669,11 @@ class Render {
                         } else {
                             $html  .='<span class="fa fa-briefcase box-sm-icon deactivate text-gray margin-r-5 pull-left" style="cursor:not-allowed;padding-top:3px;" data-toggle="tooltip" title="Keine Materialien verfügbar"></span>';
                         }
-                        if ((checkCapabilities('file:upload', $USER->role_id, false) OR checkCapabilities('file:uploadURL', $USER->role_id, false)) AND $PAGE->action == 'view'){
+                        if ((checkCapabilities('file:upload', $USER->role_id, false) OR checkCapabilities('file:uploadURL', $USER->role_id, false)) AND isset($PAGE->action)){
+                            if ($PAGE->action == 'view'){
                                 $html  .='<a href="'.$CFG->smarty_template_dir_url.'renderer/uploadframe.php?context='.$type.'&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal pull-right margin-r-5"><span class="fa fa-plus box-sm-icon" style="padding-top:3px;data-toggle="tooltip" title="Material hinzufügen"></span></a>';
-                            } 
+                            }
+                        } 
                         $html  .='</span>';
                         if ($edit){
                             if ($type != 'terminal_objective'){

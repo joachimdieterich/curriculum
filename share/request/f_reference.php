@@ -33,6 +33,8 @@ $id             = null;
 $title          = null; 
 $description    = null; 
 $curriculum_id  = null; 
+$context        = null; 
+$terminal_objective_id = null;
 $objectives     = null;
 $error          = null;
 $object         = file_get_contents("php://input");
@@ -49,6 +51,23 @@ if (isset($_GET['func'])){
                         $header = 'Referenz verknüpfen';            
                         $context_id     = $_SESSION['CONTEXT'][filter_input(INPUT_GET, 'context', FILTER_SANITIZE_STRING)]->context_id;
                         $reference_id   = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+                        switch (filter_input(INPUT_GET, 'context', FILTER_SANITIZE_STRING)) {
+                            case 'enabling_objective':  $obj        = new EnablingObjective();
+                                                        $obj->id    = $reference_id;
+                                                        $obj->load();
+                                break;
+                            case 'terminal_objective':  $obj        = new TerminalObjective();
+                                                        $obj->id    = $reference_id;
+                                                        $obj->load();
+                                break;
+
+                            default:
+                                break;
+                        }
+                        $cur        = new Curriculum();
+                        $cur->id    = $obj->curriculum_id;
+                        $cur->load();
+                        $grade_id   = $cur->grade_id;
             break;
         case "edit":    checkCapabilities('reference:update',    $USER->role_id);
                         $header   = 'Referenz bearbeiten';
@@ -76,19 +95,34 @@ $content .= '<input id="context_id" name="context_id" type="text" class="invisib
 if (isset($id)) {                                                               // only set id input field if set! prevents error on validation form reload
     $content .= '<input id="id" name="id" type="text" class="invisible" value="'.$id.'">';
 }
-$content     .= Form::info(array('id' => 'ref_info', 'content' => 'Hier können Querverweise zu anderen Lehrplänen gemacht werden.'));
+$content     .= Form::info(array('id' => 'ref_info', 'content' => 'Hier können Bezüge zu anderen Lehrplänen hergestellt werden. <br>Bezüge können sich sowohl auf ein <strong>Thema / Kompetenzbereich</strong> sowie <strong>Kompetenzen / Lernziele</strong> beziehen.'));
 $cur          = new Curriculum();
 $curriculum   = $cur->getCurricula('user', $USER->id);
 
 if ($id == null) {
     $curriculum_id = $curriculum[0]->id;        
-    $content .= Form::input_select('curriculum_id', 'Lehrplan', $curriculum, 'curriculum', 'id', $curriculum_id , $error, 'getValues(\'objectives\', this.value, \'objective_id\');');
+    $content .= Form::input_select('curriculum_id', 'Lehrplan', $curriculum, 'curriculum', 'id', $curriculum_id , $error, 'getMultipleValues([\'objectives\', this.value, \'terminal_objective_id\', \'terminal_objective\'], [\'objectives\', this.value, \'enabling_objective_id\', \'enabling_objective_from_curriculum\']);');//
 } else {
     $content .= Form::input_select('curriculum_id', 'Lehrplan', $curriculum, 'curriculum', 'id', $curriculum_id , $error, '','', 'col-sm-3', 'col-sm-9', 'disabled="disabled"');
 }
+
+$ter      = new TerminalObjective();
+$ter->curriculum_id = $curriculum_id;
+$content .= Form::input_select('terminal_objective_id', 'Thema / Kompetenzbereich', $ter->getObjectives('curriculum', $curriculum_id), 'terminal_objective', 'id', $terminal_objective_id , $error, 'getValues(\'objectives\', this.value, \'enabling_objective_id\', \'enabling_objective_from_terminal_objective\');');
+
 $ena      = new EnablingObjective();
 $ena->curriculum_id = $curriculum_id;
-$content .= Form::input_select_multiple(array('id' => 'objective_id', 'label' => 'Kompetenzen/ Lernziele', 'select_data' => $ena->getObjectives('curriculum', $curriculum_id), 'select_label' => 'enabling_objective', 'select_value' => 'id', 'input' => $objectives, 'error' => $error)); 
+$content .= Form::input_select_multiple(array('id' => 'enabling_objective_id', 'label' => 'Kompetenzen/ Lernziele', 'select_data' => $ena->getObjectives('curriculum', $curriculum_id), 'select_label' => 'enabling_objective', 'select_value' => 'id', 'input' => $objectives, 'error' => $error)); 
+
+$grades                     = new Grade();    //Load Grades
+$content .= Form::info(array('id' => 'grade_info', 'content' => 'Im folgendenden Feld kann falls nötig die Klassenstufe präzisiert werden.'));
+$content .= Form::input_select('grade_id', 'Klassenstufe', $grades->getGrades('institution',$USER->institution_id), 'grade, institution', 'id', $grade_id , $error);
+$content .= Form::info(array('id' => 'grade_info', 'content' => 'Hier können Anregungen zur Umsetzung eingetragen werden.'));
+$content .= Form::input_textarea('description', 'Hinweise', $description, $error, '');
+
+$c       = new Context();
+$content   .=  Form::input_select('file_context', 'Sichtbarkeit', $c->get(), 'description', 'id', $context , $error);
+
 $content .= '</form>';
 $footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_reference\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>'; 
 $html     = Form::modal(array('title'     => $header,
