@@ -27,6 +27,8 @@
 class Reference {
     public $id;
     public $unique_id;
+    public $description; 
+    public $grade_id;
     public $context_id;
     public $reference_id;
     public $creation_time;
@@ -71,12 +73,16 @@ class Reference {
     public function add(){
         global $USER;
         checkCapabilities('reference:add', $USER->role_id);
-        $db = DB::prepare('INSERT INTO reference (unique_id,context_id,reference_id, creator_id) VALUES (UUID(),?,?,?)');
-        if ($db->execute(array($this->target_context_id, $this->target_reference_id, $USER->id))){
-            $this->id = DB::lastInsertId();  
+        $db = DB::prepare('INSERT INTO reference (unique_idgrade_id,context_id,reference_id, creator_id) VALUES (UUID(),?,?,?,?)');
+        if ($db->execute(array($this->grade_id,$this->target_context_id, $this->target_reference_id, $USER->id))){
+            $this->id               = DB::lastInsertId();  
             $this->load();
-            $db = DB::prepare('INSERT INTO reference (unique_id,context_id,reference_id, creator_id) VALUES (?,?,?,?)');
-            return $db->execute(array($this->unique_id, $this->source_context_id, $this->source_reference_id, $USER->id));
+            $content                = new Content();
+            $content->content       = $this->description;
+            $content->context_id    = $_SESSION['CONTEXT']['reference']->context_id;
+            $content->add();
+            $db = DB::prepare('INSERT INTO reference (unique_id,grade_id,context_id,reference_id, creator_id) VALUES (?,?,?,?,?)');
+            return $db->execute(array($this->unique_id,  $this->grade_id, $this->source_context_id, $this->source_reference_id, $USER->id));
         }
     }
    
