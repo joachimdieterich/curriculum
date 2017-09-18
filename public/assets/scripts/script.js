@@ -815,15 +815,17 @@ function popupFunction(e){
     /*close popup when clicking outside modal*/
     $(function() {
     $("body").click(function(e) {
-        if (e.target.id == "modal" || $(e.target).parents("#modal").size()) { 
-            /* do nothing */
-        } else if (e.target.id == "daterangepicker" || $(e.target).parents("#daterangepicker").size()) {
-            /* do nothing */
-        } else { 
-            if ($("#daterangepicker").is(':visible') || $("#colorpicker").is(':visible') || $(".cke_dialog").is(':visible')) {
-                /* don't close if daterangepicker is visible!*/
-            } else {
-                closePopup('popup'); 
+        if ($("body").hasClass("modal-open")){ /* cont call function if it was called before */
+            if (e.target.id == "modal" || $(e.target).parents("#modal").size()) { 
+                /* do nothing */
+            } else if (e.target.id == "daterangepicker" || $(e.target).parents("#daterangepicker").size()) {
+                /* do nothing */
+            } else { 
+                if ($("#daterangepicker").is(':visible') || $("#colorpicker").is(':visible') || $(".cke_dialog").is(':visible')) {
+                    /* don't close if daterangepicker is visible!*/
+                } else {
+                    closePopup('null'); /*only close popup without reloading*/
+                }
             }
         }
     });
