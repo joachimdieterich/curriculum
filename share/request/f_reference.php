@@ -55,10 +55,12 @@ if (isset($_GET['func'])){
                             case 'enabling_objective':  $obj        = new EnablingObjective();
                                                         $obj->id    = $reference_id;
                                                         $obj->load();
+                                                        $type       = 'enabling_objective';
                                 break;
                             case 'terminal_objective':  $obj        = new TerminalObjective();
                                                         $obj->id    = $reference_id;
                                                         $obj->load();
+                                                        $type       = 'terminal_objective';
                                 break;
 
                             default:
@@ -95,7 +97,7 @@ $content .= '<input id="context_id" name="context_id" type="text" class="invisib
 if (isset($id)) {                                                               // only set id input field if set! prevents error on validation form reload
     $content .= '<input id="id" name="id" type="text" class="invisible" value="'.$id.'">';
 }
-$content     .= Form::info(array('id' => 'ref_info', 'content' => 'Hier können Bezüge zu anderen Lehrplänen hergestellt werden. <br>Bezüge können sich sowohl auf ein <strong>Thema / Kompetenzbereich</strong> sowie <strong>Kompetenzen / Lernziele</strong> beziehen.'));
+$content     .= Form::info(array('id' => 'ref_info', 'content' => 'Bezug mit Kompetenz(bereich) <strong>'.$obj->$type.'</strong> herstellen. <br>Bezüge können sich sowohl auf ein <strong>Thema / Kompetenzbereich</strong> sowie <strong>Kompetenzen / Lernziele</strong> beziehen.'));
 $cur          = new Curriculum();
 $curriculum   = $cur->getCurricula('user', $USER->id);
 
@@ -114,14 +116,14 @@ $ena      = new EnablingObjective();
 $ena->curriculum_id = $curriculum_id;
 $content .= Form::input_select_multiple(array('id' => 'enabling_objective_id', 'label' => 'Kompetenzen/ Lernziele', 'select_data' => $ena->getObjectives('curriculum', $curriculum_id), 'select_label' => 'enabling_objective', 'select_value' => 'id', 'input' => $objectives, 'error' => $error)); 
 
-$grades                     = new Grade();    //Load Grades
+$grades   = new Grade();    //Load Grades
 $content .= Form::info(array('id' => 'grade_info', 'content' => 'Im folgendenden Feld kann falls nötig die Klassenstufe präzisiert werden.'));
 $content .= Form::input_select('grade_id', 'Klassenstufe', $grades->getGrades('institution',$USER->institution_id), 'grade, institution', 'id', $grade_id , $error);
 $content .= Form::info(array('id' => 'grade_info', 'content' => 'Hier können Anregungen zur Umsetzung eingetragen werden.'));
 $content .= Form::input_textarea('description', 'Hinweise', $description, $error, '');
 
-$c       = new Context();
-$content   .=  Form::input_select('file_context', 'Sichtbarkeit', $c->get(), 'description', 'id', $context , $error);
+$c        = new Context();
+$content .=  Form::input_select('file_context', 'Sichtbarkeit', $c->get(), 'description', 'id', $context , $error);
 
 $content .= '</form>';
 $footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_reference\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>'; 
