@@ -210,7 +210,7 @@ if (!$files){
             $m_icon_class = resolveFileType($files[$i]->type);
         }     
         
-        if (checkCapabilities('file:editMaterial', $USER->role_id, false) && $edit && ($files[$i]->type != 'external')){
+        if ((checkCapabilities('file:editMaterial', $USER->role_id, false) && $edit && ($files[$i]->type != 'external')) OR ($files[$i]->creator_id == $USER->id)){
             $m_delete = true;
         }
 
