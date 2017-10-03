@@ -64,7 +64,7 @@
                 <li class="header">Institution: {$my_institution->institution}</li>
                 {if checkCapabilities('menu:readObjectives', $my_role_id, false)}
                 <li class="treeview {if $page_action eq 'objectives'}active{/if}">
-                    <a href="index.php?action=objectives">
+                    <a href="index.php?action=objectives&reset=true">
                         <i class="fa fa-edit"></i> <span>Lernstand eingeben</span>
                     </a>
                 </li>
