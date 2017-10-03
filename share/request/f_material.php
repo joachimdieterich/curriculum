@@ -224,7 +224,7 @@ if (!$files){
             if (isset($license->license)){ 
                 if (isset($license->file_id)){ 
                     $m_license_icon = $CFG->access_id_url.$license->file_id;
-                    $m_footer .= '<img src="'.$CFG->access_id_url.$_SESSION['LICENSE'][$files[$i]->license]->file_id.'" height="30"/>'; 
+                    //$m_footer .= '<img src="'.$CFG->access_id_url.$_SESSION['LICENSE'][$files[$i]->license]->file_id.'" height="30"/>'; //-->now on thumbnail
                 } else {
                     $m_footer .= $license->license; 
                 }
