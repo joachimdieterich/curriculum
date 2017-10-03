@@ -70,6 +70,7 @@ $content  .= '<input type="hidden" name="curriculum_id" id="curriculum_id" value
 $content  .= Form::input_select('certificate_id', 'Zertifikat', $certificates , 'certificate', 'id', $certificate_id , $error);
 $content  .= Form::input_text('date', 'Ausgabedatum', date("d.m.Y"), $error, 'z. B. 22.01.2017');
 $content  .= Form::info(array('id' => 'info', 'label' => 'Hinweis', 'content' => 'Wen Sie die folgende Checkbox aktivieren, wird das Zertifikat  dem Schüler / Student zusätzlich im PDF bereitgestellt und kann von diesem heruntergeladen werden.'));
+$content  .= Form::input_checkbox('deliver', 'Datei für Lerner bereitstellen?', $deliver, $error);
 $content  .= '</form>';
 $footer    = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_generate_certificate\').submit();closePopup(\'null\');"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>'; 
    
