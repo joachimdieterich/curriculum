@@ -5,7 +5,7 @@
     background: #000;
     background: rgba(0,0,0,0.8);
     position: absolute;
-    z-index: 9999999;
+    z-index: 100;
     padding: 15px;
     border-radius: 5px;
     box-sizing: border-box;    
