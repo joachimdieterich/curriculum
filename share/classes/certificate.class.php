@@ -143,14 +143,14 @@ class Certificate {
         $certificates   = array();                      //Array of certificates
         if (isset($this->curriculum_id)){
             $db             = DB::prepare('SELECT ce.*, us.username, ins.institution FROM certificate AS ce, users AS us, institution AS ins
-                               WHERE (ce.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE us.id = user_id AND institution_id = ins.id AND (user_id = ? OR user_id = 0)) OR ce.institution_id = 0) 
+                               WHERE (ce.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE us.id = user_id AND status = 1 AND institution_id = ins.id AND (user_id = ? OR user_id = 0)) OR ce.institution_id = 0) 
                                AND ins.id = ce.institution_id 
                                AND us.id = ?
                                AND (ce.curriculum_id = ? OR ce.curriculum_id = 0) '.$order_param);
             $db->execute(array($USER->id, $USER->id, $this->curriculum_id)); //AND us.id = ? is used to speed up query
         } else {
             $db             = DB::prepare('SELECT ce.*, us.username, ins.institution FROM certificate AS ce, users AS us, institution AS ins
-                               WHERE ce.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE us.id = user_id AND institution_id = ins.id AND user_id = ?) 
+                               WHERE ce.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE us.id = user_id AND status = 1 AND institution_id = ins.id AND user_id = ?) 
                                AND ins.id = ce.institution_id '.$order_param);
             $db->execute(array($USER->id));
         }
