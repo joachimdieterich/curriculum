@@ -56,8 +56,8 @@ if (isset($_GET['func'])){
         case "new":     checkCapabilities('curriculum:add',     $USER->role_id);     //USER berechtigt?
                         $header = 'Lehrplan hinzufügen';
                         if (!isset($country_id)){ 
-                            $country_id = $INSTITUTION->country_id;
-                            $state_id   = $INSTITUTION->state_id;         
+                            $country_id = $USER->country_id;
+                            $state_id   = $USER->state_id;         
                         }
                         $add = true;      
             break;
