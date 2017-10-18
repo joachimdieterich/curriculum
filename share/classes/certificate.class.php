@@ -396,7 +396,7 @@ class Certificate {
                 if ($ter_value->id == $ena[$member][$i]->terminal_objective_id){
                     $output .= '<tr><td style="width: 25%;border-bottom: 1px solid silver;border-right: 1px solid silver;">'.strip_tags($ena[$member][$i]->enabling_objective).'</td>';
                     foreach($userlist as $key=>$member){
-                        if ($i == 0) error_log(json_encode($ena[$member]));
+                        //if ($i == 0) //error_log(json_encode($ena[$member]));
                         $output .='<td style="text-align: center; border-bottom: 1px solid silver;border-right: 1px solid silver;">';
                         if (in_array($ena[$member][$i]->accomplished_status_id, array("01","1","x1","11","21","31")) ){
                             $output .='<span style="text-align: center; font-family: Arial Unicode MS, Lucida Grande">&#10004;</span>';
