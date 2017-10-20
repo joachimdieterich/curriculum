@@ -72,6 +72,11 @@
                         <i class="fa fa-plus"></i>
                     </button>
                 {/if}
+                {if checkCapabilities('curriculum:print', $my_role_id, false)}
+                    <button type="button" class="btn btn-default" onclick="formloader('print','curriculum',{$course[0]->curriculum_id});">
+                        <i class="fa fa-print"></i>
+                    </button>
+                {/if}
             </div>
             <div class="btn-group pull-left margin-r-5">
                 {Render::split_button($glossar_content)}

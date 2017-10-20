@@ -1009,6 +1009,7 @@ class User {
      */
     public function getUsers($dependency = null, $paginator = '', $id = null, $group = null, $wallet_id = null){
         global $USER, $CFG;
+        
         $order_param = orderPaginator($paginator, array('id'  => 'us', 
                                                         'username'  => 'us', 
                                                         'firstname' => 'us', 
@@ -1075,6 +1076,7 @@ class User {
                                                 AND gr.institution_id = ie.institution_id
                                                 AND gr.id = ge.group_id
                                                 '.$order_param);
+                
                             $db->execute(array($id, $group, 0)); 
                             while($result = $db->fetchObject()) {  
                                     $this->id           = $result->id;

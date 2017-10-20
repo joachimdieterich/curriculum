@@ -37,8 +37,10 @@ class Pdf {
     public function generate(){
         global $USER, $CFG, $TEMPLATE;
 
-        include_once(dirname(__FILE__).'/../libs/MPDF57/mpdf.php');
-        $mpdf           = new mPDF($this->font_encoding, $this->page_format, $this->font_size, $this->font_name);
+        include_once(dirname(__FILE__).'/../libs/mpdf-master/vendor/mpdf/mpdf/mpdf.php');
+        $mpdf = new Mpdf($this->font_encoding, $this->page_format, $this->font_size, $this->font_name);
+        //include_once(dirname(__FILE__).'/../libs/MPDF57/mpdf.php');
+        //$mpdf           = new mPDF($this->font_encoding, $this->page_format, $this->font_size, $this->font_name);
         /*$stylesheet     = file_get_contents($CFG->smarty_template_dir.'bootstrap/css/bootstrap.css');
         $stylesheet     .= file_get_contents($CFG->smarty_template_dir.'css/AdminLTE.min.css');
         $stylesheet     .= file_get_contents($CFG->smarty_template_dir.'skins/_all-skins.min.css');
