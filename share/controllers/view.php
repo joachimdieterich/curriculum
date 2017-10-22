@@ -97,3 +97,7 @@ if (!empty($glossar)){
     }
     $TEMPLATE->assign('glossar_json',json_encode($term_def)); //
 } 
+if (isset($_SESSION['anchor'])){
+    $TEMPLATE->assign('anchor',$_SESSION['anchor']);
+    $_SESSION['anchor'] = null;
+}
