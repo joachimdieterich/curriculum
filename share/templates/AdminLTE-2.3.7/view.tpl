@@ -25,6 +25,11 @@
     {/if}
     <script type="text/javascript">
     $(document).ready(function () {
+         <!--jump to actual row-->      
+        {if isset($anchor)}
+            $('#body-wrapper').animate({literal}{{/literal} scrollTop: $('#{$anchor}').offset().top-60{literal}}{/literal}, 100);
+        {/if}
+        
         $('a[data-toggle="collapse"]').click(function () {
                 $(this).find('i.fa').toggleClass('fa-compress fa-expand');
         });
@@ -171,11 +176,6 @@
         </div>            
     </div>
 </section>
-        
- <!--jump to actual row-->      
-{if isset($smarty.session.anchor)}
-    <script type="text/javascript"> window.location.hash="{$smarty.session.anchor}"; </script>            
-{/if}
 
 {/block}
 
