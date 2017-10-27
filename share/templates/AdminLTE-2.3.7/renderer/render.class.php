@@ -1116,8 +1116,11 @@ class Render {
         $usr     = new User();
         $r       = '<ul class="todo-list ui-sortable">';
                  foreach ($task as $tsk) {
-        $r       .= ' <li>
-                      <!--span class="handle ui-sortable-handle">
+        $r       .= ' <li class="tasklink" ';
+        if ($onclick){ 
+            $r   .= 'onclick="loadhtml(\'task\', '.$tsk->id.', \'task_left_col\', \'task_right_col\', \'col-xs-12 col-lg-6\', \'col-xs-12 col-lg-6\');">';
+        }
+            $r   .= '<!--span class="handle ui-sortable-handle">
                         <i class="fa fa-ellipsis-v"></i>
                         <i class="fa fa-ellipsis-v"></i>
                       </span-->';
@@ -1130,14 +1133,7 @@ class Render {
                                 }
                       $r       .= '>';
                       }
-                      $r       .= '<span class="text">';
-                      if ($onclick){ 
-                          $r   .= '<a onclick="loadhtml(\'task\', '.$tsk->id.', \'task_left_col\', \'task_right_col\', \'col-xs-12 col-lg-6\', \'col-xs-12 col-lg-6\');">'.$tsk->task.'</a>';
-                      } else {
-                          $r   .= $tsk->task;
-                      }
-                      
-                      $r       .=  '</span>
+                      $r       .= '<span class="text">'.$tsk->task.'</span>
                       <img src="../share/accessfile.php?id='.$usr->resolveUserId($tsk->creator_id, 'avatar').'" class="img-responsive img-circle img-sm pull-right" data-toggle="tooltip" title="'.$tsk->creator.'" style="margin-top:-5px;" alt="User Image">    
                       <span class="label label-primary pull-right margin-r-5"><i class="fa fa-clock-o"></i> '.$tsk->timeend.'</span>';
                       
@@ -1776,7 +1772,15 @@ class Render {
                                 
                             $html   .= '<li><a href="'.$href_regex.'">'.$l;
                             if (isset($badge)){
-                                $html   .= '<span class="pull-right badge '.$bg_badge.'" onclick="'.$onclick_badge.'">'.$value->$badge.'</span>';          
+                                
+                                $onclick = str_replace('__id__', $value->id, $onclick_badge);
+                                $html   .= '<span class="pull-right badge '.$bg_badge.'" onclick="'.$onclick.'">';
+                                if (isset($badge_title)){
+                                    $html   .= $badge_title;
+                                } else {
+                                    $html   .= $value->$badge;
+                                }
+                                $html   .= '</span>';          
                             }
                             $html   .= '</a></li>';           
                         } 
