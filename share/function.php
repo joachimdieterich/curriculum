@@ -304,7 +304,7 @@ function renderSelect($name, $label, $values, $select){?>
  * @param boolean $thow_exception 
  * @return boolean 
  */
-function checkCapabilities($capability = null, $role_id = null, $thow_exception = true){
+function checkCapabilities($capability = null, $role_id = null, $thow_exception = true, $modal = false){
     $capabilities = new Capability();
     $capabilities->capability = $capability; 
     $capabilities->role_id    = $role_id; 
@@ -312,10 +312,19 @@ function checkCapabilities($capability = null, $role_id = null, $thow_exception 
     if ($capabilities->checkCapability()){
         return true;
     } else {
+        if ($modal){ // Rendert den Fehler im modal
+            $html = Form::error(array('capability' => $capability, 
+                     'page_name'  => '')); 
+            $html = Form::modal(array('title'     => 'Fehler',
+                                         'content'   => $html));
+            echo json_encode(array('html'=> $html));
+            die();
+        }
         if ($thow_exception){
             global $USER;
             throw new CurriculumException('Als <strong>'.$USER->role_name.'</strong> verfügen Sie nicht über die erforderliche Berechtigung ('.$capability.').', 1);
         }
+        
         return false; 
     }
 }
