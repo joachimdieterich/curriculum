@@ -366,6 +366,22 @@ class Curriculum {
                  $this->creator_id        = $USER->id;
             }
             $c_id = $this->add();
+            
+            /* import content */
+            $cur_content_nodes = getImmediateChildrenByTagName($curriculum, 'content');
+            foreach ($cur_content_nodes as $ct) {
+                $content = new Content();
+                $content->title         = getImmediateChildrenByTagName($ct, 'title')[0]->nodeValue;
+                $content->content       = getImmediateChildrenByTagName($ct, 'text')[0]->nodeValue;
+                $content->file_context  = 1;
+                $content->creator_id    = $USER->id;
+                $content->context_id    = $_SESSION['CONTEXT']['curriculum']->id;
+                $content->reference_id  = $c_id;
+                
+                $content->add();
+                
+            }
+            /* end import content */
        }                                                                                    //<-- s.    public function loadImportFormData($file) 
        foreach($xml->getElementsByTagName('terminal_objective') as $ter) {
            $t = new TerminalObjective();
@@ -400,7 +416,7 @@ class Curriculum {
                     $f->terminal_objective_id   = $t_id;
                     $f->enabling_objective_id   = NULL;
                     $f->add();
-                    if ($f->type != '.url'){
+                    if ($f->type != '.url' AND $f->type != 'external'){
                         silent_mkdir($CFG->curriculum_root.$f->path);
                         copy($CFG->backup_root.$import_folder.'/'.$old_cur_id.'/'.$old_ter_id.'/'.$f->filename, $CFG->curriculum_root.$f->path.$f->filename);
                     }
@@ -441,10 +457,10 @@ class Curriculum {
                     $f->terminal_objective_id   = $t_id;
                     $f->enabling_objective_id   = $e_id;
                     $f->add();
-                    if ($f->type != '.url'){
+                    if ($f->type != '.url' AND $f->type != 'external'){
                         silent_mkdir($CFG->curriculum_root.$f->path);
                         copy($CFG->backup_root.$import_folder.'/'.$old_cur_id.'/'.$old_ter_id.'/'.$old_ena_id.'/'.$f->filename, $CFG->curriculum_root.$f->path.$f->filename);
-                    }
+                    } 
                 } 
             }     
         }
