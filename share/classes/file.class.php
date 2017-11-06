@@ -518,18 +518,20 @@ class File {
                 $this->author                = $result->author;
                 $this->license               = $result->license;
                 $this->type                  = $result->type;
-                if ($this->type != '.url'){
-                    $this->path              = $result->path;
-                } else {
-                    $this->path              = $result->filename;
-                }
                 
                 $this->context_id            = $result->context_id;
                 if (isset($result->context_path)){
                     $this->context_path      = $result->context_path;
                 }
                 
-                $this->full_path             = $this->context_path.$this->path.$this->filename;     //??? context path wird über die sql eigentlich schon ermittelt
+                if ($this->type != '.url' AND $this->type != 'external'){
+                    $this->path              = $result->path;
+                    $this->full_path         = $this->context_path.$this->path.$this->filename;     //??? context path wird über die sql eigentlich schon ermittelt
+                } else {
+                    $this->path              = $result->filename;
+                    $this->full_path         = $this->path;     //??? context path wird über die sql eigentlich schon ermittelt
+                }
+                
                 $this->file_context          = $result->file_context;
                 $this->curriculum_id         = $result->cur_id;
                 $this->terminal_objective_id = $result->ter_id;
