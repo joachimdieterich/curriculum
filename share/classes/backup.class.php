@@ -332,8 +332,9 @@ class Backup {
                                 $ena->appendChild( $f_ena );        // Datei enabling objective zuordnen
                                 /* Datei in Backup Temp kopieren */
                                 //error_log($CFG->curriculumdata_root.$f_value->full_path.' : '.$tmp_folder.$f_value->full_path);
-                                silent_mkdir($this->temp_path.'/'.$f_value->path);
-                                if ($f_value->type != '.url'){
+                                
+                                if ($f_value->type != '.url' AND $f_value->type != 'external'){
+                                    silent_mkdir($this->temp_path.'/'.$f_value->path);
                                     copy($CFG->curriculumdata_root.$f_value->full_path, $this->temp_path.'/'.$f_value->path.$f_value->filename);
                                 }
                             }
@@ -344,6 +345,23 @@ class Backup {
                 $cur->appendChild( $ter );        // Datei enabling objective zuordnen
             }
         }
+        /* content */
+        $content            = new Content();
+        $content_entries    = $content->get('curriculum', $c->id );
+        $i                  = 0;
+        foreach($content_entries as $con_value){ 
+            $i++;
+            $content_tag         = $xml->createElement("content");
+            $content_tag_title   = $xml->createElement("title", $con_value->title);
+            $content_tag->appendChild($content_tag_title);
+            $content_tag_content = $xml->createElement("text", $con_value->content);
+            $content_tag->appendChild($content_tag_content);   
+        }
+        $cur->appendChild($content_tag);
+        /* end content */
+        
+        /* glossar */
+        /* end glossar */
         $xml->appendChild($cur);
         $xml->preserveWhiteSpace = false; 
         $xml->formatOutput = true; 
