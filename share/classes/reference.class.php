@@ -96,6 +96,14 @@ class Reference {
         }
     }
    
+    public function import(){
+        global $USER;
+        checkCapabilities('reference:add', $USER->role_id);
+        $db = DB::prepare('INSERT INTO reference (unique_id, grade_id, context_id, reference_id, creator_id) VALUES (?,?,?,?,?)');
+        if ($db->execute(array($this->unique_id, $this->grade_id, $this->context_id, $this->reference_id, $USER->id))){
+            return true;
+        }
+    }
     
     public function update(){
         global $USER;
@@ -113,16 +121,31 @@ class Reference {
     }
     
     public function get($dependency, $context_id, $id){
-        global $USER;
         $db = DB::prepare('SELECT re.id FROM reference AS re WHERE re.context_id = ? AND re.'.$dependency.' = ?');
         $db->execute(array($context_id, $id));
         $r  = array();
         while($result = $db->fetchObject()) { 
             $this->load('id',        $result->id); 
-            $this->load('unique_id', $this->unique_id); //load entry with matching unique_id
-            $r[]  = clone $this;
+            //$this->load('unique_id', $this->unique_id); //load entry with matching unique_id
+            $r = $this->getUniqueIDs();
+            //$r[]  = clone $this;
         } 
         
         return $r;     
+    }
+    
+    public function getUniqueIDs(){
+        $db = DB::prepare('SELECT re.id FROM reference AS re WHERE re.unique_id = ?');
+        $db->execute(array($this->unique_id));
+        $current_obj_id = $this->reference_id;
+        
+        $r  = array();
+        while($result = $db->fetchObject()) { 
+            $this->load('id',        $result->id); 
+            if ($this->reference_id == $current_obj_id){ continue; } // don't show reference entry of the current ena
+            $r[]  = clone $this;
+        } 
+        
+        return $r; 
     }
 }
