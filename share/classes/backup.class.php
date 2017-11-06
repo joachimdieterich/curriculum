@@ -297,8 +297,9 @@ class Backup {
                     $ter->setAttribute("ext_reference",  $ext_ref->getReference('terminal_objective', $ter_value->id));
                 }
                 
-                $this->appendFile($xml, $ter, $ter_value->id, 'terminal_objective', $file); /* terminal objective material */
-
+                $this->appendFile($xml, $ter, $ter_value->id, 'terminal_objective', $file); // terminal objective material
+                $this->appendReference($xml, $ter, $ter_value->id, 'terminal_objective');   //append references
+                
                 /* enabling objectives */
                 if (count($ter_value->enabling_objectives) >= 1 AND $ter_value->enabling_objectives != false){
                     foreach($ter_value->enabling_objectives as $ena_value){ 
@@ -312,7 +313,8 @@ class Backup {
                             $ena->setAttribute('ext_reference',      $ext_ref->getReference('enabling_objective', $ena_value->id));
                         }
                         
-                        $this->appendFile($xml, $ena, $ena_value->id, 'enabling_objective', $file); /* enabling objective material */
+                        $this->appendFile($xml, $ena, $ena_value->id, 'enabling_objective', $file); // enabling objective material
+                        $this->appendReference($xml, $ena, $ena_value->id, 'enabling_objective');   //append references
                         $ter->appendChild( $ena );                              // append enabling_objective to terminal_objective
                     }
                 }
@@ -336,13 +338,15 @@ class Backup {
     private function appendContent($xml, $parent_node, $ref_id, $context, $element_tag){
         $content                 = new Content();
         $content_entries         = $content->get($context, $ref_id );
-        foreach($content_entries as $con_value){ 
-            $content_tag         = $xml->createElement($element_tag);
-            $content_tag_title   = $xml->createElement("title", $con_value->title);
-            $content_tag->appendChild($content_tag_title);
-            $content_tag_content = $xml->createElement("text", $con_value->content);
-            $content_tag->appendChild($content_tag_content);   
-            $parent_node->appendChild($content_tag);
+        if (count($content_entries) >= 1){
+            foreach($content_entries as $con_value){ 
+                $content_tag         = $xml->createElement($element_tag);
+                $content_tag_title   = $xml->createElement("title", $con_value->title);
+                $content_tag->appendChild($content_tag_title);
+                $content_tag_content = $xml->createElement("text", $con_value->content);
+                $content_tag->appendChild($content_tag_content);   
+                $parent_node->appendChild($content_tag);
+            }
         }
     }
     
@@ -363,6 +367,26 @@ class Backup {
                     silent_mkdir($this->temp_path.'/'.$f_value->path);
                     copy($CFG->curriculumdata_root.$f_value->full_path, $this->temp_path.'/'.$f_value->path.$f_value->filename);
                 }
+            }
+        }
+    }
+    
+    private function appendReference($xml, $parent_node, $ref_id, $context){
+        $reference = new Reference();
+        $references = $reference->get('reference_id', $_SESSION['CONTEXT'][$context]->context_id, $ref_id);
+        if (count($references) >= 1){
+            foreach ($references as $ref) {
+                $child  = $xml->createElement('reference');
+                $child->setAttribute('unique_id',     $ref->unique_id); 
+                $child->setAttribute('reference_id',  $ref_id);
+                
+                $gr     = new Grade();
+                $gr->load('id', $ref->grade_id);
+                $child->setAttribute('grade',  $gr->grade); 
+                
+                $this->appendContent($xml, $child, $ref->id, 'reference', 'content');    /*load content */
+                
+                $parent_node->appendChild( $child );        // Datei enabling objective zuordnen
             }
         }
     }
