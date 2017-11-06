@@ -297,13 +297,8 @@ class Backup {
                     $ter->setAttribute("ext_reference",  $ext_ref->getReference('terminal_objective', $ter_value->id));
                 }
                 
-                /* terminal objective material */
-                $ter_files  = $file->getFiles('terminal_objective', $ter_value->id);
-                if (count($ter_files) >= 1){
-                    foreach($ter_files as $f_value) {
-                        $this->appendFile($xml, $ter, $f_value);
-                    }
-                }
+                $this->appendFile($xml, $ter, $ter_value->id, 'terminal_objective', $file); /* terminal objective material */
+
                 /* enabling objectives */
                 if (count($ter_value->enabling_objectives) >= 1 AND $ter_value->enabling_objectives != false){
                     foreach($ter_value->enabling_objectives as $ena_value){ 
@@ -316,31 +311,19 @@ class Backup {
                         if (isset($ext_ref)){
                             $ena->setAttribute('ext_reference',      $ext_ref->getReference('enabling_objective', $ena_value->id));
                         }
-                        /* enabling objective material */
-                        $ena_files  = $file->getFiles('enabling_objective', $ena_value->id);
-                        if (count($ena_files) >= 1){
-                            foreach($ena_files as $f_value) {
-                                $this->appendFile($xml, $ena, $f_value);
-                            }
-                        }
-                        $ter->appendChild( $ena );        // Datei enabling objective zuordnen
+                        
+                        $this->appendFile($xml, $ena, $ena_value->id, 'enabling_objective', $file); /* enabling objective material */
+                        $ter->appendChild( $ena );                              // append enabling_objective to terminal_objective
                     }
                 }
-                $cur->appendChild( $ter );        // Datei enabling objective zuordnen
+                $cur->appendChild( $ter );                                      // append terminal_objective to curriculum
             }
         }
         
-        $this->appendContent($xml, $cur, $c->id, 'curriculum', 'content');                 //* export content *//
-        $this->appendContent($xml, $cur, $c->id, 'glossar', 'glossar');                    //* export glossar *//
-                
-        /* curriculum material */
-        $cur_files  = $file->getFiles('curriculum', $c->id,'', array('cur' => true));
-        if (count($cur_files) >= 1){
-            foreach($cur_files as $f_value) {
-                $this->appendFile($xml, $cur, $f_value);
-            }
-        }
-        /* end curriculum material */
+        $this->appendContent($xml, $cur, $c->id, 'curriculum', 'content');      //* export content *//
+        $this->appendContent($xml, $cur, $c->id, 'glossar', 'glossar');         //* export glossar *//
+        $this->appendFile(   $xml, $cur, $c->id, 'curriculum', $file);             //* export curriuculum files *//
+        
         
         $xml->appendChild($cur);
         $xml->preserveWhiteSpace = false; 
@@ -363,15 +346,24 @@ class Backup {
         }
     }
     
-    private function appendFile($xml, $parent_node, $file){
+    private function appendFile($xml, $parent_node, $ref_id, $context, $file){
         global $CFG;
-        $child  = $xml->createElement('file');
-        $this->array_to_Attribute($child, $file);   
-        $parent_node->appendChild( $child );        // Datei enabling objective zuordnen
-        /* Datei in Backup Temp kopieren */
-        if ($file->type != '.url' AND $file->type != 'external'){
-            silent_mkdir($this->temp_path.'/'.$file->path);
-            copy($CFG->curriculumdata_root.$file->full_path, $this->temp_path.'/'.$file->path.$file->filename);
+        if ($context == 'curriculum'){
+            $cur_files  = $file->getFiles($context, $ref_id,'', array('cur' => true));
+        } else {
+            $cur_files  = $file->getFiles($context, $ref_id);
+        }
+        if (count($cur_files) >= 1){
+            foreach($cur_files as $f_value) {
+                $child  = $xml->createElement('file');
+                $this->array_to_Attribute($child, $f_value);   
+                $parent_node->appendChild( $child );        // Datei enabling objective zuordnen
+                /* Datei in Backup Temp kopieren */
+                if ($f_value->type != '.url' AND $f_value->type != 'external'){
+                    silent_mkdir($this->temp_path.'/'.$f_value->path);
+                    copy($CFG->curriculumdata_root.$f_value->full_path, $this->temp_path.'/'.$f_value->path.$f_value->filename);
+                }
+            }
         }
     }
     
