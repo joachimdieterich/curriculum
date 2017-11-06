@@ -374,31 +374,37 @@ class Curriculum {
             foreach($f_content_nodes as $cur_fil) {
                 $this->importFile($cur_fil, $import_folder, $old_cur_id.'/', $c_id); //call import function
             }
-            /* end import content */
+            /* end import curriculum files */
             
         }                                                                                    //<-- s.    public function loadImportFormData($file) 
         foreach($xml->getElementsByTagName('terminal_objective') as $ter) {
-           $t = new TerminalObjective();
-           $old_ter_id            = $ter->getAttribute('id');
-           $t->curriculum_id      = $c_id;
-           $t->terminal_objective = $ter->getAttribute('terminal_objective');
-           $t->description        = $ter->getAttribute('description');
-           $t->order_id           = $ter->getAttribute('order_id');
-           $t->repeat_interval    = $ter->getAttribute('repeat_interval');
-           $t->color              = $ter->getAttribute('color');
-           $t->creator_id         = $USER->id;
-           $t_id                  = $t->add();                                      // add terminal objective
-           $t_ref                 = $ter->getAttribute('ext_reference');
-           if ($t_ref != '' AND isset($ext_reference)){
-               $ext_reference->setReference(0, $t_id, $t_ref);                      // add ext. reference for this terminal objective
-           }
-           /* ter files */
+            $t = new TerminalObjective();
+            $old_ter_id            = $ter->getAttribute('id');
+            $t->curriculum_id      = $c_id;
+            $t->terminal_objective = $ter->getAttribute('terminal_objective');
+            $t->description        = $ter->getAttribute('description');
+            $t->order_id           = $ter->getAttribute('order_id');
+            $t->repeat_interval    = $ter->getAttribute('repeat_interval');
+            $t->color              = $ter->getAttribute('color');
+            $t->creator_id         = $USER->id;
+            $t_id                  = $t->add();                                      // add terminal objective
+            $t_ref                 = $ter->getAttribute('ext_reference');
+            if ($t_ref != '' AND isset($ext_reference)){
+                $ext_reference->setReference(0, $t_id, $t_ref);                      // add ext. reference for this terminal objective
+            }
+            /* ter files */
             $ter_file_nodes = getImmediateChildrenByTagName($ter, 'file');
             foreach($ter_file_nodes as $ter_fil) {
                 $this->importFile($ter_fil, $import_folder, $old_cur_id.'/'.$old_ter_id.'/', $c_id, $t_id); //call import function
+            } 
+            
+            /*ter references*/
+            $ter_refernce_nodes = getImmediateChildrenByTagName($ter, 'reference');
+            foreach($ter_refernce_nodes as $ter_ref) {
+                $this->importReference($ter_ref, 'terminal_objective', $t_id); //call import function
             }
-            /* enabling objectives*/
-                
+
+            /* enabling objectives*/   
             foreach($ter->getElementsByTagName('enabling_objective') as $ena) {
                 $e = new EnablingObjective();
                 $old_ena_id                  = $ena->getAttribute('id');
@@ -420,11 +426,31 @@ class Curriculum {
                 foreach($ena_file_nodes as $ena_fil) {
                     $this->importFile($ena_fil, $import_folder, $old_cur_id.'/'.$old_ter_id.'/'.$old_ena_id.'/', $c_id, $t_id, $e_id); //call import function
                 } 
+                
+                /*ena references*/
+                $ena_refernce_nodes = getImmediateChildrenByTagName($ena, 'reference');
+                foreach($ena_refernce_nodes as $ena_ref) {
+                    $this->importReference($ena_ref, 'enabling_objective', $e_id); //call import function
+                }
             }     
         }
         delete_folder($CFG->backup_root.$import_folder);                        // Löscht temporäre Dateien
         unlink($file);
-   }
+    }
+    private function importReference($ref_node, $context, $parent_id){
+        $reference = new Reference();
+        $reference->unique_id       = $ref_node->getAttribute('unique_id');
+        $reference->reference_id    = $parent_id;
+        $gr     = new Grade();
+        $gr->load('grade', $ref_node->getAttribute('grade'));
+        $reference->grade_id        = $gr->id;
+        $reference->context_id      = $_SESSION['CONTEXT'][$context]->id;
+        $reference->import();
+        $content_nodes = getImmediateChildrenByTagName($ref_node, 'content');
+        foreach ($content_nodes as $c) {
+            $this->importContent($c, 'reference', $parent_id);
+        }
+    }
    
    private function importFile($file_node, $import_folder, $old_path, $cur_id = null, $ter_id = null, $ena_id = null) {
         global $USER, $CFG;
