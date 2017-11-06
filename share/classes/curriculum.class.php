@@ -377,11 +377,49 @@ class Curriculum {
                 $content->creator_id    = $USER->id;
                 $content->context_id    = $_SESSION['CONTEXT']['curriculum']->id;
                 $content->reference_id  = $c_id;
-                
                 $content->add();
-                
             }
             /* end import content */
+            
+            /* import content */
+            $gl_content_nodes = getImmediateChildrenByTagName($curriculum, 'glossar');
+            foreach ($gl_content_nodes as $gl) {
+                $content = new Content();
+                $content->title         = getImmediateChildrenByTagName($gl, 'title')[0]->nodeValue;
+                $content->content       = getImmediateChildrenByTagName($gl, 'text')[0]->nodeValue;
+                $content->file_context  = 1;
+                $content->creator_id    = $USER->id;
+                $content->context_id    = $_SESSION['CONTEXT']['glossar']->id;
+                $content->reference_id  = $c_id;
+                $content->add();
+            }
+            /* end import content */
+            
+            /* import curriculum files */
+            $f_content_nodes = getImmediateChildrenByTagName($curriculum, 'file');
+            foreach($f_content_nodes as $fi) {
+                $f = new File();
+                $f->title                   = $fi->getAttribute('title');
+                $f->filename                = $fi->getAttribute('filename');
+                $f->description             = $fi->getAttribute('description');
+                $f->author                  = $fi->getAttribute('author');
+                $f->license                 = $fi->getAttribute('license');
+                $f->type                    = $fi->getAttribute('type');
+                $f->path                    = $c_id.'/';//$fil->getAttribute('path');
+                $f->context_id              = $fi->getAttribute('context_id');
+                $f->file_context            = $fi->getAttribute('file_context');
+                $f->creator_id              = $USER->id;
+                $f->curriculum_id           = $c_id;
+                $f->terminal_objective_id   = NULL;
+                $f->enabling_objective_id   = NULL;
+                $f->add();
+                if ($f->type != '.url' AND $f->type != 'external'){
+                    silent_mkdir($CFG->curriculum_root.$f->path);
+                    copy($CFG->backup_root.$import_folder.'/'.$old_cur_id.'/'.$f->filename, $CFG->curriculum_root.$f->path.$f->filename);
+                }
+            }
+            /* end import content */
+            
        }                                                                                    //<-- s.    public function loadImportFormData($file) 
        foreach($xml->getElementsByTagName('terminal_objective') as $ter) {
            $t = new TerminalObjective();
