@@ -76,7 +76,7 @@ case "solution":            $eo      = new EnablingObjective();
                             $enaID = $eo->id;
                             $folders = $curID.'/'.$terID.'/'.$enaID.'/';    // set upload-folder 
                             break;       
-case "terminal_objective":  $to      = new EnablingObjective();     
+case "terminal_objective":  $to      = new TerminalObjective();     
                             $to->id  = $ref_id;
                             $to->load();                                    // load ids folders
                             $curID = $to->curriculum_id;
