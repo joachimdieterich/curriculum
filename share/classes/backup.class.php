@@ -301,14 +301,7 @@ class Backup {
                 $ter_files  = $file->getFiles('terminal_objective', $ter_value->id);
                 if (count($ter_files) >= 1){
                     foreach($ter_files as $f_value) {
-                        $f_ter  = $xml->createElement('file');
-                        $this->array_to_Attribute($f_ter, $f_value);   
-                        $ter->appendChild( $f_ter );        // Datei enabling objective zuordnen
-                        /* Datei in Backup Temp kopieren */
-                        silent_mkdir($this->temp_path.'/'.$f_value->path);
-                        if ($f_value->type != '.url'){
-                            copy($CFG->curriculumdata_root.$f_value->full_path, $this->temp_path.'/'.$f_value->path.$f_value->filename);
-                        }
+                        $this->appendFile($xml, $ter, $f_value);
                     }
                 }
                 /* enabling objectives */
@@ -327,16 +320,7 @@ class Backup {
                         $ena_files  = $file->getFiles('enabling_objective', $ena_value->id);
                         if (count($ena_files) >= 1){
                             foreach($ena_files as $f_value) {
-                                $f_ena  = $xml->createElement('file');
-                                $this->array_to_Attribute($f_ena, $f_value);
-                                $ena->appendChild( $f_ena );        // Datei enabling objective zuordnen
-                                /* Datei in Backup Temp kopieren */
-                                //error_log($CFG->curriculumdata_root.$f_value->full_path.' : '.$tmp_folder.$f_value->full_path);
-                                
-                                if ($f_value->type != '.url' AND $f_value->type != 'external'){
-                                    silent_mkdir($this->temp_path.'/'.$f_value->path);
-                                    copy($CFG->curriculumdata_root.$f_value->full_path, $this->temp_path.'/'.$f_value->path.$f_value->filename);
-                                }
+                                $this->appendFile($xml, $ena, $f_value);
                             }
                         }
                         $ter->appendChild( $ena );        // Datei enabling objective zuordnen
@@ -345,46 +329,15 @@ class Backup {
                 $cur->appendChild( $ter );        // Datei enabling objective zuordnen
             }
         }
-        /* content */
-        $content                 = new Content();
-        $content_entries         = $content->get('curriculum', $c->id );
-        foreach($content_entries as $con_value){ 
-            $content_tag         = $xml->createElement("content");
-            $content_tag_title   = $xml->createElement("title", $con_value->title);
-            $content_tag->appendChild($content_tag_title);
-            $content_tag_content = $xml->createElement("text", $con_value->content);
-            $content_tag->appendChild($content_tag_content);   
-            $cur->appendChild($content_tag);
-        }
-        unset($content);
-        /* end content */
         
-        /* glossar */
-        $glossar                 = new Content();
-        $glossar_entries         = $glossar->get('glossar', $c->id );
-        foreach($glossar_entries as $gl_value){ 
-            $glossar_tag         = $xml->createElement("glossar");
-            $glossar_tag_title   = $xml->createElement("title", $gl_value->title);
-            $glossar_tag->appendChild($glossar_tag_title);
-            $glossar_tag_content = $xml->createElement("text", $gl_value->content);
-            $glossar_tag->appendChild($glossar_tag_content);   
-            $cur->appendChild($glossar_tag);
-        }
-        unset($glossar);
-        /* end glossar */
-        
+        $this->appendContent($xml, $cur, $c->id, 'curriculum', 'content');                 //* export content *//
+        $this->appendContent($xml, $cur, $c->id, 'glossar', 'glossar');                    //* export glossar *//
+                
         /* curriculum material */
         $cur_files  = $file->getFiles('curriculum', $c->id,'', array('cur' => true));
         if (count($cur_files) >= 1){
             foreach($cur_files as $f_value) {
-                $f_cur  = $xml->createElement('file');
-                $this->array_to_Attribute($f_cur, $f_value);
-                $cur->appendChild( $f_cur );        // append to cur tag
-                /* copy file to backup temp */
-                if ($f_value->type != '.url' AND $f_value->type != 'external'){
-                    silent_mkdir($this->temp_path.'/'.$f_value->path);
-                    copy($CFG->curriculumdata_root.$f_value->full_path, $this->temp_path.'/'.$f_value->path.$f_value->filename);
-                }
+                $this->appendFile($xml, $cur, $f_value);
             }
         }
         /* end curriculum material */
@@ -395,6 +348,31 @@ class Backup {
         
         $file = $this->temp_path.'/'.$filename.'.xml'; // Backup / [cur_id] / 
         file_put_contents($file, $xml->saveXML());
+    }
+    
+    private function appendContent($xml, $parent_node, $ref_id, $context, $element_tag){
+        $content                 = new Content();
+        $content_entries         = $content->get($context, $ref_id );
+        foreach($content_entries as $con_value){ 
+            $content_tag         = $xml->createElement($element_tag);
+            $content_tag_title   = $xml->createElement("title", $con_value->title);
+            $content_tag->appendChild($content_tag_title);
+            $content_tag_content = $xml->createElement("text", $con_value->content);
+            $content_tag->appendChild($content_tag_content);   
+            $parent_node->appendChild($content_tag);
+        }
+    }
+    
+    private function appendFile($xml, $parent_node, $file){
+        global $CFG;
+        $child  = $xml->createElement('file');
+        $this->array_to_Attribute($child, $file);   
+        $parent_node->appendChild( $child );        // Datei enabling objective zuordnen
+        /* Datei in Backup Temp kopieren */
+        if ($file->type != '.url' AND $file->type != 'external'){
+            silent_mkdir($this->temp_path.'/'.$file->path);
+            copy($CFG->curriculumdata_root.$file->full_path, $this->temp_path.'/'.$file->path.$file->filename);
+        }
     }
     
     private function array_to_Attribute($node, $var){
