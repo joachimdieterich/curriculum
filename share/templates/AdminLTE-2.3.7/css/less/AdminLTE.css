@@ -5889,4 +5889,16 @@ fieldset[disabled] .btn-yahoo.active {
 .text-black {
   color: #111;
 }
+.text-white-shadow {
+  color: #FFF;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-shadow: 1px 1px #FF0000 !important;
+}
+.text-ellipse {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
 /*# sourceMappingURL=AdminLTE.css.map */

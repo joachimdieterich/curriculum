@@ -157,19 +157,19 @@ function smarty_function_widget_paginator($params, $template) {
             }
             $html .= '<div class="col-lg-4 col-md-6 col-sm-12 margin-bottom">
                       <div class="box box-widget widget-user collapsed-box bottom-buffer-20">
-                        <span class="col-xs-12 no-margin" ';
+                        <span class="col-xs-12" ';
                             if (isset($config['p_widget']['bg_image'])){ 
-                                $html .= 'style="background: url(\''.$CFG->access_id_url.$file_id.'&size=t\') center center;  background-size: cover;"';
+                                $html .= 'style=" padding: 0; background: url(\''.$CFG->access_id_url.$file_id.'&size=t\') center center;  background-size: cover;"';
                             }
                         $html .= ' ">';
-                        $html .= '    <div class="widget-user-header col-xs-12" style=" background: '.ak_convert_hex2rgba($_val->color).';"  >
-                                <span class="pull-right no-margin text-white-shadow">'.$opt['delete'].'</span>
+                        $html .= '    <div class="widget-user-header no-margin" style=" background: '.ak_convert_hex2rgba($_val->color).';"  >
+                                <span class="pull-right no-margin text-white">'.$opt['delete'].'</span>
                                 <h3 class="widget-user-username text-white-shadow" >'.$header.'</h3> 
-                                <h5 class="widget-user-desc text-white-shadow" >'.$subheader01 .'</h5>
-                                <h5 class="widget-user-desc text-white-shadow "  >'.$subheader02.'</h5>
+                                <h5 class="widget-user-desc text-white" >'.$subheader01 .'</h5>
+                                <h5 class="widget-user-desc text-white "  >'.$subheader02.'</h5>
                                 <span class="col-xs-12" style="background-color: '.substr($_val->color, 0,7).'; position:absolute; display:block; left:0;right:0;bottom:0;">';
                                 if (isset($expand)){ 
-                                    $html .= '<a type="button" style="padding:5px;" class="pull-right fa fa-chevron-circle-down text-white-shadow" data-widget="collapse"></a>';
+                                    $html .= '<a type="button" style="padding:5px;" class="pull-right fa fa-chevron-circle-down text-white" data-widget="collapse"></a>';
                                 }
                                 foreach ($opt as $k =>$o) {
                                     if ($k != 'delete'){ // skip delete button 
