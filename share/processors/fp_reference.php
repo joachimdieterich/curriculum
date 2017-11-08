@@ -64,7 +64,7 @@ if($validated_data === false) {/* validation failed */
     
     $reference->grade_id            = filter_input(INPUT_POST, 'grade_id', FILTER_VALIDATE_INT);
     $reference->file_context        = filter_input(INPUT_POST, 'file_context', FILTER_VALIDATE_INT);
-    $reference->context_id          = $_SESSION['CONTEXT']['enabling_objective']->context_id; //By now, reference_source an only be enabling_objective
+    $reference->context_id          = filter_input(INPUT_POST, 'context_id', FILTER_VALIDATE_INT);//$_SESSION['CONTEXT']['enabling_objective']->context_id; //By now, reference_source an only be enabling_objective
     $reference->source_context_id   = $reference->context_id;
     $reference->source_reference_id = $_POST['reference_id'];
     
