@@ -67,6 +67,15 @@ if($validated_data === false) {/* validation failed */
     $reference->context_id          = filter_input(INPUT_POST, 'context_id', FILTER_VALIDATE_INT);//$_SESSION['CONTEXT']['enabling_objective']->context_id; //By now, reference_source an only be enabling_objective
     $reference->source_context_id   = $reference->context_id;
     $reference->source_reference_id = $_POST['reference_id'];
+    switch ($reference->context_id) {
+        case $_SESSION['CONTEXT']['enabling_objective']->context_id: $_SESSION['anchor'] = 'ena_'.$_POST['reference_id'];           // set anchor to jump to new enabling objective
+            break;
+        case $_SESSION['CONTEXT']['terminal_objective']->context_id: $_SESSION['anchor'] = 'ter_'.$_POST['reference_id'];           // set anchor to jump to new terminal objective
+            break;
+
+        default:
+            break;
+    }
     
     if (isset($_POST['enabling_objective_id'])){
         $reference->context_id          = $_SESSION['CONTEXT']['enabling_objective']->context_id; 
@@ -77,7 +86,6 @@ if($validated_data === false) {/* validation failed */
                 $_SESSION['PAGE']->message[] = array('message' => 'Referenz hinzufgefügt', 'icon' => 'fa-link text-success');
             } 
         }
-         
     } else if (isset($_POST['terminal_objective_id'])){
         $reference->context_id          = $_SESSION['CONTEXT']['terminal_objective']->context_id; 
         $reference->target_context_id   = $reference->context_id;
