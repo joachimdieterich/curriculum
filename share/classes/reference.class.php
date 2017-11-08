@@ -127,10 +127,9 @@ class Reference {
         while($result = $db->fetchObject()) { 
             $this->load('id',        $result->id); 
             //$this->load('unique_id', $this->unique_id); //load entry with matching unique_id
-            $r = $this->getUniqueIDs();
+            $r = array_merge((array)$r, (array)$this->getUniqueIDs());
             //$r[]  = clone $this;
         } 
-        
         return $r;     
     }
     
