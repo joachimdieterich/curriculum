@@ -60,9 +60,9 @@ switch ($func) {
                                 $content    .= '</div>';
                                 /* END FILTER */
                                 foreach ($references as $ref) {
-                                    $e = new EnablingObjective();
                                     switch ($ref->context_id) {
                                         case $_SESSION['CONTEXT']['enabling_objective']->context_id:
+                                                    $e = new EnablingObjective();
                                                     $e->id  = $ref->reference_id;
                                                     $e->load(); //todo: ? new query with get? to get all data with one query
                                                     $t      = new TerminalObjective();
