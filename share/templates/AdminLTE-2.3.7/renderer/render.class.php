@@ -690,6 +690,7 @@ class Render {
                                 }   
                             }
                         } else {
+                            
                             if ($type != 'terminal_objective'){
                                 if (checkCapabilities('reference:show', $USER->role_id, false)){
                                     $html  .= '<span class="fa fa-link text-primary box-sm-icon pull-left" data-toggle="tooltip" title="Lehr- /Rahmenplanbezüge" onclick=\'formloader("reference_view", "'.$type.'", "'.$objective->id.'");\'></span>';
@@ -713,6 +714,14 @@ class Render {
                                         $html  .='<span class="box-sm-icon text-primary" onclick=\'processor("link_module_result","enabling_objective","'.$objective->id.'","","webservice/moodle");\'><i class="fa fa-external-link-square  fa-rotate-180"></i></span>';
                                     }
                                 }
+                            } else {
+                                if (checkCapabilities('reference:show', $USER->role_id, false)){
+                                    $html  .= '<span class="fa fa-link text-primary box-sm-icon pull-left" data-toggle="tooltip" title="Lehr- /Rahmenplanbezüge" onclick=\'formloader("reference_view", "'.$type.'", "'.$objective->id.'");\'></span>';
+                                }
+                                if (checkCapabilities('reference:add', $USER->role_id, false)){
+                                    $html  .= '<span class="box-sm-icon pull-right text-primary" data-toggle="tooltip" title="Lehr- /Rahmenplanbezug hinzufügen" onclick=\'formloader("reference", "new", "'.$objective->id.'", {"context":"terminal_objective"});\'><i class="fa fa-link text-primary box-sm-icon"><i class="fa fa-plus fa-xs"></i></i></span>';
+                                }    
+                                
                             }
                         }  
                         
