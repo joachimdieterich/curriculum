@@ -24,7 +24,6 @@
                     {else}
                         {foreach item=cur_menu from=$my_enrolments name=enrolments}
                             {if $cur_menu->semester_id eq $my_semester_id}
-
                                     {if {$smarty.foreach.enrolments.index} neq 4} 
                                     <li {if isset($page_curriculum )}{if ($page_curriculum eq $cur_menu->id) && ($page_group eq $cur_menu->group_id)} class="active treeview"{/if}{/if}>                                
                                         <a class="text-ellipse" href="index.php?action=view&curriculum_id={$cur_menu->id}&group={$cur_menu->group_id}" >
@@ -44,6 +43,19 @@
                                         <li class=" treeview"><a><span>Weitere Einträge</span><i class="fa fa-angle-left pull-right"></i></a> 
                                         <ul class="treeview-menu" style="display: none;">
                                         {assign var="submenu" value=true} 
+                                        <li {if isset($page_curriculum )}{if ($page_curriculum eq $cur_menu->id) && ($page_group eq $cur_menu->group_id)} class="active treeview"{/if}{/if}>                                
+                                        <a class="text-ellipse" href="index.php?action=view&curriculum_id={$cur_menu->id}&group={$cur_menu->group_id}" >
+                                            {*<span style="position: absolute;left: 0;top: 0;bottom:0px;right:0; background: url('{$access_file}{$cur_menu->icon_id|resolve_file_id:"t"}') center; background-size: cover; "></span>
+                                            <span style="position: absolute;left: 0;top: 0;bottom:0px;right:0; background: {ak_convert_hex2rgba($cur_menu->color)};"></span>*}
+                                            {*<i class="fa fa-dashboard"></i><span style="position: absolute; color:#FFF;">*}{$cur_menu->curriculum}{*</span>&nbsp;*}<span class="label pull-right bg-green">{$cur_menu->groups}</span>
+                                        </a>
+
+                                        <div class="progress xxs margin-bottom-none">
+                                            <div class="progress-bar progress-bar-success" style="width: {$cur_menu->completed}%" role="progressbar" aria-valuenow="{$cur_menu->completed}" aria-valuemin="0" aria-valuemax="100">
+                                              <span class="sr-only">{$cur_menu->completed}% Complete</span>
+                                            </div>
+                                        </div>
+                                    </li>
                                     {/if}  
                                 
                             {/if}
