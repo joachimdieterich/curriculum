@@ -921,7 +921,7 @@ function closePopup(id){
     $('#'+popup).hide();  
     $("body").removeClass("modal-open"); //reactivate scrolling on body
     $("#overlay").removeClass("overlay");                                           //remove darken background
-    document.getElementById(popup).style.zIndex = 3000; // reset zIndex;
+    /*document.getElementById(popup).style.zIndex = 3000; // reset zIndex; comment cause select 2 is not working when calling modal two times without reload*/
     document.getElementById(popup).innerHTML    = '<div class="modal-dialog"><div class="box"><div class="box-header"><h3 class="box-title">Loading...</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div></div>';    
 }
 
