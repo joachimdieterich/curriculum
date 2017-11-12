@@ -613,7 +613,7 @@ class Render {
                     
                 }
                  if (checkCapabilities('user:getHelp', $USER->role_id, false) AND $type != 'terminal_objective' AND isset($group_id)){
-                    $html  .= ' <span class="fa fa-support pull-right invert box-sm-icon text-primary margin-r-5" onclick=\'formloader("support","random", '.$objective->id.', {"group_id":"'.$group_id.'"});\'></span>';
+                    $html  .= ' <span class="fa fa-support pull-right invert box-sm-icon text-primary margin-r-5" data-toggle="tooltip" title="Gruppenmitglied um Hilfe bitten" onclick=\'formloader("support","random", '.$objective->id.', {"group_id":"'.$group_id.'"});\'></span>';
                 }
                 
                 if (checkCapabilities('file:solutionUpload', $USER->role_id, false) AND $type != 'terminal_objective' AND isset($solutions)){
