@@ -44,7 +44,7 @@
             {if $cfg_guest_login}
                 <div class="row">
                     <div class="col-xs-6 pull-left">{*!pull-left to not submit guest login on return, when entering regular user accounts*}
-                        <input id="register" {*type="submit"*} onclick="alert('Funktion noch nicht verfügbar');"  name="register" class="btn btn-primary btn-block btn-flat visible" value="registrieren" data-toggle="tooltip" title="Noch nicht registriert?"></input>
+                        <input id="register" {*type="submit"*} onclick="alert('Funktion noch nicht verfügbar');"  name="register" class="btn btn-primary btn-block btn-flat visible" value="Registrierung" data-toggle="tooltip" title="Noch nicht registriert?"></input>
                     </div><!-- /.col -->
                     <div class="col-xs-6 pull-right">{*!pull-left to not submit guest login on return, when entering regular user accounts*}
                         <input id="guest" type="submit" name="guest" class="btn btn-primary btn-block btn-flat visible" value="Gastzugang" data-toggle="tooltip" title="Als Gast einen Einblick bekommen"></input>
