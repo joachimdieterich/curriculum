@@ -47,7 +47,6 @@ switch ($func) {
                                 $content .= '<small>'.$cur->description.'</small>';
                             
                             foreach ($ter as $ter_value){
-                               
                                 $content .= '<pagebreak orientation="landscape"/><div style="padding:5px;background:'.$ter_value->color.'">'.strip_tags($ter_value->terminal_objective).'</div>';
                                 $content .= '<table style="width:100%; border-collapse: collapse;border: 1px solid #EBEBEB;">';
                                 $content .= '<thead><tr style="background: #F2DBDB"><td>Lernziel / Kompetenz</td><td>Bezüge / Querverweise</td><td>Materialien</td></tr></thead>';
@@ -55,7 +54,7 @@ switch ($func) {
                                 /* Bezüge */
                                 $content    .= '<td valign="top" style="width:40%;border: 1px solid '.$ter_value->color.';"><small>'. render_reference('terminal_objective', $ter_value->id).'</small></td>';
                                 /*  Material  */
-                                $content    .= '<td valign="top" style="width:30%;border: 1px solid '.$ter_value->color.';"><small>'.render_material('enabling_objective', $ena_value->id).'</small></td>';
+                                $content    .= '<td valign="top" style="width:30%;border: 1px solid '.$ter_value->color.';"><small>'.render_material('terminal_objective', $ter_value->id).'</small></td>';
                                 $content    .= '</td></tr>';
                                 
                                 foreach($ter_value->enabling_objectives AS $ena_value){
@@ -108,73 +107,29 @@ switch ($func) {
                                         $ena_obj->load();  
                                         $reference = new Reference();
                                         $references = $reference->get('reference_id', $_SESSION['CONTEXT']['enabling_objective']->context_id, $ena_obj->id);
-                                    
-                                            foreach ($references as $ref) {
-                                            $e = new EnablingObjective();
-                                            switch ($ref->context_id) {
-                                                case $_SESSION['CONTEXT']['enabling_objective']->context_id:
-                                                            $e->id  = $ref->reference_id;
-                                                            $e->load(); //todo: ? new query with get? to get all data with one query
-                                                            $t      = new TerminalObjective();
-                                                            $t->id  = $e->terminal_objective_id;
-                                                            $t->load();
-                                                            $c      = new Curriculum();         
-                                                            $c->id  = $e->curriculum_id;
-                                                            $c->load();
-                                                            $sc     = new Schooltype();
-                                                            $sc->load('id', $c->schooltype_id);
-                                                            $gr     = new Grade();
-                                                            $gr->load('id', $ref->grade_id);
-                                                            $ct     = new Content();
-                                                            $ct->get('reference', $ref->id);
-                                                            $content    .= '<div style="padding:5px;background:'.$ter_value->color.'">'.strip_tags($ena_value->enabling_objective).'</div>';
-                                                            $content .= '<columns column-count="2" vAlign="justify" column-gap="25" />';
-                                                            $content .= '<p><small><strong>Lehrplan</strong></small> '.$c->curriculum.'<br>';
-                                                            $content .= '<small><strong>Ausbildungsrichtung</strong></small> '.$sc->schooltype.'<br>';
-                                                            $content .= '<small><strong>Fach</strong></small> '.$c->subject.'<br>';
-                                                            $content .= '<small><strong>Klassenstufe</strong></small> '.$gr->grade.'<br>';
-                                                            $content .= '<small><strong>Thema</strong></small> '.strip_tags($t->terminal_objective).'<br>';
-                                                            $content .= '<small><strong>Lernziel/Kompetenz</strong></small> '.strip_tags($e->enabling_objective).'<br>';
-                                                            if (isset($ct->content)){
-                                                                if ($ct->content != ''){
-                                                                    $content .= '<small><strong>Hinweise</strong></small> '.strip_tags($ct->content).'<br>';
-                                                                }
-                                                            }
-                                                            $content .= '</p>';
-                                                            $content .= '<columns column-count="1" vAlign="justify" column-gap="0" />';
-                                                    break;
-                                                case $_SESSION['CONTEXT']['terminal_objective']->context_id:
-                                                            $t      = new TerminalObjective();
-                                                            $t->id  = $ref->reference_id;
-                                                            $t->load();
-                                                            $c      = new Curriculum();         
-                                                            $c->id  = $t->curriculum_id;
-                                                            $c->load();
-                                                            $sc     = new Schooltype();
-                                                            $sc->load('id', $c->schooltype_id);
-                                                            $gr     = new Grade();
-                                                            $gr->load('id', $ref->grade_id);
-                                                            $ct     = new Content();
-                                                            $ct->get('reference', $ref->id);
-                                                            $content    .= '<div style="padding:5px;background:'.$ter_value->color.'">'.strip_tags($ter_value->terminal_objective).'</div>';
-                                                            $content .= '<columns column-count="2" vAlign="justify" column-gap="25" />';
-                                                            $content .= '<p><small><strong>Lehrplan</strong></small> '.$c->curriculum.'<br>';
-                                                            $content .= '<small><strong>Ausbildungsrichtung</strong></small> '.$sc->schooltype.'<br>';
-                                                            $content .= '<small><strong>Fach</strong></small> '.$c->subject.'<br>';
-                                                            $content .= '<small><strong>Klassenstufe</strong></small> '.$gr->grade.'<br>';
-                                                            $content .= '<small><strong>Thema</strong></small> '.strip_tags($t->terminal_objective).'<br>';
-                                                            if (isset($ct->content)){
-                                                                if ($ct->content != ''){
-                                                                    $content .= '<small><strong>Hinweise</strong></small> '.strip_tags($ct->content).'<br>';
-                                                                }
-                                                            }
-                                                            $content .= '</p>';
-                                                            $content .= '<columns column-count="1" vAlign="justify" column-gap="0" />';
-                                                    break;
-
-                                                default:
-                                                    break;
+                                        
+                                        foreach ($references as $ref) {
+                                            if ($ref->context_id == $_SESSION['CONTEXT']['terminal_objective']->context_id){
+                                                $content    .= '<div style="padding:5px;background:'.$ter_value->color.'">'.strip_tags($ter_value->terminal_objective).'</div>';
+                                            } else {
+                                                $content    .= '<div style="padding:5px;background:'.$ter_value->color.'">'.strip_tags($ena_value->enabling_objective).'</div>';
                                             }
+                                            $content .= '<columns column-count="2" vAlign="justify" column-gap="25" />';
+                                            $content .= '<p><small><strong>Lehrplan</strong></small> '.$ref->curriculum_object->curriculum.'<br>';
+                                            $content .= '<small><strong>Ausbildungsrichtung</strong></small> '.$ref->schooltype.'<br>';
+                                            $content .= '<small><strong>Fach</strong></small> '.$ref->curriculum_object->subject.'<br>';
+                                            $content .= '<small><strong>Klassenstufe</strong></small> '.$ref->grade.'<br>';
+                                            $content .= '<small><strong>Thema</strong></small> '.strip_tags($ref->terminal_object->terminal_objective).'<br>';
+                                            if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id){
+                                                $content .= '<small><strong>Lernziel/Kompetenz</strong></small> '.strip_tags($ref->enabling_object->enabling_objective).'<br>';
+                                            }
+                                            if (isset($ref->content_object->content)){
+                                                if ($ref->content_object->content != ''){
+                                                    $content .= '<small><strong>Hinweise</strong></small> '.strip_tags($ref->content_object->content).'<br>';
+                                                }
+                                            }
+                                            $content .= '</p>';
+                                            $content .= '<columns column-count="1" vAlign="justify" column-gap="0" />';
 
                                         }   
                                 }
@@ -257,9 +212,6 @@ switch ($func) {
         break;
 }
 
-
-
-
 $_SESSION['FORM']                  = null;                     // reset Session Form object
 
 $_SESSION['PAGE']->print          = new stdClass();
@@ -278,7 +230,6 @@ function render_material($dependency, $id){
                                             $content .= '<li>'.$f->title.' ('.$f->filename.')</li>';
                                         }
                                     $content    .= '</ul></small>';
-
             break;
 
         default:
@@ -287,86 +238,34 @@ function render_material($dependency, $id){
     if (isset($content)) return $content;
     
 }
+function render_reference_entry($ref){
+    $content  = '<p><small><strong>Lehrplan</strong><br> '.$ref->curriculum_object->curriculum.' ('.$ref->curriculum_object->subject.', '.$ref->grade.')<br>
+                 <strong>Thema</strong><br> '.strip_tags($ref->terminal_object->terminal_objective).'<br>';
+    if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
+        $content .= ' <strong>Lernziel/Kompetenz</strong><br> '.strip_tags($ref->enabling_object->enabling_objective).'<br>';
+    }
+    
+    if (isset($ref->content_object->content)){
+        if ($ref->content_object->content != ''){
+            $content .= '<small><strong>Hinweise</strong></small><br>'.strip_tags($ref->content_object->content).'<br>';
+        }
+    }
+    $content .= '</p>';
+    return $content;
+}
 
 function render_reference($dependency, $id){
     switch ($dependency) {
         case 'terminal_objective':
-            $reference = new Reference();
+            $reference  = new Reference();
             $references = $reference->get('reference_id', $_SESSION['CONTEXT']['terminal_objective']->context_id, $id);
-            //error_log(json_encode($references));
-            $content = '';
-            $count_ref = count($references);
-            $i = 0;
+            $content    = '';
+            $count_ref  = count($references);
+            $i          = 0;
             foreach ($references as $ref) {
                 $i++;
-                $e = new EnablingObjective();
-                switch ($ref->context_id) {
-                    case $_SESSION['CONTEXT']['enabling_objective']->context_id:
-                                $e->id  = $ref->reference_id;
-                                $e->load(); //todo: ? new query with get? to get all data with one query
-                                $t      = new TerminalObjective();
-                                $t->id  = $e->terminal_objective_id;
-                                $t->load();
-                                $c      = new Curriculum();         
-                                $c->id  = $e->curriculum_id;
-                                $c->load();
-                                //$sc     = new Schooltype();
-                                //$sc->load('id', $c->schooltype_id);
-                                $gr     = new Grade();
-                                $gr->load('id', $ref->grade_id);
-                                $ct     = new Content();
-                                $ct->get('reference', $ref->id);
-                                $content .= '<p><small><strong>Lehrplan</strong><br> '.$c->curriculum.' ('.$c->subject.', '.$gr->grade.')<br>';
-                                //$content .= '<small><strong>Ausbildungsrichtung</strong></small> '.$sc->schooltype.'<br>';
-                                //$content .= '<small><strong>Fach</strong></small> '.$c->subject.'<br>';
-                                //$content .= '<small><strong>Klassenstufe</strong></small> '.$gr->grade.'<br>';
-
-                                $content .= '<strong>Thema</strong><br> '.strip_tags($t->terminal_objective).'<br>';
-                                $content .= '<strong>Lernziel/Kompetenz</strong><br> '.strip_tags($e->enabling_objective).'<br>';
-                                if (isset($ct->content)){
-                                    $content .= '<strong>Hinweise</strong></small><br> '.strip_tags($ct->content).'</small><br>';
-                                }
-                                $content .= '</p>';
-                                if ($i < $count_ref) { $content .= '<hr style="width:100%; padding-bottom:5px; color: #EBEBEB;">'; }
-                                
-
-
-                        break;
-                    case $_SESSION['CONTEXT']['terminal_objective']->context_id:
-                                $t      = new TerminalObjective();
-                                $t->id  = $ref->reference_id;
-                                $t->load();
-                                $c      = new Curriculum();         
-                                $c->id  = $t->curriculum_id;
-                                $c->load();
-                                //$sc     = new Schooltype();
-                                //$sc->load('id', $c->schooltype_id);
-                                $gr     = new Grade();
-                                $gr->load('id', $ref->grade_id);
-                                $ct     = new Content();
-                                $ct->get('reference', $ref->id);
-
-                                /*$content .= '<div class="row">' 
-                                          . '<div class="col-xs-12 col-sm-6 pull-left"><dt>Ausbildungsrichtung<dd>'.$sc->schooltype.'</dd></dt>';
-                                $content .= '<br><dt>Fach<dd>'.$c->subject.'</dd></dt>';
-                                $content .= '<br><dt>Lehrplan<dd>'.$c->curriculum.'</dd></dt>';
-                                $content .= '<br><dt>Klassenstufe<dd>'.$gr->grade.'</dd></dt>';*/
-                                
-                                $content .= '<p><small><strong>Lehrplan</strong><br> '.$c->curriculum.' ('.$c->subject.', '.$gr->grade.')<br>';
-                                $content .= '<strong>Thema</strong><br> '.strip_tags($t->terminal_objective).'<br>';
-                                
-                                if (isset($ct->content)){
-                                    $content .= '<strong>Hinweise</strong></small><br> '.strip_tags($ct->content).'</small><br>';
-                                }
-                                $content .= '</p>';
-                                if ($i < $count_ref) { $content .= '<hr style="width:100%; padding-bottom:5px; color: #EBEBEB;">'; }
-                                
-                        break;
-
-                    default:
-                        break;
-                }
-
+                $content .= render_reference_entry($ref);
+                if ($i < $count_ref) { $content .= '<hr style="width:100%; padding-bottom:5px; color: #EBEBEB;">'; }
             } 
            break;
         case 'enabling_objective':
@@ -377,69 +276,8 @@ function render_reference($dependency, $id){
             $i = 0;
             foreach ($references as $ref) {
                 $i++;
-                $e = new EnablingObjective();
-                switch ($ref->context_id) {
-                    case $_SESSION['CONTEXT']['enabling_objective']->context_id:
-                                $e->id  = $ref->reference_id;
-                                $e->load(); //todo: ? new query with get? to get all data with one query
-                                $t      = new TerminalObjective();
-                                $t->id  = $e->terminal_objective_id;
-                                $t->load();
-                                $c      = new Curriculum();         
-                                $c->id  = $e->curriculum_id;
-                                $c->load();
-                                $sc     = new Schooltype();
-                                $sc->load('id', $c->schooltype_id);
-                                $gr     = new Grade();
-                                $gr->load('id', $ref->grade_id);
-                                $ct     = new Content();
-                                $ct->get('reference', $ref->id);
-                                $content .= '<p><small><strong>Lehrplan</strong><br> '.$c->curriculum.' ('.$c->subject.', '.$gr->grade.')<br>';
-                                //$content .= '<small><strong>Ausbildungsrichtung</strong></small> '.$sc->schooltype.'<br>';
-                                //$content .= '<small><strong>Fach</strong></small> '.$c->subject.'<br>';
-                                //$content .= '<small><strong>Klassenstufe</strong></small> '.$gr->grade.'<br>';
-
-                                $content .= '<strong>Thema</strong><br> '.strip_tags($t->terminal_objective).'<br>';
-                                $content .= '<strong>Lernziel/Kompetenz</strong><br> '.strip_tags($e->enabling_objective).'<br>';
-                                if (isset($ct->content)){
-                                    $content .= '<strong>Hinweise</strong></small><br> '.strip_tags($ct->content).'</small><br>';
-                                }
-                                $content .= '</p>';
-                                if ($i < $count_ref) { $content .= '<hr style="width:100%; padding-bottom:5px; color: #EBEBEB;">'; }
-                                
-
-
-                        break;
-                    case $_SESSION['CONTEXT']['terminal_objective']->context_id:
-                                $t      = new TerminalObjective();
-                                $t->id  = $ref->reference_id;
-                                $t->load();
-                                $c      = new Curriculum();         
-                                $c->id  = $t->curriculum_id;
-                                $c->load();
-                                $sc     = new Schooltype();
-                                $sc->load('id', $c->schooltype_id);
-                                $gr     = new Grade();
-                                $gr->load('id', $ref->grade_id);
-                                $ct     = new Content();
-                                $ct->get('reference', $ref->id);
-
-                                $content .= '<div class="row">' 
-                                          . '<div class="col-xs-12 col-sm-6 pull-left"><dt>Ausbildungsrichtung<dd>'.$sc->schooltype.'</dd></dt>';
-                                $content .= '<br><dt>Fach<dd>'.$c->subject.'</dd></dt>';
-                                $content .= '<br><dt>Lehrplan<dd>'.$c->curriculum.'</dd></dt>';
-                                $content .= '<br><dt>Klassenstufe<dd>'.$gr->grade.'</dd></dt>';
-                                if (isset($ct->content)){
-                                    $content .= '<br><dt>Hinweise<dd>'.strip_tags($ct->content).'</dd></dt>';
-                                }
-                                $content .= '</div><div class="col-xs-12 col-sm-3 ""><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('objective' => $t, 'color')).'</div>';
-                                $content .= '</div><hr style="clear:both;">';
-                        break;
-
-                    default:
-                        break;
-                }
-
+                $content .= render_reference_entry($ref);
+                if ($i < $count_ref) { $content .= '<hr style="width:100%; padding-bottom:5px; color: #EBEBEB;">'; }
             } 
            break;
         default:
