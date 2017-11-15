@@ -441,7 +441,7 @@ class Curriculum {
         $reference = new Reference();
         $reference->unique_id       = $ref_node->getAttribute('unique_id');
         $reference->reference_id    = $parent_id;
-        $gr     = new Grade();
+        $gr        = new Grade();
         $gr->load('grade', $ref_node->getAttribute('grade'));
         $reference->grade_id        = $gr->id;
         $reference->context_id      = $_SESSION['CONTEXT'][$context]->id;
