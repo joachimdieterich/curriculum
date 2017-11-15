@@ -26,22 +26,39 @@
 /**
  * Setup global $USER 
  */
-global $CFG, $USER, $_SESSION, $PAGE, $INSTITUTION, $TEMPLATE, $CONTEXT, $LICENSE;
+global $CFG, $USER, $_SESSION, $PAGE, $INSTITUTION, $TEMPLATE, $CONTEXT, $LICENSE, $SCHOOLTYPE, $GRADE;
 
 if (isset($_SESSION['CONTEXT'])){                                               //global $CONTEXT array --> lesser db calls
-    $CONTEXT                    = $_SESSION['CONTEXT'];
+    $CONTEXT                   = $_SESSION['CONTEXT'];
 } else {
-    $ctx                        = new Context();
-    $CONTEXT                    = $ctx->get('context');
-    $_SESSION['CONTEXT']        = $CONTEXT;
+    $ctx                       = new Context();
+    $CONTEXT                   = $ctx->get('context');
+    $_SESSION['CONTEXT']       = $CONTEXT;
 }
 
+// Licenses
 if (isset($_SESSION['LICENSE'])){                                               //global $LICENSE array --> lesser db calls
-    $LICENSE                    = $_SESSION['LICENSE'];
+    $LICENSE                   = $_SESSION['LICENSE'];
 } else {
     $fl                        = new License();
-    $LICENSE                    = $fl->get();
-    $_SESSION['LICENSE']        = $LICENSE;
+    $LICENSE                   = $fl->get();
+    $_SESSION['LICENSE']       = $LICENSE;
+}
+// Schooltypes
+if (isset($_SESSION['SCHOOLTYPE'])){                                               //global $SCHOOLTYPE array --> lesser db calls
+    $SCHOOLTYPE                = $_SESSION['SCHOOLTYPE'];
+} else {
+    $s                         = new Schooltype();
+    $SCHOOLTYPE                = $s->getSchooltypes(true);
+    $_SESSION['SCHOOLTYPE']    = $SCHOOLTYPE;
+}
+// Schooltypes
+if (isset($_SESSION['GRADE'])){                                               //global $GRADE array --> lesser db calls
+    $GRADE                     = $_SESSION['GRADE'];
+} else {
+    $g                         = new Grade();
+    $GRADE                     = $g->getGrades('all', null, '', true);
+    $_SESSION['GRADE']         = $GRADE;
 }
 
 
