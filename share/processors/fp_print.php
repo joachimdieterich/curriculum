@@ -136,7 +136,7 @@ switch ($func) {
                                                             $content .= '<small><strong>Thema</strong></small> '.strip_tags($t->terminal_objective).'<br>';
                                                             $content .= '<small><strong>Lernziel/Kompetenz</strong></small> '.strip_tags($e->enabling_objective).'<br>';
                                                             if (isset($ct->content)){
-                                                                $content .= '<small><strong>Hinweise</strong></small> '.$ct->content.'<br>';
+                                                                $content .= '<small><strong>Hinweise</strong></small> '.strip_tags($ct->content).'<br>';
                                                             }
                                                             $content .= '</p>';
                                                             $content .= '<columns column-count="1" vAlign="justify" column-gap="0" />';
@@ -161,7 +161,7 @@ switch ($func) {
                                                             $content .= '<br><dt>Lehrplan<dd>'.$c->curriculum.'</dd></dt>';
                                                             $content .= '<br><dt>Klassenstufe<dd>'.$gr->grade.'</dd></dt>';
                                                             if (isset($ct->content)){
-                                                                $content .= '<br><dt>Hinweise<dd>'.$ct->content.'</dd></dt>';
+                                                                $content .= '<br><dt>Hinweise<dd>'.strip_tags($ct->content).'</dd></dt>';
                                                             }
                                                             $content .= '</div><div class="col-xs-12 col-sm-3 ""><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('objective' => $t, 'color')).'</div>';
                                                             $content .= '</div><hr style="clear:both;">';
