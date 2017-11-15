@@ -137,7 +137,7 @@ class Grade {
      * Get all availible Grades of current institution
      * @return array of Grade objects 
      */
-    public function getGrades($dependency = 'all', $id = null, $paginator = '' ){
+    public function getGrades($dependency = 'all', $id = null, $paginator = '', $for_session = false){
         global $USER;
         $order_param = orderPaginator($paginator, array('id'            => 'gr',
                                                         'grade'         => 'gr',
@@ -164,7 +164,10 @@ class Grade {
             foreach ($result as $key => $value) {
                 $this->$key = $value; 
             }
-            $grades[]       = clone $this;        //it has to be clone, to get the object and not the reference
+            if ($for_session){
+                $grades[$result->grade]= clone $this;        // store grade by id and grade to resolve both ways
+            }
+            $grades[$result->id]       = clone $this;       
         } 
         return $grades;
     }
