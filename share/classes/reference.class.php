@@ -29,6 +29,12 @@ class Reference {
     public $unique_id;
     public $description; 
     public $grade_id;
+    public $grade;
+    public $curriculum_object;
+    public $terminal_object;
+    public $enabling_object;
+    public $schooltype;
+    public $content_object;
     public $context_id;
     public $file_context;
     public $reference_id;
@@ -64,6 +70,46 @@ class Reference {
         if ($result){
             foreach ($result as $key => $value) {
                 $this->$key  = $value; 
+            }
+            switch ($this->context_id) {
+                case $_SESSION['CONTEXT']['terminal_objective']->context_id:
+                    $t                          = new TerminalObjective();
+                    $t->id                      = $this->reference_id;
+                    $t->load();
+                    $this->terminal_object      = $t;
+                    $c                          = new Curriculum();         
+                    $c->id                      = $t->curriculum_id;
+                    $c->load();
+                    $this->curriculum_object    = $c;
+                    $this->schooltype           = $_SESSION['SCHOOLTYPE'][$c->schooltype_id]->schooltype; 
+                    $ct     = new Content();
+                    $ct->get('reference', $this->id);
+                    $this->content_object       = $ct;    
+                    break;
+                case $_SESSION['CONTEXT']['enabling_objective']->context_id:
+                    $e                          = new EnablingObjective();
+                    $e->id                      = $this->reference_id;
+                    $e->load(); 
+                    $this->enabling_object      = $e;
+                    $t                          = new TerminalObjective();
+                    $t->id                      = $e->terminal_objective_id;
+                    $t->load();
+                    $this->terminal_object      = $t;
+                    $c                          = new Curriculum();         
+                    $c->id                      = $t->curriculum_id;
+                    $c->load();
+                    $this->curriculum_object    = $c;
+                    $this->schooltype           = $_SESSION['SCHOOLTYPE'][$c->schooltype_id]->schooltype; 
+                    $ct     = new Content();
+                    $ct->get('reference', $this->id);
+                    $this->content_object       = $ct;    
+                    break;
+
+                default:
+                    break;
+            }
+            if (isset($this->grade_id)){
+                $this->grade = $_SESSION['GRADE'][$this->grade_id]->grade;
             }
             return true;                                                        
         } else { 
@@ -130,6 +176,7 @@ class Reference {
             $r = array_merge((array)$r, (array)$this->getUniqueIDs());
             //$r[]  = clone $this;
         } 
+        
         return $r;     
     }
     
@@ -146,5 +193,5 @@ class Reference {
         } 
         
         return $r; 
-    }
+    }  
 }
