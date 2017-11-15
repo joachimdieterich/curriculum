@@ -154,7 +154,7 @@ switch ($func) {
                                                             $gr->load('id', $ref->grade_id);
                                                             $ct     = new Content();
                                                             $ct->get('reference', $ref->id);
-
+                                                            $content    .= '<div style="padding:5px;background:'.$ter_value->color.'">'.strip_tags($ter_value->enabling_objective).'</div>';
                                                             $content .= '<columns column-count="2" vAlign="justify" column-gap="25" />';
                                                             $content .= '<p><small><strong>Lehrplan</strong></small> '.$c->curriculum.'<br>';
                                                             $content .= '<small><strong>Ausbildungsrichtung</strong></small> '.$sc->schooltype.'<br>';
