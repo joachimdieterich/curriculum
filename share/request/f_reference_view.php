@@ -38,7 +38,7 @@ switch ($func) {
     case 'terminal_objective':  $ter        = new TerminalObjective();
                                 $ter->id    = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
                                 $ter->load();  
-                                $reference = new Reference();
+                                $reference  = new Reference();
                                 $references = $reference->get('reference_id', $_SESSION['CONTEXT']['terminal_objective']->context_id, $ter->id);
                                 
                                 $content    .= 'Zum Lernziel / Zur Kompetenz <strong>'.$ter->terminal_objective.'</strong> wurden die folgenden Bezüge gefunden:<br><hr>';
@@ -46,90 +46,15 @@ switch ($func) {
                                     $content    .= 'Keine Bezüge vorhanden.';
                                 }
                                 /* FILTER */
-                                $content    .= '<div class="row">';
-                                $schooltypes = new Schooltype();  // Load schooltype 
-                                $content    .= '<span class="col-sm-3 pull-left">'.Form::input_select('schooltype_id', '', $schooltypes->getSchooltypes(), 'schooltype', 'id', $schooltype_id , null,'', 'Nach Ausbidlungsrichtung filtern', 'col-xs-0', 'col-xs-12').'</span>';
-                                $subjects                   = new Subject();                                                      
-                                $subjects->institution_id   = $USER->institutions;
-                                $content     .= '<span class="col-sm-3 pull-left">'.Form::input_select('subject_id', '', $subjects->getSubjects(), 'subject, institution', 'id', $subject_id , null, '', 'Nach Fach filtern', 'col-xs-0', 'col-xs-12').'</span>';
-                                $cur          = new Curriculum();
-                                $curriculum   = $cur->getCurricula('user', $USER->id);
-                                $content     .= '<span class="col-sm-3 pull-left">'.Form::input_select('curriculum_id', '', $curriculum, 'curriculum', 'id', $curriculum_id , null, '', 'Nach Lehr-/Rahmenplan filtern', 'col-xs-0', 'col-xs-12').'</span>';
-                                $grades       = new Grade();    //Load Grades
-                                $content     .= '<span class="col-sm-3 pull-left">'.Form::input_select('grade_id', '', $grades->getGrades('institution',$USER->institution_id), 'grade, institution', 'id', $grade_id , null, '', 'Nach Klassenstufe filtern', 'col-xs-0', 'col-xs-12').'</span>';
-                                $content    .= '</div>';
-                                /* END FILTER */
+                                $content .= render_filter();
                                 foreach ($references as $ref) {
-                                    switch ($ref->context_id) {
-                                        case $_SESSION['CONTEXT']['enabling_objective']->context_id:
-                                                    $e = new EnablingObjective();
-                                                    $e->id  = $ref->reference_id;
-                                                    $e->load(); //todo: ? new query with get? to get all data with one query
-                                                    $t      = new TerminalObjective();
-                                                    $t->id  = $e->terminal_objective_id;
-                                                    $t->load();
-                                                    $c      = new Curriculum();         
-                                                    $c->id  = $e->curriculum_id;
-                                                    $c->load();
-                                                    $sc     = new Schooltype();
-                                                    $sc->load('id', $c->schooltype_id);
-                                                    $gr     = new Grade();
-                                                    $gr->load('id', $ref->grade_id);
-                                                    $ct     = new Content();
-                                                    $ct->get('reference', $ref->id);
-
-
-
-                                                    $content .= '<div class="row">' 
-                                                              . '<div class="col-xs-12 col-sm-6 pull-left"><dt>Ausbildungsrichtung<dd>'.$sc->schooltype.'</dd></dt>';
-                                                    $content .= '<br><dt>Fach<dd>'.$c->subject.'</dd></dt>';
-                                                    $content .= '<br><dt>Lehrplan<dd>'.$c->curriculum.'</dd></dt>';
-                                                    $content .= '<br><dt>Klassenstufe<dd>'.$gr->grade.'</dd></dt>';
-                                                    if (isset($ct->content)){
-                                                        $content .= '<br><dt>Hinweise<dd>'.$ct->content.'</dd></dt>';
-                                                    }
-                                                    $content .= '</div><div class="col-xs-12 col-sm-3 ""><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('objective' => $t, 'color')).'</div>';
-                                                    $content .= '<div class="col-xs-12 col-sm-3 "><dt>Lernziel/Kompetenz</dt>'.Render::objective(array('type' => 'enabling_objective', 'objective' => $e, 'border_color' => $t->color)).'</div>';
-                                                    $content .= '</div><hr style="clear:both;">';
-
-
-                                            break;
-                                        case $_SESSION['CONTEXT']['terminal_objective']->context_id:
-                                                    $t      = new TerminalObjective();
-                                                    $t->id  = $ref->reference_id;
-                                                    $t->load();
-                                                    $c      = new Curriculum();         
-                                                    $c->id  = $t->curriculum_id;
-                                                    $c->load();
-                                                    $sc     = new Schooltype();
-                                                    $sc->load('id', $c->schooltype_id);
-                                                    $gr     = new Grade();
-                                                    $gr->load('id', $ref->grade_id);
-                                                    $ct     = new Content();
-                                                    $ct->get('reference', $ref->id);
-
-                                                    $content .= '<div class="row">' 
-                                                              . '<div class="col-xs-12 col-sm-6 pull-left"><dt>Ausbildungsrichtung<dd>'.$sc->schooltype.'</dd></dt>';
-                                                    $content .= '<br><dt>Fach<dd>'.$c->subject.'</dd></dt>';
-                                                    $content .= '<br><dt>Lehrplan<dd>'.$c->curriculum.'</dd></dt>';
-                                                    $content .= '<br><dt>Klassenstufe<dd>'.$gr->grade.'</dd></dt>';
-                                                    if (isset($ct->content)){
-                                                        $content .= '<br><dt>Hinweise<dd>'.$ct->content.'</dd></dt>';
-                                                    }
-                                                    $content .= '</div><div class="col-xs-12 col-sm-3 ""><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('objective' => $t, 'color')).'</div>';
-                                                    $content .= '</div><hr style="clear:both;">';
-                                            break;
-
-                                        default:
-                                            break;
-                                    }
-                                    
+                                    $content .= render_reference_entry($ref);
                                 }
         break;
     case 'enabling_objective':  $ena        = new EnablingObjective();
                                 $ena->id    = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
                                 $ena->load();  
-                                $reference = new Reference();
+                                $reference  = new Reference();
                                 $references = $reference->get('reference_id', $_SESSION['CONTEXT']['enabling_objective']->context_id, $ena->id);
                                 
                                 $content    .= 'Zum Lernziel / Zur Kompetenz <strong>'.$ena->enabling_objective.'</strong> wurden die folgenden Bezüge gefunden:<br><hr>';
@@ -137,84 +62,9 @@ switch ($func) {
                                     $content    .= 'Keine Bezüge vorhanden.';
                                 }
                                 /* FILTER */
-                                $content    .= '<div class="row">';
-                                $schooltypes = new Schooltype();  // Load schooltype 
-                                $content    .= '<span class="col-sm-3 pull-left">'.Form::input_select('schooltype_id', '', $schooltypes->getSchooltypes(), 'schooltype', 'id', $schooltype_id , null,'', 'Nach Ausbidlungsrichtung filtern', 'col-xs-0', 'col-xs-12').'</span>';
-                                $subjects                   = new Subject();                                                      
-                                $subjects->institution_id   = $USER->institutions;
-                                $content     .= '<span class="col-sm-3 pull-left">'.Form::input_select('subject_id', '', $subjects->getSubjects(), 'subject, institution', 'id', $subject_id , null, '', 'Nach Fach filtern', 'col-xs-0', 'col-xs-12').'</span>';
-                                $cur          = new Curriculum();
-                                $curriculum   = $cur->getCurricula('user', $USER->id);
-                                $content     .= '<span class="col-sm-3 pull-left">'.Form::input_select('curriculum_id', '', $curriculum, 'curriculum', 'id', $curriculum_id , null, '', 'Nach Lehr-/Rahmenplan filtern', 'col-xs-0', 'col-xs-12').'</span>';
-                                $grades       = new Grade();    //Load Grades
-                                $content     .= '<span class="col-sm-3 pull-left">'.Form::input_select('grade_id', '', $grades->getGrades('institution',$USER->institution_id), 'grade, institution', 'id', $grade_id , null, '', 'Nach Klassenstufe filtern', 'col-xs-0', 'col-xs-12').'</span>';
-                                $content    .= '</div>';
-                                /* END FILTER */
+                                $content .= render_filter();
                                 foreach ($references as $ref) {
-                                    $e = new EnablingObjective();
-                                    switch ($ref->context_id) {
-                                        case $_SESSION['CONTEXT']['enabling_objective']->context_id:
-                                                    $e->id  = $ref->reference_id;
-                                                    $e->load(); //todo: ? new query with get? to get all data with one query
-                                                    $t      = new TerminalObjective();
-                                                    $t->id  = $e->terminal_objective_id;
-                                                    $t->load();
-                                                    $c      = new Curriculum();         
-                                                    $c->id  = $e->curriculum_id;
-                                                    $c->load();
-                                                    $sc     = new Schooltype();
-                                                    $sc->load('id', $c->schooltype_id);
-                                                    $gr     = new Grade();
-                                                    $gr->load('id', $ref->grade_id);
-                                                    $ct     = new Content();
-                                                    $ct->get('reference', $ref->id);
-
-
-
-                                                    $content .= '<div class="row">' 
-                                                              . '<div class="col-xs-12 col-sm-6 pull-left"><dt>Ausbildungsrichtung<dd>'.$sc->schooltype.'</dd></dt>';
-                                                    $content .= '<br><dt>Fach<dd>'.$c->subject.'</dd></dt>';
-                                                    $content .= '<br><dt>Lehrplan<dd>'.$c->curriculum.'</dd></dt>';
-                                                    $content .= '<br><dt>Klassenstufe<dd>'.$gr->grade.'</dd></dt>';
-                                                    if (isset($ct->content)){
-                                                        $content .= '<br><dt>Hinweise<dd>'.$ct->content.'</dd></dt>';
-                                                    }
-                                                    $content .= '</div><div class="col-xs-12 col-sm-3 ""><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('objective' => $t, 'color')).'</div>';
-                                                    $content .= '<div class="col-xs-12 col-sm-3 "><dt>Lernziel/Kompetenz</dt>'.Render::objective(array('type' => 'enabling_objective', 'objective' => $e, 'border_color' => $t->color)).'</div>';
-                                                    $content .= '</div><hr style="clear:both;">';
-
-
-                                            break;
-                                        case $_SESSION['CONTEXT']['terminal_objective']->context_id:
-                                                    $t      = new TerminalObjective();
-                                                    $t->id  = $ref->reference_id;
-                                                    $t->load();
-                                                    $c      = new Curriculum();         
-                                                    $c->id  = $t->curriculum_id;
-                                                    $c->load();
-                                                    $sc     = new Schooltype();
-                                                    $sc->load('id', $c->schooltype_id);
-                                                    $gr     = new Grade();
-                                                    $gr->load('id', $ref->grade_id);
-                                                    $ct     = new Content();
-                                                    $ct->get('reference', $ref->id);
-
-                                                    $content .= '<div class="row">' 
-                                                              . '<div class="col-xs-12 col-sm-6 pull-left"><dt>Ausbildungsrichtung<dd>'.$sc->schooltype.'</dd></dt>';
-                                                    $content .= '<br><dt>Fach<dd>'.$c->subject.'</dd></dt>';
-                                                    $content .= '<br><dt>Lehrplan<dd>'.$c->curriculum.'</dd></dt>';
-                                                    $content .= '<br><dt>Klassenstufe<dd>'.$gr->grade.'</dd></dt>';
-                                                    if (isset($ct->content)){
-                                                        $content .= '<br><dt>Hinweise<dd>'.$ct->content.'</dd></dt>';
-                                                    }
-                                                    $content .= '</div><div class="col-xs-12 col-sm-3 ""><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('objective' => $t, 'color')).'</div>';
-                                                    $content .= '</div><hr style="clear:both;">';
-                                            break;
-
-                                        default:
-                                            break;
-                                    }
-                                    
+                                    $content .= render_reference_entry($ref);
                                 }
         break;
    
@@ -228,3 +78,39 @@ $html = Form::modal(array('target' => 'null',
                           'content' => $content));
 
 echo json_encode(array('html'=>$html));
+
+function render_filter(){
+    global $USER;
+    $c    = '<div class="row">';
+    $schooltypes = new Schooltype();  // Load schooltype 
+    $c    .= '<span class="col-sm-3 pull-left">'.Form::input_select('schooltype_id', '', $schooltypes->getSchooltypes(), 'schooltype', 'id', $schooltype_id , null,'', 'Nach Ausbidlungsrichtung filtern', 'col-xs-0', 'col-xs-12').'</span>';
+    $subjects                   = new Subject();                                                      
+    $subjects->institution_id   = $USER->institutions;
+    $c     .= '<span class="col-sm-3 pull-left">'.Form::input_select('subject_id', '', $subjects->getSubjects(), 'subject, institution', 'id', $subject_id , null, '', 'Nach Fach filtern', 'col-xs-0', 'col-xs-12').'</span>';
+    $cur          = new Curriculum();
+    $curriculum   = $cur->getCurricula('user', $USER->id);
+    $c     .= '<span class="col-sm-3 pull-left">'.Form::input_select('curriculum_id', '', $curriculum, 'curriculum', 'id', $curriculum_id , null, '', 'Nach Lehr-/Rahmenplan filtern', 'col-xs-0', 'col-xs-12').'</span>';
+    $grades       = new Grade();    //Load Grades
+    $c     .= '<span class="col-sm-3 pull-left">'.Form::input_select('grade_id', '', $grades->getGrades('institution',$USER->institution_id), 'grade, institution', 'id', $grade_id , null, '', 'Nach Klassenstufe filtern', 'col-xs-0', 'col-xs-12').'</span>';
+    $c    .= '</div>';
+    return $c;
+}
+
+function render_reference_entry($ref){
+    $c  = '<div class="row">
+           <div class="col-xs-12 col-sm-6 pull-left"><dt>Ausbildungsrichtung<dd>'.$ref->schooltype.'</dd></dt>
+           <br><dt>Fach<dd>'.$ref->curriculum_object->subject.'</dd></dt>
+           <br><dt>Lehrplan<dd>'.$ref->curriculum_object->curriculum.'</dd></dt>
+           <br><dt>Klassenstufe<dd>'.$ref->grade.'</dd></dt>';
+    if (isset($ref->content_object->content)){
+        if ($ref->content_object->content != ''){
+            $c .= '<br><dt>Hinweise<dd> '.strip_tags($ref->content_object->content).'</dd></dt>';
+        }
+    }
+    $c .= '</div><div class="col-xs-12 col-sm-3 ""><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('objective' => $ref->terminal_object, 'color')).'</div>';
+    if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
+      $c .= '<div class="col-xs-12 col-sm-3 "><dt>Lernziel/Kompetenz</dt>'.Render::objective(array('type' => 'enabling_objective', 'objective' => $ref->enabling_object, 'border_color' => $ref->terminal_object->color)).'</div>';
+    }
+    $c .= '</div><hr style="clear:both;">';
+    return $c;
+}
