@@ -136,7 +136,9 @@ switch ($func) {
                                                             $content .= '<small><strong>Thema</strong></small> '.strip_tags($t->terminal_objective).'<br>';
                                                             $content .= '<small><strong>Lernziel/Kompetenz</strong></small> '.strip_tags($e->enabling_objective).'<br>';
                                                             if (isset($ct->content)){
-                                                                $content .= '<small><strong>Hinweise</strong></small> '.strip_tags($ct->content).'<br>';
+                                                                if ($ct->content != ''){
+                                                                    $content .= '<small><strong>Hinweise</strong></small> '.strip_tags($ct->content).'<br>';
+                                                                }
                                                             }
                                                             $content .= '</p>';
                                                             $content .= '<columns column-count="1" vAlign="justify" column-gap="0" />';
@@ -154,7 +156,7 @@ switch ($func) {
                                                             $gr->load('id', $ref->grade_id);
                                                             $ct     = new Content();
                                                             $ct->get('reference', $ref->id);
-                                                            $content    .= '<div style="padding:5px;background:'.$ter_value->color.'">'.strip_tags($ter_value->enabling_objective).'</div>';
+                                                            $content    .= '<div style="padding:5px;background:'.$ter_value->color.'">'.strip_tags($ter_value->terminal_objective).'</div>';
                                                             $content .= '<columns column-count="2" vAlign="justify" column-gap="25" />';
                                                             $content .= '<p><small><strong>Lehrplan</strong></small> '.$c->curriculum.'<br>';
                                                             $content .= '<small><strong>Ausbildungsrichtung</strong></small> '.$sc->schooltype.'<br>';
@@ -162,7 +164,9 @@ switch ($func) {
                                                             $content .= '<small><strong>Klassenstufe</strong></small> '.$gr->grade.'<br>';
                                                             $content .= '<small><strong>Thema</strong></small> '.strip_tags($t->terminal_objective).'<br>';
                                                             if (isset($ct->content)){
-                                                                $content .= '<small><strong>Hinweise</strong></small> '.strip_tags($ct->content).'<br>';
+                                                                if ($ct->content != ''){
+                                                                    $content .= '<small><strong>Hinweise</strong></small> '.strip_tags($ct->content).'<br>';
+                                                                }
                                                             }
                                                             $content .= '</p>';
                                                             $content .= '<columns column-count="1" vAlign="justify" column-gap="0" />';
