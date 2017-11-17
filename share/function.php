@@ -889,7 +889,8 @@ function setChildren(){
     }
 }
 
-function getContrastColor($hexcolor, $darkcolor = '#000000' , $lightcolor = '#FFFFFF') {               
+function getContrastColor($hexcolor, $darkcolor = '#000000' , $lightcolor = '#FFFFFF') {  
+    $hexcolor = str_replace('#', '', $hexcolor);
     $r = hexdec(substr($hexcolor, 0, 2));
     $g = hexdec(substr($hexcolor, 2, 2));
     $b = hexdec(substr($hexcolor, 4, 2));
