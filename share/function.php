@@ -891,6 +891,15 @@ function setChildren(){
 
 function getContrastColor($hexcolor, $darkcolor = '#000000' , $lightcolor = '#FFFFFF') {  
     $hexcolor = str_replace('#', '', $hexcolor);
+    switch($len=strlen($hexcolor)) {
+        case 3:
+                $hexcolor=preg_replace("/(.)(.)(.)/","\\1\\1\\2\\2\\3\\3",$hexcolor);
+                break;
+        case 6:
+                break;
+        default:
+                error_log("Invalid hex length ($len). Must be a minimum length of (3) or maxium of (6) characters");
+    }
     $r = hexdec(substr($hexcolor, 0, 2));
     $g = hexdec(substr($hexcolor, 2, 2));
     $b = hexdec(substr($hexcolor, 4, 2));
