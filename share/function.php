@@ -739,7 +739,7 @@ function PHPArrayObjectSorter($array,$sortBy,$direction='asc'){
         }
         
         return $sortedArray;
-    }
+}
     
     function truncate($text, $chars = 25) {
         $text = substr($text,0,$chars);
@@ -888,6 +888,14 @@ function setChildren(){
         }
     }
 }
+
+function getContrastColor($hexcolor, $darkcolor = '#000000' , $lightcolor = '#FFFFFF') {               
+    $r = hexdec(substr($hexcolor, 0, 2));
+    $g = hexdec(substr($hexcolor, 2, 2));
+    $b = hexdec(substr($hexcolor, 4, 2));
+    $yiq = (($r * 299) + ($g * 587) + ($b * 114)) / 1000;
+    return ($yiq >= 128) ? $darkcolor: $lightcolor;
+}    
 
 /*
 function element_functions($string, $prefix, $object){
