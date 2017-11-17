@@ -557,7 +557,9 @@ class Render {
             $objective->color = '#FFF'; 
             $text_class       = 'text-black';
        } else {
-           $text_class       = 'text-white';
+           if (getContrastColor($objective->color) == '#000000'){$text_class       = 'text-black';}
+           else {$text_class  = 'text-white';}
+           
        }
        if (!isset($border_color)){
             $border_color = $objective->color; 
