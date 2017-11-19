@@ -132,8 +132,16 @@ class Content {
     public function addSubscription(){
         global $USER;
         checkCapabilities('content:add', $USER->role_id);
-        $db = DB::prepare('INSERT INTO content_subscriptions (content_id,context_id,file_context,reference_id,timecreated,status,creator_id) VALUES (?,?,?,?,NOW(),?,?)');
-        return $db->execute(array($this->id, $this->context_id, $this->file_context, $this->reference_id,1,$USER->id));
+        $db     = DB::prepare('SELECT COUNT(id) FROM content_subscriptions WHERE content_id = ? AND context_id = ? AND file_context = ? AND reference_id = ?');
+        $db->execute(array($this->id, $this->context_id, $this->file_context, $this->reference_id));
+        $count  = $db->fetchColumn();
+        if ($count > 0){
+            $_SESSION['PAGE']->message[] = array('message' => 'Referenz ist bereits verknüpft', 'icon' => 'fa-link text-warning');
+            return false;
+        } else {
+            $db = DB::prepare('INSERT INTO content_subscriptions (content_id,context_id,file_context,reference_id,timecreated,status,creator_id) VALUES (?,?,?,?,NOW(),?,?)');
+            return $db->execute(array($this->id, $this->context_id, $this->file_context, $this->reference_id,1,$USER->id));
+        } 
     }
     
     /**
