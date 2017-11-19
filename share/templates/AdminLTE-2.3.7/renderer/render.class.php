@@ -540,9 +540,11 @@ class Render {
         return $html;
         
     }
+    
     /* add all possible options (ter and ena) to this objective function*/
     public static function objective($params){
        global $CFG, $USER, $PAGE;
+       $format      = 'default';
        $type        = 'terminal_objective'; 
        $edit        = false;
        $sol_btn     = false;
@@ -564,173 +566,229 @@ class Render {
        if (!isset($border_color)){
             $border_color = $objective->color; 
         }
-       $html  =   '<div ';
-       if ($type == 'enabling_objective'){ //id is important to get scroll-to function while creating
-           $html  .= 'id="ena_'.$objective->id.'"';
-       } else {
-           $html  .= 'id="ter_'.$objective->id.'"';
-       }
-       $html  .=   'class="box box-objective ';
-            if (isset($highlight)){
-                if (in_array($type.'_'.$objective->id, $highlight)){
-                    $html  .= 'highlight';
-                } 
-            }
-            $html  .= '" style="padding-top: 0 !important; background: '.$objective->color.'; border: 1px solid '.$border_color.'">';
-            /*************** Header ***************/
-            if ($type == 'enabling_objective'){
-                $html  .= '<div id="ena_header_'.$objective->id.'" class="boxheader bg-'.$objective->accomplished_status_id.'" >';
-            } else {
-                $html  .= '<div class="boxheader">';
-            }
-            if (checkCapabilities('groups:showAccomplished', $USER->role_id, false)){
-                if (isset($objective->accomplished_users) AND isset($objective->enroled_users) AND isset($objective->accomplished_percent)){
-                    $html  .= '<span class=" pull-left hidden-sm hidden-xs text-black" data-toggle="tooltip" title="Stand der Lerngruppe">'.$objective->accomplished_users.' von '.$objective->enroled_users.' ('.$objective->accomplished_percent.'%)</span><!--Ziel-->  ';
-                }
-            }
         
-            if ($edit){
-                if ($type == 'terminal_objective'){
-                    $icon_up    = 'down'; 
-                    $icon_down  = 'up';
-                    $position   = 'pull-left';
+        
+        //adding format to generate more objective layouts
+        switch ($format) {
+            case 'reference':
+                $html  =   '<div ';
+                if ($type == 'enabling_objective'){ //id is important to get scroll-to function while creating
+                    $html  .= 'id="ena_'.$objective->id.'"';
                 } else {
-                    $icon_up    = 'right'; 
-                    $icon_down  = 'left';
-                    $position   = 'pull-right';
+                    $html  .= 'id="ter_'.$objective->id.'"';
                 }
-                if ($orderup){
-                    $html  .= '<span class="fa fa-arrow-'.$icon_up.' '.$position.' box-sm-icon text-primary" onclick=\'processor("orderObjective", "'.$type.'", "'.$objective->id.'", {"order":"up"});\'></span>';
+                $html  .=   'class="box box-objective ';
+                if (isset($highlight)){
+                    if (in_array($type.'_'.$objective->id, $highlight)){
+                        $html  .= 'highlight';
+                    } 
                 }
-                $html  .= '<span class="fa fa-minus pull-right box-sm-icon text-primary margin-r-5" onclick=\'del("'.$type.'", '.$objective->id.');\'></span>
-                           <span class="fa fa-edit pull-right box-sm-icon text-primary" onclick=\'formloader("'.$type.'", "edit", '.$objective->id.');\'></span>';
-                if ($orderdown){
-                    $html  .= '<span class="fa fa-arrow-'.$icon_down.' pull-left box-sm-icon text-primary" onclick=\'processor("orderObjective", "'.$type.'", "'.$objective->id.'", {"order":"down"});\'></span>';
+                $html  .= '" style="padding-top: 0 !important; background: '.$objective->color.'; border: 1px solid '.$border_color.'">';
+                /*************** Header ***************/
+                if ($type == 'enabling_objective'){
+                    $html  .= '<div id="ena_header_'.$objective->id.'" class="boxheader bg-'.$objective->accomplished_status_id.'" >';
+                } else {
+                    $html  .= '<div class="boxheader">';
                 }
-            } else {
-               
-                if (checkCapabilities('course:setAccomplishedStatus', $USER->role_id, false) AND $type != 'terminal_objective' AND isset($group_id)){
-                    $html  .= '<span class="fa fa-bar-chart-o pull-right invert box-sm-icon text-primary margin-r-5" onclick=\'formloader("compare","group", '.$objective->id.', {"group_id":"'.$group_id.'"});\'></span>
-                               <span class="fa fa-files-o pull-right invert box-sm-icon text-primary margin-r-5" onclick=\'formloader("material","solution", '.$objective->id.', {"group_id":"'.$group_id.'", "curriculum_id": "'.$objective->curriculum_id.'"});\'></span>';
-                    
+                 $html  .='</div>';    
+                 /*************** ./Header ***************/
+                 /*************** Body ***************/    
+                 $html  .='  <div id="'.$type.'_'.$objective->id.'" class="panel-body boxwrap" >
+                                 <div class="boxscroll" ';
+                                     if ($type == 'terminal_objective'){
+                                         $html  .='style="background: '.$objective->color.'"';
+                                     }
+                                     $html  .='><div class="boxcontent '.$text_class.'">'.$objective->$type.'</div>
+                                 </div>
+                             </div>';
+                 /*************** ./Body ***************/   
+                /*************** Footer ***************/
+                $html  .= '  <div class="boxfooter">';
+                if ($objective->description != ''){
+                    $html  .='<span class="fa fa-info pull-right box-sm-icon text-primary" style=" margin-right:3px;" data-toggle="tooltip" title="Beschreibung" onclick="formloader(\'description\', \''.$type.'\', '.$objective->id.');"></span>';
                 }
-                 if (checkCapabilities('user:getHelp', $USER->role_id, false) AND $type != 'terminal_objective' AND isset($group_id)){
-                    $html  .= ' <span class="fa fa-support pull-right invert box-sm-icon text-primary margin-r-5" data-toggle="tooltip" title="Gruppenmitglied um Hilfe bitten" onclick=\'formloader("support","random", '.$objective->id.', {"group_id":"'.$group_id.'"});\'></span>';
+                $html  .='<span class="pull-left margin-r-10">';
+                if (checkCapabilities('file:loadMaterial', $USER->role_id, false) AND ($objective->files['local'] != '0' OR $objective->files['repository'] != '' OR isset($objective->files['webservice']) )){
+                    $html  .='<span class="fa fa-briefcase box-sm-icon text-primary margin-r-5 pull-left" style="cursor:pointer; padding-top:3px;" data-toggle="tooltip" title="Materialien und Aufgaben" onclick="formloader(\'material\',\''.$type.'\','.$objective->id.')"></span>';
+                } else {
+                    $html  .='<span class="fa fa-briefcase box-sm-icon deactivate text-gray margin-r-5 pull-left" style="cursor:not-allowed;padding-top:3px;" data-toggle="tooltip" title="Keine Materialien verfügbar"></span>';
                 }
-                
-                if (checkCapabilities('file:solutionUpload', $USER->role_id, false) AND $type != 'terminal_objective' AND isset($solutions)){
-                    foreach ($solutions AS $s){
-                        if (($USER->id == $s->creator_id) AND ($s->enabling_objective_id == $objective->id) AND ($sol_btn != $objective->id)){
-                            $sol_btn = $objective->id;
-                            break;
-                        }
-                    }
+                $html  .='</span></div>';
+                 /*************** ./Footer ***************/
+                $html  .= '</div>';
+                break;
+
+            default:
+                $html  =   '<div ';
+                if ($type == 'enabling_objective'){ //id is important to get scroll-to function while creating
+                    $html  .= 'id="ena_'.$objective->id.'"';
+                } else {
+                    $html  .= 'id="ter_'.$objective->id.'"';
                 }
-                if (isset($PAGE->action) AND $type == 'enabling_objective' AND checkCapabilities('file:solutionUpload', $USER->role_id, false) AND (checkCapabilities('file:upload', $USER->role_id, false) OR checkCapabilities('file:uploadURL', $USER->role_id, false))){
-                    if($PAGE->action == 'view'){
-                        $html  .= '<a href="'.$CFG->smarty_template_dir_url.'renderer/uploadframe.php?context=solution&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal">
-                        <span class="fa ';
-                        if ($sol_btn == $objective->id){
-                            $html  .= 'fa-check-circle-o ';
-                        } else {
-                            $html  .= 'fa-upload ';
-                        } 
-                            $html  .= 'pull-right box-sm-icon text-primary" data-toggle="tooltip"';
-                        if ($sol_btn == $objective->id){
-                            $html  .= ' title="Lösung eingereicht"';
-                        } else {
-                            $html  .= ' title="Lösung einreichen"';
-                        }
-                        $html  .= '></span></a>';
-                    }
+                $html  .=   'class="box box-objective ';
+                if (isset($highlight)){
+                    if (in_array($type.'_'.$objective->id, $highlight)){
+                        $html  .= 'highlight';
+                    } 
                 }
-            }
-         if ($type == 'terminal_objective'){
-            $html  .=' <a class="collapse_btn" data-toggle="collapse" data-target="#collaps_ter_'.$objective->id.'" data-toggle="tooltip" title="Kompetenzen einklappen bzw. ausklappen"><i class="fa fa-compress box-sm-icon text-primary" style="padding-left:5px;"></i></a>';   
-         }
-         $html  .='  </div>';    
-        /*************** ./Header ***************/
-        /*************** Body ***************/    
-        $html  .='  <div id="'.$type.'_'.$objective->id.'" class="panel-body boxwrap" >
-                        <div class="boxscroll" ';
-                            if ($type == 'terminal_objective'){
-                                $html  .='style="background: '.$objective->color.'"';
-                            }
-                            $html  .='><div class="boxcontent '.$text_class.'">'.$objective->$type.'</div>
-                        </div>
-                    </div>';
-        /*************** ./Body ***************/
-        /*************** Footer ***************/
-        $html  .= '  <div class="boxfooter">';
-                        if ($objective->description != ''){
-                            $html  .='<span class="fa fa-info pull-right box-sm-icon text-primary" style=" margin-right:3px;" data-toggle="tooltip" title="Beschreibung" onclick="formloader(\'description\', \''.$type.'\', '.$objective->id.');"></span>';
-                        }
-                        $html  .='<span class="pull-left margin-r-10">';
-                        if (checkCapabilities('file:loadMaterial', $USER->role_id, false) AND ($objective->files['local'] != '0' OR $objective->files['repository'] != '' OR isset($objective->files['webservice']) )){
-                            $html  .='<span class="fa fa-briefcase box-sm-icon text-primary margin-r-5 pull-left" style="cursor:pointer; padding-top:3px;" data-toggle="tooltip" title="Materialien und Aufgaben" onclick="formloader(\'material\',\''.$type.'\','.$objective->id.')"></span>';
-                        } else {
-                            $html  .='<span class="fa fa-briefcase box-sm-icon deactivate text-gray margin-r-5 pull-left" style="cursor:not-allowed;padding-top:3px;" data-toggle="tooltip" title="Keine Materialien verfügbar"></span>';
-                        }
-                        if ((checkCapabilities('file:upload', $USER->role_id, false) OR checkCapabilities('file:uploadURL', $USER->role_id, false)) AND isset($PAGE->action)){
-                            if ($PAGE->action == 'view'){
-                                $html  .='<a href="'.$CFG->smarty_template_dir_url.'renderer/uploadframe.php?context='.$type.'&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal pull-right margin-r-5"><span class="fa fa-plus box-sm-icon" style="padding-top:3px;data-toggle="tooltip" title="Material hinzufügen"></span></a>';
-                            }
-                        } 
-                        $html  .='</span>';
-                        if ($edit){
-                            if ($type != 'terminal_objective'){
-                                
-                                $html  .= '<span class="fa fa-check-square-o pull-right box-sm-icon text-primary" onclick=\'formloader("addQuiz", "enabling_objective", "'.$objective->id.'");\'></span>';
-                                if (checkCapabilities('webservice:linkModule', $USER->role_id, false) AND $PAGE->action == 'view'){
-                                    $html  .='<span class="fa fa-puzzle-piece ';
-                                    if ($objective->files['webservice'] == ""){ 
-                                        $html .= 'deactivate text-gray ';
-                                    } else {
-                                        $html  .='text-primary ';
-                                    }
-                                    $html  .='pull-right" onclick=\'formloader("link_module","enabling_objective","'.$objective->id.'","","webservice/moodle");\'></span>';
-                                }   
-                            }
-                        } else {
-                            
-                            if ($type != 'terminal_objective'){
-                                if (checkCapabilities('reference:show', $USER->role_id, false)){
-                                    $html  .= '<span class="fa fa-link text-primary box-sm-icon pull-left" data-toggle="tooltip" title="Lehr- /Rahmenplanbezüge" onclick=\'formloader("reference_view", "'.$type.'", "'.$objective->id.'");\'></span>';
-                                }
-                                if (checkCapabilities('reference:add', $USER->role_id, false)){
-                                    $html  .= '<span class="box-sm-icon pull-right text-primary" data-toggle="tooltip" title="Lehr- /Rahmenplanbezug hinzufügen" onclick=\'formloader("reference", "new", "'.$objective->id.'", {"context":"enabling_objective"});\'><i class="fa fa-link text-primary box-sm-icon"><i class="fa fa-plus fa-xs"></i></i></span>';
-                                }
-                                if (checkCapabilities('course:selfAssessment', $USER->role_id, false)){
-                                    if (is_array($user_id)){
-                                        $user_id = implode(',',$user_id);
-                                    }
-                                    $html  .='<span class="pull-left">'.Render::accCheckboxes(array('id' => $objective->id, 'student' => $user_id, 'teacher' => $USER->id, 'link' => false)).'</span>';
-                                }
-                                if (checkCapabilities('quiz:showQuiz', $USER->role_id, false) AND isset($PAGE->action)){
-                                    if ($objective->quiz != '0' AND $PAGE->action == 'view'){
-                                        $html  .='<span class="fa fa-check-square-o pull-right box-sm-icon text-primary" onclick=\'formloader("quiz","enabling_objective","'.$objective->id.'");\'></span>';
-                                    }
-                                }
-                                if (checkCapabilities('webservice:linkModuleResults', $USER->role_id, false) AND isset($PAGE->action) AND $objective->files['webservice'] != ''){
-                                    if ($PAGE->action == 'view'){
-                                        $html  .='<span class="box-sm-icon text-primary" onclick=\'processor("link_module_result","enabling_objective","'.$objective->id.'","","webservice/moodle");\'><i class="fa fa-external-link-square  fa-rotate-180"></i></span>';
-                                    }
-                                }
-                            } else {
-                                if (checkCapabilities('reference:show', $USER->role_id, false)){
-                                    $html  .= '<span class="fa fa-link text-primary box-sm-icon pull-left" data-toggle="tooltip" title="Lehr- /Rahmenplanbezüge" onclick=\'formloader("reference_view", "'.$type.'", "'.$objective->id.'");\'></span>';
-                                }
-                                if (checkCapabilities('reference:add', $USER->role_id, false)){
-                                    $html  .= '<span class="box-sm-icon pull-right text-primary" data-toggle="tooltip" title="Lehr- /Rahmenplanbezug hinzufügen" onclick=\'formloader("reference", "new", "'.$objective->id.'", {"context":"terminal_objective"});\'><i class="fa fa-link text-primary box-sm-icon"><i class="fa fa-plus fa-xs"></i></i></span>';
-                                }    
-                                
-                            }
-                        }  
-                        
-        $html  .=' </div>';
-                        
-        /*************** ./Footer ***************/
-        $html  .= '</div>';
+                $html  .= '" style="padding-top: 0 !important; background: '.$objective->color.'; border: 1px solid '.$border_color.'">';
+                /*************** Header ***************/
+                if ($type == 'enabling_objective'){
+                    $html  .= '<div id="ena_header_'.$objective->id.'" class="boxheader bg-'.$objective->accomplished_status_id.'" >';
+                } else {
+                    $html  .= '<div class="boxheader">';
+                }
+                     if (checkCapabilities('groups:showAccomplished', $USER->role_id, false)){
+                         if (isset($objective->accomplished_users) AND isset($objective->enroled_users) AND isset($objective->accomplished_percent)){
+                             $html  .= '<span class=" pull-left hidden-sm hidden-xs text-black" data-toggle="tooltip" title="Stand der Lerngruppe">'.$objective->accomplished_users.' von '.$objective->enroled_users.' ('.$objective->accomplished_percent.'%)</span><!--Ziel-->  ';
+                         }
+                     }
+
+                     if ($edit){
+                         if ($type == 'terminal_objective'){
+                             $icon_up    = 'down'; 
+                             $icon_down  = 'up';
+                             $position   = 'pull-left';
+                         } else {
+                             $icon_up    = 'right'; 
+                             $icon_down  = 'left';
+                             $position   = 'pull-right';
+                         }
+                         if ($orderup){
+                             $html  .= '<span class="fa fa-arrow-'.$icon_up.' '.$position.' box-sm-icon text-primary" onclick=\'processor("orderObjective", "'.$type.'", "'.$objective->id.'", {"order":"up"});\'></span>';
+                         }
+                         $html  .= '<span class="fa fa-minus pull-right box-sm-icon text-primary margin-r-5" onclick=\'del("'.$type.'", '.$objective->id.');\'></span>
+                                    <span class="fa fa-edit pull-right box-sm-icon text-primary" onclick=\'formloader("'.$type.'", "edit", '.$objective->id.');\'></span>';
+                         if ($orderdown){
+                             $html  .= '<span class="fa fa-arrow-'.$icon_down.' pull-left box-sm-icon text-primary" onclick=\'processor("orderObjective", "'.$type.'", "'.$objective->id.'", {"order":"down"});\'></span>';
+                         }
+                     } else {
+
+                         if (checkCapabilities('course:setAccomplishedStatus', $USER->role_id, false) AND $type != 'terminal_objective' AND isset($group_id)){
+                             $html  .= '<span class="fa fa-bar-chart-o pull-right invert box-sm-icon text-primary margin-r-5" onclick=\'formloader("compare","group", '.$objective->id.', {"group_id":"'.$group_id.'"});\'></span>
+                                        <span class="fa fa-files-o pull-right invert box-sm-icon text-primary margin-r-5" onclick=\'formloader("material","solution", '.$objective->id.', {"group_id":"'.$group_id.'", "curriculum_id": "'.$objective->curriculum_id.'"});\'></span>';
+
+                         }
+                          if (checkCapabilities('user:getHelp', $USER->role_id, false) AND $type != 'terminal_objective' AND isset($group_id)){
+                             $html  .= ' <span class="fa fa-support pull-right invert box-sm-icon text-primary margin-r-5" data-toggle="tooltip" title="Gruppenmitglied um Hilfe bitten" onclick=\'formloader("support","random", '.$objective->id.', {"group_id":"'.$group_id.'"});\'></span>';
+                         }
+
+                         if (checkCapabilities('file:solutionUpload', $USER->role_id, false) AND $type != 'terminal_objective' AND isset($solutions)){
+                             foreach ($solutions AS $s){
+                                 if (($USER->id == $s->creator_id) AND ($s->enabling_objective_id == $objective->id) AND ($sol_btn != $objective->id)){
+                                     $sol_btn = $objective->id;
+                                     break;
+                                 }
+                             }
+                         }
+                         if (isset($PAGE->action) AND $type == 'enabling_objective' AND checkCapabilities('file:solutionUpload', $USER->role_id, false) AND (checkCapabilities('file:upload', $USER->role_id, false) OR checkCapabilities('file:uploadURL', $USER->role_id, false))){
+                             if($PAGE->action == 'view'){
+                                 $html  .= '<a href="'.$CFG->smarty_template_dir_url.'renderer/uploadframe.php?context=solution&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal">
+                                 <span class="fa ';
+                                 if ($sol_btn == $objective->id){
+                                     $html  .= 'fa-check-circle-o ';
+                                 } else {
+                                     $html  .= 'fa-upload ';
+                                 } 
+                                     $html  .= 'pull-right box-sm-icon text-primary" data-toggle="tooltip"';
+                                 if ($sol_btn == $objective->id){
+                                     $html  .= ' title="Lösung eingereicht"';
+                                 } else {
+                                     $html  .= ' title="Lösung einreichen"';
+                                 }
+                                 $html  .= '></span></a>';
+                             }
+                         }
+                     }
+                  if ($type == 'terminal_objective'){
+                     $html  .=' <a class="collapse_btn" data-toggle="collapse" data-target="#collaps_ter_'.$objective->id.'" data-toggle="tooltip" title="Kompetenzen einklappen bzw. ausklappen"><i class="fa fa-compress box-sm-icon text-primary" style="padding-left:5px;"></i></a>';   
+                  }
+                  $html  .='  </div>';    
+                 /*************** ./Header ***************/
+                 /*************** Body ***************/    
+                 $html  .='  <div id="'.$type.'_'.$objective->id.'" class="panel-body boxwrap" >
+                                 <div class="boxscroll" ';
+                                     if ($type == 'terminal_objective'){
+                                         $html  .='style="background: '.$objective->color.'"';
+                                     }
+                                     $html  .='><div class="boxcontent '.$text_class.'">'.$objective->$type.'</div>
+                                 </div>
+                             </div>';
+                 /*************** ./Body ***************/
+                 /*************** Footer ***************/
+                 $html  .= '  <div class="boxfooter">';
+                                 if ($objective->description != ''){
+                                     $html  .='<span class="fa fa-info pull-right box-sm-icon text-primary" style=" margin-right:3px;" data-toggle="tooltip" title="Beschreibung" onclick="formloader(\'description\', \''.$type.'\', '.$objective->id.');"></span>';
+                                 }
+                                 $html  .='<span class="pull-left margin-r-10">';
+                                 if (checkCapabilities('file:loadMaterial', $USER->role_id, false) AND ($objective->files['local'] != '0' OR $objective->files['repository'] != '' OR isset($objective->files['webservice']) )){
+                                     $html  .='<span class="fa fa-briefcase box-sm-icon text-primary margin-r-5 pull-left" style="cursor:pointer; padding-top:3px;" data-toggle="tooltip" title="Materialien und Aufgaben" onclick="formloader(\'material\',\''.$type.'\','.$objective->id.')"></span>';
+                                 } else {
+                                     $html  .='<span class="fa fa-briefcase box-sm-icon deactivate text-gray margin-r-5 pull-left" style="cursor:not-allowed;padding-top:3px;" data-toggle="tooltip" title="Keine Materialien verfügbar"></span>';
+                                 }
+                                 if ((checkCapabilities('file:upload', $USER->role_id, false) OR checkCapabilities('file:uploadURL', $USER->role_id, false)) AND isset($PAGE->action)){
+                                     if ($PAGE->action == 'view'){
+                                         $html  .='<a href="'.$CFG->smarty_template_dir_url.'renderer/uploadframe.php?context='.$type.'&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal pull-right margin-r-5"><span class="fa fa-plus box-sm-icon" style="padding-top:3px;data-toggle="tooltip" title="Material hinzufügen"></span></a>';
+                                     }
+                                 } 
+                                 $html  .='</span>';
+                                 if ($edit){
+                                     if ($type != 'terminal_objective'){
+
+                                         $html  .= '<span class="fa fa-check-square-o pull-right box-sm-icon text-primary" onclick=\'formloader("addQuiz", "enabling_objective", "'.$objective->id.'");\'></span>';
+                                         if (checkCapabilities('webservice:linkModule', $USER->role_id, false) AND $PAGE->action == 'view'){
+                                             $html  .='<span class="fa fa-puzzle-piece ';
+                                             if ($objective->files['webservice'] == ""){ 
+                                                 $html .= 'deactivate text-gray ';
+                                             } else {
+                                                 $html  .='text-primary ';
+                                             }
+                                             $html  .='pull-right" onclick=\'formloader("link_module","enabling_objective","'.$objective->id.'","","webservice/moodle");\'></span>';
+                                         }   
+                                     }
+                                 } else {
+
+                                     if ($type != 'terminal_objective'){
+                                         if (checkCapabilities('reference:show', $USER->role_id, false)){
+                                             $html  .= '<span class="fa fa-link text-primary box-sm-icon pull-left" data-toggle="tooltip" title="Lehr- /Rahmenplanbezüge" onclick=\'formloader("reference_view", "'.$type.'", "'.$objective->id.'");\'></span>';
+                                         }
+                                         if (checkCapabilities('reference:add', $USER->role_id, false)){
+                                             $html  .= '<span class="box-sm-icon pull-right text-primary" data-toggle="tooltip" title="Lehr- /Rahmenplanbezug hinzufügen" onclick=\'formloader("reference", "new", "'.$objective->id.'", {"context":"enabling_objective"});\'><i class="fa fa-link text-primary box-sm-icon"><i class="fa fa-plus fa-xs"></i></i></span>';
+                                         }
+                                         if (checkCapabilities('course:selfAssessment', $USER->role_id, false)){
+                                             if (is_array($user_id)){
+                                                 $user_id = implode(',',$user_id);
+                                             }
+                                             $html  .='<span class="pull-left">'.Render::accCheckboxes(array('id' => $objective->id, 'student' => $user_id, 'teacher' => $USER->id, 'link' => false)).'</span>';
+                                         }
+                                         if (checkCapabilities('quiz:showQuiz', $USER->role_id, false) AND isset($PAGE->action)){
+                                             if ($objective->quiz != '0' AND $PAGE->action == 'view'){
+                                                 $html  .='<span class="fa fa-check-square-o pull-right box-sm-icon text-primary" onclick=\'formloader("quiz","enabling_objective","'.$objective->id.'");\'></span>';
+                                             }
+                                         }
+                                         if (checkCapabilities('webservice:linkModuleResults', $USER->role_id, false) AND isset($PAGE->action) AND $objective->files['webservice'] != ''){
+                                             if ($PAGE->action == 'view'){
+                                                 $html  .='<span class="box-sm-icon text-primary" onclick=\'processor("link_module_result","enabling_objective","'.$objective->id.'","","webservice/moodle");\'><i class="fa fa-external-link-square  fa-rotate-180"></i></span>';
+                                             }
+                                         }
+                                     } else {
+                                         if (checkCapabilities('reference:show', $USER->role_id, false)){
+                                             $html  .= '<span class="fa fa-link text-primary box-sm-icon pull-left" data-toggle="tooltip" title="Lehr- /Rahmenplanbezüge" onclick=\'formloader("reference_view", "'.$type.'", "'.$objective->id.'");\'></span>';
+                                         }
+                                         if (checkCapabilities('reference:add', $USER->role_id, false)){
+                                             $html  .= '<span class="box-sm-icon pull-right text-primary" data-toggle="tooltip" title="Lehr- /Rahmenplanbezug hinzufügen" onclick=\'formloader("reference", "new", "'.$objective->id.'", {"context":"terminal_objective"});\'><i class="fa fa-link text-primary box-sm-icon"><i class="fa fa-plus fa-xs"></i></i></span>';
+                                         }    
+
+                                     }
+                                 }  
+
+                 $html  .=' </div>';
+
+                 /*************** ./Footer ***************/
+                $html  .= '</div>'; 
+           break;
+        }
+        
         return $html;
     }
     
@@ -1722,6 +1780,9 @@ class Render {
                                     break;
                                     case 'file':
                                         $html .= '<li><a onclick="formloader(\'preview\',\'file\','.$val->id.');">'.$val->title.'</span></a></li>';
+                                    break;
+                                    case 'menu':
+                                        $html .= '<li><a onclick="'.$val->onclick.'">'.$val->title.'</span></a></li>';
                                     break;
                                     
                                     default:
