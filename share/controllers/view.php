@@ -73,6 +73,22 @@ $TEMPLATE->assign('page_bg_file_id', $cur[0]->icon_id);
 switch ($function) {
     case 'addObjectives':   $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('curriculum', $PAGE->curriculum));
                             $TEMPLATE->assign('page_title', 'Lehrplaninhalt bearbeiten'); 
+                            $c_menu_array               = array();
+                            $content_menu_obj           = new stdClass();
+                            $content_menu_obj           = new stdClass();
+                            $content_menu_obj->onclick  = "formloader('content', 'new', null,{'context_id':'2', 'reference_id':'{$PAGE->curriculum}'});";
+                            $content_menu_obj->title    = '<i class="fa fa-plus"></i> Neuen Hinweis erstellen';
+                            $c_menu_array[]             = clone $content_menu_obj;
+                            $content_menu_obj->onclick  = "formloader('content_subscribe','curriculum',null,{'context_id':'2', 'reference_id':'{$PAGE->curriculum}'});";
+                            $content_menu_obj->title    = '<i class="fa fa-link"></i>Hinweise aus anderem Lehrplan übernehmen';
+                            $c_menu_array[]             = clone $content_menu_obj;
+                            $content_menu_obj->onclick  = "formloader('description','curriculum','{$PAGE->curriculum}');";
+                            $content_menu_obj->title    = '<i class="fa fa-info" style="padding-right:5px;"></i> Information zum Lehrplan';
+                            $c_menu_array[]             = clone $content_menu_obj;
+                            
+                            
+                            $content_menu = array('type' => 'menu', 'label' => '<i class="fa fa-caret-down"></i>', 'entrys' => $c_menu_array);
+                            $TEMPLATE->assign('content_menu', $content_menu); 
         break;
 
     default:                $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('course', $PAGE->curriculum, $PAGE->group));
@@ -97,7 +113,9 @@ if (!empty($glossar)){
     }
     $TEMPLATE->assign('glossar_json',json_encode($term_def)); //
 } 
+
 if (isset($_SESSION['anchor'])){
     $TEMPLATE->assign('anchor',$_SESSION['anchor']);
+    error_log($_SESSION['anchor']);
     $_SESSION['anchor'] = null;
 }
