@@ -68,15 +68,14 @@
                 <button type="button" class="btn btn-default" data-toggle="tooltip" title="Kompetenzen einklappen bzw. ausklappen"  onclick="toggleAll(); $(this).find('i.fa').toggleClass('fa-compress fa-expand');">
                     <i class="fa fa-compress"></i>
                 </button>
-                <button type="button" class="btn btn-default" onclick="formloader('description','curriculum',{$course[0]->curriculum_id});">
+                {*<button type="button" class="btn btn-default" onclick="formloader('description','curriculum',{$course[0]->curriculum_id});">
                     <i class="fa fa-info"></i>
-                </button>
+                </button>*}
                 {Render::split_button($cur_content)}
                 {if isset($showaddObjectives)}
-                    <button type="button" class="btn btn-default" onclick='formloader("content", "new", null,{["context_id"=>"2", "reference_id"=>$course[0]->curriculum_id]|@json_encode nofilter});'>
-                        <i class="fa fa-plus"></i>
-                    </button>
+                   {Render::split_button($content_menu)}    
                 {/if}
+                
                 {if checkCapabilities('curriculum:print', $my_role_id, false)}
                     <button type="button" class="btn btn-default" onclick="formloader('print','curriculum',{$course[0]->curriculum_id});">
                         <i class="fa fa-print"></i>
