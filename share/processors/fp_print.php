@@ -101,19 +101,46 @@ switch ($func) {
                                 $ena_obj                = new EnablingObjective();         //load enabling objectives
                                 $ena_obj->curriculum_id = $id;
                                 $ena                    = $ena_obj->getObjectives('terminal_objective', $ter_value->id);
+                                $reference = new Reference(); // todo: create function for both terminal and enabling objective (removes double code)
+                                $references = $reference->get('reference_id', $_SESSION['CONTEXT']['terminal_objective']->context_id, $ter_value->id);
+                                if (count($references) > 0){
+                                    $content    .= '<div style="padding:5px;background:'.$ter_value->color.'; color:'.getContrastColor($ter_value->color).';">'.strip_tags($ter_value->terminal_objective).'</div>';
+                                } 
+                                foreach ($references as $ref) { 
+                                    $content .= '<columns column-count="2" vAlign="justify" column-gap="25" />';
+                                    $content .= '<p><small><strong>Lehrplan</strong></small> '.$ref->curriculum_object->curriculum.'<br>';
+                                    $content .= '<small><strong>Ausbildungsrichtung</strong></small> '.$ref->schooltype.'<br>';
+                                    $content .= '<small><strong>Fach</strong></small> '.$ref->curriculum_object->subject.'<br>';
+                                    $content .= '<small><strong>Klassenstufe</strong></small> '.$ref->grade.'<br>';
+                                    $content .= '<small><strong>Thema</strong></small> '.strip_tags($ref->terminal_object->terminal_objective).'<br>';
+                                    if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id){
+                                        $content .= '<small><strong>Lernziel/Kompetenz</strong></small> '.strip_tags($ref->enabling_object->enabling_objective).'<br>';
+                                    }
+                                    if (isset($ref->content_object->content)){
+                                        if ($ref->content_object->content != ''){
+                                            $content .= '<small><strong>Hinweise</strong></small> '.strip_tags($ref->content_object->content).'<br>';
+                                        }
+                                    }
+                                    $content .= '</p>';
+                                    $content .= '<columns column-count="1" vAlign="justify" column-gap="0" />';
+
+                                }
                                 
                                 foreach ($ena as $ena_value) {
                                         $ena_obj->id        = $ena_value->id;
                                         $ena_obj->load();  
                                         $reference = new Reference();
                                         $references = $reference->get('reference_id', $_SESSION['CONTEXT']['enabling_objective']->context_id, $ena_obj->id);
-                                        
+                                        if (count($references) > 0){
+                                            $content    .= '<div style="padding:5px;background:'.$ter_value->color.'; color:'.getContrastColor($ter_value->color).';">'.strip_tags($ter_value->terminal_objective).'</div>';
+                                            $content    .= '<div style="padding:5px;border:1px solid '.$ter_value->color.';">'.strip_tags($ena_value->enabling_objective).'</div>';
+                                        }
                                         foreach ($references as $ref) {
-                                            if ($ref->context_id == $_SESSION['CONTEXT']['terminal_objective']->context_id){
-                                                $content    .= '<div style="padding:5px;background:'.$ter_value->color.'">'.strip_tags($ter_value->terminal_objective).'</div>';
+                                           /* if ($ref->context_id == $_SESSION['CONTEXT']['terminal_objective']->context_id){
+                                                $content    .= '<div style="padding:5px;background:'.$ter_value->color.'; color:'.getContrastColor($ter_value->color).';">'.strip_tags($ter_value->terminal_objective).'</div>';
                                             } else {
-                                                $content    .= '<div style="padding:5px;background:'.$ter_value->color.'">'.strip_tags($ena_value->enabling_objective).'</div>';
-                                            }
+                                                $content    .= '<div style="padding:5px;background:'.$ter_value->color.'; color:'.getContrastColor($ter_value->color).';">'.strip_tags($ena_value->enabling_objective).'</div>';
+                                            }*/
                                             $content .= '<columns column-count="2" vAlign="justify" column-gap="25" />';
                                             $content .= '<p><small><strong>Lehrplan</strong></small> '.$ref->curriculum_object->curriculum.'<br>';
                                             $content .= '<small><strong>Ausbildungsrichtung</strong></small> '.$ref->schooltype.'<br>';
