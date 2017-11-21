@@ -85,8 +85,10 @@ switch ($func) {
                                 $content .= '<p><strong>'.$content_entry->title.'</strong><br />';
                                 $content .= ''.$content_entry->content.'</p>';
                             }
-                            if (count($content_entry) > 0){
-                                $pagebreak = true;   
+                            if (isset($content_entry)){
+                                if (count($content_entry) > 0){
+                                    $pagebreak = true;   
+                                }
                             }
                         }
                         if (isset($_POST['print_reference'])){ // print reference
