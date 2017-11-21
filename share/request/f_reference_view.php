@@ -30,8 +30,8 @@ $USER           = $_SESSION['USER'];
 $func           = $_GET['func'];
 $schooltype_id  = null; 
 $subject_id     = null; 
-$curriculum_id  = null;
-$grade_id       = null;
+$curriculum_id  = null; 
+$grade_id       = null; 
 $content        = '';
 
 switch ($func) {
@@ -63,6 +63,7 @@ switch ($func) {
                                 }
                                 /* FILTER */
                                 $content .= render_filter();
+                                //error_log(json_encode($references));
                                 foreach ($references as $ref) {
                                     $content .= render_reference_entry($ref);
                                 }
@@ -79,7 +80,7 @@ $html = Form::modal(array('target' => 'null',
 
 echo json_encode(array('html'=>$html));
 
-function render_filter(){
+function render_filter($schooltype_id  = null, $subject_id = null, $curriculum_id = null, $grade_id = null){
     global $USER;
     $c    = '<div class="row">';
     $schooltypes = new Schooltype();  // Load schooltype 
@@ -107,9 +108,9 @@ function render_reference_entry($ref){
             $c .= '<br><dt>Hinweise<dd> '.strip_tags($ref->content_object->content).'</dd></dt>';
         }
     }
-    $c .= '</div><div class="col-xs-12 col-sm-3 ""><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('objective' => $ref->terminal_object, 'color')).'</div>';
+    $c .= '</div><div class="col-xs-12 col-sm-3"><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('format' => 'reference', 'objective' => $ref->terminal_object, 'color')).'</div>';
     if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
-      $c .= '<div class="col-xs-12 col-sm-3 "><dt>Lernziel/Kompetenz</dt>'.Render::objective(array('type' => 'enabling_objective', 'objective' => $ref->enabling_object, 'border_color' => $ref->terminal_object->color)).'</div>';
+      $c .= '<div class="col-xs-12 col-sm-3"><dt>Lernziel/Kompetenz</dt>'.Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $ref->enabling_object, 'border_color' => $ref->terminal_object->color)).'</div>';
     }
     $c .= '</div><hr style="clear:both;">';
     return $c;
