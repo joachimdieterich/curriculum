@@ -62,8 +62,8 @@ if (isset($_GET['func'])){
         case "new":     checkCapabilities('institution:add',    $USER->role_id);
                         $header = 'Institution hinzufügen';
                         if (!isset($country_id)){ 
-                            $country_id = $INSTITUTION->country_id;
-                            $state_id   = $INSTITUTION->state_id;         
+                            $country_id = $USER->institution->country_id;
+                            $state_id   = $USER->institution->state_id;         
                         }              
             break;
         case "edit":    checkCapabilities('institution:update',    $USER->role_id);
