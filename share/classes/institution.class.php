@@ -213,7 +213,7 @@ class Institution {
     public function loadConfig($dependency = null, $id = null){
     global $INSTITUTION; 
     switch ($dependency) {
-        case 'user':    $db = DB::prepare('SELECT ins.*, sch.schooltype AS schooltype_id, sta.state AS state_id, 
+        case 'user':    $db = DB::prepare('SELECT ins.*, sch.schooltype AS schooltype_id, sta.state_id, 
                              usr.username AS creator_id
                         FROM institution AS ins, schooltype AS sch, state AS sta, users AS usr
                         WHERE sch.id = ins.schooltype_id AND sta.id = ins.state_id AND usr.id = ins.creator_id
