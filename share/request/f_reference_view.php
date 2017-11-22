@@ -105,7 +105,7 @@ function render_reference_entry($ref){
            <br><dt>Klassenstufe<dd>'.$ref->grade.'</dd></dt>';
     if (isset($ref->content_object->content)){
         if ($ref->content_object->content != ''){
-            $c .= '<br><dt>Hinweise<dd> '.strip_tags($ref->content_object->content).'</dd></dt>';
+            $c .= '<br><dt>Hinweise <a onclick="formloader(\'content\', \'edit\','.$ref->content_object->id.')" class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-edit"></i></a><dd> '.strip_tags($ref->content_object->content).'</dd></dt>';
         }
     }
     $c .= '</div><div class="col-xs-12 col-sm-3"><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('format' => 'reference', 'objective' => $ref->terminal_object, 'color')).'</div>';
