@@ -98,6 +98,7 @@ function render_filter($schooltype_id  = null, $subject_id = null, $curriculum_i
 }
 
 function render_reference_entry($ref){
+    global $USER;
     $c  = '<div class="row">
            <div class="col-xs-12 col-sm-6 pull-left"><dt>Ausbildungsrichtung<dd>'.$ref->schooltype.'</dd></dt>
            <br><dt>Fach<dd>'.$ref->curriculum_object->subject.'</dd></dt>
@@ -105,7 +106,11 @@ function render_reference_entry($ref){
            <br><dt>Klassenstufe<dd>'.$ref->grade.'</dd></dt>';
     if (isset($ref->content_object->content)){
         if ($ref->content_object->content != ''){
-            $c .= '<br><dt>Hinweise <a onclick="formloader(\'content\', \'edit\','.$ref->content_object->id.')" class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-edit"></i></a><dd> '.strip_tags($ref->content_object->content).'</dd></dt>';
+            $c .= '<br><dt>Hinweise ';
+            if (checkCapabilities('reference:add',    $USER->role_id)){
+             $c .= '<a onclick="formloader(\'content\', \'edit\','.$ref->content_object->id.');"';
+            }
+            $c .= ' class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-edit"></i></a><dd> '.strip_tags($ref->content_object->content).'</dd></dt>';
         }
     }
     $c .= '</div><div class="col-xs-12 col-sm-3"><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('format' => 'reference', 'objective' => $ref->terminal_object, 'color')).'</div>';
