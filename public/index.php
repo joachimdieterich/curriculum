@@ -39,8 +39,8 @@ try { // Error handling
 
         default:   require ('../share/session.php');                                                           // Erst Session aufbauen damit $USER verfügbar ist, dann login-check!
                    require ('../share/login-check.php');                                                       // Check ob Session abgelaufen ist
+                   
                    $PAGE->action   = filter_input(INPUT_GET, 'action', FILTER_UNSAFE_RAW);
-
                    $TEMPLATE->assign('mySemester',         $_SESSION['SEMESTER']);                             // ARRAY mit Lernzeiträumen in die der USER eingeschrieben ist.
                    if (isset($_SESSION['username'])){
                        $TEMPLATE->assign('loginname',      $_SESSION['username']);                                      
@@ -96,6 +96,7 @@ try { // Error handling
             $pdf->content   = $_SESSION['PAGE']->print->content;
             $pdf->filename  = 'print.pdf';
             $pdf->path      = 'user/'.$USER->id.'/';
+            set_time_limit(100);
             $pdf->generate(); 
             unset($_SESSION['PAGE']->print);
         }   
