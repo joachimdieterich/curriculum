@@ -30,7 +30,7 @@ global $USER, $PAGE, $CFG;
 $USER       = $_SESSION['USER'];
 $edit       = checkCapabilities('file:editMaterial',    $USER->role_id, false); // DELETE / edit anzeigen
 $header     = 'Material';
-
+$m_license_icon = null; //to prevent error logs
 $file       = new File();
 $func       = filter_input(INPUT_GET, 'func', FILTER_UNSAFE_RAW);
 switch ($func) {
