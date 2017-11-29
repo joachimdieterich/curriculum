@@ -52,12 +52,12 @@ if (isset($_SESSION['SCHOOLTYPE'])){                                            
     $SCHOOLTYPE                = $s->getSchooltypes(true);
     $_SESSION['SCHOOLTYPE']    = $SCHOOLTYPE;
 }
-// Schooltypes
+// GRADES
 if (isset($_SESSION['GRADE'])){                                               //global $GRADE array --> lesser db calls
     $GRADE                     = $_SESSION['GRADE'];
 } else {
     $g                         = new Grade();
-    $GRADE                     = $g->getGrades('all', null, '', true);
+    $GRADE                     = $g->getGrades('global', null, '', true);
     $_SESSION['GRADE']         = $GRADE;
 }
 
