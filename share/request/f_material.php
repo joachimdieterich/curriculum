@@ -62,7 +62,7 @@ $f_content  = null;
 $content    = null; 
 $m_boxes    = '';
 
-if (!$files OR !$sodis OR !references){
+if (!$files OR count($references) == 0 OR count($sodis) == 0){
     $content .= 'Es gibt leider kein Material zum gewählten Lernziel.';
 } else {
     /* Tab header */
