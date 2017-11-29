@@ -59,34 +59,6 @@ switch ($func) {
                                 if (!isset($ena->description) && !isset($ter->description)){    
                                   $content .= 'Keine Beschreibung vorhanden';
                                 }
-                                if ($func == 'enabling_objective'){
-                                    $reference = new Reference();
-                                    $references = $reference->get('reference_id', $_SESSION['CONTEXT']['enabling_objective']->context_id, $ena->id);
-                                     $content .= '<br><h4><strong>Bezüge zu anderen Lehr- /Rahmenplänen</strong></h4><hr>';
-                                    foreach ($references as $ref) {
-                                        $e = new EnablingObjective();
-                                        if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id){
-                                            $e->id  = $ref->reference_id;
-                                            $e->load(); //todo: ? new query with get? to get all data with one query
-                                            $t      = new TerminalObjective();
-                                            $t->id  = $e->terminal_objective_id;
-                                            $t->load();
-                                            $c      = new Curriculum();         
-                                            $c->id  = $e->curriculum_id;
-                                            $c->load();
-                                            $sc     = new Schooltype();
-                                            $sc->load('id', $c->schooltype_id);
-                                            $content .= '<div class="row">'
-                                                      . '<div class="col-xs-12 col-sm-6 pull-left"><dt>Ausbildungsrichtung<dd>'.$sc->schooltype.'</dd></dt>';
-                                            $content .= '<br><dt>Fach<dd>'.$c->subject.'</dd></dt>';
-                                            $content .= '<br><dt>Lehrplan<dd>'.$c->curriculum.'</dd></dt><br></div>'
-                                                      . '<div class="col-xs-12 col-sm-3 float-right">'
-                                                        . '<dt>Lernziel/Kompetenz</dt>'.Render::objective(array('type' => 'enabling_objective', 'objective' => $e)).'</div>';
-                                            $content .= '<div class="col-xs-12 col-sm-3 float-right"><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('objective' => $t)).'</div>';
-                                            $content .= '</div><hr style="clear:both;">';
-                                        }
-                                    }
-                                }
         break;
 }
 
