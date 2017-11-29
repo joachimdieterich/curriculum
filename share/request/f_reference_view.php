@@ -102,7 +102,7 @@ function render_reference_entry($ref, $context_id){
            <div class="col-xs-12 col-sm-6 pull-left">';
             if (checkCapabilities('reference:add',    $USER->role_id)){
                 $c .= '<a onclick="del(\'reference\', '.$ref->id.');" class="btn btn-default btn-xs pull-right" data-toggle="tooltip" title="" data-original-title="Referenz löschen" style="margin-right:5px;"><i class="fa fa-trash"></i></a>';
-                $c .= '<a onclick="formloader(\'reference\', \'edit\', '.$ref->id.', {\'context_id\': \''.$context_id.'\'});" class="btn btn-default btn-xs pull-right" data-toggle="tooltip" title="" data-original-title="Referenz editieren" style="margin-right:5px;"><i class="fa fa-edit"></i></a>';
+                //$c .= '<a onclick="formloader(\'reference\', \'edit\', '.$ref->id.', {\'context_id\': \''.$context_id.'\'});" class="btn btn-default btn-xs pull-right" data-toggle="tooltip" title="" data-original-title="Referenz editieren" style="margin-right:5px;"><i class="fa fa-edit"></i></a>';
             }
             $c .= '<dt>Ausbildungsrichtung<dd>'.$ref->schooltype.'</dd></dt>
            <br><dt>Fach<dd>'.$ref->curriculum_object->subject.'</dd></dt>
