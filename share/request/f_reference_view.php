@@ -48,7 +48,7 @@ switch ($func) {
                                 /* FILTER */
                                 $content .= render_filter();
                                 foreach ($references as $ref) {
-                                    $content .= render_reference_entry($ref);
+                                    $content .= render_reference_entry($ref, $_SESSION['CONTEXT']['terminal_objective']->context_id);
                                 }
         break;
     case 'enabling_objective':  $ena        = new EnablingObjective();
@@ -60,12 +60,11 @@ switch ($func) {
                                 $content    .= 'Zum Lernziel / Zur Kompetenz <strong>'.$ena->enabling_objective.'</strong> wurden die folgenden Bezüge gefunden:<br><hr>';
                                 if (count($references) == 0){
                                     $content    .= 'Keine Bezüge vorhanden.';
-                                }
+                                } 
                                 /* FILTER */
                                 $content .= render_filter();
-                                //error_log(json_encode($references));
                                 foreach ($references as $ref) {
-                                    $content .= render_reference_entry($ref);
+                                    $content .= render_reference_entry($ref, $_SESSION['CONTEXT']['enabling_objective']->context_id);
                                 }
         break;
    
@@ -97,20 +96,25 @@ function render_filter($schooltype_id  = null, $subject_id = null, $curriculum_i
     return $c;
 }
 
-function render_reference_entry($ref){
+function render_reference_entry($ref, $context_id){
     global $USER;
     $c  = '<div class="row">
-           <div class="col-xs-12 col-sm-6 pull-left"><dt>Ausbildungsrichtung<dd>'.$ref->schooltype.'</dd></dt>
+           <div class="col-xs-12 col-sm-6 pull-left">';
+            if (checkCapabilities('reference:add',    $USER->role_id)){
+                $c .= '<a onclick="del(\'reference\', '.$ref->id.');" class="btn btn-default btn-xs pull-right" data-toggle="tooltip" title="" data-original-title="Referenz löschen" style="margin-right:5px;"><i class="fa fa-trash"></i></a>';
+                $c .= '<a onclick="formloader(\'reference\', \'edit\', '.$ref->id.', {\'context_id\': \''.$context_id.'\'});" class="btn btn-default btn-xs pull-right" data-toggle="tooltip" title="" data-original-title="Referenz editieren" style="margin-right:5px;"><i class="fa fa-edit"></i></a>';
+            }
+            $c .= '<dt>Ausbildungsrichtung<dd>'.$ref->schooltype.'</dd></dt>
            <br><dt>Fach<dd>'.$ref->curriculum_object->subject.'</dd></dt>
            <br><dt>Lehrplan<dd>'.$ref->curriculum_object->curriculum.'</dd></dt>
            <br><dt>Klassenstufe<dd>'.$ref->grade.'</dd></dt>';
     if (isset($ref->content_object->content)){
         if ($ref->content_object->content != ''){
-            $c .= '<br><dt>Hinweise ';
+            $c .= '<br><dt>Anregungen zur Unterrichtsgestaltung ';
             if (checkCapabilities('reference:add',    $USER->role_id)){
-             $c .= '<a onclick="formloader(\'content\', \'edit\','.$ref->content_object->id.');"';
+             $c .= '<a onclick="formloader(\'content\', \'edit\','.$ref->content_object->id.');" class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-edit"></i></a>';
             }
-            $c .= ' class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-edit"></i></a><dd> '.strip_tags($ref->content_object->content).'</dd></dt>';
+            $c .= '<dd> '.strip_tags($ref->content_object->content).'</dd></dt>';
         }
     }
     $c .= '</div><div class="col-xs-12 col-sm-3"><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('format' => 'reference', 'objective' => $ref->terminal_object, 'color')).'</div>';
@@ -118,5 +122,6 @@ function render_reference_entry($ref){
       $c .= '<div class="col-xs-12 col-sm-3"><dt>Lernziel/Kompetenz</dt>'.Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $ref->enabling_object, 'border_color' => $ref->terminal_object->color)).'</div>';
     }
     $c .= '</div><hr style="clear:both;">';
+    
     return $c;
 }
