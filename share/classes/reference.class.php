@@ -160,10 +160,13 @@ class Reference {
     public function delete(){
         global $USER, $LOG;
         checkCapabilities('reference:delete', $USER->role_id);
-        $this->load();
+        $this->load();    
         $LOG->add($USER->id, 'reference.class.php', dirname(__FILE__), 'Delete reference: '.$this->unique_id.', curriculum_id: '.$this->curriculum_id.', creator_id: '.$this->creator_id);
         $db = DB::prepare('DELETE FROM reference WHERE id = ?');
-        return $db->execute(array($this->id));
+        $db->execute(array($this->id));
+        $db = DB::prepare('DELETE FROM reference WHERE unique_id = ?');
+        
+        return $db->execute(array($this->unique_id));
     }
     
     public function get($dependency, $context_id, $id){
