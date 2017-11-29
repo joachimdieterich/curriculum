@@ -115,7 +115,7 @@
                 {if checkCapabilities('menu:readUser', $my_role_id, false)}
                     <li class="treeview {if $page_action eq 'user'}active{/if}">
                         <a href="index.php?action=user">
-                            <i class="fa fa-user"></i><span>Benutzer</span>
+                            <i class="fa fa-user"></i><span>Benutzerverwaltung</span>
                         </a>
                     </li>
                 {/if}
