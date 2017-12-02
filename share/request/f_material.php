@@ -34,24 +34,25 @@ $m_license_icon = null; //to prevent error logs
 $file       = new File();
 $repo       = get_plugin('repository', 'sodis');
 $func       = filter_input(INPUT_GET, 'func', FILTER_UNSAFE_RAW);
+
 switch ($func) {
     case 'enabling_objective':  
-    case 'terminal_objective':         $files  = $file->getFiles($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => true));
-                                       $sodis = $repo->get($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
-                                       $reference  = new Reference();
-                                       $references = $reference->get('reference_id', $_SESSION['CONTEXT'][$func]->context_id, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
+    case 'terminal_objective':         $files       = $file->getFiles($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => true));
+                                       $sodis       = $repo->get($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
+                                       $reference   = new Reference();
+                                       $references  = $reference->get('reference_id', $_SESSION['CONTEXT'][$func]->context_id, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
         break;
     case 'id' :         $files  = $file->getFiles('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => false, 'user_id' => filter_input(INPUT_GET, 'user_id', FILTER_VALIDATE_INT)));
                         $header = 'Lösungen / Dateien des Users';
                         $edit   = false;    //don't show delete button in solution window
         break;
-    case 'solution':    $header  = 'Eingereichte Lösungen';
-                        $course  = new Course();
-                        $course->curriculum_id = filter_input(INPUT_GET, 'curriculum_id', FILTER_VALIDATE_INT);
-                        $members = $course->members('group_id', filter_input(INPUT_GET, 'group_id', FILTER_VALIDATE_INT));
-                        $user_ids = implode(", ", array_column($members, 'id')); //require php 5.5
-                        $files   = $file->getSolutions('objective', $user_ids, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));  // load solutions
-                        $edit    = false;    //don't show delete button in solution window
+    case 'solution':    $header                 = 'Eingereichte Lösungen';
+                        $course                 = new Course();
+                        $course->curriculum_id  = filter_input(INPUT_GET, 'curriculum_id', FILTER_VALIDATE_INT);
+                        $members                = $course->members('group_id', filter_input(INPUT_GET, 'group_id', FILTER_VALIDATE_INT));
+                        $user_ids               = implode(", ", array_column($members, 'id')); //require php 5.5
+                        $files                  = $file->getSolutions('objective', $user_ids, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));  // load solutions
+                        $edit                   = false;    //don't show delete button in solution window
         break;
     default:
         break;
@@ -62,7 +63,7 @@ $f_content  = null;
 $content    = null; 
 $m_boxes    = '';
 
-if (!$files AND count($references) == 0 AND count($sodis) == 0){
+if (!$files AND !isset($references) AND !isset($sodis)){
     $content .= 'Es gibt leider kein Material zum gewählten Lernziel.';
 } else {
     /* Tab header */
@@ -72,8 +73,16 @@ if (!$files AND count($references) == 0 AND count($sodis) == 0){
     $file_context_count[4] = 0; // counter for file_context 4
     $file_context_count[5] = 0; // counter for file_context 5 --> external reference
     $file_context_count[6] = 0; // counter for file_context 6 --> external webservice ressource
-    $file_context_count[7] = count($references); // counter for file_context 7 --> internal reference
-    $file_context_count[8] = count($sodis); // counter for file_context 8 --> external sodis reference
+    if (isset($references)){
+        $file_context_count[7] = count($references); // counter for file_context 7 --> internal reference
+    } else {
+        $file_context_count[7] = 0;  
+    }
+    if (isset($sodis)){
+        $file_context_count[8] = count($sodis); // counter for file_context 8 --> external sodis reference
+    } else {
+        $file_context_count[8] = 0;
+    }
     for($i = 0; $i < count($files); $i++) {
         $file_context_count[$files[$i]->file_context]++;
     }
@@ -289,10 +298,8 @@ if (!$files AND count($references) == 0 AND count($sodis) == 0){
         /* context box */   
         /* generate tabs for each file context*/
         $close = false;
-        if (count($files) == ($i+1)){ 
+        if (count($files) == ($i+1)OR $files[$i+1]->file_context >= $file_context){ 
             $close = true;
-        } else {
-            if ($files[$i+1]->file_context >= $file_context){ $close = true; }  
         }
         
         if ($close == true AND $m_boxes != ''){ //close file_context box // only generate tab-pane when there are files (m_boxes)
@@ -308,6 +315,7 @@ if (!$files AND count($references) == 0 AND count($sodis) == 0){
     }
     
         /* internal reference*/
+    if (isset($references)){
         $content   .='<div class="tab-pane';
             if ($active[7] == 'active' ){
                 $content   .=' active';
@@ -320,8 +328,10 @@ if (!$files AND count($references) == 0 AND count($sodis) == 0){
                 }
             $content .='</div>';
         }
+    }
         /* end internal reference*/
         /* external sodis reference*/
+    if (isset($sodis)){
         $content   .='<div class="tab-pane';
         if ($active[8] == 'active' ){
             $content   .=' active';
@@ -334,7 +344,7 @@ if (!$files AND count($references) == 0 AND count($sodis) == 0){
             }
             $content   .='" id="f_context_8">'.$sodis_content.'</div>';
         }
-        
+    }   
         /* end external sodis reference*/                        
                                     
     
