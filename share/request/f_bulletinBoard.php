@@ -40,7 +40,7 @@ if (is_array($data)) {
             
 if (isset($func)){
     switch ($func) {
-        case "edit":    checkCapabilities('dashboard:editBulletinBoard', $USER->role_id);
+        case "edit":    checkCapabilities('dashboard:editBulletinBoard', $USER->role_id, false, true);
                         $header            = 'Pinnwand ändern';
                         $bulletinBoard     = new Institution();
                         $bulletinBoard->id = $USER->institution_id;
