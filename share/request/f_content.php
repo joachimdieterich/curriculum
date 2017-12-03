@@ -56,7 +56,7 @@ if (is_array($data)) {
 
 if (isset($_GET['func'])){
     switch ($_GET['func']) {
-        case "new":     checkCapabilities('content:add',    $USER->role_id);
+        case "new":     checkCapabilities('content:add',    $USER->role_id, false, true);
                         if (null !== filter_input(INPUT_GET, 'context', FILTER_SANITIZE_STRING)){
                             $context_id     = $_SESSION['CONTEXT'][filter_input(INPUT_GET, 'context', FILTER_SANITIZE_STRING)]->context_id;
                         } else {
@@ -65,7 +65,7 @@ if (isset($_GET['func'])){
                         $reference_id   = filter_input(INPUT_GET, 'reference_id', FILTER_VALIDATE_INT);
                         $add = true;              
             break;
-        case "edit":    checkCapabilities('content:update', $USER->role_id);
+        case "edit":    checkCapabilities('content:update', $USER->role_id, false, true);
                         $label_header   = 'Inhalt aktualisieren';
                         $edit           = true; 
                         $ct             = new Content();
@@ -78,10 +78,10 @@ if (isset($_GET['func'])){
             break;
         case "show":    $content        = new Content();
                         $content->load('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
-                        if (checkCapabilities('content:delete', $USER->role_id, false)){
+                        if (checkCapabilities('content:delete', $USER->role_id, false, true)){
                             $options   .= '<a onclick="del(\'content\','.$content->id.');" class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-trash"></i></a>';
                         }
-                        if (checkCapabilities('content:update', $USER->role_id, false)){
+                        if (checkCapabilities('content:update', $USER->role_id, false, true)){
                             $options   .= '<a onclick="formloader(\'content\', \'edit\','.$content->id.')" class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-edit"></i></a>';
                         }
                         $label_header   = $content->title;
