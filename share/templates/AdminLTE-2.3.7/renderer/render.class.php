@@ -663,42 +663,50 @@ class Render {
                              $html  .= '<span class="fa fa-arrow-'.$icon_down.' pull-left box-sm-icon text-primary" onclick=\'processor("orderObjective", "'.$type.'", "'.$objective->id.'", {"order":"down"});\'></span>';
                          }
                      } else {
-
-                         if (checkCapabilities('course:setAccomplishedStatus', $USER->role_id, false) AND $type != 'terminal_objective' AND isset($group_id)){
-                             $html  .= '<span class="fa fa-bar-chart-o pull-right invert box-sm-icon text-primary margin-r-5" onclick=\'formloader("compare","group", '.$objective->id.', {"group_id":"'.$group_id.'"});\'></span>
-                                        <span class="fa fa-files-o pull-right invert box-sm-icon text-primary margin-r-5" onclick=\'formloader("material","solution", '.$objective->id.', {"group_id":"'.$group_id.'", "curriculum_id": "'.$objective->curriculum_id.'"});\'></span>';
-
-                         }
-                          if (checkCapabilities('user:getHelp', $USER->role_id, false) AND $type != 'terminal_objective' AND isset($group_id)){
-                             $html  .= ' <span class="fa fa-support pull-right invert box-sm-icon text-primary margin-r-5" data-toggle="tooltip" title="Gruppenmitglied um Hilfe bitten" onclick=\'formloader("support","random", '.$objective->id.', {"group_id":"'.$group_id.'"});\'></span>';
-                         }
-
-                         if (checkCapabilities('file:solutionUpload', $USER->role_id, false) AND $type != 'terminal_objective' AND isset($solutions)){
-                             foreach ($solutions AS $s){
-                                 if (($USER->id == $s->creator_id) AND ($s->enabling_objective_id == $objective->id) AND ($sol_btn != $objective->id)){
-                                     $sol_btn = $objective->id;
-                                     break;
-                                 }
-                             }
-                         }
-                         if (isset($PAGE->action) AND $type == 'enabling_objective' AND checkCapabilities('file:solutionUpload', $USER->role_id, false) AND (checkCapabilities('file:upload', $USER->role_id, false) OR checkCapabilities('file:uploadURL', $USER->role_id, false))){
-                             if($PAGE->action == 'view'){
-                                 $html  .= '<a href="'.$CFG->smarty_template_dir_url.'renderer/uploadframe.php?context=solution&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal">
-                                 <span class="fa ';
-                                 if ($sol_btn == $objective->id){
-                                     $html  .= 'fa-check-circle-o ';
-                                 } else {
-                                     $html  .= 'fa-upload ';
-                                 } 
-                                     $html  .= 'pull-right box-sm-icon text-primary" data-toggle="tooltip"';
-                                 if ($sol_btn == $objective->id){
-                                     $html  .= ' title="Lösung eingereicht"';
-                                 } else {
-                                     $html  .= ' title="Lösung einreichen"';
-                                 }
-                                 $html  .= '></span></a>';
-                             }
-                         }
+                        $c_menu_array               = array();
+                        $content_menu_obj           = new stdClass();
+                        if (checkCapabilities('file:solutionUpload', $USER->role_id, false) AND $type != 'terminal_objective' AND isset($solutions)){
+                            foreach ($solutions AS $s){
+                                if (($USER->id == $s->creator_id) AND ($s->enabling_objective_id == $objective->id) AND ($sol_btn != $objective->id)){
+                                    $sol_btn = $objective->id;
+                                    break;
+                                }
+                            }
+                        }
+                        if (isset($PAGE->action) AND $type == 'enabling_objective' AND checkCapabilities('file:solutionUpload', $USER->role_id, false) AND (checkCapabilities('file:upload', $USER->role_id, false) OR checkCapabilities('file:uploadURL', $USER->role_id, false))){
+                            if($PAGE->action == 'view'){
+                                $content_menu_obj->href = $CFG->smarty_template_dir_url.'renderer/uploadframe.php?context=solution&ref_id='.$objective->id.$CFG->tb_param;
+                                $content_menu_obj->href_class = 'nyroModal';
+                                if ($sol_btn == $objective->id){
+                                    $content_menu_obj->title  = '<i class="fa fa-check-circle-o" ></i> Lösung (Datei) eingereicht';
+                                } else {
+                                    $content_menu_obj->title  = '<i class="fa fa-upload" ></i> Lösung (Datei) einreichen';
+                                }  
+                            }
+                            $c_menu_array[]             = clone $content_menu_obj;
+                            $content_menu_obj           = new stdClass();
+                            $content_menu_obj->onclick  = 'formloader(\'content\', \'new\', null,{\'context_id\':\'4\', \'reference_id\':\''.$objective->id.'\'});';
+                            $content_menu_obj->title    = '<i class="fa fa-pencil" ></i> Lösung online eingeben';
+                            $c_menu_array[]             = clone $content_menu_obj;
+                        }
+                        if (checkCapabilities('course:setAccomplishedStatus', $USER->role_id, false) AND $type != 'terminal_objective' AND isset($group_id)){
+                            $content_menu_obj->onclick  = 'formloader(\'compare\',\'group\', \''.$objective->id.'\', {\'group_id\':\''.$group_id.'\'});';
+                            $content_menu_obj->title    = '<i class="fa fa-bar-chart-o"></i> Überblick über Gruppe';
+                            $c_menu_array[]             = clone $content_menu_obj;
+                            $content_menu_obj->onclick  = 'formloader(\'material\',\'solution\', \''.$objective->id.'\', {\'group_id\':\''.$group_id.'\', \'curriculum_id\': \''.$objective->curriculum_id.'\'});';
+                            $content_menu_obj->title    = '<i class="fa fa-files-o"></i> Eingereichte Lösungen (Datei)';
+                            $c_menu_array[]             = clone $content_menu_obj;
+                            $content_menu_obj->onclick  = 'formloader(\'solution\',\'solution\', \''.$objective->id.'\', {\'group_id\':\''.$group_id.'\', \'curriculum_id\': \''.$objective->curriculum_id.'\'});';
+                            $content_menu_obj->title    = '<i class="fa fa-files-o"></i> Eingereichte Lösungen (Texteingaben)';
+                            $c_menu_array[]             = clone $content_menu_obj;
+                        }
+                        if (checkCapabilities('user:getHelp', $USER->role_id, false) AND $type != 'terminal_objective' AND isset($group_id)){
+                            $content_menu_obj->onclick  = 'formloader(\'support\',\'random\', \''.$objective->id.'\', {\'group_id\':\''.$group_id.'\'});';
+                            $content_menu_obj->title    = '<i class="fa fa-support" ></i> Gruppenmitglied um Hilfe bitten';
+                            $c_menu_array[]             = clone $content_menu_obj;
+                        }
+                        $html  .= '<span class="pull-right box-sm-icon" style="padding-left:5px;">'.Render::split_button(array('type' => 'menu', 'btn_type' => 'btn btn-flat btn-default btn-xs','label' => '<i class="fa fa-caret-down"></i>', 'entrys' => $c_menu_array)).'</span>';
+                        
                      }
                   if ($type == 'terminal_objective'){
                      $html  .=' <a class="collapse_btn" data-toggle="collapse" data-target="#collaps_ter_'.$objective->id.'" data-toggle="tooltip" title="Kompetenzen einklappen bzw. ausklappen"><i class="fa fa-compress box-sm-icon text-primary" style="padding-left:5px;"></i></a>';   
@@ -1782,7 +1790,11 @@ class Render {
                                         $html .= '<li><a onclick="formloader(\'preview\',\'file\','.$val->id.');">'.$val->title.'</span></a></li>';
                                     break;
                                     case 'menu':
-                                        $html .= '<li><a onclick="'.$val->onclick.'">'.$val->title.'</span></a></li>';
+                                        if (isset($val->href)){
+                                            $html .= '<li><a href="'.$val->href.'" class="'.$val->href_class.'">'.$val->title.'</span></a></li>';
+                                        } else {
+                                            $html .= '<li><a onclick="'.$val->onclick.'">'.$val->title.'</span></a></li>';
+                                        }
                                     break;
                                     
                                     default:
