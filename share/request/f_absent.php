@@ -51,7 +51,7 @@ if (is_array($data)) {
 if (isset($_GET['func'])){
     switch ($_GET['func']) {
         case "coursebook":  $reference_id =  filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-        case "new":         checkCapabilities('absent:add',    $USER->role_id);
+        case "new":         checkCapabilities('absent:add',    $USER->role_id, false, true);
                             $header       = 'Fehlende Person(en) erfassen ';
                             $course       = new Course();
                             if (isset($reference_id)){
@@ -60,7 +60,7 @@ if (isset($_GET['func'])){
                                 $members  = $course->members('id',$cb->course_id);
                             }
             break;
-        case "edit":        checkCapabilities('absent:update', $USER->role_id);
+        case "edit":        checkCapabilities('absent:update', $USER->role_id, false, true);
                             $header     = 'Anwesenheitsliste aktualisieren';
                             $abs         = new Absent();
                             $abs->load('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
