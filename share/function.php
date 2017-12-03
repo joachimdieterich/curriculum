@@ -315,8 +315,7 @@ function checkCapabilities($capability = null, $role_id = null, $thow_exception 
         if ($modal){ // Rendert den Fehler im modal
             $html = Form::error(array('capability' => $capability, 
                      'page_name'  => '')); 
-            $html = Form::modal(array('title'     => 'Fehler',
-                                         'content'   => $html));
+            $html = Form::modal(array('title'     => 'Fehler',   'content'   => $html));
             echo json_encode(array('html'=> $html));
             die();
         }
