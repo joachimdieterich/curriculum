@@ -45,7 +45,7 @@ $content .= '<div class="btn btn-default btn-file margin-r-5"><a href="'.$CFG->s
 $cnt      = new Content();
 $content .='<div class="btn-group ">';
 $content .= Render::split_button(array('label'=>'Notizen', 'btn_type'=> 'btn btn-default','entrys'=> $cnt->get('task', $t->id )));
-if (checkCapabilities('content:add', $USER->role_id, false)){
+if (checkCapabilities('content:add', $USER->role_id, false, true)){
     $content .='<button type="button" class="btn btn-default" onclick="formloader(\'content\', \'new\', null,{\'context_id\':\''.$_SESSION['CONTEXT']['task']->context_id.'\',\'reference_id\':\''.$t->id.'\'});">
                     <i class="fa fa-plus"></i>
                 </button>';
