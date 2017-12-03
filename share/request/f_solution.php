@@ -131,9 +131,10 @@ echo json_encode(array('html'=> $html, 'target' => $target));
 
 function render_online_solution($sol){
     $c  = '<div class="row">
-           <div class="col-xs-12 pull-left">
-           <dt>'.$sol->creator.'<dd>'.$sol->timecreated.'</dd></dt>
-           <br><dt>'.$sol->title.'<dd>'.$sol->content.'</dd></dt>';
+           <div class="col-xs-12 col-sm-4 pull-left">
+           <dt>'.$sol->creator.'<dd>'.$sol->timecreated.'</dd></dt>';
+    $c .= '</div><div class="col-xs-12 col-sm-8 pull-left">
+           <dt>'.$sol->title.'<dd>'.$sol->content.'</dd></dt>';
     $c .= '</div></div><hr style="clear:both;">';
     
     return $c;
