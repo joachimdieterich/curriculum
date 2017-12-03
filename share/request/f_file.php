@@ -39,10 +39,10 @@ if (is_array($data)) {
             
 if (isset($_GET['func'])){
     switch ($_GET['func']) {
-        case "new":     checkCapabilities('file:add',    $USER->role_id);
+        case "new":     checkCapabilities('file:add',    $USER->role_id, false, true);
                         $header = 'Datei hochladen';        
             break;
-        case "edit":    checkCapabilities('file:update', $USER->role_id);
+        case "edit":    checkCapabilities('file:update', $USER->role_id, false, true);
                         $header = 'Datei aktualisieren';
                         $f      = new File();
                         $f->load(filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
