@@ -70,7 +70,7 @@ $content .= '<div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false" ><i class="fa fa-user margin-r-10"></i> Persönliche Einstellungen</a></li>
                     <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="true" ><i class="fa fa-university margin-r-10"></i> Einstellungen (Institution)</a></li>';
-if (checkCapabilities('user:userListComplete', $USER->role_id, false)){
+if (checkCapabilities('user:userListComplete', $USER->role_id, false, true)){
 $content .=         '<li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="true" ><i class="fa fa-globe margin-r-10"></i> Einstellungen (global)</a></li>';
 }
 $content .=   ' </ul>
@@ -115,7 +115,7 @@ $content .=   ' </ul>
     $content .='</div><!-- /.tab-pane -->
                 <div class="tab-pane" id="tab_2"> under construction
                 </div><!-- /.tab-pane -->';
-    if (checkCapabilities('user:userListComplete', $USER->role_id, false)){
+    if (checkCapabilities('user:userListComplete', $USER->role_id, false, true)){
         $terms = new Content();
         $content .=  '<div class="tab-pane" id="tab_3">';
         $content .= Form::info(['id' => 'global_terms_info', 'content' => 'Hier können Sie die Nutzungsbedingungen / Datenschutzerklärung ändern. <br>Diese muss von allen Nutzern beim ersten Login bestätigt werden.']);
