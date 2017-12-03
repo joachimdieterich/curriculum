@@ -53,7 +53,7 @@ if (is_array($data)) {
             
 if (isset($_GET['func'])){
     switch ($_GET['func']) {
-        case "new":     checkCapabilities('curriculum:add',     $USER->role_id);     //USER berechtigt?
+        case "new":     checkCapabilities('curriculum:add',     $USER->role_id, false, true);     //USER berechtigt?
                         $header = 'Lehrplan hinzufügen';
                         if (!isset($country_id)){ 
                             $country_id = $USER->country_id;
@@ -61,7 +61,7 @@ if (isset($_GET['func'])){
                         }
                         $add = true;      
             break;
-        case "edit":    checkCapabilities('curriculum:update',     $USER->role_id);     //USER berechtigt?
+        case "edit":    checkCapabilities('curriculum:update',     $USER->role_id, false, true);     //USER berechtigt?
                         $header  = 'Lehrplan bearbeiten';
                         $cur->id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
                         $cur->load();
@@ -70,7 +70,7 @@ if (isset($_GET['func'])){
                         }
                         $edit = true; 
             break;
-        case "import":  checkCapabilities('curriculum:import',     $USER->role_id);     //USER berechtigt?
+        case "import":  checkCapabilities('curriculum:import',     $USER->role_id, false, true);     //USER berechtigt?
                         $header = 'Lehrplan importieren';
                         $import = true;
             break;
@@ -93,7 +93,7 @@ if (!isset($edit)){ // Tabs ausblenden wenn im Edit-Modus
 $content .= '<div class="nav-tabs-custom"> 
               <ul class="nav nav-tabs">
                 <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false" onclick="toggle([\'form_curriculum\', \'bAdd\'], [\'tab_1\']);">Lehrplan hinzufügen</a></li>';
-                if (checkCapabilities('curriculum:import', $USER->role_id, false)){
+                if (checkCapabilities('curriculum:import', $USER->role_id, false, true)){
                   $content .= '<li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="true" onclick="toggle([\'tab_1\'], [\'form_curriculum\', \'bAdd\']);">Lehrplan importieren</a></li>';
                 }
 $content .='</ul>';
