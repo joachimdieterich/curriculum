@@ -35,7 +35,7 @@ $description    = null;
 $curriculum_id  = null; 
 $context        = null; 
 $terminal_objective_id = null;
-$objectives     = null;
+$enabling_objective_id = null;
 $error          = null;
 $object         = file_get_contents("php://input");
 $data           = json_decode($object, true);
@@ -44,10 +44,14 @@ if (is_array($data)) {
         $$key = $value;
     }
 }
-            
+
+$cur        = new Curriculum();
+$curriculum = $cur->getCurricula('user', $USER->id);
+$ter        = new TerminalObjective();
+$ena        = new EnablingObjective();
 if (isset($_GET['func'])){
     switch ($_GET['func']) {
-        case "new":     checkCapabilities('reference:add',    $USER->role_id);
+        case "new":     checkCapabilities('reference:add',    $USER->role_id, false, true);
                         $header = 'Referenz verknüpfen';            
                         $context_id     = $_SESSION['CONTEXT'][filter_input(INPUT_GET, 'context', FILTER_SANITIZE_STRING)]->context_id;
                         $reference_id   = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
@@ -66,14 +70,38 @@ if (isset($_GET['func'])){
                             default:
                                 break;
                         }
-                        $cur        = new Curriculum();
+                        
                         $cur->id    = $obj->curriculum_id;
                         $cur->load();
                         $grade_id   = $cur->grade_id;
+                        $curriculum_id = $curriculum[0]->id; 
+
+                        $ter->curriculum_id = $curriculum_id;
+                        $terminal_objectives = $ter->getObjectives('curriculum', $curriculum_id);
+                        
+                        $ena->curriculum_id  = $curriculum_id;
+                        $enabling_objectives = $ena->getObjectives('curriculum', $curriculum_id);
             break;
-        case "edit":    checkCapabilities('reference:update',    $USER->role_id);
+            case "edit":    checkCapabilities('reference:update',    $USER->role_id, false, true);
+                        $context_id     = filter_input(INPUT_GET, 'context_id', FILTER_VALIDATE_INT); 
+                        $reference_id   = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT); 
                         $header   = 'Referenz bearbeiten';
                         $edit     = true; 
+                        $id       = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+                        $r        = new Reference();
+                        $r->load('id', $id);
+                        $curriculum_id          = $r->curriculum_object->id;
+                        $cur->id    = $curriculum_id;
+                        $cur->load();
+                        $terminal_objective_id  = $r->terminal_object->id;
+                        $terminal_objectives = $ter->getObjectives('curriculum', $curriculum_id);
+                        $enabling_objective_id  = $r->enabling_object->id;
+                        $enabling_objectives = $ena->getObjectives('terminal_objective', $terminal_objective_id);
+                        
+                        $grade_id               = $r->grade_id;
+                        $description            = $r->content_object->content;
+                        $context                = $r->context_id;
+                        
 
             break;
         default: break;
@@ -97,9 +125,9 @@ $content .= '<input id="context_id" name="context_id" type="text" class="invisib
 if (isset($id)) {                                                               // only set id input field if set! prevents error on validation form reload
     $content .= '<input id="id" name="id" type="text" class="invisible" value="'.$id.'">';
 }
-$content     .= Form::info(array('id' => 'ref_info', 'content' => 'Bezug mit Kompetenz(bereich) <strong>'.$obj->$type.'</strong> herstellen. <br>Bezüge können sich sowohl auf ein <strong>Thema / Kompetenzbereich</strong> sowie <strong>Kompetenzen / Lernziele</strong> beziehen.'));
-$cur          = new Curriculum();
-$curriculum   = $cur->getCurricula('user', $USER->id);
+if ($edit =! true){
+    $content     .= Form::info(array('id' => 'ref_info', 'content' => 'Bezug mit Kompetenz(bereich) <strong>'.$obj->$type.'</strong> herstellen. <br>Bezüge können sich sowohl auf ein <strong>Thema / Kompetenzbereich</strong> sowie <strong>Kompetenzen / Lernziele</strong> beziehen.'));
+}
 
 if ($id == null) {
     $curriculum_id = $curriculum[0]->id;        
@@ -108,13 +136,9 @@ if ($id == null) {
     $content .= Form::input_select('curriculum_id', 'Lehrplan', $curriculum, 'curriculum', 'id', $curriculum_id , $error, '','', 'col-sm-3', 'col-sm-9', 'disabled="disabled"');
 }
 
-$ter      = new TerminalObjective();
-$ter->curriculum_id = $curriculum_id;
-$content .= Form::input_select('terminal_objective_id', 'Thema / Kompetenzbereich', $ter->getObjectives('curriculum', $curriculum_id), 'terminal_objective', 'id', $terminal_objective_id , $error, 'getValues(\'objectives\', this.value, \'enabling_objective_id\', \'enabling_objective_from_terminal_objective\');');
 
-$ena      = new EnablingObjective();
-$ena->curriculum_id = $curriculum_id;
-$content .= Form::input_select_multiple(array('id' => 'enabling_objective_id', 'label' => 'Kompetenzen/ Lernziele', 'select_data' => $ena->getObjectives('curriculum', $curriculum_id), 'select_label' => 'enabling_objective', 'select_value' => 'id', 'input' => $objectives, 'error' => $error)); 
+$content .= Form::input_select('terminal_objective_id', 'Thema / Kompetenzbereich', $terminal_objectives, 'terminal_objective', 'id', $terminal_objective_id , $error, 'getValues(\'objectives\', this.value, \'enabling_objective_id\', \'enabling_objective_from_terminal_objective\');');
+$content .= Form::input_select_multiple(array('id' => 'enabling_objective_id', 'label' => 'Kompetenzen/ Lernziele', 'select_data' => $enabling_objectives, 'select_label' => 'enabling_objective', 'select_value' => 'id', 'input' => array($enabling_objective_id), 'error' => $error)); 
 
 $grades   = new Grade();    //Load Grades
 $content .= Form::info(array('id' => 'grade_info', 'content' => 'Im folgendenden Feld kann falls nötig die Klassenstufe präzisiert werden.'));
