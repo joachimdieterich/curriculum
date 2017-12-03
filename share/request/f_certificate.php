@@ -49,10 +49,10 @@ if (is_array($data)) {
 if (isset($func)){
     switch ($func) {
         case "coursebook":  $reference_id =  filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-        case "new":         checkCapabilities('certificate:add',    $USER->role_id);
+        case "new":         checkCapabilities('certificate:add',    $USER->role_id, false, true);
                             $header     = 'Zertifikat hinzufügen';
             break;
-        case "edit":        checkCapabilities('certificate:update', $USER->role_id);
+        case "edit":        checkCapabilities('certificate:update', $USER->role_id, false, true);
                             $header     = 'Zertifikat aktualisieren';
                             $cert       = new Certificate();
                             $cert->id   = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
