@@ -48,13 +48,13 @@ if (is_array($data)) {
             
 if (isset($func)){
     switch ($func) {
-        case "new": checkCapabilities('backup:add',    $USER->role_id);
+        case "new": checkCapabilities('backup:add',    $USER->role_id, false, true);
                     $header             = 'Backup erstellen';
                     /* load backups and courses */
                     $courses            = new Course(); //load Courses
-                    if (checkCapabilities('backup:getAllBackups', $USER->role_id, false)) {                          // Administrators
+                    if (checkCapabilities('backup:getAllBackups', $USER->role_id, false, true)) {                          // Administrators
                         $options        = $courses->getCourse('admin', $USER->id);
-                    } else if (checkCapabilities('backup:getMyBackups', $USER->role_id, false)) {                    // Teacher and Tutor
+                    } else if (checkCapabilities('backup:getMyBackups', $USER->role_id, false, true)) {                    // Teacher and Tutor
                         $options        = $courses->getCourse('teacher', $USER->id);
                     } 
             break;
