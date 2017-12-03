@@ -46,15 +46,15 @@ if (is_array($data)) {
             
 if (isset($func)){
     switch ($func) {
-        case 'new':      checkCapabilities('groups:add',         $USER->role_id);
+        case 'new':      checkCapabilities('groups:add',         $USER->role_id, false, true);
                          $header            = 'Lerngruppe hinzufügen';
         break;
-        case 'semester': checkCapabilities('groups:changeSemester',         $USER->role_id);
+        case 'semester': checkCapabilities('groups:changeSemester',         $USER->role_id, false, true);
                          $header            = 'Lernzeitraum ändern';
                          $change_semester   = true;
                          $id          = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);  // edit case: id == ena_id
             break;
-        case "edit":     checkCapabilities('groups:update', $USER->role_id);
+        case "edit":     checkCapabilities('groups:update', $USER->role_id, false, true);
                          $header            = 'Lerngruppe bearbeiten';
                          $gr_obj            = new Group();
                          $gr_obj->id        = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);  // edit case: id == ena_id
