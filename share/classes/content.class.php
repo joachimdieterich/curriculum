@@ -91,27 +91,34 @@ class Content {
         }
     }
        
-    public function get($dependency = 'curriculum', $id = null, $order = "ORDER by ct.timecreated ASC"){
+    public function get($dependency = 'curriculum', $id = null, $order = "ORDER by ct.timecreated ASC", $user_ids = null){
         $entrys = array();                      //Array of content
          
         switch ($dependency) {
             case 'blog':    $order =  'ORDER by ct.timecreated DESC';
-                            $db = DB::prepare('SELECT ct.id FROM content AS ct, content_subscriptions AS cts, context AS co
+                            $db = DB::prepare('SELECT ct.*, cts.context_id, cts.reference_id, cts.file_context FROM content AS ct, content_subscriptions AS cts, context AS co
                                                         WHERE  co.context = "'.$dependency.'"
                                                         AND co.context_id = cts.context_id
                                                         AND cts.reference_id = ?
                                                         AND cts.content_id = ct.id '.$order);
                             $db->execute(array($id));
                 break;
-            case 'terms':       $db = DB::prepare('SELECT ct.id FROM content AS ct, content_subscriptions AS cts, context AS co
+            case 'terms':       $db = DB::prepare('SELECT ct.*, cts.context_id, cts.reference_id, cts.file_context FROM content AS ct, content_subscriptions AS cts, context AS co
                                                         WHERE  co.context = "terms"
                                                         AND co.context_id = cts.context_id
                                                         AND cts.content_id = ct.id');
                                 $db->execute();          
                 break;
-
+            case 'solution': $db = DB::prepare('SELECT ct.*, cts.context_id, cts.reference_id, cts.file_context FROM content AS ct, content_subscriptions AS cts, context AS co
+                                                        WHERE  co.context = "'.$dependency.'"
+                                                        AND co.context_id = cts.context_id
+                                                        AND ct.creator_id IN ('.$user_ids.')
+                                                        AND cts.reference_id = ?
+                                                        AND cts.content_id = ct.id '.$order);
+                            $db->execute(array($id));
+                break;
             default:        
-                            $db = DB::prepare('SELECT ct.id FROM content AS ct, content_subscriptions AS cts, context AS co
+                            $db = DB::prepare('SELECT ct.*, cts.context_id, cts.reference_id, cts.file_context FROM content AS ct, content_subscriptions AS cts, context AS co
                                                         WHERE  co.context = "'.$dependency.'"
                                                         AND co.context_id = cts.context_id
                                                         AND cts.reference_id = ?
@@ -120,10 +127,19 @@ class Content {
                 break;
         }
         
-        
+        $user       = new User();
         while($result = $db->fetchObject()) { 
             $this->id            = $result->id;
-            $this->load();
+            $this->title         = $result->title;
+            $this->content       = $result->content;
+            $this->timecreated   = $result->timecreated;
+            $this->timemodified  = $result->timemodified;
+            $this->creator_id    = $result->creator_id;
+            $this->creator       = $user->resolveUserId($result->creator_id);
+            $this->context_id    = $result->context_id;
+            $this->reference_id  = $result->reference_id;
+            $this->file_context  = $result->file_context;
+            //$this->load();
             $entrys[]            = clone $this;        //it has to be clone, to get the object and not the reference
         } 
         return $entrys;
