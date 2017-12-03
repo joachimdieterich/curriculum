@@ -447,7 +447,7 @@ class User {
         global $USER; 
         checkCapabilities('user:getGroupMembers', $USER->role_id);
         switch ($dependency) {
-            case 'group':   $db = DB::prepare('SELECT user_id FROM groups_enrolments 
+            case 'group':   $db = DB::prepare('SELECT DISTINCT user_id FROM groups_enrolments 
                                                 WHERE group_id = ?
                                                 AND status = 1');
                             $db->execute(array($id)); 
@@ -641,6 +641,7 @@ class User {
             if($db->fetchColumn() >= 1) {
                 $db = DB::prepare('UPDATE groups_enrolments SET status = 0, expel_time = NOW() WHERE group_id = ? AND user_id =? '); // Status 0 expelled
             if ($db->execute(array($group_id, $this->id))){
+                $groups->load($group_id);
                 $_SESSION['PAGE']->message[]    = array('message' => '<strong>'.$this->username.'</strong> erfolgreich aus <strong>'.$groups->group.'</strong> ausgeschrieben.', 'icon' => 'fa-user text-success');
             }
             }
