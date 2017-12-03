@@ -40,11 +40,11 @@ if (is_array($data)) {
 if (isset($func)){
     switch ($func) {
         case "changePW":    $info       = true;
-        case "edit":        checkCapabilities('user:resetPassword', $USER->role_id);
+        case "edit":        checkCapabilities('user:resetPassword', $USER->role_id, false, true);
                             $header     = 'Kennwort ändern';
                             $username   = $USER->username;      
             break;
-        case "reset":       checkCapabilities('user:resetPassword', $USER->role_id);
+        case "reset":       checkCapabilities('user:resetPassword', $USER->role_id, false, true);
                             $header     = 'Kennwort zurücksetzen';
                             $user       = new User();
                             if (is_int($_GET['id'])){
