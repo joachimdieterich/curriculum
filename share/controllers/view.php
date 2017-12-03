@@ -115,6 +115,6 @@ if (!empty($glossar)){
 
 if (isset($_SESSION['anchor'])){
     $TEMPLATE->assign('anchor',$_SESSION['anchor']);
-    error_log($_SESSION['anchor']);
+    //error_log($_SESSION['anchor']);
     $_SESSION['anchor'] = null;
 }
