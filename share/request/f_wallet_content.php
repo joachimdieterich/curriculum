@@ -46,7 +46,7 @@ if (is_array($data)) {
         $$key = $value;
     }
 }
-checkCapabilities('wallet:workon',    $USER->role_id);            
+checkCapabilities('wallet:workon',    $USER->role_id, false, true);            
 if (isset($_GET['func'])){
     switch ($_GET['func']) {
         case "new_file":    $header     = 'Datei hinzufügen'; 
