@@ -75,7 +75,6 @@ switch ($function) {
                             $TEMPLATE->assign('page_title', 'Lehrplaninhalt bearbeiten'); 
                             $c_menu_array               = array();
                             $content_menu_obj           = new stdClass();
-                            $content_menu_obj           = new stdClass();
                             $content_menu_obj->onclick  = "formloader('content', 'new', null,{'context_id':'2', 'reference_id':'{$PAGE->curriculum}'});";
                             $content_menu_obj->title    = '<i class="fa fa-plus"></i> Neuen Hinweis erstellen';
                             $c_menu_array[]             = clone $content_menu_obj;
