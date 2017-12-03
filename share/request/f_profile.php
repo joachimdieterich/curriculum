@@ -57,10 +57,10 @@ if (is_array($data)) {
             
 if (isset($func)){
     switch ($func) {
-        case 'new':      checkCapabilities('user:addUser',    $USER->role_id);
+        case 'new':      checkCapabilities('user:addUser',    $USER->role_id, false, true);
                          $header            = 'Benutzer anlegen';
         break;
-        case 'editUser': checkCapabilities('user:updateUser',    $USER->role_id);
+        case 'editUser': checkCapabilities('user:updateUser',    $USER->role_id, false, true);
                          $header            = 'Profil bearbeiten';
                          $user->load('id', filter_input(INPUT_GET,  'id', FILTER_VALIDATE_INT));
                          $user_id           = filter_input(INPUT_GET,  'id', FILTER_VALIDATE_INT);
@@ -69,7 +69,7 @@ if (isset($func)){
                          }
         break;
         
-        case "edit":     checkCapabilities('user:update',    $USER->role_id);
+        case "edit":     checkCapabilities('user:update',    $USER->role_id, false, true);
                          $header            = 'Mein Profil aktualisieren';
                          $user->load('id',    $USER->id);
                          $user_id           = $USER->id;//Läd die bestehenden Daten aus der db
