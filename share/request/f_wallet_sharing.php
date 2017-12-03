@@ -45,7 +45,7 @@ if (is_array($data)) {
 if (isset($_GET['func'])){
     switch ($_GET['func']) {
         case "new":
-        case "edit":    checkCapabilities('wallet:share',    $USER->role_id);
+        case "edit":    checkCapabilities('wallet:share',    $USER->role_id, false, true);
                         $header = 'Sammelmappe teilen';       
                         $wallet = new Wallet();
                         $wallet->load(filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
