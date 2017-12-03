@@ -52,7 +52,7 @@ if (is_array($data)) {
 
 if (isset($_GET['func'])){
     switch ($_GET['func']) {
-        case "curriculum":  checkCapabilities('content:add',    $USER->role_id);
+        case "curriculum":  checkCapabilities('content:add',    $USER->role_id, false, true);
                             if (null !== filter_input(INPUT_GET, 'context', FILTER_SANITIZE_STRING)){
                                 $context_id     = $_SESSION['CONTEXT'][filter_input(INPUT_GET, 'context', FILTER_SANITIZE_STRING)]->context_id;
                             } else {
