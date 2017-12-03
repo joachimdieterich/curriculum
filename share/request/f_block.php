@@ -46,7 +46,7 @@ if (is_array($data)) {
             
 if (isset($func)){
     switch ($func) {
-        case "new" : checkCapabilities('block:add', $USER->role_id);
+        case "new" : checkCapabilities('block:add', $USER->role_id, false, true);
                      $header            = 'Block hinzufügen';
                      if (null != filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT)){
                          $block_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
@@ -55,7 +55,7 @@ if (isset($func)){
                      }    
                      $add              = true;   
             break;
-        case "edit": checkCapabilities('block:update', $USER->role_id);
+        case "edit": checkCapabilities('block:update', $USER->role_id, false, true);
                      $header            = 'Block ändern';
                      $edit              = true;   
                      $block->id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
