@@ -130,11 +130,15 @@ echo json_encode(array('html'=> $html, 'target' => $target));
 
 
 function render_online_solution($sol){
+    global $USER;
     $c  = '<div class="row">
            <div class="col-xs-12 col-sm-4 pull-left">
            <dt>'.$sol->creator.'<dd>'.$sol->timecreated.'</dd></dt>';
     $c .= '</div><div class="col-xs-12 col-sm-8 pull-left">
            <dt>'.$sol->title.'<dd>'.$sol->content.'</dd></dt>';
+    if (checkCapabilities('reference:add',    $USER->role_id, false, true) AND $sol->creator_id == $USER->id){
+        $c .= '<a onclick="formloader(\'content\', \'edit\','.$sol->id.');" class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-edit"></i></a>';
+    }
     $c .= '</div></div><hr style="clear:both;">';
     
     return $c;
