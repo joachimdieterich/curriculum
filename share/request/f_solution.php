@@ -44,6 +44,9 @@ switch ($func) {
        
                         $solution_content       = new Content();
                         $solutions              = $solution_content->get('solution', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), 'ORDER by ct.timecreated ASC', $user_ids);
+                        $ena        = new EnablingObjective();
+                        $ena->id    = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+                        $ena->load();  
          break;                
     default:
         break;
@@ -61,6 +64,8 @@ if (!$solutions){
     for($i = 0; $i < count($solutions); $i++) {
         $file_context_count[$solutions[$i]->file_context]++;
     }
+    
+    $content .= '<p><strong>Kompetenz: </strong>'.$ena->enabling_objective.'</p>';     
     $content .= '<div class="nav-tabs-custom">';
     $active   = array( '1' => '', '2' => '', '3' => '','4' => '');
     foreach ($file_context_count as $key => $value) { // mark first tab with files as "active"
