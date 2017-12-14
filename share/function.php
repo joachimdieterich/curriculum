@@ -312,7 +312,7 @@ function checkCapabilities($capability = null, $role_id = null, $thow_exception 
     if ($capabilities->checkCapability()){
         return true;
     } else {
-        if ($modal){ // Rendert den Fehler im modal
+        if ($modal AND $thow_exception == true){ // Rendert den Fehler im modal
             $html = Form::error(array('capability' => $capability, 
                      'page_name'  => '')); 
             $html = Form::modal(array('title'     => 'Fehler',   'content'   => $html));
