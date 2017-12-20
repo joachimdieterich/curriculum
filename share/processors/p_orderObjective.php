@@ -41,11 +41,13 @@ switch ($func) {
                                 $enabling_objective->id     = filter_input(INPUT_GET, 'val',  FILTER_VALIDATE_INT);
                                 $enabling_objective->load();
                                 $enabling_objective->order(filter_input(INPUT_GET, 'order', FILTER_SANITIZE_STRING));
-        break;
+                                $_SESSION['anchor'] = 'ena_'.$enabling_objective->id;
+        break;                   
     case 'terminal_objective':  $terminal_objective         = new TerminalObjective();
                                 $terminal_objective->id     = filter_input(INPUT_GET, 'val',  FILTER_VALIDATE_INT);
                                 $terminal_objective->load();
-                                $terminal_objective->order(filter_input(INPUT_GET, 'order', FILTER_SANITIZE_STRING));                   
+                                $terminal_objective->order(filter_input(INPUT_GET, 'order', FILTER_SANITIZE_STRING));  
+                                $_SESSION['anchor'] = 'ter_'.$terminal_objective->id; 
         break;
     default:
         break;
