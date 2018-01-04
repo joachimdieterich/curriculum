@@ -109,14 +109,14 @@ function render_reference_entry($ref, $context_id){
            <br><dt>Lehrplan<dd>'.$ref->curriculum_object->curriculum.'</dd></dt>
            <br><dt>Klassenstufe<dd>'.$ref->grade.'</dd></dt>';
     if (isset($ref->content_object->content)){
-        if ($ref->content_object->content != ''){
-            $c .= '<br><dt>Anregungen zur Unterrichtsgestaltung ';
-            if (checkCapabilities('reference:add',    $USER->role_id, false, true)){
-             $c .= '<a onclick="formloader(\'content\', \'edit\','.$ref->content_object->id.');" class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-edit"></i></a>';
-            }
-            $c .= '<dd> '.strip_tags($ref->content_object->content).'</dd></dt>';
+        $c .= '<br><dt>Anregungen zur Unterrichtsgestaltung ';
+        if (checkCapabilities('reference:add',    $USER->role_id, false, true)){
+            $c .= '<a onclick="formloader(\'content\', \'edit\','.$ref->content_object->id.');" class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-edit"></i></a>';
         }
-    }
+        if ($ref->content_object->content != ''){
+            $c .= '<dd> '.strip_tags($ref->content_object->content).'</dd></dt>';
+        } 
+    } 
     $c .= '</div><div class="col-xs-12 col-sm-3"><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('format' => 'reference', 'objective' => $ref->terminal_object, 'color')).'</div>';
     if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
       $c .= '<div class="col-xs-12 col-sm-3"><dt>Lernziel/Kompetenz</dt>'.Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $ref->enabling_object, 'border_color' => $ref->terminal_object->color)).'</div>';
