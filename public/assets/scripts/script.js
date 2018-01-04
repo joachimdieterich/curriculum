@@ -811,26 +811,27 @@ function popupFunction(e){
     };
     for (var selector in config) {
         $(selector).chosen(config[selector]);
-    }*/
+    }*/  
     /*close popup when clicking outside modal*/
     $(function() {
-    $("body").click(function(e) {
-        if ($("body").hasClass("modal-open")){ /* cont call function if it was called before */
-            if (e.target.id == "modal" || $(e.target).parents("#modal").size()) { 
-                /* do nothing */
-            } else if (e.target.id == "daterangepicker" || $(e.target).parents("#daterangepicker").size()) {
-                /* do nothing */
-            } else { 
-                if ($("#daterangepicker").is(':visible') || $("#colorpicker").is(':visible') || $(".cke_dialog").is(':visible')) {
-                    /* don't close if daterangepicker is visible!*/
-                } else {
-                    closePopup('null'); /*only close popup without reloading*/
+        $("body").click(function(e) {
+            if ($("body").hasClass("modal-open")){ /* cont call function if it was called before */
+                if (textareas.length > 0){
+                   /* do nothing */ 
+                } else if (e.target.id == "modal" || $(e.target).parents("#modal").size() ) { 
+                    /* do nothing */
+                } else if (e.target.id == "daterangepicker" || $(e.target).parents("#daterangepicker").size()) {
+                    /* do nothing */
+                } else { 
+                    if ($("#daterangepicker").is(':visible') || $("#colorpicker").is(':visible') || $(".cke_dialog").is(':visible')) {
+                        /* don't close if daterangepicker is visible!*/
+                    } else {
+                        closePopup('null'); /*only close popup without reloading*/
+                    }
                 }
             }
-        }
-    });
-})
-
+        });
+    });    
 }
 
 /**
