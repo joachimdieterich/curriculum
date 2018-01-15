@@ -36,7 +36,10 @@ if ($_GET){
                                             $group->load(); 
                                             $TEMPLATE->assign('group',     $group);
         case isset($_GET['curriculum_id']): $PAGE->curriculum = $_GET['curriculum_id'];
-                                            $TEMPLATE->assign('page_curriculum',     $PAGE->curriculum);                 
+                                            $TEMPLATE->assign('page_curriculum',     $PAGE->curriculum);   
+                                            $cur        = new Curriculum();
+                                            $cur->id    = $_GET['curriculum_id'];
+                                            $cur->load();
             break;
         
         default:
@@ -45,9 +48,6 @@ if ($_GET){
 }
 
 if ((isset($_GET['function']) AND $_GET['function'] == 'addObjectives')) {
-    $cur        = new Curriculum();
-    $cur->id    = $_GET['curriculum_id'];
-    $cur->load();
     if (checkCapabilities('curriculum:update', $USER->role_id, false) AND ($cur->creator_id == $USER->id)){ //only edit if capability is set or user == owner
         $function = 'addObjectives';
         $TEMPLATE->assign('showaddObjectives', true); //blendet die addButtons ein
@@ -66,15 +66,16 @@ $TEMPLATE->assign('terminal_objectives', $terminal_objectives->getObjectives('cu
 
 $enabling_objectives = new EnablingObjective();                                     //load enabling objectives
 $enabling_objectives->curriculum_id = $PAGE->curriculum;
-$cur                 = $courses->getCourse('course', $PAGE->curriculum);
-$TEMPLATE->assign('course', $cur); 
-$TEMPLATE->assign('page_bg_file_id', $cur[0]->icon_id); 
-
+$course                 = $courses->getCourse('course', $PAGE->curriculum);
+$TEMPLATE->assign('course', $course); 
+$TEMPLATE->assign('page_bg_file_id', $course[0]->icon_id); 
+$c_menu_array               = array();
+$content_menu_obj           = new stdClass();
 switch ($function) {
     case 'addObjectives':   $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('curriculum', $PAGE->curriculum));
                             $TEMPLATE->assign('page_title', 'Lehrplaninhalt bearbeiten'); 
-                            $c_menu_array               = array();
-                            $content_menu_obj           = new stdClass();
+                            //splitbutton
+                            
                             $content_menu_obj->onclick  = "formloader('content', 'new', null,{'context_id':'2', 'reference_id':'{$PAGE->curriculum}'});";
                             $content_menu_obj->title    = '<i class="fa fa-plus"></i> Neuen Hinweis erstellen';
                             $c_menu_array[]             = clone $content_menu_obj;
@@ -84,13 +85,28 @@ switch ($function) {
                             $content_menu_obj->onclick  = "formloader('description','curriculum','{$PAGE->curriculum}');";
                             $content_menu_obj->title    = '<i class="fa fa-info" style="padding-right:5px;"></i> Information zum Lehrplan';
                             $c_menu_array[]             = clone $content_menu_obj;
+                            if (checkCapabilities('curriculum:update', $USER->role_id, false)){
+                                $content_menu_obj->onclick  = "formloader('curriculum','edit','{$PAGE->curriculum}');";
+                                $content_menu_obj->title    = '<i class="fa fa-edit" style="padding-right:5px;"></i> Lehrplaneigenschaften bearbeiten';
+                                $c_menu_array[]             = clone $content_menu_obj;
+                            }
+                            
                             
                             
                             $content_menu = array('type' => 'menu', 'label' => '<i class="fa fa-caret-down"></i>', 'entrys' => $c_menu_array);
                             $TEMPLATE->assign('content_menu', $content_menu); 
         break;
 
-    default:                $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('course', $PAGE->curriculum, $PAGE->group));
+    default:                if (checkCapabilities('curriculum:update', $USER->role_id, false) AND $cur->creator_id == $USER->id){
+                                $content_menu_obj->onclick  = "location.href='index.php?action=view&function=addObjectives&curriculum_id={$PAGE->curriculum}'";
+                                $content_menu_obj->title    = '<i class="fa fa-edit" style="padding-right:5px;"></i> Lehrplan bearbeiten';
+                                $c_menu_array[]             = clone $content_menu_obj;
+                                $content_menu = array('type' => 'menu', 'label' => '<i class="fa fa-caret-down"></i>', 'entrys' => $c_menu_array);
+                                $TEMPLATE->assign('content_menu', $content_menu); 
+                            }
+                            
+                            
+                            $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('course', $PAGE->curriculum, $PAGE->group));
                             $TEMPLATE->assign('page_title', 'Lehrplan'); 
         break;
 }
