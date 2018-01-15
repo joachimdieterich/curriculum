@@ -72,7 +72,7 @@
                     <i class="fa fa-info"></i>
                 </button>*}
                 {Render::split_button($cur_content)}
-                {if isset($showaddObjectives)}
+                {if isset($content_menu)}
                    {Render::split_button($content_menu)}    
                 {/if}
                 
