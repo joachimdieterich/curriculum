@@ -78,6 +78,7 @@ $content .= Form::input_select('curriculum_id', 'Lehrplan', $options, 'course', 
 /* Format selector*/
 $format_array = array('XML curriculum' => 'xml',
                 'XML RLP Digitale Lehrpläne' => 'xml-rlp',
+                'XML edu-sharing Sammlungen' => 'xml-edu-sharing',
                 'IMSCC Moodle' => 'imscc'
                );
 $format_obj = new stdClass();
