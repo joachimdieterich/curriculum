@@ -106,6 +106,11 @@ class Backup {
                             $file->type             = '.zip';
                             $zip                    = true;
                 break;
+            case 'xml-edu-sharing': $this->generate_edusharing_collection($c, $timestamp_folder);                      // export für edu-sharing sammlungen
+                            $file->filename         = $timestamp_folder.'.zip';
+                            $file->type             = '.zip';
+                            $zip                    = true;
+                break;
 
             case 'imscc':   include (dirname(__FILE__).'../../libs/Backup/cc_constants.php');   // Konstanten laden
                             mkdir($this->temp_path, 0700);                                      // Lese- und Schreibrechte nur für den Besitzer
@@ -247,6 +252,99 @@ class Backup {
                     }
                 $c3->appendChild($c3_themeninhalt);
             $root->appendChild($c3);
+        $xml->appendChild($root);
+        
+        $xml->preserveWhiteSpace = false; 
+        $xml->formatOutput = true; 
+        
+        $file = $this->temp_path.'/'.$filename.'.xml'; // Backup / [cur_id] / 
+        file_put_contents($file, $xml->saveXML());
+    }
+    
+    public function generate_edusharing_collection($c, $filename){
+        global $CFG; 
+
+        $xml = new DOMDocument("1.0", "UTF-8"); 
+        /* root */
+        $root = $xml->createElement('collections');
+        $root->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
+        //$root->setAttribute('xmlns', 'http://bsbb.eu');
+        $root->setAttribute('xsi:noNamespaceSchemaLocation', 'collections.xsd');
+            /* curriculum Attributes (c1)*/
+            $c1     = $xml->createElement("collection");
+            
+            $c1_title = $xml->createElement("title",    $c->curriculum);
+            $c1->appendChild($c1_title);
+            $c1_description = $xml->createElement("description",    strip_tags($c->description));
+            $c1->appendChild($c1_description);
+            
+            $c1_image = $xml->createElement("image", 'logo.png');
+            $c1->appendChild($c1_image);
+            
+            $c1_color = $xml->createElement("color", $c->color);
+            $c1->appendChild($c1_color);
+   
+            $c1_id  = $xml->createElement("property");   
+            $c1_id->setAttribute('key', 'ccm:curriculum');
+                $c1_id_value = $xml->createElement("value",    'RLP'.$c->id);
+                $c1_id->appendChild($c1_id_value);
+            $c1->appendChild($c1_id);
+            
+            $c1_lang  = $xml->createElement("property");   
+            $c1_lang->setAttribute('key', 'ccm:educationallanguage');
+                $c1_lang_value = $xml->createElement("value",    'de');
+                $c1_lang->appendChild($c1_lang_value);
+            $c1->appendChild($c1_lang);
+            
+            $c1_context  = $xml->createElement("property");   
+            $c1_context->setAttribute('key', 'ccm:educationalcontext');
+                $c1_context_value = $xml->createElement("value",    'educational');
+                $c1_context->appendChild($c1_context_value);
+            $c1->appendChild($c1_context);
+               
+                /* sub collections (c2 themen)*/
+                $c2 = $xml->createElement("collections");
+              
+                    /* sub collection --> Terminal Objectives */
+                    foreach($c->terminal_objectives as $ter_value){ 
+                        $c2_area = $xml->createElement("collection");   
+                            $c2_area_title   = $xml->createElement("title", strip_tags($ter_value->terminal_objective));
+                            $c2_area->appendChild($c2_area_title);
+                            $c2_area_description = $xml->createElement("description", strip_tags($ter_value->description));
+                            $c2_area->appendChild($c2_area_description);
+                            $c2_area_color = $xml->createElement("color", $ter_value->color);
+                            $c2_area->appendChild($c2_area_color);
+                            $c2_area_id  = $xml->createElement("property");   
+                            $c2_area_id->setAttribute('key', 'ccm:curriculum');
+                                $c2_area_id_value = $xml->createElement("value",'RLP'.$c->id.'_'.$ter_value->id);
+                                $c2_area_id->appendChild($c2_area_id_value);
+                            $c2_area->appendChild($c2_area_id);
+                            /* sub collections (c3 enabling objectives)*/
+                            $c3 = $xml->createElement("collections");
+                                /* sub sub collection --> enabling objectives */
+                                if (count($ter_value->enabling_objectives) >= 1 AND $ter_value->enabling_objectives != false){
+                                    foreach($ter_value->enabling_objectives as $ena_value){ 
+                                        $c2_subarea_competence  = $xml->createElement("collection");
+                                            $c2_subarea_competence_title = $xml->createElement("title", strip_tags($ena_value->enabling_objective));
+                                            $c2_subarea_competence->appendChild($c2_subarea_competence_title);
+                                            $c2_subarea_competence_description = $xml->createElement("description", strip_tags($ena_value->description));
+                                            $c2_subarea_competence->appendChild($c2_subarea_competence_description);
+                                            $c2_subarea_competence_color = $xml->createElement("color", $ter_value->color);
+                                            $c2_subarea_competence->appendChild($c2_subarea_competence_color);
+                                            $c2_subarea_id= $xml->createElement("property");   
+                                            $c2_subarea_id->setAttribute('key', 'ccm:curriculum');
+                                                $c2_subarea_id_value = $xml->createElement("value",'RLP'.$c->id.'_'.$ter_value->id.'_'.$ena_value->id);
+                                                $c2_subarea_id->appendChild($c2_subarea_id_value);
+                                            $c2_subarea_competence->appendChild($c2_subarea_id);
+                                        $c3->appendChild($c2_subarea_competence);
+                                    }
+                                }
+                        $c2_area->appendChild($c3);
+                    $c2->appendChild($c2_area);
+                    }  
+                    
+                $c1->appendChild($c2);
+            $root->appendChild($c1);
         $xml->appendChild($root);
         
         $xml->preserveWhiteSpace = false; 
