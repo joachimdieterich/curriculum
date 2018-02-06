@@ -605,7 +605,7 @@ class Render {
                                      if ($type == 'terminal_objective'){
                                          $html  .='style="background: '.$objective->color.'"';
                                      }
-                                     $html  .='><div class="boxcontent '.$icon_class.'">'.$objective->$type.'</div>
+                                     $html  .='><div class="boxcontent '.$text_class.'">'.$objective->$type.'</div>
                                  </div>
                              </div>';
                  /*************** ./Body ***************/   
@@ -726,7 +726,7 @@ class Render {
                                      if ($type == 'terminal_objective'){
                                          $html  .='style="background: '.$objective->color.'"';
                                      }
-                                     $html  .='><div class="boxcontent '.$icon_class.'">'.$objective->$type.'</div>
+                                     $html  .='><div class="boxcontent '.$text_class.'">'.$objective->$type.'</div>
                                  </div>
                              </div>';
                  /*************** ./Body ***************/
@@ -743,7 +743,7 @@ class Render {
                                  }
                                  if ((checkCapabilities('file:upload', $USER->role_id, false) OR checkCapabilities('file:uploadURL', $USER->role_id, false)) AND isset($PAGE->action)){
                                      if ($PAGE->action == 'view'){
-                                         $html  .='<a href="'.$CFG->smarty_template_dir_url.'renderer/uploadframe.php?context='.$type.'&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal pull-right margin-r-5"><span class="fa fa-plus '.$text_class.' box-sm-icon" style="padding-top:3px;data-toggle="tooltip" title="Material hinzufügen"></span></a>';
+                                         $html  .='<a href="'.$CFG->smarty_template_dir_url.'renderer/uploadframe.php?context='.$type.'&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal pull-right margin-r-5"><span class="fa fa-plus '.$icon_class.' box-sm-icon" style="padding-top:3px;data-toggle="tooltip" title="Material hinzufügen"></span></a>';
                                      }
                                  } 
                                  $html  .='</span>';
