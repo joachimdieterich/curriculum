@@ -558,7 +558,7 @@ class Render {
        if (!isset($objective->color)){ 
             $objective->color = '#FFF'; 
             $text_class       = 'text-black';
-            $icon_class       = 'text-black';
+            $icon_class       = 'text-primary';
        } else {
            if (getContrastColor($objective->color) == '#000000'){
                $text_class    = 'text-black';
