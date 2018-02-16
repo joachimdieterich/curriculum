@@ -59,14 +59,24 @@
         {block name=additional_stylesheets}{/block}
     </head>
     
-    {if $page_action eq 'login' OR  $page_action eq 'lock' OR  $page_action eq 'extern'}
+    {if in_array($page_action, array('login', 'lock', 'extern'))}
     <body class="hold-transition {if $page_action eq 'login' OR  $page_action eq 'extern'}login-page{/if} {if $page_action eq 'lock'}lockscreen{/if}" style="background-image: url('{$random_bg}'); background-size: cover;" >
         {block name=content} {/block}
     </body>
+    {*elseif in_array($page_action, array('navigator'))}
+    <body class="skin-blue {$page_layout}" data-spy="scroll" data-target=".modal-body" style=" -webkit-overflow-scrolling:touch; overflow:auto;" > 
+         <div id="body-wrapper" class="wrapper"> 
+             <div id="content-wrapper" class="content-wrapper">
+                <div id="popup" class="modal" onload="popupFunction(this.id);"><div class="modal-dialog"><div class="box"><div class="box-header"><h3 class="box-title">Loading...</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div></div></div> <!-- Popup -->    
+                {block name=content} {/block}
+            </div> 
+        </div>
+    </body>
+    *}
     {else}
     
-    <body class="hold-transition fixed skin-blue sidebar-mini" data-spy="scroll" data-target=".modal-body" style=" -webkit-overflow-scrolling:touch; overflow:auto;" > 
-        <div id="body-wrapper" class="wrapper"> 
+    <body class="hold-transition {$page_layout} skin-blue" data-spy="scroll" data-target=".modal-body" style=" -webkit-overflow-scrolling:touch; overflow:auto;" > 
+        <div id="body-wrapper" class="{$page_body_wrapper}"> 
             <header class="main-header">
               <!-- Logo -->
               <a href="index.php?action=dashboard" class="logo">
@@ -246,7 +256,7 @@
             </header>        
                 
             <!-- Sidebar left - Menu -->
-            {if $page_name neq 'login' OR  $page_action eq 'extern'} <!--Kein Menu -->        
+            {if {$page_layout} neq 'layout-top-nav'} <!--Kein Menu -->        
                 {block name=nav}{include file='menu.tpl'}{/block} 
             {/if}
             
@@ -286,7 +296,17 @@
     <link rel="stylesheet" href="{$template_url}plugins/select2/select2.min.css">
     <script src="{$template_url}plugins/select2/select2.min.js" type="text/javascript"></script>
     <link rel="stylesheet" href="{$template_url}css/less/select2.min.css">
-
+    <!-- MathJax -->
+    {literal}
+        <script type="text/x-mathjax-config">
+            MathJax.Hub.Config({
+              extensions: ["tex2jax.js"],
+              jax: ["input/TeX","output/HTML-CSS"],
+              tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
+            });
+        </script>
+    {/literal}
+     <script src="{$lib_url}MathJax-master/MathJax.js"></script><!-- MathJax-->
     {block name=additional_scripts} 
     <!-- Logout - Timer  -->
     {if isset($institution_timeout)}
@@ -303,15 +323,15 @@
             $(this).keypress(function (e) { idleTime = 0; });
             
             $(document.getElementById('popup')).attr('class', 'modal');
-            $(".select2").select2();
+            $(".select2").select2();  
         });
         
-        function timerIncrement() {
+    function timerIncrement() {
             idleTime++;
             if (idleTime === {$global_timeout}) { 
                 window.location="index.php?action=logout&timout=true";
             }
-        }     
+        }       
     </script>
     {/if}
     <!-- end Logout - Timer  -->
