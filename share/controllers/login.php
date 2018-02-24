@@ -45,7 +45,7 @@ if(filter_input(INPUT_POST, 'guest', FILTER_UNSAFE_RAW) AND $CFG->settings->gues
     $user->username = $CFG->settings->guest_usr;
     $user->password = md5($CFG->settings->guest_pwd);
     if($user->checkLoginData()) {
-        login($user);
+        login($user, $CFG->settings->guest_startpoint);
     }
 } else if(filter_input(INPUT_POST, 'reset', FILTER_UNSAFE_RAW)) {
     $user->username = (filter_input(INPUT_POST,     'username', FILTER_UNSAFE_RAW));     
@@ -105,7 +105,7 @@ if(filter_input(INPUT_POST, 'guest', FILTER_UNSAFE_RAW) AND $CFG->settings->gues
         case 'Ja':  unset($_SESSION['accept_terms']); //security var to prevent login without accepting terms, if var is set login is not possible
                     $user->load('username', $_SESSION['username'], true);
                     $user->acceptTerms();
-                    route($user);
+                    route($user, $_SESSION['target']);
             break;
         case 'Nein':header('Location:index.php?action=logout'); 
             break;
@@ -118,7 +118,7 @@ $TEMPLATE->assign('page_title',  'Login');
 $TEMPLATE->assign('breadcrumb',  array('Login' => 'index.php?action=login'));
 $TEMPLATE->assign('message',     $message);
 
-function login($user){
+function login($user, $location = 'dashboard'){
     global $CFG, $PAGE;
     if (isset($_SESSION['wantsurl'])){  
             $PAGE->wantsurl = $_SESSION['wantsurl'];                            // save wantsurl in $PAGE, session gets destroyed!
@@ -135,13 +135,14 @@ function login($user){
     session_reload_user();
     
     //Nutzungsbedingungen akzeptiert?
-    if (($user->checkTermsOfUse() == false) OR ($user->username == $CFG->settings->guest_usr)){   
+    if (($user->checkTermsOfUse() == false) OR ($user->username == $CFG->settings->guest_usr)){
+        $_SESSION['target'] = $location;
         header('Location:index.php?action=terms'); exit();
     }
-    route($user);
+    route($user, $location);
 }
 
-function route($usr){
+function route($usr, $location = 'dashboard'){
     global $PAGE,$CFG;
     $confirmed = $usr->getConfirmed();
     if(filter_input(INPUT_POST, 'reset', FILTER_UNSAFE_RAW)){ 
@@ -151,20 +152,20 @@ function route($usr){
         case 1:     if (isset($PAGE->wantsurl)){            //if user wants a url -> redirect
                         header('Location:'.$PAGE->wantsurl); 
                     } else {
-                        header('Location:index.php?action=dashboard'); 
+                        header('Location:index.php?action='.$location); 
                     }
             break;
         case 2:     $_SESSION['FORM']       = new stdClass();
                     $_SESSION['FORM']->id   = null;
                     $_SESSION['FORM']->form = 'password';
                     $_SESSION['FORM']->func = 'reset';
-                    header('Location:'.$CFG->base_url.'public/index.php?action=dashboard');
+                    header('Location:'.$CFG->base_url.'public/index.php?action='.$location);
             break;
         case 3:     $_SESSION['FORM']       = new stdClass();
                     $_SESSION['FORM']->id   = null;
                     $_SESSION['FORM']->form = 'password';
                     $_SESSION['FORM']->func = 'changePW';
-                    header('Location:index.php?action=dashboard');
+                    header('Location:index.php?action='.$location);
             break;
         case 4:     //$PAGE->message[] = 'Ihr Account wurde noch nicht durch den Administrator freigegeben. Bitte probieren Sie es später noch einmal.'; //wurde für die PL Version herausgenommen // --> noch nicht freigegeben
             break; 
