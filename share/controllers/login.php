@@ -135,7 +135,7 @@ function login($user, $location = 'dashboard'){
     session_reload_user();
     
     //Nutzungsbedingungen akzeptiert?
-    if (($user->checkTermsOfUse() == false) OR ($user->username == $CFG->settings->guest_usr)){
+    if (($user->checkTermsOfUse() == false) OR (($user->username == $CFG->settings->guest_usr) AND ($CFG->settings->guest_show_terms != 0))){
         $_SESSION['target'] = $location;
         header('Location:index.php?action=terms'); exit();
     }
