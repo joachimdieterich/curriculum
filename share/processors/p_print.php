@@ -29,6 +29,11 @@ $USER   = $_SESSION['USER'];
 $func   = filter_input(INPUT_GET, 'func',  FILTER_SANITIZE_STRING);
 $id     = filter_input(INPUT_GET, 'val',   FILTER_SANITIZE_STRING); // kein INT --> System ID -1
 switch ($func) {
+    case "content":             $c            = new Content();
+                                $c->load('id', $id);           
+                                $content = '<strong>'.$c->title.'</strong><br><br>'.$c->content;
+        break;
+    
     case "certificate":         $t = new Certificate();         break;
     case "curriculum":          $t = new Curriculum();          break;
     case "grade":               $t = new Grade();               break;
