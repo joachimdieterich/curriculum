@@ -30,13 +30,11 @@ try { // Error handling
     $PAGE->action   = filter_input(INPUT_GET, 'action', FILTER_UNSAFE_RAW);
     if (!$PAGE->action) { $PAGE->action = 'login'; $_SESSION['lock'] = false;}
     switch ($PAGE->action) {                                  
-        case 'login':   $TEMPLATE->assign('page_action',      'login');                                      
+        case 'login': 
+        case 'install': 
+        case 'extern':  $TEMPLATE->assign('page_action',      $PAGE->action); 
             break;
-        case 'install': $TEMPLATE->assign('page_action',      'install'); 
-            break;
-        case 'extern':  $TEMPLATE->assign('page_action',      'extern'); 
-            break;
-
+        
         default:   require ('../share/session.php');                                                           // Erst Session aufbauen damit $USER verfügbar ist, dann login-check!
                    require ('../share/login-check.php');                                                       // Check ob Session abgelaufen ist
                    
@@ -45,9 +43,26 @@ try { // Error handling
                    if (isset($_SESSION['username'])){
                        $TEMPLATE->assign('loginname',      $_SESSION['username']);                                      
                    }
-                   detect_reload();   
+                   detect_reload();  
             break;
     }
+    switch ($PAGE->action) {
+        case 'login': 
+        case 'install': 
+        case 'extern': 
+        case 'navigator':   $PAGE->layout = 'layout-top-nav'; //css layout
+                            $PAGE->body_wrapper = 'body-wrapper'; //css layout
+                            $PAGE->header = false;
+            break;
+
+        default:            $PAGE->layout = 'fixed sidebar-mini'; //css layout
+                            $PAGE->body_wrapper = 'wrapper'; //css layout
+                            $PAGE->header = true;
+            break;
+    }
+    $TEMPLATE->assign('page_layout',      $PAGE->layout); 
+    $TEMPLATE->assign('page_body_wrapper',$PAGE->body_wrapper); 
+    $TEMPLATE->assign('page_header',      $PAGE->header); 
 
     /** highlight */
     if (isset($_SESSION['highlight'])){
@@ -66,31 +81,7 @@ try { // Error handling
                 $TEMPLATE->assign('mails', $mail->inbox);
             }
         }   
-        if (checkCapabilities('system:update', $USER->role_id, false)){
-            /*$update          = new Update();
-            $update_db       = $update->load();
-            
-            $update_files    = scandir($CFG->share_root.'update');              // get update files
-            if (count($update_files) == 2){ 
-                $last_update = false; // no update file available
-            } else {
-                $last_update = array_values(array_slice($update_files, -1))[0]; // readl last update file
-            }
-            
-            if ($update_db == false){
-                if (!$last_update == false){
-                    //* do ALL update and write filename to config db
-                }
-            } else {
-                if (in_array($update->value, $update_files)){
-                   //iterate array and do update and write filename to config 
-                }
-            }
-            
-            
-            error_log($last_update);*/
-            $TEMPLATE->assign('system_update', true);
-        }
+        
         if (isset($_SESSION['PAGE']->print)){
             $pdf            = new Pdf();
             $pdf->content   = $_SESSION['PAGE']->print->content;
