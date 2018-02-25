@@ -25,21 +25,58 @@
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 class Update {
+    public $id;
+    public $filename;
+    public $description;
+    public $status;
+    public $log;
+    public $timestamp;
+    public $timestamp_installed;
+    public $user_id;
+    public $user;
     
     
-    public function load(){
-        $db     = DB::prepare('SELECT ud.* FROM update AS ud WHERE ud.context_id = ? AND ud.name = ?');
-        $db->execute(array($_SESSION['CONTEXT']['config']->context_id, 'last_update'));
+    public function add(){
+        global $USER;
+        $db = DB::prepare('INSERT INTO updates (filename,description,status,timestamp,user_id) VALUES (?,?,?,NOW(),?)');
+        $db->execute(array($this->filename, $this->description, $this->status, $USER->id));
+    }
+    
+    public function update(){
+        global $USER;
+        $db = DB::prepare('UPDATE updates SET status = ?, log = ?, timestamp_installed = NOW(), user_id = ? WHERE filename = ?');
+        return $db->execute(array($this->status, $this->log, $USER->id, $this->filename));
+    }
+    
+    public function load($dependency, $reference){
+        $db     = DB::prepare('SELECT ud.* FROM updates AS ud WHERE '.$dependency.' = ?');
+        $db->execute(array($reference));
         $result = $db->fetchObject();
         if ($result){
             foreach ($result as $key => $value) {
                 $this->$key  = $value; 
             }
+            $u = new User();
+            $this->user = $u->resolveUserId($this->user_id);
             return true;                                                        
         } else { 
             return false; 
         }
         
     }
+    
+    public function get(){
+        $db = DB::prepare('SELECT ud.id FROM updates AS ud');
+        $db->execute(array());
+        $r  = array();
+        while($result = $db->fetchObject()) { 
+            $this->load('id',        $result->id); 
+            $r[]  = clone $this;
+        } 
+        
+        return $r;     
+    }
+    
+    
 
 }
