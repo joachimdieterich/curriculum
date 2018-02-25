@@ -31,13 +31,15 @@ $UPDATE->info   = "Installiert Navigator (DB). <br><br>Mit dem Navigator lassen 
 if (isset($_GET['execute'])){
     $UPDATE->log = "Starte Navigator-Update...<br>";
     $db= DB::prepare("CREATE TABLE `navigator` (
-                        `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-                        `context_id` int(11) unsigned NOT NULL,
-                        `reference_id` int(11) unsigned NOT NULL,
-                        `creation_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
-                        `creator_id` int(11) unsigned NOT NULL,
-                        PRIMARY KEY (`id`)
-                      ) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+                    `na_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+                    `na_title` varchar(1024) NOT NULL DEFAULT '',
+                    `na_context_id` int(11) unsigned NOT NULL,
+                    `na_reference_id` int(11) unsigned NOT NULL,
+                    `na_creation_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+                    `na_creator_id` int(11) unsigned NOT NULL,
+                    `na_file_id` int(11) unsigned DEFAULT NULL,
+                    PRIMARY KEY (`na_id`)
+                  ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;");
     if ($db->execute(array())){
         $UPDATE->log .= "<b class=\"text-success\">Create table 'navigator' - OK</b><br>";
         $UPDATE->installed = true;
@@ -47,13 +49,15 @@ if (isset($_GET['execute'])){
     }     
     $db= DB::prepare("CREATE TABLE `navigator_view` (
                         `nv_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+                        `nv_title` varchar(200) DEFAULT NULL,
+                        `nv_description` varchar(2084) DEFAULT NULL,
                         `nv_navigator_id` int(11) unsigned NOT NULL,
                         `nv_creator_id` int(11) unsigned NOT NULL,
                         `nv_top_width_class` char(255) DEFAULT 'col-xs-12',
                         `nv_content_width_class` char(255) DEFAULT 'col-xs-12',
                         `nv_footer_width_class` char(255) DEFAULT 'col-xs-12',
                         PRIMARY KEY (`nv_id`)
-                      ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;");
+                      ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;");
     if ($db->execute(array())){
         $UPDATE->log .= "<b class=\"text-success\">Create table 'navigator_view' - OK</b><br>";
         $UPDATE->installed = true;
@@ -74,7 +78,7 @@ if (isset($_GET['execute'])){
                         `nb_target` varchar(512) NOT NULL DEFAULT '',
                         `nb_file_id` int(11) unsigned DEFAULT NULL,
                         PRIMARY KEY (`nb_id`)
-                      ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;");
+                      ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;");
     if ($db->execute(array())){
         $UPDATE->log .= "<b class=\"text-success\">Create table 'navigator_block' - OK</b><br>";
         $UPDATE->installed = true;
