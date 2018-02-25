@@ -458,6 +458,25 @@ class User {
                                 return $group_members;
                             } else { return false;}
                 break;
+            case 'my_groups': $db = DB::prepare('SELECT DISTINCT usr.id, usr.firstname, usr.lastname, usr.username
+                                    FROM users AS usr, groups_enrolments AS ge, institution_enrolments AS ie, groups AS gr 
+                                    WHERE ge.group_id IN (SELECT DISTINCT group_id FROM groups_enrolments WHERE user_id = ?)
+                                    AND ie.user_id = ?
+                                    AND usr.id = ge.user_id 
+                                    AND gr.id = ge.group_id 
+                                    AND gr.institution_id = ie.institution_id 
+                                    AND ge.status = 1');//Zeigt nur User in deren Gruppe man eingeschrieben ist. 
+                                $db->execute(array($this->id, $this->id)); 
+                            
+                            while($result = $db->fetchObject()) { 
+                                    $class_members[]     = clone $result;
+                            } 
+                            if (isset($class_members)){
+                                return $class_members;
+                            } else { 
+                                return false;
+                            }
+                break;
             default:        if (checkCapabilities('user:userListComplete', $USER->role_id,false)){
                                 $db = DB::prepare('SELECT DISTINCT us.id, us.firstname, us.lastname, us.username FROM users AS us ORDER BY us.lastname');//Zeige alle User --> nur für globale Admin Rolle !. 
                                 $db->execute(array()); 
@@ -478,7 +497,9 @@ class User {
                             } 
                             if (isset($class_members)){
                                 return $class_members;
-                            } else return false; 
+                            } else {
+                                return false; 
+                            }
                 break;
         }
     }  
@@ -641,7 +662,7 @@ class User {
             if($db->fetchColumn() >= 1) {
                 $db = DB::prepare('UPDATE groups_enrolments SET status = 0, expel_time = NOW() WHERE group_id = ? AND user_id =? '); // Status 0 expelled
             if ($db->execute(array($group_id, $this->id))){
-                $groups->load($group_id);
+                $groups->load('id', $group_id);
                 $_SESSION['PAGE']->message[]    = array('message' => '<strong>'.$this->username.'</strong> erfolgreich aus <strong>'.$groups->group.'</strong> ausgeschrieben.', 'icon' => 'fa-user text-success');
             }
             }
@@ -777,7 +798,7 @@ class User {
                                                         'postalcode'=> 'us',
                                                         'city'      => 'us'));  
         
-        checkCapabilities('user:userList', $USER->role_id); // kann eigentlich weg.
+        //checkCapabilities('user:userList', $USER->role_id); // kann eigentlich weg.
         $users = array();                      //Array of grades
         switch ($dependency) {
             case 'institution': if(checkCapabilities('user:userListComplete', $USER->role_id,false)){ //Global Admin
@@ -1039,7 +1060,7 @@ class User {
                                     $users[]            = clone $this; 
                                 }               
                 break;
-            case 'wallet_shared':  $db = DB::prepare('SELECT us.*, ie.role_id FROM users AS us, groups_enrolments AS ge, curriculum_enrolments AS ce, institution_enrolments as ie, groups as gr
+            case 'wallet_shared':  $db = DB::prepare('SELECT us.*, ie.role_id, ws.permission FROM users AS us, groups_enrolments AS ge, curriculum_enrolments AS ce, institution_enrolments as ie, groups as gr, wallet_sharing AS ws
                                                 WHERE us.id = ge.user_id 
                                                 AND ce.curriculum_id = ?
                                                 AND ce.status = 1
@@ -1053,14 +1074,28 @@ class User {
                                                 AND ie.status = 1                                                      
                                                 AND ge.status = 1 
                                                 AND gr.institution_id = ie.institution_id
-                                                AND gr.id = ge.group_id '.$order_param);
-                                $db->execute(array($id, 'userFiles', $wallet_id)); 
+                                                AND gr.id = ge.group_id
+                                                AND ws.wallet_id = ?
+                                                AND ws.reference_id = us.id '.$order_param);
+                                $db->execute(array($id, 'userFiles', $wallet_id, $wallet_id)); 
                                 while($result = $db->fetchObject()) {  
                                     $this->id           = $result->id;
                                     $this->username     = $result->username;
                                     $this->firstname    = $result->firstname; 
                                     $this->lastname     = $result->lastname; 
                                     $this->role_id      = $result->role_id; 
+                                    switch ($result->permission) {
+                                        case '0':       $this->permission = 'lesezugriff';
+                                            break;
+                                        case '1':       $this->permission = 'kommentierbar';
+                                            break;
+                                        case '2':       $this->permission = 'schreibzugriff';
+                                            break;
+
+                                        default:
+                                            break;
+                                    }
+                                   
                                     $users[]            = clone $this; 
                                 }               
                 break;
