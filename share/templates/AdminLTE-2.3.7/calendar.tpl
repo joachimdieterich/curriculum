@@ -8,16 +8,17 @@
     
     <!-- Page specific script -->
     <!-- fullCalendar 2.2.5 -->
-    <script src="{$template_url}plugins/fullcalendar/fullcalendar.min.js"></script>
-    <script src="{$template_url}plugins/fullcalendar/lang/de.js"></script>
+    <script src="{$template_url}plugins/fullcalendar-scheduler-1.9.2/lib/fullcalendar.min.js"></script>
+    <script src="{$template_url}plugins/fullcalendar-scheduler-1.9.2/locale/de.js"></script>
      <!-- Slimscroll -->
     <script src="{$template_url}plugins/slimScroll/jquery.slimscroll.min.js"></script>
     <!-- FastClick -->
-    <script src="{$template_url}plugins/fastclick/fastclick.min.js"></script>
+    <!-- script src="{$template_url}plugins/fastclick/fastclick.min.js"></script-->
     <!-- AdminLTE App -->
     <!--script src="{$template_url}js/app.min.js"></script-->
     <!-- jQuery UI 1.11.4 -->
-    <script src="{$template_url}plugins/fullcalendar/jquery-ui.min.js"></script>
+    <script src="{$template_url}plugins/fullcalendar-scheduler-1.9.2/lib/jquery-ui.min.js"></script>
+    <script src="{$template_url}plugins/fullcalendar-scheduler-1.9.2//scheduler.min.js"></script>
       {literal}
     <script>
       $(function () {
@@ -55,6 +56,7 @@
                 m = date.getMonth(),
                 y = date.getFullYear();
         $('#calendar').fullCalendar({
+          schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source',
           customButtons: {
                 addButton: {
                     text: '+',
@@ -66,7 +68,7 @@
           header: {
             left: 'addButton prev,next today',
             center: 'title',
-            right: 'month,agendaWeek,agendaDay'
+            right: 'timelineDay,month,agendaWeek,agendaDay, listWeek'
           },
           buttonText: {
             today: 'Heute',
@@ -75,6 +77,23 @@
             day: 'Tag'
           },
           lang: 'de',
+          nowIndicator: true,
+          minTime: '06:00',
+          eventRender: function(event, element, view) {
+
+            var theDate = event.start;
+            var endDate = event.dowend;
+            var startDate = event.dowstart;
+
+            if (theDate >= endDate) {
+                    return false;
+            }
+
+            if (theDate <= startDate) {
+              return false;
+            }
+
+          },
           //Random default events
           events: {/literal}{$events}{literal},
           editable: true,
@@ -149,14 +168,16 @@
           $("#new-event").val("");
         });
       });
+      
     </script>
 
     {/literal}
 {/block}
 {block name=additional_stylesheets}{$smarty.block.parent} 
 <!-- fullCalendar 2.2.5-->
-<link rel="stylesheet" href="{$template_url}plugins/fullcalendar/fullcalendar.min.css">
-<link rel="stylesheet" href="{$template_url}plugins/fullcalendar/fullcalendar.print.css" media="print">
+<link rel="stylesheet" href="{$template_url}plugins/fullcalendar-scheduler-1.9.2/lib/fullcalendar.min.css">
+<link rel="stylesheet" href="{$template_url}plugins/fullcalendar-scheduler-1.9.2/lib/fullcalendar.print.min.css" media="print">
+<link rel="stylesheet" href="{$template_url}plugins/fullcalendar-scheduler-1.9.2//scheduler.min.css" media="print">
 {/block}
 
 {block name=content}
