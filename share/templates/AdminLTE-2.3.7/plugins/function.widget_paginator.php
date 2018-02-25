@@ -155,14 +155,22 @@ function smarty_function_widget_paginator($params, $template) {
             if (!isset($_val->color)){
                 $_val->color = '#3c8dbc99'; //todo global color
             }
-            $html .= '<div class="col-lg-4 col-md-6 col-sm-12 margin-bottom">
+            if (isset($td['onclick'])){
+                $widget_onclick = str_replace('__id__', $_id, $td['onclick']);
+            } else {
+                $widget_onclick = 'checkrow(\''.$_id.'\', \''.$id.'\', \'true\');';
+            }
+            $html .= '<div class="col-lg-3 col-md-4 col-sm-12 margin-bottom">'.
+                    Render::paginator_widget(array('widget_title' => $header, 'widget_desc' => $subheader01, 'widget_onclick' =>  $widget_onclick, 'widget_timerange' => $subheader02, 'icon_url' => $CFG->access_id_url.$file_id/*.'&size=t'*/, 'bg_color' =>  $_val->color,'opt' => $opt))
+                    .'</div>';
+            /*$html .= '<div class="col-lg-4 col-md-6 col-sm-12 margin-bottom">
                       <div class="box box-widget widget-user collapsed-box bottom-buffer-20">
                         <span class="col-xs-12" ';
                             if (isset($config['p_widget']['bg_image'])){ 
                                 $html .= 'style=" padding: 0; background: url(\''.$CFG->access_id_url.$file_id.'&size=t\') center center;  background-size: cover;"';
                             }
                         $html .= ' ">';
-                        $html .= '    <div class="widget-user-header no-margin" style=" background: '.ak_convert_hex2rgba($_val->color).';"  >
+                        $html .= '<div class="widget-user-header no-margin" style=" background: '.ak_convert_hex2rgba($_val->color).';"  >
                                 <span class="pull-right no-margin text-white">'.$opt['delete'].'</span>
                                 <h3 class="widget-user-username text-white-shadow" >'.$header.'</h3> 
                                 <h5 class="widget-user-desc text-white" >'.$subheader01 .'</h5>
@@ -193,7 +201,7 @@ function smarty_function_widget_paginator($params, $template) {
                 }
               $html .= '</div><!-- /.widget-user -->
                     </div>
-                    <!-- /.col -->';
+                    <!-- /.col -->';*/
         }
         
         $html .= '</div>'; //table end
