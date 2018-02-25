@@ -77,6 +77,7 @@
     
     <body class="hold-transition {$page_layout} skin-blue" data-spy="scroll" data-target=".modal-body" style=" -webkit-overflow-scrolling:touch; overflow:auto;" > 
         <div id="body-wrapper" class="{$page_body_wrapper}"> 
+            {if $page_header}
             <header class="main-header">
               <!-- Logo -->
               <a href="index.php?action=dashboard" class="logo">
@@ -242,19 +243,28 @@
                           </ul>
                         </li>
                         {if checkCapabilities('template:change', $my_role_id, false)}
-                            <!-- Control Sidebar Toggle Button -->
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gears"></i></a>
+                                <ul class="dropdown-menu" role="menu">
+                                  <li><a href="#" onclick="formloader('settings', 'edit');">Einstellungen</a></li>
+                                  <li class="divider"></li>
+                                  <li><a href="index.php?action=navigator">Navigator (Test)</a></li>
+                                  <li><a href="index.php?action=update">Updates</a></li>
+                                </ul>
+                            </li>
+                            {*<!-- Control Sidebar Toggle Button -->
                             <li>
                               <a href="#" onclick="formloader('settings', 'edit');"><i class="fa fa-gears"></i>
                                   {if checkCapabilities('system:update', $my_role_id, false) AND isset($system_update)}<span class="label label-danger">Update</span>{/if}
                               </a>
-                            </li>
+                            </li>*}
                         {/if}
                       </ul>
                     </div>    
                     {/if}   
                 </nav>         
             </header>        
-                
+            {/if}    
             <!-- Sidebar left - Menu -->
             {if {$page_layout} neq 'layout-top-nav'} <!--Kein Menu -->        
                 {block name=nav}{include file='menu.tpl'}{/block} 
@@ -273,7 +283,7 @@
                 {$app_footer} {block name=footer} {/block}
             </footer>    
               
-            {block name=sidebar_right}{include file='sidebar_right.tpl'}{/block}
+            {*block name=sidebar_right}{include file='sidebar_right.tpl'}{/block*}
         </div><!-- ./wrapper -->
     {/if}    
 <!-- SCRIPTS-->  
