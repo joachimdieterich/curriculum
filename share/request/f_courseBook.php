@@ -63,10 +63,10 @@ if (is_array($data)) {
             
 if (isset($_GET['func'])){
     switch ($_GET['func']) {
-        case "new":     checkCapabilities('coursebook:add',    $USER->role_id);
+        case "new":     checkCapabilities('coursebook:add',    $USER->role_id, false, true);
                         $header = 'Kursbucheintrag hinzufügen';          
             break;
-        case "edit":    checkCapabilities('coursebook:update', $USER->role_id);
+        case "edit":    checkCapabilities('coursebook:update', $USER->role_id, false, true);
                         $header = 'Kursbucheintrag aktualisieren';
                         $course_book = new CourseBook();
                         $course_book->load('cb_id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
@@ -99,9 +99,9 @@ $content .= Form::input_textarea('topic', 'Thema', $topic, $error, 'Stundenthema
 $content .= Form::input_textarea('description', 'Beschreibung', $description, $error, 'Beschreibung');
 
 $courses = new Course(); 
-if(checkCapabilities('user:userListComplete', $USER->role_id, false)){
+if(checkCapabilities('user:userListComplete', $USER->role_id, false, true)){
     $courses = $courses->getCourse('admin', $USER->id);  
-} else if(checkCapabilities('user:userList', $USER->role_id, false)){
+} else if(checkCapabilities('user:userList', $USER->role_id, false, true)){
     $courses = $courses->getCourse('teacher', $USER->id);  // abhängig von USER->my_semester id --> s. Select in objectives.tpl, 
 }                                               // Load schooltype 
 $content .= Form::input_select('course_id', 'Kurs / Klasse', $courses, 'course', 'course_id', $course_id , $error);
