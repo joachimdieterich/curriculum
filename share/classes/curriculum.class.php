@@ -362,7 +362,7 @@ class Curriculum {
             }
             /* end import content */
             
-            /* import clossar */
+            /* import glossar */
             $gl_content_nodes = getImmediateChildrenByTagName($curriculum, 'glossar');
             foreach ($gl_content_nodes as $gl) {
                 $this->importContent($gl, 'glossar', $c_id);
