@@ -44,7 +44,8 @@ $course_user        = new User();
 $course_user->id    = $USER->id;
 
 //$TEMPLATE->assign('userlist', $course_user->getUsers('curriculum', 'walletPaginator', $wallet->curriculum_id));
-$TEMPLATE->assign('userlist', $course_user->getUsers('wallet_shared', 'walletPaginator', $wallet->curriculum_id, null, $wallet->id));
+$users = $course_user->getUsers('wallet_shared', 'walletPaginator', $wallet->curriculum_id, null, $wallet->id);
+$TEMPLATE->assign('userlist', $users);
 //error_log(json_encode($wallet->comments));
 $TEMPLATE->assign('wallet', $wallet); 
 $TEMPLATE->assign('course', $wallet); 
@@ -59,3 +60,23 @@ foreach ($wallet->objectives as $id) {
 
 $TEMPLATE->assign('objectives', $obj); 
 $TEMPLATE->assign('page_bg_file_id', $wallet->file_id); 
+
+
+
+$p_options     = array('mailnew'   => array('onclick'       => 'formloader(\'mail\', \'gethelp\', __id__);',
+                                                   'capability' => checkCapabilities('mail:postMail', $USER->role_id, false),
+                                                   'icon'       => 'fa fa-envelope',
+                                                   'tooltip'    => 'Nachricht schreiben'));
+$t_config      = array('table_id'  => array('id'         => 'contentsmalltable'),
+                       'td'        => array('onclick'    => "location.href='index.php?action=walletView&wallet={$wallet->id}&user_id=__id__';"));
+$p_config   = array('id'        => false,
+                       'username'  => 'Benutzername', 
+                       'firstname' => 'Vorname', 
+                       'lastname'  => 'Nachname',
+                      /* 'completed' => 'Fortschritt',
+                       'role_name' => 'Rolle',*/
+                       'p_search'  => array('username', 'firstname', 'lastname'),
+                       'p_options' => $p_options,
+                       't_config'  => $t_config); 
+
+setPaginator('walletuserPaginator', $TEMPLATE, $users, 'results', 'index.php?action=wallet&wallet='.$wallet->id, $p_config); //set Paginator 
