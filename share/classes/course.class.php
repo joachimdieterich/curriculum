@@ -96,7 +96,25 @@ class Course {
     public $icon; 
     public $icon_id; 
 
- 
+    public function getCourseIds($dependency = null, $id = null){
+        $course_ids = array();
+        switch ($dependency) {
+            case 'user':   $db = DB::prepare('SELECT ce.id 
+                                                FROM  curriculum_enrolments AS ce  
+                                                WHERE ce.status = 1
+                                                AND ce.group_id = ANY(SELECT group_id
+                                                    FROM groups_enrolments
+                                                    WHERE user_id = ? AND status = 1)');
+                            $db->execute(array($id));          
+                break; 
+        }
+        $ids = '';
+        while($result = $db->fetchObject()) {
+           $ids .=$result->id.',';
+        }
+        $ids = substr($ids, 0, -1); //remove last comma
+        return $ids;
+    }
     /**
      * get courses depending on dependency
      * @param string $dependency
