@@ -1818,6 +1818,184 @@ class Render {
         }
     }
     
+    public static function box($params){
+        $status             = 'collapsed-box';
+        $header_content     = 'Title';
+        $header_box_tools   = '';
+        
+        $body_content       = '';
+        //$footer_content     = '';
+        
+        foreach($params as $key => $val) {
+            $$key = $val;
+        }
+        $html   = '';
+        $html  .= '<div class="box '.$status.' bottom-buffer-20">
+                            <div class="box-header with-border">
+                                  <h3 class="box-title">'.$header_content.'</h3>
+                                  <div class="box-tools pull-right">
+                                  '.$header_box_tools.'
+                                  </div>
+                            </div><!-- /.box-header -->
+                            <div class="box-body" >
+                                '.$body_content.'
+                            </div>';
+              if (isset($footer_content)){
+              $html  .= '   <div class="box-footer">
+                                '.$footer_content.'
+                            </div>';
+              }
+        $html  .= '</div>';
+        return $html;
+    }
+    
+    public static function carousel($params){
+        $carousel_id = 'carousel';
+        $data_ride   = 'carousel';
+        $slides     = array(); //[caption => '...', content => '...']
+        foreach($params as $key => $val) {
+            //error_log($key.' -> '. $val);
+            $$key = $val;
+        }
+        $html = '<div id="'.$carousel_id.'" class="carousel slide" data-ride="'.$data_ride.'" >
+                    <ol class="carousel-indicators">';
+                    $active_class = 'active';
+                    $i = 0; 
+                    foreach ($slides as $s) {
+                        $html .= '<li data-target="#'.$carousel_id.'" data-slide-to="'.$i.'" class="'.$active_class.'"></li>';
+                        if ($active_class == 'active'){ $active_class = ''; }
+                        $i++;
+                    }
+        $html .='   </ol>
+                <div class="carousel-inner" >';
+                    $active_class = 'active';
+                    $i = 0; 
+                    foreach ($slides as $s) {
+                        $html .= '<div class="item '.$active_class.'" >
+                                    <div style="overflow: scroll;  height: 400px;">'.$s->content.'</div>
+                                    <div class="carousel-caption">'.$s->caption.'</div>
+                                </div>';
+                        if ($active_class == 'active'){ $active_class = ''; }
+                        $i++;
+                    }
+        $html .='</div>
+                <a class="left carousel-control" href="#'.$carousel_id.'" data-slide="prev">
+                  <span class="fa fa-angle-left"></span>
+                </a>
+                <a class="right carousel-control" href="#'.$carousel_id.'" data-slide="next">
+                  <span class="fa fa-angle-right"></span>
+                </a>
+              </div>';
+        return $html;
+    }
+
+
+    public static function navigator_item($params){
+        global $CFG;
+        
+        foreach($params as $key => $val) {
+            //error_log($key.' -> '. $val);
+            $$key = $val;
+        }
+        $html = '';
+        switch ($nb_context_id) {
+            
+            case 2:     $cur                = new Curriculum();
+                        $cur->id            = $nb_target; 
+                        $cur->load(false);
+                        $file_id            = $cur->icon_id;
+                        $widget_onclick     = "location.href='index.php?action=view&curriculum_id={$nb_target}';";
+                        $html = RENDER::paginator_widget(array('widget_title' => $nb_title, 'file_id' => $file_id, 'widget_onclick' => $widget_onclick));
+                break;
+            case 15:    $content            = new Content();
+                        $content->load('id', $nb_reference_id);
+                        
+                        /*$s                  = array();
+                        $slides             = new stdClass();
+                        $slides->caption    =  'Slide2';
+                        $slides->content    =  '$content->content';
+                        $s[]                = clone $slides;
+                        */
+                        /*$slides             = new stdClass();
+                        $slides->caption    =  $content->title;
+                        $slides->content    =  $content->content;
+                        $s[]                = clone $slides;
+                        */
+                       //error_log(json_encode($s));
+                        
+                        
+                        $html              .= RENDER::box(array('header_box_tools' => '<button class="btn btn-box-tool" onclick="processor(\'print\',\'content\', \''.$nb_reference_id.'\')"><i class="fa fa-print"></i></button><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_content' => $content->title, 'content_id' => $nb_reference_id, 'body_content' => $content->content/*RENDER::carousel(array('data_ride' => '', 'slides' => $s))*/));
+                break; 
+            case 16:    $c = new Curriculum();
+                        $curricula = $c->getCurricula('group', $nb_reference_id);
+                        foreach ($curricula as $cur) {
+                            $html .= RENDER::paginator_widget(["widget_title" =>$cur->curriculum, "ref_id" => $cur->id, "group_id" => $nb_reference_id]);
+                        }
+                        
+                break;
+            
+            case 29:    $f = new File();
+                        $f->load($nb_reference_id);
+                        $html = '<div class="'.$nb_width_class.'">'.RENDER::file($f).'</div>';
+                break;
+            case 31:    $widget_onclick = "location.href='index.php?action=navigator&nv_id={$nb_target}';";
+                        $html = RENDER::paginator_widget(array('widget_title' => $nb_title, 'file_id' => $nb_file_id, 'widget_onclick' => $widget_onclick));
+
+                break;
+            
+            default:
+                break;
+        }
+        
+        return $html;     
+    }
+    public static function paginator_widget($params){
+        global $CFG;
+        /*default params*/
+        $class_width    = 'col-md-6';
+        $widget_type    = 'curriculum';
+        $bg_color       = 'bg-white';
+        $widget_title   = 'Titel';
+        $widget_desc    = '';
+        $bg_badge       = 'bg-green';
+        $href           = '#';
+        //$onclick_badge  = '';
+        $opt            = array(); 
+        $widget_onclick        = ''; 
+        
+        foreach($params as $key => $val) {
+            $$key = $val;
+        }
+        if (isset($file_id)){
+            $icon_url           = $CFG->access_id_url.$file_id;
+        } else if (!isset($icon_url)){
+            $cur                = new Curriculum();
+            $cur->id            = $ref_id; 
+            $cur->load(false);
+            $icon_url           = $CFG->access_id_url.$cur->icon_id;
+            $widget_onclick     = "location.href='index.php?action=view&curriculum_id={$ref_id}&group={$group_id}';";
+        } 
+        
+        $html   =  '<div class="box box-objective bg-white '.$bg_color.'" style="height: 300px !important; padding: 0; background: url(\''.$icon_url.'\') center center;  background-size: cover;" margin-bottom" >'; 
+        $html   .= '                <span class="bg-white no-padding" style="background-color: #fff; position:absolute; bottom:0px; height: 120px;width:100%;text-align: center;">'
+                . '<span class="col-xs-12" style="background-color: '.$bg_color.'; position:absolute; display:block; left:0;right:0;bottom:120px;">';
+        foreach ($opt as $k =>$o) {
+                $html .= '<span style="margin-right:15px;padding:5px;text-shadow: 1px 1px #FF0000;" class="fa">'.$o.'</span>';    
+        }
+        $html .= '</span>';
+                $html   .= '<div class="caption text-center">';
+                if (isset($widget_timerange)){
+                    $html   .= '<small>'.$widget_timerange.'</small>';
+                }
+                        $html   .= '  <h5 class="events-heading text-ellipse"><a onclick="'.$widget_onclick.'">'.$widget_title.'</a></h5>
+                                  <p style="overflow: scroll; width: 100%; height: 60px;">'.$widget_desc.'</p>
+                                </div>';
+                        
+        $html   .=     '</span>
+                     </div>';
+        return $html;     
+    }
+    
     public static function box_widget($params){
         /*default params*/
         $class_width    = 'col-md-6';
