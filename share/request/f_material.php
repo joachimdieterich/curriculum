@@ -36,8 +36,9 @@ $repo       = get_plugin('repository', 'sodis');
 $func       = filter_input(INPUT_GET, 'func', FILTER_UNSAFE_RAW);
 
 switch ($func) {
-    case 'enabling_objective':  
-    case 'terminal_objective':         $files       = $file->getFiles($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => true));
+    case 'enabling_objective':         //$_SESSION['anchor'] = 'ena_'.filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+    case 'terminal_objective':         //$_SESSION['anchor'] = 'ter_'.filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+                                       $files       = $file->getFiles($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => true));
                                        $sodis       = $repo->get($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
                                        $reference   = new Reference();
                                        $references  = $reference->get('reference_id', $_SESSION['CONTEXT'][$func]->context_id, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
