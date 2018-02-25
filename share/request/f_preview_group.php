@@ -31,7 +31,7 @@ $func       = $_GET['func'];
 
 switch ($func) {
     case 'full':  $g       = new Group();
-                  $g->load(filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));     
+                  $g->load('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));     
         break;
     
     default:    
@@ -47,8 +47,7 @@ $content    = Render::box_widget(array('widget_title' => 'Lehrpläne',
                                        'bg_icon'      => 'fa fa-th'));
 $users      = new User();
 $u_list     = $users->getGroupMembers('group', $g->id);
-
-$list  = array();
+$list       = array();
 foreach($u_list AS $ul){
     $users      = new User();
     $users->load('id', $ul, false);
