@@ -26,7 +26,7 @@
 
 global $UPDATE;
 $UPDATE         = new stdClass();
-$UPDATE->info   = "Context (DB) Update. <br><br>.Mit dem neuen context 'book' lassen sich Einträge aus der content tabelle zu einem 'Buch' zusammenfassen.";
+$UPDATE->info   = "Context (DB) Update. <br><br> Mit dem neuen context 'book' lassen sich Einträge aus der content tabelle zu einem 'Buch' zusammenfassen.";
 
 if (isset($_GET['execute'])){
     
