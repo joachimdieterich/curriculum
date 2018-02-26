@@ -29,6 +29,11 @@ $USER   = $_SESSION['USER'];
 $func   = filter_input(INPUT_GET, 'func',  FILTER_SANITIZE_STRING);
 $id     = filter_input(INPUT_GET, 'val',   FILTER_SANITIZE_STRING); // kein INT --> System ID -1
 switch ($func) {
+    case "content":             $c            = new Content();
+                                $c->load('id', $id);           
+                                $content = '<strong>'.$c->title.'</strong><br><br>'.$c->content;
+        break;
+    
     case "certificate":         $t = new Certificate();         break;
     case "curriculum":          $t = new Curriculum();          break;
     case "grade":               $t = new Grade();               break;
@@ -102,6 +107,89 @@ switch ($func) {
                                     }
                                     $content .= RENDER::wallet_content($v);
                                 }
+        break;
+    case "reference":           switch (filter_input(INPUT_GET, 'context', FILTER_SANITIZE_STRING)) {
+                                case 'enabling_objective':  $ena        = new EnablingObjective();
+                                                            $ena->id    = $id;
+                                                            $ena->load();  
+                                                            $reference  = new Reference();
+                                                            $references = $reference->get('reference_id', $_SESSION['CONTEXT']['enabling_objective']->context_id, $ena->id);
+
+                                                            $content    = 'Zum Lernziel / Zur Kompetenz <strong>'.$ena->enabling_objective.'</strong> wurden die folgenden Bezüge gefunden:<br><hr>';
+                                                            if (count($references) == 0){
+                                                                $content    .= 'Keine Bezüge vorhanden.';
+                                                            }
+                                                          
+                                                            foreach ($references as $ref) {
+                                                                $e = new EnablingObjective();
+                                                                switch ($ref->context_id) {
+                                                                    case $_SESSION['CONTEXT']['enabling_objective']->context_id:
+                                                                                $e->id  = $ref->reference_id;
+                                                                                $e->load(); //todo: ? new query with get? to get all data with one query
+                                                                                $t      = new TerminalObjective();
+                                                                                $t->id  = $e->terminal_objective_id;
+                                                                                $t->load();
+                                                                                $c      = new Curriculum();         
+                                                                                $c->id  = $e->curriculum_id;
+                                                                                $c->load();
+                                                                                $sc     = new Schooltype();
+                                                                                $sc->load('id', $c->schooltype_id);
+                                                                                $gr     = new Grade();
+                                                                                $gr->load('id', $ref->grade_id);
+                                                                                $ct     = new Content();
+                                                                                $ct->get('reference', $ref->id);
+
+
+
+                                                                                $content .= '<p><strong>Ausbildungsrichtung: </strong>'.$sc->schooltype.'<br>';
+                                                                                $content .= '<strong>Fach: </strong>'.$c->subject.'<br>';
+                                                                                $content .= '<strong>Lehrplan: </strong>'.$c->curriculum.'<br>';
+                                                                                $content .= '<strong>Klassenstufe: </strong>'.$gr->grade.'<br>';
+                                                                                if (isset($ct->content)){
+                                                                                    $content .= '<strong>Hinweise: </strong>'.$ct->content.'<br></p>';
+                                                                                }
+                                                                                $content .= '<p><strong>Thema/Kompetenzbereich: </strong>'.Render::objective(array('objective' => $t, 'color')).'</p>';
+                                                                                $content .= '<p><strong>Lernziel/Kompetenz: </strong>'.Render::objective(array('type' => 'enabling_objective', 'objective' => $e, 'border_color' => $t->color)).'</p>';
+                                                                                $content .= '<hr>';
+
+
+                                                                        break;
+                                                                    case $_SESSION['CONTEXT']['terminal_objective']->context_id:
+                                                                                $t      = new TerminalObjective();
+                                                                                $t->id  = $ref->reference_id;
+                                                                                $t->load();
+                                                                                $c      = new Curriculum();         
+                                                                                $c->id  = $t->curriculum_id;
+                                                                                $c->load();
+                                                                                $sc     = new Schooltype();
+                                                                                $sc->load('id', $c->schooltype_id);
+                                                                                $gr     = new Grade();
+                                                                                $gr->load('id', $ref->grade_id);
+                                                                                $ct     = new Content();
+                                                                                $ct->get('reference', $ref->id);
+
+                                                                                $content .= '<div class="row">' 
+                                                                                          . '<div class="col-xs-12 col-sm-6 pull-left"><dt>Ausbildungsrichtung<dd>'.$sc->schooltype.'</dd></dt>';
+                                                                                $content .= '<br><dt>Fach<dd>'.$c->subject.'</dd></dt>';
+                                                                                $content .= '<br><dt>Lehrplan<dd>'.$c->curriculum.'</dd></dt>';
+                                                                                $content .= '<br><dt>Klassenstufe<dd>'.$gr->grade.'</dd></dt>';
+                                                                                if (isset($ct->content)){
+                                                                                    $content .= '<br><dt>Hinweise<dd>'.$ct->content.'</dd></dt>';
+                                                                                }
+                                                                                $content .= '</div><div class="col-xs-12 col-sm-3 ""><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('objective' => $t, 'color')).'</div>';
+                                                                                $content .= '</div><hr style="clear:both;">';
+                                                                        break;
+
+                                                                    default:
+                                                                        break;
+                                                                }
+
+                                                            }
+                                    break;
+
+                                default:
+                                    break;
+                            }
         break;
     default: break;
 }

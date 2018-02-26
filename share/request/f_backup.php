@@ -48,13 +48,13 @@ if (is_array($data)) {
             
 if (isset($func)){
     switch ($func) {
-        case "new": checkCapabilities('backup:add',    $USER->role_id);
+        case "new": checkCapabilities('backup:add',    $USER->role_id, false, true);
                     $header             = 'Backup erstellen';
                     /* load backups and courses */
                     $courses            = new Course(); //load Courses
-                    if (checkCapabilities('backup:getAllBackups', $USER->role_id, false)) {                          // Administrators
+                    if (checkCapabilities('backup:getAllBackups', $USER->role_id, false, true)) {                          // Administrators
                         $options        = $courses->getCourse('admin', $USER->id);
-                    } else if (checkCapabilities('backup:getMyBackups', $USER->role_id, false)) {                    // Teacher and Tutor
+                    } else if (checkCapabilities('backup:getMyBackups', $USER->role_id, false, true)) {                    // Teacher and Tutor
                         $options        = $courses->getCourse('teacher', $USER->id);
                     } 
             break;
@@ -75,6 +75,19 @@ $content  = '<form id="form_backup"  class="form-horizontal" role="form" method=
 if (isset($currentUrlId)){ $content .= $currentUrlId; }
 $content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
 $content .= Form::input_select('curriculum_id', 'Lehrplan', $options, 'course', 'curriculum_id', null , $error);
+/* Format selector*/
+$format_array = array('XML curriculum' => 'xml',
+                'XML RLP Digitale Lehrpläne' => 'xml-rlp',
+                'XML edu-sharing Sammlungen' => 'xml-edu-sharing',
+                'IMSCC Moodle' => 'imscc'
+               );
+$format_obj = new stdClass();
+foreach ($format_array as $key => $value) {
+    $format_obj->name  = $key;
+    $format_obj->format = $value;
+    $f_list[] = clone $format_obj;
+}
+$content     .= Form::input_select('export_format', 'Export-Format', $f_list, 'name', 'format', null , $error);
 $content .= '</form>';
 $footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_backup\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';  
 $html     = Form::modal(array('title'     => $header,

@@ -44,4 +44,34 @@ if (isset($_GET['view'])){
 } else {
     $wallet   = new Wallet();
     $TEMPLATE->assign('wallet', $wallet->get('search', $search));   
+    
+    $p_options = array('delete' => array('onclick'    => "del('wallet',__id__);", 
+                                        'capability'  => checkCapabilities('wallet:delete', $USER->role_id, false),
+                                        'icon'        => 'fa fa-trash',
+                                        'tooltip'     => 'löschen'),
+                       'edit'  => array('onclick'     => "formloader('wallet','edit',__id__);",
+                                        'capability'  => checkCapabilities('wallet:update', $USER->role_id, false),
+                                        'icon'        => 'fa fa-edit',
+                                        'tooltip'     => 'bearbeiten'),
+                        'description'  => array('onclick'=> "formloader('description','wallet',__id__);", 
+                                     'capability'   => true,  //free for all
+                                     'icon'         => 'fa fa-info',
+                                     'tooltip'      => 'Beschreibung'));
+    $p_widget  = array('header'       => 'title',
+                       'subheader01'  => 'description',
+                       'subheader02'  => 'timerange',
+                       'file_id'      => 'file_id',
+                       'bg_image'     => 'file_id',); //false ==> don't show icon on widget
+    $t_config      = array('td'     => array('onclick'         => "location.href='index.php?action=walletView&wallet=__id__'"));
+    $p_config =   array('id'          => 'checkbox',
+                        'title'       => 'Titel', 
+                        /*'description' => 'Beschreibung',*/
+                        'timerange'   => 'Zeitraum',
+                        't_config'  => $t_config,
+                        'p_search'    => array('title','description'),
+                        'p_widget'    => $p_widget, 
+                        'p_options'   => $p_options);
+    setPaginator('walletP', $TEMPLATE, $wallet->get('search', $search), 'wa_val', 'index.php?action=wallet', $p_config); 
+    
+    
 }

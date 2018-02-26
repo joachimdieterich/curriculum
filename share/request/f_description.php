@@ -28,30 +28,38 @@ include(dirname(__FILE__).'/../login-check.php');  //check login status and rese
 global $USER;
 $USER       = $_SESSION['USER'];
 $func       = $_GET['func'];
+$content    = '';
 
 $ter        = new TerminalObjective();
 switch ($func) {
     case 'curriculum':          $cur        = new Curriculum();
                                 $cur->id    = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
                                 $cur->load(false);
+                                $content .= $cur->description;
         break;
+    case 'wallet':              $wa        = new Wallet();
+                                $wa->id    = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+                                $wa->load(false);
+                                $content .= $wa->description;
+        break;
+
     case 'terminal_objective':  
                                 $ter->id    = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+                                //$_SESSION['anchor'] = 'ter_'.$ena->id;
         break;
     case 'enabling_objective':  $ena        = new EnablingObjective();
                                 $ena->id    = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
                                 $ena->load();  
-                                $ter->id    = $ena->terminal_objective_id;                       
+                                $ter->id    = $ena->terminal_objective_id;  
+                                //$_SESSION['anchor'] = 'ena_'.$ena->id;
         break;
 
     default:
         break;
 }
 
-$content    = '';
+
 switch ($func) {
-    case 'curriculum':          $content .= $cur->description;
-        break;
     case 'terminal_objective':
     case 'enabling_objective':  $ter->load();
                                 if ($ter->description AND $ter->description != ''){         $content .= $ter->description; } 
@@ -61,6 +69,7 @@ switch ($func) {
                                 }
         break;
 }
+
 
 
 $html = Form::modal(array('target' => 'null',

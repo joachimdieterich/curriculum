@@ -50,10 +50,10 @@ if (is_array($data)) {
             
 if (isset($_GET['func'])){
     switch ($_GET['func']) {
-        case "new":     checkCapabilities('wallet:add',    $USER->role_id);
+        case "new":     checkCapabilities('wallet:add',    $USER->role_id, false, true);
                         $header = 'Sammelmappe anlegen';            
             break;
-        case "edit":    checkCapabilities('wallet:update',    $USER->role_id);
+        case "edit":    checkCapabilities('wallet:update',    $USER->role_id, false, true);
                         $header   = 'Sammelmappe bearbeiten';
                         $edit     = true; 
                         $w        = new Wallet(filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));

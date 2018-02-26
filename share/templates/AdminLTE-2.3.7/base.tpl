@@ -59,14 +59,25 @@
         {block name=additional_stylesheets}{/block}
     </head>
     
-    {if $page_action eq 'login' OR  $page_action eq 'lock' OR  $page_action eq 'extern'}
+    {if in_array($page_action, array('login', 'lock', 'extern'))}
     <body class="hold-transition {if $page_action eq 'login' OR  $page_action eq 'extern'}login-page{/if} {if $page_action eq 'lock'}lockscreen{/if}" style="background-image: url('{$random_bg}'); background-size: cover;" >
         {block name=content} {/block}
     </body>
+    {*elseif in_array($page_action, array('navigator'))}
+    <body class="skin-blue {$page_layout}" data-spy="scroll" data-target=".modal-body" style=" -webkit-overflow-scrolling:touch; overflow:auto;" > 
+         <div id="body-wrapper" class="wrapper"> 
+             <div id="content-wrapper" class="content-wrapper">
+                <div id="popup" class="modal" onload="popupFunction(this.id);"><div class="modal-dialog"><div class="box"><div class="box-header"><h3 class="box-title">Loading...</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div></div></div> <!-- Popup -->    
+                {block name=content} {/block}
+            </div> 
+        </div>
+    </body>
+    *}
     {else}
     
-    <body class="hold-transition fixed skin-blue sidebar-mini" data-spy="scroll" data-target=".modal-body" style=" -webkit-overflow-scrolling:touch; overflow:auto;" > 
-        <div id="body-wrapper" class="wrapper"> 
+    <body class="hold-transition {$page_layout} skin-blue" data-spy="scroll" data-target=".modal-body" style=" -webkit-overflow-scrolling:touch; overflow:auto;" > 
+        <div id="body-wrapper" class="{$page_body_wrapper}"> 
+            {if $page_header}
             <header class="main-header">
               <!-- Logo -->
               <a href="index.php?action=dashboard" class="logo">
@@ -117,48 +128,52 @@
                             <i class="fa fa-calendar"></i>
                           </a>
                         </li>  
+                        {if checkCapabilities('menu:readTimeline', $my_role_id, false)}  
                         <li class="timeline-menu">   
                         <a href="index.php?action=portfolio" style="padding: 15px 8px 15px 8px;">
                             <i class="fa fa-cubes"></i>
                           </a>
-                        </li>  
-                        {if isset($mails)}  
-                        <!-- Messages: style can be found in dropdown.less-->
-                        <li class="dropdown messages-menu">
-                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 15px 8px 15px 8px;">
-                            <i class="fa fa-envelope-o"></i>
-                            <span class="label label-success">{count($mails)}</span>
-                          </a>
-                          <ul class="dropdown-menu">
-                            <li class="header">Sie haben {count($mails)} neue Nachrichten</li>
-                            <li>
-                              <!-- inner menu: contains the actual data -->
-                              <ul class="menu">
-                                  {section name=mes loop=$mails}
-                                      <li><!-- start message -->
-                                          <a href="index.php?action=messages&function=showInbox&id={$mails[mes]->id}">
-                                            <div class="pull-left">
-                                              <img src="{$access_file}{$mails[mes]->sender_file_id|resolve_file_id:"xs"}" class="img-circle" alt="User Image">
-                                            </div>
-                                            <h4>
-                                              {$mails[mes]->sender_username}
-                                              <small><i class="fa fa-calendar-times-o"></i> {$mails[mes]->creation_time}</small>
-                                            </h4>
-                                            <p>{$mails[mes]->subject}</p>
-                                          </a>
-                                      </li>
-                                  {/section}
-                                <!-- end message -->
+                        </li> 
+                        {/if}
+                        {if checkCapabilities('menu:readMessages', $my_role_id, false)}
+                            {if isset($mails)}  
+                            <!-- Messages: style can be found in dropdown.less-->
+                            <li class="dropdown messages-menu">
+                              <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 15px 8px 15px 8px;">
+                                <i class="fa fa-envelope-o"></i>
+                                <span class="label label-success">{count($mails)}</span>
+                              </a>
+                              <ul class="dropdown-menu">
+                                <li class="header">Sie haben {count($mails)} neue Nachrichten</li>
+                                <li>
+                                  <!-- inner menu: contains the actual data -->
+                                  <ul class="menu">
+                                      {section name=mes loop=$mails}
+                                          <li><!-- start message -->
+                                              <a href="index.php?action=messages&function=showInbox&id={$mails[mes]->id}">
+                                                <div class="pull-left">
+                                                  <img src="{$access_file}{$mails[mes]->sender_file_id|resolve_file_id:"xs"}" class="img-circle" alt="User Image">
+                                                </div>
+                                                <h4>
+                                                  {$mails[mes]->sender_username}
+                                                  <small><i class="fa fa-calendar-times-o"></i> {$mails[mes]->creation_time}</small>
+                                                </h4>
+                                                <p>{$mails[mes]->subject}</p>
+                                              </a>
+                                          </li>
+                                      {/section}
+                                    <!-- end message -->
+                                  </ul>
+                                </li>
+                                <li class="footer"><a href="index.php?action=messages&function=showInbox">Alle Nachrichten</a></li>
                               </ul>
                             </li>
-                            <li class="footer"><a href="index.php?action=messages&function=showInbox">Alle Nachrichten</a></li>
-                          </ul>
-                        </li>
-                        {else}
-                        <li class=" messages-menu">   
-                            <a href="index.php?action=messages&function=showInbox" style="padding: 15px 8px 15px 8px;"><i class="fa fa-envelope-o"></i></a>
-                        </li>
-                        {/if} 
+                            {else}
+                            <li class=" messages-menu">   
+                                <a href="index.php?action=messages&function=showInbox" style="padding: 15px 8px 15px 8px;"><i class="fa fa-envelope-o"></i></a>
+                            </li>
+                            {/if} 
+                        {/if}
 
                         {if isset($page_message)}
                         <!-- Notifications: style can be found in dropdown.less -->
@@ -228,19 +243,30 @@
                           </ul>
                         </li>
                         {if checkCapabilities('template:change', $my_role_id, false)}
-                            <!-- Control Sidebar Toggle Button -->
-                            <li>
-                              <a href="#" onclick="formloader('settings', 'edit');"><i class="fa fa-gears"></i></a>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gears"></i></a>
+                                <ul class="dropdown-menu" role="menu">
+                                  <li><a href="#" onclick="formloader('settings', 'edit');">Einstellungen</a></li>
+                                  <li class="divider"></li>
+                                  <li><a href="index.php?action=navigator">Navigator (Test)</a></li>
+                                  <li><a href="index.php?action=update">Updates</a></li>
+                                </ul>
                             </li>
+                            {*<!-- Control Sidebar Toggle Button -->
+                            <li>
+                              <a href="#" onclick="formloader('settings', 'edit');"><i class="fa fa-gears"></i>
+                                  {if checkCapabilities('system:update', $my_role_id, false) AND isset($system_update)}<span class="label label-danger">Update</span>{/if}
+                              </a>
+                            </li>*}
                         {/if}
                       </ul>
                     </div>    
                     {/if}   
                 </nav>         
             </header>        
-                
+            {/if}    
             <!-- Sidebar left - Menu -->
-            {if $page_name neq 'login' OR  $page_action eq 'extern'} <!--Kein Menu -->        
+            {if {$page_layout} neq 'layout-top-nav'} <!--Kein Menu -->        
                 {block name=nav}{include file='menu.tpl'}{/block} 
             {/if}
             
@@ -257,7 +283,7 @@
                 {$app_footer} {block name=footer} {/block}
             </footer>    
               
-            {block name=sidebar_right}{include file='sidebar_right.tpl'}{/block}
+            {*block name=sidebar_right}{include file='sidebar_right.tpl'}{/block*}
         </div><!-- ./wrapper -->
     {/if}    
 <!-- SCRIPTS-->  
@@ -280,7 +306,17 @@
     <link rel="stylesheet" href="{$template_url}plugins/select2/select2.min.css">
     <script src="{$template_url}plugins/select2/select2.min.js" type="text/javascript"></script>
     <link rel="stylesheet" href="{$template_url}css/less/select2.min.css">
-
+    <!-- MathJax -->
+    {literal}
+        <script type="text/x-mathjax-config">
+            MathJax.Hub.Config({
+              extensions: ["tex2jax.js"],
+              jax: ["input/TeX","output/HTML-CSS"],
+              tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
+            });
+        </script>
+    {/literal}
+     <script src="{$lib_url}MathJax-master/MathJax.js"></script><!-- MathJax-->
     {block name=additional_scripts} 
     <!-- Logout - Timer  -->
     {if isset($institution_timeout)}
@@ -297,15 +333,15 @@
             $(this).keypress(function (e) { idleTime = 0; });
             
             $(document.getElementById('popup')).attr('class', 'modal');
-            $(".select2").select2();
+            $(".select2").select2();  
         });
         
-        function timerIncrement() {
+    function timerIncrement() {
             idleTime++;
             if (idleTime === {$global_timeout}) { 
                 window.location="index.php?action=logout&timout=true";
             }
-        }     
+        }       
     </script>
     {/if}
     <!-- end Logout - Timer  -->

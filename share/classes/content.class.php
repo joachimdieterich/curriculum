@@ -91,31 +91,55 @@ class Content {
         }
     }
        
-    public function get($dependency = 'curriculum', $id = null, $order = 'ASC'){
+    public function get($dependency = 'curriculum', $id = null, $order = "ORDER by ct.timecreated ASC", $user_ids = null){
         $entrys = array();                      //Array of content
-        
-        switch ($entrys) {
-            case 'blog':    $db = DB::prepare('SELECT ct.id FROM content AS ct, content_subscriptions AS cts, context AS co
+         
+        switch ($dependency) {
+            case 'blog':    $order =  'ORDER by ct.timecreated DESC';
+                            $db = DB::prepare('SELECT ct.*, cts.context_id, cts.reference_id, cts.file_context FROM content AS ct, content_subscriptions AS cts, context AS co
                                                         WHERE  co.context = "'.$dependency.'"
                                                         AND co.context_id = cts.context_id
                                                         AND cts.reference_id = ?
-                                                        AND cts.content_id = ct.id ORDER by ct.timecreated DESC');
+                                                        AND cts.content_id = ct.id '.$order);
                             $db->execute(array($id));
                 break;
-
-            default:        $db = DB::prepare('SELECT ct.id FROM content AS ct, content_subscriptions AS cts, context AS co
+            case 'terms':       $db = DB::prepare('SELECT ct.*, cts.context_id, cts.reference_id, cts.file_context FROM content AS ct, content_subscriptions AS cts, context AS co
+                                                        WHERE  co.context = "terms"
+                                                        AND co.context_id = cts.context_id
+                                                        AND cts.content_id = ct.id');
+                                $db->execute();          
+                break;
+            case 'solution': $db = DB::prepare('SELECT ct.*, cts.context_id, cts.reference_id, cts.file_context FROM content AS ct, content_subscriptions AS cts, context AS co
+                                                        WHERE  co.context = "'.$dependency.'"
+                                                        AND co.context_id = cts.context_id
+                                                        AND ct.creator_id IN ('.$user_ids.')
+                                                        AND cts.reference_id = ?
+                                                        AND cts.content_id = ct.id '.$order);
+                            $db->execute(array($id));
+                break;
+            default:        
+                            $db = DB::prepare('SELECT ct.*, cts.context_id, cts.reference_id, cts.file_context FROM content AS ct, content_subscriptions AS cts, context AS co
                                                         WHERE  co.context = "'.$dependency.'"
                                                         AND co.context_id = cts.context_id
                                                         AND cts.reference_id = ?
-                                                        AND cts.content_id = ct.id ORDER by ct.timecreated ASC');
+                                                        AND cts.content_id = ct.id '.$order);
                             $db->execute(array($id));
                 break;
         }
         
-        
+        $user       = new User();
         while($result = $db->fetchObject()) { 
             $this->id            = $result->id;
-            $this->load();
+            $this->title         = $result->title;
+            $this->content       = $result->content;
+            $this->timecreated   = $result->timecreated;
+            $this->timemodified  = $result->timemodified;
+            $this->creator_id    = $result->creator_id;
+            $this->creator       = $user->resolveUserId($result->creator_id);
+            $this->context_id    = $result->context_id;
+            $this->reference_id  = $result->reference_id;
+            $this->file_context  = $result->file_context;
+            //$this->load();
             $entrys[]            = clone $this;        //it has to be clone, to get the object and not the reference
         } 
         return $entrys;
@@ -124,8 +148,16 @@ class Content {
     public function addSubscription(){
         global $USER;
         checkCapabilities('content:add', $USER->role_id);
-        $db = DB::prepare('INSERT INTO content_subscriptions (content_id,context_id,file_context,reference_id,timecreated,status,creator_id) VALUES (?,?,?,?,NOW(),?,?)');
-        return $db->execute(array($this->id, $this->context_id, $this->file_context, $this->reference_id,1,$USER->id));
+        $db     = DB::prepare('SELECT COUNT(id) FROM content_subscriptions WHERE content_id = ? AND context_id = ? AND file_context = ? AND reference_id = ?');
+        $db->execute(array($this->id, $this->context_id, $this->file_context, $this->reference_id));
+        $count  = $db->fetchColumn();
+        if ($count > 0){
+            $_SESSION['PAGE']->message[] = array('message' => 'Referenz ist bereits verknüpft', 'icon' => 'fa-link text-warning');
+            return false;
+        } else {
+            $db = DB::prepare('INSERT INTO content_subscriptions (content_id,context_id,file_context,reference_id,timecreated,status,creator_id) VALUES (?,?,?,?,NOW(),?,?)');
+            return $db->execute(array($this->id, $this->context_id, $this->file_context, $this->reference_id,1,$USER->id));
+        } 
     }
     
     /**

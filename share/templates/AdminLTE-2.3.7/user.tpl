@@ -44,15 +44,17 @@
                         {/if}
                     </div>
                     {/if}
-                    <div class="pull-right">
-                        {if isset($myInstitutions)}
-                            {Form::input_select('institution_filter', null, $myInstitutions, 'institution', 'id', $filter_institution_id, null, "location.href='index.php?action=user&filter_institution='+this.value", 'Nach Institution filtern', 'col-sm-0', 'col-sm-12')}
-                        {/if}
-                    </div>
-                    
-                    
                 </div><!-- /.box-header -->
                 <div class="box-body">
+                    {if isset($myInstitutions)}
+                        {if count($myInstitutions) >= 1}
+                            {Form::input_select('institution_filter', null, $myInstitutions, 'institution', 'id', $filter_institution_id, null, "location.href='index.php?action=user&filter_institution='+this.value+'&filter_role=false&filter_group=false'", 'Nach Institution filtern')}      
+                            {if $filter_institution_id neq false}
+                                {Form::input_select('role_filter', null, $roles, 'role', 'id', $filter_role_id, null, "location.href='index.php?action=user&filter_institution='+document.getElementById('institution_filter').value+'&filter_role='+document.getElementById('role_filter').value+'&filter_group='+document.getElementById('group_filter').value", 'Nach Rolle filtern')}
+                                {Form::input_select('group_filter', null, $groups, 'group', 'id', $filter_group_id, null, "location.href='index.php?action=user&filter_institution='+document.getElementById('institution_filter').value+'&filter_role='+document.getElementById('role_filter').value+'&filter_group='+document.getElementById('group_filter').value", 'Nach Gruppe filtern')}
+                            {/if}
+                        {/if}
+                    {/if}
                     {html_paginator id='userP' title='Benutzerliste'} 
                     <!--<input class="invisible" type="checkbox" name="id[]" value="none" checked /><!--Hack - nothing selected-->  
                 </div>  

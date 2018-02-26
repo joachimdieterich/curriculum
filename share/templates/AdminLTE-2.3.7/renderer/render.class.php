@@ -540,9 +540,11 @@ class Render {
         return $html;
         
     }
+    
     /* add all possible options (ter and ena) to this objective function*/
     public static function objective($params){
        global $CFG, $USER, $PAGE;
+       $format      = 'default';
        $type        = 'terminal_objective'; 
        $edit        = false;
        $sol_btn     = false;
@@ -556,157 +558,252 @@ class Render {
        if (!isset($objective->color)){ 
             $objective->color = '#FFF'; 
             $text_class       = 'text-black';
+            $icon_class       = 'text-primary';
        } else {
-           $text_class       = 'text-white';
+           if (getContrastColor($objective->color) == '#000000'){
+               $text_class    = 'text-black';
+               $icon_class    = 'text-black';
+           }
+           else {
+               $text_class    = 'text-white';
+               $icon_class    = 'text-white';
+           }
+           
        }
        if (!isset($border_color)){
             $border_color = $objective->color; 
         }
-       $html  =   '<div ';
-       if ($type == 'enabling_objective'){ //id is important to get scroll-to function while creating curriculum
-           $html  .= 'id="ena_'.$objective->id.'"';
-       } else {
-           $html  .= 'id="ter_'.$objective->id.'"';
-       }
-       $html  .=   'class="box box-objective ';
-            if (isset($highlight)){
-                if (in_array($type.'_'.$objective->id, $highlight)){
-                    $html  .= 'highlight';
-                } 
-            }
-            $html  .= '" style="padding-top: 0 !important; background: '.$objective->color.'; border: 1px solid '.$border_color.'">';
-            /*************** Header ***************/
-            if ($type == 'enabling_objective'){
-                $html  .= '<div id="ena_header_'.$objective->id.'" class="boxheader bg-'.$objective->accomplished_status_id.'" >';
-            } else {
-                $html  .= '<div class="boxheader">';
-            }
-            if (checkCapabilities('groups:showAccomplished', $USER->role_id, false)){
-                if (isset($objective->accomplished_users) AND isset($objective->enroled_users) AND isset($objective->accomplished_percent)){
-                    $html  .= '<span class=" pull-left hidden-sm hidden-xs text-black" data-toggle="tooltip" title="Stand der Lerngruppe">'.$objective->accomplished_users.' von '.$objective->enroled_users.' ('.$objective->accomplished_percent.'%)</span><!--Ziel-->  ';
-                }
-            }
         
-            if ($edit){
-                if ($type == 'terminal_objective'){
-                    $icon_up    = 'down'; 
-                    $icon_down  = 'up';
-                    $position   = 'pull-left';
+        
+        //adding format to generate more objective layouts
+        switch ($format) {
+            case 'reference':
+                $html  =   '<div ';
+                if ($type == 'enabling_objective'){ //id is important to get scroll-to function while creating
+                    $html  .= 'id="ena_'.$objective->id.'"';
                 } else {
-                    $icon_up    = 'right'; 
-                    $icon_down  = 'left';
-                    $position   = 'pull-right';
+                    $html  .= 'id="ter_'.$objective->id.'"';
                 }
-                if ($orderup){
-                    $html  .= '<span class="fa fa-arrow-'.$icon_up.' '.$position.' box-sm-icon text-primary" onclick=\'processor("orderObjective", "'.$type.'", "'.$objective->id.'", {"order":"up"});\'></span>';
-                }
-                $html  .= '<span class="fa fa-minus pull-right box-sm-icon text-primary margin-r-5" onclick=\'del("'.$type.'", '.$objective->id.');\'></span>
-                           <span class="fa fa-edit pull-right box-sm-icon text-primary" onclick=\'formloader("'.$type.'", "edit", '.$objective->id.');\'></span>';
-                if ($orderdown){
-                    $html  .= '<span class="fa fa-arrow-'.$icon_down.' pull-left box-sm-icon text-primary" onclick=\'processor("orderObjective", "'.$type.'", "'.$objective->id.'", {"order":"down"});\'></span>';
-                }
-            } else {
-               
-                if (checkCapabilities('course:setAccomplishedStatus', $USER->role_id, false) AND $type != 'terminal_objective' AND isset($group_id)){
-                    $html  .= '<span class="fa fa-bar-chart-o pull-right invert box-sm-icon text-primary margin-r-5" onclick=\'formloader("compare","group", '.$objective->id.', {"group_id":"'.$group_id.'"});\'></span>
-                               <span class="fa fa-files-o pull-right invert box-sm-icon text-primary margin-r-5" onclick=\'formloader("material","solution", '.$objective->id.', {"group_id":"'.$group_id.'", "curriculum_id": "'.$objective->curriculum_id.'"});\'></span>';
-                    
-                }
-                 if (checkCapabilities('user:getHelp', $USER->role_id, false) AND $type != 'terminal_objective' AND isset($group_id)){
-                    $html  .= ' <span class="fa fa-support pull-right invert box-sm-icon text-primary margin-r-5" onclick=\'formloader("support","random", '.$objective->id.', {"group_id":"'.$group_id.'"});\'></span>';
-                }
-                
-                if (checkCapabilities('file:solutionUpload', $USER->role_id, false) AND $type != 'terminal_objective' AND isset($solutions)){
-                    foreach ($solutions AS $s){
-                        if (($USER->id == $s->creator_id) AND ($s->enabling_objective_id == $objective->id) AND ($sol_btn != $objective->id)){
-                            $sol_btn = $objective->id;
-                            break;
-                        }
-                    }
-                }
-                if ($type == 'enabling_objective' AND checkCapabilities('file:solutionUpload', $USER->role_id, false) AND (checkCapabilities('file:upload', $USER->role_id, false) OR checkCapabilities('file:uploadURL', $USER->role_id, false))){
-                    $html  .= '<a href="'.$CFG->smarty_template_dir_url.'renderer/uploadframe.php?context=solution&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal">
-                    <span class="fa ';
-                    if ($sol_btn == $objective->id){
-                        $html  .= 'fa-check-circle-o ';
-                    } else {
-                        $html  .= 'fa-upload ';
+                $html  .=   'class="box box-objective ';
+                if (isset($highlight)){
+                    if (in_array($type.'_'.$objective->id, $highlight)){
+                        $html  .= 'highlight';
                     } 
-                        $html  .= 'pull-right box-sm-icon text-primary" data-toggle="tooltip"';
-                    if ($sol_btn == $objective->id){
-                        $html  .= ' title="Lösung eingereicht"';
-                    } else {
-                        $html  .= ' title="Lösung einreichen"';
-                    }
-                    $html  .= '></span></a>'; 
                 }
-            }
-         if ($type == 'terminal_objective'){
-            $html  .=' <a class="collapse_btn" data-toggle="collapse" data-target="#collaps_ter_'.$objective->id.'" data-toggle="tooltip" title="Kompetenzen einklappen bzw. ausklappen"><i class="fa fa-compress box-sm-icon text-primary" style="padding-left:5px;"></i></a>';   
-         }
-         $html  .='  </div>';    
-        /*************** ./Header ***************/
-        /*************** Body ***************/    
-        $html  .='  <div id="'.$type.'_'.$objective->id.'" class="panel-body boxwrap" >
-                        <div class="boxscroll" ';
-                            if ($type == 'terminal_objective'){
-                                $html  .='style="background: '.$objective->color.'"';
-                            }
-                            $html  .='><div class="boxcontent '.$text_class.'">'.$objective->$type.'</div>
-                        </div>
-                    </div>';
-        /*************** ./Body ***************/
-        /*************** Footer ***************/
-        $html  .= '  <div class="boxfooter">';
-                        if ($objective->description != ''){
-                            $html  .='<span class="fa fa-info pull-right box-sm-icon text-primary" style=" margin-right:3px;" data-toggle="tooltip" title="Beschreibung" onclick="formloader(\'description\', \''.$type.'\', '.$objective->id.');"></span>';
-                        }
-                        $html  .='<span class="pull-left margin-r-10">';
-                        if (checkCapabilities('file:loadMaterial', $USER->role_id, false) AND ($objective->files['local'] != '0' OR $objective->files['repository'] != '' OR $objective->files['webservice'] != '' )){
-                            $html  .='<span class="fa fa-briefcase box-sm-icon text-primary margin-r-5 pull-left" style="cursor:pointer; padding-top:3px;" data-toggle="tooltip" title="Materialien und Aufgaben" onclick="formloader(\'material\',\''.$type.'\','.$objective->id.')"></span>';
-                        } else {
-                            $html  .='<span class="fa fa-briefcase box-sm-icon deactivate text-gray margin-r-5 pull-left" style="cursor:not-allowed;padding-top:3px;" data-toggle="tooltip" title="Keine Materialien verfügbar"></span>';
-                        }
-                        if (checkCapabilities('file:upload', $USER->role_id, false) OR checkCapabilities('file:uploadURL', $USER->role_id, false)){
-                                $html  .='<a href="'.$CFG->smarty_template_dir_url.'renderer/uploadframe.php?context='.$type.'&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal pull-right margin-r-5"><span class="fa fa-plus box-sm-icon" style="padding-top:3px;data-toggle="tooltip" title="Material hinzufügen"></span></a>';
-                            } 
-                        $html  .='</span>';
-                        if ($edit){
-                            if ($type != 'terminal_objective'){
-                                $html  .= '<span class="fa fa-check-square-o pull-right box-sm-icon text-primary" onclick=\'formloader("addQuiz", "enabling_objective", "'.$objective->id.'");\'></span>';
-                                if (checkCapabilities('webservice:linkModule', $USER->role_id, false) AND $PAGE->action == 'view'){
-                                    $html  .='<span class="fa fa-puzzle-piece ';
-                                    if ($objective->files['webservice'] == ""){ 
-                                        $html .= 'deactivate text-gray ';
-                                    } else {
-                                        $html  .='text-primary ';
-                                    }
-                                    $html  .='pull-right" onclick=\'formloader("link_module","enabling_objective","'.$objective->id.'","","webservice/moodle");\'></span>';
-                                }   
-                            }
-                        } else {
-                            if (checkCapabilities('course:selfAssessment', $USER->role_id, false) AND $type != 'terminal_objective'){
-                                if (is_array($user_id)){
-                                    $user_id = implode(',',$user_id);
+                $html  .= '" style="padding-top: 0 !important; background: '.$objective->color.'; border: 1px solid '.$border_color.'">';
+                /*************** Header ***************/
+                if ($type == 'enabling_objective'){
+                    $html  .= '<div id="ena_header_'.$objective->id.'" class="boxheader bg-'.$objective->accomplished_status_id.'" >';
+                } else {
+                    $html  .= '<div class="boxheader">';
+                }
+                 $html  .='</div>';    
+                 /*************** ./Header ***************/
+                 /*************** Body ***************/    
+                 $html  .='  <div id="'.$type.'_'.$objective->id.'" class="panel-body boxwrap" >
+                                 <div class="boxscroll" ';
+                                     if ($type == 'terminal_objective'){
+                                         $html  .='style="background: '.$objective->color.'"';
+                                     }
+                                     $html  .='><div class="boxcontent '.$text_class.'">'.$objective->$type.'</div>
+                                 </div>
+                             </div>';
+                 /*************** ./Body ***************/   
+                /*************** Footer ***************/
+                $html  .= '  <div class="boxfooter">';
+                if ($objective->description != ''){
+                    $html  .='<span class="fa fa-info pull-right box-sm-icon text-primary" style=" margin-right:3px;" data-toggle="tooltip" title="Beschreibung" onclick="formloader(\'description\', \''.$type.'\', '.$objective->id.');"></span>';
+                }
+                $html  .='<span class="pull-left margin-r-10">';
+                if (checkCapabilities('file:loadMaterial', $USER->role_id, false) AND ($objective->files['local'] != '0' OR $objective->files['repository'] != '' OR isset($objective->files['webservice']) )){
+                    $html  .='<span class="fa fa-briefcase box-sm-icon text-primary margin-r-5 pull-left" style="cursor:pointer; padding-top:3px;" data-toggle="tooltip" title="Materialien und Aufgaben" onclick="formloader(\'material\',\''.$type.'\','.$objective->id.')"></span>';
+                } else {
+                    $html  .='<span class="fa fa-briefcase box-sm-icon deactivate text-gray margin-r-5 pull-left" style="cursor:not-allowed;padding-top:3px;" data-toggle="tooltip" title="Keine Materialien verfügbar"></span>';
+                }
+                $html  .='</span></div>';
+                 /*************** ./Footer ***************/
+                $html  .= '</div>';
+                break;
+
+            default:
+                $html  =   '<div ';
+                if ($type == 'enabling_objective'){ //id is important to get scroll-to function while creating
+                    $html  .= 'id="ena_'.$objective->id.'"';
+                } else {
+                    $html  .= 'id="ter_'.$objective->id.'"';
+                }
+                $html  .=   'class="box box-objective ';
+                if (isset($highlight)){
+                    if (in_array($type.'_'.$objective->id, $highlight)){
+                        $html  .= 'highlight';
+                    } 
+                }
+                $html  .= '" style="padding-top: 0 !important; background: '.$objective->color.'; border: 1px solid '.$border_color.'">';
+                /*************** Header ***************/
+                if ($type == 'enabling_objective'){
+                    $html  .= '<div id="ena_header_'.$objective->id.'" class="boxheader bg-'.$objective->accomplished_status_id.'" >';
+                } else {
+                    $html  .= '<div class="boxheader">';
+                }
+                     if (checkCapabilities('groups:showAccomplished', $USER->role_id, false)){
+                         if (isset($objective->accomplished_users) AND isset($objective->enroled_users) AND isset($objective->accomplished_percent)){
+                             $html  .= '<span class=" pull-left hidden-sm hidden-xs text-black" data-toggle="tooltip" title="Stand der Lerngruppe">'.$objective->accomplished_users.' von '.$objective->enroled_users.' ('.$objective->accomplished_percent.'%)</span><!--Ziel-->  ';
+                         }
+                     }
+
+                     if ($edit){
+                         if ($type == 'terminal_objective'){
+                             $icon_up    = 'down'; 
+                             $icon_down  = 'up';
+                             $position   = 'pull-left';
+                         } else {
+                             $icon_up    = 'right'; 
+                             $icon_down  = 'left';
+                             $position   = 'pull-right';
+                         }
+                         if ($orderup){
+                             $html  .= '<span class="fa fa-arrow-'.$icon_up.' '.$position.' box-sm-icon '.$icon_class.'" onclick=\'processor("orderObjective", "'.$type.'", "'.$objective->id.'", {"order":"up"});\'></span>';
+                         }
+                         $html  .= '<span class="fa fa-minus pull-right box-sm-icon '.$icon_class.' margin-r-5" onclick=\'del("'.$type.'", '.$objective->id.');\'></span>
+                                    <span class="fa fa-edit pull-right box-sm-icon '.$icon_class.'" onclick=\'formloader("'.$type.'", "edit", '.$objective->id.');\'></span>';
+                         if ($orderdown){
+                             $html  .= '<span class="fa fa-arrow-'.$icon_down.' pull-left box-sm-icon '.$icon_class.'" onclick=\'processor("orderObjective", "'.$type.'", "'.$objective->id.'", {"order":"down"});\'></span>';
+                         }
+                     } else {
+                        $c_menu_array               = array();
+                        $content_menu_obj           = new stdClass();
+                        if (checkCapabilities('file:solutionUpload', $USER->role_id, false) AND $type != 'terminal_objective' AND isset($solutions)){
+                            foreach ($solutions AS $s){
+                                if (($USER->id == $s->creator_id) AND ($s->enabling_objective_id == $objective->id) AND ($sol_btn != $objective->id)){
+                                    $sol_btn = $objective->id;
+                                    break;
                                 }
-                                $html  .='<span class="pull-left">'.Render::accCheckboxes(array('id' => $objective->id, 'student' => $user_id, 'teacher' => $USER->id, 'link' => false)).'</span>';
                             }
-                            if (checkCapabilities('quiz:showQuiz', $USER->role_id, false) AND $type != 'terminal_objective' AND $PAGE->action == 'view'){
-                                if ($objective->quiz != '0'){
-                                    $html  .='<span class="fa fa-check-square-o pull-right box-sm-icon text-primary" onclick=\'formloader("quiz","enabling_objective","'.$objective->id.'");\'></span>';
-                                }
+                        }
+                        if (isset($PAGE->action) AND $type == 'enabling_objective' AND checkCapabilities('file:solutionUpload', $USER->role_id, false) AND (checkCapabilities('file:upload', $USER->role_id, false) OR checkCapabilities('file:uploadURL', $USER->role_id, false))){
+                            if($PAGE->action == 'view'){
+                                $content_menu_obj->href = $CFG->smarty_template_dir_url.'renderer/uploadframe.php?context=solution&ref_id='.$objective->id.$CFG->tb_param;
+                                $content_menu_obj->href_class = 'nyroModal';
+                                if ($sol_btn == $objective->id){
+                                    $content_menu_obj->title  = '<i class="fa fa-check-circle-o" ></i> Lösung (Datei) eingereicht';
+                                } else {
+                                    $content_menu_obj->title  = '<i class="fa fa-upload" ></i> Lösung (Datei) einreichen';
+                                }  
                             }
-                            if (checkCapabilities('webservice:linkModuleResults', $USER->role_id, false) AND $type != 'terminal_objective' AND $PAGE->action == 'view' AND $objective->files['webservice'] != ''){
-                                $html  .='<span class="box-sm-icon text-primary" onclick=\'processor("link_module_result","enabling_objective","'.$objective->id.'","","webservice/moodle");\'><i class="fa fa-external-link-square  fa-rotate-180"></i></span>';
-                            }
-                            
-                            
-                        }  
+                            $c_menu_array[]             = clone $content_menu_obj;
+                            $content_menu_obj           = new stdClass();
+                            $content_menu_obj->onclick  = 'formloader(\'content\', \'new\', null,{\'context_id\':\'4\', \'reference_id\':\''.$objective->id.'\'});';
+                            $content_menu_obj->title    = '<i class="fa fa-pencil" ></i> Lösung online eingeben';
+                            $c_menu_array[]             = clone $content_menu_obj;
+                        }
+                        if (checkCapabilities('course:setAccomplishedStatus', $USER->role_id, false) AND $type != 'terminal_objective' AND isset($group_id)){
+                            $content_menu_obj->onclick  = 'formloader(\'compare\',\'group\', \''.$objective->id.'\', {\'group_id\':\''.$group_id.'\'});';
+                            $content_menu_obj->title    = '<i class="fa fa-bar-chart-o"></i> Überblick über Gruppe';
+                            $c_menu_array[]             = clone $content_menu_obj;
+                            $content_menu_obj->onclick  = 'formloader(\'material\',\'solution\', \''.$objective->id.'\', {\'group_id\':\''.$group_id.'\', \'curriculum_id\': \''.$objective->curriculum_id.'\'});';
+                            $content_menu_obj->title    = '<i class="fa fa-files-o"></i> Eingereichte Lösungen (Datei)';
+                            $c_menu_array[]             = clone $content_menu_obj;
+                            $content_menu_obj->onclick  = 'formloader(\'solution\',\'solution\', \''.$objective->id.'\', {\'group_id\':\''.$group_id.'\', \'curriculum_id\': \''.$objective->curriculum_id.'\'});';
+                            $content_menu_obj->title    = '<i class="fa fa-files-o"></i> Eingereichte Lösungen (Texteingaben)';
+                            $c_menu_array[]             = clone $content_menu_obj;
+                        }
+                        if (checkCapabilities('user:getHelp', $USER->role_id, false) AND $type != 'terminal_objective' AND isset($group_id)){
+                            $content_menu_obj->onclick  = 'formloader(\'support\',\'random\', \''.$objective->id.'\', {\'group_id\':\''.$group_id.'\'});';
+                            $content_menu_obj->title    = '<i class="fa fa-support" ></i> Gruppenmitglied um Hilfe bitten';
+                            $c_menu_array[]             = clone $content_menu_obj;
+                        }
+                        $html  .= '<span class="pull-right box-sm-icon" style="padding-left:5px;">'.Render::split_button(array('type' => 'menu', 'btn_type' => 'btn btn-flat btn-default btn-xs','label' => '<i class="fa fa-caret-down"></i>', 'entrys' => $c_menu_array)).'</span>';
                         
-        $html  .=' </div>';
-                        
-        /*************** ./Footer ***************/
-        $html  .= '</div>';
+                     }
+                  if ($type == 'terminal_objective'){
+                     $html  .=' <a class="collapse_btn" data-toggle="collapse" data-target="#collaps_ter_'.$objective->id.'" data-toggle="tooltip" title="Kompetenzen einklappen bzw. ausklappen"><i class="fa fa-compress box-sm-icon '.$text_class.'" style="padding-left:5px;"></i></a>';   
+                  }
+                  $html  .='  </div>';    
+                 /*************** ./Header ***************/
+                 /*************** Body ***************/    
+                 $html  .='  <div id="'.$type.'_'.$objective->id.'" class="panel-body boxwrap" >
+                                 <div class="boxscroll" ';
+                                     if ($type == 'terminal_objective'){
+                                         $html  .='style="background: '.$objective->color.'"';
+                                     }
+                                     $html  .='><div class="boxcontent '.$text_class.'">'.$objective->$type.'</div>
+                                 </div>
+                             </div>';
+                 /*************** ./Body ***************/
+                 /*************** Footer ***************/
+                 $html  .= '  <div class="boxfooter">';
+                                 if ($objective->description != ''){
+                                     $html  .='<span class="fa fa-info pull-right box-sm-icon '.$icon_class.'" style=" margin-right:3px;" data-toggle="tooltip" title="Beschreibung" onclick="formloader(\'description\', \''.$type.'\', '.$objective->id.');"></span>';
+                                 }
+                                 $html  .='<span class="pull-left margin-r-10">';
+                                 if (checkCapabilities('file:loadMaterial', $USER->role_id, false) AND ($objective->files['local'] != '0' OR $objective->files['repository'] != '' OR isset($objective->files['webservice']) )){
+                                     $html  .='<span class="fa fa-briefcase box-sm-icon '.$icon_class.' margin-r-5 pull-left" style="cursor:pointer; padding-top:3px;" data-toggle="tooltip" title="Materialien und Aufgaben" onclick="formloader(\'material\',\''.$type.'\','.$objective->id.')"></span>';
+                                 } else {
+                                     $html  .='<span class="fa fa-briefcase box-sm-icon deactivate '.$icon_class.' margin-r-5 pull-left" style="cursor:not-allowed;padding-top:3px;" data-toggle="tooltip" title="Keine Materialien verfügbar"></span>';
+                                 }
+                                 if ((checkCapabilities('file:upload', $USER->role_id, false) OR checkCapabilities('file:uploadURL', $USER->role_id, false)) AND isset($PAGE->action)){
+                                     if ($PAGE->action == 'view'){
+                                         $html  .='<a href="'.$CFG->smarty_template_dir_url.'renderer/uploadframe.php?context='.$type.'&ref_id='.$objective->id.$CFG->tb_param.'" class="nyroModal pull-right margin-r-5"><span class="fa fa-plus '.$icon_class.' box-sm-icon" style="padding-top:3px;data-toggle="tooltip" title="Material hinzufügen"></span></a>';
+                                     }
+                                 } 
+                                 $html  .='</span>';
+                                 if ($edit){
+                                     if ($type != 'terminal_objective'){
+
+                                         $html  .= '<span class="fa fa-check-square-o pull-right box-sm-icon '.$icon_class.'" onclick=\'formloader("addQuiz", "enabling_objective", "'.$objective->id.'");\'></span>';
+                                         if (checkCapabilities('webservice:linkModule', $USER->role_id, false) AND isset($objective->files['webservice']) AND $PAGE->action == 'view'){
+                                             $html  .='<span class="fa fa-puzzle-piece ';
+                                             if ($objective->files['webservice'] == ""){ 
+                                                 $html .= 'deactivate text-gray ';
+                                             } else {
+                                                 $html  .=''.$icon_class.' ';
+                                             }
+                                             $html  .='pull-right" onclick=\'formloader("link_module","enabling_objective","'.$objective->id.'","","webservice/moodle");\'></span>';
+                                         }   
+                                     }
+                                 } else {
+
+                                     if ($type != 'terminal_objective'){
+                                         if (checkCapabilities('reference:show', $USER->role_id, false)){
+                                             $html  .= '<span class="fa fa-link text-primary box-sm-icon pull-left" data-toggle="tooltip" title="Lehr- /Rahmenplanbezüge" onclick=\'formloader("reference_view", "'.$type.'", "'.$objective->id.'");\'></span>';
+                                         }
+                                         if (checkCapabilities('reference:add', $USER->role_id, false)){
+                                             $html  .= '<span class="box-sm-icon pull-right text-primary" data-toggle="tooltip" title="Lehr- /Rahmenplanbezug hinzufügen" onclick=\'formloader("reference", "new", "'.$objective->id.'", {"context":"enabling_objective"});\'><i class="fa fa-link text-primary box-sm-icon"><i class="fa fa-plus fa-xs"></i></i></span>';
+                                         }
+                                         if (checkCapabilities('course:selfAssessment', $USER->role_id, false)){
+                                             if (is_array($user_id)){
+                                                 $user_id = implode(',',$user_id);
+                                             }
+                                             $html  .='<span class="pull-left">'.Render::accCheckboxes(array('id' => $objective->id, 'student' => $user_id, 'teacher' => $USER->id, 'link' => false)).'</span>';
+                                         }
+                                         if (checkCapabilities('quiz:showQuiz', $USER->role_id, false) AND isset($PAGE->action)){
+                                             if ($objective->quiz != '0' AND $PAGE->action == 'view'){
+                                                 $html  .='<span class="fa fa-check-square-o pull-right box-sm-icon '.$icon_class.'" onclick=\'formloader("quiz","enabling_objective","'.$objective->id.'");\'></span>';
+                                             }
+                                         }
+                                         if (checkCapabilities('webservice:linkModuleResults', $USER->role_id, false) AND isset($PAGE->action) AND $objective->files['webservice'] != ''){
+                                             if ($PAGE->action == 'view'){
+                                                 $html  .='<span class="box-sm-icon '.$icon_class.'" onclick=\'processor("link_module_result","enabling_objective","'.$objective->id.'","","webservice/moodle");\'><i class="fa fa-external-link-square  fa-rotate-180"></i></span>';
+                                             }
+                                         }
+                                     } else {
+                                         if (checkCapabilities('reference:show', $USER->role_id, false)){
+                                             $html  .= '<span class="fa fa-link '.$icon_class.' box-sm-icon pull-left" data-toggle="tooltip" title="Lehr- /Rahmenplanbezüge" onclick=\'formloader("reference_view", "'.$type.'", "'.$objective->id.'");\'></span>';
+                                         }
+                                         if (checkCapabilities('reference:add', $USER->role_id, false)){
+                                             $html  .= '<span class="box-sm-icon pull-right '.$icon_class.'" data-toggle="tooltip" title="Lehr- /Rahmenplanbezug hinzufügen" onclick=\'formloader("reference", "new", "'.$objective->id.'", {"context":"terminal_objective"});\'><i class="fa fa-link '.$text_class.' box-sm-icon"><i class="fa fa-plus fa-xs"></i></i></span>';
+                                         }    
+
+                                     }
+                                 }  
+
+                 $html  .=' </div>';
+
+                 /*************** ./Footer ***************/
+                $html  .= '</div>'; 
+           break;
+        }
+        
         return $html;
     }
     
@@ -1103,8 +1200,11 @@ class Render {
         $usr     = new User();
         $r       = '<ul class="todo-list ui-sortable">';
                  foreach ($task as $tsk) {
-        $r       .= ' <li>
-                      <!--span class="handle ui-sortable-handle">
+        $r       .= ' <li class="tasklink" ';
+        if ($onclick){ 
+            $r   .= 'onclick="loadhtml(\'task\', '.$tsk->id.', \'task_left_col\', \'task_right_col\', \'col-xs-12 col-lg-6\', \'col-xs-12 col-lg-6\');">';
+        }
+            $r   .= '<!--span class="handle ui-sortable-handle">
                         <i class="fa fa-ellipsis-v"></i>
                         <i class="fa fa-ellipsis-v"></i>
                       </span-->';
@@ -1117,14 +1217,7 @@ class Render {
                                 }
                       $r       .= '>';
                       }
-                      $r       .= '<span class="text">';
-                      if ($onclick){ 
-                          $r   .= '<a onclick="loadhtml(\'task\', '.$tsk->id.', \'task_left_col\', \'task_right_col\', \'col-xs-12 col-lg-6\', \'col-xs-12 col-lg-6\');">'.$tsk->task.'</a>';
-                      } else {
-                          $r   .= $tsk->task;
-                      }
-                      
-                      $r       .=  '</span>
+                      $r       .= '<span class="text">'.$tsk->task.'</span>
                       <img src="../share/accessfile.php?id='.$usr->resolveUserId($tsk->creator_id, 'avatar').'" class="img-responsive img-circle img-sm pull-right" data-toggle="tooltip" title="'.$tsk->creator.'" style="margin-top:-5px;" alt="User Image">    
                       <span class="label label-primary pull-right margin-r-5"><i class="fa fa-clock-o"></i> '.$tsk->timeend.'</span>';
                       
@@ -1304,6 +1397,9 @@ class Render {
             }
         }
     }
+    public static function task_institution_block($params){
+       /*TODO: Show last institution tasks for global admins*/
+    }
     public static function task_block($params){ 
         global $USER,$CFG;
         $width  = '';//'col-md-4';
@@ -1354,7 +1450,7 @@ class Render {
             }
         }
     }
-    
+   
     public static function statistic_block($params){ 
         global $USER,$CFG;
         $width  = '';//'col-md-4';
@@ -1685,9 +1781,9 @@ class Render {
     }
     
     public static function split_button($params){
-        $label  = 'Auswahl';
-        $btn_type = 'btn btn-default btn-flat';
-        
+        $label      = 'Auswahl';
+        $btn_type   = 'btn btn-default btn-flat';
+        $type       = 'content';
         foreach($params as $key => $val) {
             $$key = $val;
         }
@@ -1696,7 +1792,25 @@ class Render {
                             <button type="button" class="'.$btn_type.' dropdown-toggle" data-toggle="dropdown">'.$label.' </button>
                             <ul class="dropdown-menu" role="menu">';
                             foreach($entrys as $key => $val) {
-                                $html .= '<li><a onclick="formloader(\'content\', \'show\','.$val->id.');">'.$val->title.'</span></a></li>';
+                                switch ($type) {
+                                    case 'content':
+                                        $html .= '<li><a onclick="formloader(\'content\', \'show\','.$val->id.');">'.$val->title.'</span></a></li>';
+                                    break;
+                                    case 'file':
+                                        $html .= '<li><a onclick="formloader(\'preview\',\'file\','.$val->id.');">'.$val->title.'</span></a></li>';
+                                    break;
+                                    case 'menu':
+                                        if (isset($val->href)){
+                                            $html .= '<li><a href="'.$val->href.'" class="'.$val->href_class.'">'.$val->title.'</span></a></li>';
+                                        } else {
+                                            $html .= '<li><a onclick="'.$val->onclick.'">'.$val->title.'</span></a></li>';
+                                        }
+                                    break;
+                                    
+                                    default:
+                                        break;
+                                }
+                                
                             }
             $html  .=      '</ul>
                         </div>';
@@ -1704,15 +1818,195 @@ class Render {
         }
     }
     
+    public static function box($params){
+        $status             = 'collapsed-box';
+        $header_content     = 'Title';
+        $header_box_tools   = '';
+        
+        $body_content       = '';
+        //$footer_content     = '';
+        
+        foreach($params as $key => $val) {
+            $$key = $val;
+        }
+        $html   = '';
+        $html  .= '<div class="box '.$status.' bottom-buffer-20">
+                            <div class="box-header with-border">
+                                  <h3 class="box-title">'.$header_content.'</h3>
+                                  <div class="box-tools pull-right">
+                                  '.$header_box_tools.'
+                                  </div>
+                            </div><!-- /.box-header -->
+                            <div class="box-body" >
+                                '.$body_content.'
+                            </div>';
+              if (isset($footer_content)){
+              $html  .= '   <div class="box-footer">
+                                '.$footer_content.'
+                            </div>';
+              }
+        $html  .= '</div>';
+        return $html;
+    }
+    
+    public static function carousel($params){
+        $carousel_id = 'carousel';
+        $data_ride   = 'carousel';
+        $slides     = array(); //[caption => '...', content => '...']
+        foreach($params as $key => $val) {
+            //error_log($key.' -> '. $val);
+            $$key = $val;
+        }
+        $html = '<div id="'.$carousel_id.'" class="carousel slide" data-ride="'.$data_ride.'" >
+                    <ol class="carousel-indicators">';
+                    $active_class = 'active';
+                    $i = 0; 
+                    foreach ($slides as $s) {
+                        $html .= '<li data-target="#'.$carousel_id.'" data-slide-to="'.$i.'" class="'.$active_class.'"></li>';
+                        if ($active_class == 'active'){ $active_class = ''; }
+                        $i++;
+                    }
+        $html .='   </ol>
+                <div class="carousel-inner" >';
+                    $active_class = 'active';
+                    $i = 0; 
+                    foreach ($slides as $s) {
+                        $html .= '<div class="item '.$active_class.'" >
+                                    <div style="overflow: scroll;  height: 400px;">'.$s->content.'</div>
+                                    <div class="carousel-caption">'.$s->caption.'</div>
+                                </div>';
+                        if ($active_class == 'active'){ $active_class = ''; }
+                        $i++;
+                    }
+        $html .='</div>
+                <a class="left carousel-control" href="#'.$carousel_id.'" data-slide="prev">
+                  <span class="fa fa-angle-left"></span>
+                </a>
+                <a class="right carousel-control" href="#'.$carousel_id.'" data-slide="next">
+                  <span class="fa fa-angle-right"></span>
+                </a>
+              </div>';
+        return $html;
+    }
+
+
+    public static function navigator_item($params){
+        global $CFG;
+        
+        foreach($params as $key => $val) {
+            //error_log($key.' -> '. $val);
+            $$key = $val;
+        }
+        $html = '';
+        switch ($nb_context_id) {
+            
+            case 2:     $cur                = new Curriculum();
+                        $cur->id            = $nb_target; 
+                        $cur->load(false);
+                        $file_id            = $cur->icon_id;
+                        $widget_onclick     = "location.href='index.php?action=view&curriculum_id={$nb_target}';";
+                        $html = RENDER::paginator_widget(array('widget_title' => $nb_title, 'file_id' => $file_id, 'widget_onclick' => $widget_onclick));
+                break;
+            case 15:    $content            = new Content();
+                        $content->load('id', $nb_reference_id);
+                        
+                        /*$s                  = array();
+                        $slides             = new stdClass();
+                        $slides->caption    =  'Slide2';
+                        $slides->content    =  '$content->content';
+                        $s[]                = clone $slides;
+                        */
+                        /*$slides             = new stdClass();
+                        $slides->caption    =  $content->title;
+                        $slides->content    =  $content->content;
+                        $s[]                = clone $slides;
+                        */
+                       //error_log(json_encode($s));
+                        
+                        
+                        $html              .= RENDER::box(array('header_box_tools' => '<button class="btn btn-box-tool" onclick="processor(\'print\',\'content\', \''.$nb_reference_id.'\')"><i class="fa fa-print"></i></button><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_content' => $content->title, 'content_id' => $nb_reference_id, 'body_content' => $content->content/*RENDER::carousel(array('data_ride' => '', 'slides' => $s))*/));
+                break; 
+            case 16:    $c = new Curriculum();
+                        $curricula = $c->getCurricula('group', $nb_reference_id);
+                        foreach ($curricula as $cur) {
+                            $html .= RENDER::paginator_widget(["widget_title" =>$cur->curriculum, "ref_id" => $cur->id, "group_id" => $nb_reference_id]);
+                        }
+                        
+                break;
+            
+            case 29:    $f = new File();
+                        $f->load($nb_reference_id);
+                        $html = '<div class="'.$nb_width_class.'">'.RENDER::file($f).'</div>';
+                break;
+            case 31:    $widget_onclick = "location.href='index.php?action=navigator&nv_id={$nb_target}';";
+                        $html = RENDER::paginator_widget(array('widget_title' => $nb_title, 'file_id' => $nb_file_id, 'widget_onclick' => $widget_onclick));
+
+                break;
+            
+            default:
+                break;
+        }
+        
+        return $html;     
+    }
+    public static function paginator_widget($params){
+        global $CFG;
+        /*default params*/
+        $class_width    = 'col-md-6';
+        $widget_type    = 'curriculum';
+        $bg_color       = 'bg-white';
+        $widget_title   = 'Titel';
+        $widget_desc    = '';
+        $bg_badge       = 'bg-green';
+        $href           = '#';
+        //$onclick_badge  = '';
+        $opt            = array(); 
+        $widget_onclick        = ''; 
+        
+        foreach($params as $key => $val) {
+            $$key = $val;
+        }
+        if (isset($file_id)){
+            $icon_url           = $CFG->access_id_url.$file_id;
+        } else if (!isset($icon_url)){
+            $cur                = new Curriculum();
+            $cur->id            = $ref_id; 
+            $cur->load(false);
+            $icon_url           = $CFG->access_id_url.$cur->icon_id;
+            $widget_onclick     = "location.href='index.php?action=view&curriculum_id={$ref_id}&group={$group_id}';";
+        } 
+        
+        $html   =  '<div class="box box-objective bg-white '.$bg_color.'" style="height: 300px !important; padding: 0; background: url(\''.$icon_url.'\') center center;  background-size: cover;" margin-bottom" >'; 
+        $html   .= '                <span class="bg-white no-padding" style="background-color: #fff; position:absolute; bottom:0px; height: 120px;width:100%;text-align: center;">'
+                . '<span class="col-xs-12" style="background-color: '.$bg_color.'; position:absolute; display:block; left:0;right:0;bottom:120px;">';
+        foreach ($opt as $k =>$o) {
+                $html .= '<span style="margin-right:15px;padding:5px;text-shadow: 1px 1px #FF0000;" class="fa">'.$o.'</span>';    
+        }
+        $html .= '</span>';
+                $html   .= '<div class="caption text-center">';
+                if (isset($widget_timerange)){
+                    $html   .= '<small>'.$widget_timerange.'</small>';
+                }
+                        $html   .= '  <h5 class="events-heading text-ellipse"><a onclick="'.$widget_onclick.'">'.$widget_title.'</a></h5>
+                                  <p style="overflow: scroll; width: 100%; height: 60px;">'.$widget_desc.'</p>
+                                </div>';
+                        
+        $html   .=     '</span>
+                     </div>';
+        return $html;     
+    }
+    
     public static function box_widget($params){
         /*default params*/
-        $class_width     = 'col-md-6';
+        $class_width    = 'col-md-6';
         $widget_type    = 'user';
         $bg_color       = '';
         $widget_title   = 'Titel';
         $widget_desc    = 'desc';
         $bg_badge       = 'bg-green';
         $href           = '#';
+        $onclick_badge  = '';
+        
         // $data        == data array;
         // more params: $label, $badge, $bg_icon 
         
@@ -1750,7 +2044,15 @@ class Render {
                                 
                             $html   .= '<li><a href="'.$href_regex.'">'.$l;
                             if (isset($badge)){
-                                $html   .= '<span class="pull-right badge '.$bg_badge.'">'.$value->$badge.'</span>';          
+                                
+                                $onclick = str_replace('__id__', $value->id, $onclick_badge);
+                                $html   .= '<span class="pull-right badge '.$bg_badge.'" onclick="'.$onclick.'">';
+                                if (isset($badge_title)){
+                                    $html   .= $badge_title;
+                                } else {
+                                    $html   .= $value->$badge;
+                                }
+                                $html   .= '</span>';          
                             }
                             $html   .= '</a></li>';           
                         } 

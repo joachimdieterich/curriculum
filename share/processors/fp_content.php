@@ -56,6 +56,9 @@ if($validated_data === false) {/* validation failed */
     foreach($content as $key => $value){
         $_SESSION['FORM']->$key  = $value;
     } 
+    if (isset($_POST['id'])){
+        $_SESSION['FORM']->id = $_POST['id'];
+    }
     $_SESSION['FORM']->error     = $gump->get_readable_errors();
     $_SESSION['FORM']->func      = $_POST['func'];
 } else {
@@ -66,6 +69,18 @@ if($validated_data === false) {/* validation failed */
     }  else {
         checkCapabilities('content:add', $USER->role_id);   //has to be done here --> content class is used in wallet with permission wallet:add
         $content->add(); 
+    }
+    switch ($content->context_id) {
+        case 4: 
+        case 12:    $_SESSION['anchor'] = 'ena_'.$content->reference_id; // set anchor to jump to new enabling objective
+            break;
+        case 27:    $_SESSION['anchor'] = 'ter_'.$content->reference_id; // set anchor to jump to new terminal objective
+
+
+            break;
+
+        default:
+            break;
     }
     $_SESSION['FORM']            = null;                     // reset Session Form object 
 }

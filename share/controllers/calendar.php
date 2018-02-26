@@ -40,4 +40,31 @@ foreach ($e->get('user', $USER->id) as $value) {
     $ev->borderColor      = "#00c0ef";
     $events[]             = clone $ev;
 }
+
+ 
+$course     = new Course();
+$ids        = $course->getCourseIds('user', $USER->id);
+$schedule   = new Schedule();
+$schedules  = $schedule->get('course', $ids);
+//error_log(json_encode($schedules));
+foreach ($schedules as $value) {
+    
+    //{"id":"1","schedule":"1. Stunde","description":"Raum 0","context_id":"17","reference_id":"141","repeat_id":"2",
+    //"date_start":"2017-01-27","date_end":"2019-01-27","time_start":"09:00:00","duration":"09:45:00","creation_time":"2018-01-27 16:19:09","creator_id":"102"}
+    $ev->id               = $value->id;
+    $ev->title            = $value->schedule;
+    $ev->dowstart         = $value->date_start;
+    $ev->dowend           = $value->date_end;
+    $ev->dow              = '['.$value->dow.']';
+    $ev->start            = $value->time_start;
+    $ev->end              = $value->time_end;
+    $ev->resourceId       = $value->reference_id;
+    $group                = new Group();
+    $group->
+    $ev->backgroundColor  = "#00c0ef";
+    $ev->borderColor      = "#00c0ef";
+    $events[]             = clone $ev;
+}
+//error_log(json_encode($events));
 $TEMPLATE->assign('events', json_encode($events));       
+  

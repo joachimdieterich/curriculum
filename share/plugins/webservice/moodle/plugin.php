@@ -93,39 +93,42 @@ class webservice_plugin_moodle extends webservice_plugin_base {
     }
     
     function getFiles_link_module($dependency, $id, $files){
-        $link_module = $this->link_module_results($_SESSION['CONTEXT'][$dependency]->id, $id);
-        if (!isset($link_module->config_data)){
-            return $files;
-        }
-        $config_data = json_decode($link_module->config_data);
-        $course_cont = json_decode($this->core_course_get_contents($config_data->moodle_course_id)); 
-        $tmp_file    = new File();
-        $mdl_link    = array();
-        foreach ($course_cont AS  $value) {
-             foreach($value->modules AS $module){
-                 if (isset($module->id) AND $module->modname == 'quiz' ){
-                     if ($module->id == $config_data->moodle_module_id){
-                         $tmp_file->license                       = '---';
-                         $tmp_file->title                         = $module->name;
-                         $tmp_file->type                          ='external';
-                         $tmp_file->file_context                  = 6;
-                         if (isset($module->description)){
-                             $tmp_file->description               = $module->description;
-                         } else {
-                             $tmp_file->description = '';
+        if (isset($_SESSION['CONTEXT'][$dependency]->id)){
+            $link_module = $this->link_module_results($_SESSION['CONTEXT'][$dependency]->id, $id);
+            if (!isset($link_module->config_data)){
+                return $files;
+            }
+            $config_data = json_decode($link_module->config_data);
+            $course_cont = json_decode($this->core_course_get_contents($config_data->moodle_course_id)); 
+            $tmp_file    = new File();
+            $mdl_link    = array();
+            foreach ($course_cont AS  $value) {
+                 foreach($value->modules AS $module){
+                     if (isset($module->id) AND $module->modname == 'quiz' ){
+                         if ($module->id == $config_data->moodle_module_id){
+                             $tmp_file->license                       = '---';
+                             $tmp_file->title                         = $module->name;
+                             $tmp_file->type                          ='external';
+                             $tmp_file->file_context                  = 6;
+                             if (isset($module->description)){
+                                 $tmp_file->description               = $module->description;
+                             } else {
+                                 $tmp_file->description = '';
+                             }
+                             $tmp_file->file_version['t']['filename'] = $module->modicon;
+                             $tmp_file->filename                      = $module->url;
+                             $tmp_file->path                          = $module->url;
+                             $mdl_link[] = clone $tmp_file;
                          }
-                         $tmp_file->file_version['t']['filename'] = $module->modicon;
-                         $tmp_file->filename                      = $module->url;
-                         $tmp_file->path                          = $module->url;
-                         $mdl_link[] = clone $tmp_file;
                      }
                  }
              }
-         }
-         if (is_array($mdl_link) AND isset($tmp_file->title)){ //todo define all cases
-              $files = array_merge($files, $mdl_link);
-         }
-         return $files;
+        
+            if (is_array($mdl_link) AND isset($tmp_file->title)){ //todo define all cases
+                 $files = array_merge($files, $mdl_link);
+            }
+        }
+        return $files;
     }
     
      public function count($context_id, $id){

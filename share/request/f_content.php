@@ -36,6 +36,11 @@ $content     = null;
 $context     = null;
 $timecreated = null;
 $creator_id  = null;
+$label_title     = isset($_GET['label_title']) ? $_GET['label_title'] : 'Titel';
+$label_content   = isset($_GET['label_content']) ? $_GET['label_content'] : 'Beschreibung';
+$label_header    = isset($_GET['label_header']) ? $_GET['label_header'] : 'Inhalt hinzufügen';
+$label_save      = isset($_GET['label_save']) ? $_GET['label_save'] : 'Inhalt speichern';
+  
 $footer      = '';
 $options     = '';
 $func        = $_GET['func'];
@@ -44,20 +49,24 @@ $object      = file_get_contents("php://input");
 $data        = json_decode($object, true);
 if (is_array($data)) {
     foreach ($data as $key => $value){
-        $$key = $value;
+        $$key = $value;   
     }
 }
             
+
 if (isset($_GET['func'])){
     switch ($_GET['func']) {
-        case "new":     checkCapabilities('content:add',    $USER->role_id);
-                        $header         = 'Inhalt hinzufügen';
-                        $context_id     = filter_input(INPUT_GET, 'context_id', FILTER_VALIDATE_INT);
+        case "new":     checkCapabilities('content:add',    $USER->role_id, false, true);
+                        if (null !== filter_input(INPUT_GET, 'context', FILTER_SANITIZE_STRING)){
+                            $context_id     = $_SESSION['CONTEXT'][filter_input(INPUT_GET, 'context', FILTER_SANITIZE_STRING)]->context_id;
+                        } else {
+                            $context_id     = filter_input(INPUT_GET, 'context_id', FILTER_VALIDATE_INT);
+                        }
                         $reference_id   = filter_input(INPUT_GET, 'reference_id', FILTER_VALIDATE_INT);
                         $add = true;              
             break;
-        case "edit":    checkCapabilities('content:update', $USER->role_id);
-                        $header         = 'Inhalt aktualisieren';
+        case "edit":    checkCapabilities('content:update', $USER->role_id, false, true);
+                        $label_header   = 'Inhalt aktualisieren';
                         $edit           = true; 
                         $ct             = new Content();
                         $ct->load('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
@@ -69,13 +78,13 @@ if (isset($_GET['func'])){
             break;
         case "show":    $content        = new Content();
                         $content->load('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
-                        if (checkCapabilities('content:delete', $USER->role_id, false)){
+                        if (checkCapabilities('content:delete', $USER->role_id, false, true)){
                             $options   .= '<a onclick="del(\'content\','.$content->id.');" class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-trash"></i></a>';
                         }
-                        if (checkCapabilities('content:update', $USER->role_id, false)){
+                        if (checkCapabilities('content:update', $USER->role_id, false, true)){
                             $options   .= '<a onclick="formloader(\'content\', \'edit\','.$content->id.')" class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-edit"></i></a>';
                         }
-                        $header         = $content->title;
+                        $label_header   = $content->title;
                         $html           = $content->content;
                         
             break;
@@ -101,16 +110,16 @@ if ($_GET['func'] != "show"){
     <input id="reference_id" type="hidden" name="reference_id" value="'.$reference_id.'"/>
     <input id="id" name="id" type="text" class="invisible" ';
     if (isset($id)) { $html .= 'value="'.$id.'"';} $html .= '>';
-    $html   .= Form::input_text('title', 'Titel', $title, $error, 'Überschrift');
-    $html   .= Form::input_textarea('content', 'Inhalt', $content, $error, 'Seiteninhalt');
+    $html   .= Form::input_text('title', $label_title, $title, $error, 'Titel');
+    $html   .= Form::input_textarea('content', $label_content, $content, $error, 'Beschreibung');
     $c       = new Context();
     $html   .=  Form::input_select('file_context', 'Freigabe-Level', $c->get(), 'description', 'id', $context , $error);
     $html   .= '</form>';
-    $footer .= '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_content\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';
+    $footer .= '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_content\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$label_save.'</button>';
 }
 
 $html_form   = Form::modal(array('target'    => 'null',
-                                   'title'     => $header.$options,
+                                   'title'     => $label_header.$options,
                                    'content'   => $html, 
                                    'f_content' => $footer));
 

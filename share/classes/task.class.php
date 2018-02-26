@@ -185,7 +185,7 @@ class Task {
     
     public function enrol($context_id, $reference_id){
         global $USER;
-        error_log('ctx '.$context_id.' ref '.$reference_id);
+        //error_log('ctx '.$context_id.' ref '.$reference_id);
         if ($this->checkEnrolment($context_id, $reference_id, 0)) {
             $db = DB::prepare('UPDATE task_enrolments SET status = 1, creator_id = ?, creation_time = NOW()
                                 WHERE context_id = ? AND reference_id = ? AND task_id = ?'); //Status 1 == eingeschrieben

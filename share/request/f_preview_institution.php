@@ -54,7 +54,7 @@ $content   .= Render::box_widget(array('widget_title' => 'Benutzer',
                                        'data'         => $u,
                                        'badge'        => 'role_name',
                                        'label'        => 'firstname, lastname', 
-                                       'widget_desc'  => 'Mitglieder der Lerngruppe',
+                                       'widget_desc'  => 'Mitglieder der Institution',
                                        'bg_icon'      => 'fa fa-user',
                                        'bg_color'     => 'blue'));
 $content   .='</div></div><!-- /.tab-pane -->

@@ -59,14 +59,14 @@ if (is_array($data)) {
             
 if (isset($_GET['func'])){
     switch ($_GET['func']) {
-        case "new":     checkCapabilities('institution:add',    $USER->role_id);
+        case "new":     checkCapabilities('institution:add',    $USER->role_id, false, true);
                         $header = 'Institution hinzufügen';
                         if (!isset($country_id)){ 
-                            $country_id = $INSTITUTION->country_id;
-                            $state_id   = $INSTITUTION->state_id;         
+                            $country_id = $USER->institution->country_id;
+                            $state_id   = $USER->institution->state_id;         
                         }              
             break;
-        case "edit":    checkCapabilities('institution:update',    $USER->role_id);
+        case "edit":    checkCapabilities('institution:update',    $USER->role_id, false, true);
                         $header     = 'Institution aktualisieren';
                         $ins        = new Institution();
                         $ins->id    = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);

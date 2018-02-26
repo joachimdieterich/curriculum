@@ -29,9 +29,5 @@ global $USER;
 $USER               = $_SESSION['USER'];
 
 $current_user       = new User();
-$current_user->id   = filter_input(INPUT_GET, 'userID', FILTER_VALIDATE_INT);
-if ($current_user->expelFromGroup(filter_input(INPUT_GET, 'groupsID', FILTER_VALIDATE_INT))){
-    Render::popup('Information', '<p>Benutzer wurde erfolgreich ausgeschrieben.</p>');
-} else { 
-    Render::popup('Information', '<p>Datensatz konnte nicht gefunden werden.</p>');
-}
+$current_user->load('id', filter_input(INPUT_GET, 'userID', FILTER_VALIDATE_INT));
+$current_user->expelFromGroup(array(filter_input(INPUT_GET, 'groupsID', FILTER_VALIDATE_INT)));

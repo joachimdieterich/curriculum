@@ -154,13 +154,12 @@ class Group {
     /**
      * Load group with id $this->id 
      */
-    public function load($id = null){
-        if ($id != null){
-            $this->id = $id;
-        }
-        $db     = DB::prepare('SELECT gr.*, se.semester FROM groups AS gr, semester AS se WHERE gr.id = ? AND gr.semester_id = se.id');
-        $db->execute(array($this->id));              
+    public function load($dependency = 'id', $value = null){
+        if (isset($value)){ $v = $value; } else { $v = $this->id; }
+        $db     = DB::prepare('SELECT gr.*, se.semester FROM groups AS gr, semester AS se WHERE gr.'.$dependency.' = ? AND gr.semester_id = se.id');
+        $db->execute(array($v));              
         $result = $db->fetchObject();
+        $this->id               = $result->id;
         $this->group            = $result->groups;
         $this->description      = $result->description;
         $this->grade_id         = $result->grade_id;
@@ -252,7 +251,7 @@ class Group {
      * @param type $id
      * @return array of groups objects 
      */
-    public function getGroups($dependency = null, $id = null, $paginator = ''){
+    public function getGroups($dependency = null, $id = null, $paginator = '', $institution_id = null){
         global $USER;
         $order_param = orderPaginator($paginator, array('id'            => 'gp',
                                                         'groups'        => 'gp',
@@ -291,6 +290,17 @@ class Group {
                                                 AND gp.id = ANY (SELECT group_id FROM groups_enrolments WHERE user_id = ? AND status = 1) 
                                                 '.$order_param);
                             $db->execute(array($id));
+                 break; 
+            case 'user_institution':    $db = DB::prepare('SELECT gp.*, gr.grade, se.semester, ins.institution AS institution_id, usr.username AS creator_id
+                                                FROM groups AS gp, semester AS se, institution AS ins, users AS usr, grade AS gr
+                                                WHERE se.id = gp.semester_id
+                                                AND gp.grade_id = gr.id
+                                                AND ins.id = gp.institution_id
+                                                AND ins.id = ?
+                                                AND usr.id = gp.creator_id
+                                                AND gp.id = ANY (SELECT group_id FROM groups_enrolments WHERE user_id = ? AND status = 1) 
+                                                '.$order_param);
+                            $db->execute(array($institution_id, $id));
                  break; 
             case 'institution':   $db = DB::prepare('SELECT gp.*, gr.grade, se.semester FROM groups AS gp, grade AS gr, semester AS se
                                                      WHERE se.id = gp.semester_id

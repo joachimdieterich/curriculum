@@ -50,6 +50,7 @@ switch ($db) {
     case "content":             $t = new Content();             break;
     case "wallet":              $t = new Wallet();              break;
     case "wallet_content":      $t = new WalletContent();       break;
+    case "reference":           $t = new Reference();           break;
     default: break;
 }
 

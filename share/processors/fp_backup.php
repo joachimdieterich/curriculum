@@ -49,7 +49,8 @@ if($validated_data === false) {/* validation failed */
     $_SESSION['FORM']->func      = $_POST['func'];
 } else {
     if ($_POST['func'] == 'new'){
-        $backup->add($curriculum_id, true, false);           // 2. arg = generate  xml backup //todo: 3. parameter =generate imscc
+        $export_format      = $_POST['export_format'];
+        $backup->add($curriculum_id, $export_format);           // 2. arg = generate  xml backup //todo: 3. parameter =generate imscc
         SmartyPaginate::setTotal(SmartyPaginate::getTotal('fileBackupPaginator')+1, 'fileBackupPaginator');
         $_SESSION['PAGE']->target_url = SmartyPaginate::getLastPageIndexURL('fileBackupPaginator'); //jump to new entry in list
         $_SESSION['PAGE']->message[] = array('message' => 'Backup hinzufgefügt', 'icon' => 'fa-cloud-download text-success');

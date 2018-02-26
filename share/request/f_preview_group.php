@@ -31,7 +31,7 @@ $func       = $_GET['func'];
 
 switch ($func) {
     case 'full':  $g       = new Group();
-                  $g->load(filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));     
+                  $g->load('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));     
         break;
     
     default:    
@@ -47,9 +47,9 @@ $content    = Render::box_widget(array('widget_title' => 'Lehrpläne',
                                        'bg_icon'      => 'fa fa-th'));
 $users      = new User();
 $u_list     = $users->getGroupMembers('group', $g->id);
-
-
+$list       = array();
 foreach($u_list AS $ul){
+    $users      = new User();
     $users->load('id', $ul, false);
     $list[] = clone $users;
 }
@@ -57,7 +57,11 @@ $content   .= Render::box_widget(array('widget_title' => 'Benutzer',
                                        'data'         => $list,
                                        'label'        => 'firstname, lastname', 
                                        'widget_desc'  => 'Mitglieder der Lerngruppe',
-                                       'bg_icon'      => 'fa fa-user'));
+                                       'bg_icon'      => 'fa fa-user',
+                                       'bg_badge'     => 'bg-gray ',
+                                       'badge'        => true,
+                                       'badge_title'  => 'ausschreiben',
+                                       'onclick_badge'=> 'expelUser('.$g->id.',__id__);'));
 
 $html       = Form::modal(array('title'   => 'Überblick Lerngruppe <strong>'.$g->group.'</strong>',
                                 'content' => $content));

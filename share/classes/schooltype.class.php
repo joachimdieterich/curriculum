@@ -136,7 +136,7 @@ class Schooltype {
      * Get all availible schooltypes 
      * @return array of schooltype objects 
      */
-    public function getSchooltypes(){
+    public function getSchooltypes($for_session = false){
         $schooltypes = array();                      //Array of schooltypes
         $db          = DB::prepare('SELECT * FROM schooltype');
         $db->execute();
@@ -148,7 +148,10 @@ class Schooltype {
             $this->state_id         = $result->state_id;
             $this->creation_time    = $result->creation_time;
             $this->creator_id       = $result->creator_id;
-            $schooltypes[]          = clone $this;        //it has to be clone, to get the object and not the reference
+            if ($for_session){
+                $schooltypes[$result->schooltype]= clone $this;   // store schooltypes by id and schooltype to resolve both ways
+            }
+            $schooltypes[$result->id]= clone $this;        
         } 
         return $schooltypes;
     }

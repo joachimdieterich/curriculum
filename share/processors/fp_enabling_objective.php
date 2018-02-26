@@ -68,7 +68,7 @@ if($validated_data === false) {/* validation failed */
     } else {
         $ena_id                  = $enabling_objective->add(); 
     }
-    $_SESSION['anchor']          = 'ena_'.$ena_id;           // set anchor to jump to new terminal objective
+    $_SESSION['anchor']          = 'ena_'.$ena_id;           // set anchor to jump to new enabling objective
     $_SESSION['FORM']            = null;                     // reset Session Form object
     $curriculum                  = $_POST['curriculum_id'];   
 }

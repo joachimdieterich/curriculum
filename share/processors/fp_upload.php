@@ -63,7 +63,10 @@ case "userFiles":
 case "avatar":
 case "editor":              $folders = $USER->id.'/';                       // set upload-folder 
                             break;
-
+case "curriculum":          // see case enabling_objective and terminal_objective
+                            $curID   = $ref_id;
+                            $folders = $ref_id.'/';
+      break;
 case "enabling_objective":  $context = 'curriculum';                        // ! set context to curriculum to get right context_id, enabling_objective is used to load curID and terID
 case "solution":            $eo      = new EnablingObjective();     
                             $eo->id  = $ref_id;
@@ -73,7 +76,7 @@ case "solution":            $eo      = new EnablingObjective();
                             $enaID = $eo->id;
                             $folders = $curID.'/'.$terID.'/'.$enaID.'/';    // set upload-folder 
                             break;       
-case "terminal_objective":  $to      = new EnablingObjective();     
+case "terminal_objective":  $to      = new TerminalObjective();     
                             $to->id  = $ref_id;
                             $to->load();                                    // load ids folders
                             $curID = $to->curriculum_id;
@@ -81,8 +84,7 @@ case "terminal_objective":  $to      = new EnablingObjective();
                             $folders = $curID.'/'.$terID.'/';               // set upload-folder 
                             $context = 'curriculum';                        // ! set context to curriculum to get right context_id, terminal_objective is used to load curID
                             break;                 
-case "curriculum":          // see case enabling_objective and terminal_objective
-                            //break;
+
 case "task":
 case "badge":               
 case "backup":              $folders = '/';                                  // siehe unten                        

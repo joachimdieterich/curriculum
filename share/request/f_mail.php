@@ -47,11 +47,11 @@ if (isset($func)){
     switch ($func) {
         case 'gethelp': $subject           = $USER->firstname.' '.$USER->lastname.' braucht Deine Hilfe.';
                         $receiver_id       = filter_input(INPUT_GET, 'id',    FILTER_UNSAFE_RAW);
-        case 'new':     checkCapabilities('mail:postMail', $USER->role_id);
+        case 'new':     checkCapabilities('mail:postMail', $USER->role_id, false, true);
                         $header            = 'Nachricht schreiben';
         break;
         case 'reply':
-        case 'forward': checkCapabilities('mail:postMail', $USER->role_id);
+        case 'forward': checkCapabilities('mail:postMail', $USER->role_id, false, true);
                         $header            = 'Nachricht beantworten';
                         $mail_obj          = new Mail();
                         $mail_obj->id      = filter_input(INPUT_GET, 'id',    FILTER_UNSAFE_RAW);

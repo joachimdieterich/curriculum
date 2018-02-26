@@ -304,7 +304,7 @@ function renderSelect($name, $label, $values, $select){?>
  * @param boolean $thow_exception 
  * @return boolean 
  */
-function checkCapabilities($capability = null, $role_id = null, $thow_exception = true){
+function checkCapabilities($capability = null, $role_id = null, $thow_exception = true, $modal = false){
     $capabilities = new Capability();
     $capabilities->capability = $capability; 
     $capabilities->role_id    = $role_id; 
@@ -312,10 +312,18 @@ function checkCapabilities($capability = null, $role_id = null, $thow_exception 
     if ($capabilities->checkCapability()){
         return true;
     } else {
+        if ($modal AND $thow_exception == true){ // Rendert den Fehler im modal
+            $html = Form::error(array('capability' => $capability, 
+                     'page_name'  => '')); 
+            $html = Form::modal(array('title'     => 'Fehler',   'content'   => $html));
+            echo json_encode(array('html'=> $html));
+            die();
+        }
         if ($thow_exception){
             global $USER;
             throw new CurriculumException('Als <strong>'.$USER->role_name.'</strong> verfügen Sie nicht über die erforderliche Berechtigung ('.$capability.').', 1);
         }
+        
         return false; 
     }
 }
@@ -730,7 +738,7 @@ function PHPArrayObjectSorter($array,$sortBy,$direction='asc'){
         }
         
         return $sortedArray;
-    }
+}
     
     function truncate($text, $chars = 25) {
         $text = substr($text,0,$chars);
@@ -879,6 +887,24 @@ function setChildren(){
         }
     }
 }
+
+function getContrastColor($hexcolor, $darkcolor = '#000000' , $lightcolor = '#FFFFFF') {  
+    $hexcolor = str_replace('#', '', $hexcolor);
+    switch($len=strlen($hexcolor)) {
+        case 3:
+                $hexcolor=preg_replace("/(.)(.)(.)/","\\1\\1\\2\\2\\3\\3",$hexcolor);
+                break;
+        case 6:
+                break;
+        default:
+                error_log("Invalid hex length ($len). Must be a minimum length of (3) or maxium of (6) characters");
+    }
+    $r = hexdec(substr($hexcolor, 0, 2));
+    $g = hexdec(substr($hexcolor, 2, 2));
+    $b = hexdec(substr($hexcolor, 4, 2));
+    $yiq = (($r * 299) + ($g * 587) + ($b * 114)) / 1000;
+    return ($yiq >= 128) ? $darkcolor: $lightcolor;
+}    
 
 /*
 function element_functions($string, $prefix, $object){

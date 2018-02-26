@@ -137,7 +137,7 @@ class Grade {
      * Get all availible Grades of current institution
      * @return array of Grade objects 
      */
-    public function getGrades($dependency = 'all', $id = null, $paginator = '' ){
+    public function getGrades($dependency = 'all', $id = null, $paginator = '', $for_session = false){
         global $USER;
         $order_param = orderPaginator($paginator, array('id'            => 'gr',
                                                         'grade'         => 'gr',
@@ -145,6 +145,11 @@ class Grade {
                                                         'institution'   => 'ins')); 
         $grades = array();                      //Array of grades
         switch ($dependency) {
+            case 'global': $db = DB::prepare('SELECT gr.*, ins.institution 
+                                            FROM grade AS gr, institution AS ins 
+                                            WHERE gr.institution_id = ins.id '.$order_param );
+                        $db->execute();
+                break;
             case 'all': $db = DB::prepare('SELECT gr.*, ins.institution 
                                             FROM grade AS gr, institution AS ins 
                                             WHERE (gr.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE institution_id = ins.id AND user_id = ?) OR gr.institution_id = 0)
@@ -164,7 +169,10 @@ class Grade {
             foreach ($result as $key => $value) {
                 $this->$key = $value; 
             }
-            $grades[]       = clone $this;        //it has to be clone, to get the object and not the reference
+            if ($for_session){
+                $grades[$result->grade]= clone $this;        // store grade by id and grade to resolve both ways
+            }
+            $grades[$result->id]       = clone $this;       
         } 
         return $grades;
     }

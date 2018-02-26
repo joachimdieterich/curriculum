@@ -25,19 +25,29 @@
             </div>
         </div>
         
-            <div class="pull-left" style="padding: 0 0 10px 15px;">
-                {if checkCapabilities('wallet:add', $my_role_id, false)}    
-                <button type="button" class="btn btn-default " onclick="formloader('wallet','new');" ><i class="fa fa-plus"></i> Sammelmappe hinzufügen</button>
-                {/if}
-                <button type="button" class="btn btn-default " onclick="location.href='index.php?action=wallet&view=shared';" ><i class="fa fa-share-alt"></i> Freigaben</button>
+        <div class="pull-left" style="padding: 0 0 10px 15px;">
+            {if checkCapabilities('wallet:add', $my_role_id, false)}    
+            <button type="button" class="btn btn-default " onclick="formloader('wallet','new');" ><i class="fa fa-plus"></i> Sammelmappe hinzufügen</button>
+            {/if}
+            <button type="button" class="btn btn-default " onclick="location.href='index.php?action=wallet&view=shared';" ><i class="fa fa-share-alt"></i> Freigaben</button>
+        </div>
+        <div class="col-xs-12">
+            <div class="box box-default">
+                <div class="box-body">
+                    <span class="clearfix"></span>
+                    {html_paginator id='walletP' title='Sammelmappen'}
+                </div>
             </div>
+        </div>
         
     </div>
-    <div class="row">
+    
+    {*<div class="row">
+        
         {foreach key=walletid item=w from=$wallet}
             {RENDER::wallet_thumb(['wallet'=>$w])}
         {/foreach}
-    </div>
+    </div>*}
 </section>
 {/block}
 

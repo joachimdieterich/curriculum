@@ -5,10 +5,31 @@
 {block name=nav}{$smarty.block.parent}{/block}
 
 {block name=additional_scripts}{$smarty.block.parent}
-{literal}
+    {if isset($glossar_json)}
+        <script src="{$media_url}scripts/glossarizer/jquery.glossarize.min.js"></script>
+        <script src="{$media_url}scripts/glossarizer/tooltip/tooltip.min.js"></script>
+
+        <script>
+        $(function(){
+          $('.boxcontent').glossarizer({
+            sourceURL: {$glossar_json},
+            callback: function(){
+              new tooltip();
+            }
+          });
+        });
+        function toggleAll(){
+            return (this.tog^=1) ? $('.collapse').collapse('hide') : $('.collapse').collapse('show');
+        };
+        </script>
+    {/if}
     <script type="text/javascript">
-    
     $(document).ready(function () {
+         <!--jump to actual row-->      
+        {if isset($anchor)}
+            $('#body-wrapper').animate({literal}{{/literal} scrollTop: $('#{$anchor}').offset().top-60{literal}}{/literal}, 100);
+        {/if}
+        
         $('a[data-toggle="collapse"]').click(function () {
                 $(this).find('i.fa').toggleClass('fa-compress fa-expand');
         });
@@ -17,9 +38,11 @@
         return (this.tog^=1) ? $('.collapse').collapse('hide') : $('.collapse').collapse('show');
     };
     
-</script>{/literal}        
+</script>
 {/block}
-{block name=additional_stylesheets}{$smarty.block.parent}{/block}
+{block name=additional_stylesheets}
+<link rel="stylesheet" href="{$media_url}scripts/glossarizer/tooltip/tooltip.min.css">
+{$smarty.block.parent}{/block}
 
 {block name=content}
 <!-- Content Header (Page header) -->
@@ -45,15 +68,37 @@
                 <button type="button" class="btn btn-default" data-toggle="tooltip" title="Kompetenzen einklappen bzw. ausklappen"  onclick="toggleAll(); $(this).find('i.fa').toggleClass('fa-compress fa-expand');">
                     <i class="fa fa-compress"></i>
                 </button>
-                <button type="button" class="btn btn-default" onclick="formloader('description','curriculum',{$course[0]->curriculum_id});">
+                {*<button type="button" class="btn btn-default" onclick="formloader('description','curriculum',{$course[0]->curriculum_id});">
                     <i class="fa fa-info"></i>
-                </button>
+                </button>*}
                 {Render::split_button($cur_content)}
-                {if isset($showaddObjectives)}
-                    <button type="button" class="btn btn-default" onclick='formloader("content", "new", null,{["context_id"=>"2", "reference_id"=>$course[0]->curriculum_id]|@json_encode nofilter});'>
-                        <i class="fa fa-plus"></i>
+                {if isset($content_menu)}
+                   {Render::split_button($content_menu)}    
+                {/if}
+                
+                {if checkCapabilities('curriculum:print', $my_role_id, false)}
+                    <button type="button" class="btn btn-default" onclick="formloader('print','curriculum',{$course[0]->curriculum_id});">
+                        <i class="fa fa-print"></i>
                     </button>
                 {/if}
+            </div>
+            <div class="btn-group pull-left margin-r-5">
+                {Render::split_button($glossar_content)}
+                {if isset($showaddObjectives)}
+                    <button type="button" class="btn btn-default" onclick='formloader("content", "new", null,{["label_title"=>"Begriff", "label_content"=>"Definition", "label_header"=>"Glossar hinzufügen","label_save"=>"Glossareintrag speichern", "context"=>"glossar", "reference_id"=>$course[0]->curriculum_id]|@json_encode nofilter});'>
+                        <i class="fa fa-list-alt "></i>
+                    </button>
+                {/if} 
+            </div>
+            <div class="btn-group pull-left margin-r-5">
+                {Render::split_button($cur_files)}
+                {if isset($showaddObjectives)}
+                    <button type="button" class="btn btn-default" >
+                        <a href="{$template_url}renderer/uploadframe.php?context=curriculum&ref_id={$course[0]->curriculum_id}&modal=true&format=1" class="nyroModal">
+                            <i class="fa fa-upload text-black"></i>
+                        </a>
+                    </button>
+                {/if} 
             </div>
         </div>
         <div id="search_curriculum_{$course[0]->curriculum_id}" class="col-xs-12 top-buffer" >
@@ -130,11 +175,6 @@
         </div>            
     </div>
 </section>
-        
- <!--jump to actual row-->      
-{if isset($smarty.session.anchor)}
-    <script type="text/javascript"> window.location.hash="{$smarty.session.anchor}"; </script>            
-{/if}
 
 {/block}
 

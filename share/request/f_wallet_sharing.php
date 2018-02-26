@@ -45,7 +45,7 @@ if (is_array($data)) {
 if (isset($_GET['func'])){
     switch ($_GET['func']) {
         case "new":
-        case "edit":    checkCapabilities('wallet:share',    $USER->role_id);
+        case "edit":    checkCapabilities('wallet:share',    $USER->role_id, false, true);
                         $header = 'Sammelmappe teilen';       
                         $wallet = new Wallet();
                         $wallet->load(filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
@@ -81,7 +81,7 @@ $content .= '<div class="nav-tabs-custom">
             </div>
             <div class="tab-content">
                 <div class="tab-pane active" id="tab_1">';
-    $content .= Form::input_select_multiple(array('id' => 'user_list', 'label' => 'Schülerauswahl', 'select_data' => $USER->getGroupMembers(), 'select_label' => 'firstname, lastname', 'select_value' => 'id', 'input' => $user_list, 'error' => $error));
+    $content .= Form::input_select_multiple(array('id' => 'user_list', 'label' => 'Schülerauswahl', 'select_data' => $USER->getGroupMembers('my_groups'), 'select_label' => 'firstname, lastname', 'select_value' => 'id', 'input' => $user_list, 'error' => $error));
     $permissions = array('lesezugriff' => '0',
                          'kommentierbar' => '1',
                          'schreibzugriff' => '2' );
@@ -94,6 +94,21 @@ $content .= '<div class="nav-tabs-custom">
     $content .= Form::input_select('permission', 'Freigabe', $o, 'label', 'position', $permission , $error);
     $content .= Form::input_date(array('id'=>'timerange', 'label' => 'Freigabe-Zeitraum' , 'time' => $timerange, 'error' => $error, 'placeholder' => '', $type = 'date'));
 
+    $course_user        = new User();
+    $course_user->id    = $USER->id;
+    $userlist = $course_user->getUsers('wallet_shared', 'walletPaginator', $wallet->curriculum_id, null, $wallet->id);
+    $content   .= Render::box_widget(array('widget_title' => 'Geteilt',
+                                       'class_width'  => 'col-sm-12',
+                                       'bg_color'     => 'blue',
+                                       'data'         => $userlist,
+                                       'label'        => 'firstname, lastname', 
+                                       'widget_desc'  => 'Freigaben an Personen',
+                                       'bg_icon'      => 'fa fa-user',
+                                       'bg_badge'     => 'bg-gray ',
+                                       'badge'        => 'permission',
+                                       /*'badge_title'  => 'freigabe ',*/
+                                       /*'onclick_badge'=> 'expelUser('.$g->id.',__id__);'*/));
+    
     $content .='</div><!-- /.tab-pane -->
                 <div class="tab-pane" id="tab_2">not implemented yet
                 </div><!-- /.tab-pane -->

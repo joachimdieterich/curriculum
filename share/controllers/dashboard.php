@@ -40,4 +40,4 @@ $TEMPLATE->assign('cronjob', 'Es wurde zuletzt am '.$cron->check_cronjob().' gep
 $LOG->add($USER->id, 'view', $PAGE->url,  'Browser: '.$PAGE->browser); /* add log */
 
 global $INSTITUTION;
-error_log(json_encode($INSTITUTION));
+//error_log(json_encode($INSTITUTION));

@@ -31,8 +31,69 @@
         });
         $(".connectedSortable .wallet-content").css("cursor", "move");
     </script>{/literal}
+    
+    {if isset($walletuserPaginator)} 
+    {literal}
+    <script type="text/javascript" > 
+        
+        $(document).ready(function () {
+            function findTopPos(obj) {
+                var curleft = curtop = 0;
+                if (obj.offsetParent) {
+                  curtop = obj.offsetTop
+                  while (obj = obj.offsetParent) {
+                    curtop += obj.offsetTop
+                  }
+                }
+                return curtop;
+            }
+            defaultTop  = findTopPos($("#container_walletuserPaginator")[0]);  
+            small       = false;
+            floating_table('body-wrapper', defaultTop, 'widgetuserPaginator', ['username'], 'menu_top_placeholder', 'container_walletuserPaginator', 'default_walletuserPaginator_position');
+            
+        });
+    </script>
+    
+    {/literal}
+    
+    <!-- jQuery UI used by sortable -->
+<script src="{$media_url}scripts/jquery-ui.min.js"></script>
+    {literal}<script>
+    //Make the dashboard widgets sortable Using jquery UI
+        $(".connectedSortable").sortable({
+          placeholder         : "sort-highlight",
+          connectWith         : ".connectedSortable",
+          handle              : ".wallet-content",
+          forcePlaceholderSize: true,
+          zIndex              : 999999,
+          /*stop: function(e, ui) {
+                      var element_weight = $.map($(".sortable"), function(el) {
+                          return $(el).attr('id') + '=' + $(el).index();
+                      });
+                      var element_region = $.map($(".sortable"), function(el) {
+                          return $(el).attr('id') + '=' + $(el).closest('section').attr('id');
+                      })
+                      processor('config','sortable', 'dashboard', {'element_weight': element_weight, 'element_region': element_region});
+                      alert($.map($(".sortable"), function(el) {
+                          return $(el).attr('id') + ' = ' + $(el).index();
+                      }));
+                  }*/
+
+        });
+        $(".wallet-content").css("cursor", "move");
+    </script>{/literal}
+{/if} 
+    
 {/block}
-{block name=additional_stylesheets}{$smarty.block.parent}{/block}
+{block name=additional_stylesheets}{$smarty.block.parent}
+<style>
+    .sort-highlight {
+    border: 1px dotted black;
+    margin: 0 1em 1em 0;
+    height: 50px;
+  }
+</style>
+{/block}
 
 {block name=content}
 <!-- Content Header (Page header) -->
@@ -83,6 +144,13 @@
                     <strong>{$wallet->title}</strong><br>{$wallet->timerange}
                 </div>
                 <div class="panel-body">
+                    
+                    {if isset($walletuserPaginator)}   
+                    <p> Bitte  Schüler aus der Liste auswählen um die Sammelmappe zu sehen.</p>
+                    <div id="default_walletuserPaginator_position" >
+                            {html_paginator id='walletuserPaginator' title='Freigaben'} 
+                    </div>
+                {elseif $showuser eq true}Die Sammelmappe wurde keinem Benutzer freigegeben{/if}
                     <div class="alert alert-info">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                         {$wallet->description}<br>

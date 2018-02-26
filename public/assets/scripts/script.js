@@ -811,24 +811,27 @@ function popupFunction(e){
     };
     for (var selector in config) {
         $(selector).chosen(config[selector]);
-    }*/
+    }*/  
     /*close popup when clicking outside modal*/
     $(function() {
-    $("body").click(function(e) {
-        if (e.target.id == "modal" || $(e.target).parents("#modal").size()) { 
-            /* do nothing */
-        } else if (e.target.id == "daterangepicker" || $(e.target).parents("#daterangepicker").size()) {
-            /* do nothing */
-        } else { 
-            if ($("#daterangepicker").is(':visible') || $("#colorpicker").is(':visible')) {
-                /* don't close if daterangepicker is visible!*/
-            } else {
-                closePopup('popup'); 
+        $("body").click(function(e) {
+            if ($("body").hasClass("modal-open")){ /* cont call function if it was called before */
+                if (textareas.length > 0){
+                   /* do nothing */ 
+                } else if (e.target.id == "modal" || $(e.target).parents("#modal").size() ) { 
+                    /* do nothing */
+                } else if (e.target.id == "daterangepicker" || $(e.target).parents("#daterangepicker").size()) {
+                    /* do nothing */
+                } else { 
+                    if ($("#daterangepicker").is(':visible') || $("#colorpicker").is(':visible') || $(".cke_dialog").is(':visible')) {
+                        /* don't close if daterangepicker is visible!*/
+                    } else {
+                        closePopup('null'); /*only close popup without reloading*/
+                    }
+                }
             }
-        }
-    });
-})
-
+        });
+    });    
 }
 
 /**
@@ -919,7 +922,7 @@ function closePopup(id){
     $('#'+popup).hide();  
     $("body").removeClass("modal-open"); //reactivate scrolling on body
     $("#overlay").removeClass("overlay");                                           //remove darken background
-    document.getElementById(popup).style.zIndex = 3000; // reset zIndex;
+    /*document.getElementById(popup).style.zIndex = 3000; // reset zIndex; comment cause select 2 is not working when calling modal two times without reload*/
     document.getElementById(popup).innerHTML    = '<div class="modal-dialog"><div class="box"><div class="box-header"><h3 class="box-title">Loading...</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div></div>';    
 }
 

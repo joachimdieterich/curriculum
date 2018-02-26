@@ -53,15 +53,15 @@ if (is_array($data)) {
             
 if (isset($_GET['func'])){
     switch ($_GET['func']) {
-        case "new":     checkCapabilities('curriculum:add',     $USER->role_id);     //USER berechtigt?
+        case "new":     checkCapabilities('curriculum:add',     $USER->role_id, false, true);     //USER berechtigt?
                         $header = 'Lehrplan hinzufügen';
                         if (!isset($country_id)){ 
-                            $country_id = $INSTITUTION->country_id;
-                            $state_id   = $INSTITUTION->state_id;         
+                            $country_id = $USER->country_id;
+                            $state_id   = $USER->state_id;         
                         }
                         $add = true;      
             break;
-        case "edit":    checkCapabilities('curriculum:update',     $USER->role_id);     //USER berechtigt?
+        case "edit":    checkCapabilities('curriculum:update',     $USER->role_id, false, true);     //USER berechtigt?
                         $header  = 'Lehrplan bearbeiten';
                         $cur->id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
                         $cur->load();
@@ -70,7 +70,7 @@ if (isset($_GET['func'])){
                         }
                         $edit = true; 
             break;
-        case "import":  checkCapabilities('curriculum:import',     $USER->role_id);     //USER berechtigt?
+        case "import":  checkCapabilities('curriculum:import',     $USER->role_id, false, true);     //USER berechtigt?
                         $header = 'Lehrplan importieren';
                         $import = true;
             break;
@@ -93,7 +93,7 @@ if (!isset($edit)){ // Tabs ausblenden wenn im Edit-Modus
 $content .= '<div class="nav-tabs-custom"> 
               <ul class="nav nav-tabs">
                 <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false" onclick="toggle([\'form_curriculum\', \'bAdd\'], [\'tab_1\']);">Lehrplan hinzufügen</a></li>';
-                if (checkCapabilities('curriculum:import', $USER->role_id, false)){
+                if (checkCapabilities('curriculum:import', $USER->role_id, false, true)){
                   $content .= '<li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="true" onclick="toggle([\'tab_1\'], [\'form_curriculum\', \'bAdd\']);">Lehrplan importieren</a></li>';
                 }
 $content .='</ul>';
@@ -107,8 +107,9 @@ $content .= '<div class="tab-content">
                 <div class="form-group clearfix">
                   <div class="pull-left">
                     <span id="curriculum_upload_fName" class="hidden"></span><br>
-                    <span id="curriculum_upload_fSize" class="hidden"></span><br>
-                    <span id="curriculum_upload_fType" class="hidden"></span>
+                    <span id="curriculum_upload_fSize" class="hidden"></span><br>';
+$content .= '<input id="max_size" name="max_size" type="hidden" value="<?php echo return_bytes(ini_get(\'upload_max_filesize\')); ?>" />';
+$content .= '       <span id="curriculum_upload_fType" class="hidden"></span>
                     <div id="curriculum_upload_fProgress" class="progress">
                         <div id="curriculum_upload_fProgress_bar" class="progress-bar progress-bar-primary progress-bar-striped" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" >
                           <span class="sr-only" id="curriculum_upload_fPercent"></span>

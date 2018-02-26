@@ -72,6 +72,7 @@ switch ($func) {
                                     SmartyPaginate::setOrder('', $paginator);
                                 }
                                 SmartyPaginate::setSearch($order, filter_input(INPUT_GET, 'search', FILTER_UNSAFE_RAW), $paginator);
+                                
                             }
         break; 
     case "paginator_reset": resetPaginator(filter_input(INPUT_GET, 'val', FILTER_UNSAFE_RAW));

@@ -98,6 +98,10 @@ $p_options  = array('delete' => array('onclick'     => "del('user',__id__);",
                                      'capability'   => checkCapabilities('user:delete', $USER->role_id, false),
                                      'icon'         => 'fa fa-trash',
                                      'tooltip'      => 'löschen'),
+                    'parents'  => array('onclick'      => "formloader('parents','edit',__id__);", 
+                                     'capability'   => checkCapabilities('user:parentalAuthority', $USER->role_id, false),
+                                     'icon'         => 'fa fa-child',
+                                     'tooltip'      => 'Erziehungsberechtigung zuweisen'),
                     'edit'  => array('onclick'      => "formloader('profile','editUser',__id__);", 
                                      'capability'   => checkCapabilities('user:updateUser', $USER->role_id, false),
                                      'icon'         => 'fa fa-edit',
@@ -124,14 +128,25 @@ $p_config   = array('id'         => 'checkbox',
                     'p_search'   => array('username','firstname','lastname','email','postalcode','city'),
                     'p_widget'   => $p_widget,
                     'p_options'  => $p_options);
+$TEMPLATE->assign('filter_institution_id', false);
 if (isset($_GET['filter_institution'])){
     if ($_GET['filter_institution'] == 'false'){
         $u = $users->userList('institution', 'userP', filter_input(INPUT_GET, 'lost', FILTER_VALIDATE_BOOLEAN));
     } else {
-        $u = $users->userList('filter_institution', 'userP', filter_input(INPUT_GET, 'lost', FILTER_VALIDATE_BOOLEAN), $_GET['filter_institution']);
+        $TEMPLATE->assign('filter_group_id', $_GET['filter_group']);
+        $TEMPLATE->assign('filter_role_id', $_GET['filter_role']);
+        $u = $users->userList('filter_institution', 'userP', filter_input(INPUT_GET, 'lost', FILTER_VALIDATE_BOOLEAN), $_GET['filter_institution'], $_GET['filter_role'], $_GET['filter_group']);
+        
         $TEMPLATE->assign('filter_institution_id', $_GET['filter_institution']);
+        $role      = new Roles();
+        $roles     = $role->get();
+        $TEMPLATE->assign('roles',      $roles);
+        $group     = new Group();
+        $groups    = $group->getGroups('user_institution', $USER->id, '', $_GET['filter_institution']);
+        $TEMPLATE->assign('groups',     $groups   );
     }
 } else {
     $u = $users->userList('institution', 'userP', filter_input(INPUT_GET, 'lost', FILTER_VALIDATE_BOOLEAN));
 }
+
 setPaginator('userP', $TEMPLATE, $u, 'us_val', 'index.php?action=user', $p_config); //set Paginator    

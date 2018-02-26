@@ -442,9 +442,17 @@ class File {
                                                         WHERE fl.creator_id = ? AND fl.context_id = ct.context_id '.$order_param);
                 $db->execute(array($id));
                 break;
-            case 'curriculum':          $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
-                                                        WHERE fl.cur_id = ? AND fl.context_id = 2 AND fl.context_id = ct.context_id '.$order_param);
-                $db->execute(array($id));
+            case 'curriculum':          if (isset($cur)){ // if param cur is set, load only files for cur 'level'
+                                            $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+                                                                                    WHERE fl.cur_id = ? AND fl.context_id = 2 AND fl.context_id = ct.context_id 
+                                                                                    AND ena_id IS NULL AND ter_id IS NULL '.$order_param);
+                                            $db->execute(array($id));
+                                        } else {
+                                            $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+                                                                                    WHERE fl.cur_id = ? AND fl.context_id = 2 AND fl.context_id = ct.context_id '.$order_param);
+                                            $db->execute(array($id));
+                                        }
+                
                 break;
             case 'terminal_objective':  $db = DB::prepare('SELECT DISTINCT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                             WHERE fl.ter_id = ? AND ISNULL(fl.ena_id) AND fl.context_id = 2 AND fl.context_id = ct.context_id
@@ -510,18 +518,20 @@ class File {
                 $this->author                = $result->author;
                 $this->license               = $result->license;
                 $this->type                  = $result->type;
-                if ($this->type != '.url'){
-                    $this->path              = $result->path;
-                } else {
-                    $this->path              = $result->filename;
-                }
                 
                 $this->context_id            = $result->context_id;
                 if (isset($result->context_path)){
                     $this->context_path      = $result->context_path;
                 }
                 
-                $this->full_path             = $this->context_path.$this->path.$this->filename;     //??? context path wird über die sql eigentlich schon ermittelt
+                if ($this->type != '.url' AND $this->type != 'external'){
+                    $this->path              = $result->path;
+                    $this->full_path         = $this->context_path.$this->path.$this->filename;     //??? context path wird über die sql eigentlich schon ermittelt
+                } else {
+                    $this->path              = $result->filename;
+                    $this->full_path         = $this->path;     //??? context path wird über die sql eigentlich schon ermittelt
+                }
+                
                 $this->file_context          = $result->file_context;
                 $this->curriculum_id         = $result->cur_id;
                 $this->terminal_objective_id = $result->ter_id;

@@ -106,4 +106,15 @@ class Printer {
         return $content; 
     }
     
+    
+    public static function glossar($params){
+        foreach($params as $key => $val) {
+            $$key = $val;
+        }
+        $glossar            = new Content();
+        $glossar_entries    = $glossar->get('glossar', $curriculum_id , 'ORDER by ct.title ASC');
+        $content            = json_encode($glossar_entries);
+        return $content;  
+    }
+            
 }

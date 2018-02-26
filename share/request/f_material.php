@@ -28,27 +28,32 @@ include(dirname(__FILE__).'/../login-check.php');  //check login status and rese
 global $USER, $PAGE, $CFG;
 
 $USER       = $_SESSION['USER'];
-$edit       = checkCapabilities('file:editMaterial',    $USER->role_id, false); // DELETE / edit anzeigen
+$edit       = checkCapabilities('file:editMaterial',    $USER->role_id, false, true); // DELETE / edit anzeigen
 $header     = 'Material';
-
+$m_license_icon = null; //to prevent error logs
 $file       = new File();
+$repo       = get_plugin('repository', 'sodis');
 $func       = filter_input(INPUT_GET, 'func', FILTER_UNSAFE_RAW);
+
 switch ($func) {
-    case 'enabling_objective':         $files  = $file->getFiles('enabling_objective', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => true));
-        break;
-    case 'terminal_objective':         $files  = $file->getFiles('terminal_objective', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => true));
+    case 'enabling_objective':         //$_SESSION['anchor'] = 'ena_'.filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+    case 'terminal_objective':         //$_SESSION['anchor'] = 'ter_'.filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+                                       $files       = $file->getFiles($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => true));
+                                       $sodis       = $repo->get($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
+                                       $reference   = new Reference();
+                                       $references  = $reference->get('reference_id', $_SESSION['CONTEXT'][$func]->context_id, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
         break;
     case 'id' :         $files  = $file->getFiles('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => false, 'user_id' => filter_input(INPUT_GET, 'user_id', FILTER_VALIDATE_INT)));
                         $header = 'Lösungen / Dateien des Users';
                         $edit   = false;    //don't show delete button in solution window
         break;
-    case 'solution':    $header  = 'Eingereichte Lösungen';
-                        $course  = new Course();
-                        $course->curriculum_id = filter_input(INPUT_GET, 'curriculum_id', FILTER_VALIDATE_INT);
-                        $members = $course->members('group_id', filter_input(INPUT_GET, 'group_id', FILTER_VALIDATE_INT));
-                        $user_ids = implode(", ", array_column($members, 'id')); //require php 5.5
-                        $files   = $file->getSolutions('objective', $user_ids, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));  // load solutions
-                        $edit    = false;    //don't show delete button in solution window
+    case 'solution':    $header                 = 'Eingereichte Lösungen';
+                        $course                 = new Course();
+                        $course->curriculum_id  = filter_input(INPUT_GET, 'curriculum_id', FILTER_VALIDATE_INT);
+                        $members                = $course->members('group_id', filter_input(INPUT_GET, 'group_id', FILTER_VALIDATE_INT));
+                        $user_ids               = implode(", ", array_column($members, 'id')); //require php 5.5
+                        $files                  = $file->getSolutions('objective', $user_ids, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));  // load solutions
+                        $edit                   = false;    //don't show delete button in solution window
         break;
     default:
         break;
@@ -59,7 +64,7 @@ $f_content  = null;
 $content    = null; 
 $m_boxes    = '';
 
-if (!$files){
+if (!$files AND !isset($references) AND !isset($sodis)){
     $content .= 'Es gibt leider kein Material zum gewählten Lernziel.';
 } else {
     /* Tab header */
@@ -69,11 +74,21 @@ if (!$files){
     $file_context_count[4] = 0; // counter for file_context 4
     $file_context_count[5] = 0; // counter for file_context 5 --> external reference
     $file_context_count[6] = 0; // counter for file_context 6 --> external webservice ressource
+    if (isset($references)){
+        $file_context_count[7] = count($references); // counter for file_context 7 --> internal reference
+    } else {
+        $file_context_count[7] = 0;  
+    }
+    if (isset($sodis)){
+        $file_context_count[8] = count($sodis); // counter for file_context 8 --> external sodis reference
+    } else {
+        $file_context_count[8] = 0;
+    }
     for($i = 0; $i < count($files); $i++) {
         $file_context_count[$files[$i]->file_context]++;
     }
     $content .= '<div class="nav-tabs-custom">';
-    $active   = array( '1' => '', '2' => '', '3' => '','4' => '','5' => '','6' => '');
+    $active   = array( '1' => '', '2' => '', '3' => '','4' => '','5' => '','6' => '', '7' => '', '8' => '');
     foreach ($file_context_count as $key => $value) { // mark first tab with files as "active"
         if ($value > 0){
             $active[$key] = 'active';
@@ -101,6 +116,13 @@ if (!$files){
     if ($file_context_count[6] != 0){
         $content .= '<li class="'.$active[6].'"><a href="#f_context_6" data-toggle="tab" >Externe Aufgaben <span class="label label-primary">'.$file_context_count[6].'</span></a></li>';
     }
+    if ($file_context_count[7] != 0){
+        $content .= '<li class="'.$active[7].'"><a href="#f_context_7" data-toggle="tab" >Querverweise <span class="label label-primary">'.$file_context_count[7].'</span></a></li>';
+    }
+    if ($file_context_count[8] != 0){
+        $content .= '<li class="'.$active[8].'"><a href="#f_context_8" data-toggle="tab" >KMK <span class="label label-primary">'.$file_context_count[8].'</span></a></li>';
+    }
+    
     $content .='</ul>';
     /* tab content*/
     $content .='<div class="tab-content">';
@@ -116,15 +138,17 @@ if (!$files){
         $m_content      = ''; 
         
         if ($files[$i]->file_context >= $file_context){ 
-            switch ($files[$i]->file_context) {
+            /*switch ($files[$i]->file_context) {
                 case 1: $level_header = 'Globale Dateien'; break;
                 case 2: $level_header = 'Dateien meiner Instution(en)'; break;
                 case 3: $level_header = 'Dateien meiner Gruppe(n)'; break;
                 case 4: $level_header = 'Meine Dateien'; break;
                 case 5: $level_header = 'Externe Medien'; break;
                 case 6: $level_header = 'Externe Aufgaben'; break;
+                case 7: $level_header = 'Querverweise'; break;
+                case 8: $level_header = 'KMK'; break;
                 default: break;
-            } $file_context       = $files[$i]->file_context+1; //file_context auf nächstes Level setzen
+            }*/ $file_context       = $files[$i]->file_context+1; //file_context auf nächstes Level setzen
         }
         
         $m_title    = '';
@@ -210,7 +234,7 @@ if (!$files){
             $m_icon_class = resolveFileType($files[$i]->type);
         }     
         
-        if (checkCapabilities('file:editMaterial', $USER->role_id, false) && $edit && ($files[$i]->type != 'external')){
+        if ((checkCapabilities('file:editMaterial', $USER->role_id, false) && $edit && ($files[$i]->type != 'external')) OR ($files[$i]->creator_id == $USER->id)){
             $m_delete = true;
         }
 
@@ -224,7 +248,7 @@ if (!$files){
             if (isset($license->license)){ 
                 if (isset($license->file_id)){ 
                     $m_license_icon = $CFG->access_id_url.$license->file_id;
-                    $m_footer .= '<img src="'.$CFG->access_id_url.$_SESSION['LICENSE'][$files[$i]->license]->file_id.'" height="30"/>'; 
+                    //$m_footer .= '<img src="'.$CFG->access_id_url.$_SESSION['LICENSE'][$files[$i]->license]->file_id.'" height="30"/>'; //-->now on thumbnail
                 } else {
                     $m_footer .= $license->license; 
                 }
@@ -275,10 +299,8 @@ if (!$files){
         /* context box */   
         /* generate tabs for each file context*/
         $close = false;
-        if (count($files) == ($i+1)){ 
+        if (count($files) == ($i+1)OR $files[$i+1]->file_context >= $file_context){ 
             $close = true;
-        } else {
-            if ($files[$i+1]->file_context >= $file_context){ $close = true; }  
         }
         
         if ($close == true AND $m_boxes != ''){ //close file_context box // only generate tab-pane when there are files (m_boxes)
@@ -292,6 +314,42 @@ if (!$files){
         }
 
     }
+    
+        /* internal reference*/
+    if (isset($references)){
+        $content   .='<div class="tab-pane';
+            if ($active[7] == 'active' ){
+                $content   .=' active';
+            }
+            if (count($references) > 0 ){
+                $content   .='" id="f_context_7">';
+                $content .= render_filter();
+                foreach ($references as $ref) {
+                    $content .= render_reference_entry($ref, $_SESSION['CONTEXT']['terminal_objective']->context_id);
+                }
+            $content .='</div>';
+        }
+    }
+        /* end internal reference*/
+        /* external sodis reference*/
+    if (isset($sodis)){
+        $content   .='<div class="tab-pane';
+        if ($active[8] == 'active' ){
+            $content   .=' active';
+        }
+        if (count($sodis) > 0 ){
+            $sodis_content = '<br><h4><small><strong>'.$repo->config('kmk').'</strong></small></h4><hr>';
+            foreach ($sodis as $s) {
+                $r = json_decode($s);
+                $sodis_content   .= '<li>'.str_replace("0", ".", substr($r->get[0]->id, 5)).'. '.$r->get[0]->description.'</li>';   
+            }
+            $content   .='" id="f_context_8">'.$sodis_content.'</div>';
+        }
+    }   
+        /* end external sodis reference*/                        
+                                    
+    
+    
     $content   .='</div><!-- /.tab-content -->
                         </div><!-- /.nav-tab-custom -->';
 }
@@ -305,3 +363,52 @@ $html     = Form::modal(array('target'   => 'null',
                                'content' => $content, 
                             'background' => '#ecf0f5'));  
 echo json_encode(array('html'=> $html, 'target' => $target));
+
+
+
+function render_filter($schooltype_id  = null, $subject_id = null, $curriculum_id = null, $grade_id = null){
+    global $USER;
+    $c    = '<div class="row">';
+    $schooltypes = new Schooltype();  // Load schooltype 
+    $c    .= '<span class="col-sm-3 pull-left">'.Form::input_select('schooltype_id', '', $schooltypes->getSchooltypes(), 'schooltype', 'id', $schooltype_id , null,'', 'Nach Ausbidlungsrichtung filtern', 'col-xs-0', 'col-xs-12').'</span>';
+    $subjects                   = new Subject();                                                      
+    $subjects->institution_id   = $USER->institutions;
+    $c     .= '<span class="col-sm-3 pull-left">'.Form::input_select('subject_id', '', $subjects->getSubjects(), 'subject, institution', 'id', $subject_id , null, '', 'Nach Fach filtern', 'col-xs-0', 'col-xs-12').'</span>';
+    $cur          = new Curriculum();
+    $curriculum   = $cur->getCurricula('user', $USER->id);
+    $c     .= '<span class="col-sm-3 pull-left">'.Form::input_select('curriculum_id', '', $curriculum, 'curriculum', 'id', $curriculum_id , null, '', 'Nach Lehr-/Rahmenplan filtern', 'col-xs-0', 'col-xs-12').'</span>';
+    $grades       = new Grade();    //Load Grades
+    $c     .= '<span class="col-sm-3 pull-left">'.Form::input_select('grade_id', '', $grades->getGrades('institution',$USER->institution_id), 'grade, institution', 'id', $grade_id , null, '', 'Nach Klassenstufe filtern', 'col-xs-0', 'col-xs-12').'</span>';
+    $c    .= '</div>';
+    return $c;
+}
+
+function render_reference_entry($ref, $context_id){
+    global $USER;
+    $c  = '<div class="row">
+           <div class="col-xs-12 col-sm-6 pull-left">';
+            if (checkCapabilities('reference:add',    $USER->role_id, false, true)){
+                $c .= '<a onclick="del(\'reference\', '.$ref->id.');" class="btn btn-default btn-xs pull-right" data-toggle="tooltip" title="" data-original-title="Referenz löschen" style="margin-right:5px;"><i class="fa fa-trash"></i></a>';
+                //$c .= '<a onclick="formloader(\'reference\', \'edit\', '.$ref->id.', {\'context_id\': \''.$context_id.'\'});" class="btn btn-default btn-xs pull-right" data-toggle="tooltip" title="" data-original-title="Referenz editieren" style="margin-right:5px;"><i class="fa fa-edit"></i></a>';
+            }
+            $c .= '<dt>Ausbildungsrichtung<dd>'.$ref->schooltype.'</dd></dt>
+           <br><dt>Fach<dd>'.$ref->curriculum_object->subject.'</dd></dt>
+           <br><dt>Lehrplan<dd>'.$ref->curriculum_object->curriculum.'</dd></dt>
+           <br><dt>Klassenstufe<dd>'.$ref->grade.'</dd></dt>';
+    if (isset($ref->content_object->content)){
+        if ($ref->content_object->content != ''){
+            $c .= '<br><dt>Anregungen zur Unterrichtsgestaltung ';
+            if (checkCapabilities('reference:add',    $USER->role_id, false, true)){
+             $c .= '<a onclick="formloader(\'content\', \'edit\','.$ref->content_object->id.');" class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-edit"></i></a>';
+            }
+            $c .= '<dd> '.strip_tags($ref->content_object->content).'</dd></dt>';
+        }
+    }
+    $c .= '</div><div class="col-xs-12 col-sm-3"><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('format' => 'reference', 'objective' => $ref->terminal_object, 'color')).'</div>';
+    if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
+      $c .= '<div class="col-xs-12 col-sm-3"><dt>Lernziel/Kompetenz</dt>'.Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $ref->enabling_object, 'border_color' => $ref->terminal_object->color)).'</div>';
+    }
+    $c .= '</div><hr style="clear:both;">';
+    
+    return $c;
+}

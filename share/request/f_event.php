@@ -66,10 +66,10 @@ if (is_array($data)) {
             
 if (isset($_GET['func'])){
     switch ($_GET['func']) {
-        case "new":     checkCapabilities('event:add',    $USER->role_id);
+        case "new":     checkCapabilities('event:add',    $USER->role_id, false, true);
                         $header     = 'Termin hinzufügen';        
             break;
-        case "edit":    checkCapabilities('event:update', $USER->role_id);
+        case "edit":    checkCapabilities('event:update', $USER->role_id, false, true);
                         $header     = 'Termin aktualisieren';
                         $ev         = new Event();
                         $ev->load('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));

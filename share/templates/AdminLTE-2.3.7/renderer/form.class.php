@@ -355,6 +355,24 @@ class Form {
         return $form; 
     }
     
+    public static function error($params){
+        global $USER;
+        foreach($params as $key => $val) {
+            $$key = $val;
+        }
+        $html = '<div class="error-page">
+            <h2 class="headline text-danger"> 403</h2>
+            <div class="error-content"><br>
+                <h3><i class="fa fa-warning text-red"></i> Fehlende Berechtigung.</h3>
+                <p>Als <strong>'.$USER->role_name.'</strong> verfügen Sie nicht über die erforderliche Berechtigung (<strong>'.$capability.'</strong>).<br>Die Seite <strong>'.$page_name.'</strong> kann nicht angezeigt werden.<br><br>
+                    Hier gehts zurück auf die  <a href="index.php?action=dashboard">Startseite</a>.</p>
+            </div><!-- /.error-content -->
+        </div><!-- /.error-page -->';
+        
+        return $html;
+                
+    }
+    
     /**
      * parameter
      * h_content

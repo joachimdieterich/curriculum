@@ -13,7 +13,12 @@ $(document).ready(function() {
     $(document.body).on("click", "a[data-toggle]", function(event) {
         location.hash = this.getAttribute("href");
     });
-    
+    $(function() {
+    $(".tasklink").on("click", function() {
+        $(".tasklink").removeClass("bg-gray");  // remove active class from all
+        $(this).addClass("bg-gray");         // add active class to clicked element
+    });
+});
     
 });
 $(window).on("popstate", function() {
