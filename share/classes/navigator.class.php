@@ -142,7 +142,7 @@ class Navigator {
     public function getChildren($navigator_view_id){
         $b = array();
         do {
-            $navigator_view_id = $this->getChildrenBock($navigator_view_id);
+            $navigator_view_id = $this->getChildrenBlock($navigator_view_id);
             //error_log($navigator_view_id);
             if ($navigator_view_id != false){
                 $b[] = clone $this;
@@ -151,7 +151,7 @@ class Navigator {
         return $b;
     }
     
-    public function getChildrenBock($navigator_view_id){
+    public function getChildrenBlock($navigator_view_id){
         $db = DB::prepare('SELECT nb.* FROM navigator_block AS nb WHERE nb.nb_navigator_view_id = ? AND nb.nb_target_context_id = ?');
         $db->execute(array($navigator_view_id, $_SESSION['CONTEXT']['navigator_view']->context_id));
         
