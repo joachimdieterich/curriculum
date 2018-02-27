@@ -32,7 +32,11 @@ try { // Error handling
     switch ($PAGE->action) {                                  
         case 'login': 
         case 'install': 
-        case 'extern':  $TEMPLATE->assign('page_action',      $PAGE->action); 
+        case 'extern':  
+        case 'navigator':   $TEMPLATE->assign('page_action',      $PAGE->action); 
+                            $PAGE->layout = 'layout-top-nav'; //css layout
+                            $PAGE->body_wrapper = 'body-wrapper'; //css layout
+                            $PAGE->header = false;
             break;
         
         default:   require ('../share/session.php');                                                           // Erst Session aufbauen damit $USER verfügbar ist, dann login-check!
@@ -41,25 +45,21 @@ try { // Error handling
                    $PAGE->action   = filter_input(INPUT_GET, 'action', FILTER_UNSAFE_RAW);
                    $TEMPLATE->assign('mySemester',         $_SESSION['SEMESTER']);                             // ARRAY mit Lernzeiträumen in die der USER eingeschrieben ist.
                    if (isset($_SESSION['username'])){
-                       $TEMPLATE->assign('loginname',      $_SESSION['username']);                                      
+                        $TEMPLATE->assign('loginname',      $_SESSION['username']);     
+                        if ($_SESSION['username'] == 'gast' AND $CFG->settings->guest_show_menu == 0){
+                            $PAGE->layout       = 'layout-top-nav'; //css layout
+                            $PAGE->body_wrapper = 'body-wrapper'; //css layout
+                            $PAGE->header       = false;
+                        } else {
+                            $PAGE->layout       = 'fixed sidebar-mini'; //css layout
+                            $PAGE->body_wrapper = 'wrapper'; //css layout
+                            $PAGE->header       = true;
+                        }
                    }
                    detect_reload();  
             break;
     }
-    switch ($PAGE->action) {
-        case 'login': 
-        case 'install': 
-        case 'extern': 
-        case 'navigator':   $PAGE->layout = 'layout-top-nav'; //css layout
-                            $PAGE->body_wrapper = 'body-wrapper'; //css layout
-                            $PAGE->header = false;
-            break;
-
-        default:            $PAGE->layout = 'fixed sidebar-mini'; //css layout
-                            $PAGE->body_wrapper = 'wrapper'; //css layout
-                            $PAGE->header = true;
-            break;
-    }
+    
     $TEMPLATE->assign('page_layout',      $PAGE->layout); 
     $TEMPLATE->assign('page_body_wrapper',$PAGE->body_wrapper); 
     $TEMPLATE->assign('page_header',      $PAGE->header); 
