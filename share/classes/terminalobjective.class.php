@@ -220,6 +220,11 @@ class TerminalObjective {
                                         $ws     = get_plugin('webservice', $CFG->settings->webservice);
                                         $this->files['webservice']  = '';//$ws->count($_SESSION['CONTEXT']['terminal_objective']->id,$result->id);
                                     }
+                                    /* Check if references are available for this terminal objective*/
+                                    $db_04       = DB::prepare('SELECT COUNT(*) AS MAX FROM reference WHERE context_id = ? AND reference_id = ?');
+                                    $db_04->execute(array( $_SESSION['CONTEXT']['terminal_objective']->context_id, $result->id));
+                                    $res_04 = $db_04->fetchObject();
+                                    $this->files['references']  = $res_04->MAX;
                                     
                                     $objectives[]               = clone $this; 
                                 }
