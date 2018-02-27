@@ -50,29 +50,6 @@ class Navigator {
        
     }
     
-    /*public function add(){
-        global $USER;
-        checkCapabilities('help:add', $USER->role_id);
-        $db = DB::prepare('INSERT INTO help (title,description,category,file_id) VALUES (?,?,?,?)');
-        return $db->execute(array($this->title, $this->description, $this->category, $this->file_id));
-    }
-    
-    public function update(){
-        global $USER;
-        checkCapabilities('help:update', $USER->role_id);
-        $db = DB::prepare('UPDATE help SET title = ?,description = ?,category = ?,file_id = ? WHERE id = ?');
-        return $db->execute(array($this->title, $this->description, $this->category, $this->file_id, $this->id));
-    }
-    
-    public function delete(){
-        global $USER, $LOG;
-        checkCapabilities('help:delete', $USER->role_id);
-        $this->load();
-        $LOG->add($USER->id, 'help.class.php', dirname(__FILE__), 'Delete helpfile: '.$this->title.', file_id: '.$this->file_id);
-        $db = DB::prepare('DELETE FROM help WHERE id = ?');
-        return $db->execute(array($this->id));
-    }*/
-    
     public function load($dependency = 'navigator_block', $id = null){
         if ($id == null){ $id = $this->id; }
         switch ($dependency) {
@@ -126,7 +103,6 @@ class Navigator {
         $db = DB::prepare('SELECT nb.nb_navigator_view_id, nv.nv_title FROM navigator_block AS nb, navigator_view AS nv 
                             WHERE nb.nb_target = ? AND nb.nb_target_context_id = ? AND nv.nv_id = nb.nb_navigator_view_id');
         $db->execute(array($navigator_view_id, $_SESSION['CONTEXT']['navigator_view']->context_id));
-        
         $result = $db->fetchObject();
         //error_log(json_encode($result).' '.$navigator_view_id.' '.$_SESSION['CONTEXT']['navigator_view']->context_id);
         if ($result){
@@ -139,15 +115,70 @@ class Navigator {
         }
     }
     
+    public function searchfield_content($navigator_view_id){
+        $search   = array();
+        $view_ids = $this->getChildren($navigator_view_id);
+        foreach ($view_ids as $v_id) {
+            $blocks = $this->get($v_id);
+            foreach ($blocks as $block) {
+                $s          = new stdClass();
+                $s->id      = $block->nb_id;
+                switch ($block->nb_context_id) {
+                    /* curriculum */
+                    case 2:     $s->id      = $block->nb_id;
+                                $s->title   = $block->nb_title;
+                                $s->onclick = "index.php?action=view&curriculum_id={$block->nb_target}";
+                                $search[] = clone $s;
+                        break;
+                    /* content */
+                    case 15:    $content            = new Content();
+                                $content->load('id', $block->nb_reference_id);
+                                $s->title   = $content->content;
+                                $s->onclick = "index.php?action=view&curriculum_id={$block->nb_target}";
+                                $search[] = clone $s;
+                        break; 
+                    /* curricula of group */
+                    case 16:    $c                  = new Curriculum();
+                                $curricula          = $c->getCurricula('group', $block->nb_reference_id);
+                                foreach ($curricula as $cur) {
+                                    $s->title   = $cur->curriculum;
+                                    $s->onclick = "index.php?action=view&curriculum_id={$cur->id}";
+                                    $search[] = clone $s;
+                                }
+
+                        break;
+
+                    case 29:    $f                  = new File();
+                                $f->load($block->nb_reference_id);
+                                $s->title   = $f->title;
+                                $s->onclick = "index.php?action=navigator&nv_id={$block->nb_target}";
+                                $search[] = clone $s;
+                        break;
+                    
+                    case 31:    /* Navigator View*/
+                    case 33:    /* Book */
+                                $s->title   = $block->nb_title;
+                                $s->onclick = "index.php?action=navigator&nv_id={$block->nb_target}";
+                                $search[] = clone $s;
+                        break;
+
+                    default:
+                        break;
+                }
+            }   
+        }
+        
+        
+        return $search;     
+    }
+    
     public function getChildren($navigator_view_id){
         $b = array();
-        do {
-            $navigator_view_id = $this->getChildrenBlock($navigator_view_id);
-            //error_log($navigator_view_id);
-            if ($navigator_view_id != false){
-                $b[] = clone $this;
-            }
-        } while ($navigator_view_id != false);
+        foreach ($this->getChildrenBlock($navigator_view_id) AS $block_id){
+            $b[]  = $block_id;
+            $b    = array_merge($b, $this->getChildren($block_id));
+
+        }
         return $b;
     }
     
@@ -155,7 +186,13 @@ class Navigator {
         $db = DB::prepare('SELECT nb.* FROM navigator_block AS nb WHERE nb.nb_navigator_view_id = ? AND nb.nb_target_context_id = ?');
         $db->execute(array($navigator_view_id, $_SESSION['CONTEXT']['navigator_view']->context_id));
         
-        $result = $db->fetchObject();
+        $r  = array();
+        while($result = $db->fetchObject()) { 
+            $r[] =  $result->nb_target; 
+        } 
+        
+        return $r;
+        /*$result = $db->fetchObject();
         if ($result){
             foreach ($result as $key => $value) {
                 $this->$key = $value; 
@@ -163,7 +200,9 @@ class Navigator {
             return $result->nb_target;                                                        
         } else { 
             return false; 
-        }
+        }*/
         
     }
+    
+    
 }
