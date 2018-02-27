@@ -280,10 +280,14 @@
                 <div class="pull-right hidden-xs">
                   <b>Version</b> {$app_version}
                 </div>
+                <a class="btn-xs margin-r-10 pull-right" onclick='formloader("content", "new", null,{["label_title"=>"Betreff", "label_content"=>"Fehler beschreiben", "label_header"=>"Fehler melden","label_save"=>"Meldung abschicken", "context"=>"debug", "reference_id"=> 0]|@json_encode nofilter});'>
+                    <i class="fa fa-bullhorn text-warning"></i> Fehler melden
+                </a>
                 {$app_footer} {block name=footer} {/block}
             </footer>    
               
             {*block name=sidebar_right}{include file='sidebar_right.tpl'}{/block*}
+            
         </div><!-- ./wrapper -->
     {/if}    
 <!-- SCRIPTS-->  
