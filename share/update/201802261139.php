@@ -29,7 +29,22 @@ $UPDATE         = new stdClass();
 $UPDATE->info   = "Context (DB) Update. <br><br> Mit dem neuen context 'book' lassen sich Einträge aus der content tabelle zu einem 'Buch' zusammenfassen.";
 
 if (isset($_GET['execute'])){
-    
+    $UPDATE->log = "Starte Book-Update...<br>";
+    $db= DB::prepare("CREATE TABLE `book` (
+                        `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+                        `title` varchar(512) DEFAULT NULL,
+                        `description` varchar(2048) DEFAULT NULL,
+                        `creationtime` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+                        `creator_id` int(11) unsigned NOT NULL,
+                        PRIMARY KEY (`id`)
+                      ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;");
+    if ($db->execute(array())){
+        $UPDATE->log .= "<b class=\"text-success\">Create table 'book' - OK</b><br>";
+        $UPDATE->installed = true;
+    } else {
+        $UPDATE->log .= "<b class=\"text-red\">Create table 'book' - failed.</b><br>";
+        $UPDATE->installed = false;
+    } 
     $db = DB::prepare('SELECT COUNT(id) FROM context WHERE context = ?');
     $db->execute(array('book'));
     if($db->fetchColumn() >= 1) { 
