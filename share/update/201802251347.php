@@ -26,7 +26,7 @@
 
 global $UPDATE;
 $UPDATE         = new stdClass();
-$UPDATE->info   = "Context (DB) Update. <br><br>.Mit dem 'debug' context lassen sich u. a. Rückmeldungen zur Plattform erfassen.";
+$UPDATE->info   = "Context (DB) Update. <br><br>Mit dem 'debug' context lassen sich u. a. Rückmeldungen zur Plattform erfassen.";
 
 if (isset($_GET['execute'])){
     
