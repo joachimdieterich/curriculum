@@ -53,8 +53,7 @@ foreach (array_reverse($b_array) as $value) {
     $breadcrumbs[$value->nv_title] = 'index.php?action=navigator&nv_id='.$value->nb_navigator_view_id;
 }
 $breadcrumbs[$navigator_bocks[0]->nv_title] = '';
-//error_log(json_encode($breadcrumbs));
 $TEMPLATE->assign('breadcrumb',  $breadcrumbs);
-$TEMPLATE->assign('search_navigator', $navigator->getChildren($navigator_view)); 
+$TEMPLATE->assign('search_navigator', $navigator->searchfield_content($navigator_view)); 
 $TEMPLATE->assign('page_title', $navigator_bocks[0]->na_title); 
 $TEMPLATE->assign('navigator', $navigator_bocks);   
