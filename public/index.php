@@ -32,8 +32,7 @@ try { // Error handling
     switch ($PAGE->action) {                                  
         case 'login': 
         case 'install': 
-        case 'extern':  
-        case 'navigator':   $TEMPLATE->assign('page_action',      $PAGE->action); 
+        case 'extern':      $TEMPLATE->assign('page_action',      $PAGE->action); 
                             $PAGE->layout = 'layout-top-nav'; //css layout
                             $PAGE->body_wrapper = 'body-wrapper'; //css layout
                             $PAGE->header = false;
