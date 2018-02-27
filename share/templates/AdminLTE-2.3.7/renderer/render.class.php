@@ -736,7 +736,7 @@ class Render {
                                      $html  .='<span class="fa fa-info pull-right box-sm-icon '.$icon_class.'" style=" margin-right:3px;" data-toggle="tooltip" title="Beschreibung" onclick="formloader(\'description\', \''.$type.'\', '.$objective->id.');"></span>';
                                  }
                                  $html  .='<span class="pull-left margin-r-10">';
-                                 if (checkCapabilities('file:loadMaterial', $USER->role_id, false) AND ($objective->files['local'] != '0' OR $objective->files['repository'] != '' OR isset($objective->files['webservice']) )){
+                                 if (checkCapabilities('file:loadMaterial', $USER->role_id, false) AND ($objective->files['local'] != '0' OR $objective->files['repository'] != '' OR isset($objective->files['webservice']) OR $objective->files['references'] != false )){
                                      $html  .='<span class="fa fa-briefcase box-sm-icon '.$icon_class.' margin-r-5 pull-left" style="cursor:pointer; padding-top:3px;" data-toggle="tooltip" title="Materialien und Aufgaben" onclick="formloader(\'material\',\''.$type.'\','.$objective->id.')"></span>';
                                  } else {
                                      $html  .='<span class="fa fa-briefcase box-sm-icon deactivate '.$icon_class.' margin-r-5 pull-left" style="cursor:not-allowed;padding-top:3px;" data-toggle="tooltip" title="Keine Materialien verfügbar"></span>';
@@ -781,8 +781,8 @@ class Render {
                                                  $html  .='<span class="fa fa-check-square-o pull-right box-sm-icon '.$icon_class.'" onclick=\'formloader("quiz","enabling_objective","'.$objective->id.'");\'></span>';
                                              }
                                          }
-                                         if (checkCapabilities('webservice:linkModuleResults', $USER->role_id, false) AND isset($PAGE->action) AND $objective->files['webservice'] != ''){
-                                             if ($PAGE->action == 'view'){
+                                         if (checkCapabilities('webservice:linkModuleResults', $USER->role_id, false) AND isset($PAGE->action) AND isset($objective->files['webservice'])){
+                                             if ($PAGE->action == 'view' AND $objective->files['webservice'] != ''){
                                                  $html  .='<span class="box-sm-icon '.$icon_class.'" onclick=\'processor("link_module_result","enabling_objective","'.$objective->id.'","","webservice/moodle");\'><i class="fa fa-external-link-square  fa-rotate-180"></i></span>';
                                              }
                                          }
@@ -1819,11 +1819,12 @@ class Render {
     }
     
     public static function box($params){
-        $status             = 'collapsed-box';
-        $header_content     = 'Title';
-        $header_box_tools   = '';
+        $status                     = 'collapsed-box';
+        $header_content             = 'Title';
+        $header_box_tools_left      = '';
+        $header_box_tools_right     = '';
         
-        $body_content       = '';
+        $body_content               = '';
         //$footer_content     = '';
         
         foreach($params as $key => $val) {
@@ -1832,9 +1833,11 @@ class Render {
         $html   = '';
         $html  .= '<div class="box '.$status.' bottom-buffer-20">
                             <div class="box-header with-border">
-                                  <h3 class="box-title">'.$header_content.'</h3>
+                                  '.$header_box_tools_left.'
+                                  <h3 class="box-title"> '.$header_content.'</h3>
+                                  
                                   <div class="box-tools pull-right">
-                                  '.$header_box_tools.'
+                                  '.$header_box_tools_right.'
                                   </div>
                             </div><!-- /.box-header -->
                             <div class="box-body" >
@@ -1909,37 +1912,29 @@ class Render {
                 break;
             case 15:    $content            = new Content();
                         $content->load('id', $nb_reference_id);
-                        
-                        /*$s                  = array();
-                        $slides             = new stdClass();
-                        $slides->caption    =  'Slide2';
-                        $slides->content    =  '$content->content';
-                        $s[]                = clone $slides;
-                        */
-                        /*$slides             = new stdClass();
-                        $slides->caption    =  $content->title;
-                        $slides->content    =  $content->content;
-                        $s[]                = clone $slides;
-                        */
-                       //error_log(json_encode($s));
-                        
-                        
-                        $html              .= RENDER::box(array('header_box_tools' => '<button class="btn btn-box-tool" onclick="processor(\'print\',\'content\', \''.$nb_reference_id.'\')"><i class="fa fa-print"></i></button><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_content' => $content->title, 'content_id' => $nb_reference_id, 'body_content' => $content->content/*RENDER::carousel(array('data_ride' => '', 'slides' => $s))*/));
+                        $html              .= RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool" onclick="processor(\'print\',\'content\', \''.$nb_reference_id.'\')"><i class="fa fa-print"></i></button><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_content' => $content->title, 'content_id' => $nb_reference_id, 'body_content' => $content->content));
                 break; 
-            case 16:    $c = new Curriculum();
-                        $curricula = $c->getCurricula('group', $nb_reference_id);
+            case 16:    $c                  = new Curriculum();
+                        $curricula          = $c->getCurricula('group', $nb_reference_id);
                         foreach ($curricula as $cur) {
-                            $html .= RENDER::paginator_widget(["widget_title" =>$cur->curriculum, "ref_id" => $cur->id, "group_id" => $nb_reference_id]);
+                            $html          .= RENDER::paginator_widget(["widget_title" =>$cur->curriculum, "ref_id" => $cur->id, "group_id" => $nb_reference_id]);
                         }
                         
                 break;
             
-            case 29:    $f = new File();
+            case 29:    $f                  = new File();
                         $f->load($nb_reference_id);
-                        $html = '<div class="'.$nb_width_class.'">'.RENDER::file($f).'</div>';
+                        $html               = '<div class="'.$nb_width_class.'">'.RENDER::file($f).'</div>';
                 break;
-            case 31:    $widget_onclick = "location.href='index.php?action=navigator&nv_id={$nb_target}';";
-                        $html = RENDER::paginator_widget(array('widget_title' => $nb_title, 'file_id' => $nb_file_id, 'widget_onclick' => $widget_onclick));
+            case 31:    $widget_onclick     = "location.href='index.php?action=navigator&nv_id={$nb_target}';";
+                        $html               = RENDER::paginator_widget(array('widget_title' => $nb_title, 'file_id' => $nb_file_id, 'widget_onclick' => $widget_onclick));
+
+                break;
+            
+            case 33:    /* Book */
+                        $html               = RENDER::book(array('book_id' => $nb_reference_id));
+                        //$html               = RENDER::book(array('book_id' => $b->id, 'book_title' => $b->title, 'toc'=> $toc, 'book_content' => RENDER::carousel(array('data_ride' => '', 'slides' => $s))));
+                        //$html = RENDER::carousel(array('data_ride' => '', 'slides' => $s));
 
                 break;
             
@@ -1949,6 +1944,85 @@ class Render {
         
         return $html;     
     }
+    
+    public static function book($params){
+        foreach($params as $key => $val) {
+            $$key = $val;
+        }
+        $b                  = new Book();
+        $book               = $b->get('book', $book_id);
+        
+        $s                  = array();
+        $toc                = array(); //Table of Contents
+        $i = 0;
+        foreach($book AS $content){
+            $slide             = new stdClass();
+            $ct                = new Content();
+            $ct->load('id', $content->content_id);
+            $slide->caption    = $ct->title;
+            $toc[$i]['id']     = $content->content_id;
+            $toc[$i]['title']  = $ct->title;
+            $i++;
+            $slide->content    = $ct->content;
+            $slides[]          = clone $slide;
+            unset($slide);
+        }
+        
+        $left_menu = '<i class="fa fa-bars dropdown-toggle" data-toggle="dropdown"></i><ul class="dropdown-menu" role="menu">';
+        $i = 0;
+        foreach($toc AS $t){
+            $left_menu .= '<li><a data-slide-to="'.$i.'" data-target="#carousel">'.$t["title"].'</a></li>';
+            $i++;
+        }
+                    
+        $left_menu .='</ul>';
+        $carousel_id = 'carousel';
+        $data_ride   = ''; // if 'carousel' pages auto-slide
+
+        $book_content = '<div id="'.$carousel_id.'" class="carousel slide" data-interval="false" data-ride="'.$data_ride.'" >
+                    <ol class="carousel-indicators " style="bottom:5px;">';
+                    $active_class = 'active';
+                    $i = 0; 
+                    foreach ($slides as $s) {
+                        $book_content .= '<li data-target="#'.$carousel_id.'" data-slide-to="'.$i.'" ';
+                        if ($active_class == 'active') { //todo --> change css class
+                            $book_content .= 'style="background:#333;" ';
+                        } else {
+                            $book_content .= 'style="border: 1px solid #333;" ';
+                        }
+                        $book_content .= 'class=" '.$active_class.'"></li>';
+                        if ($active_class == 'active'){ $active_class = ''; }
+                        $i++;
+                    }
+        $book_content .='   </ol>
+                <div class="carousel-inner" >';
+                    $active_class = 'active';
+                    $i = 0; 
+                    foreach ($slides as $s) {
+                        $book_content .= '<div class="item '.$active_class.'" >
+                                    <div style="overflow: scroll;  height: 400px;" >'.$s->content.'</div>
+                                    <div class="carousel-caption text-black" style="position:static;">'.$s->caption.'</div>
+                                </div>';
+                        if ($active_class == 'active'){ $active_class = ''; }
+                        $i++;
+                    }
+        $book_content .='</div>
+                <a class="left carousel-control" href="#'.$carousel_id.'" data-slide="prev">
+                  <span class="fa fa-angle-left text-black" style="bottom: 22px; top: auto !important;"></span>
+                </a>
+                <a class="right carousel-control" href="#'.$carousel_id.'" data-slide="next">
+                  <span class="fa fa-angle-right text-black" style="bottom: 22px; top: auto !important;"></span>
+                </a>
+              </div>';
+        
+        
+        
+        //$left_menu = '<i class="fa fa-bars dropdown-toggle" data-toggle="dropdown"></i>';
+        return $html = RENDER::box(array('header_box_tools_left' => $left_menu,'header_box_tools_right' => '<button class="btn btn-box-tool" onclick="processor(\'print\',\'book\', \''.$b->id.'\')"><i class="fa fa-print"></i></button><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_content' => $b->title, 'content_id' => $b->id, 'body_content' => $book_content));
+    }
+    
+    
+    
     public static function paginator_widget($params){
         global $CFG;
         /*default params*/
@@ -1967,12 +2041,13 @@ class Render {
             $$key = $val;
         }
         if (isset($file_id)){
-            $icon_url           = $CFG->access_id_url.$file_id;
+            $icon_url           = $CFG->access_id_url.$file_id;//.'&size=t';
         } else if (!isset($icon_url)){
             $cur                = new Curriculum();
             $cur->id            = $ref_id; 
             $cur->load(false);
-            $icon_url           = $CFG->access_id_url.$cur->icon_id;
+            $icon_url           = $CFG->access_id_url.$cur->icon_id;//.'&size=t';
+            //error_log('gr_id'.$group_id);
             $widget_onclick     = "location.href='index.php?action=view&curriculum_id={$ref_id}&group={$group_id}';";
         } 
         
