@@ -21,7 +21,7 @@ function toggleAll(){
 <section class="content">
     <div class="row">
         <div class="col-md-6 col-md-offset-4">
-            {FORM::input_select('search', '', $search_navigator, 'nb_title', 'nb_id', '', '', '', 'Suchen (Schnellzugriff > noch nicht fertig)', '', '')}
+            {FORM::input_select('search', '', $search_navigator, 'title', 'onclick', '', '', 'window.location.assign(this.value);', 'Schnellzugriff', '', '')}
         </div>
         {if checkCapabilities('navigator:add', $my_role_id, false)}    
             <div class="pull-left" style="padding: 0 0 10px 15px;">
