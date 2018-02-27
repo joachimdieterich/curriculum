@@ -26,8 +26,11 @@ include('../share/setup.php');
 global $CFG, $PAGE, $TEMPLATE, $USER;
 
 try { // Error handling
-    $PAGE           = new stdClass();
-    $PAGE->action   = filter_input(INPUT_GET, 'action', FILTER_UNSAFE_RAW);
+    $PAGE               = new stdClass();
+    $PAGE->action       = filter_input(INPUT_GET, 'action', FILTER_UNSAFE_RAW);
+    $PAGE->layout       = 'fixed sidebar-mini'; //css layout
+    $PAGE->body_wrapper = 'wrapper'; //css layout
+    $PAGE->header       = true;
     if (!$PAGE->action) { $PAGE->action = 'login'; $_SESSION['lock'] = false;}
     switch ($PAGE->action) {                                  
         case 'login': 
@@ -49,11 +52,7 @@ try { // Error handling
                             $PAGE->layout       = 'layout-top-nav'; //css layout
                             $PAGE->body_wrapper = 'body-wrapper'; //css layout
                             $PAGE->header       = false;
-                        } else {
-                            $PAGE->layout       = 'fixed sidebar-mini'; //css layout
-                            $PAGE->body_wrapper = 'wrapper'; //css layout
-                            $PAGE->header       = true;
-                        }
+                        } 
                    }
                    detect_reload();  
             break;
