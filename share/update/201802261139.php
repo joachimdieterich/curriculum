@@ -51,7 +51,7 @@ if (isset($_GET['execute'])){
         $UPDATE->log .= "<b class=\"text-success\">Context 'book' exists already - OK</b><br>";
         $UPDATE->installed = true;
     } else {
-        $db= DB::prepare("INSERT INTO `context` (`context`, `context_id`, `path`) VALUES ('book', 32, NULL);");
+        $db= DB::prepare("INSERT INTO `context` (`context`, `context_id`, `path`) VALUES ('book', 33, NULL);");
         if ($db->execute(array())){
             $UPDATE->log .= "<b class=\"text-success\">Adding book context to 'context' - OK</b><br>";
             $UPDATE->installed = true;
