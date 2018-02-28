@@ -71,6 +71,7 @@ class Reference {
             foreach ($result as $key => $value) {
                 $this->$key  = $value; 
             }
+            $this->grade = $_SESSION['GRADE'][$this->grade_id]->grade;
             switch ($this->context_id) {
                 case $_SESSION['CONTEXT']['terminal_objective']->context_id:
                     $t                          = new TerminalObjective();
@@ -80,7 +81,12 @@ class Reference {
                     $c                          = new Curriculum();         
                     $c->id                      = $t->curriculum_id;
                     $c->load();
+                    $this->subject              = $c->subject;      //needed by sort functions
+                    $this->subject_id           = $c->subject_id;   //needed by sort functions
+                    $this->curriculum           = $c->curriculum;   //needed by sort functions
+                    $this->curriculum_id        = $c->id;           //needed by sort functions
                     $this->curriculum_object    = $c;
+                    $this->schooltype_id        = $c->schooltype_id;//needed by sort functions
                     $this->schooltype           = $_SESSION['SCHOOLTYPE'][$c->schooltype_id]->schooltype; 
                     $ct     = new Content();
                     $ct->get('reference', $this->id);
@@ -98,7 +104,12 @@ class Reference {
                     $c                          = new Curriculum();         
                     $c->id                      = $t->curriculum_id;
                     $c->load();
+                    $this->subject              = $c->subject;      //needed by sort functions
+                    $this->subject_id           = $c->subject_id;   //needed by sort functions
+                    $this->curriculum           = $c->curriculum;   //needed by sort functions
+                    $this->curriculum_id        = $c->id;           //needed by sort functions
                     $this->curriculum_object    = $c;
+                    $this->schooltype_id        = $c->schooltype_id;//needed by sort functions
                     $this->schooltype           = $_SESSION['SCHOOLTYPE'][$c->schooltype_id]->schooltype; 
                     $ct     = new Content();
                     $ct->get('reference', $this->id);
