@@ -34,14 +34,22 @@ $m_license_icon = null; //to prevent error logs
 $file       = new File();
 $repo       = get_plugin('repository', 'sodis');
 $func       = filter_input(INPUT_GET, 'func', FILTER_UNSAFE_RAW);
+if (isset($_GET['s_key'])){ $s_key =  $_GET['s_key']; } else { $s_key =  'curriculum'; }
+
 
 switch ($func) {
-    case 'enabling_objective':         //$_SESSION['anchor'] = 'ena_'.filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-    case 'terminal_objective':         //$_SESSION['anchor'] = 'ter_'.filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-                                       $files       = $file->getFiles($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => true));
-                                       $sodis       = $repo->get($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
-                                       $reference   = new Reference();
-                                       $references  = $reference->get('reference_id', $_SESSION['CONTEXT'][$func]->context_id, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
+    case 'enabling_objective':     //$_SESSION['anchor'] = 'ena_'.filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+    case 'terminal_objective':     //$_SESSION['anchor'] = 'ter_'.filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+                                   $files       = $file->getFiles($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => true));
+                                   $sodis       = $repo->get($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
+                                   $reference   = new Reference();
+                                   $references  = $reference->get('reference_id', $_SESSION['CONTEXT'][$func]->context_id, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
+                                   Reference::sortByProp($references, $s_key, 'asc');
+                                   if (isset($_GET['s_value'])){
+                                        $references  = ofilter($references, [$s_key => $_GET['s_value']]);
+                                   }
+                                   //$references  = PHPArrayObjectSorter($references, 'subject', 'asc', 'Englisch - Französisch');
+                                       
         break;
     case 'id' :         $files  = $file->getFiles('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => false, 'user_id' => filter_input(INPUT_GET, 'user_id', FILTER_VALIDATE_INT)));
                         $header = 'Lösungen / Dateien des Users';
@@ -322,11 +330,14 @@ if (!$files AND !isset($references) AND !isset($sodis)){
                 $content   .=' active';
             }
             if (count($references) > 0 ){
-                $content   .='" id="f_context_7">';
+                $content .='" id="f_context_7">';
                 $content .= render_filter();
-                foreach ($references as $ref) {
+                $content .='<span id="reference_ajax">';
+                $content .= RENDER::reference($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), array('schooltype_id' => 'false', 'subject_id' => 'false', 'curriculum_id' => 'false', 'grade_id' => 'false', 'ajax' => 'false'));
+                /*foreach ($references as $ref) {
                     $content .= render_reference_entry($ref, $_SESSION['CONTEXT']['terminal_objective']->context_id);
-                }
+                }*/
+                $content   .='</span>';
             $content .='</div>';
         }
     }
@@ -365,50 +376,19 @@ $html     = Form::modal(array('target'   => 'null',
 echo json_encode(array('html'=> $html, 'target' => $target));
 
 
-
 function render_filter($schooltype_id  = null, $subject_id = null, $curriculum_id = null, $grade_id = null){
     global $USER;
     $c    = '<div class="row">';
     $schooltypes = new Schooltype();  // Load schooltype 
-    $c    .= '<span class="col-sm-3 pull-left">'.Form::input_select('schooltype_id', '', $schooltypes->getSchooltypes(), 'schooltype', 'id', $schooltype_id , null,'', 'Nach Ausbidlungsrichtung filtern', 'col-xs-0', 'col-xs-12').'</span>';
+    $c    .= '<span class="col-sm-3 pull-left">'.Form::input_select('schooltype_id', '', $schooltypes->getSchooltypes(), 'schooltype', 'id', $schooltype_id , null,"$('#reference_ajax').load('../share/request/render_html.php' + '?render=reference&func=".filter_input(INPUT_GET, 'func', FILTER_UNSAFE_RAW)."&id=".filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT)."&schooltype_id='+$('#schooltype_id').val()+'&subject_id='+$('#subject_id').val()+'&curriculum_id='+$('#curriculum_id').val()+'&grade_id='+$('#grade_id').val()+'&ajax=true#reference_ajax');", 'Nach Ausbidlungsrichtung filtern', 'col-xs-0', 'col-xs-12').'</span>';
     $subjects                   = new Subject();                                                      
     $subjects->institution_id   = $USER->institutions;
-    $c     .= '<span class="col-sm-3 pull-left">'.Form::input_select('subject_id', '', $subjects->getSubjects(), 'subject, institution', 'id', $subject_id , null, '', 'Nach Fach filtern', 'col-xs-0', 'col-xs-12').'</span>';
+    $c     .= '<span class="col-sm-3 pull-left">'.Form::input_select('subject_id', '', $subjects->getSubjects(), 'subject, institution', 'id', $subject_id , null, "$('#reference_ajax').load('../share/request/render_html.php' + '?render=reference&func=".filter_input(INPUT_GET, 'func', FILTER_UNSAFE_RAW)."&id=".filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT)."&schooltype_id='+$('#schooltype_id').val()+'&subject_id='+$('#subject_id').val()+'&curriculum_id='+$('#curriculum_id').val()+'&grade_id='+$('#grade_id').val()+'&ajax=true#reference_ajax');", 'Nach Fach filtern', 'col-xs-0', 'col-xs-12').'</span>';
     $cur          = new Curriculum();
     $curriculum   = $cur->getCurricula('user', $USER->id);
-    $c     .= '<span class="col-sm-3 pull-left">'.Form::input_select('curriculum_id', '', $curriculum, 'curriculum', 'id', $curriculum_id , null, '', 'Nach Lehr-/Rahmenplan filtern', 'col-xs-0', 'col-xs-12').'</span>';
+    $c     .= '<span class="col-sm-3 pull-left">'.Form::input_select('curriculum_id', '', $curriculum, 'curriculum', 'id', $curriculum_id , null, "$('#reference_ajax').load('../share/request/render_html.php' + '?render=reference&func=".filter_input(INPUT_GET, 'func', FILTER_UNSAFE_RAW)."&id=".filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT)."&schooltype_id='+$('#schooltype_id').val()+'&subject_id='+$('#subject_id').val()+'&curriculum_id='+$('#curriculum_id').val()+'&grade_id='+$('#grade_id').val()+'&ajax=true#reference_ajax');", 'Nach Lehr-/Rahmenplan filtern', 'col-xs-0', 'col-xs-12').'</span>';
     $grades       = new Grade();    //Load Grades
-    $c     .= '<span class="col-sm-3 pull-left">'.Form::input_select('grade_id', '', $grades->getGrades('institution',$USER->institution_id), 'grade, institution', 'id', $grade_id , null, '', 'Nach Klassenstufe filtern', 'col-xs-0', 'col-xs-12').'</span>';
+    $c     .= '<span class="col-sm-3 pull-left">'.Form::input_select('grade_id', '', $grades->getGrades('institution',$USER->institution_id), 'grade, institution', 'id', $grade_id , null, "$('#reference_ajax').load('../share/request/render_html.php' + '?render=reference&func=".filter_input(INPUT_GET, 'func', FILTER_UNSAFE_RAW)."&id=".filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT)."&schooltype_id='+$('#schooltype_id').val()+'&subject_id='+$('#subject_id').val()+'&curriculum_id='+$('#curriculum_id').val()+'&grade_id='+$('#grade_id').val()+'&ajax=true#reference_ajax');", 'Nach Klassenstufe filtern', 'col-xs-0', 'col-xs-12').'</span>';
     $c    .= '</div>';
-    return $c;
-}
-
-function render_reference_entry($ref, $context_id){
-    global $USER;
-    $c  = '<div class="row">
-           <div class="col-xs-12 col-sm-6 pull-left">';
-            if (checkCapabilities('reference:add',    $USER->role_id, false, true)){
-                $c .= '<a onclick="del(\'reference\', '.$ref->id.');" class="btn btn-default btn-xs pull-right" data-toggle="tooltip" title="" data-original-title="Referenz löschen" style="margin-right:5px;"><i class="fa fa-trash"></i></a>';
-                //$c .= '<a onclick="formloader(\'reference\', \'edit\', '.$ref->id.', {\'context_id\': \''.$context_id.'\'});" class="btn btn-default btn-xs pull-right" data-toggle="tooltip" title="" data-original-title="Referenz editieren" style="margin-right:5px;"><i class="fa fa-edit"></i></a>';
-            }
-            $c .= '<dt>Ausbildungsrichtung<dd>'.$ref->schooltype.'</dd></dt>
-           <br><dt>Fach<dd>'.$ref->curriculum_object->subject.'</dd></dt>
-           <br><dt>Lehrplan<dd>'.$ref->curriculum_object->curriculum.'</dd></dt>
-           <br><dt>Klassenstufe<dd>'.$ref->grade.'</dd></dt>';
-    if (isset($ref->content_object->content)){
-        if ($ref->content_object->content != ''){
-            $c .= '<br><dt>Anregungen zur Unterrichtsgestaltung ';
-            if (checkCapabilities('reference:add',    $USER->role_id, false, true)){
-             $c .= '<a onclick="formloader(\'content\', \'edit\','.$ref->content_object->id.');" class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-edit"></i></a>';
-            }
-            $c .= '<dd> '.strip_tags($ref->content_object->content).'</dd></dt>';
-        }
-    }
-    $c .= '</div><div class="col-xs-12 col-sm-3"><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('format' => 'reference', 'objective' => $ref->terminal_object, 'color')).'</div>';
-    if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
-      $c .= '<div class="col-xs-12 col-sm-3"><dt>Lernziel/Kompetenz</dt>'.Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $ref->enabling_object, 'border_color' => $ref->terminal_object->color)).'</div>';
-    }
-    $c .= '</div><hr style="clear:both;">';
-    
     return $c;
 }
