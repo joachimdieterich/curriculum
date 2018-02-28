@@ -30,10 +30,15 @@ class Reference {
     public $description; 
     public $grade_id;
     public $grade;
+    public $curriculum_id;
+    public $curriculum;
     public $curriculum_object;
     public $terminal_object;
     public $enabling_object;
+    public $schooltype_od;
     public $schooltype;
+    public $subject_id;
+    public $subject;
     public $content_object;
     public $context_id;
     public $file_context;
@@ -46,14 +51,16 @@ class Reference {
     public $source_context_id;          // only needed to add reference
     public $source_reference_id;        // only needed to add reference
     
-
+    static $sortKey;
+    
+    
     public function __construct($id = null) {
         if ($id != null){ 
             $this->id = $id; 
             $this->load();
         }
     }
-    
+     
     public function load($dependency = 'id', $id = null){
         if ($id == null){ $id = $this->id; }
         switch ($dependency) {
@@ -208,4 +215,26 @@ class Reference {
         
         return $r; 
     }  
+    
+     
+    public static function sorter_asc( $a, $b ){
+        return strcasecmp( $a->{self::$sortKey}, $b->{self::$sortKey} );
+    }
+    
+    public static function sorter_desc( $a, $b ){
+        return strcasecmp( $b->{self::$sortKey}, $a->{self::$sortKey} );
+    }
+
+    public static function sortByProp( &$collection, $prop, $direction = 'asc' ){
+        self::$sortKey = $prop;
+        switch ($direction) {
+            case 'desc': usort( $collection, array( __CLASS__, 'sorter_desc' ) );
+                 break;
+
+            default:    usort( $collection, array( __CLASS__, 'sorter_asc' ) );
+                break;
+        }
+        
+    }
+    
 }
