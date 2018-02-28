@@ -2053,7 +2053,7 @@ class Render {
         
         $html   =  '<div class="box box-objective bg-white '.$bg_color.'" style="height: 300px !important; padding: 0; background: url(\''.$icon_url.'\') center center;  background-size: cover;" margin-bottom" >'; 
         $html   .= '                <span class="bg-white no-padding" style="background-color: #fff; position:absolute; bottom:0px; height: 120px;width:100%;text-align: center;">'
-                . '<span class="col-xs-12" style="background-color: '.$bg_color.'; position:absolute; display:block; left:0;right:0;bottom:120px;">';
+                . '<span class="col-xs-12" style="background-color: '.$bg_color.'; position:absolute; display:block; left:0;right:0;bottom:120px;" >';
         foreach ($opt as $k =>$o) {
                 $html .= '<span style="margin-right:15px;padding:5px;text-shadow: 1px 1px #FF0000;" class="fa">'.$o.'</span>';    
         }
@@ -2214,4 +2214,73 @@ class Render {
             
         }
     }
+    
+    public static function reference($func, $id, $get){
+    $content     = '';
+    $reference   = new Reference();
+    $references  = $reference->get('reference_id', $_SESSION['CONTEXT'][$func]->context_id, $id);
+    Reference::sortByProp($references, 'curriculum', 'asc');
+    
+    if ($get['schooltype_id'] != 'false'){
+        $references  = ofilter($references, ['schooltype_id' => $_GET['schooltype_id']]);
+    }
+    if ($get['subject_id'] != 'false'){
+         $references  = ofilter($references, ['subject_id' => $_GET['subject_id']]);
+    }
+    if ($get['curriculum_id'] != 'false'){
+         $references  = ofilter($references, ['curriculum_id' => $_GET['curriculum_id']]);
+    }
+    if ($get['grade_id'] != 'false'){
+         $references  = ofilter($references, ['grade_id' => $_GET['grade_id']]);
+    }
+    if (isset($references)){
+        foreach ($references as $ref) {
+            $content .= RENDER::render_reference_entry($ref, $_SESSION['CONTEXT']['terminal_objective']->context_id);
+        }
+    } 
+    
+    if (count($references) == 0) {
+        $content .= 'Keine Querverweise vorhanden.';
+    }
+
+    if ($get['ajax'] == 'true'){  
+        echo $content;
+    } else {
+        return $content;
+    }
+}
+
+
+
+public static function render_reference_entry($ref, $context_id){
+    global $USER;
+    $c  = '<div class="row">
+           <div class="col-xs-12 col-sm-6 pull-left">';
+            if (checkCapabilities('reference:add',    $USER->role_id, false, true)){
+                $c .= '<a onclick="del(\'reference\', '.$ref->id.');" class="btn btn-default btn-xs pull-right" data-toggle="tooltip" title="" data-original-title="Referenz löschen" style="margin-right:5px;"><i class="fa fa-trash"></i></a>';
+                //$c .= '<a onclick="formloader(\'reference\', \'edit\', '.$ref->id.', {\'context_id\': \''.$context_id.'\'});" class="btn btn-default btn-xs pull-right" data-toggle="tooltip" title="" data-original-title="Referenz editieren" style="margin-right:5px;"><i class="fa fa-edit"></i></a>';
+            }
+            $c .= '<dt>Ausbildungsrichtung<dd>'.$ref->schooltype.'</dd></dt>
+           <br><dt>Fach<dd>'.$ref->curriculum_object->subject.'</dd></dt>
+           <br><dt>Lehrplan<dd>'.$ref->curriculum_object->curriculum.'</dd></dt>
+           <br><dt>Klassenstufe<dd>'.$ref->grade.'</dd></dt>';
+    if (isset($ref->content_object->content)){
+        if ($ref->content_object->content != ''){
+            $c .= '<br><dt>Anregungen zur Unterrichtsgestaltung ';
+            if (checkCapabilities('reference:add',    $USER->role_id, false, true)){
+             $c .= '<a onclick="formloader(\'content\', \'edit\','.$ref->content_object->id.');" class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-edit"></i></a>';
+            }
+            $c .= '<dd> '.strip_tags($ref->content_object->content).'</dd></dt>';
+        }
+    }
+    $c .= '</div><div class="col-xs-12 col-sm-3"><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('format' => 'reference', 'objective' => $ref->terminal_object, 'color')).'</div>';
+    if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
+      $c .= '<div class="col-xs-12 col-sm-3"><dt>Lernziel/Kompetenz</dt>'.Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $ref->enabling_object, 'border_color' => $ref->terminal_object->color)).'</div>';
+    }
+    $c .= '</div><hr style="clear:both;">';
+    
+    return $c;
+}
+    
+    
 }
