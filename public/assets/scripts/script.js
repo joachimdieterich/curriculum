@@ -802,6 +802,11 @@ function popupFunction(e){
         }); 
     }
     $(".select2").select2();
+    
+    $('button[data-toggle="collapse"]').click(function () {
+        $(this).find('i.fa').toggleClass('fa-compress fa-expand');
+    });
+    
     /*var config = {
       '.chosen-select'           : {},
       '.chosen-select-deselect'  : {allow_single_deselect:true},
