@@ -38,18 +38,28 @@ if (isset($_GET['s_key'])){ $s_key =  $_GET['s_key']; } else { $s_key =  'curric
 
 
 switch ($func) {
-    case 'enabling_objective':     //$_SESSION['anchor'] = 'ena_'.filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-    case 'terminal_objective':     //$_SESSION['anchor'] = 'ter_'.filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-                                   $files       = $file->getFiles($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => true));
-                                   $sodis       = $repo->get($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
-                                   $reference   = new Reference();
-                                   $references  = $reference->get('reference_id', $_SESSION['CONTEXT'][$func]->context_id, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
-                                   Reference::sortByProp($references, $s_key, 'asc');
-                                   if (isset($_GET['s_value'])){
-                                        $references  = ofilter($references, [$s_key => $_GET['s_value']]);
-                                   }
-                                   //$references  = PHPArrayObjectSorter($references, 'subject', 'asc', 'Englisch - Französisch');
-                                       
+    case 'enabling_objective':  //$_SESSION['anchor'] = 'ena_'.filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+    case 'terminal_objective':  //$_SESSION['anchor'] = 'ter_'.filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+                                $files       = $file->getFiles($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => true));
+                                $sodis       = $repo->get($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
+                                $reference   = new Reference();
+                                $references  = $reference->get('reference_id', $_SESSION['CONTEXT'][$func]->context_id, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
+                                Reference::sortByProp($references, $s_key, 'asc');
+                                if (isset($_GET['s_value'])){
+                                     $references  = ofilter($references, [$s_key => $_GET['s_value']]);
+                                }
+                                //$references  = PHPArrayObjectSorter($references, 'subject', 'asc', 'Englisch - Französisch');
+                                if ($func == 'enabling_objective'){
+                                    $objective   = new EnablingObjective();
+                                    $objective->id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT); 
+                                    $objective->load();
+                                    $header     = 'Material<br><small><b>Lernziel / Kompetenz</b><br>'.strip_tags($objective->enabling_objective).'</small>'; 
+                                } else {
+                                    $objective   = new TerminalObjective();
+                                    $objective->id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT); 
+                                    $objective->load();
+                                    $header     = 'Material<br><small><b>Lernziel / Kompetenz</b><br>'.strip_tags($objective->terminal_objective).'</small>'; 
+                                }
         break;
     case 'id' :         $files  = $file->getFiles('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => false, 'user_id' => filter_input(INPUT_GET, 'user_id', FILTER_VALIDATE_INT)));
                         $header = 'Lösungen / Dateien des Users';
@@ -71,7 +81,7 @@ switch ($func) {
 $f_content  = null;
 $content    = null; 
 $m_boxes    = '';
-
+    
 if (!$files AND !isset($references) AND !isset($sodis)){
     $content .= 'Es gibt leider kein Material zum gewählten Lernziel.';
 } else {
@@ -383,12 +393,12 @@ function render_filter($schooltype_id  = null, $subject_id = null, $curriculum_i
     $c    .= '<span class="col-sm-3 pull-left">'.Form::input_select('schooltype_id', '', $schooltypes->getSchooltypes(), 'schooltype', 'id', $schooltype_id , null,"$('#reference_ajax').load('../share/request/render_html.php' + '?render=reference&func=".filter_input(INPUT_GET, 'func', FILTER_UNSAFE_RAW)."&id=".filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT)."&schooltype_id='+$('#schooltype_id').val()+'&subject_id='+$('#subject_id').val()+'&curriculum_id='+$('#curriculum_id').val()+'&grade_id='+$('#grade_id').val()+'&ajax=true#reference_ajax');", 'Nach Ausbidlungsrichtung filtern', 'col-xs-0', 'col-xs-12').'</span>';
     $subjects                   = new Subject();                                                      
     $subjects->institution_id   = $USER->institutions;
-    $c     .= '<span class="col-sm-3 pull-left">'.Form::input_select('subject_id', '', $subjects->getSubjects(), 'subject, institution', 'id', $subject_id , null, "$('#reference_ajax').load('../share/request/render_html.php' + '?render=reference&func=".filter_input(INPUT_GET, 'func', FILTER_UNSAFE_RAW)."&id=".filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT)."&schooltype_id='+$('#schooltype_id').val()+'&subject_id='+$('#subject_id').val()+'&curriculum_id='+$('#curriculum_id').val()+'&grade_id='+$('#grade_id').val()+'&ajax=true#reference_ajax');", 'Nach Fach filtern', 'col-xs-0', 'col-xs-12').'</span>';
+    $c     .= '<span class="col-sm-3 pull-left">'.Form::input_select('subject_id', '', $subjects->getSubjects(), 'subject', 'id', $subject_id , null, "$('#reference_ajax').load('../share/request/render_html.php' + '?render=reference&func=".filter_input(INPUT_GET, 'func', FILTER_UNSAFE_RAW)."&id=".filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT)."&schooltype_id='+$('#schooltype_id').val()+'&subject_id='+$('#subject_id').val()+'&curriculum_id='+$('#curriculum_id').val()+'&grade_id='+$('#grade_id').val()+'&ajax=true#reference_ajax');", 'Nach Fach filtern', 'col-xs-0', 'col-xs-12').'</span>';
     $cur          = new Curriculum();
     $curriculum   = $cur->getCurricula('user', $USER->id);
     $c     .= '<span class="col-sm-3 pull-left">'.Form::input_select('curriculum_id', '', $curriculum, 'curriculum', 'id', $curriculum_id , null, "$('#reference_ajax').load('../share/request/render_html.php' + '?render=reference&func=".filter_input(INPUT_GET, 'func', FILTER_UNSAFE_RAW)."&id=".filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT)."&schooltype_id='+$('#schooltype_id').val()+'&subject_id='+$('#subject_id').val()+'&curriculum_id='+$('#curriculum_id').val()+'&grade_id='+$('#grade_id').val()+'&ajax=true#reference_ajax');", 'Nach Lehr-/Rahmenplan filtern', 'col-xs-0', 'col-xs-12').'</span>';
     $grades       = new Grade();    //Load Grades
-    $c     .= '<span class="col-sm-3 pull-left">'.Form::input_select('grade_id', '', $grades->getGrades('institution',$USER->institution_id), 'grade, institution', 'id', $grade_id , null, "$('#reference_ajax').load('../share/request/render_html.php' + '?render=reference&func=".filter_input(INPUT_GET, 'func', FILTER_UNSAFE_RAW)."&id=".filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT)."&schooltype_id='+$('#schooltype_id').val()+'&subject_id='+$('#subject_id').val()+'&curriculum_id='+$('#curriculum_id').val()+'&grade_id='+$('#grade_id').val()+'&ajax=true#reference_ajax');", 'Nach Klassenstufe filtern', 'col-xs-0', 'col-xs-12').'</span>';
+    $c     .= '<span class="col-sm-3 pull-left">'.Form::input_select('grade_id', '', $grades->getGrades('institution',$USER->institution_id), 'grade', 'id', $grade_id , null, "$('#reference_ajax').load('../share/request/render_html.php' + '?render=reference&func=".filter_input(INPUT_GET, 'func', FILTER_UNSAFE_RAW)."&id=".filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT)."&schooltype_id='+$('#schooltype_id').val()+'&subject_id='+$('#subject_id').val()+'&curriculum_id='+$('#curriculum_id').val()+'&grade_id='+$('#grade_id').val()+'&ajax=true#reference_ajax');", 'Nach Klassenstufe filtern', 'col-xs-0', 'col-xs-12').'</span>';
     $c    .= '</div>';
     return $c;
 }
