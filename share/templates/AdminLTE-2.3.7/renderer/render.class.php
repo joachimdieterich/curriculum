@@ -2234,9 +2234,20 @@ class Render {
          $references  = ofilter($references, ['grade_id' => $_GET['grade_id']]);
     }
     if (isset($references)){
+        $subject_id = '';
         foreach ($references as $ref) {
+            if ($ref->subject_id != $subject_id){
+                if ($subject_id != ''){
+                    $content .= '</span>';
+                }
+                $subject_id = $ref->subject_id;
+                
+                $content .= '<span class="col-xs-12 bg-light-aqua"><h4 class="text-black">'.$ref->curriculum_object->curriculum.' <small>'.$ref->schooltype.'</small><button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#subject_'.$subject_id.'" aria-expanded="true" data-toggle="tooltip" title="Fach einklappen bzw. ausklappen"><i class="fa fa-expand"></i></button></h4></span><hr style="clear:both;">';
+                $content .= '<span id ="subject_'.$subject_id.'" class="collapse in">';
+            }
             $content .= RENDER::render_reference_entry($ref, $_SESSION['CONTEXT']['terminal_objective']->context_id);
         }
+        $content .= '</span>'; //close last subject span
     } 
     
     if (count($references) == 0) {
@@ -2255,29 +2266,25 @@ class Render {
 public static function render_reference_entry($ref, $context_id){
     global $USER;
     $c  = '<div class="row">
-           <div class="col-xs-12 col-sm-6 pull-left">';
+            <div class="col-xs-12 col-sm-3 pull-left"><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('format' => 'reference', 'objective' => $ref->terminal_object, 'color')).'</div>';
+            if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
+              $c .= '<div class="col-xs-12 col-sm-3"><dt>Lernziel/Kompetenz</dt>'.Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $ref->enabling_object, 'border_color' => $ref->terminal_object->color)).'</div>';
+            }
+            $c .= '
+           <div class="col-xs-12 col-sm-6 pull-right">';
             if (checkCapabilities('reference:add',    $USER->role_id, false, true)){
                 $c .= '<a onclick="del(\'reference\', '.$ref->id.');" class="btn btn-default btn-xs pull-right" data-toggle="tooltip" title="" data-original-title="Referenz löschen" style="margin-right:5px;"><i class="fa fa-trash"></i></a>';
                 //$c .= '<a onclick="formloader(\'reference\', \'edit\', '.$ref->id.', {\'context_id\': \''.$context_id.'\'});" class="btn btn-default btn-xs pull-right" data-toggle="tooltip" title="" data-original-title="Referenz editieren" style="margin-right:5px;"><i class="fa fa-edit"></i></a>';
             }
-            $c .= '<dt>Ausbildungsrichtung<dd>'.$ref->schooltype.'</dd></dt>
-           <br><dt>Fach<dd>'.$ref->curriculum_object->subject.'</dd></dt>
-           <br><dt>Lehrplan<dd>'.$ref->curriculum_object->curriculum.'</dd></dt>
-           <br><dt>Klassenstufe<dd>'.$ref->grade.'</dd></dt>';
     if (isset($ref->content_object->content)){
         if ($ref->content_object->content != ''){
-            $c .= '<br><dt>Anregungen zur Unterrichtsgestaltung ';
+            $c .= '<br><dt>Anregungen zur Unterrichtsgestaltung <dd> '.strip_tags($ref->content_object->content).'</dd></dt>';
             if (checkCapabilities('reference:add',    $USER->role_id, false, true)){
-             $c .= '<a onclick="formloader(\'content\', \'edit\','.$ref->content_object->id.');" class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-edit"></i></a>';
+                $c .= '<a onclick="formloader(\'content\', \'edit\','.$ref->content_object->id.');" class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-edit"></i></a>';
             }
-            $c .= '<dd> '.strip_tags($ref->content_object->content).'</dd></dt>';
         }
     }
-    $c .= '</div><div class="col-xs-12 col-sm-3"><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('format' => 'reference', 'objective' => $ref->terminal_object, 'color')).'</div>';
-    if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
-      $c .= '<div class="col-xs-12 col-sm-3"><dt>Lernziel/Kompetenz</dt>'.Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $ref->enabling_object, 'border_color' => $ref->terminal_object->color)).'</div>';
-    }
-    $c .= '</div><hr style="clear:both;">';
+    $c .= '</div></div><hr style="clear:both;">';
     
     return $c;
 }
