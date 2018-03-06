@@ -520,6 +520,7 @@ class Curriculum {
         }
     } 
     
+    /* Used by reference view: Get group based on curriculum*/
     public function getGroupsByUserAndCurriculum($user_id, $curriculum_id = null, $status = 1) {
         if ($curriculum_id == null){
             $curriculum_id = $this->id;
