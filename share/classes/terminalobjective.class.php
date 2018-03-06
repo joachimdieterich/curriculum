@@ -187,7 +187,7 @@ class TerminalObjective {
      * @param boolean $load_enabling_objectives
      * @return array of TerminalObjective objects|boolean 
      */
-    public function getObjectives($dependency = null, $id = null, $load_enabling_objectives = false) {
+    public function getObjectives($dependency = null, $id = null, $load_enabling_objectives = false, $reference_ter_ids = null) {
         global $CFG;
         switch ($dependency) {
             case 'curriculum':  $files = new File(); 
@@ -221,10 +221,18 @@ class TerminalObjective {
                                         $this->files['webservice']  = '';//$ws->count($_SESSION['CONTEXT']['terminal_objective']->id,$result->id);
                                     }
                                     /* Check if references are available for this terminal objective*/
-                                    $db_04       = DB::prepare('SELECT COUNT(*) AS MAX FROM reference WHERE context_id = ? AND reference_id = ?');
-                                    $db_04->execute(array( $_SESSION['CONTEXT']['terminal_objective']->context_id, $result->id));
-                                    $res_04 = $db_04->fetchObject();
-                                    $this->files['references']  = $res_04->MAX;
+                                    if (is_array($reference_ter_ids)){ //check if view mode == reference_view
+                                        $db_04c       = DB::prepare('SELECT COUNT(*) AS MAX FROM reference WHERE context_id = ? AND reference_id IN ('.implode(",", $reference_ter_ids).') AND unique_id IN (SELECT unique_id FROM reference WHERE context_id = ? AND reference_id = ?)');
+                                        $db_04c->execute(array( $_SESSION['CONTEXT']['terminal_objective']->context_id, $_SESSION['CONTEXT']['terminal_objective']->context_id, $result->id));
+                                        $res_04c = $db_04c->fetchObject();
+                                        $this->files['references']  = $res_04c->MAX;
+                                    } else {
+                                        $db_04       = DB::prepare('SELECT COUNT(*) AS MAX FROM reference WHERE context_id = ? AND reference_id = ?');
+                                        $db_04->execute(array( $_SESSION['CONTEXT']['terminal_objective']->context_id, $result->id));
+                                        $res_04 = $db_04->fetchObject();
+                                        $this->files['references']  = $res_04->MAX;
+                                    }
+                                    
                                     
                                     $objectives[]               = clone $this; 
                                 }
@@ -253,6 +261,19 @@ class TerminalObjective {
         if (isset($objectives)){
             return $objectives;
         } else { return false;}
+    }
+    
+    public function getIdArray($id){
+        $db     = DB::prepare('SELECT id FROM terminalObjectives WHERE curriculum_id = ?');
+        $db->execute(array($id));
+        while($r = $db->fetchObject()) { 
+            $ter_ids[] = $r->id;
+        }
+        if (isset($ter_ids)){
+            return $ter_ids;
+        } else {
+            return false; 
+        }
     }
     
     /**
