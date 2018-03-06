@@ -24,20 +24,17 @@
 */
 global $PAGE, $USER, $TEMPLATE;
  
-$search     = false;
-$navigator  = new Navigator();
+$search             = false;
+$navigator          = new Navigator();
 $navigator->getNavigatorByInstitution($USER->institution_id);
-error_log($navigator->na_id);
+$allowed_navigator  = $navigator->na_id;
 $navigator->getFirstView($navigator->na_id);
-error_log($navigator->nv_id);
-$navigator_view = $navigator->nv_id;                            //load navigator_id from 
-
+$navigator_view     = $navigator->nv_id;                            //load navigator_id from 
 if (isset($_POST) ){
     if (isset($_POST['search'])){
         $search = filter_input(INPUT_POST, 'search', FILTER_SANITIZE_STRING);
         $TEMPLATE->assign('navigator_reset', true); 
-    }
-    
+    }   
 }
 if (isset($_GET)){
     if (isset($_GET['nv_id'])){
@@ -52,6 +49,7 @@ $TEMPLATE->assign('top_text', $content);
 //$navigator_view = 1;
 //error_log(json_encode($navigator->get($navigator_view)));
 $navigator_bocks = $navigator->get($navigator_view);
+if ($navigator_bocks[0]->na_id != $allowed_navigator){ die(); } //security check
 $b_array     = $navigator->getBreadcrumbs($navigator_view);
 $breadcrumbs = array();
 
