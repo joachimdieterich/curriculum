@@ -120,8 +120,8 @@ class EnablingObjective {
      */
     public $files; 
     public $quiz;
-            
-            
+    
+                    
     /**
      * add objective
      * @return mixed 
@@ -210,7 +210,7 @@ class EnablingObjective {
      * @param int $group
      * @return array of EnablingObjective objects|boolean 
      */
-    public function getObjectives($dependency = null, $id = null, $group = null) {
+    public function getObjectives($dependency = null, $id = null, $group = null, $reference_ena_ids = null) {
         global $USER, $CFG; 
         switch ($dependency) {
                 case 'user':  $db = DB::prepare('SELECT en.*, ua.status_id, ua.accomplished_time, ua.creator_id AS teacher_id
@@ -377,10 +377,18 @@ class EnablingObjective {
                                         $this->files['webservice']  = $ws->count($_SESSION['CONTEXT']['enabling_objective']->id,$result->id);
                                     }
                                     /* Check if references are available for this enabling objective*/
-                                    $db_04       = DB::prepare('SELECT COUNT(*) AS MAX FROM reference WHERE context_id = ? AND reference_id = ?');
-                                    $db_04->execute(array( $_SESSION['CONTEXT']['enabling_objective']->context_id, $result->id));
-                                    $res_04 = $db_04->fetchObject();
-                                    $this->files['references']  = $res_04->MAX;
+                                    if (is_array($reference_ena_ids)){ //check if view mode == reference_view
+                                        $db_04c       = DB::prepare('SELECT COUNT(*) AS MAX FROM reference WHERE context_id = ? AND reference_id IN ('.implode(",", $reference_ena_ids).') AND unique_id IN (SELECT unique_id FROM reference WHERE context_id = ? AND reference_id = ?)');
+                                        $db_04c->execute(array( $_SESSION['CONTEXT']['enabling_objective']->context_id, $_SESSION['CONTEXT']['enabling_objective']->context_id, $result->id));
+                                        $res_04c = $db_04c->fetchObject();
+                                        $this->files['references']  = $res_04c->MAX;
+                                        
+                                    } else {
+                                        $db_04       = DB::prepare('SELECT COUNT(*) AS MAX FROM reference WHERE context_id = ? AND reference_id = ?');
+                                        $db_04->execute(array( $_SESSION['CONTEXT']['enabling_objective']->context_id, $result->id));
+                                        $res_04 = $db_04->fetchObject();
+                                        $this->files['references']  = $res_04->MAX;
+                                    }
                                     
                                     /* Check if Quiz is available for this enabling objective*/
                                     $db_05       = DB::prepare('SELECT COUNT(*) AS MAX FROM quiz_questions WHERE objective_id = ? AND objective_type = 1');
@@ -485,6 +493,19 @@ class EnablingObjective {
         } else { return false;}
         
     }  
+    
+    public function getIdArray($id){
+        $db     = DB::prepare('SELECT id FROM enablingObjectives WHERE curriculum_id = ?');
+        $db->execute(array($id));
+        while($r = $db->fetchObject()) { 
+            $ena_ids[] = $r->id;
+        }
+        if (isset($ena_ids)){
+            return $ena_ids;
+        } else {
+            return false; 
+        }
+    }
     
     /**
      * change order of objectives 
