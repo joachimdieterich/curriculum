@@ -550,6 +550,7 @@ class Render {
        $sol_btn     = false;
        $orderup     = false;
        $orderdown   = false;
+       $reference_view = false; // 'hide' objectives without references
        //$objective 
        foreach($params as $key => $val) {
             $$key = $val;
@@ -638,7 +639,11 @@ class Render {
                         $html  .= 'highlight';
                     } 
                 }
-                $html  .= '" style="padding-top: 0 !important; background: '.$objective->color.'; border: 1px solid '.$border_color.'">';
+                $style = 'padding-top: 0 !important; background: '.$objective->color.'; border: 1px solid '.$border_color;
+                if ($objective->files['references'] == false AND $reference_view == true){
+                   $style .= 'filter: alpha(opacity=40); opacity: 0.4; -moz-opacity: 0.4;';
+                } 
+                $html  .= '" style="'.$style.'">';
                 /*************** Header ***************/
                 if ($type == 'enabling_objective'){
                     $html  .= '<div id="ena_header_'.$objective->id.'" class="boxheader bg-'.$objective->accomplished_status_id.'" >';
