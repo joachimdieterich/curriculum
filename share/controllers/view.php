@@ -35,6 +35,15 @@ if ($_GET){
                                             $group->id   = $_GET['group'];
                                             $group->load(); 
                                             $TEMPLATE->assign('group',     $group);
+                                            $c                          = new Curriculum();
+                                            $reference_curriculum_list  = $c->getCurricula('group',$PAGE->group);
+                                            $TEMPLATE->assign('reference_curriculum_list', $reference_curriculum_list);   
+                                            if (filter_input(INPUT_GET, 'reference_view', FILTER_VALIDATE_INT)){
+                                                $reference_curriculum_id = filter_input(INPUT_GET, 'reference_view', FILTER_VALIDATE_INT);
+                                                $TEMPLATE->assign('selected_curriculum_id', $reference_curriculum_id);  
+                                            } else {
+                                                $TEMPLATE->assign('selected_curriculum_id', false);   
+                                            }
         case isset($_GET['curriculum_id']): $PAGE->curriculum = $_GET['curriculum_id'];
                                             $TEMPLATE->assign('page_curriculum',     $PAGE->curriculum);   
                                             $cur        = new Curriculum();
@@ -55,6 +64,7 @@ if ((isset($_GET['function']) AND $_GET['function'] == 'addObjectives')) {
         $PAGE->message[] = array('message' => 'Lehrplan kann nur vom Ersteller editiert werden. ', 'icon' => 'fa fa-th text-warning');// Schließen und speichern 
     }
 }
+
 /******************************************************************************
  * END POST / GET
  */
@@ -62,7 +72,14 @@ if ((isset($_GET['function']) AND $_GET['function'] == 'addObjectives')) {
 $courses = new Course(); // Load course
 
 $terminal_objectives = new TerminalObjective();                                     //load terminal objectives
-$TEMPLATE->assign('terminal_objectives', $terminal_objectives->getObjectives('curriculum', $PAGE->curriculum /*false*/)); // default -> false: only load terminal objectives
+if (isset($reference_curriculum_id)){
+    $ter_ids = $terminal_objectives->getIdArray($reference_curriculum_id);
+    $TEMPLATE->assign('terminal_objectives', $terminal_objectives->getObjectives('curriculum', $PAGE->curriculum, false, $ter_ids));
+    $TEMPLATE->assign('reference_view', true);
+} else {
+    $TEMPLATE->assign('terminal_objectives', $terminal_objectives->getObjectives('curriculum', $PAGE->curriculum /*false*/)); // default -> false: only load terminal objectives
+    $TEMPLATE->assign('reference_view', false);
+}
 
 $enabling_objectives = new EnablingObjective();                                     //load enabling objectives
 $enabling_objectives->curriculum_id = $PAGE->curriculum;
@@ -105,8 +122,13 @@ switch ($function) {
                                 $TEMPLATE->assign('content_menu', $content_menu); 
                             }
                             
+                            if (isset($reference_curriculum_id)){
+                                $ena_ids = $enabling_objectives->getIdArray($reference_curriculum_id);
+                                $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('course', $PAGE->curriculum, $PAGE->group, $ena_ids));
+                            } else {
+                                $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('course', $PAGE->curriculum, $PAGE->group));
+                            }
                             
-                            $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('course', $PAGE->curriculum, $PAGE->group));
                             $TEMPLATE->assign('page_title', 'Lehrplan'); 
         break;
 }
