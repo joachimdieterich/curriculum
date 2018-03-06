@@ -43,7 +43,7 @@ if ($_GET){
                                                 $TEMPLATE->assign('selected_curriculum_id', $reference_curriculum_id);  
                                             } else {
                                                 $TEMPLATE->assign('selected_curriculum_id', false);   
-                                            }
+                                            }  
         case isset($_GET['curriculum_id']): $PAGE->curriculum = $_GET['curriculum_id'];
                                             $TEMPLATE->assign('page_curriculum',     $PAGE->curriculum);   
                                             $cur        = new Curriculum();
