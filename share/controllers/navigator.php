@@ -24,8 +24,14 @@
 */
 global $PAGE, $USER, $TEMPLATE;
  
-$search = false;
-$navigator_view = 1;
+$search     = false;
+$navigator  = new Navigator();
+$navigator->getNavigatorByInstitution($USER->institution_id);
+error_log($navigator->na_id);
+$navigator->getFirstView($navigator->na_id);
+error_log($navigator->nv_id);
+$navigator_view = $navigator->nv_id;                            //load navigator_id from 
+
 if (isset($_POST) ){
     if (isset($_POST['search'])){
         $search = filter_input(INPUT_POST, 'search', FILTER_SANITIZE_STRING);
@@ -42,7 +48,7 @@ $content        = new Content();
 $content->load('id', 1239);
 $TEMPLATE->assign('top_text', $content); 
 
-$navigator   = new Navigator();
+
 //$navigator_view = 1;
 //error_log(json_encode($navigator->get($navigator_view)));
 $navigator_bocks = $navigator->get($navigator_view);
