@@ -99,6 +99,9 @@
                         </a>
                     </button>
                 {/if} 
+                {if isset($reference_curriculum_list)}
+                    {Form::input_select('reference_curriuclumid', '', $reference_curriculum_list, 'curriculum', 'id', $selected_curriculum_id, null, "window.location.assign('index.php?action=view&curriculum_id={$course[0]->curriculum_id}&group={$page_group}&reference_view='+this.value);", 'Überfachliche Bezüge hervorheben', '', 'col-sm-12')}
+                {/if}
             </div>
         </div>
         <div id="search_curriculum_{$course[0]->curriculum_id}" class="col-xs-12 top-buffer" >
@@ -123,7 +126,7 @@
                          {/if}
                          {RENDER::objective(["type" =>"terminal_objective", "objective" => $ter , "user_id" => $my_id, "edit" => true, "orderup" => $orderup, "orderdown" => $orderdown, "highlight" => $highlight])}
                      {else}
-                           {RENDER::objective(["type" =>"terminal_objective", "objective" => $ter , "user_id" => $my_id, "highlight" => $highlight])}
+                         {RENDER::objective(["type" =>"terminal_objective", "objective" => $ter , "user_id" => $my_id, "highlight" => $highlight, "reference_view" => $reference_view])}
                      {/if}
                      
                      {*Ende Thema*}
@@ -147,7 +150,7 @@
                                  {RENDER::objective(["type" =>"enabling_objective", "objective" => $ena , "user_id" => $my_id, "solutions" => $solutions, "edit" => true, "orderup" => $orderup, "orderdown" => $orderdown, "border_color" => $ter->color, "highlight" => $highlight])}
                              {else}
                                  
-                                 {RENDER::objective(["type" =>"enabling_objective", "objective" => $ena , "user_id" => $my_id, "solutions" => $solutions, "group_id" => $page_group, "border_color" => $ter->color, "highlight" => $highlight])}
+                                 {RENDER::objective(["type" =>"enabling_objective", "objective" => $ena , "user_id" => $my_id, "solutions" => $solutions, "group_id" => $page_group, "border_color" => $ter->color, "highlight" => $highlight, "reference_view" => $reference_view])}
                              {/if}
                          {/if}
                          {/foreach}
