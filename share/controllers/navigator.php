@@ -41,13 +41,7 @@ if (isset($_GET)){
         $navigator_view = $_GET['nv_id'];
     }
 }
-/*$content        = new Content();
-$content->load('id', 1239);
-$TEMPLATE->assign('top_text', $content); */
 
-
-//$navigator_view = 1;
-//error_log(json_encode($navigator->get($navigator_view)));
 $navigator_bocks = $navigator->get($navigator_view);
 if ($navigator_bocks[0]->na_id != $allowed_navigator){ die(); } //security check
 $b_array     = $navigator->getBreadcrumbs($navigator_view);
