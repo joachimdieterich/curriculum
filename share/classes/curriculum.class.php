@@ -499,7 +499,7 @@ class Curriculum {
         $content->reference_id  = $cur_id;
         $content->add();
     }
-   
+    
    public function checkEnrolment($status = '1'){
         $db = DB::prepare('SELECT ce.*, gp.groups, ins.institution FROM curriculum_enrolments AS ce, 
 							groups AS gp,
@@ -519,6 +519,26 @@ class Curriculum {
             return false;
         }
     } 
+    
+    public function getGroupsByUserAndCurriculum($user_id, $curriculum_id = null, $status = 1) {
+        if ($curriculum_id == null){
+            $curriculum_id = $this->id;
+        }
+        $db = DB::prepare('SELECT ce.group_id FROM curriculum_enrolments AS ce, groups_enrolments AS ge
+						WHERE ce.curriculum_id = ?
+						AND ce.status = ?
+						AND ce.group_id = ge.group_id AND ge.user_id = ?'); //ORDER BY institution for statistic chart
+        $db->execute(array($curriculum_id, $status, $user_id));
+        
+        while($result = $db->fetchObject()) { 
+            $groups[] = $result; 
+        } 
+        if (isset($groups)){
+            return $groups; 
+        } else {
+            return false;
+        }
+    }
    
    /**
     * function used during the install process to set up creator id to new admin
