@@ -1899,7 +1899,7 @@ class Render {
 
 
     public static function navigator_item($params){
-        global $CFG;
+        global $CFG, $USER;
         
         foreach($params as $key => $val) {
             //error_log($key.' -> '. $val);
@@ -1907,12 +1907,13 @@ class Render {
         }
         $html = '';
         switch ($nb_context_id) {
-            
+            /*curriculum*/
             case 2:     $cur                = new Curriculum();
                         $cur->id            = $nb_target; 
                         $cur->load(false);
+                        $enroled_groups     = $cur->getGroupsByUserAndCurriculum($USER->id);
                         $file_id            = $cur->icon_id;
-                        $widget_onclick     = "location.href='index.php?action=view&curriculum_id={$nb_target}';";
+                        $widget_onclick     = "location.href='index.php?action=view&curriculum_id={$nb_target}&group={$enroled_groups[0]->group_id}';";
                         $html = RENDER::paginator_widget(array('widget_title' => $nb_title, 'file_id' => $file_id, 'widget_onclick' => $widget_onclick));
                 break;
             case 15:    $content            = new Content();
