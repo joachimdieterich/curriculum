@@ -41,9 +41,9 @@ if (isset($_GET)){
         $navigator_view = $_GET['nv_id'];
     }
 }
-$content        = new Content();
+/*$content        = new Content();
 $content->load('id', 1239);
-$TEMPLATE->assign('top_text', $content); 
+$TEMPLATE->assign('top_text', $content); */
 
 
 //$navigator_view = 1;
