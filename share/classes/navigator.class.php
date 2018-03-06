@@ -204,5 +204,34 @@ class Navigator {
         
     }
     
+    public function getNavigatorByInstitution($institution_id) {
+        $db = DB::prepare('SELECT na.* FROM navigator AS na WHERE na.na_context_id = ? AND na.na_reference_id = ?');
+        $db->execute(array($_SESSION['CONTEXT']['institution']->context_id, $institution_id));
+        
+        $result = $db->fetchObject();
+        if ($result){
+            foreach ($result as $key => $value) {
+                $this->$key = $value; 
+            }
+            return true;                                                        
+        } else { 
+            return false; 
+        }
+    }
+    
+    public function getFirstView($navigator_id){
+        $db = DB::prepare('SELECT MIN(nv_id) AS nv_id FROM navigator_view WHERE nv_navigator_id = ?');
+        $db->execute(array($navigator_id));
+        
+        $result = $db->fetchObject();
+        if ($result){
+            foreach ($result as $key => $value) {
+                $this->$key = $value; 
+            }
+            return true;                                                        
+        } else { 
+            return false; 
+        }
+    }
     
 }
