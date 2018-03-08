@@ -265,11 +265,11 @@ class Curriculum {
                                                 AND cu.schooltype_id = sc.id AND cu.grade_id = gr.id 
                                                 AND cu.subject_id = su.id AND cu.icon_id = fl.id 
                                                 AND cu.id IN (SELECT cure.curriculum_id 
-                                                FROM curriculum_enrolments AS cure WHERE cure.group_id IN (SELECT ge.group_id FROM groups_enrolments AS ge WHERE ge.status = 1 AND ge.user_id = ?))) '.$order_param);
+                                                FROM curriculum_enrolments AS cure WHERE cure.status = 1 AND cure.group_id IN (SELECT ge.group_id FROM groups_enrolments AS ge WHERE ge.status = 1 AND ge.user_id = ?))) '.$order_param);
                                 $db->execute(array($id, $id));
                             }
                             while($result = $db->fetchObject()) {
-                                $curriculum[] = $result; //result Data wird an setPaginator vergeben
+                                $curriculum[] = $result;  //result Data wird an setPaginator vergeben
                             } 
                 break; 
             default:  break;
