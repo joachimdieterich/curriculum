@@ -125,7 +125,7 @@ class Task {
                                                 AND te.task_id = ta.id ORDER BY ta.timeend' );
                                     $db->execute(array($dependency, $id));
                 break;
-            case 'coursebook':      $db = DB::prepare('SELECT ta.id
+            case 'coursebook':      $db = DB::prepare('SELECT DISTINCT ta.id
                                                 FROM task AS ta, task_enrolments AS te, context AS ct
                                                 WHERE ct.context = ? 
                                                 AND ct.context_id = te.context_id
