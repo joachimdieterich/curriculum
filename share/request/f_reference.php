@@ -129,7 +129,7 @@ if (isset($id)) {                                                               
 switch ($type) {
     case 'enabling_objective': $type_text = "dem Lernziel bzw. der Kompetenz";
         break;
-    case 'terminal_objective': $type_text = "dem Thema bzw. Kompetenzbereich";
+    case 'terminal_objective': $type_text = "dem Thema bzw. Kompetenzbereich"; 
         break;
 }
 $content     .= Form::info(array('id' => 'ref_info', 'content' => 'Bezug mit '.$type_text.' herstellen. <strong>'.$obj->$type.'</strong>'));
