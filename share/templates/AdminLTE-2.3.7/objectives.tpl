@@ -62,7 +62,7 @@
                                         {*Zertifikat*}
                                         <div class="col-md-2 col-sm-12">
                                             <div class='btn btn-default' onclick="formloader('generate_certificate','',{$sel_curriculum});">
-                                                <span class="fa fa-files-o" aria-hidden="true"></span> {if count($selected_user_id) > 1} Zertifikate erstellen{else} Zertifikat erstellen{/if}
+                                                <span class="fa fa-files-o" aria-hidden="true"></span> {if count($selected_user_id) > 1} Zertifikate/Grupen-Übersicht {else} Zertifikat/Grupen-Übersicht {/if}erstellen
                                             </div>
                                         </div>
                                         <input id="certificate_template" class="hidden" value="false"/>{* hack to get js working if no user is selected, todo: remve certificate_template in js not used any more *}
