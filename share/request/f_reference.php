@@ -125,9 +125,14 @@ $content .= '<input id="context_id" name="context_id" type="text" class="invisib
 if (isset($id)) {                                                               // only set id input field if set! prevents error on validation form reload
     $content .= '<input id="id" name="id" type="text" class="invisible" value="'.$id.'">';
 }
-if ($edit =! true){
-    $content     .= Form::info(array('id' => 'ref_info', 'content' => 'Bezug mit Kompetenz(bereich) <strong>'.$obj->$type.'</strong> herstellen. <br>Bezüge können sich sowohl auf ein <strong>Thema / Kompetenzbereich</strong> sowie <strong>Kompetenzen / Lernziele</strong> beziehen.'));
+
+switch ($type) {
+    case 'enabling_objective': $type_text = "dem Lernziel bzw. der Kompetenz";
+        break;
+    case 'terminal_objective': $type_text = "dem Thema bzw. Kompetenzbereich";
+        break;
 }
+$content     .= Form::info(array('id' => 'ref_info', 'content' => 'Bezug mit '.$type_text.' herstellen. <strong>'.$obj->$type.'</strong>'));
 
 if ($id == null) {
     $curriculum_id = $curriculum[0]->id;        
