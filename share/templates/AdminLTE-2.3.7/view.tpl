@@ -48,7 +48,7 @@
 <!-- Content Header (Page header) -->
 {if isset($showaddObjectives)}{assign var="help" value="http://docs.joachimdieterich.de/index.php?title=Lehrplan_anlegen"}
 {else}{assign var="help" value="http://docs.joachimdieterich.de/index.php?title=Lehrplan"}{/if}
-{content_header p_title="{$page_title}: {$course[0]->curriculum} ({$course[0]->grade}: {$course[0]->subject})" pages=$breadcrumb help= $help}       
+{content_header p_title="{$page_title}: {$course[0]->curriculum}" pages=$breadcrumb help= $help}       
 
 <!-- Main content -->
 <section class="content " >   
