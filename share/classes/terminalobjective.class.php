@@ -155,7 +155,10 @@ class TerminalObjective {
         $db = DB::prepare('UPDATE terminalObjectives SET order_id = order_id - 1 WHERE curriculum_id = ? AND order_id > ?');
         if ($db->execute(array($this->curriculum_id, $this->order_id))) {
             $db01 = DB::prepare('DELETE FROM terminalObjectives WHERE id = ?');
-            return $db01->execute(array($this->id));
+            if ($db01->execute(array($this->id))){
+                $db02 = DB::prepare('DELETE FROM enablingObjectives WHERE terminal_objective_id = ?');
+                return $db02->execute(array($this->id));
+            }
         } else {
             return false;
         }
