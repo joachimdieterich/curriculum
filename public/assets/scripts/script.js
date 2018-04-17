@@ -796,7 +796,11 @@ function popupFunction(e){
     textareas = document.getElementsByTagName("textarea");                      // Replace the <textarea id="editor1"> with a CKEditor instance, using default configuration
     for (var i = 0, len = textareas.length; i < len; i++) {
         CKEDITOR.dtd.$removeEmpty['i'] = false;
-        CKEDITOR.replace(textareas[i].id, { toolbarStartupExpanded : false});
+        if (i == 0){                                                            // only collapse first editor -> description editors sould show toolbar
+            CKEDITOR.replace(textareas[i].id, { toolbarStartupExpanded : false});
+        } else {
+            CKEDITOR.replace(textareas[i].id, { toolbarStartupExpanded : true});
+        }
         CKEDITOR.on('instanceReady',function(){
             resizeModal();      // if ckeditor is used, then modal has to be resized after ckeditor is ready
         }); 
