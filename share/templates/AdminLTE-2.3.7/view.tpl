@@ -48,7 +48,7 @@
 <!-- Content Header (Page header) -->
 {if isset($showaddObjectives)}{assign var="help" value="http://docs.joachimdieterich.de/index.php?title=Lehrplan_anlegen"}
 {else}{assign var="help" value="http://docs.joachimdieterich.de/index.php?title=Lehrplan"}{/if}
-{content_header p_title="{$page_title}: {$course[0]->curriculum}" pages=$breadcrumb help= $help}       
+{content_header p_title="{$course[0]->curriculum}" pages=$breadcrumb help= $help}       
 
 <!-- Main content -->
 <section class="content " >   
@@ -93,11 +93,9 @@
             <div class="btn-group pull-left margin-r-5">
                 {Render::split_button($cur_files)}
                 {if isset($showaddObjectives)}
-                    <button type="button" class="btn btn-default" >
-                        <a href="{$template_url}renderer/uploadframe.php?context=curriculum&ref_id={$course[0]->curriculum_id}&modal=true&format=1" class="nyroModal">
-                            <i class="fa fa-upload text-black"></i>
-                        </a>
-                    </button>
+                    <a href="{$template_url}renderer/uploadframe.php?context=curriculum&ref_id={$course[0]->curriculum_id}&modal=true&format=1" class="nyroModal btn btn-default">
+                        <i class="fa fa-upload text-black"></i>
+                    </a>
                 {/if} 
             </div>
             <div class="btn-group pull-left margin-r-5">
