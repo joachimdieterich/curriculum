@@ -83,7 +83,7 @@ function render_filter($schooltype_id  = null, $subject_id = null, $curriculum_i
     global $USER;
     $c    = '<div class="row">';
     $schooltypes = new Schooltype();  // Load schooltype 
-    $c    .= '<span class="col-sm-3 pull-left">'.Form::input_select('schooltype_id', '', $schooltypes->getSchooltypes(), 'schooltype', 'id', $schooltype_id , null,'', 'Nach Ausbidlungsrichtung filtern', 'col-xs-0', 'col-xs-12').'</span>';
+    $c    .= '<span class="col-sm-3 pull-left">'.Form::input_select('schooltype_id', '', $schooltypes->getSchooltypes(), 'schooltype', 'id', $schooltype_id , null,'', 'Nach Ausbildungsrichtung filtern', 'col-xs-0', 'col-xs-12').'</span>';
     $subjects                   = new Subject();                                                      
     $subjects->institution_id   = $USER->institutions;
     $c     .= '<span class="col-sm-3 pull-left">'.Form::input_select('subject_id', '', $subjects->getSubjects(), 'subject, institution', 'id', $subject_id , null, '', 'Nach Fach filtern', 'col-xs-0', 'col-xs-12').'</span>';
