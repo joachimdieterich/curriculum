@@ -14,7 +14,6 @@
         {/foreach} 
     {/if}
 {/function}
-   
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -62,19 +61,7 @@
     {if in_array($page_action, array('login', 'lock', 'extern'))}
     <body class="hold-transition {if $page_action eq 'login' OR  $page_action eq 'extern'}login-page{/if} {if $page_action eq 'lock'}lockscreen{/if}" style="background-image: url('{$random_bg}'); background-size: cover;" >
         {block name=content} {/block}
-    </body>
-    {*elseif in_array($page_action, array('navigator'))}
-    <body class="skin-blue {$page_layout}" data-spy="scroll" data-target=".modal-body" style=" -webkit-overflow-scrolling:touch; overflow:auto;" > 
-         <div id="body-wrapper" class="wrapper"> 
-             <div id="content-wrapper" class="content-wrapper">
-                <div id="popup" class="modal" onload="popupFunction(this.id);"><div class="modal-dialog"><div class="box"><div class="box-header"><h3 class="box-title">Loading...</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div></div></div> <!-- Popup -->    
-                {block name=content} {/block}
-            </div> 
-        </div>
-    </body>
-    *}
     {else}
-    
     <body class="hold-transition {$page_layout} skin-blue" data-spy="scroll" data-target=".modal-body" style=" -webkit-overflow-scrolling:touch; overflow:auto;" > 
         <div id="body-wrapper" class="{$page_body_wrapper}"> 
             {if $page_header}
