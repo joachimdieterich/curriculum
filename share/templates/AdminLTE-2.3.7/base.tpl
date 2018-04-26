@@ -287,14 +287,13 @@
             </footer>    
               
             {*block name=sidebar_right}{include file='sidebar_right.tpl'}{/block*}
-            
         </div><!-- ./wrapper -->
     {/if}    
 <!-- SCRIPTS-->  
     <script src="{$lib_url}ckeditor/ckeditor.js"></script><!-- CK Editor -->
     <script src="{$template_url}plugins/moment/moment.min.js"></script><!-- moment -->
     <script src="{$media_url}scripts/jquery-2.2.1.min.js"></script> <!-- jQuery 2.2.1 -->
-    <script src="{$media_url}scripts/alterClass.min.js"></script> <!-- jQuery 2.2.1 -->
+    <script src="{$media_url}scripts/alterClass.min.js"></script> <!-- alter class -->
     <script src="{$template_url}bootstrap/js/bootstrap.min.js"></script><!-- Bootstrap 3.3.5 -->
     <script src="{$template_url}js/app.min.js"></script><!-- AdminLTE App -->
     <script src="{$template_url}plugins/slimScroll/jquery.slimscroll.min.js"></script><!-- SlimScroll 1.3.0 -->
@@ -308,7 +307,7 @@
     <script src="{$media_url}scripts/dragndrop.min.js"></script>
     <!-- Select2 -->
     <link rel="stylesheet" href="{$template_url}plugins/select2/select2.min.css">
-    <script src="{$template_url}plugins/select2/select2.min.js" type="text/javascript"></script>
+    <script src="{$template_url}plugins/select2/select2.min.js"></script>
     <link rel="stylesheet" href="{$template_url}css/less/select2.min.css">
     <!-- MathJax -->
     {literal}
