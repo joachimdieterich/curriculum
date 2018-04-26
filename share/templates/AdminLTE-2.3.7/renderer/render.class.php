@@ -613,7 +613,7 @@ class Render {
                 /*************** Footer ***************/
                 $html  .= '  <div class="boxfooter">';
                 if ($objective->description != ''){
-                    $html  .='<span class="fa fa-info pull-right box-sm-icon text-primary" style=" margin-right:3px;" data-toggle="tooltip" title="Beschreibung" onclick="formloader(\'description\', \''.$type.'\', '.$objective->id.');"></span>';
+                    $html  .='<span class="fa fa-info pull-right box-sm-icon text-primary" style=" margin-right:3px;" onclick="formloader(\'description\', \''.$type.'\', '.$objective->id.');"></span>';
                 }
                 $html  .='<span class="pull-left margin-r-10">';
                 if (checkCapabilities('file:loadMaterial', $USER->role_id, false) AND ($objective->files['local'] != '0' OR $objective->files['repository'] != '' OR isset($objective->files['webservice']) )){
