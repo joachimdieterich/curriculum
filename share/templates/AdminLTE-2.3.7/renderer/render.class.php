@@ -1914,7 +1914,8 @@ class Render {
                         $enroled_groups     = $cur->getGroupsByUserAndCurriculum($USER->id);
                         $file_id            = $cur->icon_id;
                         $widget_onclick     = "location.href='index.php?action=view&curriculum_id={$nb_target}&group={$enroled_groups[0]->group_id}';";
-                        $html = RENDER::paginator_widget(array('widget_title' => $nb_title, 'file_id' => $file_id, 'widget_onclick' => $widget_onclick));
+                        $html = RENDER::paginator_widget(array('widget_title' => $nb_title, 'file_id' => $file_id, 'widget_onclick' => $widget_onclick, 'global_onclick' => true));
+                        error_log('test');
                 break;
             case 15:    $content            = new Content();
                         $content->load('id', $nb_reference_id);
@@ -1923,7 +1924,7 @@ class Render {
             case 16:    $c                  = new Curriculum();
                         $curricula          = $c->getCurricula('group', $nb_reference_id);
                         foreach ($curricula as $cur) {
-                            $html          .= RENDER::paginator_widget(["widget_title" =>$cur->curriculum, "ref_id" => $cur->id, "group_id" => $nb_reference_id]);
+                            $html          .= RENDER::paginator_widget(["widget_title" =>$cur->curriculum, "ref_id" => $cur->id, "group_id" => $nb_reference_id, 'global_onclick' => true]);
                         }
                         
                 break;
@@ -1933,7 +1934,7 @@ class Render {
                         $html               = '<div class="'.$nb_width_class.'">'.RENDER::file($f).'</div>';
                 break;
             case 31:    $widget_onclick     = "location.href='index.php?action=navigator&nv_id={$nb_target}';";
-                        $html               = RENDER::paginator_widget(array('widget_title' => $nb_title, 'file_id' => $nb_file_id, 'widget_onclick' => $widget_onclick));
+                        $html               = RENDER::paginator_widget(array('widget_title' => $nb_title, 'file_id' => $nb_file_id, 'widget_onclick' => $widget_onclick, 'global_onclick' => true));
 
                 break;
             
@@ -2057,7 +2058,11 @@ class Render {
             $widget_onclick     = "location.href='index.php?action=view&curriculum_id={$ref_id}&group={$group_id}';";
         } 
         
-        $html   =  '<div class="box box-objective bg-white '.$bg_color.'" style="height: 300px !important; padding: 0; background: url(\''.$icon_url.'\') center center;  background-size: cover;" margin-bottom" >'; 
+        $html   =  '<div class="box box-objective bg-white '.$bg_color.'" style="height: 300px !important; padding: 0; background: url(\''.$icon_url.'\') center center;  background-size: cover;" margin-bottom" ';
+        if (isset($global_onclick)){
+            $html   .= ' onclick="'.$widget_onclick.'"';
+        }
+        $html   .= '>'; 
         $html   .= '                <span class="bg-white no-padding" style="background-color: #fff; position:absolute; bottom:0px; height: 120px;width:100%;text-align: center;">'
                 . '<span class="col-xs-12" style="background-color: '.$bg_color.'; position:absolute; display:block; left:0;right:0;bottom:120px;" >';
         foreach ($opt as $k =>$o) {
