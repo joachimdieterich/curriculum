@@ -12,7 +12,7 @@
 {block name=content}
 <div class="login-box">
     <div class="login-logo"><br>
-          <img src="assets/images/favicon/apple-touch-icon-57x57.png"></img> <br>
+          <img alt="curriculum-logo" src="assets/images/favicon/apple-touch-icon-57x57.png"/> <br>
         <b>{$app_title}</b>
       </div><!-- /.login-logo -->
       <div class="login-box-body">
@@ -31,11 +31,11 @@
           </div>
           <div class="row">
                 <div class="col-xs-6 pull-left">{*!pull-left to not submit guest login on return, when entering regular user accounts*}
-                    <input id="pw_reset" class="btn btn-primary btn-block btn-flat visible" onclick="toggle(['reset', 'reset_info'], ['login', 'password', 'pw_reset']);" value="Passwort vergessen"></input>
+                    <input id="pw_reset" class="btn btn-primary btn-block btn-flat visible" onclick="toggle(['reset', 'reset_info'], ['login', 'password', 'pw_reset']);" value="Passwort vergessen" />
                 </div><!-- /.col -->
             <div class="col-xs-6 pull-right">
-              <input id="login" type="submit" name="login" class="btn btn-primary btn-block btn-flat visible" value="Einloggen" ></input>
-              <input id="reset" type="submit" name="reset" class="btn btn-primary btn-block btn-flat hidden" value="Passwort vergessen" ></input>
+              <input id="login" type="submit" name="login" class="btn btn-primary btn-block btn-flat visible" value="Einloggen" />
+              <input id="reset" type="submit" name="reset" class="btn btn-primary btn-block btn-flat hidden" value="Passwort vergessen" />
             </div><!-- /.col -->
           </div>
             {if $cfg_guest_login eq '1' OR  $cfg_shibboleth eq '1'}      
@@ -44,16 +44,16 @@
             {if $cfg_guest_login}
                 <div class="row">
                     <div class="col-xs-6 pull-left">{*!pull-left to not submit guest login on return, when entering regular user accounts*}
-                        <input id="register" {*type="submit"*} onclick="alert('Funktion noch nicht verfügbar');"  name="register" class="btn btn-primary btn-block btn-flat visible" value="Registrierung" data-toggle="tooltip" title="Noch nicht registriert?"></input>
+                        <input id="register" {*type="submit"*} onclick="alert('Funktion noch nicht verfügbar');"  name="register" class="btn btn-primary btn-block btn-flat visible" value="Registrierung" data-toggle="tooltip" title="Noch nicht registriert?"/>
                     </div><!-- /.col -->
                     <div class="col-xs-6 pull-right">{*!pull-left to not submit guest login on return, when entering regular user accounts*}
-                        <input id="guest" type="submit" name="guest" class="btn btn-primary btn-block btn-flat visible" value="Gastzugang" data-toggle="tooltip" title="Als Gast einen Einblick bekommen"></input>
+                        <input id="guest" type="submit" name="guest" class="btn btn-primary btn-block btn-flat visible" value="Gastzugang" data-toggle="tooltip" title="Als Gast einen Einblick bekommen"/>
                     </div><!-- /.col -->
                 </div>
             {/if}    
             {if $cfg_shibboleth}
             <div class="social-auth-links text-center">
-              <a href="../share/plugins/auth/shibboleth/index.php" class="btn btn-block btn-social btn-openid"><img src="assets/images/icons/shibboleth-web.png"></img> Über Shibboleth anmelden</a>
+              <a href="../share/plugins/auth/shibboleth/index.php" class="btn btn-block btn-social btn-openid"><img src="assets/images/icons/shibboleth-web.png"/> Über Shibboleth anmelden</a>
             </div>
             {/if}
         </form>
