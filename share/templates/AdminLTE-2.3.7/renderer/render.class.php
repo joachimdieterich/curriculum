@@ -2047,7 +2047,7 @@ class Render {
             $$key = $val;
         }
         if (isset($file_id)){
-            $icon_url           = $CFG->access_id_url.$file_id;//.'&size=t';
+            $icon_url           = $CFG->access_id_url.$file_id.'&size=t';
         } else if (!isset($icon_url)){
             $cur                = new Curriculum();
             $cur->id            = $ref_id; 
