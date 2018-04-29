@@ -133,6 +133,13 @@ class Curriculum {
         return $db->execute(array($this->curriculum, $this->description, $this->grade_id, $this->subject_id, $this->schooltype_id, $this->state_id, $this->icon_id, $this->country_id, $this->color, $this->id));
     }
     
+    public function setOwner($new_owner){
+        global $USER;
+        checkCapabilities('curriculum:update', $USER->role_id); 
+        $db = DB::prepare('UPDATE curriculum SET creator_id = ? WHERE id = ?');
+        return $db->execute(array($new_owner, $this->id));
+    }
+    
     /**
      * Delete curriculum from db
      * @return mixed 
