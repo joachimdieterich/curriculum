@@ -52,7 +52,9 @@ if($validated_data === false) {/* validation failed */
     $cur->id           = $_POST['curriculum_id'];
     $cur->load();
     $cur->setOwner($_POST['owner_id']);
-    $_SESSION['PAGE']->message[] = array('message' => 'Besitzer von <strong>'.$cur->curriculum.'</strong> erfolgreich geändert.', 'icon' => 'fa-th text-success');    
+    $usr               = new User();
+    $usr->load('id', $_POST['owner_id']);
+    $_SESSION['PAGE']->message[] = array('message' => '<strong>'.$usr->firstname.' '.$usr->lastname.'</strong> ist jetzt Besitzer von <strong>'.$cur->curriculum.'</strong>.', 'icon' => 'fa-th text-success');    
     $_SESSION['FORM']            = null;                     // reset Session Form object 
 }
 
