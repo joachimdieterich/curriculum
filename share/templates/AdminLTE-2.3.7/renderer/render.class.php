@@ -2073,8 +2073,8 @@ class Render {
                 if (isset($widget_timerange)){
                     $html   .= '<small>'.$widget_timerange.'</small>';
                 }
-                        $html   .= '  <h5 class="events-heading text-ellipse"><a onclick="'.$widget_onclick.'">'.$widget_title.'</a></h5>
-                                  <p style="overflow: scroll; width: 100%; height: 60px;">'.$widget_desc.'</p>
+                        $html   .= '  <h5 class="events-heading text-center"><a onclick="'.$widget_onclick.'">'.$widget_title.'</a></h5>
+                                  <p style="width: 100%; height: 60px;">'.$widget_desc.'</p>
                                 </div>';
                         
         $html   .=     '</span>
