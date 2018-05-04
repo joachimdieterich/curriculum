@@ -76,7 +76,7 @@ class Navigator {
     
     public function get($navigator_view = false){
         
-        $db = DB::prepare('SELECT nb_id FROM navigator_block WHERE nb_navigator_view_id = ?');
+        $db = DB::prepare('SELECT nb_id FROM navigator_block WHERE nb_navigator_view_id = ? ORDER BY nb_title');
         $db->execute(array($navigator_view));
         
         $r  = array();
