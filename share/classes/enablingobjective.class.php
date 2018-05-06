@@ -210,7 +210,7 @@ class EnablingObjective {
      * @param int $group
      * @return array of EnablingObjective objects|boolean 
      */
-    public function getObjectives($dependency = null, $id = null, $group = null, $reference_ena_ids = null) {
+    public function getObjectives($dependency = null, $id = null, $group = null, $reference_ter_ids = null, $reference_ena_ids = null) {
         global $USER, $CFG; 
         switch ($dependency) {
                 case 'user':  $db = DB::prepare('SELECT en.*, ua.status_id, ua.accomplished_time, ua.creator_id AS teacher_id
@@ -377,12 +377,17 @@ class EnablingObjective {
                                         $this->files['webservice']  = $ws->count($_SESSION['CONTEXT']['enabling_objective']->id,$result->id);
                                     }
                                     /* Check if references are available for this enabling objective*/
-                                    if (is_array($reference_ena_ids)){ //check if view mode == reference_view
-                                        $db_04c       = DB::prepare('SELECT COUNT(*) AS MAX FROM reference WHERE context_id = ? AND reference_id IN ('.implode(",", $reference_ena_ids).') AND unique_id IN (SELECT unique_id FROM reference WHERE context_id = ? AND reference_id = ?)');
-                                        $db_04c->execute(array( $_SESSION['CONTEXT']['enabling_objective']->context_id, $_SESSION['CONTEXT']['enabling_objective']->context_id, $result->id));
+                                    if (is_array($reference_ter_ids) OR is_array($reference_ena_ids)){ //check if view mode == reference_view
+                                        $db_04c       = DB::prepare('SELECT COUNT(*) AS MAX FROM reference WHERE context_id = ? AND reference_id IN ('.implode(",", $reference_ter_ids).') AND unique_id IN (SELECT unique_id FROM reference WHERE context_id = ? AND reference_id = ?)');
+                                        $db_04c->execute(array( $_SESSION['CONTEXT']['terminal_objective']->context_id, $_SESSION['CONTEXT']['enabling_objective']->context_id, $result->id));
                                         $res_04c = $db_04c->fetchObject();
                                         $this->files['references']  = $res_04c->MAX;
-                                        
+                                        if ($res_04c->MAX == 0){ // only check ena ids if nothing found yet
+                                            $db_04d       = DB::prepare('SELECT COUNT(*) AS MAX FROM reference WHERE context_id = ? AND reference_id IN ('.implode(",", $reference_ena_ids).') AND unique_id IN (SELECT unique_id FROM reference WHERE context_id = ? AND reference_id = ?)');
+                                            $db_04d->execute(array( $_SESSION['CONTEXT']['enabling_objective']->context_id, $_SESSION['CONTEXT']['enabling_objective']->context_id, $result->id));
+                                            $res_04d = $db_04d->fetchObject();
+                                            $this->files['references']  += $res_04d->MAX;
+                                        }
                                     } else {
                                         $db_04       = DB::prepare('SELECT COUNT(*) AS MAX FROM reference WHERE context_id = ? AND reference_id = ?');
                                         $db_04->execute(array( $_SESSION['CONTEXT']['enabling_objective']->context_id, $result->id));
