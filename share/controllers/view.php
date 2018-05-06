@@ -72,16 +72,18 @@ if ((isset($_GET['function']) AND $_GET['function'] == 'addObjectives')) {
 $courses = new Course(); // Load course
 
 $terminal_objectives = new TerminalObjective();                                     //load terminal objectives
+$enabling_objectives = new EnablingObjective(); 
 if (isset($reference_curriculum_id)){
     $ter_ids = $terminal_objectives->getIdArray($reference_curriculum_id);
-    $TEMPLATE->assign('terminal_objectives', $terminal_objectives->getObjectives('curriculum', $PAGE->curriculum, false, $ter_ids));
+    $ena_ids = $enabling_objectives->getIdArray($reference_curriculum_id);
+    $TEMPLATE->assign('terminal_objectives', $terminal_objectives->getObjectives('curriculum', $PAGE->curriculum, false, $ter_ids, $ena_ids));
     $TEMPLATE->assign('reference_view', true);
 } else {
     $TEMPLATE->assign('terminal_objectives', $terminal_objectives->getObjectives('curriculum', $PAGE->curriculum /*false*/)); // default -> false: only load terminal objectives
     $TEMPLATE->assign('reference_view', false);
 }
 
-$enabling_objectives = new EnablingObjective();                                     //load enabling objectives
+//$enabling_objectives = new EnablingObjective();                                     //load enabling objectives
 $enabling_objectives->curriculum_id = $PAGE->curriculum;
 $course                 = $courses->getCourse('course', $PAGE->curriculum);
 $TEMPLATE->assign('course', $course); 
@@ -123,8 +125,8 @@ switch ($function) {
                             }
                             
                             if (isset($reference_curriculum_id)){
-                                $ena_ids = $enabling_objectives->getIdArray($reference_curriculum_id);
-                                $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('course', $PAGE->curriculum, $PAGE->group, $ena_ids));
+                                //$ena_ids = $enabling_objectives->getIdArray($reference_curriculum_id);
+                                $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('course', $PAGE->curriculum, $PAGE->group, $ter_ids, $ena_ids));
                             } else {
                                 $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('course', $PAGE->curriculum, $PAGE->group));
                             }
