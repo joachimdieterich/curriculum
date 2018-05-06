@@ -190,7 +190,7 @@ class TerminalObjective {
      * @param boolean $load_enabling_objectives
      * @return array of TerminalObjective objects|boolean 
      */
-    public function getObjectives($dependency = null, $id = null, $load_enabling_objectives = false, $reference_ter_ids = null) {
+    public function getObjectives($dependency = null, $id = null, $load_enabling_objectives = false, $reference_ter_ids = null,  $reference_ena_ids = null) {
         global $CFG;
         switch ($dependency) {
             case 'curriculum':  $files = new File(); 
@@ -229,6 +229,12 @@ class TerminalObjective {
                                         $db_04c->execute(array( $_SESSION['CONTEXT']['terminal_objective']->context_id, $_SESSION['CONTEXT']['terminal_objective']->context_id, $result->id));
                                         $res_04c = $db_04c->fetchObject();
                                         $this->files['references']  = $res_04c->MAX;
+                                        if ($res_04c->MAX == 0){ // only check ena ids if nothing found yet
+                                            $db_04d       = DB::prepare('SELECT COUNT(*) AS MAX FROM reference WHERE context_id = ? AND reference_id IN ('.implode(",", $reference_ena_ids).') AND unique_id IN (SELECT unique_id FROM reference WHERE context_id = ? AND reference_id = ?)');
+                                            $db_04d->execute(array( $_SESSION['CONTEXT']['enabling_objective']->context_id, $_SESSION['CONTEXT']['terminal_objective']->context_id, $result->id));
+                                            $res_04d = $db_04d->fetchObject();
+                                            $this->files['references']  += $res_04d->MAX;
+                                        }
                                     } else {
                                         $db_04       = DB::prepare('SELECT COUNT(*) AS MAX FROM reference WHERE context_id = ? AND reference_id = ?');
                                         $db_04->execute(array( $_SESSION['CONTEXT']['terminal_objective']->context_id, $result->id));
