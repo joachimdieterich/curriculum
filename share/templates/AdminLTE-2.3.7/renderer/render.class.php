@@ -1915,7 +1915,6 @@ class Render {
                         $file_id            = $cur->icon_id;
                         $widget_onclick     = "location.href='index.php?action=view&curriculum_id={$nb_target}&group={$enroled_groups[0]->group_id}';";
                         $html = RENDER::paginator_widget(array('widget_title' => $nb_title, 'file_id' => $file_id, 'widget_onclick' => $widget_onclick, 'global_onclick' => true));
-                        error_log('test');
                 break;
             case 15:    $content            = new Content();
                         $content->load('id', $nb_reference_id);
@@ -1933,7 +1932,14 @@ class Render {
                         $f->load($nb_reference_id);
                         $html               = '<div class="'.$nb_width_class.'">'.RENDER::file($f).'</div>';
                 break;
-            case 31:    $widget_onclick     = "location.href='index.php?action=navigator&nv_id={$nb_target}';";
+            case 31:    if ($nb_target_context_id == $_SESSION['CONTEXT']['file']->context_id){
+                            $f                  = new File();
+                            $f->load($nb_target);
+                            $widget_onclick     = "location.href='index.php?action=login'";
+                        } else {
+                            $widget_onclick     = "location.href='index.php?action=navigator&nv_id={$nb_target}';";
+                        }
+                       
                         $html               = RENDER::paginator_widget(array('widget_title' => $nb_title, 'file_id' => $nb_file_id, 'widget_onclick' => $widget_onclick, 'global_onclick' => true));
 
                 break;
@@ -2042,7 +2048,7 @@ class Render {
         $href           = '#';
         //$onclick_badge  = '';
         $opt            = array(); 
-        $widget_onclick        = ''; 
+        $widget_onclick = ''; 
         
         foreach($params as $key => $val) {
             $$key = $val;
@@ -2058,7 +2064,7 @@ class Render {
             $widget_onclick     = "location.href='index.php?action=view&curriculum_id={$ref_id}&group={$group_id}';";
         } 
         
-        $html   =  '<div class="box box-objective bg-white '.$bg_color.'" style="height: 300px !important; padding: 0; background: url(\''.$icon_url.'\') center center;  background-size: cover;" margin-bottom" ';
+        $html   =  '<div class="box box-objective bg-white '.$bg_color.'" style="height: 300px !important; padding: 0; background: url(\''.$icon_url.'\') center center;  background-size: cover;"  ';
         if (isset($global_onclick)){
             $html   .= ' onclick="'.$widget_onclick.'"';
         }
