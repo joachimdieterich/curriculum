@@ -236,6 +236,7 @@
                                   <li><a href="#" onclick="formloader('settings', 'edit');">Einstellungen</a></li>
                                   <li class="divider"></li>
                                   <li><a href="index.php?action=navigator">Navigator (Test)</a></li>
+                                  <li><a href="index.php?action=debug">Debug / Userfeedback</a></li>
                                   <li><a href="index.php?action=update">Updates</a></li>
                                 </ul>
                             </li>
@@ -287,7 +288,7 @@
     <script src="{$template_url}plugins/pace/pace.min.js"></script>
     <script src="{$template_url}plugins/mark/jquery.mark.min.js"></script>
     <script src="{$media_url}scripts/curriculum.min.js"></script><!-- curriculum settings (sidebar) -->
-    <script src="{$media_url}jquery.nyroModal/js/jquery.nyroModal.custom.js"></script> <!-- jquery.nyroModal -->
+    <script src="{$media_url}jquery.nyroModal/js/jquery.nyroModal.custom.min.js"></script> <!-- jquery.nyroModal -->
     <script src="{$media_url}scripts/script.min.js"></script> 
     <script src="{$media_url}scripts/PDFObject-master/pdfobject.min.js"></script> 
     <script src="{$media_url}scripts/file.min.js"></script>
