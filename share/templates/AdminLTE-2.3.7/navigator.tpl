@@ -20,7 +20,7 @@ function toggleAll(){
 <!-- Main content -->
 <section class="content">
     <div class="row">
-        <div class="col-md-6 col-md-offset-4">
+        <div class="col-md-6 col-centered">
             {FORM::input_select('search', '', $search_navigator, 'title', 'onclick', '', '', 'window.location.assign(this.value);', 'Schnellzugriff', '', '')}
         </div>
         {if checkCapabilities('navigator:add', $my_role_id, false)}    
@@ -31,35 +31,29 @@ function toggleAll(){
     </div>
     <div class="row"> 
         <div class="{$navigator[0]->nv_top_width_class} ">
-            <div style="margin: auto;" >
             {foreach key=nav_id item=nav from=$navigator}
                 {if $nav->nb_position eq 'top'}
                     {RENDER::navigator_item($nav)}
                 {/if}
             {/foreach}
-            </div>
         </div>
     </div>
     <div class="row" > 
-        <div class="{$navigator[0]->nv_content_width_class}" >
-            <div style="margin: auto;" >
+        <div class="{$navigator[0]->nv_content_width_class}" >     
             {foreach key=nav_id item=nav from=$navigator}
                 {if $nav->nb_position eq 'content'}
                     {RENDER::navigator_item($nav)}
                 {/if}
             {/foreach}
-            </div>
         </div>
     </div>
     <div class="row" > 
         <div class="{$navigator[0]->nv_content_width_class}" >
-            <div style="margin: auto;" >
             {foreach key=nav_id item=nav from=$navigator}
                 {if $nav->nb_position eq 'footer'}
                     {RENDER::navigator_item($nav)}
                 {/if}
             {/foreach}
-            </div>
         </div>
     </div>
 </section>
