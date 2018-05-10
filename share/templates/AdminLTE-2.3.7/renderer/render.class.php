@@ -1935,7 +1935,7 @@ class Render {
             case 31:    if ($nb_target_context_id == $_SESSION['CONTEXT']['file']->context_id){
                             $f                  = new File();
                             $f->load($nb_target);
-                            $widget_onclick     = "location.href='index.php?action=login'";
+                            $widget_onclick     = "location.href='{$f->path}'";
                         } else {
                             $widget_onclick     = "location.href='index.php?action=navigator&nv_id={$nb_target}';";
                         }
