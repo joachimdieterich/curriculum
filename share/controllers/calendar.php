@@ -42,7 +42,9 @@ foreach ($e->get('user', $USER->id) as $value) {
 }
 
  
-$course     = new Course();
+/*
+ * Test
+ * $course     = new Course();
 $ids        = $course->getCourseIds('user', $USER->id);
 $schedule   = new Schedule();
 $schedules  = $schedule->get('course', $ids);
@@ -65,6 +67,6 @@ foreach ($schedules as $value) {
     $ev->borderColor      = "#00c0ef";
     $events[]             = clone $ev;
 }
-//error_log(json_encode($events));
+//error_log(json_encode($events));*/
 $TEMPLATE->assign('events', json_encode($events));       
   
