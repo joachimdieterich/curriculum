@@ -292,5 +292,18 @@ class Statistic {
         }
         
     }
+    
+    public static function setStatistics($context_id,$reference_id,$increment = 1){
+        $db = DB::prepare('SELECT clicks FROM statistics WHERE context_id = ? AND reference_id = ?');
+        $db->execute(array($context_id, $reference_id));
+        $result = $db->fetchObject();
+        if ($result){
+            $db = DB::prepare('UPDATE statistics SET context_id = ?,reference_id = ?, clicks = ?');
+            return $db->execute(array($context_id, $reference_id, ($result->clicks + $increment)));
+        } else {
+            $db = DB::prepare('INSERT INTO statistics (context_id,reference_id,clicks) VALUES (?,?,?)');
+            return $db->execute(array($context_id, $reference_id, $increment));
+        }
+    }
  
 }
