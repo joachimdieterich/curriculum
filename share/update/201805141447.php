@@ -23,14 +23,13 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-
 global $UPDATE;
 $UPDATE         = new stdClass();
-$UPDATE->info   = "Cleaning enablingObjective Database. <br><br> Entfernt Datenbankeinträge in der enablingObjective DB die unter einem gelöschten Thema (termainObjective) liegen.";
+$UPDATE->info   = "Add visible status to navigator block. <br><br> Navigator-Blöcke können nach dem Update versteckt werden.";
 
 if (isset($_GET['execute'])){
     $UPDATE->log = "Starte Update...<br>";
-    $db= DB::prepare("Delete FROM enablingObjectives WHERE terminal_objective_id not IN (select id from terminalObjectives)");
+    $db= DB::prepare("ALTER TABLE navigator_block ADD nb_visible tinyint(4) unsigned NOT NULL DEFAULT '1'");
     if ($db->execute(array())){
         $UPDATE->log .= "<b class=\"text-success\">Update finished - OK</b><br>";
         $UPDATE->installed = true;
@@ -41,6 +40,3 @@ if (isset($_GET['execute'])){
   
            
 }
-
-
-
