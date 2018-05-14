@@ -4,10 +4,12 @@
  */
 
 CKEDITOR.editorConfig = function( config ) {
+    config.extraPlugins = 'abbr,widget,lineutils,dialog,clipboard,widgetselection,mathjax';
+    
     config.skin = 'bootstrapck';        
     config.toolbar_Full = [
     { name: 'clipboard',   groups: [ 'clipboard', 'undo' ], items: [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', 'Undo', 'Redo' ] },
-    { name: 'insert', items: [ 'CreatePlaceholder', 'Image', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar' ] },
+    { name: 'insert', groups: [ 'groups'], items: [ 'CreatePlaceholder', 'Image', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'Abbr', 'Mathjax'] },
     { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', 'RemoveFormat' ] },
     { name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align' ], items: [ 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock' ] },
     { name: 'links', items: [ 'Link', 'Unlink' ] },
@@ -22,6 +24,7 @@ CKEDITOR.editorConfig = function( config ) {
   config.toolbar = "Full";
   config.toolbarCanCollapse = true;
   config.allowedContent = true;
+  config.mathJaxLib = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML';
   CKEDITOR.dtd.$removeEmpty['i'] = false;
   CKEDITOR.dtd.$removeEmpty.i = 0;
   CKEDITOR.dtd.$removeEmpty['span'] = false;
