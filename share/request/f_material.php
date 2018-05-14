@@ -39,7 +39,7 @@ if (isset($_GET['s_key'])){ $s_key =  $_GET['s_key']; } else { $s_key =  'curric
 
 switch ($func) {
     case 'enabling_objective':  //$_SESSION['anchor'] = 'ena_'.filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-    case 'terminal_objective':  //$_SESSION['anchor'] = 'ter_'.filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+    case 'terminal_objective':  Statistic::setStatistics($_SESSION['CONTEXT'][$func]->context_id, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT)); // click counter
                                 $files       = $file->getFiles($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => true));
                                 $sodis       = $repo->get($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
                                 $reference   = new Reference();
