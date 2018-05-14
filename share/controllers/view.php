@@ -68,7 +68,7 @@ if ((isset($_GET['function']) AND $_GET['function'] == 'addObjectives')) {
 /******************************************************************************
  * END POST / GET
  */
-
+Statistic::setStatistics($_SESSION['CONTEXT']['curriculum']->context_id, $PAGE->curriculum); //click counter
 $courses = new Course(); // Load course
 
 $terminal_objectives = new TerminalObjective();                                     //load terminal objectives
