@@ -299,7 +299,7 @@ class Statistic {
         $result = $db->fetchObject();
         if ($result){
             error_log('res'.($result->clicks + $increment).' context_id:'.$context_id.' reference_id:'.$reference_id);
-            $db = DB::prepare('UPDATE statistics SET clicks = ? WHERE context_id = ?, reference_id = ?');
+            $db = DB::prepare('UPDATE statistics SET clicks = ? WHERE context_id = ? AND reference_id = ?');
             return $db->execute(array(($result->clicks + $increment), $context_id, $reference_id));
         } else {
             $db = DB::prepare('INSERT INTO statistics (context_id,reference_id,clicks) VALUES (?,?,?)');
