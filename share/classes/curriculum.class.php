@@ -107,11 +107,15 @@ class Curriculum {
      * @var type 
      */
     public $terminal_objectives;
-    
+    /**
+     * contains click counter value (table statistics)
+     * @var int 
+     */
+    public $clicks;
     /**
      * add curriculum to db
      * @return mixed 
-     */
+     */    
     public function add(){
         global $USER;
         checkCapabilities('curriculum:add', $USER->role_id);
@@ -276,6 +280,12 @@ class Curriculum {
                                 $db->execute(array($id, $id));
                             }
                             while($result = $db->fetchObject()) {
+                                //get statistics
+                                $db2 = DB::prepare('SELECT clicks FROM statistics WHERE context_id = ? AND reference_id = ?');
+                                $db2->execute(array($_SESSION['CONTEXT']['curriculum']->context_id, $result->id));
+                                $stat_result  = $db2->fetchObject();
+                                $result->clicks = $stat_result->clicks;
+                                //get statistics
                                 $curriculum[] = $result;  //result Data wird an setPaginator vergeben
                             } 
                 break; 
