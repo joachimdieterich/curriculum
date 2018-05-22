@@ -1,5 +1,5 @@
 <?php
-/** Updatefile 04 - Adding anonym click statistic
+/** Updatefile 07 - Adding anonym click statistic
 * 
 * @abstract This file is part of curriculum - http://www.joachimdieterich.de
 * @package core
