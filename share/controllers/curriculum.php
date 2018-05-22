@@ -65,6 +65,7 @@ $t_config      = array('td'     => array('onclick'         => "location.href='in
 $p_config  = array('id'         => 'checkbox',
                    'curriculum'  => 'Lehrplan', 
                    /*'description' => 'Beschreibung', */
+                   'clicks'      => 'Aufrufe',
                    'subject'     => 'Fach',
                    'grade'       => 'Klassenstufe',
                    'schooltype'  => 'Schultyp',
