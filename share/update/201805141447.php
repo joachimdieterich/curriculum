@@ -1,12 +1,12 @@
 <?php
-/** Updatefile 04 - Adding debug context
+/** Updatefile 06 - Adding visible status to navigator blocks
 * 
 * @abstract This file is part of curriculum - http://www.joachimdieterich.de
 * @package core
 * @filename 201804101346.php
 * @copyright 2018 Joachim Dieterich
 * @author Joachim Dieterich
-* @date 2018.04.10 13:46
+* @date 2018.05.14 14:47
 * @license: 
 *
 * The MIT License (MIT)
