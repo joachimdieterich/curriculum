@@ -1205,6 +1205,7 @@ class User {
     * @return boolean
     */
    public function setLastLogin(){           
+        Statistic::setStatistics(1, $this->id); //statistic count logins
         $db = DB::prepare('UPDATE users SET last_login = NOW(), token = ? WHERE UPPER(username) = UPPER(?) AND password = ?');
         return $db->execute(array(getToken(), $this->username, $this->password));
    }
