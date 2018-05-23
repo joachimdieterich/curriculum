@@ -91,7 +91,7 @@ if ($institution_id == null){
 }
 $semesters                  = new Semester();  //Load Semesters
 $semesters->institution_id  = $institution_id;
-$content .= Form::input_select('semester_id', 'Lernzeitraum', $semesters->getSemesters('institution',$institution_id), 'semester, institution', 'id', $semester_id , $error);
+$content .= Form::input_select('semester_id', 'Lernzeitraum', $semesters->getSemesters('institution',$institution_id), 'semester', 'id', $semester_id , $error);
 
 $grades                     = new Grade();                                      //Load Grades
 $grades->institution_id     = $USER->institutions; 
