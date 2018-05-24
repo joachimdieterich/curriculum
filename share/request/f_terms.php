@@ -27,11 +27,6 @@ include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 //include(dirname(__FILE__).'/../login-check.php');  //don't check login -> terms should be available without login
 global $CFG, $TEMPLATE;
 
-if (is_array($data)) {
-    foreach ($data as $key => $value){
-        $$key = $value;
-    }
-}
 $footer   = ''; 
 $terms    = new Content();
 $html     = Form::modal(array('title'     => 'Impressum / Datenschutz',
