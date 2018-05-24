@@ -60,6 +60,7 @@
     
     {if in_array($page_action, array('login', 'lock', 'extern'))}
     <body class="hold-transition {if $page_action eq 'login' OR  $page_action eq 'extern'}login-page{/if} {if $page_action eq 'lock'}lockscreen{/if}" style="background-image: url('{$random_bg}'); background-size: cover;" >
+        <div id="popup" class="modal" onload="popupFunction(this.id);"><div class="modal-dialog"><div class="box"><div class="box-header"><h3 class="box-title">Loading...</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div></div></div> <!-- Popup -->    
         {block name=content} {/block}
     {else}
     <body class="hold-transition {$page_layout} skin-blue" data-spy="scroll" data-target=".modal-body" style=" -webkit-overflow-scrolling:touch; overflow:auto;" > 
@@ -266,12 +267,12 @@
             
             <footer class="main-footer">
                 <div class="pull-right hidden-xs">
-                  <b>Version</b> {$app_version}
+                  <b>Version</b> {$app_version} 
                 </div>
                 <a class="btn-xs margin-r-10 pull-right" onclick='formloader("content", "new", null,{["label_title"=>"Betreff", "label_content"=>"Fehler beschreiben", "label_header"=>"Fehler melden","label_save"=>"Meldung abschicken", "context"=>"debug", "reference_id"=> 0]|@json_encode nofilter});'>
                     <i class="fa fa-bullhorn text-warning"></i> Fehler melden
                 </a>
-                {$app_footer} {block name=footer} {/block}
+                {$app_footer} {block name=footer}  <small><a onclick="formloader('terms')">Impressum / Datenschutz</a></small>{/block}
             </footer>    
               
             {*block name=sidebar_right}{include file='sidebar_right.tpl'}{/block*}
