@@ -29,9 +29,9 @@ global $CFG, $PAGE, $USER, $LOG;
 if (!isset($_SESSION['USER'])){ die(); }    // logged in?
 $USER       = $_SESSION['USER'];
 
-foreach ($_POST as $key => $value) {
+/*foreach ($_POST as $key => $value) {
     $$key = $value;
-}
+}*/
 
 $file       = new File();
 
