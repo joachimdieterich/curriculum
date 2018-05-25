@@ -29,6 +29,7 @@ $USER   = $_SESSION['USER'];
 if (!isset($_SESSION['PAGE']->target_url)){     //if target_url is not set -> use last PAGE url
     $_SESSION['PAGE']->target_url       = $_SESSION['PAGE']->url;
 }
+
 $task  = new Task();
 
 $purify = HTMLPurifier_Config::createDefault();
