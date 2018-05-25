@@ -26,6 +26,7 @@ $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $CFG, $USER, $COURSE;
+
 $USER           = $_SESSION['USER'];
 if (isset($_SESSION['COURSE'])){
 $COURSE         = $_SESSION['COURSE'];
@@ -39,7 +40,6 @@ $creator_id     = null;
 $timestart      = null;
 $timeend        = null;
 $timerange      = null;
-
 $func           = $_GET['func'];
 $error          =   null;
 $object         = file_get_contents("php://input");
@@ -49,7 +49,10 @@ if (is_array($data)) {
         $$key = $value;
     }
 }
-            
+if (isset($_GET['tab'])){  
+    $_SESSION['PAGE']->target_url = $_SESSION['PAGE']->url.'#'.$_GET['tab'];
+}
+
 if (isset($_GET['func'])){
     switch ($_GET['func']) {
         case "course": 
