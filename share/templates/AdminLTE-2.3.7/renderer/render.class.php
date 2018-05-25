@@ -1239,7 +1239,7 @@ class Render {
                  }
                  
         if (checkCapabilities('task:add', $USER->role_id, false) AND $add == true){            
-            $r   .= '<li><a class="btn btn-primary btn-xs" onclick="formloader(\'task\',\''.$context.'\', '.$reference_id.')"><i class="fa fa-plus"></i> Aufgabe hinzufügen</a></li> </ul>';
+            $r   .= '<li><a class="btn btn-primary btn-xs" onclick="formloader(\'task\',\''.$context.'\', '.$reference_id.')"><i class="fa fa-plus"></i> Aufgabe/Notiz hinzufügen</a></li> </ul>';
         }
         return $r;
     }
@@ -1250,10 +1250,10 @@ class Render {
         $r = '';
         if (!empty($tasks)){
             $r .= "<h4>{$heading}</h4>";
-            $r .= Render::todoList($tasks, $dependency, $id, false, true, true, false);
+            $r .= Render::todoList($tasks, $dependency, $id, true, true, true, false);
             $r .= '<hr>';
-        }
-        
+        } 
+       
         return $r;
     }
     
