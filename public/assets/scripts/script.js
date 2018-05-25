@@ -540,12 +540,14 @@ function curriculumdocs(link) {
  * @returns {undefined}
  */
 function formloader(/*form, func, id, []*/){
+    var url = window.location.href;
+    var tab = url.substring(url.indexOf("#") + 1);
     if (typeof(arguments[4]) !== 'undefined'){
-        getRequest("../share/plugins/"+ arguments[4] +"/request/f_"+ arguments[0] +".php?func="+ arguments[1] +"&id="+ arguments[2]+"&"+jQuery.param(arguments[3]));
+        getRequest("../share/plugins/"+ arguments[4] +"/request/f_"+ arguments[0] +".php?func="+ arguments[1] +"&id="+ arguments[2]+"&"+jQuery.param(arguments[3])+"&tab="+tab);
     } else if (typeof(arguments[3]) !== 'undefined'){
-        getRequest("../share/request/f_"+ arguments[0] +".php?func="+ arguments[1] +"&id="+ arguments[2]+"&"+jQuery.param(arguments[3]));        
+        getRequest("../share/request/f_"+ arguments[0] +".php?func="+ arguments[1] +"&id="+ arguments[2]+"&"+jQuery.param(arguments[3])+"&tab="+tab);        
     } else {
-        getRequest("../share/request/f_"+ arguments[0] +".php?func="+ arguments[1] +"&id="+ arguments[2]);
+        getRequest("../share/request/f_"+ arguments[0] +".php?func="+ arguments[1] +"&id="+ arguments[2]+"&tab="+tab);
     }
 }
 
