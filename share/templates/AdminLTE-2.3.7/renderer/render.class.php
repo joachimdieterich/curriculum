@@ -2240,16 +2240,16 @@ class Render {
     Reference::sortByProp($references, 'curriculum', 'asc');
     
     if ($get['schooltype_id'] != 'false'){
-        $references  = ofilter($references, ['schooltype_id' => $_GET['schooltype_id']]);
+        $references  = ofilter($references, ['schooltype_id' => $get['schooltype_id']]);
     }
     if ($get['subject_id'] != 'false'){
-         $references  = ofilter($references, ['subject_id' => $_GET['subject_id']]);
+         $references  = ofilter($references, ['subject_id' => $get['subject_id']]);
     }
     if ($get['curriculum_id'] != 'false'){
-         $references  = ofilter($references, ['curriculum_id' => $_GET['curriculum_id']]);
+         $references  = ofilter($references, ['curriculum_id' => $get['curriculum_id']]);
     }
     if ($get['grade_id'] != 'false'){
-         $references  = ofilter($references, ['grade_id' => $_GET['grade_id']]);
+         $references  = ofilter($references, ['grade_id' => $get['grade_id']]);
     }
     if (isset($references)){
         $subject_id = '';
