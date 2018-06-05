@@ -284,7 +284,12 @@ class Curriculum {
                                 $db2 = DB::prepare('SELECT clicks FROM statistics WHERE context_id = ? AND reference_id = ?');
                                 $db2->execute(array($_SESSION['CONTEXT']['curriculum']->context_id, $result->id));
                                 $stat_result  = $db2->fetchObject();
-                                $result->clicks = $stat_result->clicks;
+                                if (isset($stat_result->clicks)){
+                                    $result->clicks = $stat_result->clicks;
+                                } else {
+                                    $result->clicks = 0;
+                                }
+                                
                                 //get statistics
                                 $curriculum[] = $result;  //result Data wird an setPaginator vergeben
                             } 
