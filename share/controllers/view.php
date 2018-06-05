@@ -77,6 +77,8 @@ if (isset($reference_curriculum_id)){
     $ter_ids = $terminal_objectives->getIdArray($reference_curriculum_id);
     $ena_ids = $enabling_objectives->getIdArray($reference_curriculum_id);
     $TEMPLATE->assign('terminal_objectives', $terminal_objectives->getObjectives('curriculum', $PAGE->curriculum, false, $ter_ids, $ena_ids));
+    $_SESSION['PAGE']->s_key   = 'curriculum_id';
+    $_SESSION['PAGE']->s_value = $reference_curriculum_id;
     $TEMPLATE->assign('reference_view', true);
 } else {
     $TEMPLATE->assign('terminal_objectives', $terminal_objectives->getObjectives('curriculum', $PAGE->curriculum /*false*/)); // default -> false: only load terminal objectives
