@@ -396,10 +396,10 @@ if (!$files AND !isset($references) AND !isset($sodis)){
         }
         $content .= '" id="f_context_9">';
         if (count($quotes) > 0 ){
-            $content .= '<br>'.RENDER::quote($quotes).'<hr></div>';
+            $content .= '<br>'.RENDER::quote($quotes, array('schooltype_id' => 'false', 'subject_id' => 'false', 'curriculum_id' => 'false', 'grade_id' => 'false', 'ajax' => 'false')).'<hr></div>';
         }
     }   
-     /* end quotes */                     
+    /* end quotes */                     
                                     
     $content   .='</div><!-- /.tab-content -->
                         </div><!-- /.nav-tab-custom -->';
