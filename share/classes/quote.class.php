@@ -29,9 +29,10 @@ class Quote {
     public $id;
     public $context_id; 
     public $reference_id; 
+    public $reference_title;
+    public $reference_object;   
     public $quote; 
     public $quote_link;
-    public $reference_title;
     public $creation_time; 
     public $creator_id; 
     public $creator; 
@@ -58,7 +59,7 @@ class Quote {
     }
     
     public function get($dependency, $reference_id){
-        error_log($dependency.':'.$reference_id);
+       
         switch ($dependency) {
             /*case 2:
                     $db = DB::prepare('SELECT qu.* FROM quote AS qu, content_subscriptions AS cts 
@@ -79,6 +80,16 @@ class Quote {
             $this->id            = $result->id;
             $this->context_id    = $result->context_id;
             $this->reference_id  = $result->reference_id;
+            if ($this->context_id == 15){ //content subscribed in a curriculum context // other contextes are not available yet
+                $db1 = DB::prepare('SELECT cu.* FROM curriculum AS cu, content_subscriptions AS cts 
+                                        WHERE cu.id = cts.reference_id AND cts.context_id = ? AND cts.content_id = ?');
+                $db1->execute(array(2, $this->reference_id)); //2 --> curriculum
+                $cur_result     = $db1->fetchObject();
+                if ($cur_result){
+                    $this->reference_object = $cur_result;
+                }
+            }
+            
             $this->creation_time = $result->creation_time;
             $this->creator_id    = $result->creator_id;
             $this->creator       = $user->resolveUserId($result->creator_id);
