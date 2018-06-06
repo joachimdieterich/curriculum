@@ -39,9 +39,9 @@ if (isset($_GET['execute'])){
                         `status` int(11) NOT NULL DEFAULT '1',
                         `creator_id` int(11) DEFAULT NULL,
                         PRIMARY KEY (`id`),
-                        KEY `rel_con_content_id` (`content_id`),
-                        KEY `rel_content_context_id` (`context_id`),
-                        KEY `rel_content_reference_id` (`reference_id`)
+                        KEY `rel_quote_quote_id` (`quote_id`),
+                        KEY `rel_quote_context_id` (`context_id`),
+                        KEY `rel_quote_reference_id` (`reference_id`)
                       ) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
     if ($db->execute(array())){
         $UPDATE->log .= "<b class=\"text-success\">Update finished - OK</b><br>";
