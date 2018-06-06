@@ -57,14 +57,19 @@ class Quote {
         }
     }
     
-    public function get($dependency = 'curriculum', $id){
+    public function get($dependency, $reference_id){
+        error_log($dependency.':'.$reference_id);
         switch ($dependency) {
-            case 'curriculum':  $db = DB::prepare('SELECT qu.* FROM quote AS qu, content_subscriptions AS cts 
-                                                  WHERE qu.reference_id = cts.content_id AND cts.context_id = ? AND cts.reference_id = ?');
-                                $db->execute(array($_SESSION['CONTEXT']['curriculum']->context_id, $id));
-                break;
+            /*case 2:
+                    $db = DB::prepare('SELECT qu.* FROM quote AS qu, content_subscriptions AS cts 
+                                        WHERE qu.reference_id = cts.content_id AND cts.context_id = ? AND cts.reference_id = ?');
+                    $db->execute(array($dependency, $reference_id));
+                break;*/
 
-            default:
+
+            default:    $db = DB::prepare('SELECT qu.* FROM quote AS qu, quote_subscriptions AS qus 
+                                        WHERE qu.id = qus.quote_id AND qus.context_id = ? AND qus.reference_id = ?');
+                        $db->execute(array($dependency, $reference_id));
                 break;
         }
         $user       = new User();
