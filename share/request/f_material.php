@@ -48,6 +48,8 @@ switch ($func) {
                                 $reference   = new Reference();
                                 $references  = $reference->get('reference_id', $_SESSION['CONTEXT'][$func]->context_id, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
                                 Reference::sortByProp($references, $s_key, 'asc');
+                                $quote       = new Quote();
+                                $quotes      = $quote->get($_SESSION['CONTEXT'][$func]->context_id, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
  
                                 if ($func == 'enabling_objective'){
                                     $objective   = new EnablingObjective();
@@ -102,11 +104,16 @@ if (!$files AND !isset($references) AND !isset($sodis)){
     } else {
         $file_context_count[8] = 0;
     }
+    if (isset($quotes)){
+        $file_context_count[9] = count($quotes); // counter for file_context 9 --> quotes referecne
+    } else {
+        $file_context_count[9] = 0;
+    }
     for($i = 0; $i < count($files); $i++) {
         $file_context_count[$files[$i]->file_context]++;
     }
     $content .= '<div class="nav-tabs-custom">';
-    $active   = array( '1' => '', '2' => '', '3' => '','4' => '','5' => '','6' => '', '7' => '', '8' => '');
+    $active   = array( '1' => '', '2' => '', '3' => '','4' => '','5' => '','6' => '', '7' => '', '8' => '', '9' => '');
     foreach ($file_context_count as $key => $value) { // mark first tab with files as "active"
         if ($value > 0){
             $active[$key] = 'active';
@@ -139,6 +146,9 @@ if (!$files AND !isset($references) AND !isset($sodis)){
     }
     if ($file_context_count[8] != 0){
         $content .= '<li class="'.$active[8].'"><a href="#f_context_8" data-toggle="tab" >KMK <span class="label label-primary">'.$file_context_count[8].'</span></a></li>';
+    }
+    if ($file_context_count[9] != 0){
+        $content .= '<li class="'.$active[9].'"><a href="#f_context_9" data-toggle="tab" >Textstellen-/Bezüge <span class="label label-primary">'.$file_context_count[9].'</span></a></li>';
     }
     
     $content .='</ul>';
@@ -377,10 +387,20 @@ if (!$files AND !isset($references) AND !isset($sodis)){
             $content   .='" id="f_context_8">'.$sodis_content.'</div>';
         }
     }   
-    /* end external sodis reference*/                        
+    /* end external sodis reference*/    
+    /* quotes */    
+    if (isset($quotes)){
+        $content   .='<div class="tab-pane';
+        if ($active[9] == 'active' ){
+            $content   .=' active';
+        }
+        $content .= '" id="f_context_9">';
+        if (count($quotes) > 0 ){
+            $content .= '<br>'.RENDER::quote($quotes).'<hr></div>';
+        }
+    }   
+     /* end quotes */                     
                                     
-    
-    
     $content   .='</div><!-- /.tab-content -->
                         </div><!-- /.nav-tab-custom -->';
 }
