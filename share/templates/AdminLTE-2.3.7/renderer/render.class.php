@@ -2307,7 +2307,6 @@ public static function render_reference_entry($ref, $context_id){
     return $c;
 }
 public static function quote($quotes){
-    global $USER;
     $c  = '<div class="row">
             <div class="col-xs-12"><dt>Relevante Textstellen im Lehr-/Rahmenplan</dt>';
             foreach ($quotes AS $qt){
