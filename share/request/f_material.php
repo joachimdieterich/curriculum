@@ -34,7 +34,10 @@ $m_license_icon = null; //to prevent error logs
 $file       = new File();
 $repo       = get_plugin('repository', 'sodis');
 $func       = filter_input(INPUT_GET, 'func', FILTER_UNSAFE_RAW);
+$s_sort     = null; 
 if (isset($_GET['s_key'])){ $s_key =  $_GET['s_key']; } else { $s_key =  'curriculum'; }
+if (isset($_SESSION['PAGE']->s_key))  { $s_key  =  $_SESSION['PAGE']->s_key; } 
+if (isset($_SESSION['PAGE']->s_value)){ $s_sort =  $_SESSION['PAGE']->s_value; }  
 
 
 switch ($func) {
@@ -45,10 +48,7 @@ switch ($func) {
                                 $reference   = new Reference();
                                 $references  = $reference->get('reference_id', $_SESSION['CONTEXT'][$func]->context_id, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
                                 Reference::sortByProp($references, $s_key, 'asc');
-                                if (isset($_GET['s_value'])){
-                                     $references  = ofilter($references, [$s_key => $_GET['s_value']]);
-                                }
-                                //$references  = PHPArrayObjectSorter($references, 'subject', 'asc', 'Englisch - Französisch');
+ 
                                 if ($func == 'enabling_objective'){
                                     $objective   = new EnablingObjective();
                                     $objective->id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT); 
@@ -341,9 +341,19 @@ if (!$files AND !isset($references) AND !isset($sodis)){
             }
             if (count($references) > 0 ){
                 $content .='" id="f_context_7">';
-                $content .= render_filter();
+                $content .= render_filter($schooltype_id  = null, $subject_id = null, $curriculum_id = $s_sort, $grade_id = null);
                 $content .='<span id="reference_ajax">';
-                $content .= RENDER::reference($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), array('schooltype_id' => 'false', 'subject_id' => 'false', 'curriculum_id' => 'false', 'grade_id' => 'false', 'ajax' => 'false'));
+                if (isset($s_key)){
+                    switch ($s_key) {
+                        case 'curriculum_id': $c_id = $s_sort;
+                            break;
+
+                        default: $c_id = 'false';
+                            break;
+                    }
+                }
+                
+                $content .= RENDER::reference($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), array('schooltype_id' => 'false', 'subject_id' => 'false', 'curriculum_id' => $c_id, 'grade_id' => 'false', 'ajax' => 'false'));
                 /*foreach ($references as $ref) {
                     $content .= render_reference_entry($ref, $_SESSION['CONTEXT']['terminal_objective']->context_id);
                 }*/
@@ -367,7 +377,7 @@ if (!$files AND !isset($references) AND !isset($sodis)){
             $content   .='" id="f_context_8">'.$sodis_content.'</div>';
         }
     }   
-        /* end external sodis reference*/                        
+    /* end external sodis reference*/                        
                                     
     
     
