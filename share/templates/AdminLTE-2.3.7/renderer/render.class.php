@@ -2295,14 +2295,17 @@ public static function render_reference_entry($ref, $context_id){
                 $c .= '<a onclick="del(\'reference\', '.$ref->id.');" class="btn btn-default btn-xs pull-right" data-toggle="tooltip" title="" data-original-title="Referenz löschen" style="margin-right:5px;"><i class="fa fa-trash"></i></a>';
                 //$c .= '<a onclick="formloader(\'reference\', \'edit\', '.$ref->id.', {\'context_id\': \''.$context_id.'\'});" class="btn btn-default btn-xs pull-right" data-toggle="tooltip" title="" data-original-title="Referenz editieren" style="margin-right:5px;"><i class="fa fa-edit"></i></a>';
             }
-    if (isset($ref->content_object->content)){
-        if ($ref->content_object->content != ''){
-            $c .= '<br><dt>Anregungen zur Unterrichtsgestaltung <dd> '.strip_tags($ref->content_object->content).'</dd></dt>';
+    
+            $c .= '<br><dt>Anregungen zur Unterrichtsgestaltung <dd> ';
+            if (isset($ref->content_object->content)){
+                if ($ref->content_object->content != ''){
+                    $c .= strip_tags($ref->content_object->content);
+                }
+            }
+            $c .='</dd></dt>';
             if (checkCapabilities('reference:add',    $USER->role_id, false, true)){
                 $c .= '<a onclick="formloader(\'content\', \'edit\','.$ref->content_object->id.');" class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-edit"></i></a>';
             }
-        }
-    }
     $c .= '</div></div><hr style="clear:both;">';
     
     return $c;
