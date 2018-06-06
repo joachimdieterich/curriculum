@@ -105,7 +105,7 @@ class Quote {
         switch ($dependency) {
             case 'content': $content = new Content();
                             $content->load('id', $this->reference_id);
-                            $regex   = '#\<quote id="'.$this->id.'"\>(.+?)\<\/quote\>#s';
+                            $regex   = '#\<quote id="quote_'.$this->id.'"\>(.+?)\<\/quote\>#s';
                             preg_match($regex, $content->content, $matches);
                             //$matches[0] == with quote tag
                             //$matches[1] == quote only
