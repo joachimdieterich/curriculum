@@ -31,8 +31,16 @@ if (!isset($_SESSION['PAGE']->target_url)){     //if target_url is not set -> us
 }
 $content                = new Content();
 $purify = HTMLPurifier_Config::createDefault();
+$purify->set('Attr.EnableID', true);
 $purify->set('Core.Encoding', 'UTF-8'); // replace with your encoding
 $purify->set('HTML.Doctype', 'HTML 4.01 Transitional'); // replace with your doctype
+$purify->set('HTML.DefinitionID', 'Quote'); //enable Quote tag
+$purify->set('HTML.DefinitionRev', 1);
+// allow name and id attributes
+
+if ($def = $purify->maybeGetRawHTMLDefinition()) {
+    $def->addElement('quote', 'Block', 'Empty', 'Common', array('id' => 'Text'));
+}
 
 $purifier               = new HTMLPurifier($purify);
 $content->content       = $purifier->purify(filter_input(INPUT_POST, 'content', FILTER_UNSAFE_RAW));
