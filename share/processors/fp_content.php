@@ -39,7 +39,7 @@ $purify->set('HTML.DefinitionRev', 1);
 // allow name and id attributes
 
 if ($def = $purify->maybeGetRawHTMLDefinition()) {
-    $def->addElement('quote', 'Block', 'Empty', 'Common', array('id' => 'Text'));
+    $def->addElement('quote', 'Block', 'Inline', 'Common', array('id' => 'Text'));
 }
 
 $purifier               = new HTMLPurifier($purify);
