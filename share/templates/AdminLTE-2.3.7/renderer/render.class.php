@@ -2264,6 +2264,14 @@ class Render {
                 $content .= '<span id ="subject_'.$subject_id.'" class="collapse in">';
             }
             $content .= RENDER::render_reference_entry($ref, $_SESSION['CONTEXT']['terminal_objective']->context_id);
+            /* get quotes*/
+            $content .= '<strong>Relevante Textstellen im Lehr-/Rahmenplan:</strong><br/>';
+            $quote    = new Quote();
+            $quotes   = $quote->get('curriculum', $ref->curriculum_id);
+            foreach ($quotes AS $qt){
+               $content .= '<a onclick="formloader(\'content\', \'show\','.$qt->quote_link.');">'.$qt->reference_title.'</a><br/><blockquote cite="'.$qt->reference_title.'">'.$qt->quote.'</blockquote>'; 
+            }
+            /* end quotes */
         }
         $content .= '</span>'; //close last subject span
     } 
