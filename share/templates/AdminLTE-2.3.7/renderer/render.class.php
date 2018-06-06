@@ -25,6 +25,7 @@
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 class Render {
+    static $sortKey;
    
     public static function accomplish($string, $student, $teacher){
         global $s, $t;
@@ -2306,20 +2307,69 @@ public static function render_reference_entry($ref, $context_id){
     
     return $c;
 }
-public static function quote($quotes){
-    $c  = '<div class="row">
-            <div class="col-xs-12"><dt>Relevante Textstellen im Lehr-/Rahmenplan</dt>';
-            foreach ($quotes AS $qt){
-               $c .= '<a onclick="formloader(\'content\', \'show\','.$qt->quote_link.');">'.$qt->reference_title.'</a><br/><blockquote cite="'.$qt->reference_title.'">'.$qt->quote.'</blockquote>'; 
-            }
-            /* end quotes */
-    $c .= '</div>';
-    $c .= '</div><hr style="clear:both;">';
+
+public static function quote($quotes, $get){
+    $content     = '';  
+    RENDER::sortByProp($quotes, 'curriculum', 'asc');
     
-    return $c;
+    if ($get['schooltype_id'] != 'false'){
+        $quotes  = ofilter($quotes, ['schooltype_id' => $get['schooltype_id']]);
+    }
+    if ($get['subject_id'] != 'false'){
+         $quotes  = ofilter($quotes, ['subject_id' => $get['subject_id']]);
+    }
+    if ($get['curriculum_id'] != 'false'){
+         $quotes  = ofilter($quotes, ['curriculum_id' => $get['curriculum_id']]);
+    }
+    if ($get['grade_id'] != 'false'){
+         $quotes  = ofilter($quotes, ['grade_id' => $get['grade_id']]);
+    }
+    if (isset($quotes)){
+        $cur_id = '';
+        foreach ($quotes as $ref) {
+            if ($ref->reference_object->id != $cur_id){
+                if ($cur_id != ''){
+                    $content .= '</span>';  
+                }
+                $cur_id = $ref->reference_object->id;
+                $content .= '<span class="col-xs-12 bg-light-aqua"><h4 class="text-black">'.$ref->reference_object->curriculum.'<button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#cur_'.$cur_id.'" aria-expanded="true" data-toggle="tooltip" title="Fach einklappen bzw. ausklappen"><i class="fa fa-expand"></i></button></h4></span><hr style="clear:both;">';
+                $content .= '<span id ="cur_'.$cur_id.'" class="collapse in">';
+            }
+            $content .= '<a onclick="formloader(\'content\', \'show\','.$ref->quote_link.');">'.$ref->reference_title.'</a><br/><blockquote cite="'.$ref->reference_title.'">'.$ref->quote.'</blockquote>'; 
+        }
+        $content .= '</span>'; //close last subject span
+    } 
+    
+    if (count($quotes) == 0) {
+        $content .= 'Keine Textbezüge vorhanden.';
+    }
+
+    if ($get['ajax'] == 'true'){  
+        echo $content;
+    } else {
+        return $content;
+    }
 }
 
+    public static function sorter_asc( $a, $b ){
+        return strcasecmp( $a->{self::$sortKey}, $b->{self::$sortKey} );
+    }
+    
+    public static function sorter_desc( $a, $b ){
+        return strcasecmp( $b->{self::$sortKey}, $a->{self::$sortKey} );
+    }
 
+    public static function sortByProp( &$collection, $prop, $direction = 'asc' ){
+        self::$sortKey = $prop;
+        switch ($direction) {
+            case 'desc': usort( $collection, array( __CLASS__, 'sorter_desc' ) );
+                 break;
+
+            default:    usort( $collection, array( __CLASS__, 'sorter_asc' ) );
+                break;
+        }
+        
+    }
     
     
 }
