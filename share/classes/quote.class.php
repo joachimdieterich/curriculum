@@ -36,6 +36,7 @@ class Quote {
     public $creation_time; 
     public $creator_id; 
     public $creator; 
+    public $curriculum; //for sorting
    
     public function load($id = null){
         if ($id == null){ $id = $this->id; }
@@ -87,6 +88,7 @@ class Quote {
                 $cur_result     = $db1->fetchObject();
                 if ($cur_result){
                     $this->reference_object = $cur_result;
+                    $this->curriculum       = $cur_result->curriculum;
                 }
             }
             
