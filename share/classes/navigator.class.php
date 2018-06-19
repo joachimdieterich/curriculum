@@ -34,7 +34,13 @@ class Navigator {
     public $na_file_id;
     
     public $nv_id;
+    public $nv_title;
+    public $nv_description;
     public $nv_navigator_id;
+    public $nv_creator_id;
+    public $nv_top_width_class;
+    public $nv_content_width_class;
+    public $nv_footer_width_class;
     
     public $nb_id;
     public $nb_context_id;
@@ -43,6 +49,8 @@ class Navigator {
     public $nb_width_class;
     public $nb_target_context_id;
     public $nb_target;
+    public $nb_file_id;
+    public $nb_visible;
     
     
     
@@ -51,7 +59,7 @@ class Navigator {
     }
     
     public function load($dependency = 'navigator_block', $id = null){
-        if ($id == null){ $id = $this->id; }
+        //if ($id == null){ $id = $this->id; } //doesn't work 
         switch ($dependency) {
             case 'navigator_block':  $db     = DB::prepare('SELECT na.*, nv.*, nb.* FROM navigator AS na, navigator_view AS nv, navigator_block AS nb 
                                                                 WHERE nb.nb_id = ? AND na.na_id = nv.nv_navigator_id AND nv.nv_id = nb.nb_navigator_view_id');
@@ -116,6 +124,7 @@ class Navigator {
     }
     
     public function searchfield_content($navigator_view_id){
+        global $USER;
         $search   = array();
         $view_ids = $this->getChildren($navigator_view_id);
         foreach ($view_ids as $v_id) {
@@ -123,47 +132,50 @@ class Navigator {
             foreach ($blocks as $block) {
                 $s          = new stdClass();
                 $s->id      = $block->nb_id;
-                switch ($block->nb_context_id) {
-                    /* curriculum */
-                    case 2:     $s->id      = $block->nb_id;
-                                $s->title   = $block->nb_title;
-                                $s->onclick = "index.php?action=view&curriculum_id={$block->nb_target}";
-                                $search[] = clone $s;
-                        break;
-                    /* content */
-                    case 15:    $content            = new Content();
-                                $content->load('id', $block->nb_reference_id);
-                                $s->title   = $content->content;
-                                $s->onclick = "index.php?action=view&curriculum_id={$block->nb_target}";
-                                $search[] = clone $s;
-                        break; 
-                    /* curricula of group */
-                    case 16:    $c                  = new Curriculum();
-                                $curricula          = $c->getCurricula('group', $block->nb_reference_id);
-                                foreach ($curricula as $cur) {
-                                    $s->title   = $cur->curriculum;
-                                    $s->onclick = "index.php?action=view&curriculum_id={$cur->id}";
+                
+                if ((checkCapabilities('navigator:add', $USER->role_id, false) == true AND $block->nb_visible == 0) OR  $block->nb_visible == 1){
+                    switch ($block->nb_context_id) {
+                        /* curriculum */
+                        case 2:     $s->id      = $block->nb_id;
+                                    $s->title   = $block->nb_title;
+                                    $s->onclick = "index.php?action=view&curriculum_id={$block->nb_target}";
                                     $search[] = clone $s;
-                                }
+                            break;
+                        /* content */
+                        case 15:    $content            = new Content();
+                                    $content->load('id', $block->nb_reference_id);
+                                    $s->title   = $content->content;
+                                    $s->onclick = "index.php?action=view&curriculum_id={$block->nb_target}";
+                                    $search[] = clone $s;
+                            break; 
+                        /* curricula of group */
+                        case 16:    $c                  = new Curriculum();
+                                    $curricula          = $c->getCurricula('group', $block->nb_reference_id);
+                                    foreach ($curricula as $cur) {
+                                        $s->title   = $cur->curriculum;
+                                        $s->onclick = "index.php?action=view&curriculum_id={$cur->id}";
+                                        $search[] = clone $s;
+                                    }
 
-                        break;
+                            break;
 
-                    case 29:    $f                  = new File();
-                                $f->load($block->nb_reference_id);
-                                $s->title   = $f->title;
-                                $s->onclick = "index.php?action=navigator&nv_id={$block->nb_target}";
-                                $search[] = clone $s;
-                        break;
-                    
-                    case 31:    /* Navigator View*/
-                    case 33:    /* Book */
-                                $s->title   = $block->nb_title;
-                                $s->onclick = "index.php?action=navigator&nv_id={$block->nb_target}";
-                                $search[] = clone $s;
-                        break;
+                        case 29:    $f                  = new File();
+                                    $f->load($block->nb_reference_id);
+                                    $s->title   = $f->title;
+                                    $s->onclick = "index.php?action=navigator&nv_id={$block->nb_target}";
+                                    $search[] = clone $s;
+                            break;
 
-                    default:
-                        break;
+                        case 31:    /* Navigator View*/
+                        case 33:    /* Book */
+                                    $s->title   = $block->nb_title;
+                                    $s->onclick = "index.php?action=navigator&nv_id={$block->nb_target}";
+                                    $search[] = clone $s;
+                            break;
+
+                        default:
+                            break;
+                    }
                 }
             }   
         }
