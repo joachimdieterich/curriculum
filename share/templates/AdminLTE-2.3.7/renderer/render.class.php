@@ -1907,7 +1907,7 @@ class Render {
             $$key = $val;
         }
         $html = '';
-        if ($nb_visible == 1){  //is visible?
+        if ($nb_visible == 1 OR(checkCapabilities('navigator:add', $USER->role_id, false) == true )){  //is visible?
             switch ($nb_context_id) {
                 /*curriculum*/
                 case 2:     $cur                = new Curriculum();
