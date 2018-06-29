@@ -2336,7 +2336,7 @@ public static function quote($quotes, $get){
                 }
                 $cur_id = $ref->reference_object->id;
                 $content .= '<span class="col-xs-12 bg-light-aqua"><h4 class="text-black">'.$ref->reference_object->curriculum.'<button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#cur_'.$cur_id.'" aria-expanded="true" data-toggle="tooltip" title="Fach einklappen bzw. ausklappen"><i class="fa fa-expand"></i></button></h4></span><hr style="clear:both;">';
-                $content .= '<span id ="cur_'.$cur_id.'" class="collapse in">';
+                $content .= '<span id ="cur_'.$cur_id.'" class="collapse out">';
             }
             $content .= '<blockquote>'.$ref->quote.'<small>'.$ref->reference_object->curriculum.', <cite="'.$ref->reference_title.'" class="pointer_hand"><a onclick="formloader(\'content\', \'show\','.$ref->quote_link.');">'.$ref->reference_title.'</a></cite></small></blockquote>'; 
         }
