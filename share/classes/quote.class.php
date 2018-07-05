@@ -59,45 +59,75 @@ class Quote {
         }
     }
     
-    public function get($dependency, $reference_id){
-       
+    public function get($dependency, $reference_id, $ter_ids = null, $ena_ids = null){
+        $user       = new User();
+        $entrys     = array();
         switch ($dependency) {
-            /*case 2:
-                    $db = DB::prepare('SELECT qu.* FROM quote AS qu, content_subscriptions AS cts 
-                                        WHERE qu.reference_id = cts.content_id AND cts.context_id = ? AND cts.reference_id = ?');
-                    $db->execute(array($dependency, $reference_id));
-                break;*/
+            case 'curriculum_content':
+                        $db = DB::prepare('SELECT DISTINCT qus.quote_id, qus.context_id, qus.reference_id, qus.file_context, qus.status, qu.context_id AS qu_context_id, qu.reference_id AS content_id FROM quote_subscriptions AS qus, quote AS qu 
+                                            WHERE qu.reference_id IN ('.implode(",", $reference_id).') AND qu.context_id = 15 AND qu.id = qus.quote_id
+                                            AND (qus.context_id = 27 AND qus.reference_id IN ('.implode(",", $ter_ids).'))
+                                            OR  (qus.context_id = 12 AND qus.reference_id IN ('.implode(",", $ena_ids).')) ORDER BY qu.reference_id');
+                        $db->execute(array());
+                        while($result = $db->fetchObject()) { 
+                            $this->id            = $result->quote_id;
+                            $this->context_id    = $result->context_id;
+                            $this->reference_id  = $result->reference_id;
+                            $this->quote_link    = $result->content_id;
+                            switch ($this->context_id) {
+                                case 27:        $t                          = new TerminalObjective();
+                                                $t->id                      = $this->reference_id;
+                                                $t->load();
+                                                $this->terminal_object      = $t;   
+                                    break;
+                                case 12:        $e                          = new EnablingObjective();
+                                                $e->id                      = $this->reference_id;
+                                                $e->load(); 
+                                                $this->enabling_object      = $e;
+                                                $t                          = new TerminalObjective();
+                                                $t->id                      = $e->terminal_objective_id;
+                                                $t->load();
+                                                $this->terminal_object      = $t;
+                                    break;
+
+                                default:
+                                    break;
+                            }
+                            //error_log($this->quote_link);
+                            $this->quote         = $this->getQuote('curriculum_content', $_SESSION['CONTEXT'][$this->context_id]->context);
+                            $entrys[]            = clone $this;        //it has to be clone, to get the object and not the reference
+                        }
+                break;
 
 
             default:    $db = DB::prepare('SELECT qu.* FROM quote AS qu, quote_subscriptions AS qus 
                                         WHERE qu.id = qus.quote_id AND qus.context_id = ? AND qus.reference_id = ?');
                         $db->execute(array($dependency, $reference_id));
+                        
+                        while($result = $db->fetchObject()) { 
+                            $this->id            = $result->id;
+                            $this->context_id    = $result->context_id;
+                            $this->reference_id  = $result->reference_id;
+                            if ($this->context_id == 15){ //content subscribed in a curriculum context // other contextes are not available yet
+                                $db1 = DB::prepare('SELECT cu.* FROM curriculum AS cu, content_subscriptions AS cts 
+                                                        WHERE cu.id = cts.reference_id AND cts.context_id = ? AND cts.content_id = ?');
+                                $db1->execute(array(2, $this->reference_id)); //2 --> curriculum
+                                $cur_result     = $db1->fetchObject();
+                                if ($cur_result){
+                                    $this->reference_object = $cur_result;
+                                    $this->curriculum       = $cur_result->curriculum;
+                                }
+                            }
+
+                            $this->creation_time = $result->creation_time;
+                            $this->creator_id    = $result->creator_id;
+                            $this->creator       = $user->resolveUserId($result->creator_id);
+                            $this->quote         = $this->getQuote($_SESSION['CONTEXT'][$this->context_id]->context);
+                            $entrys[]            = clone $this;        //it has to be clone, to get the object and not the reference
+                        }
                 break;
         }
-        $user       = new User();
-        $entrys     = array();
-        
-        while($result = $db->fetchObject()) { 
-            $this->id            = $result->id;
-            $this->context_id    = $result->context_id;
-            $this->reference_id  = $result->reference_id;
-            if ($this->context_id == 15){ //content subscribed in a curriculum context // other contextes are not available yet
-                $db1 = DB::prepare('SELECT cu.* FROM curriculum AS cu, content_subscriptions AS cts 
-                                        WHERE cu.id = cts.reference_id AND cts.context_id = ? AND cts.content_id = ?');
-                $db1->execute(array(2, $this->reference_id)); //2 --> curriculum
-                $cur_result     = $db1->fetchObject();
-                if ($cur_result){
-                    $this->reference_object = $cur_result;
-                    $this->curriculum       = $cur_result->curriculum;
-                }
-            }
-            
-            $this->creation_time = $result->creation_time;
-            $this->creator_id    = $result->creator_id;
-            $this->creator       = $user->resolveUserId($result->creator_id);
-            $this->quote         = $this->getQuote($_SESSION['CONTEXT'][$this->context_id]->context);
-            $entrys[]            = clone $this;        //it has to be clone, to get the object and not the reference
-        } 
+       
         return $entrys;
         
     }
@@ -105,6 +135,7 @@ class Quote {
     public function getQuote($dependency = 'content'){
         
         switch ($dependency) {
+            
             case 'content': $content = new Content();
                             $content->load('id', $this->reference_id);
                             $regex   = '#\<quote id="quote_'.$this->id.'"\>(.+?)\<\/quote\>#s';
@@ -115,11 +146,20 @@ class Quote {
                             $this->quote_link       = $content->id;
                             return  $matches[1];
                 break;
-
+            case 'curriculum_content': 
+                            $content = new Content();
+                            $content->load('id', $this->quote_link);
+                            $regex   = '#\<quote id="quote_'.$this->id.'"\>(.+?)\<\/quote\>#s';
+                            preg_match($regex, $content->content, $matches);
+                            //$matches[0] == with quote tag
+                            //$matches[1] == quote only
+                            $this->reference_title  = $content->title;
+                            return  $matches[1];
+                break;
             default:
                 break;
         } 
     }
-    
+      
     
 }
