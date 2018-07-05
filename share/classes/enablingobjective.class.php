@@ -499,18 +499,6 @@ class EnablingObjective {
         
     }  
     
-    public function getIdArray($id){
-        $db     = DB::prepare('SELECT id FROM enablingObjectives WHERE curriculum_id = ?');
-        $db->execute(array($id));
-        while($r = $db->fetchObject()) { 
-            $ena_ids[] = $r->id;
-        }
-        if (isset($ena_ids)){
-            return $ena_ids;
-        } else {
-            return false; 
-        }
-    }
     
     /**
      * change order of objectives 
