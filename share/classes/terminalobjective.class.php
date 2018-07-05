@@ -242,7 +242,6 @@ class TerminalObjective {
                                         $this->files['references']  = $res_04->MAX;
                                     }
                                     
-                                    
                                     $objectives[]               = clone $this; 
                                 }
                                 break;
