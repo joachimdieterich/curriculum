@@ -2399,9 +2399,12 @@ public static function quote_reference($quotes){
         $content .= '</span>'; //close last content span
     }
     if (count($quotes) == 0) {
-        $content .= 'Keine Textbezüge vorhanden.';
+        // $content .= 'Keine Textbezüge vorhanden.';
+        // do nothing 
+    } else {
+        return '<div class="col-xs-12 top-buffer" >'.RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool"><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_content' => 'Textbezüge im Lehrplan', 'content_id' => null, 'body_content' => $content)).'</div>';
     }
-    return '<div class="col-xs-12 top-buffer" >'.RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool"><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_content' => 'Textbezüge im Lehrplan', 'content_id' => null, 'body_content' => $content)).'</div>';
+    
     
 }
 
