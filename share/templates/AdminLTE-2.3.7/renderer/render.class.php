@@ -1230,10 +1230,10 @@ class Render {
                       if ($show_description){
                             $r .=  '<br><span class="text small">'.$tsk->description.'</span>';
                       }
-                        if (checkCapabilities('task:update', $USER->role_id, false)){
+                        if (checkCapabilities('task:update', $USER->role_id, false) AND $onclick == false){
                             $r   .= '<div class="tools">
-                                        <i class="fa fa-edit" onclick="formloader(\'task\',\'edit\', '.$tsk->id.')"></i>
-                                        <i class="fa fa-trash-o" onclick="del(\'task\', '.$tsk->id.')"></i>
+                                        <i class="fa fa-edit" onclick="formloader(\'task\',\'edit\', \''.$tsk->id.'\');"></i>
+                                        <i class="fa fa-trash-o" onclick="del(\'task\', '.$tsk->id.');"></i>
                                     </div>';
                         }
         $r       .= '</li>';
