@@ -574,4 +574,41 @@ class Curriculum {
             return $db->execute(array($this->creator_id));
         }
     }
+    
+    public function getFieldArray($id, $dependency = 'curriculum_content', $field ='id'){
+        $ids = array();
+        switch ($dependency) {
+            case 'curriculum_content':  $db     = DB::prepare('SELECT ct.'.$field.' FROM content AS ct, content_subscriptions AS cts WHERE  cts.context_id = ?
+                                                        AND cts.reference_id = ?
+                                                        AND cts.content_id = ct.id');
+                                        $db->execute(array($_SESSION['CONTEXT']['curriculum']->context_id, $id));
+                                        while($r = $db->fetchObject()) { 
+                                          $ids[] = $r->$field;
+                                        }
+
+                break;
+            case 'terminal_objectives': $db     = DB::prepare('SELECT '.$field.' FROM terminalObjectives WHERE curriculum_id = ?');
+                                        $db->execute(array($id));
+                                        while($r = $db->fetchObject()) { 
+                                          $ids[] = $r->$field;
+                                        }
+                break;
+            case 'enabling_objectives': $db     = DB::prepare('SELECT '.$field.' FROM enablingObjectives WHERE curriculum_id = ?');
+                                        $db->execute(array($id));
+                                        while($r = $db->fetchObject()) { 
+                                          $ids[] = $r->$field;
+                                        }
+                break;
+
+            default:
+                break;
+        }
+        
+        if (isset($ids)){
+            return $ids;
+        } else {
+            return false; 
+        }
+    }
+    
 }
