@@ -104,6 +104,10 @@
                 {/if}
             </div>
         </div>
+            
+        {if isset($curriculum_content_references)}
+            {RENDER::quote_reference($curriculum_content_references)}    
+        {/if}
         <div id="search_curriculum_{$course[0]->curriculum_id}" class="col-xs-12 top-buffer" >
          {if $terminal_objectives != false}
              {assign var="sol_btn" value="false"}  
