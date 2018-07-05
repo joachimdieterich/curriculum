@@ -1920,7 +1920,12 @@ class Render {
                     break;
                 case 15:    $content            = new Content();
                             $content->load('id', $nb_reference_id);
-                            $html              .= RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool" onclick="processor(\'print\',\'content\', \''.$nb_reference_id.'\')"><i class="fa fa-print"></i></button><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_content' => $content->title, 'content_id' => $nb_reference_id, 'body_content' => $content->content));
+                            if (checkCapabilities('navigator:add', $USER->role_id, false)){
+                                $html              .= RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool" onclick="formloader(\'content\',\'edit\', \''.$nb_reference_id.'\')"><i class="fa fa-edit"></i></button><button class="btn btn-box-tool" onclick="processor(\'print\',\'content\', \''.$nb_reference_id.'\')"><i class="fa fa-print"></i></button><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_content' => $content->title, 'content_id' => $nb_reference_id, 'body_content' => $content->content));
+                            } else {
+                                $html              .= RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool" onclick="processor(\'print\',\'content\', \''.$nb_reference_id.'\')"><i class="fa fa-print"></i></button><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_content' => $content->title, 'content_id' => $nb_reference_id, 'body_content' => $content->content));
+                            }
+                            
                     break; 
                 case 16:    $c                  = new Curriculum();
                             $curricula          = $c->getCurricula('group', $nb_reference_id);
