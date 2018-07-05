@@ -272,19 +272,6 @@ class TerminalObjective {
         } else { return false;}
     }
     
-    public function getIdArray($id){
-        $db     = DB::prepare('SELECT id FROM terminalObjectives WHERE curriculum_id = ?');
-        $db->execute(array($id));
-        while($r = $db->fetchObject()) { 
-            $ter_ids[] = $r->id;
-        }
-        if (isset($ter_ids)){
-            return $ter_ids;
-        } else {
-            return false; 
-        }
-    }
-    
     /**
     * function used during the install process to set up creator id to new admin
     * @return boolean
