@@ -11,7 +11,7 @@
             {/if}  
             <li class="header">Lehrpläne</li>
             {if $my_enrolments != ''}
-                {if ($cfg_guest_usr == $my_username) || ($my_role_name eq 'Indexer')}
+                {if ($cfg_guest_usr == $my_username) || ($my_role_name eq 'Indexer') || count($my_enrolments) > 10}
                     <select id="guest_menu" name="guest_menu" class="select2 form-control" onchange="location = this.value;">
                         <option value="false">Bitte Lehrplan wählen...</option>
                         {foreach item=cur_menu from=$my_enrolments name=enrolments}
