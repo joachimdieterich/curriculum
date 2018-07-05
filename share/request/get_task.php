@@ -32,7 +32,15 @@ $t         = new Task();
 $t->load('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
 $_SESSION['PAGE']->show_reference_id = $t->id;
 $content   =  '<div class="nav-tabs-custom"><div class="box-header">'
-        . '<h3 class="box-title">'.$t->task.'</h3></div>'
+        . '<h3 class="box-title">'.$t->task.'</h3>';
+            if (checkCapabilities('task:update', $USER->role_id, false)){
+            $content   .= '<div class="tools pull-right text-muted">
+                            <i class="fa fa-edit" onclick="formloader(\'task\',\'edit\', \''.$t->id.'\');"></i>
+                            <i class="fa fa-trash-o" onclick="del(\'task\', '.$t->id.');"></i>
+                        </div>';
+            }
+
+$content .=' </div>'
         . '<div class="box-body"><span class="label label-primary pull-right">'.$t->timerange.'</span><br>'.$t->description.'<hr>';        
 
 
