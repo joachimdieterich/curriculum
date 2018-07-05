@@ -2365,7 +2365,7 @@ public static function quote_reference($quotes){
     if (isset($quotes)){
         $content_id = '';
         $quote_id   = '';
-        error_log(count($quotes));
+        //error_log(count($quotes));
         foreach ($quotes as $ref) {
             if ($ref->quote_link != $content_id){ //if new content render Title
                 if ($content_id != ''){
