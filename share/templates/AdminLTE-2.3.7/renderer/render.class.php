@@ -2354,6 +2354,53 @@ public static function quote($quotes, $get){
     }
 }
 
+public static function quote_reference($quotes){
+    $content     = '';  
+    RENDER::sortByProp($quotes, 'quote_link', 'asc');
+    if (isset($quotes)){
+        $content_id = '';
+        $quote_id   = '';
+        foreach ($quotes as $ref) {
+            if ($ref->quote_link != $content_id){
+                if ($content_id != ''){
+                    $content .= '</span>';  
+                }
+                $content_id = $ref->quote_link;
+                if ($ref->id == $quote_id){
+                    if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
+                      $content .= '<div class="col-xs-12 col-sm-3"><dt>Lernziel/Kompetenz</dt>'.Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $ref->enabling_object, 'border_color' => $ref->terminal_object->color)).'</div>';
+                    }
+                 $content .= '<div class="col-xs-12 col-sm-3 pull-right"><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('format' => 'reference', 'objective' => $ref->terminal_object, 'color')).'</div>';
+                } else {
+                    $content .= '<span class="col-xs-12 bg-light-aqua"><h4 class="text-black">'.$ref->reference_title.'<button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#ct_'.$content_id.'" aria-expanded="true" data-toggle="tooltip" title="Fach einklappen bzw. ausklappen"><i class="fa fa-expand"></i></button></h4></span><hr style="clear:both;">';
+                    $content .= '<span id ="ct_'.$content_id.'" class="collapse out">';
+                    $content .= '<div class="col-xs-12 col-sm-6">Fundstelle im Text:<br><blockquote>'.$ref->quote.'<small>, <cite="'.$ref->reference_title.'" class="pointer_hand"><a onclick="formloader(\'content\', \'show\','.$ref->quote_link.');">'.$ref->reference_title.'</a></cite></small></blockquote></div>'; 
+                    $c        = new Curriculum();    
+                    $c->id    = $ref->terminal_object->curriculum_id;
+                    $c->load();
+                    $content .= '<div class="col-xs-12 col-sm-6 pull-right">'.$c->curriculum.'</div>';
+                    $content .= '<div class="col-xs-12 col-sm-3 pull-right">';
+                    if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
+                      $content .= '<dt>Lernziel/Kompetenz</dt>'.Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $ref->enabling_object, 'border_color' => $ref->terminal_object->color));
+                    }
+                    $content .= '</div>';
+                    $content .= '<div class="col-xs-12 col-sm-3 pull-right"><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('format' => 'reference', 'objective' => $ref->terminal_object, 'color')).'</div>';
+                    
+                }
+                $quote_id = $ref->id;
+                
+            }
+            
+        }
+        $content .= '</span>'; //close last subject span
+    }
+    if (count($quotes) == 0) {
+        $content .= 'Keine Textbezüge vorhanden.';
+    }
+    return '<div class="col-xs-12 top-buffer" >'.RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool"><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_content' => 'Textbezüge im Lehrplan', 'content_id' => null, 'body_content' => $content)).'</div>';
+    
+}
+
     public static function sorter_asc( $a, $b ){
         return strcasecmp( $a->{self::$sortKey}, $b->{self::$sortKey} );
     }
