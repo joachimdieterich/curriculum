@@ -976,6 +976,19 @@ function ofilter($array, $properties)
 }
 
 /*
+ * generate input values for select out of an array 
+ */
+function generate_select_object($array){
+    $obj = new stdClass();
+    foreach ($array as $key => $value) {
+        $obj->label = $key;
+        $obj->value = $value;
+        $o[] = clone $obj;
+    }
+    return $o;
+}
+
+/*
 function element_functions($string, $prefix, $object){
     global $$prefix;        //defines object with dynamic obj name
     global $temp_prefix;    
