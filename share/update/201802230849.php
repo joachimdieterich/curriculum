@@ -75,7 +75,7 @@ if (isset($_GET['execute'])){
                         `nb_position` char(255) NOT NULL DEFAULT '',
                         `nb_width_class` char(255) NOT NULL DEFAULT '',
                         `nb_target_context_id` int(11) unsigned DEFAULT NULL,
-                        `nb_target` varchar(512) NOT NULL DEFAULT '',
+                        `nb_target_id` varchar(512) NOT NULL DEFAULT '',
                         `nb_file_id` int(11) unsigned DEFAULT NULL,
                         PRIMARY KEY (`nb_id`)
                       ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;");
