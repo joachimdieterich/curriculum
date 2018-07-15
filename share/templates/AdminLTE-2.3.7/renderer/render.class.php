@@ -1911,12 +1911,12 @@ class Render {
             switch ($nb_context_id) {
                 /*curriculum*/
                 case 2:     $cur                = new Curriculum();
-                            $cur->id            = $nb_target; 
+                            $cur->id            = $nb_target_id; 
                             $cur->load(false);
                             $enroled_groups     = $cur->getGroupsByUserAndCurriculum($USER->id);
                             $file_id            = $cur->icon_id;
-                            $widget_onclick     = "location.href='index.php?action=view&curriculum_id={$nb_target}&group={$enroled_groups[0]->group_id}';";
-                            $html = RENDER::paginator_widget(array('widget_title' => $nb_title, 'file_id' => $file_id, 'widget_onclick' => $widget_onclick, 'global_onclick' => true));
+                            $widget_onclick     = "location.href='index.php?action=view&curriculum_id={$nb_target_id}&group={$enroled_groups[0]->group_id}';";
+                            $html               = RENDER::paginator_widget(array('widget_title' => $nb_title, 'widget_desc' => $nb_description, 'file_id' => $file_id, 'widget_onclick' => $widget_onclick, 'global_onclick' => true));
                     break;
                 case 15:    $content            = new Content();
                             $content->load('id', $nb_reference_id);
@@ -1930,7 +1930,7 @@ class Render {
                 case 16:    $c                  = new Curriculum();
                             $curricula          = $c->getCurricula('group', $nb_reference_id);
                             foreach ($curricula as $cur) {
-                                $html          .= RENDER::paginator_widget(["widget_title" =>$cur->curriculum, "ref_id" => $cur->id, "group_id" => $nb_reference_id, 'global_onclick' => true]);
+                                $html          .= RENDER::paginator_widget(["widget_title" =>$cur->curriculum, 'widget_desc' => $nb_description, "ref_id" => $cur->id, "group_id" => $nb_reference_id, 'global_onclick' => true]);
                             }
 
                     break;
@@ -1941,10 +1941,10 @@ class Render {
                     break;
                 case 31:    if ($nb_target_context_id == $_SESSION['CONTEXT']['file']->context_id){
                                 $f                  = new File();
-                                $f->load($nb_target);
+                                $f->load($nb_target_id);
                                 $widget_onclick     = "location.href='{$f->path}'";
                             } else {
-                                $widget_onclick     = "location.href='index.php?action=navigator&nv_id={$nb_target}';";
+                                $widget_onclick     = "location.href='index.php?action=navigator&nv_id={$nb_target_id}';";
                             }
 
                             $html               = RENDER::paginator_widget(array('widget_title' => $nb_title, 'file_id' => $nb_file_id, 'widget_onclick' => $widget_onclick, 'global_onclick' => true));
@@ -2087,7 +2087,7 @@ class Render {
                     $html   .= '<small>'.$widget_timerange.'</small>';
                 }
                         $html   .= '  <h5 class="events-heading text-center"><a onclick="'.$widget_onclick.'">'.$widget_title.'</a></h5>
-                                  <p style="width: 100%; height: 60px;">'.$widget_desc.'</p>
+                                  <p style="height: 60px;" class="margin text-muted">'.$widget_desc.'</p>
                                 </div>';
                         
         $html   .=     '</span>
