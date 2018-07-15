@@ -48,7 +48,7 @@ class Navigator {
     public $nb_position;
     public $nb_width_class;
     public $nb_target_context_id;
-    public $nb_target;
+    public $nb_target_id;
     public $nb_file_id;
     public $nb_visible;
     
@@ -109,7 +109,7 @@ class Navigator {
     
     public function getParentView($navigator_view_id){
         $db = DB::prepare('SELECT nb.nb_navigator_view_id, nv.nv_title FROM navigator_block AS nb, navigator_view AS nv 
-                            WHERE nb.nb_target = ? AND nb.nb_target_context_id = ? AND nv.nv_id = nb.nb_navigator_view_id');
+                            WHERE nb.nb_target_id = ? AND nb.nb_target_context_id = ? AND nv.nv_id = nb.nb_navigator_view_id');
         $db->execute(array($navigator_view_id, $_SESSION['CONTEXT']['navigator_view']->context_id));
         $result = $db->fetchObject();
         //error_log(json_encode($result).' '.$navigator_view_id.' '.$_SESSION['CONTEXT']['navigator_view']->context_id);
@@ -138,14 +138,14 @@ class Navigator {
                         /* curriculum */
                         case 2:     $s->id      = $block->nb_id;
                                     $s->title   = $block->nb_title;
-                                    $s->onclick = "index.php?action=view&curriculum_id={$block->nb_target}";
+                                    $s->onclick = "index.php?action=view&curriculum_id={$block->nb_target_id}";
                                     $search[] = clone $s;
                             break;
                         /* content */
                         case 15:    $content            = new Content();
                                     $content->load('id', $block->nb_reference_id);
                                     $s->title   = $content->content;
-                                    $s->onclick = "index.php?action=view&curriculum_id={$block->nb_target}";
+                                    $s->onclick = "index.php?action=view&curriculum_id={$block->nb_target_id}";
                                     $search[] = clone $s;
                             break; 
                         /* curricula of group */
@@ -162,14 +162,14 @@ class Navigator {
                         case 29:    $f                  = new File();
                                     $f->load($block->nb_reference_id);
                                     $s->title   = $f->title;
-                                    $s->onclick = "index.php?action=navigator&nv_id={$block->nb_target}";
+                                    $s->onclick = "index.php?action=navigator&nv_id={$block->nb_target_id}";
                                     $search[] = clone $s;
                             break;
 
                         case 31:    /* Navigator View*/
                         case 33:    /* Book */
                                     $s->title   = $block->nb_title;
-                                    $s->onclick = "index.php?action=navigator&nv_id={$block->nb_target}";
+                                    $s->onclick = "index.php?action=navigator&nv_id={$block->nb_target_id}";
                                     $search[] = clone $s;
                             break;
 
@@ -200,7 +200,7 @@ class Navigator {
         
         $r  = array();
         while($result = $db->fetchObject()) { 
-            $r[] =  $result->nb_target; 
+            $r[] =  $result->nb_target_id; 
         } 
         
         return $r;
@@ -209,7 +209,7 @@ class Navigator {
             foreach ($result as $key => $value) {
                 $this->$key = $value; 
             }
-            return $result->nb_target;                                                        
+            return $result->nb_target_id;                                                        
         } else { 
             return false; 
         }*/
