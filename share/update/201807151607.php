@@ -29,12 +29,36 @@ $UPDATE->info   = "Alter field name in navigator_block. <br><br> Benennt Feld <s
 
 if (isset($_GET['execute'])){
     $UPDATE->log = "Starte Update... <br>";
-    $db= DB::prepare("ALTER TABLE `navigator_block` CHANGE `nb_target` `nb_target_id` VARCHAR(512) NOT NULL DEFAULT ''");
+    $db= DB::prepare("ALTER TABLE `navigator_block` CHANGE `nb_target` `nb_target_id` VARCHAR(512) DEFAULT NULL;");
     if ($db->execute(array())){
-        $UPDATE->log .= "<b class=\"text-success\">Update finished - OK</b><br>";
+        $UPDATE->log .= "<b class=\"text-success\">Update Step 1 finished - OK</b><br>";
         $UPDATE->installed = true;
     } else {
-        $UPDATE->log .= "<b class=\"text-red\">Update finished - failed.</b><br>";
+        $UPDATE->log .= "<b class=\"text-red\">Update finished - Step 1 failed.</b><br>";
         $UPDATE->installed = false;
     }      
-}
+    $db= DB::prepare("UPDATE `navigator_block` SET `nb_reference_id` = `nb_target_id` WHERE `nb_context_id` = 2;");
+    if ($db->execute(array())){
+        $UPDATE->log .= "<b class=\"text-success\">Update Step 2 finished - OK</b><br>";
+        $UPDATE->installed = true;
+    } else {
+        $UPDATE->log .= "<b class=\"text-red\">Update finished - Step 2 failed.</b><br>";
+        $UPDATE->installed = false;
+    }  
+    $db= DB::prepare("UPDATE `navigator_block` SET `nb_target_context_id` = NULL WHERE `nb_context_id` = 2;");
+    if ($db->execute(array())){
+        $UPDATE->log .= "<b class=\"text-success\">Update Step 3 finished - OK</b><br>";
+        $UPDATE->installed = true;
+    } else {
+        $UPDATE->log .= "<b class=\"text-red\">Update finished - Step 3 failed.</b><br>";
+        $UPDATE->installed = false;
+    }  
+    $db= DB::prepare("UPDATE `navigator_block` SET `nb_target_id` = NULL WHERE `nb_context_id` = 2;");
+    if ($db->execute(array())){
+        $UPDATE->log .= "<b class=\"text-success\">Update Step 4 finished - OK</b><br>";
+        $UPDATE->installed = true;
+    } else {
+        $UPDATE->log .= "<b class=\"text-red\">Update finished - Step 4 failed.</b><br>";
+        $UPDATE->installed = false;
+    }   
+}                    
