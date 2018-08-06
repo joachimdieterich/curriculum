@@ -25,7 +25,7 @@
 global $PAGE, $USER, $TEMPLATE;
  
 $search             = false;
-$navigator          = new Navigator();
+$navigator          = new Navigator_item();
 $navigator->getNavigatorByInstitution($USER->institution_id);
 $allowed_navigator  = $navigator->na_id;
 $navigator->getFirstView($navigator->na_id);
