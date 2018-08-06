@@ -62,6 +62,7 @@ class Quote {
     public function get($dependency, $reference_id, $ter_ids = null, $ena_ids = null){
         $user       = new User();
         $entrys     = array();
+        if (empty($reference_id)){ return null; } //FIX 
         switch ($dependency) {
             case 'curriculum_content':
                         $db = DB::prepare('SELECT DISTINCT qus.quote_id, qus.context_id, qus.reference_id, qus.file_context, qus.status, qu.context_id AS qu_context_id, qu.reference_id AS content_id FROM quote_subscriptions AS qus, quote AS qu 
