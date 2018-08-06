@@ -1911,19 +1911,20 @@ class Render {
             switch ($nb_context_id) {
                 /*curriculum*/
                 case 2:     $cur                = new Curriculum();
-                            $cur->id            = $nb_target_id; 
+                            $cur->id            = $nb_reference_id; 
                             $cur->load(false);
                             $enroled_groups     = $cur->getGroupsByUserAndCurriculum($USER->id);
                             $file_id            = $cur->icon_id;
-                            $widget_onclick     = "location.href='index.php?action=view&curriculum_id={$nb_target_id}&group={$enroled_groups[0]->group_id}';";
-                            $html               = RENDER::paginator_widget(array('widget_title' => $nb_title, 'widget_desc' => $nb_description, 'file_id' => $file_id, 'widget_onclick' => $widget_onclick, 'global_onclick' => true));
+                            $widget_onclick     = "location.href='index.php?action=view&curriculum_id={$nb_reference_id}&group={$enroled_groups[0]->group_id}';";
+                            $opt[]              = '<a type="button" style="color:#FFF;" class="fa fa-edit" onclick="formloader(\'navigator_item\', \'edit\','.$nb_id.', {\'nb_navigator_view_id\':\''.$nb_navigator_view_id.'\'})";></a>';
+                            $html               = RENDER::paginator_widget(array('widget_title' => $nb_title, 'widget_desc' => $nb_description, 'file_id' => $file_id, 'widget_onclick' => $widget_onclick, 'opt' => $opt, 'global_onclick' => true));
                     break;
                 case 15:    $content            = new Content();
                             $content->load('id', $nb_reference_id);
                             if (checkCapabilities('navigator:add', $USER->role_id, false)){
-                                $html              .= RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool" onclick="formloader(\'content\',\'edit\', \''.$nb_reference_id.'\')"><i class="fa fa-edit"></i></button><button class="btn btn-box-tool" onclick="processor(\'print\',\'content\', \''.$nb_reference_id.'\')"><i class="fa fa-print"></i></button><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_content' => $content->title, 'content_id' => $nb_reference_id, 'body_content' => $content->content));
+                                $html          .= RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool" onclick="formloader(\'content\',\'edit\', \''.$nb_reference_id.'\')"><i class="fa fa-edit"></i></button><button class="btn btn-box-tool" onclick="processor(\'print\',\'content\', \''.$nb_reference_id.'\')"><i class="fa fa-print"></i></button><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_content' => $content->title, 'content_id' => $nb_reference_id, 'body_content' => $content->content));
                             } else {
-                                $html              .= RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool" onclick="processor(\'print\',\'content\', \''.$nb_reference_id.'\')"><i class="fa fa-print"></i></button><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_content' => $content->title, 'content_id' => $nb_reference_id, 'body_content' => $content->content));
+                                $html          .= RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool" onclick="processor(\'print\',\'content\', \''.$nb_reference_id.'\')"><i class="fa fa-print"></i></button><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_content' => $content->title, 'content_id' => $nb_reference_id, 'body_content' => $content->content));
                             }
                             
                     break; 
@@ -2048,7 +2049,7 @@ class Render {
         /*default params*/
         $class_width    = 'col-md-6';
         $widget_type    = 'curriculum';
-        $bg_color       = 'bg-white';
+        $bg_color       = 'bg-primary';
         $widget_title   = 'Titel';
         $widget_desc    = '';
         $bg_badge       = 'bg-green';
@@ -2072,16 +2073,20 @@ class Render {
         } 
         
         $html   =  '<div class="box box-objective bg-white '.$bg_color.'" style="height: 300px !important; padding: 0; background: url(\''.$icon_url.'\') center center;  background-size: cover;"  ';
+        
+        $html   .= '>'; 
+        if (count($opt) > 0){
+            $html   .= '<span class="col-xs-12 '.$bg_color.'" style="background-color: '.$bg_color.'; position:absolute; display:block; left:0;right:0;top:0px;" >';
+                       foreach ($opt as $k =>$o) {
+                               $html .= '<span style="margin-right:12px;padding:5px;text-shadow: 1px 1px #FF0000;" class="fa">'.$o.'</span>';    
+                       }
+            $html .= '</span>';
+        }        
+        $html   .= '<span class="no-padding pointer_hand" style="position:absolute; bottom:0px; height: 275px;width:100%;"';
         if (isset($global_onclick)){
             $html   .= ' onclick="'.$widget_onclick.'"';
         }
-        $html   .= '>'; 
-        $html   .= '                <span class="bg-white no-padding" style="background-color: #fff; position:absolute; bottom:0px; height: 120px;width:100%;text-align: center;">'
-                . '<span class="col-xs-12" style="background-color: '.$bg_color.'; position:absolute; display:block; left:0;right:0;bottom:120px;" >';
-        foreach ($opt as $k =>$o) {
-                $html .= '<span style="margin-right:15px;padding:5px;text-shadow: 1px 1px #FF0000;" class="fa">'.$o.'</span>';    
-        }
-        $html .= '</span>';
+        $html   .= '></span><span class="bg-white no-padding pointer_hand" style="background-color: #fff; position:absolute; bottom:0px; height: 120px;width:100%;text-align: center;" >'; 
                 $html   .= '<div class="caption text-center">';
                 if (isset($widget_timerange)){
                     $html   .= '<small>'.$widget_timerange.'</small>';
