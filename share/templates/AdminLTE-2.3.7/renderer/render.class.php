@@ -1839,10 +1839,13 @@ class Render {
         $html   = '';
         $html  .= '<div class="box '.$status.' bottom-buffer-20">
                             <div class="box-header with-border">
-                                  '.$header_box_tools_left.'
-                                  <h3 class="box-title"> '.$header_content.'</h3>
-                                  
-                                  <div class="box-tools pull-right">
+                                  '.$header_box_tools_left;
+                                  if (isset($header_onclick)){
+                                    $html  .='<h3 class="box-title" '.$header_onclick.'> '.$header_content.'</h3>'; 
+                                  } else {
+                                    $html  .='<h3 class="box-title"> '.$header_content.'</h3>';
+                                  }
+                                   $html  .='<div class="box-tools pull-right">
                                   '.$header_box_tools_right.'
                                   </div>
                             </div><!-- /.box-header -->
@@ -1926,9 +1929,9 @@ class Render {
                 case 15:    $content            = new Content();
                             $content->load('id', $nb_reference_id);
                             if (checkCapabilities('navigator:add', $USER->role_id, false)){
-                                $html          .= RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool" onclick="formloader(\'content\',\'edit\', \''.$nb_reference_id.'\')"><i class="fa fa-edit"></i></button><button class="btn btn-box-tool" onclick="processor(\'print\',\'content\', \''.$nb_reference_id.'\')"><i class="fa fa-print"></i></button><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_content' => $content->title, 'content_id' => $nb_reference_id, 'body_content' => $content->content));
+                                $html          .= RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool" onclick="formloader(\'content\',\'edit\', \''.$nb_reference_id.'\')"><i class="fa fa-edit"></i></button><button class="btn btn-box-tool" onclick="processor(\'print\',\'content\', \''.$nb_reference_id.'\')"><i class="fa fa-print"></i></button><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_onclick' => 'data-widget="collapse"', 'header_content' => $content->title, 'content_id' => $nb_reference_id, 'body_content' => $content->content));
                             } else {
-                                $html          .= RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool" onclick="processor(\'print\',\'content\', \''.$nb_reference_id.'\')"><i class="fa fa-print"></i></button><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_content' => $content->title, 'content_id' => $nb_reference_id, 'body_content' => $content->content));
+                                $html          .= RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool" onclick="processor(\'print\',\'content\', \''.$nb_reference_id.'\')"><i class="fa fa-print"></i></button><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_onclick' => 'data-widget="collapse"', 'header_onclick' => 'data-widget="collapse"', 'header_content' => $content->title, 'content_id' => $nb_reference_id, 'body_content' => $content->content));
                             }
                             
                     break; 
@@ -2043,7 +2046,7 @@ class Render {
         
         
         //$left_menu = '<i class="fa fa-bars dropdown-toggle" data-toggle="dropdown"></i>';
-        return $html = RENDER::box(array('header_box_tools_left' => $left_menu,'header_box_tools_right' => '<button class="btn btn-box-tool" onclick="processor(\'print\',\'book\', \''.$b->id.'\')"><i class="fa fa-print"></i></button><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_content' => $b->title, 'content_id' => $b->id, 'body_content' => $book_content));
+        return $html = RENDER::box(array('header_box_tools_left' => $left_menu,'header_box_tools_right' => '<button class="btn btn-box-tool" onclick="processor(\'print\',\'book\', \''.$b->id.'\')"><i class="fa fa-print"></i></button><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_onclick' => 'data-widget="collapse"', 'header_content' => $b->title, 'content_id' => $b->id, 'body_content' => $book_content));
     }
     
     
@@ -2416,7 +2419,7 @@ public static function quote_reference($quotes){
         // $content .= 'Keine Textbezüge vorhanden.';
         // do nothing 
     } else {
-        return '<div class="col-xs-12 top-buffer" >'.RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool"><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_content' => 'Textbezüge im Lehrplan', 'content_id' => null, 'body_content' => $content)).'</div>';
+        return '<div class="col-xs-12 top-buffer" >'.RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool"><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_onclick' => 'data-widget="collapse"', 'header_content' => 'Textbezüge im Lehrplan', 'content_id' => null, 'body_content' => $content)).'</div>';
     }
     
     
