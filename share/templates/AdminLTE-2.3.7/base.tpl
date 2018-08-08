@@ -203,7 +203,7 @@
                               <img src="{$access_file}{$my_avatar}" class="img-circle" alt="User Image">
                               <p>
                                 {$my_firstname} {$my_lastname} - {$my_role_name}
-                                <small>Mitglied seit {$my_creation_time}</small>
+                                {*<small>Mitglied seit {$my_creation_time}</small>*}
                               </p>
                             </li>
                             <!-- Menu Body -->
