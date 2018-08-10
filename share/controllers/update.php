@@ -26,7 +26,7 @@ global $CFG, $PAGE, $USER, $TEMPLATE;
 $TEMPLATE->assign('breadcrumb',  array('Update' => 'index.php?action=update'));
 $TEMPLATE->assign('page_title', 'Update');  
 $search = false;
-$update          = new Update();
+$update          = new Updates();
 
 if (isset($_GET) ){
     if (isset($_GET['filename'])){
@@ -56,6 +56,7 @@ if (checkCapabilities('system:update', $USER->role_id, false)){
             switch ($value) {
                 case '.':
                 case '..':
+                case '.DS_Store': //fix 
                     break;
                 default:    //error_log($value);
                             if (!$update->load('filename', $value)){            // update(file) not in db --> add to db
@@ -65,6 +66,7 @@ if (checkCapabilities('system:update', $USER->role_id, false)){
                                 $update->filename       = $value;
                                 $update->description    = $UPDATE->info;
                                 $update->status         = 0;
+                                error_log($value);
                                 $update->add();
                             }
                             
