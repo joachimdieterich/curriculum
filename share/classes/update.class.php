@@ -24,7 +24,7 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-class Updates {
+class Update {
     public $id;
     public $filename;
     public $description;
@@ -42,7 +42,7 @@ class Updates {
         $db->execute(array($this->filename, $this->description, $this->status, $USER->id));
     }
     
-    public function update(){
+    public function doUpdate(){
         global $USER;
         $db = DB::prepare('UPDATE updates SET status = ?, log = ?, timestamp_installed = NOW(), user_id = ? WHERE filename = ?');
         return $db->execute(array($this->status, $this->log, $USER->id, $this->filename));
