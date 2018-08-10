@@ -26,7 +26,7 @@ global $CFG, $PAGE, $USER, $TEMPLATE;
 $TEMPLATE->assign('breadcrumb',  array('Update' => 'index.php?action=update'));
 $TEMPLATE->assign('page_title', 'Update');  
 $search = false;
-$update          = new Updates();
+$update          = new Update();
 
 if (isset($_GET) ){
     if (isset($_GET['filename'])){
@@ -42,7 +42,7 @@ if (isset($_GET) ){
                 $update->status = 2;     
             }
             $update->log    = $UPDATE->log;
-            $update->update();
+            $update->doUpdate();
         }        
     }
 } 
