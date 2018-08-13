@@ -36,6 +36,10 @@ if ($_GET){
                                             $group->id   = $_GET['group'];
                                             $group->load(); 
                                             $TEMPLATE->assign('group',     $group);
+                                            /* Testing config_curriculum*/
+                                            $c->id       = $_GET['curriculum_id'];
+                                            $needed_curriculum_list  = $c->loadConfig();
+                                            $TEMPLATE->assign('needed_curriculum_list', $needed_curriculum_list);  
                                             $reference_curriculum_list  = $c->getCurricula('group',$PAGE->group);
                                             $TEMPLATE->assign('reference_curriculum_list', $reference_curriculum_list);   
                                             if (filter_input(INPUT_GET, 'reference_view', FILTER_VALIDATE_INT)){
