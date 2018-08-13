@@ -99,7 +99,11 @@
                 {/if} 
             </div>
             <div class="btn-group pull-left margin-r-5">
-                {if isset($reference_curriculum_list)}
+                {if count($needed_curriculum_list) eq 1}
+                    <button type="button" class="btn btn-default" onclick="window.location.assign('index.php?action=view&curriculum_id={$course[0]->curriculum_id}&group={$page_group}&reference_view={$needed_curriculum_list[0]}');">
+                        Überfachliche Bezüge/MedienkomP@ss
+                    </button>
+                {elseif isset($reference_curriculum_list)}
                     {Form::input_select('reference_curriuclumid', '', $reference_curriculum_list, 'curriculum', 'id', $selected_curriculum_id, null, "window.location.assign('index.php?action=view&curriculum_id={$course[0]->curriculum_id}&group={$page_group}&reference_view='+this.value);", 'Überfachliche Bezüge/MedienkomP@ss', '', 'col-sm-12')}
                 {/if}
             </div>
