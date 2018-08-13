@@ -2383,7 +2383,7 @@ public static function quote_reference($quotes){
                 if ($content_id != ''){
                     $content .= '</span>';  
                 }
-                $content .= '<span class="col-xs-12 bg-light-aqua"><h4 class="text-black">'.$ref->reference_title.'<button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#ct_'.$content_id.'" aria-expanded="true" data-toggle="tooltip" title="Fach einklappen bzw. ausklappen"><i class="fa fa-expand"></i></button></h4></span><hr style="clear:both;">';
+                $content .= '<span class="col-xs-12 bg-light-aqua" data-toggle="collapse" data-target="#ct_'.$content_id.'"><h4 class="text-black">'.$ref->reference_title.'<button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#ct_'.$content_id.'" aria-expanded="true" data-toggle="tooltip" title="Fach einklappen bzw. ausklappen"><i class="fa fa-expand"></i></button></h4></span><hr style="clear:both;">';
                 $content .= '<span id ="ct_'.$content_id.'" class="collapse out">';
                 }
                 $content_id = $ref->quote_link;
