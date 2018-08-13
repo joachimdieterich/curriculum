@@ -611,4 +611,25 @@ class Curriculum {
         }
     }
     
+    public function loadConfig($dependency = 'reference'){
+        switch ($dependency) {
+            case 'reference':   $db = DB::prepare('SELECT reference_id FROM config_curriculum WHERE curriculum_id = ? AND context_id = 26');
+                                $db->execute(array($this->id));
+                                $config_curriculum = array();
+                                while($result = $db->fetchObject()) { 
+                                        $config_curriculum[] = $result->reference_id; 
+                                }
+                break;
+
+            default:    $db = DB::prepare('SELECT * FROM config_curriculum WHERE curriculum_id = ?');
+                        $db->execute(array($this->id));
+                        $config_curriculum = array();
+                        while($result = $db->fetchObject()) { 
+                                $config_curriculum[] = $result; 
+                        }
+                break;
+        }
+        return $config_curriculum;
+    }
+    
 }
