@@ -1,5 +1,5 @@
 <?php
-/** Updatefile 13 - Adding new schooltype
+/** Updatefile 13 - Enhancing UI for reference selector
 * 
 * @abstract This file is part of curriculum - http://www.joachimdieterich.de
 * @package core
