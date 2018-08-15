@@ -48,7 +48,7 @@ try { // Error handling
                    $TEMPLATE->assign('mySemester',         $_SESSION['SEMESTER']);                             // ARRAY mit Lernzeiträumen in die der USER eingeschrieben ist.
                    if (isset($_SESSION['username'])){
                         $TEMPLATE->assign('loginname',      $_SESSION['username']);     
-                        if ($_SESSION['username'] == 'gast' AND $CFG->settings->guest_show_menu == 0){
+                        if ($USER->role_id == 8 AND $CFG->settings->guest_show_menu == 0){ 
                             $PAGE->layout       = 'layout-top-nav'; //css layout
                             $PAGE->body_wrapper = 'body-wrapper'; //css layout
                             $PAGE->header       = false;
