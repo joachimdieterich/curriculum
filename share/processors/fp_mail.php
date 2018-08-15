@@ -65,7 +65,7 @@ if($validated_data === false) {/* validation failed */
 } else {
     if (isset($_POST['add_person'])){
         if ($mail->postMail()){
-        $_SESSION['PAGE']->message[] = array('message' => 'Nachricht an '.$USER->resolveUserId($mail->receiver_id).'gesendet', 'icon' => 'fa-envelope-o text-success');
+        $_SESSION['PAGE']->message[] = array('message' => 'Nachricht an '.$USER->resolveUserId($mail->receiver_id).' gesendet', 'icon' => 'fa-envelope-o text-success');
         }
     }
     if (isset($_POST['add_group'])){
