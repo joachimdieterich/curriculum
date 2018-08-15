@@ -117,11 +117,31 @@ $content .=   ' </ul>
                 </div><!-- /.tab-pane -->';
     if (checkCapabilities('user:userListComplete', $USER->role_id, false, true)){
         $terms = new Content();
-        $content .=  '<div class="tab-pane" id="tab_3">';
-        $content .= Form::info(['id' => 'global_terms_info', 'content' => 'Hier können Sie die Nutzungsbedingungen / Datenschutzerklärung ändern. <br>Diese muss von allen Nutzern beim ersten Login bestätigt werden.']);
-        $content .= Form::input_textarea('global_terms', 'Nutzungsbedingungen / Datenschutzerklärung', $terms->get('terms')[0]->content, $error, '');
+        $content .=  '<div class="tab-pane" id="tab_3">
+                        <div class="nav-tabs-custom small">
+                          <ul class="nav nav-tabs">
+                            <li class="active"><a href="#sub_tab_3_1" data-toggle="tab" aria-expanded="true" >Nutzungsbedingungen</a></li>
+                            <li ><a href="#sub_tab_3_2" data-toggle="tab" aria-expanded="false" >Impressum</a></li>
+                            <li ><a href="#sub_tab_3_3" data-toggle="tab" aria-expanded="false" >Datenschutz</a></li>
+                          </ul>
+                        </div>
+                        <div class="tab-content">';
+        $content .=  '<div class="tab-pane active" id="sub_tab_3_1">';
+        $content .= Form::info(['id' => 'global_terms_info', 'content' => 'Hier können Sie die Nutzungsbedingungen  ändern. <br>Diese muss von allen Nutzern beim ersten Login bestätigt werden.']);
+        $content .= Form::input_textarea('global_terms', $terms->get('terms', 'terms'  )[0]->title, $terms->get('terms', 'terms'  )[0]->content, $error, '');
         $content .= Form::input_button(['id' => 'global_terms_save','label'=>'Speichern',  'icon'=>'fa fa-save']);
-        $content .=  '</div><!-- /.tab-pane -->';
+        $content .= '</div>
+                     <div class="tab-pane" id="sub_tab_3_2">';
+        $content .= Form::info(['id' => 'global_imprint_info', 'content' => 'Hier können Sie das Impressum ändern.']);
+        $content .= Form::input_textarea('global_imprint', $terms->get('terms', 'imprint')[0]->title, $terms->get('terms', 'imprint')[0]->content, $error, '');
+        $content .= Form::input_button(['id' => 'global_imprint_save','label'=>'Speichern',  'icon'=>'fa fa-save']);
+        $content .= '</div>
+                     <div class="tab-pane" id="sub_tab_3_3">';
+        $content .= Form::info(['id' => 'global_privacy_info', 'content' => 'Hier können Sie die Datenschutzerklärung ändern.']);
+        $content .= Form::input_textarea('global_privacy', $terms->get('terms', 'privacy')[0]->title, $terms->get('terms', 'privacy')[0]->content, $error, '');
+        $content .= Form::input_button(['id' => 'global_privacy_save','label'=>'Speichern',  'icon'=>'fa fa-save']);
+        $content .=  '</div>
+                      </div><!-- /.tab-pane -->';
     }
      $content .= '</div>';
 $content .= '</form>';
