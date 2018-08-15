@@ -209,7 +209,7 @@ function checkrow(/*rowNr,link*/) {
         $(document).ajaxStart(function() { Pace.restart(); });
         $("#curriculum_content").parent().load(arguments[3] + "&ajax=true #curriculum_content"); //.parent to replace #curriculum_content
         $(document.getElementById("div_print_certificate")).removeClass("hidden");
-        //window.location.assign(arguments[3]);        
+        window.location.assign(arguments[3]);
     }
 }
 /*  Function without fixed layout
@@ -561,10 +561,14 @@ function processor(/*proc, func, val, []*/){
     }
     req = XMLobject();
     if(req) {  
-        req.onreadystatechange =  window.location.reload();
-        req.open("GET", url, false); //false --> important for print function
-        req.send(null);
+        req.onreadystatechange =  function() {
+          if(this.readyState == this.DONE) {
+              window.location.reload(true);
+          }
+        }
     }
+    req.open("GET", url, false); //false --> important for print function
+    req.send(null);
 }
 
 function comment(/*func reference_id, context_id, text, (parent_id)*/){
@@ -987,3 +991,4 @@ function InitScripts(){
             $('#popup_generate').nyroModal();
         });
     }
+    
