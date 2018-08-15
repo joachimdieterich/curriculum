@@ -89,15 +89,28 @@ if ($selected_curriculum_id != '' AND !isset($_GET['ajax'])) {
                            'p_options' => $p_options,
                            't_config'  => $t_config);
     } else {
-       $p_config   = array('id'        => 'checkbox',
-                           'username'  => 'Benutzername', 
-                           'firstname' => 'Vorname', 
-                           'lastname'  => 'Nachname',
-                           'completed' => 'Fortschritt',
-                           'role_name' => 'Rolle',
-                           'p_search'  => array('username', 'firstname', 'lastname'),
-                           'p_options' => $p_options,
-                           't_config'  => $t_config); 
+      if (checkCapabilities('user:shortUserList', $USER->role_id, false)){
+          $p_config   = array('id'        => 'checkbox',
+                              'username'  => 'Benutzername',
+                              'firstname' => 'Vorname',
+                              'lastname'  => 'Nachname',
+                              'completed' => 'Fortschritt',
+                           /* 'role_name' => 'Rolle',  */
+                              'p_search'  => array('username', 'firstname', 'lastname'),
+                              'p_options' => $p_options,
+                              't_config'  => $t_config);
+      }
+      else {
+          $p_config   = array('id'        => 'checkbox',
+                              'username'  => 'Benutzername',
+                              'firstname' => 'Vorname',
+                              'lastname'  => 'Nachname',
+                              'completed' => 'Fortschritt',
+                              'role_name' => 'Rolle',
+                              'p_search'  => array('username', 'firstname', 'lastname'),
+                              'p_options' => $p_options,
+                              't_config'  => $t_config);
+      }
     }
     setPaginator('userPaginator', $TEMPLATE, $users, 'results', 'index.php?action=objectives&course='.$selected_curriculumforURL, $p_config); //set Paginator    
     /*course book*/
