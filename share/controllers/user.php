@@ -119,19 +119,36 @@ $p_widget  = array('header'      => 'username',
                    'subheader02' => 'email',
                    'file_id'     => 'avatar_id',
                    'circle_image'=> 'file_id'); 
-$p_config   = array('id'         => 'checkbox',
-                    'username'   => 'Benutzername', 
-                    'firstname'  => 'Vorname', 
-                    'lastname'   => 'Nachname', 
-                    'email'      => 'Email', 
-                    'postalcode' => 'PLZ', 
-                    'city'       => 'Ort', 
-                    /*'state'    => 'Bundesland', 
-                    'country'    => 'Land', */
-                    ''           => 'Rolle', 
-                    'p_search'   => array('username','firstname','lastname','email','postalcode','city'),
-                    'p_widget'   => $p_widget,
-                    'p_options'  => $p_options);
+if (checkCapabilities('user:shortUserList', $USER->role_id, false)){
+	$p_config   = array('id'         => 'checkbox',
+                      'username'   => 'Benutzername',
+                      'firstname'  => 'Vorname',
+                      'lastname'   => 'Nachname',
+                   /* 'email'      => 'Email', */
+                   /* 'postalcode' => 'PLZ', */
+                   /* 'city'       => 'Ort', */
+                   /* 'state'      => 'Bundesland', */
+                   /* 'country'    => 'Land', */
+                      ''           => 'Rolle',
+                      'p_search'   => array('username','firstname','lastname'),
+                      'p_widget'   => $p_widget,
+                      'p_options'  => $p_options);
+}
+else {
+  $p_config   = array('id'         => 'checkbox',
+                      'username'   => 'Benutzername',
+                      'firstname'  => 'Vorname',
+                      'lastname'   => 'Nachname',
+                      'email'      => 'Email',
+                      'postalcode' => 'PLZ',
+                      'city'       => 'Ort',
+                   /* 'state'      => 'Bundesland', */
+                   /* 'country'    => 'Land', */
+                      ''           => 'Rolle',
+                      'p_search'   => array('username','firstname','lastname','email','postalcode','city'),
+                      'p_widget'   => $p_widget,
+                      'p_options'  => $p_options);
+}
 $TEMPLATE->assign('filter_institution_id', false);
 if (isset($_GET['filter_institution'])){
     if ($_GET['filter_institution'] == 'false'){
