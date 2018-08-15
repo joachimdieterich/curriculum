@@ -171,11 +171,12 @@ class Render {
                 } else {
                     $student_status = 'x';
                 }
-                $html   = '<a class="pointer_hand"><i id="'.$id.'_green" style="font-size:18px;" class="'.$green.' margin-r-5 text-green pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'1\')"></i></a>'
+                if (checkCapabilities('course:selfAssessment', $USER->role_id, false) AND $teacher == $student) { // show in view
+                 $html   = '<a class="pointer_hand"><i id="'.$id.'_green" style="font-size:18px;" class="'.$green.' margin-r-5 text-green pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'1\')"></i></a>'
                     . '<a class="pointer_hand"><i id="'.$id.'_orange" style="font-size:18px;" class="'.$orange.' margin-r-5 text-orange pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'2\')"></i></a>'
                     . '<a class="pointer_hand"><i id="'.$id.'_red" style="font-size:18px;" class="'.$red.' margin-r-5 text-red pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'0\')"></i></a>'
                     . '<a class="pointer_hand"><i id="'.$id.'_white" style="font-size:18px;" class="'.$white.' margin-r-5 text-gray pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'3\')"></i></a>';
-                
+                }
             }
             
             if ($link){
@@ -776,7 +777,8 @@ class Render {
                                          if (checkCapabilities('reference:add', $USER->role_id, false)){
                                              $html  .= '<span class="box-sm-icon pull-right text-primary" data-toggle="tooltip" title="Lehr- /Rahmenplanbezug hinzufügen" onclick=\'formloader("reference", "new", "'.$objective->id.'", {"context":"enabling_objective"});\'><i class="fa fa-link text-primary box-sm-icon"><i class="fa fa-plus fa-xs"></i></i></span>';
                                          }
-                                         if (checkCapabilities('course:selfAssessment', $USER->role_id, false)){
+                                         if (checkCapabilities('course:selfAssessment', $USER->role_id, false) OR checkCapabilities('course:setAccomplishedStatus', $USER->role_id, false) OR
+                                             checkCapabilities('objectives:setStatus', $USER->role_id, false) ) {
                                              if (is_array($user_id)){
                                                  $user_id = implode(',',$user_id);
                                              }
