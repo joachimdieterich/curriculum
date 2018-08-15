@@ -84,6 +84,17 @@ $TEMPLATE->assign('app_footer',     $CFG->app_footer);
 $TEMPLATE->assign('cfg_guest_login',$CFG->settings->guest_login);
 $TEMPLATE->assign('cfg_shibboleth', $CFG->settings->shibboleth);
 
+if (isset($CFG->settings->show_subjectIcon)){
+  $TEMPLATE->assign('cfg_show_subjectIcon', $CFG->settings->show_subjectIcon);
+} else {
+  $TEMPLATE->assign('cfg_show_subjectIcon', "ALWAYS"); // possible values: ALWAYS, NEVER, SELECT
+}
+
+if (isset($CFG->settings->login_wallpaper)){
+  $TEMPLATE->assign('cfg_login_wallpaper',  $CFG->settings->login_wallpaper);
+}else {
+  $TEMPLATE->assign('cfg_login_wallpaper',  true);
+}
 
 if (!isset($CFG->settings->template)){ 
     $CFG->settings           = new stdClass();
@@ -94,6 +105,7 @@ if (isset($CFG->settings->guest_usr)){
 } else {
   $TEMPLATE->assign('cfg_guest_usr', false);  
 }
+
 $TEMPLATE->template_dir           = dirname(__FILE__).'/templates/'.$CFG->settings->template.'/';
 $TEMPLATE->compile_dir            = $TEMPLATE->template_dir.'compiled';
 $TEMPLATE->cache_dir              = $TEMPLATE->template_dir.'cached';
