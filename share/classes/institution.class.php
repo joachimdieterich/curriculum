@@ -348,7 +348,7 @@ class Institution {
         $db             = DB::prepare('SELECT timeout FROM institution WHERE id = ?');
         $db->execute(array($id));
         $result         = $db->fetchObject();
-        if ($result->timeout > 0){
+        if (intval($result->timeout) > 0){
             return $result->timeout;
         } else {
             return false;
