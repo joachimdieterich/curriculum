@@ -107,8 +107,8 @@
                     <p class="pull-right">Farb-Legende:
                     <button class="btn btn-success btn-flat" style="cursor:default">selbständig erreicht</button>
                     <button class="btn btn-warning btn-flat" style="cursor:default">mit Hilfe erreicht</button>
-                    <button class="btn btn-default disabled btn-flat" style="cursor:default">nicht bearbeitet</button>
                     <button class="btn btn-danger btn-flat" style="cursor:default">nicht erreicht</button>
+                    <button class="btn btn-default disabled btn-flat" style="cursor:default">nicht bearbeitet</button>
                     </p>
                 </div>
                 <div class="box-body">
