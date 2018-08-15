@@ -59,7 +59,7 @@
     </head>
     
     {if in_array($page_action, array('login', 'lock', 'extern'))}
-    <body class="hold-transition {if $page_action eq 'login' OR  $page_action eq 'extern'}login-page{/if} {if $page_action eq 'lock'}lockscreen{/if}" style="background-image: url('{$random_bg}'); background-size: cover;" >
+    <body class="hold-transition {if $page_action eq 'login' OR  $page_action eq 'extern'}login-page{/if} {if $page_action eq 'lock'}lockscreen{/if}" {if $cfg_login_wallpaper}style="background-image: url('{$random_bg}'); background-size: cover;"{/if} >
         <div id="popup" class="modal" onload="popupFunction(this.id);"><div class="modal-dialog"><div class="box"><div class="box-header"><h3 class="box-title">Loading...</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div></div></div> <!-- Popup -->    
         {block name=content} {/block}
     {else}
@@ -76,8 +76,8 @@
               </a>
                 
                 <!-- Header Navbar: style can be found in header.less -->
-                <nav class="navbar navbar-static-top" role="navigation" {if isset($page_bg_file_id)}style="background: url('{$access_file_id}{$page_bg_file_id}') center center;  background-size: cover;"{/if}>
-                    
+                <nav class="navbar navbar-static-top" role="navigation" {if (isset($page_bg_file_id) AND $cfg_show_subjectIcon != "NEVER")}style="background: url('{$access_file_id}{$page_bg_file_id}') center center;  background-size: cover;"{/if}>
+                    <!-- isset($page_bg_file_id) AND  -->
                     {if isset($my_id)}
                     <!-- Sidebar toggle button-->
                     <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
