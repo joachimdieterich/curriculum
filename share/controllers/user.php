@@ -62,7 +62,11 @@ if (isset($_POST) ){
                                         $institution->id = $USER->institution_id;
                                     }
                                     
-                                    $edit_user->role_id = $_POST['roles'];
+                                    if ($USER->id == $edit_user->id and $USER->role_id == 1) {
+                                       // HACK an admin can't remove own admin-rights
+                                     } else {
+                                       $edit_user->role_id = $_POST['roles'];
+                                     }
                                     $edit_user->enroleToInstitution($institution->id);
                     break; 
                 case isset($_POST['expelInstitution']):
@@ -149,4 +153,4 @@ if (isset($_GET['filter_institution'])){
     $u = $users->userList('institution', 'userP', filter_input(INPUT_GET, 'lost', FILTER_VALIDATE_BOOLEAN));
 }
 
-setPaginator('userP', $TEMPLATE, $u, 'us_val', 'index.php?action=user', $p_config); //set Paginator    
+setPaginator('userP', $TEMPLATE, $u, 'us_val', 'index.php?action=user', $p_config); //set Paginator
