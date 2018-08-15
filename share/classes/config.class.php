@@ -40,6 +40,11 @@ class Config {
         $db->execute(array('config'));
         $config = new stdClass();
         while($result = $db->fetchObject()) { 
+            if ($result->type == "bool") {
+                if (strtolower($result->value) == "false") {
+                  $result->value = "";
+                }
+            }
             settype($result->value, $result->type); //store var with proper type ! for PHP < 4.2.0 change type "bool" to "boolean" and "int" to "integer"
             //error_log($result->name.': '.json_encode(gettype($result->value)).' -> '.$result->value);
             $config->{$result->name} = $result->value;
