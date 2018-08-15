@@ -280,7 +280,7 @@ class Form {
     public static function input_dropdown($id, $label, $select_data, $select_label, $select_value, $input, $error, $onclick= '', $placeholder ='---'){
         $class          =  "notifications-menu";
         $count_semester = count($select_data);
-        $form = '<li class="dropdown '.$class.'" >
+        $form = '<li class="dropdown '.$class.'" data-toggle="tooltip" data-placement="bottom" title="Schule/Zeitraum wechseln">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 15px 8px 15px 8px;">
                       <i class="fa fa-history"></i>';
                       //<span class="label label-warning">'.$count_semester.'</span>
