@@ -40,18 +40,35 @@ $gump            = new Gump();    /* Validation */
 $_POST           = $gump->sanitize($_POST);       //sanitize $_POST
 
 // todo alle Regeln definieren
-$gump->validation_rules(array(
-'curriculum'     => 'required',
-'description'    => 'required',
-'subject_id'     => 'required',
-'grade_id'       => 'required',
-'schooltype_id'  => 'required',
-'state_id'       => 'required',
-'country_id'     => 'required',
-'icon_id'        => 'required',   
-'color'          => 'required'   
-));
-
+if (isset($CFG->settings->show_subjectIcon)){
+  $show_subjectIcon = $CFG->settings->show_subjectIcon;
+} else {
+  $show_subjectIcon =  "ALWAYS"; // possible values: ALWAYS, NEVER, SELECT
+}
+if ($show_subjectIcon != "NEVER") {
+  $gump->validation_rules(array(
+  'curriculum'     => 'required',
+  'description'    => 'required',
+  'subject_id'     => 'required',
+  'grade_id'       => 'required',
+  'schooltype_id'  => 'required',
+  'state_id'       => 'required',
+  'country_id'     => 'required',
+  'icon_id'        => 'required',
+  'color'          => 'required'
+  ));
+} else {
+  $gump->validation_rules(array(
+  'curriculum'     => 'required',
+  'description'    => 'required',
+  'subject_id'     => 'required',
+  'grade_id'       => 'required',
+  'schooltype_id'  => 'required',
+  'state_id'       => 'required',
+  'country_id'     => 'required',
+  'color'          => 'required'
+  ));
+}
 
 if (isset($_POST['id'])){
     $curriculum->id         = filter_input(INPUT_POST, 'id',             FILTER_VALIDATE_INT);
