@@ -186,7 +186,7 @@ class Certificate {
         foreach($userlist as $key=>$member){
             $output             = '';
             $template           = str_replace("../share/accessfile.php", $CFG->base_url."share/accessfile.php", $this->template); //hack to get path working --> todo: store fiele-ids in templates
-            error_log($template);
+            //error_log($template);
             //$template           = str_replace("../", "../../", $this->template); //hack to get path working --> todo: store fiele-ids in templates
             $ena                = $ena_obj->getObjectives('user', $member);
             $user->load('id', $member);
