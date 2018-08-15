@@ -53,7 +53,7 @@ function smarty_function_content_header($params) {
                     
                 }
                 if (isset($help)){
-                    $_html_result .= '<li><i class="fa fa-info" type="button" name="help" onclick="curriculumdocs(\''.$help.'\');"></i></li>';
+                    $_html_result .= '<li><i class="fa fa-info" type="button" name="help" onclick="curriculumdocs(\''.$help.'\');" data-toggle="tooltip" data-placement="left" title="Curriculum-Wiki">></i></li>';
                 }
                 $_html_result .= '</ol>';
         }
