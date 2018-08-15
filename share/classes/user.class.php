@@ -297,7 +297,9 @@ class User {
         } else {
             $this->token             = $result->token;   
         }
-        $this->auth                 = $result->auth;
+        if (isset($result->auth)){
+            $this->auth              = $result->auth;
+        }
     }
     public function set($dependency, $value, $id = NULL){
         if ($id == null){ $id = $this->id; }
