@@ -53,25 +53,17 @@ if (checkCapabilities('system:update', $USER->role_id, false)){
         $last_update = false; // no update file available
     } else {
         foreach ($update_files as $value) {
-            switch ($value) {
-                case '.':
-                case '..':
-                case '.DS_Store': //fix 
-                    break;
-                default:    //error_log($value);
-                            if (!$update->load('filename', $value)){            // update(file) not in db --> add to db
-                                global $UPDATE;
-                                include($CFG->share_root.'update/'.$value);
-                                
-                                $update->filename       = $value;
-                                $update->description    = $UPDATE->info;
-                                $update->status         = 0;
-                                error_log($value);
-                                $update->add();
-                            }
-                            
-                    break;
-            }   
+            if (preg_match('/[0-9]{12}.php$/',$value)){
+                if (!$update->load('filename', $value)){            // update(file) not in db --> add to db
+                    global $UPDATE;
+                    include($CFG->share_root.'update/'.$value);
+ 
+                    $update->filename       = $value;
+                    $update->description    = $UPDATE->info;
+                    $update->status         = 0;
+                    $update->add();
+                }
+            }  
         }
     }
 
