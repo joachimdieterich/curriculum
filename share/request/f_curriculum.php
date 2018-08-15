@@ -147,16 +147,34 @@ $content .= Form::input_textarea('description', 'Beschreibung', $description, $e
 $subjects                   = new Subject();                                                      
 $subjects->institution_id   = $USER->institutions;
 $content .= Form::input_select('subject_id', 'Fach', $subjects->getSubjects(), 'subject, institution', 'id', $subject_id , $error);
-/* Fach-Bild */ 
-$icons = new File();                                                            
-$content .= Form::input_select('icon_id', 'Fach-Icon', $icons->getFiles('context', 5), 'title', 'id', $icon_id , $error, 'showSubjectIcon(\''.$CFG->access_id_url .'\', this.options[this.selectedIndex].value);');
-/* Icon Preview */
-$content .= '<div class="form-group"><label class="control-label col-sm-3"></label>
-      <div class="col-sm-9"> <div id="icon_img" class="form-control input-lg bg-white col-sm-9" ';
-if ($icon_id){
-    $content .= 'style="background-image: url(\''.$CFG->access_id_url . $icon_id.'\'); background-position: 50% 50%; background-repeat: initial initial;"';
+
+if (isset($CFG->settings->show_subjectIcon)){
+  $show_subjectIcon = $CFG->settings->show_subjectIcon;
+} else {
+  $show_subjectIcon =  "ALWAYS"; // possible values: ALWAYS, NEVER, SELECT
 }
-$content .= '></div></div></div>';
+if ($show_subjectIcon != "NEVER") {
+  /* Fach-Bild */
+  $icons = new File();
+  if ($show_subjectIcon == "SELECT") {
+    $placeholder = "Kein Icon anzeigen";
+  }else {
+    $placeholder = "";
+  }
+  $iconList = $icons->getFiles('context', 5);
+  $content .= Form::input_select('icon_id', 'Fach-Icon', $icons->getFiles('context', 5), 'title', 'id', $icon_id , $error, 'showSubjectIcon(\''.$CFG->access_id_url .'\', this.options[this.selectedIndex].value);', $placeholder);
+  /* Icon Preview */
+  $content .= '<div class="form-group"><label class="control-label col-sm-3"></label>
+        <div class="col-sm-9"> <div id="icon_img" class="form-control input-lg bg-white col-sm-9" ';
+  if ($icon_id){
+      $content .= 'style="background-image: url(\''.$CFG->access_id_url . $icon_id.'\'); background-position: 50% 50%; background-repeat: initial initial;"';
+  }
+  $content .= '></div></div></div>';
+} else {
+   if ($icon_id == null) {
+       $content .= '<input type="hidden" name="icon_id" value="0" />'; //to get value on submit
+   }
+}
 
 $grades = new Grade();                                                          // Load grades
 $grades->institution_id = $USER->institutions;
