@@ -70,9 +70,9 @@
               <!-- Logo -->
               <a href="index.php?action=dashboard" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
-                <span class="logo-mini"><img class="pull-left" style="margin-top: 5px; margin-left: 2px;" src="{$request_url}assets/images/logo.png"/></span>
+                <span class="logo-mini"><img class="pull-left" style="margin-top: 5px; margin-left: 2px;" src="{$request_url}assets/images/logo.png"  data-toggle="tooltip" data-placement="bottom" title="Startseite" /></span>
                 <!-- logo for regular state and mobile devices -->
-                <span class="logo-lg"><img class="pull-left" style="margin-top: 5px;" src="{$request_url}assets/images/logo.png"/><b>{$app_title}</b></span>
+                <span class="logo-lg"><img class="pull-left" style="margin-top: 5px;" src="{$request_url}assets/images/logo.png" data-toggle="tooltip" data-placement="bottom" title="Startseite" /><b>{$app_title}</b></span>
               </a>
                 
                 <!-- Header Navbar: style can be found in header.less -->
@@ -89,19 +89,19 @@
                       <ul class="nav navbar-nav">
                         {if checkCapabilities('dashboard:globalAdmin', $my_role_id, false)}  
                         <li>   
-                        <a href="index.php?action=statistic" style="padding: 15px 8px 15px 8px;">
+                        <a href="index.php?action=statistic" style="padding: 15px 8px 15px 8px;" data-toggle="tooltip" data-placement="bottom" title="Statistik">
                             <i class="fa fa-pie-chart"></i>
                           </a>
                         </li>  
                         {/if}
                         <li>   
-                        <a href="index.php?action=help" style="padding: 15px 8px 15px 8px;">
+                        <a href="index.php?action=help" style="padding: 15px 8px 15px 8px;" data-toggle="tooltip" data-placement="bottom" title="Hilfe">
                             <i class="fa fa-graduation-cap"></i>
                           </a>
                         </li>
                         {if checkCapabilities('menu:readTasks', $my_role_id, false)}  
                         <li>     
-                        <a href="index.php?action=task" style="padding: 15px 8px 15px 8px;">
+                        <a href="index.php?action=task" style="padding: 15px 8px 15px 8px;" data-toggle="tooltip" data-placement="bottom" title="Aufgaben">
                             <i class="fa fa-tasks"></i>
                           </a>
                         </li>
@@ -112,13 +112,13 @@
                              {Form::input_dropdown('institution_id', '', $my_institutions, 'institution', 'institution_id', $my_institution_id, null, "processor('config','institution_id', this.getAttribute('data-id'));")}
                          {/if} 
                          <li class="calendar-menu">   
-                        <a href="index.php?action=calendar" style="padding: 15px 8px 15px 8px;">
+                        <a href="index.php?action=calendar" style="padding: 15px 8px 15px 8px;" data-toggle="tooltip" data-placement="bottom" title="Kalender">
                             <i class="fa fa-calendar"></i>
                           </a>
                         </li>  
                         {if checkCapabilities('menu:readTimeline', $my_role_id, false)}  
                         <li class="timeline-menu">   
-                        <a href="index.php?action=portfolio" style="padding: 15px 8px 15px 8px;">
+                        <a href="index.php?action=portfolio" style="padding: 15px 8px 15px 8px;" data-toggle="tooltip" data-placement="bottom" title="Timeline">
                             <i class="fa fa-cubes"></i>
                           </a>
                         </li> 
@@ -126,8 +126,8 @@
                         {if checkCapabilities('menu:readMessages', $my_role_id, false)}
                             {if isset($mails)}  
                             <!-- Messages: style can be found in dropdown.less-->
-                            <li class="dropdown messages-menu">
-                              <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 15px 8px 15px 8px;">
+                            <li class="dropdown messages-menu" data-toggle="tooltip" data-placement="bottom" title="Nachrichten">
+                              <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 15px 8px 15px 8px;" title="">
                                 <i class="fa fa-envelope-o"></i>
                                 <span class="label label-success">{count($mails)}</span>
                               </a>
@@ -158,7 +158,7 @@
                             </li>
                             {else}
                             <li class=" messages-menu">   
-                                <a href="index.php?action=messages&function=showInbox" style="padding: 15px 8px 15px 8px;"><i class="fa fa-envelope-o"></i></a>
+                                <a href="index.php?action=messages&function=showInbox" style="padding: 15px 8px 15px 8px;" data-toggle="tooltip" data-placement="bottom" title="Nachrichten"><i class="fa fa-envelope-o"></i></a>
                             </li>
                             {/if} 
                         {/if}
@@ -166,7 +166,7 @@
                         {if isset($page_message)}
                         <!-- Notifications: style can be found in dropdown.less -->
                         <li class="dropdown notifications-menu open">
-                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 15px 8px 15px 8px;">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 15px 8px 15px 8px;" title="Benachrichtigungen">
                             <i class="fa fa-bell-o"></i>
                             <span class="label label-warning">{count($page_message)}</span>
                           </a>
@@ -192,8 +192,8 @@
                         {/if}
 
                         <!-- User Account: style can be found in dropdown.less -->
-                        <li class="dropdown user user-menu">
-                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 15px 8px 15px 8px;">
+                        <li class="dropdown user user-menu"  data-toggle="tooltip" data-placement="bottom" title="Benutzer verwalten">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="" style="padding: 15px 8px 15px 8px;">
                             <img src="{$access_file}{$my_avatar}" class="user-image" alt="User Image">
                             <span class="hidden-xs">{$my_firstname} {$my_lastname}</span>
                           </a>
@@ -231,8 +231,8 @@
                           </ul>
                         </li>
                         {if checkCapabilities('template:change', $my_role_id, false)}
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gears"></i></a>
+                            <li class="dropdown" data-toggle="tooltip" data-placement="bottom" title="Einstellungen">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" title=""><i class="fa fa-gears"></i></a>
                                 <ul class="dropdown-menu" role="menu">
                                   <li><a href="#" onclick="formloader('settings', 'edit');">Einstellungen</a></li>
                                   <li class="divider"></li>
