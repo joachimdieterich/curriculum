@@ -103,7 +103,9 @@ $TEMPLATE->assign('cur_content', array('label'=>'Hinweise zum Lehrplan', 'entrys
 
 $course                 = $courses->getCourse('course', $PAGE->curriculum);
 $TEMPLATE->assign('course', $course); 
-$TEMPLATE->assign('page_bg_file_id', $course[0]->icon_id); 
+if ($course[0]->icon_id > 0){
+  $TEMPLATE->assign('page_bg_file_id', $course[0]->icon_id);
+}
 $c_menu_array               = array();
 $content_menu_obj           = new stdClass();
 switch ($function) {
