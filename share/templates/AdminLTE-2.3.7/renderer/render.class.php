@@ -2289,7 +2289,7 @@ class Render {
     } 
     
     if (count($references) == 0) {
-        $content .= 'Keine Querverweise vorhanden.';
+        $content .= 'Keine überfachliche Bezüge vorhanden.';
     }
 
     if ($get['ajax'] == 'true'){  
