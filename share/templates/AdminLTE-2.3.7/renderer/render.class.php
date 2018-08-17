@@ -771,9 +771,9 @@ class Render {
                                  } else {
 
                                      if ($type != 'terminal_objective'){
-                                         if (checkCapabilities('reference:show', $USER->role_id, false)){
+                                         /*if (checkCapabilities('reference:show', $USER->role_id, false)){
                                              $html  .= '<span class="fa fa-link text-primary box-sm-icon pull-left" data-toggle="tooltip" title="Lehr- /Rahmenplanbezüge" onclick=\'formloader("reference_view", "'.$type.'", "'.$objective->id.'");\'></span>';
-                                         }
+                                         }*/
                                          if (checkCapabilities('reference:add', $USER->role_id, false)){
                                              $html  .= '<span class="box-sm-icon pull-right text-primary" data-toggle="tooltip" title="Lehr- /Rahmenplanbezug hinzufügen" onclick=\'formloader("reference", "new", "'.$objective->id.'", {"context":"enabling_objective"});\'><i class="fa fa-link text-primary box-sm-icon"><i class="fa fa-plus fa-xs"></i></i></span>';
                                          }
@@ -795,9 +795,9 @@ class Render {
                                              }
                                          }
                                      } else {
-                                         if (checkCapabilities('reference:show', $USER->role_id, false)){
+                                         /*if (checkCapabilities('reference:show', $USER->role_id, false)){
                                              $html  .= '<span class="fa fa-link '.$icon_class.' box-sm-icon pull-left" data-toggle="tooltip" title="Lehr- /Rahmenplanbezüge" onclick=\'formloader("reference_view", "'.$type.'", "'.$objective->id.'");\'></span>';
-                                         }
+                                         }*/
                                          if (checkCapabilities('reference:add', $USER->role_id, false)){
                                              $html  .= '<span class="box-sm-icon pull-right '.$icon_class.'" data-toggle="tooltip" title="Lehr- /Rahmenplanbezug hinzufügen" onclick=\'formloader("reference", "new", "'.$objective->id.'", {"context":"terminal_objective"});\'><i class="fa fa-link '.$text_class.' box-sm-icon"><i class="fa fa-plus fa-xs"></i></i></span>';
                                          }    
