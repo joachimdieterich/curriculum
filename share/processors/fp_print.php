@@ -96,7 +96,7 @@ switch ($func) {
                                 $content .= '<pagebreak>';
                                 $pagebreak = false;
                             }
-                            $content .= '<h1>Bezüge / Querverweise</h1>'; 
+                            $content .= '<h1>Überfachliche Bezüge</h1>'; 
                             $ter_obj  = new TerminalObjective();         //load terminal objectives
                             $ter      = $ter_obj->getObjectives('certificate', $id);
                             foreach ($ter as $ter_value) {
