@@ -155,4 +155,4 @@ if(checkCapabilities('user:userList',         $USER->role_id, false)){
 }
 
 $content = new Content();
-$TEMPLATE->assign('cur_content', array('label'=>'Hinweise zum Lehrplan', 'entrys'=> $content->get('curriculum', $selected_curriculum_id)));
+$TEMPLATE->assign('cur_content', array('label'=>'Digitalisierte Texte des Lehrplans', 'entrys'=> $content->get('curriculum', $selected_curriculum_id)));
