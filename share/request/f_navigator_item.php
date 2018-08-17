@@ -34,14 +34,14 @@ $nb_navigator_view_id = '';
 $nb_context_id        = '';
 $nb_reference_id      = '';
 $nb_position          = 'content';
-$nb_width_class       = '';
+$nb_width_class       = 'col-xs-12';
 $nb_target_context_id = '';
 $nb_target_id         = '';
 $nb_file_id           = '';
 $nb_visible           = 1;
 
 $error                = '';
-$navigator            = new Navigator(); 
+$navigator            = new Navigator_item(); 
 $func                 = $_GET['func'];
 
 switch ($func) {
@@ -68,15 +68,21 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$content = '<form id="form_navigator" method="post" action="../share/processors/fp_navigator.php">
+$content = '<form id="form_navigator_item" method="post" action="../share/processors/fp_navigator_item.php">
 <input type="hidden" name="nb_navigator_view_id" id="nb_navigator_view_id" value="'.$nb_navigator_view_id.'"/>
 <input type="hidden" name="func" id="func" value="'.$func.'"/>'; 
-
+if (isset($nb_id)) {     // only set id input field if set! prevents error on validation form reload
+     $content .= '<input id="nb_id" name="nb_id" type="text" class="invisible" value="'.$nb_id.'">';
+}
+if (isset($nb_navigator_view_id)) {     // only set id input field if set! prevents error on validation form reload
+     $content .= '<input id="nb_navigator_view_id" name="nb_navigator_view_id" type="text" class="invisible" value="'.$nb_navigator_view_id.'">';
+}
 /* Type selector*/
-$t = generate_select_object( array('Lehrpläne einer Lerngruppe' => 'group',
-                                   'Lehrplan'                   => 'curriculum',
-                                   'Text'                       => 'content',
-                                   'Navigationsblock'           => 'navigator_block'));
+$t = generate_select_object( array('Lehrplan'                   => '2',
+                                   'Text'                       => '15',
+                                   'Navigationsblock'           => '31',
+                                   'Lehrpläne einer Lerngruppe' => '16'));
+//error_log('context'.$nb_context_id);
 $content .= Form::input_select('nb_context_id', 'Navigations-Typ', $t, 'label', 'value', $nb_context_id , $error);
 
 $content .= Form::input_text('nb_title', 'Titel', $nb_title, $error, 'Titel');
@@ -86,14 +92,8 @@ $p = generate_select_object(array('Oben (Top)'   => 'top',
                                 'Mitte(Content)' => 'content',
                                 'Unten (Footer)' => 'footer'));
 $content .= Form::input_select('nb_position', 'Position', $p, 'label', 'value', $nb_position , $error);
-/* Width selector*/
-$w = generate_select_object(array('Seitenbreite' => 'col-xs-12',
-                                     '3/4 Seite' => 'col-xs-9',
-                                     '2/3 Seite' => 'col-xs-8',
-                                     '1/2 Seite' => 'col-xs-6',
-                                     '1/3 Seite' => 'col-xs-4',
-                                     '1/4 Seite' => 'col-xs-3'));
-$content .= Form::input_select('nb_width_class', 'Blockgröße (Breite)', $w, 'label', 'value', $nb_width_class , $error);
+/* Width input*/
+$content .= Form::input_text('nb_width_class', 'Blockgröße (Breite)', $nb_width_class, $error);
 
 switch ($nb_context_id) {
     case '2':   /* curriculum */
@@ -104,10 +104,14 @@ switch ($nb_context_id) {
     default:
         break;
 }
+/* Visible selector*/
+$v = generate_select_object(array('Veröffentlichen' => '1',
+                                  'Verbergen'       => '0'));
+$content .= Form::input_select('nb_visible', 'Sichtbarkeit', $v, 'label', 'value', $nb_visible , $error);
 
 
 $content .= '</form>';
-$footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_navigator\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';
+$footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_navigator_item\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';
 
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
