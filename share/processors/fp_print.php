@@ -78,7 +78,7 @@ switch ($func) {
                                 $content .= '<pagebreak>';
                                 $pagebreak = false;
                             }
-                            $content           .= '<h1>Hinweise zum Lehrplan</h1>';
+                            $content           .= '<h1>Digitalisierte Texte des Lehrplans</h1>';
                             $con                = new Content();
                             $content_entries    = $con->get('curriculum', $id );
                             foreach ($content_entries AS $content_entry){
