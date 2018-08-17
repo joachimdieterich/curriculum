@@ -99,7 +99,7 @@ $enabling_objectives->curriculum_id = $PAGE->curriculum;
 /* curriculum content*/
 $content         = new Content();
 $content_entries = $content->get('curriculum', $enabling_objectives->curriculum_id);
-$TEMPLATE->assign('cur_content', array('label'=>'Hinweise zum Lehrplan', 'entrys'=> $content_entries));
+$TEMPLATE->assign('cur_content', array('label'=>'Digitalisierte Texte des Lehrplans', 'entrys'=> $content_entries));
 
 $course                 = $courses->getCourse('course', $PAGE->curriculum);
 $TEMPLATE->assign('course', $course); 
