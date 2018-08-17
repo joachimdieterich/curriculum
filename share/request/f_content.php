@@ -85,6 +85,13 @@ if (isset($_GET['func'])){
                             $options   .= '<a onclick="formloader(\'content\', \'edit\','.$content->id.')" class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-edit"></i></a>';
                         }
                         $label_header   = $content->title;
+                        /*$html           = '';
+                        $ter     = new TerminalObjective();
+                        $ter->id = 325;
+                        $ter->load();
+                        $obj .= '<div class="col-xs-1 col-sm-3 pull-right"><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('format' => 'reference', 'objective' => $ter, 'color')).'</div>';
+                        $html          .= '<div class="col-xs-11 col-sm-9">'.str_replace('<quote', '<div class="col-xs-1 col-sm-3 pull-right box" style="position: relative;left:10px;height:10px;width:50px;">'.$obj.'</div><quote ', $content->content).'</div>';
+                        *///$html          .= '<div class="col-xs-1 col-sm-3"></div>';
                         $html           = $content->content;
                         
             break;
