@@ -142,7 +142,7 @@ if (!$files AND !isset($references) AND !isset($sodis)){
         $content .= '<li class="'.$active[6].'"><a href="#f_context_6" data-toggle="tab" >Externe Aufgaben <span class="label label-primary">'.$file_context_count[6].'</span></a></li>';
     }
     if ($file_context_count[7] != 0){
-        $content .= '<li class="'.$active[7].'"><a href="#f_context_7" data-toggle="tab" >Querverweise <span class="label label-primary">'.$file_context_count[7].'</span></a></li>';
+        $content .= '<li class="'.$active[7].'"><a href="#f_context_7" data-toggle="tab" >Überfachliche Bezüge <span class="label label-primary">'.$file_context_count[7].'</span></a></li>';
     }
     if ($file_context_count[8] != 0){
         $content .= '<li class="'.$active[8].'"><a href="#f_context_8" data-toggle="tab" >KMK <span class="label label-primary">'.$file_context_count[8].'</span></a></li>';
@@ -173,7 +173,7 @@ if (!$files AND !isset($references) AND !isset($sodis)){
                 case 4: $level_header = 'Meine Dateien'; break;
                 case 5: $level_header = 'Externe Medien'; break;
                 case 6: $level_header = 'Externe Aufgaben'; break;
-                case 7: $level_header = 'Querverweise'; break;
+                case 7: $level_header = 'Überfachliche Bezüge'; break;
                 case 8: $level_header = 'KMK'; break;
                 default: break;
             }*/ $file_context       = $files[$i]->file_context+1; //file_context auf nächstes Level setzen
