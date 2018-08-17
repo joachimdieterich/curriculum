@@ -29,7 +29,7 @@ global $USER, $PAGE, $CFG;
 
 $USER       = $_SESSION['USER'];
 $edit       = checkCapabilities('file:editMaterial',    $USER->role_id, false, true); // DELETE / edit anzeigen
-$header     = 'Material';
+$header     = 'Aktenkoffer';
 $m_license_icon = null; //to prevent error logs
 $file       = new File();
 $repo       = get_plugin('repository', 'sodis');
@@ -55,12 +55,12 @@ switch ($func) {
                                     $objective   = new EnablingObjective();
                                     $objective->id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT); 
                                     $objective->load();
-                                    $header     = 'Material<br><small><b>Lernziel / Kompetenz</b><br>'.strip_tags($objective->enabling_objective).'</small>'; 
+                                    $header     = 'Aktenkoffer<br><small><b>Lernziel / Kompetenz</b><br>'.strip_tags($objective->enabling_objective).'</small>'; 
                                 } else {
                                     $objective   = new TerminalObjective();
                                     $objective->id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT); 
                                     $objective->load();
-                                    $header     = 'Material<br><small><b>Lernziel / Kompetenz</b><br>'.strip_tags($objective->terminal_objective).'</small>'; 
+                                    $header     = 'Aktenkoffer<br><small><b>Lernziel / Kompetenz</b><br>'.strip_tags($objective->terminal_objective).'</small>'; 
                                 }
         break;
     case 'id' :         $files  = $file->getFiles('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => false, 'user_id' => filter_input(INPUT_GET, 'user_id', FILTER_VALIDATE_INT)));
@@ -85,7 +85,7 @@ $content    = null;
 $m_boxes    = '';
     
 if (!$files AND !isset($references) AND !isset($sodis)){
-    $content .= 'Es gibt leider kein Material zum gewählten Lernziel.';
+    $content .= 'Es gibt leider keine Eintragungen zum gewählten Lernziel.';
 } else {
     /* Tab header */
     $file_context_count[1] = 0; // counter for file_context 1
