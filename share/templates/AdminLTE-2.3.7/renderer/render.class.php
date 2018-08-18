@@ -636,13 +636,13 @@ class Render {
                     $html  .= 'id="ter_'.$objective->id.'"';
                 }
                 $html  .=   'class="box box-objective ';
-                if (isset($highlight)){
+                /*if (isset($highlight)){ //see below ->filter: alpha(opacity=40); opacity: 0.4; -moz-opacity: 0.4; 
                     if (in_array($type.'_'.$objective->id, $highlight)){
                         $html  .= 'highlight';
                     } 
-                }
+                } */
                 $style = 'padding-top: 0 !important; background: '.$objective->color.'; border: 1px solid '.$border_color;
-                if ($objective->files['references'] == false AND $reference_view == true){
+                if (($objective->files['references'] == false AND $reference_view == true) OR isset($highlight) AND !in_array($type.'_'.$objective->id, $highlight)){
                    $style .= 'filter: alpha(opacity=40); opacity: 0.4; -moz-opacity: 0.4;';
                 } 
                 $html  .= '" style="'.$style.'">';
