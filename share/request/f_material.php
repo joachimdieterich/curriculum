@@ -99,13 +99,13 @@ if (!$files AND !isset($references) AND !isset($sodis)){
     } else {
         $file_context_count[7] = 0;  
     }
-    if (isset($sodis)){
-        $file_context_count[8] = count($sodis); // counter for file_context 8 --> external sodis reference
+    if (isset($quotes)){
+        $file_context_count[8] = count($quotes); // counter for file_context 8 --> quotes referecne
     } else {
         $file_context_count[8] = 0;
     }
-    if (isset($quotes)){
-        $file_context_count[9] = count($quotes); // counter for file_context 9 --> quotes referecne
+    if (isset($sodis)){
+        $file_context_count[9] = count($sodis); // counter for file_context 9 --> external sodis reference
     } else {
         $file_context_count[9] = 0;
     }
@@ -145,11 +145,12 @@ if (!$files AND !isset($references) AND !isset($sodis)){
         $content .= '<li class="'.$active[7].'"><a href="#f_context_7" data-toggle="tab" >Überfachliche Bezüge <span class="label label-primary">'.$file_context_count[7].'</span></a></li>';
     }
     if ($file_context_count[8] != 0){
-        $content .= '<li class="'.$active[8].'"><a href="#f_context_8" data-toggle="tab" >KMK <span class="label label-primary">'.$file_context_count[8].'</span></a></li>';
+        $content .= '<li class="'.$active[8].'"><a href="#f_context_8" data-toggle="tab" >Textstellen-/Bezüge <span class="label label-primary">'.$file_context_count[8].'</span></a></li>';
     }
     if ($file_context_count[9] != 0){
-        $content .= '<li class="'.$active[9].'"><a href="#f_context_9" data-toggle="tab" >Textstellen-/Bezüge <span class="label label-primary">'.$file_context_count[9].'</span></a></li>';
+        $content .= '<li class="'.$active[9].'"><a href="#f_context_9" data-toggle="tab" >KMK <span class="label label-primary">'.$file_context_count[9].'</span></a></li>';
     }
+    
     
     $content .='</ul>';
     /* tab content*/
@@ -372,10 +373,22 @@ if (!$files AND !isset($references) AND !isset($sodis)){
         }
     }
         /* end internal reference*/
+    /* quotes */    
+    if (isset($quotes)){
+        $content   .='<div class="tab-pane';
+        if ($active[8] == 'active' ){
+            $content   .=' active';
+        }
+        $content .= '" id="f_context_8">';
+        if (count($quotes) > 0 ){
+            $content .= '<br>'.RENDER::quote($quotes, array('schooltype_id' => 'false', 'subject_id' => 'false', 'curriculum_id' => 'false', 'grade_id' => 'false', 'ajax' => 'false')).'<hr></div>';
+        }
+    }   
+    /* end quotes */
         /* external sodis reference*/
     if (isset($sodis)){
         $content   .='<div class="tab-pane';
-        if ($active[8] == 'active' ){
+        if ($active[9] == 'active' ){
             $content   .=' active';
         }
         if (count($sodis) > 0 ){
@@ -384,22 +397,11 @@ if (!$files AND !isset($references) AND !isset($sodis)){
                 $r = json_decode($s);
                 $sodis_content   .= '<li>'.str_replace("0", ".", substr($r->get[0]->id, 5)).'. '.$r->get[0]->description.'</li>';   
             }
-            $content   .='" id="f_context_8">'.$sodis_content.'</div>';
+            $content   .='" id="f_context_9">'.$sodis_content.'</div>';
         }
     }   
     /* end external sodis reference*/    
-    /* quotes */    
-    if (isset($quotes)){
-        $content   .='<div class="tab-pane';
-        if ($active[9] == 'active' ){
-            $content   .=' active';
-        }
-        $content .= '" id="f_context_9">';
-        if (count($quotes) > 0 ){
-            $content .= '<br>'.RENDER::quote($quotes, array('schooltype_id' => 'false', 'subject_id' => 'false', 'curriculum_id' => 'false', 'grade_id' => 'false', 'ajax' => 'false')).'<hr></div>';
-        }
-    }   
-    /* end quotes */                     
+                         
                                     
     $content   .='</div><!-- /.tab-content -->
                         </div><!-- /.nav-tab-custom -->';
