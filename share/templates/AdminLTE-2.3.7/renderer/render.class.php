@@ -1924,7 +1924,7 @@ class Render {
                             if (checkCapabilities('navigator:add', $USER->role_id, false)){
                             $opt[]              = '<a type="button" style="color:#FFF;" class="fa fa-edit" onclick="formloader(\'navigator_item\', \'edit\','.$nb_id.', {\'nb_navigator_view_id\':\''.$nb_navigator_view_id.'\'})";></a>';
                             } else {
-                               $opt[]              = null; 
+                               $opt[]           = array(); 
                             }
                             $html               = RENDER::paginator_widget(array('widget_title' => $nb_title, 'widget_desc' => $nb_description, 'file_id' => $file_id, 'widget_onclick' => $widget_onclick, 'opt' => $opt, 'global_onclick' => true));
                     break;
@@ -2086,7 +2086,7 @@ class Render {
         $html   =  '<div class="box box-objective bg-white '.$bg_color.'" style="height: 300px !important; padding: 0; background: url(\''.$icon_url.'\') center center;  background-size: cover;"  ';
         
         $html   .= '>'; 
-        if (count($opt) > 0 OR $opt != NULL){
+        if (count($opt) > 0){
             $html   .= '<span class="col-xs-12 '.$bg_color.'" style="background-color: '.$bg_color.'; position:absolute; display:block; left:0;right:0;top:0px;" >';
                        foreach ($opt as $k =>$o) {
                                $html .= '<span style="margin-right:12px;padding:5px;text-shadow: 1px 1px #FF0000;" class="fa">'.$o.'</span>';    
