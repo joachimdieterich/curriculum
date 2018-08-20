@@ -1921,11 +1921,11 @@ class Render {
                             $enroled_groups     = $cur->getGroupsByUserAndCurriculum($USER->id);
                             $file_id            = $cur->icon_id;
                             $widget_onclick     = "location.href='index.php?action=view&curriculum_id={$nb_reference_id}&group={$enroled_groups[0]->group_id}';";
-                            /*if (checkCapabilities('navigator:add', $USER->role_id, false)){
+                            if (checkCapabilities('navigator:add', $USER->role_id, false)){
                             $opt[]              = '<a type="button" style="color:#FFF;" class="fa fa-edit" onclick="formloader(\'navigator_item\', \'edit\','.$nb_id.', {\'nb_navigator_view_id\':\''.$nb_navigator_view_id.'\'})";></a>';
                             } else {
                                $opt[]              = null; 
-                            }*/
+                            }
                             $html               = RENDER::paginator_widget(array('widget_title' => $nb_title, 'widget_desc' => $nb_description, 'file_id' => $file_id, 'widget_onclick' => $widget_onclick, 'opt' => $opt, 'global_onclick' => true));
                     break;
                 case 15:    $content            = new Content();
@@ -2448,4 +2448,55 @@ public static function quote_reference($quotes){
     }
     
     
+    public static function search($dependency = 'view', $id, $get ){
+        $content = '';
+        switch ($dependency) {
+            case 'view':$s          = new Search();
+                        $s->id      = $id; //cur_id
+                        $s->search  = $get['search'];
+                        $content    = Render::render_search_results('content', array('search_results' => $s->content(), 'get' => $get));  
+                break;
+
+            default:
+                break;
+        }
+        
+        
+        if ($get['ajax'] == 'true'){  
+            echo $content;
+        } else {
+            return $content;
+        }
+    }
+    
+    public static function render_search_results($dependency = 'content', $params ){
+        $content     = ''; 
+        //RENDER::sortByProp($params['search_results'], 'title', 'asc');
+        
+        /*Maybe realize further filter options with ofilter()*/
+        error_log(json_encode($params['search_results']));
+        $c_id = '';
+        foreach ($params['search_results'] as $s_result) {
+            if ($s_result['id'] != $c_id){
+                if ($c_id != ''){
+                    $content .= '</span>';  
+                }
+                $c_id = $s_result['id'];
+                
+                if (!empty($s_result['matches'])){
+                    $content .= '<span class="col-xs-12 bg-light-aqua" data-toggle="collapse" data-target="#s_result_'.$c_id.'"><h4 class="text-black">'.$s_result['title'].'<button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#s_result_'.$c_id.'" aria-expanded="true" data-toggle="tooltip" title="Text einklappen bzw. ausklappen"><i class="fa fa-expand"></i></button></h4></span><hr style="clear:both;">';
+                    $content .= '<span id ="s_result_'.$c_id.'" class="collapse out">';
+                }
+            }
+            foreach ($s_result['matches'] AS $m_result){
+                $content .= '<blockquote>'.str_ireplace ( $params['get']['search'] , '<span class="bg-yellow color-palette">'.$params['get']['search'].'</span>' , $m_result ).'<small>'.$s_result['title'].', <cite="'.$s_result['title'].'" class="pointer_hand"><a onclick="formloader(\'content\', \'show\','.$s_result['id'].');">'.$s_result['title'].'</a></cite></small></blockquote>'; 
+            }
+        }
+        $content .= '</span>'; //close last subject span
+        
+        
+                                
+        return '<div class="col-xs-12 top-buffer" >'.RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool"><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_onclick' => 'data-widget="collapse"', 'header_content' => 'Suchergebnisse', 'content_id' => null, 'body_content' => $content)).'</div>';
+        
+    }
 }
