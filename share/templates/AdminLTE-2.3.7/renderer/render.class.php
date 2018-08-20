@@ -1959,7 +1959,7 @@ class Render {
                                 $widget_onclick     = "location.href='index.php?action=navigator&nv_id={$nb_target_id}';";
                             }
 
-                            $html               = RENDER::paginator_widget(array('widget_title' => $nb_title, 'file_id' => $nb_file_id, 'widget_onclick' => $widget_onclick, 'global_onclick' => true));
+                            $html               = RENDER::paginator_widget(array('widget_title' => $nb_title, 'widget_desc' => $nb_description, 'file_id' => $nb_file_id, 'widget_onclick' => $widget_onclick, 'global_onclick' => true));
 
                     break;
 
