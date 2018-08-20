@@ -2086,7 +2086,7 @@ class Render {
         $html   =  '<div class="box box-objective bg-white '.$bg_color.'" style="height: 300px !important; padding: 0; background: url(\''.$icon_url.'\') center center;  background-size: cover;"  ';
         
         $html   .= '>'; 
-        if (count($opt) > 0 AND $opt != NULL){
+        if (count($opt) > 0 OR $opt != NULL){
             $html   .= '<span class="col-xs-12 '.$bg_color.'" style="background-color: '.$bg_color.'; position:absolute; display:block; left:0;right:0;top:0px;" >';
                        foreach ($opt as $k =>$o) {
                                $html .= '<span style="margin-right:12px;padding:5px;text-shadow: 1px 1px #FF0000;" class="fa">'.$o.'</span>';    
