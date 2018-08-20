@@ -1947,7 +1947,9 @@ class Render {
 
                 case 29:    $f                  = new File();
                             $f->load($nb_reference_id);
-                            $html               = '<div class="'.$nb_width_class.'">'.RENDER::file($f).'</div>';
+                            $widget_onclick     = "location.href='../share/accessfile.php?id={$nb_file_id}';";                        
+                            $html               = RENDER::paginator_widget(array('widget_title' => $nb_title, 'file_id' => $nb_file_id, 'widget_onclick' => 'href="'.$file->getFileUrl().'"' , 'global_onclick' => true));
+                            //$html               = '<div class="'.$nb_width_class.'">'.RENDER::file($f).'</div>';
                     break;
                 case 31:    if ($nb_target_context_id == $_SESSION['CONTEXT']['file']->context_id){
                                 $f                  = new File();
