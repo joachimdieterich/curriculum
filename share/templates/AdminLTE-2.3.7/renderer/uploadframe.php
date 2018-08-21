@@ -36,6 +36,10 @@ $target     = null;         // id of target field
 $format     = null;         // return format 0 == file_id; 1 == file_name; 2 == filePath / URL
 $context    = null; 
 $title      = null; 
+$publisher  = null;
+$publishingCompany = null;
+$place = null;
+$date = null;
 $description= null; 
 $author     = $USER->firstname.' '.$USER->lastname;
 $license    = 2;
@@ -123,6 +127,10 @@ if (isset($paginator) AND isset($paginator_search) AND isset($order)) {
               echo Form::input_text('title', 'Titel', $title, $error, 'z. B. Diagramm eLearning'); 
               echo Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung'); 
               echo Form::input_text('author', 'Autor', $author, $error, 'Max Mustermann'); 
+              echo Form::input_text('publisher', 'Herausgeber', $publisher, $error, 'z. B. Land Rheinland-Pfalz');
+              echo Form::input_text('publishingCompany', 'Verlag', $publishingCompany, $error, 'z. B. Digitalverlag');
+              echo Form::input_text('place', 'Ort', $place, $error, 'z. B. Landau');
+              echo Form::input_text('date', 'Datum/Jahr', $date, $error, 'z. B. 27.04.1987');
               $l = new License();
               echo Form::input_select('license', 'Lizenz', $l->get(), 'license', 'id', $license , $error);
               $c = new Context();

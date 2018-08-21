@@ -36,20 +36,25 @@ $USER       = $_SESSION['USER'];
 $file       = new File();
 
 /* set defaults*/
-$title      = null; 
-$description= null;
-$context    = null; 
-$author     = $USER->firstname.' '.$USER->lastname;
-$action     = 'upload';
-$file_context = 1;
-$license    = 2;
-$error      = '';
-$image      = '';
-$copy_link  = '';
-$curID      = NULL;
-$terID      = NULL;
-$enaID      = NULL;
-$ref_id     = NULL; 
+$title              = null; 
+$description        = null;
+$context            = null; 
+$author             = $USER->firstname.' '.$USER->lastname;
+$publisher          = null;
+$publishingCompany  = null;
+$place              = null;
+$date               = null;
+$action             = 'upload';
+$file_context       = 1;
+$license            = 2;
+$error              = '';
+$image              = '';
+$copy_link          = '';
+$curID              = NULL;
+$terID              = NULL;
+$enaID              = NULL;
+$ref_id             = NULL; 
+$fileURL            = NULL;
 
 //$v_error  = false;
 /* get url parameters */
@@ -115,6 +120,10 @@ if ($my_upload->upload() OR filter_var($fileURL, FILTER_VALIDATE_URL)) {//in dat
     $file->title                 = $title; 
     $file->description           = $description;
     $file->author                = $author;
+    $file->publisher             = $publisher;
+    $file->publishingCompany     = $publishingCompany;
+    $file->place                 = $place;
+    $file->date                  = $date;
     $file->license               = $license;
     $file->file_context          = $file_context;
     $file->context_id            = $file->getContextId($context);
@@ -124,6 +133,8 @@ if ($my_upload->upload() OR filter_var($fileURL, FILTER_VALIDATE_URL)) {//in dat
     $file->enabling_objective_id = $enaID;  //replace with refid
     $file->reference_id          = $ref_id;
     
+    error_log("Feldausgabe".$title);
+    error_log(json_encode($file));
     switch ($action) {
         case 'upload':  $copy_link         = ' <input type="submit" id="closelink" name="Submit" value="Datei verwenden"/>';
                         $file->filename    = str_replace(' ', '_', $my_upload->the_file);
