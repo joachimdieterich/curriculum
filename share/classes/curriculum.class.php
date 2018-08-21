@@ -116,12 +116,33 @@ class Curriculum {
      * add curriculum to db
      * @return mixed 
      */    
+    public $publisher;
+    /**
+     * publisher of curriculum
+     * @var string
+     */
+    public $publishingCompany;
+    /**
+     * publisher of Curriculum
+     * @var string
+     */
+    public $place;
+    /**
+     * place of publication
+     * @var string
+     */
+    public $date;
+    /**
+     * date of publication
+     * @var string
+     */
+    
     public function add(){
         global $USER;
         checkCapabilities('curriculum:add', $USER->role_id);
-        $db = DB::prepare('INSERT INTO curriculum (curriculum, description, grade_id, subject_id, schooltype_id, state_id, icon_id, country_id, color, creator_id) 
-                                            VALUES (?,?,?,?,?,?,?,?,?,?)');
-        $db->execute(array($this->curriculum, $this->description, $this->grade_id, $this->subject_id, $this->schooltype_id, $this->state_id, $this->icon_id, $this->country_id, $this->color, $USER->id));
+        $db = DB::prepare('INSERT INTO curriculum (curriculum, description, grade_id, subject_id, schooltype_id, state_id, icon_id, country_id, color, creator_id, publisher, publishingCompany, place, date) 
+                                            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
+        $db->execute(array($this->curriculum, $this->description, $this->grade_id, $this->subject_id, $this->schooltype_id, $this->state_id, $this->icon_id, $this->country_id, $this->color, $USER->id, $this->publisher, $this->publishingCompany, $this->place, $this->date));
         return DB::lastInsertId();
     }
     
@@ -132,9 +153,9 @@ class Curriculum {
     public function update(){
         global $USER;
         checkCapabilities('curriculum:update', $USER->role_id); 
-        $db = DB::prepare('UPDATE curriculum SET curriculum = ?, description = ?, grade_id = ?, subject_id = ?, schooltype_id = ?, state_id = ?, icon_id = ?, country_id = ?, color = ?
+        $db = DB::prepare('UPDATE curriculum SET curriculum = ?, description = ?, grade_id = ?, subject_id = ?, schooltype_id = ?, state_id = ?, icon_id = ?, country_id = ?, color = ?, publisher = ?, publishingCompany = ?, place = ?, date = ? 
                                                 WHERE id = ?');
-        return $db->execute(array($this->curriculum, $this->description, $this->grade_id, $this->subject_id, $this->schooltype_id, $this->state_id, $this->icon_id, $this->country_id, $this->color, $this->id));
+        return $db->execute(array($this->curriculum, $this->description, $this->grade_id, $this->subject_id, $this->schooltype_id, $this->state_id, $this->icon_id, $this->country_id, $this->color, $this->publisher, $this->publishingCompany, $this->place, $this->date, $this->id));
     }
     
     public function setOwner($new_owner){
@@ -207,6 +228,11 @@ class Curriculum {
         $this->color            = $result->color;
         $this->creation_time    = $result->creation_time;
         $this->creator_id       = $result->creator_id;
+        $this->publisher        = $result->publisher;
+        $this->publishingCompany= $result->publishingCompany;
+        $this->place            = $result->place;
+        $this->date             = $result->date;
+        
         if ($load_terminal_objectives){
             $terminal_objectives = new TerminalObjective();
             $this->terminal_objectives = $terminal_objectives->getObjectives('curriculum', $this->id, true);
