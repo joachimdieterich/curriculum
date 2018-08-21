@@ -72,9 +72,13 @@ if (isset($currentUrlId)){ $content .= $currentUrlId; }
 $content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>
              <input type="hidden" name="context_id" id="context_id" value="'.$context_id.'"/>';
 $content .= '<input type="hidden" name="id" id="id" value="'.$id.'"/> ';
-$content .= Form::input_text('title', 'Titel', $title, $error, 'z. B. Diagramm eLearning'); 
+$content .= Form::input_text('title', 'Titel', $title, $error, 'z. B. Diagramm eLearning');
 $content .= Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung'); 
 $content .= Form::input_text('author', 'Autor', $author, $error, 'Max Mustermann'); 
+$content .= Form::input_text('publisher', 'Herausgeber', $publisher, $error, 'z. B. Land Rheinland-Pfalz');
+$content .= Form::input_text('publishingCompany', 'Verlag', $publishingCompany, $error, 'z. B. Digitalverlag');
+$content .= Form::input_text('place', 'Ort', $place, $error, 'z. B. Landau');
+$content .= Form::input_text('date', 'Datum/Jahr', $date, $error, 'z. B. 27.04.1987');
 $l        = new License();
 $content .= Form::input_select('license', 'Lizenz', $l->get(), 'license', 'id', $license , $error);
 $c        = new Context();

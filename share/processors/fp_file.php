@@ -39,6 +39,10 @@ $file->author       = $_POST['author'];
 $file->license      = $_POST['license']; 
 $file->file_context = $_POST['file_context']; 
 $file->context_id   = $_POST['context_id']; 
+$file->publisher             = $_POST['publisher'];
+$file->publishingCompany     = $_POST['publishingCompany'];
+$file->place                 = $_POST['place'];
+$file->date                  = $_POST['date'];
  
 $gump->validation_rules(array(
 'license'           => 'required',
