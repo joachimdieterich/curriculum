@@ -2475,9 +2475,7 @@ public static function quote_reference($quotes){
     public static function render_search_results($dependency = 'content', $params ){
         $content     = ''; 
         //RENDER::sortByProp($params['search_results'], 'title', 'asc');
-        
         /*Maybe realize further filter options with ofilter()*/
-        error_log(json_encode($params['search_results']));
         $c_id = '';
         foreach ($params['search_results'] as $s_result) {
             if ($s_result['id'] != $c_id){
