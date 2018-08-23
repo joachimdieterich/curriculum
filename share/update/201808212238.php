@@ -29,7 +29,7 @@ $UPDATE         = new stdClass();
 $UPDATE->info   = "Add new fields for to curriculum (e.g. publisher, author...)  <br><br> Hinzufuegen neuer Felder um weitere Informationen zum Lehrplan speichern zu können(z.B. Verlag, Autor).";
 
 if (isset($_GET['execute'])){
-    $UPDATE->log = "Starte Update...<br>";
+    $UPDATE->log = "Starte Update...<br>"; 
     $db1= DB::prepare("ALTER TABLE `curriculum` ADD COLUMN `publisher` VARCHAR(255) NULL AFTER `color`;");
     if ($db1->execute(array())){
         $UPDATE->log .= "<b class=\"text-success\">Update finished 1 - OK</b><br>";
