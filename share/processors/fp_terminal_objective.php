@@ -43,6 +43,7 @@ $gump = new Gump();    /* Validation */
 $_POST = $gump->sanitize($_POST);       //sanitize $_POST
 $terminal_objective->curriculum_id      = filter_input(INPUT_POST, 'curriculum_id', FILTER_VALIDATE_INT);
 $terminal_objective->color              = filter_input(INPUT_POST, 'color',         FILTER_SANITIZE_STRING);
+$terminal_objective->type_id              = filter_input(INPUT_POST, 'type_id',     FILTER_VALIDATE_INT);
 
 $gump->validation_rules(array(
 'terminal_objective'         => 'required'
@@ -58,6 +59,7 @@ if($validated_data === false) {/* validation failed */
     $_SESSION['FORM']->func  = $_POST['func'];
 } else {
     if ($_POST['func'] == 'edit'){
+        error_log("TESTto: " . $terminal_objective->type_id);
         $terminal_objective->id = $_POST['terminal_objective_id'];
         $terminal_objective->update();
         $ter_id = $terminal_objective->id;

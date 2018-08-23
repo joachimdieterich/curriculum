@@ -79,6 +79,12 @@ class TerminalObjective {
      * add objective
      * @return mixed 
      */
+    public $type;
+    /**
+     * type of terminalobjective
+     * @return string;
+     */
+    
     public function add(){
         global $USER;
         checkCapabilities('objectives:addTerminalObjective', $USER->role_id);
@@ -86,9 +92,9 @@ class TerminalObjective {
         $db->execute(array($this->curriculum_id));
         $result = $db->fetchObject();
         $this->order_id = $result->max+1;
-        $db = DB::prepare('INSERT INTO terminalObjectives (terminal_objective,description,curriculum_id,color,order_id,creator_id) 
-                    VALUES (?,?,?,?,?,?)');
-        $db->execute(array($this->terminal_objective, $this->description, $this->curriculum_id, $this->color, $this->order_id, $USER->id));
+        $db = DB::prepare('INSERT INTO terminalObjectives (terminal_objective,description,curriculum_id,color,order_id,creator_id, type_id) 
+                    VALUES (?,?,?,?,?,?,?)');
+        $db->execute(array($this->terminal_objective, $this->description, $this->curriculum_id, $this->color, $this->order_id, $USER->id, $this->type_id));
 
         return DB::lastInsertId(); //returns id    
     }
@@ -137,9 +143,10 @@ class TerminalObjective {
      */
     public function update(){
         global $USER;
+        error_log("TESTTEST: " . $this->type_id);
         checkCapabilities('objectives:updateTerminalObjectives', $USER->role_id);
-        $db = DB::prepare('UPDATE terminalObjectives SET terminal_objective = ?, description = ?, color = ? WHERE id = ?');
-        return $db->execute(array($this->terminal_objective, $this->description, $this->color, $this->id));
+        $db = DB::prepare('UPDATE terminalObjectives SET terminal_objective = ?, description = ?, color = ?, type_id = ? WHERE id = ?');
+        return $db->execute(array($this->terminal_objective, $this->description, $this->color, $this->type_id, $this->id));
     }
     
     /**
@@ -180,6 +187,7 @@ class TerminalObjective {
                 $this->repeat_interval      = $result->repeat_interval;
                 $this->creation_time        = $result->creation_time;
                 $this->creator_id           = $result->creator_id;
+                $this->type_id              = $result->type_id;
             } 
         }    
     }
@@ -269,6 +277,26 @@ class TerminalObjective {
         if (isset($objectives)){
             return $objectives;
         } else { return false;}
+    }
+    
+    public function getType(){
+    
+        $types = array();
+
+        $db  = DB::prepare('SELECT * FROM objective_type AS ot ORDER BY ot.id;');
+        $db -> execute();
+
+        while ($result = $db->fetchObject()){
+            $this->id       = $result->id;
+            $this->type     = $result->type;
+            $types[] = clone $this;
+        }
+
+        if (isset($types)){
+            return $types;
+        }else{
+            return $result;
+        }
     }
     
     /**
