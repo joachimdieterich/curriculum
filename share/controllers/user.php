@@ -62,7 +62,11 @@ if (isset($_POST) ){
                                         $institution->id = $USER->institution_id;
                                     }
                                     
-                                    $edit_user->role_id = $_POST['roles'];
+                                    if ($USER->id == $edit_user->id and $USER->role_id == 1) {
+                                       // HACK an admin can't remove own admin-rights
+                                     } else {
+                                       $edit_user->role_id = $_POST['roles'];
+                                     }
                                     $edit_user->enroleToInstitution($institution->id);
                     break; 
                 case isset($_POST['expelInstitution']):
@@ -115,19 +119,36 @@ $p_widget  = array('header'      => 'username',
                    'subheader02' => 'email',
                    'file_id'     => 'avatar_id',
                    'circle_image'=> 'file_id'); 
-$p_config   = array('id'         => 'checkbox',
-                    'username'   => 'Benutzername', 
-                    'firstname'  => 'Vorname', 
-                    'lastname'   => 'Nachname', 
-                    'email'      => 'Email', 
-                    'postalcode' => 'PLZ', 
-                    'city'       => 'Ort', 
-                    /*'state'    => 'Bundesland', 
-                    'country'    => 'Land', */
-                    ''           => 'Rolle', 
-                    'p_search'   => array('username','firstname','lastname','email','postalcode','city'),
-                    'p_widget'   => $p_widget,
-                    'p_options'  => $p_options);
+if (checkCapabilities('user:shortUserList', $USER->role_id, false)){
+	$p_config   = array('id'         => 'checkbox',
+                      'username'   => 'Benutzername',
+                      'firstname'  => 'Vorname',
+                      'lastname'   => 'Nachname',
+                   /* 'email'      => 'Email', */
+                   /* 'postalcode' => 'PLZ', */
+                   /* 'city'       => 'Ort', */
+                   /* 'state'      => 'Bundesland', */
+                   /* 'country'    => 'Land', */
+                      ''           => 'Rolle',
+                      'p_search'   => array('username','firstname','lastname'),
+                      'p_widget'   => $p_widget,
+                      'p_options'  => $p_options);
+}
+else {
+  $p_config   = array('id'         => 'checkbox',
+                      'username'   => 'Benutzername',
+                      'firstname'  => 'Vorname',
+                      'lastname'   => 'Nachname',
+                      'email'      => 'Email',
+                      'postalcode' => 'PLZ',
+                      'city'       => 'Ort',
+                   /* 'state'      => 'Bundesland', */
+                   /* 'country'    => 'Land', */
+                      ''           => 'Rolle',
+                      'p_search'   => array('username','firstname','lastname','email','postalcode','city'),
+                      'p_widget'   => $p_widget,
+                      'p_options'  => $p_options);
+}
 $TEMPLATE->assign('filter_institution_id', false);
 if (isset($_GET['filter_institution'])){
     if ($_GET['filter_institution'] == 'false'){
@@ -149,4 +170,4 @@ if (isset($_GET['filter_institution'])){
     $u = $users->userList('institution', 'userP', filter_input(INPUT_GET, 'lost', FILTER_VALIDATE_BOOLEAN));
 }
 
-setPaginator('userP', $TEMPLATE, $u, 'us_val', 'index.php?action=user', $p_config); //set Paginator    
+setPaginator('userP', $TEMPLATE, $u, 'us_val', 'index.php?action=user', $p_config); //set Paginator

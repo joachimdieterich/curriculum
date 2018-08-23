@@ -46,7 +46,7 @@
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
                     <li {if isset($f_userlist)}class="active"{/if}><a href="#f_userlist" data-toggle="tab" onclick='processor("config","page", "config",{["tab"=>"f_userlist"]|@json_encode nofilter});'>Kursliste</a></li>
-                    {if isset($coursebook)} 
+                    {if isset($coursebook) AND checkCapabilities('menu:readCourseBook', $my_role_id, false)}
                         <li {if isset($f_coursebook)}class="active"{/if}><a href="#f_coursebook" data-toggle="tab" onclick='processor("config","page", "config",{["tab"=>"f_coursebook"]|@json_encode nofilter});'>Kursbuch</a></li>
                     {/if}
                 </ul>
@@ -107,8 +107,8 @@
                     <p class="pull-right">Farb-Legende:
                     <button class="btn btn-success btn-flat" style="cursor:default">selbständig erreicht</button>
                     <button class="btn btn-warning btn-flat" style="cursor:default">mit Hilfe erreicht</button>
-                    <button class="btn btn-default disabled btn-flat" style="cursor:default">nicht bearbeitet</button>
                     <button class="btn btn-danger btn-flat" style="cursor:default">nicht erreicht</button>
+                    <button class="btn btn-default disabled btn-flat" style="cursor:default">nicht bearbeitet</button>
                     </p>
                 </div>
                 <div class="box-body">

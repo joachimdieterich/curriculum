@@ -38,6 +38,23 @@
         return (this.tog^=1) ? $('.collapse').collapse('hide') : $('.collapse').collapse('show');
     };
     
+    function processdata(data){
+        var jsonData = JSON.parse(data);
+        $('body').find('.box-objective').css("filter","alpha(opacity=40)");;
+        $('body').find('.box-objective').css("opacity","0.4");
+        $('body').find('.box-objective').css("-moz-opacity","0.4");
+        for (var i = 0; i < jsonData.length; i++) {
+            $('body').find('#'+jsonData[i]).css("filter","alpha(opacity=100)");
+            $('body').find('#'+jsonData[i]).css("opacity","1");
+            $('body').find('#'+jsonData[i]).css("-moz-opacity","1");
+        }
+    };
+        
+    function ajax_search(id, search){
+        var content;
+        $.get('../share/processors/p_highlight.php?id=' + id +'&search=' + search, processdata);   
+    };
+    
 </script>
 {/block}
 {block name=additional_stylesheets}
@@ -54,16 +71,16 @@
 <section class="content " >   
     <div class="row ">
         <div class="col-xs-12" >
-            <div class="pull-right">
-                <div class="has-feedback">
-                    <form id="view_search" method="post" action="../share/processors/fp_search.php">
-                    <input type="hidden" name="func" id="func" value="view_highlight"/>
-                    <input type="hidden" name="id" id="id" value="{$course[0]->curriculum_id}"/>
-                    <input type="text" name="search" class="form-control " placeholder="Lehrplan durchsuchen">
-                    <span class="glyphicon glyphicon-search form-control-feedback"></span>
-                    </form>
+            <form action="#" class="col-xs-12 col-sm-12 col-md-4 col-lg-3 pull-right" onsubmit="ajax_search({$course[0]->curriculum_id},$('#v_search').val());$('#search_results').load('../share/request/render_html.php?render=search&func=view&id={$course[0]->curriculum_id}&search='+$('#v_search').val()+'&ajax=true#search_results');return false">
+                <div class="input-group">
+                  <input type="text" id="v_search" class="form-control" placeholder="Suche...">
+                      <span class="input-group-btn">
+                        <button  name="search" id="search-btn" class="btn btn-flat">
+                            <i class="fa fa-search"></i>
+                        </button>
+                      </span>
                 </div>
-            </div>
+            </form>
             <div class="btn-group pull-left margin-r-5">
                 <button type="button" class="btn btn-default" data-toggle="tooltip" title="Kompetenzen einklappen bzw. ausklappen"  onclick="toggleAll(); $(this).find('i.fa').toggleClass('fa-compress fa-expand');">
                     <i class="fa fa-compress"></i>
@@ -108,7 +125,7 @@
                 {/if}
             </div>
         </div>
-            
+            <div id="search_results"></div>    
         {if isset($curriculum_content_references)}
             {RENDER::quote_reference($curriculum_content_references)}    
         {/if}

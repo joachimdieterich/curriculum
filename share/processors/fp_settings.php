@@ -71,6 +71,30 @@ if($validated_data === false) {/* validation failed */
         }
     }
     
+    if (isset($_POST['global_imprint_save'])){    // edit AGBs
+        $content->get('terms', 'imprint');
+        $purify           = HTMLPurifier_Config::createDefault();
+        $purify->set('Core.Encoding', 'UTF-8'); // replace with your encoding
+        $purify->set('HTML.Doctype', 'HTML 4.01 Transitional'); // replace with your doctype
+        $purifier         = new HTMLPurifier($purify);
+        $content->content = $purifier->purify(filter_input(INPUT_POST, 'global_imprint', FILTER_UNSAFE_RAW)); //replace with new version
+        if (checkCapabilities('user:userListComplete', $USER->role_id, false)){ //== superadmin
+            $content->update();
+        }
+    }
+
+    if (isset($_POST['global_privacy_save'])){    // edit AGBs
+        $content->get('terms', 'privacy');
+        $purify           = HTMLPurifier_Config::createDefault();
+        $purify->set('Core.Encoding', 'UTF-8'); // replace with your encoding
+        $purify->set('HTML.Doctype', 'HTML 4.01 Transitional'); // replace with your doctype
+        $purifier         = new HTMLPurifier($purify);
+        $content->content = $purifier->purify(filter_input(INPUT_POST, 'global_privacy', FILTER_UNSAFE_RAW)); //replace with new version
+        if (checkCapabilities('user:userListComplete', $USER->role_id, false)){ //== superadmin
+            $content->update();
+        }
+    }
+
     if (isset($_POST['user_signature_save'])){    // edit signature
         $content->get('signature', $USER->id);
         

@@ -297,7 +297,9 @@ class User {
         } else {
             $this->token             = $result->token;   
         }
-        $this->auth                 = $result->auth;
+        if (isset($result->auth)){
+            $this->auth              = $result->auth;
+        }
     }
     public function set($dependency, $value, $id = NULL){
         if ($id == null){ $id = $this->id; }
@@ -887,22 +889,32 @@ class User {
             default:  break;
         }
 
-        while($result = $db->fetchObject()) { 
-            $this->id           = $result->id; 
-            $this->username     = $result->username;
-            $this->firstname    = $result->firstname;
-            $this->lastname     = $result->lastname;
-            $this->email        = $result->email;
-            $this->postalcode   = $result->postalcode;
-            $this->city         = $result->city;
-            $this->avatar_id    = $result->avatar_id;
-            if (isset($result->role_name)){
-                $this->role_name    = $result->role_name;
+        while($result = $db->fetchObject()) {
+            if (checkCapabilities('user:shortUserList', $USER->role_id, false)){
+                $sortableUser->id           = $result->id;
+                $sortableUser->firstname    = $result->firstname;
+                $sortableUser->lastname     = $result->lastname;
+                $sortableUser->username     = $result->username;
+                $sortableUser->avatar_id    = $result->avatar_id;
             }
-            $users[] = clone $this;
+            else {
+                $sortableUser->id           = $result->id;
+                $sortableUser->username     = $result->username;
+                $sortableUser->firstname    = $result->firstname;
+                $sortableUser->lastname     = $result->lastname;
+                $sortableUser->email        = $result->email;
+                $sortableUser->postalcode   = $result->postalcode;
+                $sortableUser->city         = $result->city;
+                $sortableUser->avatar_id    = $result->avatar_id;
+                if (isset($result->role_name)){
+                   $sortableUser->role_name = $result->role_name;
+                }
+            }
+            $users[] = clone $sortableUser;
         } 
-            return $users;
+        return $users;
     }
+
     
     /**
      * Reset Password

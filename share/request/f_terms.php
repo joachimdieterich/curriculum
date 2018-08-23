@@ -28,8 +28,18 @@ include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 global $CFG, $TEMPLATE;
 
 $footer   = ''; 
+$data     = [];
 $terms    = new Content();
-$html     = Form::modal(array('title'     => 'Impressum / Datenschutz',
-                              'content'   => $terms->get('terms')[0]->content, 
+$func       = filter_input(INPUT_GET, 'func', FILTER_UNSAFE_RAW);
+
+if ($func == "undefined") {
+    $func = "terms";
+}
+
+$title    = $terms->get('terms', $func)[0]->title;
+$content  = $terms->get('terms', $func)[0]->content;
+
+$html     = Form::modal(array('title'     => $title,
+                              'content'   => $content,
                               'f_content' => $footer));
 echo json_encode(array('html'   => $html));

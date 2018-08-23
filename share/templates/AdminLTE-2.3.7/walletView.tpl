@@ -121,9 +121,9 @@
                         <div class="btn-group">
                             {if $wallet->creator_id eq $my_id OR $wallet->permission eq 2}
                                 {if $edit eq true}
-                                    <button type="button" class="btn btn-default"><a href="{removeUrlParameter($page_url, 'edit')}"><i class="fa fa-check"></i></a></button>
+                                    <a class="btn btn-default" href="{removeUrlParameter($page_url, 'edit')}"><i class="fa fa-check"></i></a></button>
                                 {else}
-                                    <button type="button" class="btn btn-default"><a href="{$page_url}&edit=true"><i class="fa fa-edit"></i></a></button>
+                                    <a class="btn btn-default" href="{$page_url}&edit=true"><i class="fa fa-edit"></i></a></button>
                                 {/if}
                             {/if}    
                             {if $wallet->creator_id eq $my_id} 

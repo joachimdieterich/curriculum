@@ -48,7 +48,7 @@ $content    = Render::box_widget(array('widget_title' => 'Lehrpläne',
 $users      = new User();
 $u_list     = $users->getGroupMembers('group', $g->id);
 $list       = array();
-foreach($u_list AS $ul){
+foreach((array)$u_list AS $ul){
     $users      = new User();
     $users->load('id', $ul, false);
     $list[] = clone $users;

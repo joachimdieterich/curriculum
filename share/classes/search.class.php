@@ -57,4 +57,19 @@ class Search {
 
         return $r;     
     }
+    
+    public function content(){
+        $db = DB::prepare('SELECT ct.*, cts.context_id, cts.reference_id, cts.file_context FROM content AS ct, content_subscriptions AS cts
+                                                        WHERE cts.reference_id = ? AND cts.context_id = 2
+                                                        AND cts.content_id = ct.id ');
+                            $db->execute(array($this->id));
+        
+        $r  = array();
+        while($result = $db->fetchObject()) { 
+                $regex   = '/[^.?!]*(?<=[.?\s!])'.$this->search.'.*(?=[\s.?!])[^.?!]*[.?!]/i';
+                            preg_match($regex, $result->content, $matches); 
+                $r[]   = array('id' => $result->id, 'title' => $result->title, 'content' =>  $result->content, 'matches' => $matches);
+        }
+        return $r;
+    }
 }

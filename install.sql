@@ -290,7 +290,7 @@ VALUES
 	(176,'comment:add','Kommentare schreiben','Write comments','write','comment'),
 	(177,'comment:update','Kommentare bearbeiten','Update comments','write','comment'),
 	(178,'comment:delete','Kommentare löschen','Delete comments','write','comment');
-
+        (179,'user:shortUserList','vereinfachte Benutzerliste anzeigen (Login und Name)','Ability to see short userlist (login and name)','read','curriculum');
 /*!40000 ALTER TABLE `capabilities` ENABLE KEYS */;
 UNLOCK TABLES;
 

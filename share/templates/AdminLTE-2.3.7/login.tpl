@@ -56,7 +56,7 @@
               <a href="../share/plugins/auth/shibboleth/index.php" class="btn btn-block btn-social btn-openid"><img src="assets/images/icons/shibboleth-web.png"/> Über Shibboleth anmelden</a>
             </div>
             {/if}
-            <br><small><a onclick="formloader('terms')">Impressum / Datenschutz</a></small>
+            <br><small><a onclick="formloader('terms', 'imprint')">Impressum</a> / <a onclick="formloader('terms', 'privacy')">Datenschutz</a></small>
         </form>
       </div><!-- /.login-box-body -->
 </div><!-- /.login-box -->

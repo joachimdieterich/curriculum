@@ -68,7 +68,7 @@ if (isset($id)) {                                                               
 
 $content  .= Form::info(array('id' => 'info', 'label' => '', 'content' => 'Bitte wählen Sie aus, was gedruckt werden soll:'));
 $content  .= Form::input_checkbox('print_curriculum', 'Lehrplanraster', $print_curriculum, $error);
-$content  .= Form::input_checkbox('print_content', 'Hinweise zum Lehrplan ', $print_content, $error);
+$content  .= Form::input_checkbox('print_content', 'Digitalisierte Texte des Lehrplans ', $print_content, $error);
 $content  .= Form::input_checkbox('print_glossar', 'Glossar', $print_glossar, $error);
 $content  .= Form::input_checkbox('print_files', 'Dateien zum Lehrplan', $print_files, $error);
 $content  .= Form::input_checkbox('print_reference', 'Lehrplanbezüge', $print_reference, $error);

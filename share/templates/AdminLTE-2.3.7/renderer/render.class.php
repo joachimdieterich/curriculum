@@ -171,11 +171,12 @@ class Render {
                 } else {
                     $student_status = 'x';
                 }
-                $html   = '<a class="pointer_hand"><i id="'.$id.'_green" style="font-size:18px;" class="'.$green.' margin-r-5 text-green pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'1\')"></i></a>'
+                if (checkCapabilities('course:selfAssessment', $USER->role_id, false) OR $teacher == $student) { // show in view
+                 $html   = '<a class="pointer_hand"><i id="'.$id.'_green" style="font-size:18px;" class="'.$green.' margin-r-5 text-green pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'1\')"></i></a>'
                     . '<a class="pointer_hand"><i id="'.$id.'_orange" style="font-size:18px;" class="'.$orange.' margin-r-5 text-orange pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'2\')"></i></a>'
                     . '<a class="pointer_hand"><i id="'.$id.'_red" style="font-size:18px;" class="'.$red.' margin-r-5 text-red pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'0\')"></i></a>'
                     . '<a class="pointer_hand"><i id="'.$id.'_white" style="font-size:18px;" class="'.$white.' margin-r-5 text-gray pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'3\')"></i></a>';
-                
+                }
             }
             
             if ($link){
@@ -635,13 +636,13 @@ class Render {
                     $html  .= 'id="ter_'.$objective->id.'"';
                 }
                 $html  .=   'class="box box-objective ';
-                if (isset($highlight)){
+                /*if (isset($highlight)){ //see below ->filter: alpha(opacity=40); opacity: 0.4; -moz-opacity: 0.4; 
                     if (in_array($type.'_'.$objective->id, $highlight)){
                         $html  .= 'highlight';
                     } 
-                }
+                } */
                 $style = 'padding-top: 0 !important; background: '.$objective->color.'; border: 1px solid '.$border_color;
-                if ($objective->files['references'] == false AND $reference_view == true){
+                if (($objective->files['references'] == false AND $reference_view == true) OR isset($highlight) AND !in_array($type.'_'.$objective->id, $highlight)){
                    $style .= 'filter: alpha(opacity=40); opacity: 0.4; -moz-opacity: 0.4;';
                 } 
                 $html  .= '" style="'.$style.'">';
@@ -770,13 +771,14 @@ class Render {
                                  } else {
 
                                      if ($type != 'terminal_objective'){
-                                         if (checkCapabilities('reference:show', $USER->role_id, false)){
+                                         /*if (checkCapabilities('reference:show', $USER->role_id, false)){
                                              $html  .= '<span class="fa fa-link text-primary box-sm-icon pull-left" data-toggle="tooltip" title="Lehr- /Rahmenplanbezüge" onclick=\'formloader("reference_view", "'.$type.'", "'.$objective->id.'");\'></span>';
-                                         }
+                                         }*/
                                          if (checkCapabilities('reference:add', $USER->role_id, false)){
                                              $html  .= '<span class="box-sm-icon pull-right text-primary" data-toggle="tooltip" title="Lehr- /Rahmenplanbezug hinzufügen" onclick=\'formloader("reference", "new", "'.$objective->id.'", {"context":"enabling_objective"});\'><i class="fa fa-link text-primary box-sm-icon"><i class="fa fa-plus fa-xs"></i></i></span>';
                                          }
-                                         if (checkCapabilities('course:selfAssessment', $USER->role_id, false)){
+                                         if (checkCapabilities('course:selfAssessment', $USER->role_id, false) OR checkCapabilities('course:setAccomplishedStatus', $USER->role_id, false) OR
+                                             checkCapabilities('objectives:setStatus', $USER->role_id, false) ) {
                                              if (is_array($user_id)){
                                                  $user_id = implode(',',$user_id);
                                              }
@@ -793,9 +795,9 @@ class Render {
                                              }
                                          }
                                      } else {
-                                         if (checkCapabilities('reference:show', $USER->role_id, false)){
+                                         /*if (checkCapabilities('reference:show', $USER->role_id, false)){
                                              $html  .= '<span class="fa fa-link '.$icon_class.' box-sm-icon pull-left" data-toggle="tooltip" title="Lehr- /Rahmenplanbezüge" onclick=\'formloader("reference_view", "'.$type.'", "'.$objective->id.'");\'></span>';
-                                         }
+                                         }*/
                                          if (checkCapabilities('reference:add', $USER->role_id, false)){
                                              $html  .= '<span class="box-sm-icon pull-right '.$icon_class.'" data-toggle="tooltip" title="Lehr- /Rahmenplanbezug hinzufügen" onclick=\'formloader("reference", "new", "'.$objective->id.'", {"context":"terminal_objective"});\'><i class="fa fa-link '.$text_class.' box-sm-icon"><i class="fa fa-plus fa-xs"></i></i></span>';
                                          }    
@@ -1919,12 +1921,13 @@ class Render {
                             $enroled_groups     = $cur->getGroupsByUserAndCurriculum($USER->id);
                             $file_id            = $cur->icon_id;
                             $widget_onclick     = "location.href='index.php?action=view&curriculum_id={$nb_reference_id}&group={$enroled_groups[0]->group_id}';";
-                            /*if (checkCapabilities('navigator:add', $USER->role_id, false)){
+                            if (checkCapabilities('navigator:add', $USER->role_id, false)){
                             $opt[]              = '<a type="button" style="color:#FFF;" class="fa fa-edit" onclick="formloader(\'navigator_item\', \'edit\','.$nb_id.', {\'nb_navigator_view_id\':\''.$nb_navigator_view_id.'\'})";></a>';
-                            } else {
-                               $opt[]              = null; 
-                            }*/
                             $html               = RENDER::paginator_widget(array('widget_title' => $nb_title, 'widget_desc' => $nb_description, 'file_id' => $file_id, 'widget_onclick' => $widget_onclick, 'opt' => $opt, 'global_onclick' => true));
+                            } else {
+                               $html               = RENDER::paginator_widget(array('widget_title' => $nb_title, 'widget_desc' => $nb_description, 'file_id' => $file_id, 'widget_onclick' => $widget_onclick, 'global_onclick' => true));
+                            }
+                            
                     break;
                 case 15:    $content            = new Content();
                             $content->load('id', $nb_reference_id);
@@ -1945,7 +1948,9 @@ class Render {
 
                 case 29:    $f                  = new File();
                             $f->load($nb_reference_id);
-                            $html               = '<div class="'.$nb_width_class.'">'.RENDER::file($f).'</div>';
+                            $widget_onclick     = "location.href='../share/accessfile.php?id={$nb_reference_id}';";                        
+                            $html               = RENDER::paginator_widget(array('widget_title' => $nb_title, 'widget_desc' => $nb_description, 'file_id' => $nb_file_id, 'widget_onclick' => $widget_onclick , 'global_onclick' => true));
+                            //$html               = '<div class="'.$nb_width_class.'">'.RENDER::file($f).'</div>';
                     break;
                 case 31:    if ($nb_target_context_id == $_SESSION['CONTEXT']['file']->context_id){
                                 $f                  = new File();
@@ -1955,7 +1960,7 @@ class Render {
                                 $widget_onclick     = "location.href='index.php?action=navigator&nv_id={$nb_target_id}';";
                             }
 
-                            $html               = RENDER::paginator_widget(array('widget_title' => $nb_title, 'file_id' => $nb_file_id, 'widget_onclick' => $widget_onclick, 'global_onclick' => true));
+                            $html               = RENDER::paginator_widget(array('widget_title' => $nb_title, 'widget_desc' => $nb_description, 'file_id' => $nb_file_id, 'widget_onclick' => $widget_onclick, 'global_onclick' => true));
 
                     break;
 
@@ -2278,8 +2283,8 @@ class Render {
                 }
                 $subject_id = $ref->subject_id;
                 
-                $content .= '<span class="col-xs-12 bg-light-aqua"><h4 class="text-black">'.$ref->curriculum_object->curriculum.' <small>'.$ref->schooltype.'</small><button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#subject_'.$subject_id.'" aria-expanded="true" data-toggle="tooltip" title="Fach einklappen bzw. ausklappen"><i class="fa fa-expand"></i></button></h4></span><hr style="clear:both;">';
-                $content .= '<span id ="subject_'.$subject_id.'" class="collapse in">';
+                $content .= '<span class="col-xs-12 bg-light-aqua" data-toggle="collapse" data-target="#subject_'.$subject_id.'"><h4 class="text-black" >'.$ref->curriculum_object->curriculum.' <small>'.$ref->schooltype.'</small><button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#subject_'.$subject_id.'" aria-expanded="true" data-toggle="tooltip" title="Fach einklappen bzw. ausklappen"><i class="fa fa-expand"></i></button></h4></span><hr style="clear:both;">';
+                $content .= '<span id ="subject_'.$subject_id.'" class="collapse out">';
             }
             $content .= RENDER::render_reference_entry($ref, $_SESSION['CONTEXT']['terminal_objective']->context_id);
         }
@@ -2287,7 +2292,7 @@ class Render {
     } 
     
     if (count($references) == 0) {
-        $content .= 'Keine Querverweise vorhanden.';
+        $content .= 'Keine überfachliche Bezüge vorhanden.';
     }
 
     if ($get['ajax'] == 'true'){  
@@ -2352,7 +2357,7 @@ public static function quote($quotes, $get){
                     $content .= '</span>';  
                 }
                 $cur_id = $ref->reference_object->id;
-                $content .= '<span class="col-xs-12 bg-light-aqua"><h4 class="text-black">'.$ref->reference_object->curriculum.'<button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#cur_'.$cur_id.'" aria-expanded="true" data-toggle="tooltip" title="Fach einklappen bzw. ausklappen"><i class="fa fa-expand"></i></button></h4></span><hr style="clear:both;">';
+                $content .= '<span class="col-xs-12 bg-light-aqua" data-toggle="collapse" data-target="#cur_'.$cur_id.'"><h4 class="text-black">'.$ref->reference_object->curriculum.'<button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#cur_'.$cur_id.'" aria-expanded="true" data-toggle="tooltip" title="Fach einklappen bzw. ausklappen"><i class="fa fa-expand"></i></button></h4></span><hr style="clear:both;">';
                 $content .= '<span id ="cur_'.$cur_id.'" class="collapse out">';
             }
             $content .= '<blockquote>'.$ref->quote.'<small>'.$ref->reference_object->curriculum.', <cite="'.$ref->reference_title.'" class="pointer_hand"><a onclick="formloader(\'content\', \'show\','.$ref->quote_link.');">'.$ref->reference_title.'</a></cite></small></blockquote>'; 
@@ -2446,4 +2451,53 @@ public static function quote_reference($quotes){
     }
     
     
+    public static function search($dependency = 'view', $id, $get ){
+        $content = '';
+        switch ($dependency) {
+            case 'view':$s          = new Search();
+                        $s->id      = $id; //cur_id
+                        $s->search  = $get['search'];
+                        $content    = Render::render_search_results('content', array('search_results' => $s->content(), 'get' => $get));  
+                break;
+
+            default:
+                break;
+        }
+        
+        
+        if ($get['ajax'] == 'true'){  
+            echo $content;
+        } else {
+            return $content;
+        }
+    }
+    
+    public static function render_search_results($dependency = 'content', $params ){
+        $content     = ''; 
+        //RENDER::sortByProp($params['search_results'], 'title', 'asc');
+        /*Maybe realize further filter options with ofilter()*/
+        $c_id = '';
+        foreach ($params['search_results'] as $s_result) {
+            if ($s_result['id'] != $c_id){
+                if ($c_id != ''){
+                    $content .= '</span>';  
+                }
+                $c_id = $s_result['id'];
+                
+                if (!empty($s_result['matches'])){
+                    $content .= '<span class="col-xs-12 bg-light-aqua" data-toggle="collapse" data-target="#s_result_'.$c_id.'"><h4 class="text-black">'.$s_result['title'].'<button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#s_result_'.$c_id.'" aria-expanded="true" data-toggle="tooltip" title="Text einklappen bzw. ausklappen"><i class="fa fa-expand"></i></button></h4></span><hr style="clear:both;">';
+                    $content .= '<span id ="s_result_'.$c_id.'" class="collapse out">';
+                }
+            }
+            foreach ($s_result['matches'] AS $m_result){
+                $content .= '<blockquote>'.str_ireplace ( $params['get']['search'] , '<span class="bg-yellow color-palette">'.$params['get']['search'].'</span>' , $m_result ).'<small>'.$s_result['title'].', <cite="'.$s_result['title'].'" class="pointer_hand"><a onclick="formloader(\'content\', \'show\','.$s_result['id'].');">'.$s_result['title'].'</a></cite></small></blockquote>'; 
+            }
+        }
+        $content .= '</span>'; //close last subject span
+        
+        
+                                
+        return '<div class="col-xs-12 top-buffer" >'.RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool"><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_onclick' => 'data-widget="collapse"', 'header_content' => 'Suchergebnisse', 'content_id' => null, 'body_content' => $content)).'</div>';
+        
+    }
 }

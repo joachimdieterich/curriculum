@@ -99,11 +99,13 @@ $enabling_objectives->curriculum_id = $PAGE->curriculum;
 /* curriculum content*/
 $content         = new Content();
 $content_entries = $content->get('curriculum', $enabling_objectives->curriculum_id);
-$TEMPLATE->assign('cur_content', array('label'=>'Hinweise zum Lehrplan', 'entrys'=> $content_entries));
+$TEMPLATE->assign('cur_content', array('label'=>'Digitalisierte Texte des Lehrplans', 'entrys'=> $content_entries));
 
 $course                 = $courses->getCourse('course', $PAGE->curriculum);
 $TEMPLATE->assign('course', $course); 
-$TEMPLATE->assign('page_bg_file_id', $course[0]->icon_id); 
+if ($course[0]->icon_id > 0){
+  $TEMPLATE->assign('page_bg_file_id', $course[0]->icon_id);
+}
 $c_menu_array               = array();
 $content_menu_obj           = new stdClass();
 switch ($function) {

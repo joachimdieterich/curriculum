@@ -12,44 +12,53 @@
  * All rights reserved    
  */
 /**
- * Über diese Klasse lassen sich Medien von OMEGA (omega.bildung-rp.de) einbinden.
+ * Über diese Klasse lassen sich die Bezüge zu den Kompetenzen der KMK Strategie (sodis.de) einbinden.
  */
 class repository_plugin_sodis extends repository_plugin_base { 
     public $titles; //array to filter double entries
     
     
     public function getReference($dependency, $id){
-           $db         = DB::prepare('SELECT reference FROM plugin_omega WHERE objective_id = ? AND type = ?');  // plugin_omega is needed 
+        global $CFG;
+        if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
+           $repository_db  = 'plugin_'.$CFG->settings->repository;
+           $db             = DB::prepare("SELECT reference FROM $repository_db WHERE objective_id = ? AND type = ?");  // repository plugin is needed
            $db->execute(array($id, $this->resolveDependency($dependency)));
-           $result     = $db->fetchObject();
+           $result         = $db->fetchObject();
            if ($result) {
                return $result->reference;
            } else {
                return false;           
            }
+        } else {
+           return false;
+       }
     }
 
     public function get($dependency, $id){
-        $type       = $this->resolveDependency($dependency);
-        $db         = DB::prepare('SELECT reference FROM plugin_omega WHERE objective_id = ? AND type = ?');   
-        $db->execute(array($id, $type));
-        $result     = $db->fetchObject();
-        if (isset($result->reference)) { 
-            $references = array();
-            $references = explode(",", $result->reference);
-            $this->titles     = array(); // titel_array, über das doppelte Treffer aussortiert werden -> 
-            $sodis_array = array();
-            foreach ($references as $reference) {
-                if (substr(trim($reference), 0, 1) == '{'){
-                    $sodis_array[] = $this->getItem($reference);
-                } else {
-                    // omega link --> not used here
-                }
-            } //end foreach loop
-  
-        } 
-        if (isset($sodis_array)){
-            return $sodis_array;
+        global $CFG;
+         if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
+             $repository_db   = 'plugin_'.$CFG->settings->repository;
+             $type            = $this->resolveDependency($dependency);
+             $db              = DB::prepare("SELECT reference FROM $repository_db WHERE objective_id = ? AND type = ?");
+             $db->execute(array($id, $type));
+             $result          = $db->fetchObject();
+             if (isset($result->reference)) {
+                 $references  = array();
+                 $references  = explode(",", $result->reference);
+                 $this->titles     = array(); // titel_array, über das doppelte Treffer aussortiert werden ->
+                 $sodis_array = array();
+                 foreach ($references as $reference) {
+                     if (substr(trim($reference), 0, 1) == '{'){
+                         $sodis_array[] = $this->getItem($reference);
+                     } else {
+                         // repository link --> not used here
+                     }
+                 } //end foreach loop
+             }
+             if (isset($sodis_array)){
+                 return $sodis_array;
+             }
         }
     }
     
@@ -85,6 +94,4 @@ class repository_plugin_sodis extends repository_plugin_base {
         }   
     }
     
-    
-
 }

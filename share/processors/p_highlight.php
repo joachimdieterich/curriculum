@@ -1,12 +1,11 @@
 <?php
-/** Updatefile 13 - Enhancing UI for reference selector
+/** This file is part of curriculum - http://www.joachimdieterich.de
 * 
-* @abstract This file is part of curriculum - http://www.joachimdieterich.de
 * @package core
-* @filename 201808131404.php
+* @filename p_highlight.php
 * @copyright 2018 Joachim Dieterich
 * @author Joachim Dieterich
-* @date 2018.08.13 14:05:00
+* @date 2018.08.20 11:29
 * @license: 
 *
 * The MIT License (MIT)
@@ -21,27 +20,28 @@
 * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
 * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
-* THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+* THE USE OR OTHER DEALINGS IN THE SOFTWARE.     
 */
-global $UPDATE;
-$UPDATE         = new stdClass();
-$UPDATE->info   = "Enhancing UI for reference selector. <br><br> Optimiert die Benutzeroberfläche.";
+include(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
+include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
+global $USER;
+$USER       = $_SESSION['USER'];
+$id         = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+$search     = filter_input(INPUT_GET, 'search', FILTER_UNSAFE_RAW);
 
-if (isset($_GET['execute'])){
-    $UPDATE->log = "Starte Update... <br>";
-    $db= DB::prepare("CREATE TABLE `config_curriculum` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `curriculum_id` int(11) unsigned NOT NULL,
-  `context_id` int(11) unsigned DEFAULT NULL,
-  `reference_id` int(11) unsigned DEFAULT NULL,
-  `value` text,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;");
-    if ($db->execute(array())){
-        $UPDATE->log .= "<b class=\"text-success\">Update finished - OK</b><br>";
-        $UPDATE->installed = true;
+$s          = new Search();
+$s->id      = $id;
+$s->search  = $search;
+$result     = $s->view();   
+
+$highlight  = array();
+foreach($result AS $r){
+    if (isset($r->enabling_objective)){
+        $highlight[] = 'ena_'.$r->id;
     } else {
-        $UPDATE->log .= "<b class=\"text-red\">Update failed.</b><br>";
-        $UPDATE->installed = false;
-    }      
-}                      
+        $highlight[] = 'ter_'.$r->id;
+    } 
+}
+if (!empty($highlight)){
+    echo json_encode($highlight);   //return json encoded array of matches
+} 

@@ -104,10 +104,11 @@ class Content {
                             $db->execute(array($id));
                 break;
             case 'terms':       $db = DB::prepare('SELECT ct.*, cts.context_id, cts.reference_id, cts.file_context FROM content AS ct, content_subscriptions AS cts, context AS co
-                                                        WHERE  co.context = "terms"
+                                                        WHERE  co.context = ?
                                                         AND co.context_id = cts.context_id
                                                         AND cts.content_id = ct.id');
-                                $db->execute();          
+                                if ($id == null) { $id = terms;}
+                                $db->execute(array($id));
                 break;
             case 'solution': $db = DB::prepare('SELECT ct.*, cts.context_id, cts.reference_id, cts.file_context FROM content AS ct, content_subscriptions AS cts, context AS co
                                                         WHERE  co.context = "'.$dependency.'"

@@ -49,7 +49,7 @@ switch ($func) {
                             foreach ($ter as $ter_value){
                                 $content .= '<pagebreak orientation="landscape"/><div style="padding:5px;background:'.$ter_value->color.'">'.strip_tags($ter_value->terminal_objective).'</div>';
                                 $content .= '<table style="width:100%; border-collapse: collapse;border: 1px solid #EBEBEB;">';
-                                $content .= '<thead><tr style="background: #F2DBDB"><td>Lernziel / Kompetenz</td><td>Bezüge / Querverweise</td><td>Materialien</td></tr></thead>';
+                                $content .= '<thead><tr style="background: #F2DBDB"><td>Lernziel / Kompetenz</td><td>Bezüge / Überfachliche Bezüge</td><td>Materialien</td></tr></thead>';
                                 $content    .= '<tr><td valign="top" style="width:30%;border: 1px solid '.$ter_value->color.';"><small>'.strip_tags($ter_value->description).'</small></td>';
                                 /* Bezüge */
                                 $content    .= '<td valign="top" style="width:40%;border: 1px solid '.$ter_value->color.';"><small>'. render_reference('terminal_objective', $ter_value->id).'</small></td>';
@@ -78,7 +78,7 @@ switch ($func) {
                                 $content .= '<pagebreak>';
                                 $pagebreak = false;
                             }
-                            $content           .= '<h1>Hinweise zum Lehrplan</h1>';
+                            $content           .= '<h1>Digitalisierte Texte des Lehrplans</h1>';
                             $con                = new Content();
                             $content_entries    = $con->get('curriculum', $id );
                             foreach ($content_entries AS $content_entry){
@@ -96,7 +96,7 @@ switch ($func) {
                                 $content .= '<pagebreak>';
                                 $pagebreak = false;
                             }
-                            $content .= '<h1>Bezüge / Querverweise</h1>'; 
+                            $content .= '<h1>Überfachliche Bezüge</h1>'; 
                             $ter_obj  = new TerminalObjective();         //load terminal objectives
                             $ter      = $ter_obj->getObjectives('certificate', $id);
                             foreach ($ter as $ter_value) {

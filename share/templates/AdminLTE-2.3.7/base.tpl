@@ -59,7 +59,7 @@
     </head>
     
     {if in_array($page_action, array('login', 'lock', 'extern'))}
-    <body class="hold-transition {if $page_action eq 'login' OR  $page_action eq 'extern'}login-page{/if} {if $page_action eq 'lock'}lockscreen{/if}" style="background-image: url('{$random_bg}'); background-size: cover;" >
+    <body class="hold-transition {if $page_action eq 'login' OR  $page_action eq 'extern'}login-page{/if} {if $page_action eq 'lock'}lockscreen{/if}" {if $cfg_login_wallpaper}style="background-image: url('{$random_bg}'); background-size: cover;"{/if} >
         <div id="popup" class="modal" onload="popupFunction(this.id);"><div class="modal-dialog"><div class="box"><div class="box-header"><h3 class="box-title">Loading...</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div></div></div> <!-- Popup -->    
         {block name=content} {/block}
     {else}
@@ -70,14 +70,14 @@
               <!-- Logo -->
               <a href="index.php?action=dashboard" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
-                <span class="logo-mini"><img class="pull-left" style="margin-top: 5px; margin-left: 2px;" src="{$request_url}assets/images/logo.png"/></span>
+                <span class="logo-mini"><img class="pull-left" style="margin-top: 5px; margin-left: 2px;" src="{$request_url}assets/images/logo.png"  data-toggle="tooltip" data-placement="bottom" title="Startseite" /></span>
                 <!-- logo for regular state and mobile devices -->
-                <span class="logo-lg"><img class="pull-left" style="margin-top: 5px;" src="{$request_url}assets/images/logo.png"/><b>{$app_title}</b></span>
+                <span class="logo-lg"><img class="pull-left" style="margin-top: 5px;" src="{$request_url}assets/images/logo.png" data-toggle="tooltip" data-placement="bottom" title="Startseite" /><b>{$app_title}</b></span>
               </a>
                 
                 <!-- Header Navbar: style can be found in header.less -->
-                <nav class="navbar navbar-static-top" role="navigation" {if isset($page_bg_file_id)}style="background: url('{$access_file_id}{$page_bg_file_id}') center center;  background-size: cover;"{/if}>
-                    
+                <nav class="navbar navbar-static-top" role="navigation" {if (isset($page_bg_file_id) AND $cfg_show_subjectIcon != "NEVER")}style="background: url('{$access_file_id}{$page_bg_file_id}') center center;  background-size: cover;"{/if}>
+                    <!-- isset($page_bg_file_id) AND  -->
                     {if isset($my_id)}
                     <!-- Sidebar toggle button-->
                     <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
@@ -89,19 +89,19 @@
                       <ul class="nav navbar-nav">
                         {if checkCapabilities('dashboard:globalAdmin', $my_role_id, false)}  
                         <li>   
-                        <a href="index.php?action=statistic" style="padding: 15px 8px 15px 8px;">
+                        <a href="index.php?action=statistic" style="padding: 15px 8px 15px 8px;" data-toggle="tooltip" data-placement="bottom" title="Statistik">
                             <i class="fa fa-pie-chart"></i>
                           </a>
                         </li>  
                         {/if}
                         <li>   
-                        <a href="index.php?action=help" style="padding: 15px 8px 15px 8px;">
+                        <a href="index.php?action=help" style="padding: 15px 8px 15px 8px;" data-toggle="tooltip" data-placement="bottom" title="Hilfe">
                             <i class="fa fa-graduation-cap"></i>
                           </a>
                         </li>
                         {if checkCapabilities('menu:readTasks', $my_role_id, false)}  
                         <li>     
-                        <a href="index.php?action=task" style="padding: 15px 8px 15px 8px;">
+                        <a href="index.php?action=task" style="padding: 15px 8px 15px 8px;" data-toggle="tooltip" data-placement="bottom" title="Aufgaben">
                             <i class="fa fa-tasks"></i>
                           </a>
                         </li>
@@ -112,13 +112,13 @@
                              {Form::input_dropdown('institution_id', '', $my_institutions, 'institution', 'institution_id', $my_institution_id, null, "processor('config','institution_id', this.getAttribute('data-id'));")}
                          {/if} 
                          <li class="calendar-menu">   
-                        <a href="index.php?action=calendar" style="padding: 15px 8px 15px 8px;">
+                        <a href="index.php?action=calendar" style="padding: 15px 8px 15px 8px;" data-toggle="tooltip" data-placement="bottom" title="Kalender">
                             <i class="fa fa-calendar"></i>
                           </a>
                         </li>  
                         {if checkCapabilities('menu:readTimeline', $my_role_id, false)}  
                         <li class="timeline-menu">   
-                        <a href="index.php?action=portfolio" style="padding: 15px 8px 15px 8px;">
+                        <a href="index.php?action=portfolio" style="padding: 15px 8px 15px 8px;" data-toggle="tooltip" data-placement="bottom" title="Timeline">
                             <i class="fa fa-cubes"></i>
                           </a>
                         </li> 
@@ -126,8 +126,8 @@
                         {if checkCapabilities('menu:readMessages', $my_role_id, false)}
                             {if isset($mails)}  
                             <!-- Messages: style can be found in dropdown.less-->
-                            <li class="dropdown messages-menu">
-                              <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 15px 8px 15px 8px;">
+                            <li class="dropdown messages-menu" data-toggle="tooltip" data-placement="bottom" title="Nachrichten">
+                              <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 15px 8px 15px 8px;" title="">
                                 <i class="fa fa-envelope-o"></i>
                                 <span class="label label-success">{count($mails)}</span>
                               </a>
@@ -158,7 +158,7 @@
                             </li>
                             {else}
                             <li class=" messages-menu">   
-                                <a href="index.php?action=messages&function=showInbox" style="padding: 15px 8px 15px 8px;"><i class="fa fa-envelope-o"></i></a>
+                                <a href="index.php?action=messages&function=showInbox" style="padding: 15px 8px 15px 8px;" data-toggle="tooltip" data-placement="bottom" title="Nachrichten"><i class="fa fa-envelope-o"></i></a>
                             </li>
                             {/if} 
                         {/if}
@@ -166,7 +166,7 @@
                         {if isset($page_message)}
                         <!-- Notifications: style can be found in dropdown.less -->
                         <li class="dropdown notifications-menu open">
-                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 15px 8px 15px 8px;">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 15px 8px 15px 8px;" title="Benachrichtigungen">
                             <i class="fa fa-bell-o"></i>
                             <span class="label label-warning">{count($page_message)}</span>
                           </a>
@@ -192,8 +192,8 @@
                         {/if}
 
                         <!-- User Account: style can be found in dropdown.less -->
-                        <li class="dropdown user user-menu">
-                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 15px 8px 15px 8px;">
+                        <li class="dropdown user user-menu"  data-toggle="tooltip" data-placement="bottom" title="Benutzer verwalten">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="" style="padding: 15px 8px 15px 8px;">
                             <img src="{$access_file}{$my_avatar}" class="user-image" alt="User Image">
                             <span class="hidden-xs">{$my_firstname} {$my_lastname}</span>
                           </a>
@@ -231,8 +231,8 @@
                           </ul>
                         </li>
                         {if checkCapabilities('template:change', $my_role_id, false)}
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gears"></i></a>
+                            <li class="dropdown" data-toggle="tooltip" data-placement="bottom" title="Einstellungen">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" title=""><i class="fa fa-gears"></i></a>
                                 <ul class="dropdown-menu" role="menu">
                                   <li><a href="#" onclick="formloader('settings', 'edit');">Einstellungen</a></li>
                                   <li class="divider"></li>
@@ -272,7 +272,7 @@
                 <a class="btn-xs margin-r-10 pull-right" onclick='formloader("content", "new", null,{["label_title"=>"Betreff", "label_content"=>"Fehler beschreiben", "label_header"=>"Fehler melden","label_save"=>"Meldung abschicken", "context"=>"debug", "reference_id"=> 0]|@json_encode nofilter});'>
                     <i class="fa fa-bullhorn text-warning"></i> Fehler melden
                 </a>
-                {$app_footer} {block name=footer}  <small><a onclick="formloader('terms')">Impressum / Datenschutz</a></small>{/block}
+                {$app_footer} {block name=footer}  <small><a onclick="formloader('terms', 'imprint')">Impressum</a> / <a onclick="formloader('terms', 'privacy')">Datenschutz</a></small>{/block}
             </footer>    
               
             {*block name=sidebar_right}{include file='sidebar_right.tpl'}{/block*}
