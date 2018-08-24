@@ -99,8 +99,8 @@ if (isset($reference_curriculum_id)){
 }
 $types = new TerminalObjective();
 $ter_obj_given_type_ids = array_unique(array_map(function($e) { return is_object($e) ? $e->type_id : $e['type_id'];}, $ter_objects));//Fix for php version < 7
+//$TEMPLATE->assign('ter_obj_given_type_ids', array_unique(array_column($ter_objects, 'type_id')))array column for objects available since php version 7
 
-//error_log(json_encode($types->getType()));
 $TEMPLATE->assign('ter_obj_given_type_ids', $ter_obj_given_type_ids); 
 $TEMPLATE->assign('ter_obj_type_id', $types->getType());
 
