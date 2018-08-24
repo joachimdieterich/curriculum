@@ -22,6 +22,39 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+
+    /*public function getSubjects($paginator =''){
+        global $USER;
+        $order_param    = orderPaginator($paginator, array('id' => 'sub',
+                                                           'subject' => 'sub',
+                                                        'description'    => 'sub',
+                                                        'subject_short'  => 'sub',
+                                                        'institution'    => 'ins')); 
+       
+        $subjects       = array();
+        $db             = DB::prepare('SELECT sub.*, ins.institution 
+                                       FROM subjects AS sub, institution AS ins 
+                                       WHERE (sub.institution_id  = ANY (SELECT institution_id FROM institution_enrolments WHERE institution_id = ins.id AND user_id = ?) OR sub.institution_id = 0)
+                                       AND sub.institution_id= ins.id '.$order_param);
+        $db->execute(array($USER->id));
+        while($result = $db->fetchObject()) { 
+                $this->id                   = $result->id;
+                $this->subject              = $result->subject;
+                $this->subject_short        = $result->subject_short;
+                $this->description          = $result->description;
+                $this->creation_timestamp   = $result->creation_time;
+                $this->creator_id           = $result->creator_id;
+                $this->institution_id       = $result->institution_id;
+                $this->institution          = $result->institution;
+                $subjects[] = clone $this;
+        } 
+         if (isset($subjects)) {    
+            return $subjects;
+        } else {return $result;}
+    }*/
+
+
+
 $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
@@ -36,6 +69,7 @@ $color                  = '#3cc95b';
 $error                  = '';
 $ter_objective          = new TerminalObjective(); 
 $func                   = $_GET['func'];
+$type_id = 1;           // Dient als Vorauswahl für die Type-Selection
 switch ($func) {
     case 'edit':    $ter_objective->id            = $_GET['id'];
                     $terminal_objective_id        = $ter_objective->id;
@@ -73,6 +107,7 @@ $content = '<form id="form_terminal_objective" method="post" action="../share/pr
 <input type="hidden" name="func" id="func" value="'.$func.'"/>'; 
 $content .= Form::input_textarea('terminal_objective', 'Thema', $terminal_objective, $error, 'z.B. ');
 $content .= Form::input_textarea('description', 'Beschreibung', $description, $error, 'z.B. ');
+$content .= Form::input_select('type_id', 'Typ', $ter_objective->getType(), 'type', 'id', $type_id , $error);
 $content .= Form::input_text('reference', 'Externe Referenz', $reference, $error, 'Beschreibung');
 $content .= Form::input_color(array('id' => 'color', 'rgb' => $color, 'error' => $error));
 $content .= '</form>';
