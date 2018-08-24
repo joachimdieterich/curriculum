@@ -98,6 +98,7 @@ if (isset($reference_curriculum_id)){
     $TEMPLATE->assign('reference_view', false);
 }
 
+error_log(json_encode(array_unique(array_column($ter_objects, 'type_id'))).json_encode($terminal_objectives->getType()));
 $TEMPLATE->assign('ter_obj_given_type_ids', array_unique(array_column($ter_objects, 'type_id')));
 $TEMPLATE->assign('ter_obj_type_id', $terminal_objectives->getType());
 
