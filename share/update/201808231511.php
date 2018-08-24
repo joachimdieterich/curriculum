@@ -30,7 +30,7 @@ $UPDATE->info   = "Adding new field type to terminalobjectives, create table obj
 
 if (isset($_GET['execute'])){
     $UPDATE->log = "Starte Update...<br>"; 
-    $db1= DB::prepare("CREATE TABLE `curriculum`.`objective_type` ( `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT , `type` VARCHAR(255) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB DEFAULT CHARSET=utf8;");
+    $db1= DB::prepare("CREATE TABLE `objective_type` ( `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT , `type` VARCHAR(255) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB DEFAULT CHARSET=utf8;");
     if ($db1->execute(array())){
         $UPDATE->log .= "<b class=\"text-success\">Update finished 1 - OK</b><br>";
         $UPDATE->installed = true;
