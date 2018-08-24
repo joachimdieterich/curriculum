@@ -12960,6 +12960,7 @@ class mPDF
 		curl_setopt($ch, CURLOPT_NOBODY, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); //https://stackoverflow.com/questions/5657382/curl-php-restful-service-always-returning-false
 		$data = curl_exec($ch);
 		curl_close($ch);
 	}
