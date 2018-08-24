@@ -36,7 +36,7 @@ if ($_GET){
                                             $group->id   = $_GET['group'];
                                             $group->load(); 
                                             $TEMPLATE->assign('group',     $group);
-                                            /* Testing config_curriculum*/
+                                            /* Testing config_curriculum - get relevant curricula for selecting reference view*/
                                             $c->id       = $_GET['curriculum_id'];
                                             $needed_curriculum_list  = $c->loadConfig();
                                             $TEMPLATE->assign('needed_curriculum_list', $needed_curriculum_list);  
@@ -47,18 +47,21 @@ if ($_GET){
                                                 $TEMPLATE->assign('selected_curriculum_id', $reference_curriculum_id);  
                                             } else {
                                                 $TEMPLATE->assign('selected_curriculum_id', false);   
-                                            }  
+                                            }
+                                              
         case isset($_GET['curriculum_id']): $PAGE->curriculum = $_GET['curriculum_id'];
                                             $TEMPLATE->assign('page_curriculum',     $PAGE->curriculum);   
                                             $cur        = new Curriculum();
                                             $cur->id    = $_GET['curriculum_id'];
                                             $cur->load();
+                                            $TEMPLATE->assign('needed_curriculum_list', false);  //set to avoid error.log
             break;
         
         default:
             break;
     }
 }
+
 
 if ((isset($_GET['function']) AND $_GET['function'] == 'addObjectives')) {
     if (checkCapabilities('curriculum:update', $USER->role_id, false) AND ($cur->creator_id == $USER->id)){ //only edit if capability is set or user == owner

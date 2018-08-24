@@ -655,7 +655,11 @@ class Curriculum {
                         }
                 break;
         }
-        return $config_curriculum;
+        if (isset($config_curriculum)){
+            return $config_curriculum;
+        } else {
+            return false;
+        }
     }
     
 }
