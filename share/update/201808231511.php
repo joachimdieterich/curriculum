@@ -5,7 +5,7 @@
 * @package core
 * @filename 201808212238.php
 * @copyright 2018 Joachim Dieterich
-* @author Daniel Behr
+* @author Daniel Behr, Joachim Dieterich
 * @date 2018.08.21 22:38
 * @license: 
 *
@@ -54,6 +54,16 @@ if (isset($_GET['execute'])){
         $UPDATE->installed = true;
     } else {
         $UPDATE->log .= "<b class=\"text-red\">Update finished 3 - failed.</b><br>";
+        $UPDATE->installed = false;
+    }         
+    $db4= DB::prepare("INSERT INTO `objective_type` (`id`, `type`) VALUES
+                                    (1, 'Kompetenz'),
+                                    (2, 'Inhalt/Thema');");
+    if ($db4->execute(array())){
+        $UPDATE->log .= "<b class=\"text-success\">Update finished 4 - OK</b><br>";
+        $UPDATE->installed = true;
+    } else {
+        $UPDATE->log .= "<b class=\"text-red\">Update finished 4 - failed.</b><br>";
         $UPDATE->installed = false;
     }         
 }
