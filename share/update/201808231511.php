@@ -26,7 +26,7 @@
 
 global $UPDATE;
 $UPDATE         = new stdClass();
-$UPDATE->info   = "Adding new field type to terminalobjectives, create table objective_type  <br><br> Hinzufuegen einer Typ-Spalte bei terminalobjectives, erstelle neue Tabelle obective_type.";
+$UPDATE->info   = "Adding new field type to terminalObjectives, create table objective_type  <br><br> Hinzufuegen einer Typ-Spalte bei terminalobjectives, erstelle neue Tabelle obective_type.";
 
 if (isset($_GET['execute'])){
     $UPDATE->log = "Starte Update...<br>"; 
@@ -39,7 +39,7 @@ if (isset($_GET['execute'])){
         $UPDATE->installed = false;
     }       
     
-    $db2= DB::prepare("ALTER TABLE `terminalobjectives` ADD COLUMN `type_id` INT(11) UNSIGNED NULL AFTER `color`;");
+    $db2= DB::prepare("ALTER TABLE `terminalObjectives` ADD COLUMN `type_id` INT(11) UNSIGNED NULL AFTER `color`;");
     if ($db2->execute(array())){
         $UPDATE->log .= "<b class=\"text-success\">Update finished 2 - OK</b><br>";
         $UPDATE->installed = true;
@@ -48,7 +48,7 @@ if (isset($_GET['execute'])){
         $UPDATE->installed = false;
     }       
 
-    $db3= DB::prepare("ALTER TABLE `terminalobjectives` CHANGE `type_id` `type_id` INT(11) UNSIGNED NULL DEFAULT '1'; ");
+    $db3= DB::prepare("ALTER TABLE `terminalObjectives` CHANGE `type_id` `type_id` INT(11) UNSIGNED NULL DEFAULT '1'; ");
     if ($db3->execute(array())){
         $UPDATE->log .= "<b class=\"text-success\">Update finished 3 - OK</b><br>";
         $UPDATE->installed = true;
@@ -66,7 +66,7 @@ if (isset($_GET['execute'])){
         $UPDATE->log .= "<b class=\"text-red\">Update finished 4 - failed.</b><br>";
         $UPDATE->installed = false;
     }         
-    $db5= DB::prepare("UPDATE terminalobjectives SET `type_id` = 1");
+    $db5= DB::prepare("UPDATE terminalObjectives SET `type_id` = 1");
     if ($db5->execute(array())){
         $UPDATE->log .= "<b class=\"text-success\">Update finished 5 - OK</b><br>";
         $UPDATE->installed = true;
