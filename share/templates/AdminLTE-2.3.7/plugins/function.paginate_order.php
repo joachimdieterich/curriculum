@@ -49,7 +49,11 @@ function smarty_function_paginate_order($params, &$smarty) {
                 $_id = $_val;
                 break;
             default:
-                $_attrs[] = $_key . '="' . $_val . '"';
+                if (!is_array($_val)){
+                    $_attrs[] = $_key . '="' . $_val . '"';
+                } else {
+                    $_attrs[] = $_key . '="' . implode(',', $_val) . '"'; 
+                }
                 break;   
         }
     }
