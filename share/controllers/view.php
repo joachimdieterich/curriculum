@@ -98,8 +98,8 @@ if (isset($reference_curriculum_id)){
     $TEMPLATE->assign('reference_view', false);
 }
 $types = new TerminalObjective();
-error_log(json_encode($ter_objects));
-error_log(json_encode(array_column($ter_objects, 'type_id')).json_encode($types->getType()));
+error_log(json_encode(array_column($ter_objects, 'type_id')));
+error_log(json_encode($types->getType()));
 $TEMPLATE->assign('ter_obj_given_type_ids', array_unique(array_column($ter_objects, 'type_id')));
 $TEMPLATE->assign('ter_obj_type_id', $types->getType());
 
