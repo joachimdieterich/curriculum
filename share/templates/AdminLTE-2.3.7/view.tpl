@@ -136,11 +136,13 @@
             <!-- Type Tabs -->
             <div class="nav-tabs">
                 <ul class="nav nav-tabs">
-                    {foreach name=type_ids_li item=type_id from=$ter_obj_type_id} 
-                        {if $type_id->id|in_array:$ter_obj_given_type_ids}
-                            <li class="{if $smarty.foreach.type_ids_li.first}active{/if} "><a href="#tab_type_id_{$type_id->id}" data-toggle="tab">{$type_id->type}</a></li>
-                        {/if}
-                    {/foreach}
+                    {if count($ter_obj_given_type_ids) > 1}
+                        {foreach name=type_ids_li item=type_id from=$ter_obj_type_id} 
+                            {if $type_id->id|in_array:$ter_obj_given_type_ids}
+                                <li class="{if $smarty.foreach.type_ids_li.first}active{/if} "><a href="#tab_type_id_{$type_id->id}" data-toggle="tab">{$type_id->type}</a></li>
+                            {/if}
+                        {/foreach}
+                    {/if}
                 </ul>
                 <div class="tab-content" style="padding-top:10px;">
                     {foreach name=type_ids_ct item=type_id from=$ter_obj_type_id} 
