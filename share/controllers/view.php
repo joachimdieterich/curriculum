@@ -98,9 +98,10 @@ if (isset($reference_curriculum_id)){
     $TEMPLATE->assign('reference_view', false);
 }
 $types = new TerminalObjective();
-error_log(json_encode(array_column($ter_objects, 'type_id')));
-error_log(json_encode($types->getType()));
-$TEMPLATE->assign('ter_obj_given_type_ids', array_unique(array_column($ter_objects, 'type_id')));
+$ter_obj_given_type_ids = array_unique(array_map(function($e) { return is_object($e) ? $e->type_id : $e['type_id'];}, $ter_objects));//Fix for php version < 7
+
+//error_log(json_encode($types->getType()));
+$TEMPLATE->assign('ter_obj_given_type_ids', $ter_obj_given_type_ids); 
 $TEMPLATE->assign('ter_obj_type_id', $types->getType());
 
 $enabling_objectives->curriculum_id = $PAGE->curriculum;
