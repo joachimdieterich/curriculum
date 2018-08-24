@@ -57,7 +57,7 @@ if (isset($_GET['execute'])){
         $UPDATE->installed = false;
     }         
     $db4= DB::prepare("INSERT INTO `objective_type` (`id`, `type`) VALUES
-                                    (1, 'Kompetenz'),
+                                    (1, 'Kompetenzen'),
                                     (2, 'Inhalt/Thema');");
     if ($db4->execute(array())){
         $UPDATE->log .= "<b class=\"text-success\">Update finished 4 - OK</b><br>";

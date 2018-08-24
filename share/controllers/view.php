@@ -87,15 +87,19 @@ if (isset($reference_curriculum_id)){
     //error_log(json_encode($ter_ids).json_encode($ena_ids).json_encode($ct_ids));
     $quote   = new Quote(); 
     $TEMPLATE->assign('curriculum_content_references', $quote->get('curriculum_content', $ct_ids, $ter_ids, $ena_ids)); // load quote references
-    
-    $TEMPLATE->assign('terminal_objectives', $terminal_objectives->getObjectives('curriculum', $PAGE->curriculum, false, $ter_ids, $ena_ids));
+    $ter_objects = $terminal_objectives->getObjectives('curriculum', $PAGE->curriculum, false, $ter_ids, $ena_ids);
+    $TEMPLATE->assign('terminal_objectives', $ter_objects);
     $_SESSION['PAGE']->s_key   = 'curriculum_id';
     $_SESSION['PAGE']->s_value = $reference_curriculum_id;
     $TEMPLATE->assign('reference_view', true);
 } else {
-    $TEMPLATE->assign('terminal_objectives', $terminal_objectives->getObjectives('curriculum', $PAGE->curriculum /*false*/)); // default -> false: only load terminal objectives
+    $ter_objects = $terminal_objectives->getObjectives('curriculum', $PAGE->curriculum  /*false*/);  // default -> false: only load terminal objectives
+    $TEMPLATE->assign('terminal_objectives', $ter_objects);
     $TEMPLATE->assign('reference_view', false);
 }
+
+$TEMPLATE->assign('ter_obj_given_type_ids', array_unique(array_column($ter_objects, 'type_id')));
+$TEMPLATE->assign('ter_obj_type_id', $terminal_objectives->getType());
 
 $enabling_objectives->curriculum_id = $PAGE->curriculum;
 

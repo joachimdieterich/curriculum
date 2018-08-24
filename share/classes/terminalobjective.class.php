@@ -214,6 +214,7 @@ class TerminalObjective {
                                     $this->repeat_interval      = $result->repeat_interval;
                                     $this->creation_time        = $result->creation_time;
                                     $this->creator_id           = $result->creator_id;
+                                    $this->type_id              = $result->type_id;
                                     if ($load_enabling_objectives){
                                         $enabling_objectives = new EnablingObjective();
                                         $this->enabling_objectives = $enabling_objectives->getObjectives('terminal_objective', $this->id);
@@ -266,6 +267,7 @@ class TerminalObjective {
                                     $this->repeat_interval      = $result->repeat_interval;
                                     $this->creation_time        = $result->creation_time;
                                     $this->creator_id           = $result->creator_id;
+                                    $this->type_id              = $result->type_id;
                                     $objectives[]               = clone $this; 
                                 }
                                 break;
@@ -279,21 +281,20 @@ class TerminalObjective {
     }
     
     public function getType(){
-    
         $types = array();
 
-        $db  = DB::prepare('SELECT * FROM objective_type AS ot ORDER BY ot.id;');
+        $db    = DB::prepare('SELECT * FROM objective_type AS ot ORDER BY ot.id;');
         $db -> execute();
 
         while ($result = $db->fetchObject()){
             $this->id       = $result->id;
             $this->type     = $result->type;
-            $types[] = clone $this;
+            $types[]        = clone $this;
         }
 
         if (isset($types)){
             return $types;
-        }else{
+        } else {
             return $result;
         }
     }

@@ -131,67 +131,89 @@
         {/if}
         <div id="search_curriculum_{$course[0]->curriculum_id}" class="col-xs-12 top-buffer" >
          {if $terminal_objectives != false}
-             {assign var="sol_btn" value="false"}  
-             {*Thema Row*}
-             {foreach name=foreach_ter key=terid item=ter from=$terminal_objectives}   
-             <div class="row" >
-                 <div class="col-xs-12"> 
-                     {*Thema Row*}
-                     
-                     {if isset($showaddObjectives)}
-                         {assign var="orderup" value=false}
-                         {if isset($terminal_objectives[{$terid+1}])}
-                             {if $terminal_objectives[{$terid+1}]->curriculum_id eq $ter->curriculum_id}
-                                 {assign var="orderup" value=true} 
-                             {/if}
-                         {/if}    
-                         {assign var="orderdown" value=false}
-                         {if $ter->order_id neq '1'}
-                             {assign var="orderdown" value=true}
-                         {/if}
-                         {RENDER::objective(["type" =>"terminal_objective", "objective" => $ter , "user_id" => $my_id, "edit" => true, "orderup" => $orderup, "orderdown" => $orderdown, "highlight" => $highlight])}
-                     {else}
-                         {RENDER::objective(["type" =>"terminal_objective", "objective" => $ter , "user_id" => $my_id, "highlight" => $highlight, "reference_view" => $reference_view])}
-                     {/if}
-                     
-                     {*Ende Thema*}
+            {assign var="sol_btn" value="false"}  
+            {*Thema Row*}
+            <!-- Type Tabs -->
+            <div class="nav-tabs">
+                <ul class="nav nav-tabs">
+                    {foreach name=type_ids_li item=type_id from=$ter_obj_type_id} 
+                        {if $type_id->id|in_array:$ter_obj_given_type_ids}
+                            <li class="{if $smarty.foreach.type_ids_li.first}active{/if} "><a href="#tab_type_id_{$type_id->id}" data-toggle="tab">{$type_id->type}</a></li>
+                        {/if}
+                    {/foreach}
+                </ul>
+                <div class="tab-content" style="padding-top:10px;">
+                    {foreach name=type_ids_ct item=type_id from=$ter_obj_type_id} 
+                    {if $type_id->id|in_array:$ter_obj_given_type_ids}
+                        <div class="tab-pane {if $smarty.foreach.type_ids_ct.first}active{/if}" id="tab_type_id_{$type_id->id}">
+                            {foreach name=foreach_ter key=terid item=ter from=$terminal_objectives}   
+                            <div class="row " >
+                                <div class="col-xs-12"> 
+                                    {if $ter->type_id eq $type_id->id}
+                                    {*Thema Row*}
 
-                     {*Ziele*}
-                     {if $enabledObjectives != false}
-                         <span id="collaps_ter_{$ter->id}" class="collapse in">
-                         {foreach key=enaid item=ena from=$enabledObjectives}
-                         {if $ena->terminal_objective_id eq $ter->id}
-                             {if isset($showaddObjectives)}
-                                 {assign var="orderup" value=false}
-                                 {if isset($enabledObjectives[{$enaid+1}])}
-                                     {if $enabledObjectives[{$enaid+1}]->terminal_objective_id eq $ena->terminal_objective_id}
-                                         {assign var="orderup" value=true} 
-                                     {/if}
-                                 {/if}    
-                                 {assign var="orderdown" value=false}
-                                 {if $ena->order_id neq '1'}
-                                     {assign var="orderdown" value=true}
-                                 {/if}
-                                 {RENDER::objective(["type" =>"enabling_objective", "objective" => $ena , "user_id" => $my_id, "solutions" => $solutions, "edit" => true, "orderup" => $orderup, "orderdown" => $orderdown, "border_color" => $ter->color, "highlight" => $highlight])}
-                             {else}
-                                 
-                                 {RENDER::objective(["type" =>"enabling_objective", "objective" => $ena , "user_id" => $my_id, "solutions" => $solutions, "group_id" => $page_group, "border_color" => $ter->color, "highlight" => $highlight, "reference_view" => $reference_view])}
-                             {/if}
-                         {/if}
-                         {/foreach}
-                         </span>
-                     {/if}
+                                        {if isset($showaddObjectives)}
+                                            {assign var="orderup" value=false}
+                                            {if isset($terminal_objectives[{$terid+1}])}
+                                                {if $terminal_objectives[{$terid+1}]->curriculum_id eq $ter->curriculum_id}
+                                                    {assign var="orderup" value=true} 
+                                                {/if}
+                                            {/if}    
+                                            {assign var="orderdown" value=false}
+                                            {if $ter->order_id neq '1'}
+                                                {assign var="orderdown" value=true}
+                                            {/if}
+                                            {RENDER::objective(["type" =>"terminal_objective", "objective" => $ter , "user_id" => $my_id, "edit" => true, "orderup" => $orderup, "orderdown" => $orderdown, "highlight" => $highlight])}
+                                        {else}
+                                            {RENDER::objective(["type" =>"terminal_objective", "objective" => $ter , "user_id" => $my_id, "highlight" => $highlight, "reference_view" => $reference_view])}
+                                        {/if}
 
-                 {if isset($showaddObjectives)}  
-                     <div class="box box-objective bg-white"> 
-                         <span style="position:absolute; top:20px; width:100%;text-align: center;"><h5 class="text-primary">Ziel</h5></span>
-                         <div class="text-primary" style="text-align: center; padding: 25px; font-size:100px;" onclick="formloader('enabling_objective','new', {$ter->id});">+</div>
-                     </div>
-                 {/if}
-                 </div> <!-- /.col -->
-             </div><!-- .row-->
-             <div class="hidden-lg hidden-md"><br/></div>
-             {/foreach}
+                                        {*Ende Thema*}
+
+                                        {*Ziele*}
+                                        {if $enabledObjectives != false}
+                                            <span id="collaps_ter_{$ter->id}" class="collapse in">
+                                            {foreach key=enaid item=ena from=$enabledObjectives}
+                                            {if $ena->terminal_objective_id eq $ter->id}
+                                                {if isset($showaddObjectives)}
+                                                    {assign var="orderup" value=false}
+                                                    {if isset($enabledObjectives[{$enaid+1}])}
+                                                        {if $enabledObjectives[{$enaid+1}]->terminal_objective_id eq $ena->terminal_objective_id}
+                                                            {assign var="orderup" value=true} 
+                                                        {/if}
+                                                    {/if}    
+                                                    {assign var="orderdown" value=false}
+                                                    {if $ena->order_id neq '1'}
+                                                        {assign var="orderdown" value=true}
+                                                    {/if}
+                                                    {RENDER::objective(["type" =>"enabling_objective", "objective" => $ena , "user_id" => $my_id, "solutions" => $solutions, "edit" => true, "orderup" => $orderup, "orderdown" => $orderdown, "border_color" => $ter->color, "highlight" => $highlight])}
+                                                {else}
+                                                    {RENDER::objective(["type" =>"enabling_objective", "objective" => $ena , "user_id" => $my_id, "solutions" => $solutions, "group_id" => $page_group, "border_color" => $ter->color, "highlight" => $highlight, "reference_view" => $reference_view])}
+                                                {/if}
+                                            {/if}
+                                            {/foreach}
+                                            </span>
+                                        {/if}
+
+                                    {if isset($showaddObjectives)}  
+                                        <div class="box box-objective bg-white"> 
+                                            <span style="position:absolute; top:20px; width:100%;text-align: center;"><h5 class="text-primary">Ziel</h5></span>
+                                            <div class="text-primary" style="text-align: center; padding: 25px; font-size:100px;" onclick="formloader('enabling_objective','new', {$ter->id});">+</div>
+                                        </div>
+                                    {/if}
+                                {/if}
+                                 </div> <!-- /.col -->
+                             </div><!-- .row-->
+                             <div class="hidden-lg hidden-md"><br/></div>
+                             {/foreach}     
+                        </div>        <!-- /.tab-pane -->
+                    {/if}
+                    {/foreach}
+                </div>
+                <!-- /.tab-content -->
+            </div>
+            <!--  Type Tabs  --> 
+            
          {/if}
          {* Neues Thema *}        
          {if isset($showaddObjectives)}  
