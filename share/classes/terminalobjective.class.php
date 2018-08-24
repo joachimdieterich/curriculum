@@ -143,7 +143,6 @@ class TerminalObjective {
      */
     public function update(){
         global $USER;
-        error_log("TESTTEST: " . $this->type_id);
         checkCapabilities('objectives:updateTerminalObjectives', $USER->role_id);
         $db = DB::prepare('UPDATE terminalObjectives SET terminal_objective = ?, description = ?, color = ?, type_id = ? WHERE id = ?');
         return $db->execute(array($this->terminal_objective, $this->description, $this->color, $this->type_id, $this->id));

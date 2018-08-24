@@ -66,4 +66,12 @@ if (isset($_GET['execute'])){
         $UPDATE->log .= "<b class=\"text-red\">Update finished 4 - failed.</b><br>";
         $UPDATE->installed = false;
     }         
+    $db5= DB::prepare("UPDATE terminalobjectives SET `type_id` = 1");
+    if ($db5->execute(array())){
+        $UPDATE->log .= "<b class=\"text-success\">Update finished 5 - OK</b><br>";
+        $UPDATE->installed = true;
+    } else {
+        $UPDATE->log .= "<b class=\"text-red\">Update finished 5 - failed.</b><br>";
+        $UPDATE->installed = false;
+    }         
 }
