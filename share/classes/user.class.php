@@ -890,6 +890,7 @@ class User {
         }
 
         while($result = $db->fetchObject()) {
+            $sortableUser = new stdClass();
             if (checkCapabilities('user:shortUserList', $USER->role_id, false)){
                 $sortableUser->id           = $result->id;
                 $sortableUser->firstname    = $result->firstname;
