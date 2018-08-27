@@ -75,7 +75,7 @@ foreach ($children as $key => $value) {
     $content .= '<div class="user-panel pull-left" >
         <div class="pull-left image" ><img src="'.$CFG->access_id_url.$value->avatar_id.'" style="height:45px;width:45px;" class="img-circle" alt="User Image"></div>
         <div class="pull-left info text-black">
-          <p>'.$value->firstname.' '.$value->lastname.'</p><a data-toggle="tooltip" title="Zuweisung aufheben" onclick="processor(\'set\', \'parentalAuthority\',\''.$id.'\', {\'child_id\':\''.$value->id.'\'});"><i class="fa fa-minus text-danger"></i></a>
+          <p>'.$value->firstname.' '.$value->lastname.'</p><button type="button" class="btn btn-block btn-danger btn-xs" onclick="processor(\'set\', \'parentalAuthority\',\''.$id.'\', {\'child_id\':\''.$value->id.'\'});"> entfernen</button>
         </div>
       </div>';
     $content .= '</div>';
@@ -88,7 +88,7 @@ $content .= '<input type="hidden" name="func" id="func" value="'.$func.'"/>';
 
 $semesters                  = new Semester();  //Load Semesters
 $semesters->institution_id  = $USER->institution_id;
-$content .= Form::input_select_multiple(array('id' => 'children_id', 'label' => 'Kinder', 'select_data' => $u , 'select_label' => 'firstname, lastname', 'select_value' => 'id', 'input' => $children_id, 'error' => $error));
+$content .= Form::input_select_multiple(array('id' => 'children_id', 'label' => 'Personen hinzufügen', 'select_data' => $u , 'select_label' => 'firstname, lastname', 'select_value' => 'id', 'input' => $children_id, 'error' => $error));
 
 $content .= '</form>';
 $footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_parents\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button> ';  
