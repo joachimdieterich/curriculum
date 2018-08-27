@@ -396,16 +396,16 @@ class User {
     public function delete(){
         global $USER, $LOG;
         checkCapabilities('user:delete', $USER->role_id);
-        $this->load('id', $this->id, false);
+        $this->load('id', $this->id);
         $LOG->add($USER->id, 'user.class.php', dirname(__FILE__), 'Delete user: ('.$this->resolveUserId($this->id).'), creator_id: '.$this->creator_id);
         $role_check             = new Roles();
         $role_check->load('id', $this->role_id);
         $delete_user_order_id   = $role_check->order_id;
         $role_check->load('id', $USER->role_id);
         $user_order_id          = $role_check->order_id;
-        error_log ($delete_user_order_id.'< target  user >'.$user_order_id);
+        //error_log ($delete_user_order_id.'< target  user >'.$user_order_id);
         if ($this->id != $USER->id){
-            //if ($delete_user_order_id >= $user_order_id){ //user can only delete other user who has a higher role_order_id 
+            if ($delete_user_order_id >= $user_order_id){ //user can only delete other user who has a higher role_order_id 
             
                 $db = DB::prepare('DELETE FROM users WHERE id = ?');
                 if ($db->execute(array($this->id))) {
@@ -422,9 +422,9 @@ class User {
                     $_SESSION['PAGE']->message[] = array('message' => 'Benutzerkonten wurden erfolgreich gelöscht!', 'icon' => 'fa-user text-success');
                     return $db2->execute(array($this->id));
                 } else {return false;}   
-            /*} else {
+            } else {
                 $_SESSION['PAGE']->message[] = array('message' => 'Sie können keine Nutzer mit einer übergeordneter Rollen löschen!', 'icon' => 'fa-user text-warning');
-            }*/
+            }
         } else {
             $_SESSION['PAGE']->message[] = array('message' => 'Man kann sich nicht selbst löschen!', 'icon' => 'fa-user text-warning');
         }
