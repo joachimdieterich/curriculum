@@ -27,6 +27,7 @@ global $CFG, $USER, $PAGE, $TEMPLATE, $INSTITUTION;
 $TEMPLATE->assign('breadcrumb',  array('Lehrplan' => 'index.php?action=view'));
 $function = '';
 $TEMPLATE->assign('page_group',     ''); //prevent error log
+$TEMPLATE->assign('needed_curriculum_list', false);  //set to avoid error.log
 $c        = new Curriculum();
 if ($_GET){ 
     switch ($_GET) {
@@ -39,6 +40,7 @@ if ($_GET){
                                             /* Testing config_curriculum - get relevant curricula for selecting reference view*/
                                             $c->id       = $_GET['curriculum_id'];
                                             $needed_curriculum_list  = $c->loadConfig();
+                                           
                                             $TEMPLATE->assign('needed_curriculum_list', $needed_curriculum_list);  
                                             $reference_curriculum_list  = $c->getCurricula('group',$PAGE->group);
                                             $TEMPLATE->assign('reference_curriculum_list', $reference_curriculum_list);   
@@ -54,7 +56,7 @@ if ($_GET){
                                             $cur        = new Curriculum();
                                             $cur->id    = $_GET['curriculum_id'];
                                             $cur->load();
-                                            $TEMPLATE->assign('needed_curriculum_list', false);  //set to avoid error.log
+                                            
             break;
         
         default:
