@@ -1,11 +1,11 @@
 <?php
 /** This file is part of curriculum - http://www.joachimdieterich.de
-* 
+* FormProcessor
 * @package core
-* @filename p_set.php
-* @copyright 2017 Joachim Dieterich
+* @filename fp_parents.php
+* @copyright 2018 Joachim Dieterich
 * @author Joachim Dieterich
-* @date 2017.02.01 09:23
+* @date 2018.08.27 08:09
 * @license: 
 *
 * The MIT License (MIT)
@@ -24,21 +24,45 @@
 */
 include(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
-global $USER,$CFG, $PAGE;
+global $USER, $CFG;
 $USER   = $_SESSION['USER'];
-$func   = filter_input(INPUT_GET, 'func',           FILTER_SANITIZE_STRING);
-$object = file_get_contents("php://input");
-
-switch ($func) { //$func == db table name
-    case "comments":        $c              = new Comment();   
-                            $dependency     = filter_input(INPUT_GET, 'dependency', FILTER_SANITIZE_STRING);
-                            $c->$dependency = filter_input(INPUT_GET, 'input', FILTER_UNSAFE_RAW);
-                            $c->set($dependency, filter_input(INPUT_GET, 'val', FILTER_VALIDATE_INT));
-        break;
-    case "parentalAuthority": $u              = new User();   
-                              $u->unsetChildren(filter_input(INPUT_GET, 'val', FILTER_VALIDATE_INT), filter_input(INPUT_GET, 'child_id', FILTER_VALIDATE_INT));
-        break;
-    
-  
-    default: break;
+if (!isset($_SESSION['PAGE']->target_url)){     //if target_url is not set -> use last PAGE url
+    $_SESSION['PAGE']->target_url       = $_SESSION['PAGE']->url;
 }
+$user                = new User();
+
+$gump = new Gump();    /* Validation */
+$_POST = $gump->sanitize($_POST);       //sanitize $_POST
+$user->id        = $_POST['user_id'];
+$user->children_id  = $_POST['children_id'];
+
+
+$gump->validation_rules(array(
+'children_id' => 'required',
+'id' => 'required'
+));
+$validated_data = $gump->run($_POST);
+if($user === false) {/* validation failed */
+    $_SESSION['FORM']            = new stdClass();
+    $_SESSION['FORM']->form      = 'parents';
+    foreach(children_id as $key => $value){
+        $_SESSION['FORM']->$key  = $value;
+    } 
+    if (isset($_POST['id'])){
+        $_SESSION['FORM']->id = $_POST['id'];
+    }
+    $_SESSION['FORM']->error     = $gump->get_readable_errors();
+    $_SESSION['FORM']->func      = $_POST['func'];
+} else {
+    if ($_POST['func'] == 'edit'){
+        foreach ($user->children_id as $child_id) {
+             $user->setChildren( $user->id,  $child_id);
+             
+        }
+    }  else {
+       // case does not exists
+    }
+    $_SESSION['FORM']            = null;                     // reset Session Form object 
+}
+
+header('Location:'.$_SESSION['PAGE']->target_url);

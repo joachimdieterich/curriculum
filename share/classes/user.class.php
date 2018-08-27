@@ -187,6 +187,12 @@ class User {
     public $online; 
     
     /**
+     *
+     * @var array of user_ids 
+     */
+    public $children_id;
+    
+    /**
      * User class constructor
      * @param mixed $user_value 
      */
@@ -1486,7 +1492,38 @@ class User {
         }   
     }
     
+    public function setChildren($parent, $child){
+        global $USER;
+        checkCapabilities('user:parentalAuthority', $USER->role_id);
+        $db = DB::prepare('SELECT count(id) FROM parental_authority WHERE parent_id = ? AND child_id = ?');
+        $db->execute(array($parent, $child));
+        if($db->fetchColumn() > 0) {
+            // entry already exists
+             $_SESSION['PAGE']->message[] = array('message' => 'Das Kind wurde bereits dem Erziehungsberechtigten zugeordnet.', 'icon' => 'fa-child text-info');    
+            return true;
+        } else { 
+            $db = DB::prepare('INSERT INTO parental_authority (parent_id,child_id) VALUES (?,?)');//Status 1 == accepted
+             $_SESSION['PAGE']->message[] = array('message' => 'Das Kind wurde dem Erziehungsberechtigten zugeordnet.', 'icon' => 'fa-child text-success');    
+            return $db->execute(array($parent, $child));
+        }
+    }
+    public function unsetChildren($parent, $child){
+        global $USER;
+        checkCapabilities('user:parentalAuthority', $USER->role_id);
+        $db = DB::prepare('DELETE FROM parental_authority WHERE parent_id = ? AND child_id = ?');
+        if($db->execute(array($parent, $child))) {
+            // entry already exists
+             $_SESSION['PAGE']->message[] = array('message' => 'Die Zuorndung wurde aufgehoben.', 'icon' => 'fa-child text-success');    
+            return true;
+        } else { 
+            return false; // do nothing
+        }
+    }
+    
+    
     public function getChildren(){
+        global $USER;
+        checkCapabilities('user:parentalAuthority', $USER->role_id);
         $db     = DB::prepare('SELECT child_id FROM parental_authority WHERE parent_id = ?');
         $db->execute(array($this->id));
         $users  = array();
