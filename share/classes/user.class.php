@@ -1494,7 +1494,7 @@ class User {
     
     public function setChildren($parent, $child){
         global $USER;
-        //checkCapabilities('user:parentalAuthority', $USER->role_id);
+        checkCapabilities('user:parentalAuthority', $USER->role_id);
         $db = DB::prepare('SELECT count(id) FROM parental_authority WHERE parent_id = ? AND child_id = ?');
         $db->execute(array($parent, $child));
         if($db->fetchColumn() > 0) {
@@ -1509,7 +1509,7 @@ class User {
     }
     public function unsetChildren($parent, $child){
         global $USER;
-        //checkCapabilities('user:parentalAuthority', $USER->role_id);
+        checkCapabilities('user:parentalAuthority', $USER->role_id);
         $db = DB::prepare('DELETE FROM parental_authority WHERE parent_id = ? AND child_id = ?');
         if($db->execute(array($parent, $child))) {
             // entry already exists
@@ -1523,7 +1523,6 @@ class User {
     
     public function getChildren(){
         global $USER;
-        //checkCapabilities('user:parentalAuthority', $USER->role_id);
         $db     = DB::prepare('SELECT child_id FROM parental_authority WHERE parent_id = ?');
         $db->execute(array($this->id));
         $users  = array();
