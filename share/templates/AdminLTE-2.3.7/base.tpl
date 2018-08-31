@@ -45,8 +45,8 @@
         <!-- Theme style -->
         <link rel="stylesheet" href="{$template_url}css/less/AdminLTE.min.css">
         <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
-        <link rel="stylesheet" href="{$template_url}css/less/skins/_all-skins.css">
-        <!--link rel="stylesheet" href="{$template_url}css/skins/skin-blue-light.min.css"-->
+        <!--link rel="stylesheet" href="{$template_url}css/less/skins/_all-skins.min.css"-->
+        <link rel="stylesheet" href="{$template_url}css/skins/skin-blue.min.css">
           <!-- Pace style -->
         <link rel="stylesheet" href="{$template_url}plugins/pace/pace.min.css">
         <!-- Bootstrap Color Picker -->
