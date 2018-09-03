@@ -71,13 +71,11 @@
 <section class="content " >   
     <div class="row ">
         <div class="col-xs-12" >
-            <form action="#" class="col-xs-12 col-sm-12 col-md-4 col-lg-3 pull-right" onsubmit="ajax_search({$course[0]->curriculum_id},$('#v_search').val());$('#search_results').load('../share/request/render_html.php?render=search&func=view&id={$course[0]->curriculum_id}&search='+$('#v_search').val()+'&ajax=true#search_results');return false">
+            <form action="#" class="no-padding col-xs-12 col-sm-12 col-md-4 col-lg-3 pull-right" onsubmit="ajax_search({$course[0]->curriculum_id},$('#v_search').val());$('#search_results').load('../share/request/render_html.php?render=search&func=view&id={$course[0]->curriculum_id}&search='+$('#v_search').val()+'&ajax=true#search_results');return false">
                 <div class="input-group">
                   <input type="text" id="v_search" class="form-control" placeholder="Suche...">
-                      <span class="input-group-btn">
-                        <button  name="search" id="search-btn" class="btn btn-flat">
-                            <i class="fa fa-search"></i>
-                        </button>
+                      <span class="input-group-addon btn" onclick="ajax_search({$course[0]->curriculum_id},$('#v_search').val());$('#search_results').load('../share/request/render_html.php?render=search&func=view&id={$course[0]->curriculum_id}&search='+$('#v_search').val()+'&ajax=true#search_results');return false">
+                            <i class="fa fa-search"></i>  
                       </span>
                 </div>
             </form>
