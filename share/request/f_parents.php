@@ -27,7 +27,7 @@ include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $CFG, $USER, $COURSE;
 $USER           = $_SESSION['USER'];
-
+$children_id    = null;
 checkCapabilities('user:parentalAuthority', $USER->role_id, false, true);
 $func           = $_GET['func'];
 $error          = null;
@@ -43,7 +43,8 @@ if (isset($func)){
     switch ($func) {
         case "edit":     $header            = 'Erziehungsberechtigungen bearbeiten';
                          $user              = new User();
-                         $user->id          = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+                         $id                = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+                         $user->id          = $id;
                          $user->load('id', $user->id, false);
                          $children          = $user->getChildren();      
                          $u                 = $user->userList('institution', '');
@@ -72,9 +73,9 @@ $content     .= '<div class="form-group">
 foreach ($children as $key => $value) {
     $content .= '<div class="col-sm-4">';
     $content .= '<div class="user-panel pull-left" >
-        <div class="pull-left image" ><img src="'.$CFG->access_id_url.$value->avatar_id.'" style="height:45px;" class="img-circle" alt="User Image"></div>
+        <div class="pull-left image" ><img src="'.$CFG->access_id_url.$value->avatar_id.'" style="height:45px;width:45px;" class="img-circle" alt="User Image"></div>
         <div class="pull-left info text-black">
-          <p>'.$value->firstname.' '.$value->lastname.'</p><!--a href="#"><i class="fa fa-circle text-success"></i> Online</a-->
+          <p>'.$value->firstname.' '.$value->lastname.'</p><button type="button" class="btn btn-block btn-danger btn-xs" onclick="processor(\'set\', \'parentalAuthority\',\''.$id.'\', {\'child_id\':\''.$value->id.'\'});"> entfernen</button>
         </div>
       </div>';
     $content .= '</div>';
@@ -86,8 +87,8 @@ if (isset($id)){
 $content .= '<input type="hidden" name="func" id="func" value="'.$func.'"/>';
 
 $semesters                  = new Semester();  //Load Semesters
-$semesters->institution_id  = $institution_id;
-$content .= Form::input_select_multiple(array('id' => 'children_id', 'label' => 'Kinder', 'select_data' => $u , 'select_label' => 'firstname, lastname', 'select_value' => 'id', 'input' => $children_id, 'error' => $error));
+$semesters->institution_id  = $USER->institution_id;
+$content .= Form::input_select_multiple(array('id' => 'children_id', 'label' => 'Personen hinzufügen', 'select_data' => $u , 'select_label' => 'firstname, lastname', 'select_value' => 'id', 'input' => $children_id, 'error' => $error));
 
 $content .= '</form>';
 $footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_parents\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button> ';  

@@ -27,6 +27,7 @@ global $CFG, $USER, $PAGE, $TEMPLATE, $INSTITUTION;
 $TEMPLATE->assign('breadcrumb',  array('Lehrplan' => 'index.php?action=view'));
 $function = '';
 $TEMPLATE->assign('page_group',     ''); //prevent error log
+$TEMPLATE->assign('needed_curriculum_list', false);  //set to avoid error.log
 $c        = new Curriculum();
 if ($_GET){ 
     switch ($_GET) {
@@ -36,9 +37,10 @@ if ($_GET){
                                             $group->id   = $_GET['group'];
                                             $group->load(); 
                                             $TEMPLATE->assign('group',     $group);
-                                            /* Testing config_curriculum*/
+                                            /* Testing config_curriculum - get relevant curricula for selecting reference view*/
                                             $c->id       = $_GET['curriculum_id'];
                                             $needed_curriculum_list  = $c->loadConfig();
+                                           
                                             $TEMPLATE->assign('needed_curriculum_list', $needed_curriculum_list);  
                                             $reference_curriculum_list  = $c->getCurricula('group',$PAGE->group);
                                             $TEMPLATE->assign('reference_curriculum_list', $reference_curriculum_list);   
@@ -47,18 +49,21 @@ if ($_GET){
                                                 $TEMPLATE->assign('selected_curriculum_id', $reference_curriculum_id);  
                                             } else {
                                                 $TEMPLATE->assign('selected_curriculum_id', false);   
-                                            }  
+                                            }
+                                              
         case isset($_GET['curriculum_id']): $PAGE->curriculum = $_GET['curriculum_id'];
                                             $TEMPLATE->assign('page_curriculum',     $PAGE->curriculum);   
                                             $cur        = new Curriculum();
                                             $cur->id    = $_GET['curriculum_id'];
                                             $cur->load();
+                                            
             break;
         
         default:
             break;
     }
 }
+
 
 if ((isset($_GET['function']) AND $_GET['function'] == 'addObjectives')) {
     if (checkCapabilities('curriculum:update', $USER->role_id, false) AND ($cur->creator_id == $USER->id)){ //only edit if capability is set or user == owner
@@ -84,15 +89,22 @@ if (isset($reference_curriculum_id)){
     //error_log(json_encode($ter_ids).json_encode($ena_ids).json_encode($ct_ids));
     $quote   = new Quote(); 
     $TEMPLATE->assign('curriculum_content_references', $quote->get('curriculum_content', $ct_ids, $ter_ids, $ena_ids)); // load quote references
-    
-    $TEMPLATE->assign('terminal_objectives', $terminal_objectives->getObjectives('curriculum', $PAGE->curriculum, false, $ter_ids, $ena_ids));
+    $ter_objects = $terminal_objectives->getObjectives('curriculum', $PAGE->curriculum, false, $ter_ids, $ena_ids);
+    $TEMPLATE->assign('terminal_objectives', $ter_objects);
     $_SESSION['PAGE']->s_key   = 'curriculum_id';
     $_SESSION['PAGE']->s_value = $reference_curriculum_id;
     $TEMPLATE->assign('reference_view', true);
 } else {
-    $TEMPLATE->assign('terminal_objectives', $terminal_objectives->getObjectives('curriculum', $PAGE->curriculum /*false*/)); // default -> false: only load terminal objectives
+    $ter_objects = $terminal_objectives->getObjectives('curriculum', $PAGE->curriculum  /*false*/);  // default -> false: only load terminal objectives
+    $TEMPLATE->assign('terminal_objectives', $ter_objects);
     $TEMPLATE->assign('reference_view', false);
 }
+$types = new TerminalObjective();
+$ter_obj_given_type_ids = array_unique(array_map(function($e) { return is_object($e) ? $e->type_id : $e['type_id'];}, $ter_objects));//Fix for php version < 7
+//$TEMPLATE->assign('ter_obj_given_type_ids', array_unique(array_column($ter_objects, 'type_id')))array column for objects available since php version 7
+
+$TEMPLATE->assign('ter_obj_given_type_ids', $ter_obj_given_type_ids); 
+$TEMPLATE->assign('ter_obj_type_id', $types->getType());
 
 $enabling_objectives->curriculum_id = $PAGE->curriculum;
 

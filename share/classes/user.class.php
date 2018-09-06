@@ -187,6 +187,12 @@ class User {
     public $online; 
     
     /**
+     *
+     * @var array of user_ids 
+     */
+    public $children_id;
+    
+    /**
      * User class constructor
      * @param mixed $user_value 
      */
@@ -396,16 +402,16 @@ class User {
     public function delete(){
         global $USER, $LOG;
         checkCapabilities('user:delete', $USER->role_id);
-        $this->load('id', $this->id, false);
+        $this->load('id', $this->id);
         $LOG->add($USER->id, 'user.class.php', dirname(__FILE__), 'Delete user: ('.$this->resolveUserId($this->id).'), creator_id: '.$this->creator_id);
         $role_check             = new Roles();
         $role_check->load('id', $this->role_id);
         $delete_user_order_id   = $role_check->order_id;
         $role_check->load('id', $USER->role_id);
         $user_order_id          = $role_check->order_id;
-        error_log ($delete_user_order_id.'< target  user >'.$user_order_id);
+        //error_log ($delete_user_order_id.'< target  user >'.$user_order_id);
         if ($this->id != $USER->id){
-            //if ($delete_user_order_id >= $user_order_id){ //user can only delete other user who has a higher role_order_id 
+            if ($delete_user_order_id >= $user_order_id){ //user can only delete other user who has a higher role_order_id 
             
                 $db = DB::prepare('DELETE FROM users WHERE id = ?');
                 if ($db->execute(array($this->id))) {
@@ -422,9 +428,9 @@ class User {
                     $_SESSION['PAGE']->message[] = array('message' => 'Benutzerkonten wurden erfolgreich gelöscht!', 'icon' => 'fa-user text-success');
                     return $db2->execute(array($this->id));
                 } else {return false;}   
-            /*} else {
+            } else {
                 $_SESSION['PAGE']->message[] = array('message' => 'Sie können keine Nutzer mit einer übergeordneter Rollen löschen!', 'icon' => 'fa-user text-warning');
-            }*/
+            }
         } else {
             $_SESSION['PAGE']->message[] = array('message' => 'Man kann sich nicht selbst löschen!', 'icon' => 'fa-user text-warning');
         }
@@ -890,6 +896,7 @@ class User {
         }
 
         while($result = $db->fetchObject()) {
+            $sortableUser = new stdClass();
             if (checkCapabilities('user:shortUserList', $USER->role_id, false)){
                 $sortableUser->id           = $result->id;
                 $sortableUser->firstname    = $result->firstname;
@@ -1485,7 +1492,37 @@ class User {
         }   
     }
     
+    public function setChildren($parent, $child){
+        global $USER;
+        checkCapabilities('user:parentalAuthority', $USER->role_id);
+        $db = DB::prepare('SELECT count(id) FROM parental_authority WHERE parent_id = ? AND child_id = ?');
+        $db->execute(array($parent, $child));
+        if($db->fetchColumn() > 0) {
+            // entry already exists
+             $_SESSION['PAGE']->message[] = array('message' => 'Das Kind wurde bereits dem Erziehungsberechtigten zugeordnet.', 'icon' => 'fa-child text-info');    
+            return true;
+        } else { 
+            $db = DB::prepare('INSERT INTO parental_authority (parent_id,child_id) VALUES (?,?)');//Status 1 == accepted
+             $_SESSION['PAGE']->message[] = array('message' => 'Das Kind wurde dem Erziehungsberechtigten zugeordnet.', 'icon' => 'fa-child text-success');    
+            return $db->execute(array($parent, $child));
+        }
+    }
+    public function unsetChildren($parent, $child){
+        global $USER;
+        checkCapabilities('user:parentalAuthority', $USER->role_id);
+        $db = DB::prepare('DELETE FROM parental_authority WHERE parent_id = ? AND child_id = ?');
+        if($db->execute(array($parent, $child))) {
+            // entry already exists
+             $_SESSION['PAGE']->message[] = array('message' => 'Die Zuorndung wurde aufgehoben.', 'icon' => 'fa-child text-success');    
+            return true;
+        } else { 
+            return false; // do nothing
+        }
+    }
+    
+    
     public function getChildren(){
+        global $USER;
         $db     = DB::prepare('SELECT child_id FROM parental_authority WHERE parent_id = ?');
         $db->execute(array($this->id));
         $users  = array();

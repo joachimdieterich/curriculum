@@ -143,7 +143,6 @@ class TerminalObjective {
      */
     public function update(){
         global $USER;
-        error_log("TESTTEST: " . $this->type_id);
         checkCapabilities('objectives:updateTerminalObjectives', $USER->role_id);
         $db = DB::prepare('UPDATE terminalObjectives SET terminal_objective = ?, description = ?, color = ?, type_id = ? WHERE id = ?');
         return $db->execute(array($this->terminal_objective, $this->description, $this->color, $this->type_id, $this->id));
@@ -215,6 +214,7 @@ class TerminalObjective {
                                     $this->repeat_interval      = $result->repeat_interval;
                                     $this->creation_time        = $result->creation_time;
                                     $this->creator_id           = $result->creator_id;
+                                    $this->type_id              = $result->type_id;
                                     if ($load_enabling_objectives){
                                         $enabling_objectives = new EnablingObjective();
                                         $this->enabling_objectives = $enabling_objectives->getObjectives('terminal_objective', $this->id);
@@ -267,6 +267,7 @@ class TerminalObjective {
                                     $this->repeat_interval      = $result->repeat_interval;
                                     $this->creation_time        = $result->creation_time;
                                     $this->creator_id           = $result->creator_id;
+                                    $this->type_id              = $result->type_id;
                                     $objectives[]               = clone $this; 
                                 }
                                 break;
@@ -280,21 +281,20 @@ class TerminalObjective {
     }
     
     public function getType(){
-    
         $types = array();
 
-        $db  = DB::prepare('SELECT * FROM objective_type AS ot ORDER BY ot.id;');
+        $db    = DB::prepare('SELECT * FROM objective_type AS ot ORDER BY ot.id;');
         $db -> execute();
 
         while ($result = $db->fetchObject()){
             $this->id       = $result->id;
             $this->type     = $result->type;
-            $types[] = clone $this;
+            $types[]        = clone $this;
         }
 
         if (isset($types)){
             return $types;
-        }else{
+        } else {
             return $result;
         }
     }

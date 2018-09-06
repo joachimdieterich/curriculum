@@ -59,7 +59,6 @@ if($validated_data === false) {/* validation failed */
     $_SESSION['FORM']->func  = $_POST['func'];
 } else {
     if ($_POST['func'] == 'edit'){
-        error_log("TESTto: " . $terminal_objective->type_id);
         $terminal_objective->id = $_POST['terminal_objective_id'];
         $terminal_objective->update();
         $ter_id = $terminal_objective->id;

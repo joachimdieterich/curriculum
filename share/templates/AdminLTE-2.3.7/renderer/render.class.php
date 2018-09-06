@@ -2155,7 +2155,7 @@ class Render {
                             $href_regex = preg_replace_callback('/__([^&]*)__/', 
                                     function($r){
                                         global $v;
-                                        return $v->$r[1]; 
+                                        return $v->{$r[1]}; 
                                     }, $href);
                                 
                             $html   .= '<li><a href="'.$href_regex.'">'.$l;

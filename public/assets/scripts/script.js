@@ -551,7 +551,16 @@ function formloader(/*form, func, id, []*/){
     }
 }
 
-function processor(/*proc, func, val, []*/){
+function processor(/*proc, func, val, [..., reload = false]*/){ // if reload = false: prevent reload
+    if (typeof(arguments[3]) !== 'undefined'){
+        if(arguments[3].reload == 'undefined'){
+            reload = true;
+        } else {
+            reload = false;
+        }
+    } else {
+        reload = true;
+    }
     if (typeof(arguments[4]) !== 'undefined'){
         getRequest("../share/plugins/"+ arguments[4] +"/processors/p_"+ arguments[0] +".php?func="+ arguments[1] +"&val="+ arguments[2]+"&"+jQuery.param(arguments[3]));
     } else if (typeof(arguments[3]) !== 'undefined'){
@@ -563,7 +572,7 @@ function processor(/*proc, func, val, []*/){
     if(req) {  
         req.onreadystatechange =  function() {
           if(this.readyState == this.DONE) {
-              window.location.reload(true);
+                window.location.reload(reload);
           }
         }
     }

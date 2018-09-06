@@ -388,7 +388,7 @@ class Form {
         }
 
         $html = '<div id="'.$target.'" class="modal-dialog" style="overflow-y: initial !important;" >
-                    <div id="modal" class="modal-content" ><!-- height is dynamic set by popupFunction() -->
+                    <div id="modal" class="modal-content" onmousedown="dragstart(this)"><!-- height is dynamic set by popupFunction() -->
                         <div class="modal-header">';
                         if (isset($h_content)){
                             $html .= $h_content;

@@ -170,4 +170,10 @@ if (isset($_GET['filter_institution'])){
     $u = $users->userList('institution', 'userP', filter_input(INPUT_GET, 'lost', FILTER_VALIDATE_BOOLEAN));
 }
 
+if(isset($_SESSION['PAGE']->config['tab'])){
+    $TEMPLATE->assign($_SESSION['PAGE']->config['tab'],  true);
+} else {
+    $TEMPLATE->assign('f_password',  true);
+}
+
 setPaginator('userP', $TEMPLATE, $u, 'us_val', 'index.php?action=user', $p_config); //set Paginator
