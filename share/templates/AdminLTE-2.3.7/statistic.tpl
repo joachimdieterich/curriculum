@@ -7,7 +7,7 @@
 {block name=additional_scripts}{$smarty.block.parent} 
     <!-- d3 test -->
     
-    {if ($chart eq 'institutions') OR ($chart eq 'curriculum')}
+    {if ($chart eq 'institutions') OR ($chart eq 'curriculum') OR ($chart eq 'curriculumClicks')}
     <script src="{$media_url}scripts/d3.v3.min.js"></script>
     {literal}
     <script>
@@ -19,8 +19,8 @@
     var leafColor = d3.scale.category20();
 
     var force = d3.layout.force()
-        .linkDistance(40)
-        .charge(-700)
+        .linkDistance(50)
+        .charge(-1000)
         .gravity(0.1)
         .size([width, height])
         .on("tick", tick);
@@ -308,15 +308,16 @@
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
                     <li class="{if $chart eq 'institutions'}active{/if}"><a href="index.php?action=statistic&chart=institutions" >Institutionen</a></li>
-                    <li class="{if $chart eq 'curriculum'}active{/if}"><a href="index.php?action=statistic&chart=curriculum"  >Lehrpläne</a></li>
+                    {*<li class="{if $chart eq 'curriculum'}active{/if}"><a href="index.php?action=statistic&chart=curriculum"  >Lehrpläne</a></li>*}
                     <li class="{if $chart eq 'usage'}active{/if}"><a href="index.php?action=statistic&chart=usage" >Aktivität</a></li>
                     <li class="{if $chart eq 'accomplished'}active{/if}"><a href="index.php?action=statistic&chart=accomplished" >Erfolge</a></li>
                     <li class="{if $chart eq 'newUsers'}active{/if}"><a href="index.php?action=statistic&chart=newUsers" >Neue Nutzer</a></li>
-                    <li class="{if $chart eq 'newCurricula'}active{/if}"><a href="index.php?action=statistic&chart=newCurricula" >Neue Lehrpläne</a></li>
-                    <li class="{if $chart eq 'newGroups'}active{/if}"><a href="index.php?action=statistic&chart=newGroups" >Neue Lerngruppen</a></li>
-                    <li class="{if $chart eq 'newMessages'}active{/if}"><a href="index.php?action=statistic&chart=newMessages" >Neue Nachrichten</a></li>
-                    <li class="{if $chart eq 'acceptTerms'}active{/if}"><a href="index.php?action=statistic&chart=acceptTerms" >Nutzungsbedingungen akzeptiert</a></li>
-                    <li class="{if $chart eq 'lastlLogin'}active{/if}"><a href="index.php?action=statistic&chart=lastlLogin" >Letzter login (Alle Nutzer)</a></li>
+                    {*<li class="{if $chart eq 'newCurricula'}active{/if}"><a href="index.php?action=statistic&chart=newCurricula" >Neue Lehrpläne</a></li>*}
+                    {*<li class="{if $chart eq 'newGroups'}active{/if}"><a href="index.php?action=statistic&chart=newGroups" >Neue Lerngruppen</a></li>*}
+                    {*<li class="{if $chart eq 'newMessages'}active{/if}"><a href="index.php?action=statistic&chart=newMessages" >Neue Nachrichten</a></li>*}
+                    {*<li class="{if $chart eq 'acceptTerms'}active{/if}"><a href="index.php?action=statistic&chart=acceptTerms" >Nutzungsbedingungen akzeptiert</a></li>*}
+                    {*<li class="{if $chart eq 'lastlLogin'}active{/if}"><a href="index.php?action=statistic&chart=lastlLogin" >Letzter login (Alle Nutzer)</a></li>*}
+                    <li class="{if $chart eq 'curriculumClicks'}active{/if}"><a href="index.php?action=statistic&chart=curriculumClicks" >Lehrplan (Aufrufe)</a></li>
                 </ul>
                 <div id="chart" style="margin-top: 10px;">
                     {if $chart eq 'accomplished'}
