@@ -86,7 +86,6 @@ if (isset($reference_curriculum_id)){
     $ter_ids = $c->getFieldArray($reference_curriculum_id, 'terminal_objectives');
     $ena_ids = $c->getFieldArray($reference_curriculum_id, 'enabling_objectives');
     $ct_ids  = $c->getFieldArray($PAGE->curriculum, 'curriculum_content');
-    //error_log(json_encode($ter_ids).json_encode($ena_ids).json_encode($ct_ids));
     $quote   = new Quote(); 
     $TEMPLATE->assign('curriculum_content_references', $quote->get('curriculum_content', $ct_ids, $ter_ids, $ena_ids)); // load quote references
     $ter_objects = $terminal_objectives->getObjectives('curriculum', $PAGE->curriculum, false, $ter_ids, $ena_ids);
