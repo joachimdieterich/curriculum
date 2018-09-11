@@ -125,8 +125,19 @@ if ($func == 'new'){
     $content .= Form::input_select('group_id', 'Lerngruppe', $group->getGroups('institution', $USER->institution_id), 'group', 'id', $group_id , $error); 
 }
 $content .= '</form>';
-$footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_profile\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';    
 
+if (!isset($func) OR $func != 'new'){
+    $content .= '<form id="form_getData" class="form-horizontal" role="form" method="post" action="../share/processors/fp_profile.php">';
+    $content .= '<input type="hidden" name="func" id="func" value="getData"/>
+                <input type="hidden" name="user_id" id="user_id" value="'.$user_id.'"/>
+                <input type="hidden" name="avatar_id" id="avatar_id" value="'.$avatar_id.'"/>';
+    $content .= '</form>';
+}
+
+$footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_profile\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';
+if (!isset($func) or $func != 'new'){
+    $footer .= '<button type="submit" class="btn btn-primary pull-left" onclick="document.getElementById(\'form_getData\').submit();""><i class="fa fa-database" aria-hidden="true"></i> Auskunftsrecht nach Artikel 15 DSGVO</button>';    
+}
 $script   = '<script id=\'modal_script\'>
         $(function() {
             $(\'.nyroModal\').nyroModal();
