@@ -33,16 +33,18 @@ $user                 = new User();
 $gump                 = new Gump();    /* Validation */
 $_POST                = $gump->sanitize($_POST);       //sanitize $_POST
 
-$user->username       = $_POST['usr']; 
-$user->firstname      = $_POST['firstname']; 
-$user->lastname       = $_POST['lastname']; 
-$user->email          = $_POST['email']; 
-$user->postalcode     = $_POST['postalcode']; 
-$user->city           = $_POST['city']; 
-$user->country_id     = $_POST['country_id']; 
-$user->state_id       = $_POST['state_id']; 
-$user->paginator_limit  = $CFG->settings->paginator_limit;
-$user->acc_days         = $CFG->settings->acc_days;
+if ($_POST['func'] != 'getData'){
+    $user->username       = $_POST['usr']; 
+    $user->firstname      = $_POST['firstname']; 
+    $user->lastname       = $_POST['lastname']; 
+    $user->email          = $_POST['email']; 
+    $user->postalcode     = $_POST['postalcode']; 
+    $user->city           = $_POST['city']; 
+    $user->country_id     = $_POST['country_id']; 
+    $user->state_id       = $_POST['state_id']; 
+    $user->paginator_limit  = $CFG->settings->paginator_limit;
+    $user->acc_days         = $CFG->settings->acc_days;
+}
 
 if (isset($_POST['confirm'])){
     $user->confirmed= 3; //Passwortänderung wird gesetzt == 3 //Wird bei der Anmeldung überprüft
@@ -69,6 +71,9 @@ switch ($_POST['func']) {
                      $user->institution_id  = $_POST['institution_id'];  
                      $user->group_id        = $_POST['group_id']; 
         break;
+    case 'getData':
+                    $user->avatar_id        = $_POST['avatar_id'];
+                    $user->id               = $_POST['user_id'];
 
     default:
         break;
@@ -81,14 +86,16 @@ if ($_POST['func'] == 'edit' OR $_POST['func'] == 'editUser'){  // don't validat
         'lastname'          => 'required|max_len,100',
         'email'             => 'required|valid_email'
     ));
-} else {           
-    $gump->validation_rules(array(
-        'usr'          => 'required|max_len,100|min_len,3',
-        'firstname'         => 'required|max_len,100',
-        'lastname'          => 'required|max_len,100',
-        'email'             => 'required|valid_email',
-        'pw'          => 'required|max_len,100|min_len,6'
-    ));
+} else {
+        if ($_POST['func'] != 'getData'){
+        $gump->validation_rules(array(
+            'usr'          => 'required|max_len,100|min_len,3',
+            'firstname'         => 'required|max_len,100',
+            'lastname'          => 'required|max_len,100',
+            'email'             => 'required|valid_email',
+            'pw'          => 'required|max_len,100|min_len,6'
+        ));
+    }
 }
 $validated_data = $gump->run($_POST);
 if($validated_data === false) {/* validation failed */
@@ -115,7 +122,11 @@ if($validated_data === false) {/* validation failed */
                             $_SESSION['PAGE']->message[] = array('message' => 'Benutzer erfolgreich aktualisiert', 'icon' => 'fa-user text-success');
                          }
             break;
-        
+        case 'getData':
+            $u = new Userdata();
+            $u->make();
+            $_SESSION['PAGE']->message[] = array('message' => 'Ihre Daten werden zusammengefasst und sind demnächst in "Meine Dateien" verfügbar', 'icon' => 'fa-user text-success');
+            break;
         default:
             break;
     }
