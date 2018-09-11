@@ -330,7 +330,23 @@ class User {
         $db = DB::prepare('SELECT COUNT(id) FROM users WHERE UPPER(username) = UPPER(?)');
         $db->execute(array($this->username));
         if($db->fetchColumn() >= 1) { 
+            $db1 = DB::prepare('SELECT id FROM users WHERE  UPPER(username) = UPPER(?)'); //load user id to get group enrolment working issue #150
+            $db1->execute(array($this->username));
+            $result = $db1->fetchObject(); 
+            $this->id = $result->id;
             $PAGE->message[] = array('message' => 'Benutzer '.$this->firstname.' '.$this->lastname.'('.$this->username.') existiert bereits', 'icon' => 'fa fa-user text-warning');// Schließen und speichern
+            if (is_array($institution_id)){                                          //duplicate (s. else statement)-> make function 
+                    $this->enroleToInstitutions($institution_id);                    //enrol to multiple Institutions
+                } else {  
+                    $this->enroleToInstitution($institution_id);                    // enrol to one Institution
+                    if (is_int($group_id)){                                         // enrol to group if id is set
+                        $db_01 = DB::prepare('SELECT COUNT(id) FROM groups WHERE id = ? AND institution_id = ?'); //check if group is enroled to given institution
+                        $db_01->execute(array($group_id, $institution_id));
+                        if($db_01->fetchColumn() >= 1) {
+                            $this->enroleToGroup(array($group_id));
+                        }
+                    }
+                }
         } else {
             if (!isset($this->paginator_limit)){ $this->paginator_limit = $CFG->settings->paginator_limit; } //fallback
             if (!isset($this->acc_days))       { $this->acc_days        = $CFG->settings->acc_days; }        //fallback
@@ -649,6 +665,7 @@ class User {
             } else { 
                 $db                 = DB::prepare('INSERT INTO groups_enrolments (status,group_id,user_id,creator_id) VALUES (1,?,?,?)');  //Status 1 == enroled
                 if ($db->execute(array($group_id, $this->id, $USER->id))){
+                    
                     $_SESSION['PAGE']->message[]    = array('message' => '<strong>'.$this->username.'</strong> in <strong>'.$groups->group.'</strong> eingeschrieben.', 'icon' => 'fa-user text-success');
                 }
             }   

@@ -76,7 +76,7 @@ $content  .= Form::input_checkbox('print_material', 'Materialien', $print_materi
 
 
 $content .= '</form>';
-$footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_print\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>'; 
+$footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_print\').submit();closePopup(\'null\');"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>'; 
 
 $html = Form::modal(array('target'      => 'null',
                           'title'       => $header,

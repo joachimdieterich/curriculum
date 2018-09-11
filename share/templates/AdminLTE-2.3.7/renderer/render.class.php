@@ -1800,23 +1800,25 @@ class Render {
                             <button type="button" class="'.$btn_type.' dropdown-toggle" data-toggle="dropdown">'.$label.' </button>
                             <ul class="dropdown-menu" role="menu">';
                             foreach($entrys as $key => $val) {
-                                switch ($type) {
-                                    case 'content':
-                                        $html .= '<li><a onclick="formloader(\'content\', \'show\','.$val->id.');">'.$val->title.'</span></a></li>';
-                                    break;
-                                    case 'file':
-                                        $html .= '<li><a onclick="formloader(\'preview\',\'file\','.$val->id.');">'.$val->title.'</span></a></li>';
-                                    break;
-                                    case 'menu':
-                                        if (isset($val->href)){
-                                            $html .= '<li><a href="'.$val->href.'" class="'.$val->href_class.'">'.$val->title.'</span></a></li>';
-                                        } else {
-                                            $html .= '<li><a onclick="'.$val->onclick.'">'.$val->title.'</span></a></li>';
-                                        }
-                                    break;
-                                    
-                                    default:
+                                if (isset($val->title)){ //prevent error_logs if empty entries are given
+                                    switch ($type) {
+                                        case 'content':
+                                            $html .= '<li><a onclick="formloader(\'content\', \'show\','.$val->id.');">'.$val->title.'</span></a></li>';
                                         break;
+                                        case 'file':
+                                            $html .= '<li><a onclick="formloader(\'preview\',\'file\','.$val->id.');">'.$val->title.'</span></a></li>';
+                                        break;
+                                        case 'menu':
+                                            if (isset($val->href)){
+                                                $html .= '<li><a href="'.$val->href.'" class="'.$val->href_class.'">'.$val->title.'</span></a></li>';
+                                            } else {
+                                                $html .= '<li><a onclick="'.$val->onclick.'">'.$val->title.'</span></a></li>';
+                                            }
+                                        break;
+
+                                        default:
+                                            break;
+                                    }
                                 }
                                 
                             }
@@ -2500,4 +2502,288 @@ public static function quote_reference($quotes){
         return '<div class="col-xs-12 top-buffer" >'.RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool"><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_onclick' => 'data-widget="collapse"', 'header_content' => 'Suchergebnisse', 'content_id' => null, 'body_content' => $content)).'</div>';
         
     }
+    
+    public static function print_reference($params){
+        $content    = '';
+        $pagebreak  = false; 
+        foreach($params as $key => $val) {
+            $$key   = $val;
+        }
+        if ($pagebreak){
+            $content  .= '<pagebreak>';
+            $pagebreak = false;
+        }
+        
+        $c                  = new Curriculum();
+        $c->id              = $id;
+        $c->load(false);
+        $content .= '<h3>'. $c->curriculum.'</h3>'; 
+        
+        $content .= '<h4>Bezüge zu den Kompetenzen / Lernziele</h4>'; 
+        $ter_obj  = new TerminalObjective();         //load terminal objectives
+        $ter      = $ter_obj->getObjectives('certificate', $id);
+        $temp_ter_id = 0;
+        foreach ($ter as $ter_value) {
+            $ena_obj                = new EnablingObjective();         //load enabling objectives
+            $ena_obj->curriculum_id = $id;
+            $ena                    = $ena_obj->getObjectives('terminal_objective', $ter_value->id);
+            $reference   = new Reference(); // todo: create function for both terminal and enabling objective (removes double code)
+           
+            $references  = $reference->get('reference_id', $_SESSION['CONTEXT']['terminal_objective']->context_id, $ter_value->id);
+            if (count($references) > 0){
+                $content    .= SELF::print_reference_objectives(array('references' => $references, 'ter_value' => $ter_value));
+                $print_ter = false; 
+            } else {
+                $print_ter = true;
+            }
+            if(count($references) > 0 OR $temp_ter_id == 0){ $temp_ter_id = $ter_value->id; }
+            if (is_array($ena)){
+                foreach ($ena as $ena_value) {
+                    $ena_obj->id        = $ena_value->id;
+                    $ena_obj->load();  
+                    $reference = new Reference();
+                    $references = $reference->get('reference_id', $_SESSION['CONTEXT']['enabling_objective']->context_id, $ena_obj->id);
+                    
+                    //if ($temp_ter_id != $ter_value->id OR $temp_ter_id == 0){ $print_ter = true; } else { $print_ter = false; }
+                    $content    .= SELF::print_reference_objectives(array('references' => $references, 'dependency' => 'enabling_objective', 'ter_value' => $ter_value, 'ena_value' => $ena_value, 'print_ter' => $print_ter));
+                }
+            }
+           
+            
+         }
+
+         if (count($ena) > 0){
+             $pagebreak = true;   
+         }
+         
+        /* Print Text References*/
+        $linked_curricula   = $c->loadConfig(); 
+        foreach ($linked_curricula as $l_cur_id) {
+
+            $ter_ids = $c->getFieldArray($l_cur_id, 'terminal_objectives');
+            $ena_ids = $c->getFieldArray($l_cur_id, 'enabling_objectives');
+            $ct_ids  = $c->getFieldArray($id, 'curriculum_content');
+            $quote   = new Quote(); 
+            $cur_ct_refs = $quote->get('curriculum_content', $ct_ids, $ter_ids, $ena_ids);
+            if (count($cur_ct_refs) > 0){
+                $content .= '<h4>Bezüge zu Lehrplantexten</h4>'; 
+                $content .= RENDER::print_reference_quote(array('references' => $cur_ct_refs, 'curriculum_id' => $id ));
+            }
+        }
+         
+         return $content;
+    }
+    /**
+     * Generate References 
+     * @param array $params
+     * @return string html
+     */
+    public static function print_reference_objectives($params){
+        $content     = ''; 
+        $dependency  = 'terminal_objective';
+        $print_ter   = true;
+        $temp_cur_id = 0;
+        $temp_ter_id = 0;
+        $temp_ena_id = 0;
+        foreach($params as $key => $val) {
+            $$key   = $val;
+        }
+        
+        if (count($references) > 0){
+            switch ($dependency) {
+                case 'terminal_objective':
+                         $content    .= '<div style="padding:2px;border:1px solid '.$ter_value->color.';background:'.$ter_value->color.'; color:'.getContrastColor($ter_value->color).';"><small>'.strip_tags($ter_value->terminal_objective).'</small></div>';
+                    break;
+                case 'enabling_objective':
+                    if ($print_ter){
+                        $content    .= '<div style="padding:2px;border:1px solid '.$ter_value->color.';background:'.$ter_value->color.'; color:'.getContrastColor($ter_value->color).';"><small>'.strip_tags($ter_value->terminal_objective, '<br>').'</small></div>';
+                    }
+                        $content    .= '<div style="padding:2px;border:1px solid '.$ter_value->color.';background:#FFF; color:#000;"><small>'.strip_tags($ena_value->enabling_objective, '<br>').'</small></div>';
+                    break;
+
+                default:
+                    break;
+            }
+
+            if (!empty($references)){
+                $content    .='<table  frame="box" style="width:100%; overflow: wrap; vertical-align: top; autosize:1;">';   
+            }
+            $i   = 0;
+            $j   = 0;
+             
+            $max = count($references);
+            foreach ($references as $ref) { 
+                $j_max = 1;
+                $k_max = 1;
+                $css = 'border-bottom:0.5pt solid black;'; 
+                if ($temp_cur_id == 0 OR $temp_cur_id != $ref->curriculum_object->id){
+                    $content    .= '<tr><td colspan="3" style="height:10px;"></td> </tr><tr><td colspan="3" style="width:100%;margin-top:10px;background:#DDD; "><small>Überfachlicher Bezug zu <i> '.strip_tags($ref->curriculum_object->curriculum).'</i>' .'</small></td></tr>';
+                    if ($i == 0) {
+                        $content    .='<tr><thead><th style="width:30%; '.$css.'"><small>Kompetenz/Inhalt</small></th><th style="width:30%; '.$css.'"><small>Teilkompetenz/Konkretisierung</small></th><th style="width:40%; '.$css.'"><small>Anregung zur Unterrichtsgestaltung</small></th></thead></tr>';  
+                    }
+                    $temp_cur_id = $ref->curriculum_object->id;
+                }
+                if ($i == $max - 1 OR $references[$i+1]->curriculum_object->id != $temp_cur_id) { 
+                    $css = 'padding-bottom: 10px;'; 
+                } 
+               
+                $content    .='<tr>';
+                    if (isset($references[$i+1]->terminal_object->terminal_objective)) {
+                        if ($references[$i+1]->terminal_object->id == $ref->terminal_object->id){
+                           $css = '' ;
+                        } else {
+                           $css = 'border-bottom:0.5pt solid black;';   
+                        }    
+                    } 
+
+                    $content    .='<td style="width:30%; '.$css.'">';   
+                    if ($temp_ter_id == 0 OR $temp_ter_id != $ref->terminal_object->id){
+                        RENDER::reference('terminal_objective', $ref->terminal_object->id, array('schooltype_id' => 'false', 'subject_id' => 'false', 'curriculum_id' => 'false', 'grade_id' => 'false', 'ajax' => 'false')) .'</div>';
+                        $content .= '<small>'.strip_tags($ref->terminal_object->terminal_objective).'</small>';
+                        $temp_ter_id = $ref->terminal_object->id;   
+                    }
+                    $content .= '</td>';
+
+                    if ($i == $max - 1 OR $references[$i+1]->curriculum_object->id != $temp_cur_id) { 
+                        $css = 'padding-bottom: 10px;'; 
+                    } else {
+                        $css = 'border-bottom:0.5pt solid black;';   
+                    }
+   
+                    if (isset($references[$i+1]->enabling_object->enabling_objective)) {
+                        if ($references[$i+1]->enabling_object->id == $ref->enabling_object->id){
+                           $css = '' ;
+                        } else {
+                           $css = 'border-bottom:0.5pt solid black;';   
+                        }    
+                    } 
+                    $content    .='<td style="width:30%; '.$css.'">';  
+                    if ($temp_ena_id == 0 OR $temp_ena_id != $ref->enabling_object->id){
+                        if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id){
+                            $content .= '<small>'.strip_tags($ref->enabling_object->enabling_objective, '<br>').'</small>';
+                            $temp_ena_id = $ref->enabling_object->id;
+                        }
+                    }
+                    $content    .='</td>';
+                    
+                    if (isset($references[$i+1]->content_object->content)) {
+                        if ($references[$i+1]->content_object->content == $ref->content_object->content){
+                           $css = '' ;
+                        } else {
+                           $css = 'border-bottom:0.5pt solid black;';   
+                        }    
+                    }
+                    /* Print reference content */
+                    $content    .='<td style="width:40%; '.$css.'">'; 
+                    if (isset($ref->content_object->content)){
+                        if ($ref->content_object->content != ''){
+                            if (isset($references[$i-1]->content_object->content)){
+                                if ($references[$i-1]->content_object->content != $ref->content_object->content){
+                                    $content .= '<small>'.strip_tags($ref->content_object->content, '<br>').'</small>' ;
+                                }
+                            } else {
+                                $content .= '<small>'.strip_tags($ref->content_object->content, '<br>').'</small>' ; 
+                            }
+                        }
+                    }
+                    $content .= '</td>';
+                    
+                $content    .='</tr>';
+                $i++;
+            }
+             if (!empty($references)){
+                $content    .='</table><br><br>';
+            }
+        
+        }
+        
+        return $content; 
+    }
+    public static function print_reference_quote($params){
+        $content     = '';    
+        $temp_ref_id = 0;
+        $temp_cur_id = 0;
+        $temp_ter_id = 0;
+        $temp_ena_id = 0;
+        $content_id  = '';
+       
+        foreach($params as $key => $val) {
+            $$key   = $val;
+        }
+        
+        if (count($references) > 0 ){
+            if (!empty($references)){
+                $content    .='<table  frame="box" style="width:100%; overflow: wrap; vertical-align: top; autosize:1;">';   
+            }
+            
+            $c        = new Curriculum();    
+            $c->id    = $curriculum_id;
+            $c->load();
+            $content .= '<tr><td colspan="3" style="height:10px;"></td> </tr><tr><td colspan="3" style="width:100%;margin-top:10px;background:#DDD; "><small>'.$c->curriculum.'</small></td></tr>';
+            
+            $i = 0;
+            $max = count($references);
+            foreach ($references as $ref) { 
+                $css = 'border-bottom:0.5pt solid black;'; 
+                if ($ref->quote_link != $content_id){ //if new content render Title
+                    $content .= '<tr><td colspan="3" style="height:10px;"></td> </tr><tr><td colspan="3" style="width:100%;margin-top:10px;background:#DDD; "><small>'.$ref->reference_title.'</small></td></tr>';
+                    if ($i == 0) {
+                        $content    .='<tr><thead><th style="width:30%; '.$css.'"><small>Kompetenz/Inhalt</small></th><th style="width:30%; '.$css.'"><small>Teilkompetenz/Konkretisierung</small></th><th style="width:40%; '.$css.'"><small>Fundstelle im Text</small></th></thead></tr>';  
+                    }
+                    
+                }
+                $content_id = $ref->quote_link;
+                
+                $content    .='<tr><td style="width:30%; '.$css.'">';   
+                if ($temp_ter_id == 0 OR $temp_ter_id != $ref->terminal_object->id){     
+                    if ($ref->context_id == $_SESSION['CONTEXT']['terminal_objective']->context_id) {
+                        $content .= '<small>'.strip_tags($ref->terminal_object->terminal_objective).'</small>';
+                        $temp_ter_id = $ref->terminal_object->id;   
+                    }    
+                }
+                $content    .='</td><td style="width:30%; '.$css.'">';  
+                if ($temp_ena_id == 0 OR $temp_ena_id != $ref->enabling_object->id){
+                    if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id){
+                        $content .= '<small>'.strip_tags($ref->enabling_object->enabling_objective, '<br>').'</small>';
+                        $temp_ena_id = $ref->enabling_object->id;
+                    }
+                }
+                if (isset($references[$i+1]->content_object->content)){
+                    if ($ref->content_object->content == $references[$i+1]->content_object->content){
+                        $css = '';
+                    }
+                }
+                
+                if (isset($references[$i+1]->quote)) {
+                        if ($references[$i+1]->quote == $ref->quote){
+                           $css = '' ;
+                        } else {
+                           $css = 'border-bottom:0.5pt solid black;';   
+                        }    
+                    }
+                
+                $content    .='</td><td style="width:40%; '.$css.'">'; 
+                if ($ref->quote != ''){
+                    if (isset($references[$i-1]->quote)){
+                        if ($references[$i-1]->quote != $ref->quote){
+                            $content .= '<small>'.strip_tags($ref->quote, '<br>').'</small>' ;
+                        }
+                    } else {
+                        $content .= '<small>'.strip_tags($ref->quote, '<br>').'</small>' ; 
+                    }
+                }
+                $content .= '</td>';
+                $content    .='</tr>';
+                $i++;                
+            }
+             if (!empty($references)){
+                $content    .='</table><br><br>';
+            }
+        
+        }
+        
+        return $content; 
+    }
+    
+    
 }
