@@ -2277,16 +2277,16 @@ class Render {
          $references  = ofilter($references, ['grade_id' => $get['grade_id']]);
     }
     if (isset($references)){
-        $subject_id = '';
+        $curriculum_id = '';
         foreach ($references as $ref) {
-            if ($ref->subject_id != $subject_id){
-                if ($subject_id != ''){
+            if ($ref->curriculum_id != $curriculum_id){
+                if ($curriculum_id != ''){
                     $content .= '</span>';
                 }
-                $subject_id = $ref->subject_id;
+                $curriculum_id = $ref->curriculum_id;
                 
-                $content .= '<span class="col-xs-12 bg-light-aqua" data-toggle="collapse" data-target="#subject_'.$subject_id.'"><h4 class="text-black" >'.$ref->curriculum_object->curriculum.' <small>'.$ref->schooltype.'</small><button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#subject_'.$subject_id.'" aria-expanded="true" data-toggle="tooltip" title="Fach einklappen bzw. ausklappen"><i class="fa fa-expand"></i></button></h4></span><hr style="clear:both;">';
-                $content .= '<span id ="subject_'.$subject_id.'" class="collapse out">';
+                $content .= '<span class="col-xs-12 bg-light-aqua" data-toggle="collapse" data-target="#curriculum_'.$curriculum_id.'"><h4 class="text-black" >'.$ref->curriculum_object->curriculum.' <small>'.$ref->schooltype.'</small><button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#curriculum_'.$curriculum_id.'" aria-expanded="true" data-toggle="tooltip" title="Fach einklappen bzw. ausklappen"><i class="fa fa-expand"></i></button></h4></span><hr style="clear:both;">';
+                $content .= '<span id ="curriculum_'.$curriculum_id.'" class="collapse out">';
             }
             $content .= RENDER::render_reference_entry($ref, $_SESSION['CONTEXT']['terminal_objective']->context_id);
         }
