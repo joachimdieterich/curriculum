@@ -2278,15 +2278,20 @@ class Render {
     }
     if (isset($references)){
         $curriculum_id = '';
+        $count_ref = count($references);
         foreach ($references as $ref) {
             if ($ref->curriculum_id != $curriculum_id){
                 if ($curriculum_id != ''){
                     $content .= '</span>';
                 }
                 $curriculum_id = $ref->curriculum_id;
-                
-                $content .= '<span class="col-xs-12 bg-light-aqua" data-toggle="collapse" data-target="#curriculum_'.$curriculum_id.'"><h4 class="text-black" >'.$ref->curriculum_object->curriculum.' <small>'.$ref->schooltype.'</small><button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#curriculum_'.$curriculum_id.'" aria-expanded="true" data-toggle="tooltip" title="Fach einklappen bzw. ausklappen"><i class="fa fa-expand"></i></button></h4></span><hr style="clear:both;">';
-                $content .= '<span id ="curriculum_'.$curriculum_id.'" class="collapse out">';
+                if ($count_ref > 1){
+                    $content .= '<span class="col-xs-12 bg-light-aqua" data-toggle="collapse" data-target="#curriculum_'.$curriculum_id.'"><h4 class="text-black" >'.$ref->curriculum_object->curriculum.' <small>'.$ref->schooltype.'</small><button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#curriculum_'.$curriculum_id.'" aria-expanded="true" data-toggle="tooltip" title="Fach einklappen bzw. ausklappen"><i class="fa fa-expand"></i></button></h4></span><hr style="clear:both;">';
+                    $content .= '<span id ="curriculum_'.$curriculum_id.'" class="collapse out">';
+                } else {
+                    $content .= '<span class="col-xs-12 bg-light-aqua" data-toggle="collapse" data-target="#curriculum_'.$curriculum_id.'"><h4 class="text-black" >'.$ref->curriculum_object->curriculum.' <small>'.$ref->schooltype.'</small><button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#curriculum_'.$curriculum_id.'" aria-expanded="true" data-toggle="tooltip" title="Fach einklappen bzw. ausklappen"><i class="fa fa-compress"></i></button></h4></span><hr style="clear:both;">';
+                    $content .= '<span id ="curriculum_'.$curriculum_id.'" class="collapse in">';
+                }
             }
             $content .= RENDER::render_reference_entry($ref, $_SESSION['CONTEXT']['terminal_objective']->context_id);
         }
