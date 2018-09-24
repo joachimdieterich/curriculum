@@ -1870,7 +1870,6 @@ class Render {
         $data_ride   = 'carousel';
         $slides     = array(); //[caption => '...', content => '...']
         foreach($params as $key => $val) {
-            //error_log($key.' -> '. $val);
             $$key = $val;
         }
         $html = '<div id="'.$carousel_id.'" class="carousel slide" data-ride="'.$data_ride.'" >
@@ -1910,7 +1909,6 @@ class Render {
         global $CFG, $USER;
         
         foreach($params as $key => $val) {
-            //error_log($key.' -> '. $val);
             $$key = $val;
         }
         $html = '';
@@ -2082,7 +2080,6 @@ class Render {
             $cur->id            = $ref_id; 
             $cur->load(false);
             $icon_url           = $CFG->access_id_url.$cur->icon_id;//.'&size=t';
-            //error_log('gr_id'.$group_id);
             $widget_onclick     = "location.href='index.php?action=view&curriculum_id={$ref_id}&group={$group_id}';";
         } 
         
@@ -2389,7 +2386,7 @@ public static function quote_reference($quotes){
     if (isset($quotes)){
         $content_id = '';
         $quote_id   = '';
-        //error_log(count($quotes));
+        
         foreach ($quotes as $ref) {
             if ($ref->quote_link != $content_id){ //if new content render Title
                 if ($content_id != ''){
@@ -2484,6 +2481,10 @@ public static function quote_reference($quotes){
         //RENDER::sortByProp($params['search_results'], 'title', 'asc');
         /*Maybe realize further filter options with ofilter()*/
         $c_id = '';
+        $empty = true;
+        if (count($params['search_results']) < 1){
+            return '';
+        }
         foreach ($params['search_results'] as $s_result) {
             if ($s_result['id'] != $c_id){
                 if ($c_id != ''){
@@ -2498,14 +2499,16 @@ public static function quote_reference($quotes){
             }
             foreach ($s_result['matches'] AS $m_result){
                 $content .= '<blockquote>'.str_ireplace ( $params['get']['search'] , '<span class="bg-yellow color-palette">'.$params['get']['search'].'</span>' , $m_result ).'<small>'.$s_result['title'].', <cite="'.$s_result['title'].'" class="pointer_hand"><a onclick="formloader(\'content\', \'show\','.$s_result['id'].');">'.$s_result['title'].'</a></cite></small></blockquote>'; 
-            }
+                $empty = false;
+            }   
         }
         $content .= '</span>'; //close last subject span
-        
-        
-                                
-        return '<div class="col-xs-12 top-buffer" >'.RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool"><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_onclick' => 'data-widget="collapse"', 'header_content' => 'Suchergebnisse', 'content_id' => null, 'body_content' => $content)).'</div>';
-        
+         
+        if ($empty == true){
+            return '';
+        } else {
+            return '<div class="col-xs-12 top-buffer" >'.RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool"><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_onclick' => 'data-widget="collapse"', 'header_content' => 'Suchergebnisse', 'content_id' => null, 'body_content' => $content)).'</div>';
+        }
     }
     
     public static function print_reference($params){
