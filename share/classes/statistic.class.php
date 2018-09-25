@@ -206,7 +206,7 @@ class Statistic {
                                      $node_l0->children[] = clone $node_l1;
                                  }
                                 $node_l0->size = $size_l0;
-                                
+                                error_log("STATISTIK " . json_encode($node_l0));
                                 return json_encode($node_l0);   
                 break;
             case 'curriculum':  $node_l3 = new Node();
@@ -378,6 +378,7 @@ class Statistic {
         }
         $node_l0->size = $size_l0;
         //error_log(json_encode($node_l0));
+        error_log("STATISTIK " . json_encode($node_l0));
         return json_encode($node_l0);
     }
  

@@ -5,6 +5,15 @@
 {block name=nav}{$smarty.block.parent}{/block}
 
 {block name=additional_scripts}{$smarty.block.parent}
+    <script src="{$media_url}scripts/d3.v3.min.js"></script>
+    <script src="{$media_url}scripts/treeDiagramm.js"></script>
+    <style>
+        .link {
+            fill: none;
+            stroke: #ccc;
+            stroke-width: 1.5px;
+          }
+    </style>
     {if isset($glossar_json)}
         <script src="{$media_url}scripts/glossarizer/jquery.glossarize.min.js"></script>
         <script src="{$media_url}scripts/glossarizer/tooltip/tooltip.min.js"></script>
@@ -71,6 +80,7 @@
 <section class="content " >   
     <div class="row ">
         <div class="col-xs-12" >
+            <div id ='chart'> </div>
             <form action="#" class="no-padding col-xs-12 col-sm-12 col-md-4 col-lg-3 pull-right" onsubmit="ajax_search({$course[0]->curriculum_id},$('#v_search').val());$('#search_results').load('../share/request/render_html.php?render=search&func=view&id={$course[0]->curriculum_id}&search='+$('#v_search').val()+'&ajax=true#search_results');return false">
                 <div class="input-group">
                   <input type="text" id="v_search" class="form-control" placeholder="Suche...">
@@ -184,6 +194,7 @@
                                                     {if $ena->order_id neq '1'}
                                                         {assign var="orderdown" value=true}
                                                     {/if}
+                                                    
                                                     {RENDER::objective(["type" =>"enabling_objective", "objective" => $ena , "user_id" => $my_id, "solutions" => $solutions, "edit" => true, "orderup" => $orderup, "orderdown" => $orderdown, "border_color" => $ter->color, "highlight" => $highlight])}
                                                 {else}
                                                     {RENDER::objective(["type" =>"enabling_objective", "objective" => $ena , "user_id" => $my_id, "solutions" => $solutions, "group_id" => $page_group, "border_color" => $ter->color, "highlight" => $highlight, "reference_view" => $reference_view])}

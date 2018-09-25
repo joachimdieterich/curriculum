@@ -30,4 +30,6 @@ class Node {
     public $parentName;
     public $children;
     public $linkDistance;
+    public $type;
+    public $id;
 }

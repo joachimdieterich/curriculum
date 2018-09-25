@@ -713,7 +713,20 @@ class Render {
                             $content_menu_obj->onclick  = 'formloader(\'solution\',\'solution\', \''.$objective->id.'\', {\'group_id\':\''.$group_id.'\', \'curriculum_id\': \''.$objective->curriculum_id.'\'});';
                             $content_menu_obj->title    = '<i class="fa fa-files-o"></i> Eingereichte Lösungen (Texteingaben)';
                             $c_menu_array[]             = clone $content_menu_obj;
+                            
+                            ##TODO: Passt hier die Berechtigung
+                            $content_menu_obj->onclick  = 'formloader(\'foreknowledge\',\'set\', \''.$objective->id.'\', {\'group_id\':\''.$group_id.'\'});';
+                            $content_menu_obj->title    = '<i class="fa fa-files-o"></i> Vorwissen festlegen';
+                            $c_menu_array[]             = clone $content_menu_obj;
+                            
+                            
+                            
+                            #####TODO Eigene Berechtigung machen. 
+                            $content_menu_obj->onclick  = 'formloader(\'foreknowledge\',\'show\', \''.$objective->id.'\', {\'group_id\':\''.$group_id.'\'});';
+                            $content_menu_obj->title    = '<i class="fa fa-files-o"></i> Benötigtes Vorwissen';
+                            $c_menu_array[]             = clone $content_menu_obj;
                         }
+                        
                         if (checkCapabilities('user:getHelp', $USER->role_id, false) AND $type != 'terminal_objective' AND isset($group_id)){
                             $content_menu_obj->onclick  = 'formloader(\'support\',\'random\', \''.$objective->id.'\', {\'group_id\':\''.$group_id.'\'});';
                             $content_menu_obj->title    = '<i class="fa fa-support" ></i> Gruppenmitglied um Hilfe bitten';
