@@ -111,7 +111,7 @@
                     <button class="btn btn-default disabled btn-flat" style="cursor:default">nicht bearbeitet</button>
                     </p>
                 </div>
-                <div class="box-body">
+                <div class="box-body" style="min-height:400px;">
         
                 {if $show_course != '' and isset($terminalObjectives)} 
                     {foreach key=terid item=ter from=$terminalObjectives}
