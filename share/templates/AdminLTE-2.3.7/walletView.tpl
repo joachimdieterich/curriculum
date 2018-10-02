@@ -156,7 +156,7 @@
                         {$wallet->description}<br>
                         
                         {foreach key=oid item=o from=$objectives}
-                            {if $sel_user_id}
+                            {if $sel_user_id AND $my_role_id != 0}
                                 <div style="display:inline-table">{RENDER::objective(["type" =>"enabling_objective", "objective" => $o , "user_id" => $sel_user_id])}</div>
                             {else}
                                 <div style="display:inline-table">{RENDER::objective(["type" =>"enabling_objective", "objective" => $o ])}</div>
