@@ -598,7 +598,11 @@ function comment(/*func reference_id, context_id, text, (parent_id)*/){
  **/
 function del() {
     if (confirm("Datensatz wirklich l\u00f6schen?")) {
-        var url = "../share/processors/p_delete.php?db="+arguments[0]+"&id="+ arguments[1]; 
+        if (typeof(arguments[2]) !== 'undefined'){
+            var url = "../share/processors/p_delete.php?db="+arguments[0]+"&id="+ arguments[1]+"&ref_id="+ arguments[2];
+    } else {
+            var url = "../share/processors/p_delete.php?db="+arguments[0]+"&id="+ arguments[1];
+    }
         
         req = XMLobject();
         if(req) {      
