@@ -243,24 +243,51 @@ function floating_table(wrapper, defaultTop, headerHeight, main_sidebar_class, p
 }*/
 
 /* floating_table with fixed header */
-function floating_table(wrapper, defaultTop, paginator, field_array, target, source, default_position){
+function findBottomPos(obj) {
+    var curbottom = 0;
+    if (obj.offsetParent) {
+      var offsetHeight = obj.offsetHeight;
+      curbottom = obj.offsetTop + offsetHeight
+      while (obj = obj.offsetParent) {
+        curbottom += obj.offsetTop
+      }
+    }
+    return curbottom;
+}
+
+function findTopPos(obj) {
+    var curtop = 0;
+    if (obj.offsetParent) {
+      curtop = obj.offsetTop
+      while (obj = obj.offsetParent) {
+        curtop += obj.offsetTop
+      }
+    }
+    return curtop;
+}
+
+function floating_table(wrapper, paginator, field_array, target, source, default_position){
     $("#"+wrapper).scroll(function(e) {
             var scrollTop = $(e.target).scrollTop();
-            
-            if ((scrollTop > defaultTop) && (small === false)){
+            defaultTop    = findTopPos($("#"+default_position)[0]);
+            defaultBottom = findBottomPos($("#"+default_position)[0]);
+            defaultHeight = defaultBottom-defaultTop;
+            if ((scrollTop > defaultBottom-50) && (small === false)){
                 for(var i = 0, j = field_array.length; i < j; ++i) {
                     $('td[name='+paginator+'_col_'+field_array[i]+']').addClass("hidden");
                 }
                 $("#"+source).appendTo("#"+target);
+                $('<div id="dummySpacePaginator" style="height: '+defaultHeight+'px;"></div>').appendTo("#"+default_position);
                 $("#"+target).css({'background-color': '#ecf0f5', 'webkit-transform':'translate3d(0,0,0)'});
                 small    = true;
-            } 
-             
-            if ((scrollTop < defaultTop) && (small === true)){
-                small = false;
-                $("#"+source).appendTo("#"+default_position);
-                for(var i = 0, j = field_array.length; i < j; ++i) {
-                    $('td[name='+paginator+'_col_'+field_array[i]+']').removeClass("hidden");
+            } else {
+                if ((scrollTop < defaultBottom-50) && (small === true)){
+                    small = false;
+                    $("#"+source).appendTo("#"+default_position);
+                    $("#dummySpacePaginator").remove();
+                    for(var i = 0, j = field_array.length; i < j; ++i) {
+                        $('td[name='+paginator+'_col_'+field_array[i]+']').removeClass("hidden");
+                    }
                 }
             }
         });
