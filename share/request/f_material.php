@@ -158,9 +158,17 @@ if (!$files AND !isset($references) AND !isset($sodis)){
     /* tab content*/
     $content .='<div class="tab-content">';
     
-    $file_context = 1;
-    $used_subjects = [];
-    $m_boxes_data = [];
+    $file_context       = 1;
+    $used_subjects      = [];
+    $m_boxes_data       = [];
+    $allowed_subject    = new Subject();
+    $allowed_subjects   = array();
+    foreach($allowed_subject->getSubjects() as $as){
+        if ($as->schooltype_id == $USER->institution->schooltype_id) {
+            $allowed_subjects[] = $as->subject;
+        }
+    }
+    
     for($i = 0; $i < count($files); $i++) {
         /* reset vars */
         $m_footer       = '';
@@ -172,8 +180,10 @@ if (!$files AND !isset($references) AND !isset($sodis)){
         if (isset($files[$i]->subjects)){
             foreach ( $files[$i]->subjects as $file_subj) {
                 if (! isset($used_subjects[$file_subj])) {
-                    $used_subjects[$file_subj]->subject_id = $file_subj;
-                    $used_subjects[$file_subj]->subject    = $file_subj;
+                    if ( in_array($file_subj, $allowed_subjects) ) {
+                        $used_subjects[$file_subj]->subject_id = $file_subj;
+                        $used_subjects[$file_subj]->subject    = $file_subj;
+                    }
                 }
             }
         }
