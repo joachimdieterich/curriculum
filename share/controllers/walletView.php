@@ -79,8 +79,8 @@ $TEMPLATE->assign('objectives', $obj);
 $TEMPLATE->assign('page_bg_file_id', $wallet->file_id); 
 
 
-
-$p_options     = array('delete'    => array('onclick'    => "del('wallet_sharing',{$wallet->id},__id__);",
+if ($users) {
+    $p_options = array('delete'    => array('onclick'    => "del('wallet_sharing',{$wallet->id},__id__);",
                                             'capability' => checkCapabilities('wallet:share', $USER->role_id, false),
                                             'icon'       => 'fa fa-trash',
                                             'tooltip'    => 'lÃ¶schen'),
@@ -88,11 +88,11 @@ $p_options     = array('delete'    => array('onclick'    => "del('wallet_sharing
                                             'capability' => checkCapabilities('mail:postMail', $USER->role_id, false),
                                             'icon'       => 'fa fa-envelope',
                                             'tooltip'    => 'Nachricht schreiben'));
-$t_config      = array('table_id'  => array('id'         => 'contentsmalltable'),
+    $t_config  = array('table_id'  => array('id'         => 'contentsmalltable'),
                        'td'        => array('onclick'    => "location.href='index.php?action=walletView&wallet={$wallet->id}&user_id=__id__';"));
-$p_config   = array(   'id'        => 'no-checkrow',
-                       'username'  => 'Benutzername', 
-                       'firstname' => 'Vorname', 
+    $p_config  = array('id'        => 'no-checkrow',
+                       'username'  => 'Benutzername',
+                       'firstname' => 'Vorname',
                        'lastname'  => 'Nachname',
                        'permission'=> 'Freigabe',
                        'timerange' => 'Freigabezeitraum',
@@ -100,6 +100,6 @@ $p_config   = array(   'id'        => 'no-checkrow',
                        'role_name' => 'Rolle',*/
                        'p_search'  => array('username', 'firstname', 'lastname'),
                        'p_options' => $p_options,
-                       't_config'  => $t_config); 
-
-setPaginator('walletuserPaginator', $TEMPLATE, $users, 'results', 'index.php?action=walletView&wallet='.$wallet->id, $p_config); //set Paginator 
+                       't_config'  => $t_config);
+    setPaginator('walletuserPaginator', $TEMPLATE, $users, 'results', 'index.php?action=walletView&wallet='.$wallet->id, $p_config); //set Paginator 
+}
