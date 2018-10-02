@@ -24,7 +24,7 @@
 */
 $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
-include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
+include_once(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER, $PAGE, $CFG;
 
 $USER       = $_SESSION['USER'];
@@ -45,9 +45,11 @@ switch ($func) {
     case 'terminal_objective':  Statistic::setStatistics($_SESSION['CONTEXT'][$func]->context_id, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT)); // click counter
                                 $files       = $file->getFiles($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => true));
                                 $sodis       = $repo->get($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
+                                // get internal references
                                 $reference   = new Reference();
                                 $references  = $reference->get('reference_id', $_SESSION['CONTEXT'][$func]->context_id, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
                                 Reference::sortByProp($references, $s_key, 'asc');
+                                // get quotes
                                 $quote       = new Quote();
                                 $quotes      = $quote->get($_SESSION['CONTEXT'][$func]->context_id, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
  
@@ -157,6 +159,8 @@ if (!$files AND !isset($references) AND !isset($sodis)){
     $content .='<div class="tab-content">';
     
     $file_context = 1;
+    $used_subjects = [];
+    $m_boxes_data = [];
     for($i = 0; $i < count($files); $i++) {
         /* reset vars */
         $m_footer       = '';
@@ -165,7 +169,14 @@ if (!$files AND !isset($references) AND !isset($sodis)){
         $m_preview      = null;
         $m_delete       = null;
         $m_content      = ''; 
-        
+        if (isset($files[$i]->subjects)){
+            foreach ( $files[$i]->subjects as $file_subj) {
+                if (! isset($used_subjects[$file_subj])) {
+                    $used_subjects[$file_subj]->subject_id = $file_subj;
+                    $used_subjects[$file_subj]->subject    = $file_subj;
+                }
+            }
+        }
         if ($files[$i]->file_context >= $file_context){ 
             /*switch ($files[$i]->file_context) {
                 case 1: $level_header = 'Globale Dateien'; break;
@@ -181,6 +192,7 @@ if (!$files AND !isset($references) AND !isset($sodis)){
         }
         
         $m_title    = '';
+        $m_subjects = '';
         $m_url      = '';
         $m_onclick  = '';
         /* Icon */ 
@@ -192,11 +204,11 @@ if (!$files AND !isset($references) AND !isset($sodis)){
                     if ($k == 'filename'){  $filename = $v; }
                     if ($k == 'size')    {      $size = $v; }
                 }
-                if ($files[$i]->type != 'external'){
+                if ($files[$i]->type == 'internal'){
                     $f_versions .= '<a class="pull-right" href="'.$CFG->access_file.$files[$i]->context_path.$files[$i]->path.$filename .'" target="_blank">'.translate_size($key).' ('.$size.')</a><br>'; 
                 }        
                 if ($key == 't'){
-                    if ($files[$i]->type == 'external'){
+                    if ($files[$i]->type != 'internal'){
                         $preview =  $filename ;
                     } else {
                         $preview =  $CFG->access_file.$files[$i]->context_path.$files[$i]->path.$filename;
@@ -207,7 +219,7 @@ if (!$files AND !isset($references) AND !isset($sodis)){
         }
         /* . Icon */
 
-        if ($files[$i]->type != 'external'){ 
+        if ($files[$i]->type == 'internal'){ 
             $m_onclick      = 'updateFileHits('.$files[$i]->id.')'; 
         
         } else { 
@@ -220,6 +232,11 @@ if (!$files AND !isset($references) AND !isset($sodis)){
             $m_title        = $files[$i]->title;
         }
         $m_description  = $files[$i]->description;
+        if (isset($files[$i]->subjects)){
+            $m_subjects = $files[$i]->subjects;
+        } else {
+            $m_subjects = [];
+        }
         
         switch ($files[$i]->type) {
             case '.url':      $m_url = $files[$i]->path;       
@@ -310,20 +327,20 @@ if (!$files AND !isset($references) AND !isset($sodis)){
                            </div><!-- ./row -->
                           </div><!-- ./info-box-text -->';
         }   
-        
-        $m_boxes .= Form::info_box(array('id'          => $m_id,
-                                         'preview'     => $m_preview,
-                                         'license_icon'=> $m_license_icon,
-                                         'icon_class'  => $m_icon_class,
-                                         'delete'      => $m_delete,
-                                         'url'         => $m_url,
-                                         'onclick'     => $m_onclick,
-                                         'title'       => $m_title,
-                                         'description' => $m_description,
-                                         'player'      => $m_player,
-                                         'content'     => $m_content, 
-                                         'footer'      => $m_footer));
-        unset($m_id, $preview, $m_preview, $m_icon_class, $m_delete, $m_url, $m_onclick, $m_title, $m_description, $m_player, $m_content, $m_footer, $m_hits, $f_versions, $license);
+        $m_boxes_data[$i] = array('id'          => $m_id,
+                                  'preview'     => $m_preview,
+                                  'license_icon'=> $m_license_icon,
+                                  'icon_class'  => $m_icon_class,
+                                  'delete'      => $m_delete,
+                                  'url'         => $m_url,
+                                  'onclick'     => $m_onclick,
+                                  'title'       => $m_title,
+                                  'description' => $m_description,
+                                  'subjects'    => $m_subjects,
+                                  'player'      => $m_player,
+                                  'content'     => $m_content,
+                                  'footer'      => $m_footer);
+        unset($m_id, $preview, $m_preview, $m_icon_class, $m_delete, $m_url, $m_onclick, $m_title, $m_description, $m_subjects, $m_player, $m_content, $m_footer, $m_hits, $f_versions, $license);
 
         /* context box */   
         /* generate tabs for each file context*/
@@ -332,12 +349,27 @@ if (!$files AND !isset($references) AND !isset($sodis)){
             $close = true;
         }
         
-        if ($close == true AND $m_boxes != ''){ //close file_context box // only generate tab-pane when there are files (m_boxes)
+        if ($close == true AND $m_boxes_data != []){ //close file_context box // only generate tab-pane when there are files (m_boxes)
             $content   .='<div class="tab-pane';
             if ($active[$file_context-1] == 'active' ){
                 $content   .=' active';
             }
-            $content   .='" id="f_context_'.($file_context-1).'">'.$m_boxes.'</div>';
+            $content   .='" id="f_context_'.($file_context-1).'">';
+            if ($file_context_count[5] != 0 ) {
+                $media_render_data            = [];
+                $media_render_data['subject'] = 'false';
+                $media_render_data['ajax']    = 'false';
+                # $media_render_data['m_boxes_json']   = urlencode(base64_encode(htmlentities(json_encode($m_boxes_data, JSON_UNESCAPED_SLASHES))));
+                $media_render_data['m_boxes_json']   = urlencode(json_encode($m_boxes_data, JSON_UNESCAPED_SLASHES));
+                asort($used_subjects);
+                if (!empty($used_subjects)) { $content .= render_subject_filter($used_subjects, $media_render_data); }
+                $content .='<span id="subject_ajax">';
+                $content   .= RENDER::external_media($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), $media_render_data);;
+                $content   .='</span>';
+                $content   .='</div>';
+            } else {
+                $content   .= $m_boxes.'</div>';
+            }
             unset($m_boxes);
             $m_boxes = '';
         }
@@ -431,6 +463,25 @@ function render_filter($schooltype_id  = null, $subject_id = null, $curriculum_i
     $c     .= '<span class="col-sm-3 pull-left">'.Form::input_select('curriculum_id', '', $curriculum, 'curriculum', 'id', $curriculum_id , null, "$('#reference_ajax').load('../share/request/render_html.php' + '?render=reference&func=".filter_input(INPUT_GET, 'func', FILTER_UNSAFE_RAW)."&id=".filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT)."&schooltype_id='+$('#schooltype_id').val()+'&subject_id='+$('#subject_id').val()+'&curriculum_id='+$('#curriculum_id').val()+'&grade_id='+$('#grade_id').val()+'&ajax=true#reference_ajax');", 'Nach Lehr-/Rahmenplan filtern', 'col-xs-0', 'col-xs-12').'</span>';
     $grades       = new Grade();    //Load Grades
     $c     .= '<span class="col-sm-3 pull-left">'.Form::input_select('grade_id', '', $grades->getGrades('institution',$USER->institution_id), 'grade', 'id', $grade_id , null, "$('#reference_ajax').load('../share/request/render_html.php' + '?render=reference&func=".filter_input(INPUT_GET, 'func', FILTER_UNSAFE_RAW)."&id=".filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT)."&schooltype_id='+$('#schooltype_id').val()+'&subject_id='+$('#subject_id').val()+'&curriculum_id='+$('#curriculum_id').val()+'&grade_id='+$('#grade_id').val()+'&ajax=true#reference_ajax');", 'Nach Klassenstufe filtern', 'col-xs-0', 'col-xs-12').'</span>';
+    $c    .= '</div>';
+    return $c;
+}
+function render_subject_filter($subjects, $media_render_data, $subject_id = null){
+    global $USER;
+    $c    = '<div class="row">';
+    $c   .= '<span class="col-sm-3 pull-left">';
+    $c   .= Form::input_select(
+                  'subject',
+                  '',
+                  $subjects,
+                  'subject',
+                  'subject_id',
+                  $subject_id,
+                  null,
+                  "filterBySubject(this.value)",
+                  'Nach Fach filtern',
+                  'col-xs-0',
+                  'col-xs-12').'</span>';
     $c    .= '</div>';
     return $c;
 }
