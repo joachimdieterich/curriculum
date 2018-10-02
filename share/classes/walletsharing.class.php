@@ -124,9 +124,16 @@ class WalletSharing {
         checkCapabilities('wallet:share', $USER->role_id);
         $this->getId();
         $this->load();
-        $LOG->add($USER->id, 'walletsharing.class.php', dirname(__FILE__), 'Delete walletsharing: id = '.$this->id.', creator_id: '.$this->creator_id);
-        $db = DB::prepare('DELETE FROM wallet_sharing WHERE id = ?');
-        return $db->execute(array($this->id));
+        $content            = new WalletContent();
+        $content->wallet_id = $this->wallet_id;
+        $this->content      = $content->get('user', $this->reference_id);
+        if ( !empty($this->content)) {
+            return false;
+        } else {
+            $LOG->add($USER->id, 'walletsharing.class.php', dirname(__FILE__), 'Delete walletsharing: id = '.$this->id.', creator_id: '.$this->creator_id);
+            $db = DB::prepare('DELETE FROM wallet_sharing WHERE id = ?');
+            return $db->execute(array($this->id));
+        }
     }
    
 }
