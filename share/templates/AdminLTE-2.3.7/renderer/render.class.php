@@ -45,6 +45,7 @@ class Render {
         $link   = true;
         $email  = false; 
         $token  = false;
+        $html   = '';
         
         if (!is_array($params)){ //hack to use json_arrays from smarty
             $params = json_decode($params);
