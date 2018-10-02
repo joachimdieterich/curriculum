@@ -80,17 +80,17 @@ $TEMPLATE->assign('page_bg_file_id', $wallet->file_id);
 
 
 
-//$p_options     = array('delete'    => array('onclick'    => "del('wallet_sharing',{$wallet->id},__id__);",
-//                                            'capability' => checkCapabilities('wallet:share', $USER->role_id, false),
-//                                            'icon'       => 'fa fa-trash',
-//                                            'tooltip'    => 'lÃ¶schen'),
-$p_options     = array('mailnew'   => array('onclick'    => 'formloader(\'mail\', \'gethelp\', __id__);',
+$p_options     = array('delete'    => array('onclick'    => "del('wallet_sharing',{$wallet->id},__id__);",
+                                            'capability' => checkCapabilities('wallet:share', $USER->role_id, false),
+                                            'icon'       => 'fa fa-trash',
+                                            'tooltip'    => 'lÃ¶schen'),
+                       'mailnew'   => array('onclick'    => 'formloader(\'mail\', \'new-to\', __id__);',
                                             'capability' => checkCapabilities('mail:postMail', $USER->role_id, false),
                                             'icon'       => 'fa fa-envelope',
                                             'tooltip'    => 'Nachricht schreiben'));
 $t_config      = array('table_id'  => array('id'         => 'contentsmalltable'),
                        'td'        => array('onclick'    => "location.href='index.php?action=walletView&wallet={$wallet->id}&user_id=__id__';"));
-$p_config   = array(   'id'        => false,
+$p_config   = array(   'id'        => 'no-checkrow',
                        'username'  => 'Benutzername', 
                        'firstname' => 'Vorname', 
                        'lastname'  => 'Nachname',
