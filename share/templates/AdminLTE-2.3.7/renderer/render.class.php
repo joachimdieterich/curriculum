@@ -225,7 +225,12 @@ class Render {
                 break;
             case '.url':    $content     ='<iframe src="'.$file->filename.'" style="width:100%; height: 600px;"></iframe>';
                 break;
-            default:        if (checkCapabilities('plugin:useEmbeddableGoogleDocumentViewer', $USER->role_id, false) AND !is_array(getimagesize($CFG->curriculumdata_root.$file->full_path))){
+            default:        if ($file->orgin != 'internal'){
+                                $reponame = 'repository_plugin_'.$file->orgin;
+                                $repo     = new $reponame;
+                                $content  = $repo->render($file);  
+                            }
+                            else if (checkCapabilities('plugin:useEmbeddableGoogleDocumentViewer', $USER->role_id, false) AND !is_array(getimagesize($CFG->curriculumdata_root.$file->full_path))){
                                 $content = '<iframe src="http://docs.google.com/gview?url='.$CFG->access_token_url .$file->addFileToken($file->id).'&embedded=true" style="width:100%; height:500px;" frameborder="0"></iframe>';
                             } else {
                                 $content = RENDER::thumb(array('file_list' => array($file->id), 'tag' => 'div'));
@@ -2791,6 +2796,37 @@ public static function quote_reference($quotes){
         }
         
         return $content; 
+    }
+    
+    /**
+     * 
+     * @param string $func
+     * @param int $id
+     * @param array $get
+     * @return string
+     */
+    public static function external_media($func, $id, $get){
+        $content     = '';
+        $subject   = new Subject();
+        if ($get['m_boxes_json'] != []){
+            $m_boxes_data  = json_decode(urldecode($get['m_boxes_json']), true);
+            $subject_id = '';
+
+            foreach ($m_boxes_data as $m_box) {
+                if (isset($m_box['title'])) {
+                    if (in_array($get['subject'], $m_box['subjects']) or $get['subject'] == 'false') {
+                        $content .= Form::info_box($m_box);
+                    }
+                }
+            }
+        } else {
+            $content .= 'Keine Medien für dieses Lernziel/Fach vorhanden vorhanden.';
+        }
+        if ($get['ajax'] == 'true'){ 
+            echo $content;
+        } else {
+            return $content;
+        }
     }
     
     
