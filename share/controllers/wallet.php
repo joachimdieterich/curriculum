@@ -35,7 +35,8 @@ if (isset($_POST) ){
 if (isset($_GET['view'])){
     switch ($_GET['view']) {
         case 'shared':  $wallet   = new Wallet();
-                        $TEMPLATE->assign('wallet', $wallet->get('shared', $USER->id, 'userFiles')); 
+                        $TEMPLATE->assign('wallet', $wallet->get('shared', $USER->id, 'userFiles'));
+                        setPaginator('walletP', $TEMPLATE, $wallet->get('shared', $USER->id, 'userFiles'), 'wa_val', 'index.php?action=wallet&view=shared', $p_config);
             break;
 
         default:
@@ -43,8 +44,7 @@ if (isset($_GET['view'])){
     }
 } else {
     $wallet   = new Wallet();
-    $TEMPLATE->assign('wallet', $wallet->get('search', $search));   
-    
+    $TEMPLATE->assign('wallet', $wallet->get('search', $search));
     $p_options = array('delete' => array('onclick'    => "del('wallet',__id__);", 
                                         'capability'  => checkCapabilities('wallet:delete', $USER->role_id, false),
                                         'icon'        => 'fa fa-trash',
