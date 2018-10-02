@@ -12,20 +12,9 @@
                 resizeBlocks('row_objectives_userlist', ['coursebook'])
         );
         $(document).ready(function () {
-            function findTopPos(obj) {
-                var curleft = curtop = 0;
-                if (obj.offsetParent) {
-                  curtop = obj.offsetTop
-                  while (obj = obj.offsetParent) {
-                    curtop += obj.offsetTop
-                  }
-                }
-                return curtop;
-            }
-            defaultTop  = findTopPos($("#container_userPaginator")[0]);  
             small       = false;
             if ($('#f_userlist').hasClass('active')){
-                floating_table('body-wrapper', defaultTop, 'userPaginator', ['username', 'role_name', 'completed', 'online'], 'menu_top_placeholder', 'container_userPaginator', 'default_userPaginator_position');
+                floating_table('body-wrapper', 'userPaginator', ['username', 'role_name', 'completed', 'online'], 'menu_top_placeholder', 'container_userPaginator', 'default_userPaginator_position');
             }
         });
     </script>
