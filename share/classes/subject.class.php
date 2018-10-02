@@ -86,7 +86,7 @@ class Subject {
                                        FROM subjects AS sub
                                        LEFT JOIN schooltype AS sco ON (sub.schooltype_id = sco.id)
                                        LEFT JOIN institution AS ins ON (sub.institution_id = ins.id)
-																			 WHERE (sub.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE institution_id = ins.id AND user_id = ?)
+                                       WHERE (sub.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE institution_id = ins.id AND user_id = ?)
                                        OR (sub.institution_id = 0 AND sub.schooltype_id = ?))'.$order_param);
             $db->execute(array($USER->id, $USER->institution->schooltype_id));
         }
@@ -99,6 +99,7 @@ class Subject {
                 $this->creator_id           = $result->creator_id;
                 $this->institution_id       = $result->institution_id;
                 $this->schooltype           = $result->schooltype;
+                $this->schooltype_id        = $result->schooltype_id;
                 if ($this->schooltype == "") {
                     $this->institution      = $result->institution;
                 } else {
