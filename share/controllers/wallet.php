@@ -65,7 +65,7 @@ if (isset($_GET['view'])){
                        'file_id'      => 'file_id',
                        'bg_image'     => 'file_id',); //false ==> don't show icon on widget
     $t_config  =   array('td'     => array('onclick'         => "location.href='index.php?action=walletView&wallet=__id__'"));
-    $p_config  =   array('id'          => 'checkbox',
+    $p_config  =   array('id'          => 'no-checkrow',
                         'title'       => 'Titel', 
                         /*'description' => 'Beschreibung',*/
                         'timerange'   => 'Zeitraum',
