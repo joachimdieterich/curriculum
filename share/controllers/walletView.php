@@ -24,29 +24,46 @@
 */
 
 global $CFG, $USER, $PAGE, $TEMPLATE, $INSTITUTION;
-$TEMPLATE->assign('breadcrumb',  array('Sammelmappe' => 'index.php?action=wallet', 'Ansicht' => 'index.php?action=walletView'));
 $TEMPLATE->assign('page_title', 'Ansicht');  
 $TEMPLATE->assign('sel_user_id', false); 
 $wallet   = new Wallet(filter_input(INPUT_GET, 'wallet', FILTER_VALIDATE_INT));
 if (isset($_GET['edit'])){ $TEMPLATE->assign('edit', true); } else { $TEMPLATE->assign('edit', false); }
-if (isset($_GET['user_id'])){ 
+if (isset($_GET['user_id']) AND $_GET['user_id'] != 'false'){
     $sel_user_id    = $_GET['user_id'];
     $TEMPLATE->assign('sel_user_id', $sel_user_id); 
     $wallet->get('user', $sel_user_id);
+    $TEMPLATE->assign('show_wallet_text', 'meine Sammelmappe');
 } else { 
     $wallet->get('user', $USER->id);
+    $TEMPLATE->assign('show_wallet_text', 'Sammelmappe von Kursteilnehmer wÃ¤hlen...');
 }
+$TEMPLATE->assign('breadcrumb',  array('Sammelmappe' => 'index.php?action=wallet', 'Ansicht' => 'index.php?action=walletView&wallet='.$wallet->id));
 /******************************************************************************
  * END POST / GET
  */
 
 $course_user        = new User();
 $course_user->id    = $USER->id;
-
 //$TEMPLATE->assign('userlist', $course_user->getUsers('curriculum', 'walletPaginator', $wallet->curriculum_id));
-$users = $course_user->getUsers('wallet_shared', 'walletPaginator', $wallet->curriculum_id, null, $wallet->id);
+if ($wallet->creator_id == $USER->id) {
+    $users = $course_user->getUsers('wallet_shared', 'walletuserPaginator', $wallet->curriculum_id, null, $wallet->id);
+} else{ // SchÃ¼leransicht
+    $user->id           = $USER->id;
+    $user->firstname    = "meine";
+    $user->lastname     = "Sammelmappe";
+    $users[]            = clone $user;
+
+        $user->id           = $wallet->creator_id;
+        $user->firstname    = "gestellte";
+        $user->lastname     = "Sammelmappe";
+        $users[]            = clone $user;
+        $TEMPLATE->assign('show_wallet_text', 'Sammelmappe wechseln');
+    if (!(isset($_GET['user_id']) AND $_GET['user_id'] != 'false') AND empty($wallet->content)) { // noch keine Daten vom SchÃ¼ler 
+        $wallet->get('user', $wallet->creator_id);
+        $TEMPLATE->assign('sel_user_id', $wallet->creator_id);
+    }
+}
 $TEMPLATE->assign('userlist', $users);
-//error_log(json_encode($wallet->comments));
 $TEMPLATE->assign('wallet', $wallet); 
 $TEMPLATE->assign('course', $wallet); 
 
@@ -63,20 +80,26 @@ $TEMPLATE->assign('page_bg_file_id', $wallet->file_id);
 
 
 
-$p_options     = array('mailnew'   => array('onclick'       => 'formloader(\'mail\', \'gethelp\', __id__);',
-                                                   'capability' => checkCapabilities('mail:postMail', $USER->role_id, false),
-                                                   'icon'       => 'fa fa-envelope',
-                                                   'tooltip'    => 'Nachricht schreiben'));
+//$p_options     = array('delete'    => array('onclick'    => "del('wallet_sharing',{$wallet->id},__id__);",
+//                                            'capability' => checkCapabilities('wallet:share', $USER->role_id, false),
+//                                            'icon'       => 'fa fa-trash',
+//                                            'tooltip'    => 'lÃ¶schen'),
+$p_options     = array('mailnew'   => array('onclick'    => 'formloader(\'mail\', \'gethelp\', __id__);',
+                                            'capability' => checkCapabilities('mail:postMail', $USER->role_id, false),
+                                            'icon'       => 'fa fa-envelope',
+                                            'tooltip'    => 'Nachricht schreiben'));
 $t_config      = array('table_id'  => array('id'         => 'contentsmalltable'),
                        'td'        => array('onclick'    => "location.href='index.php?action=walletView&wallet={$wallet->id}&user_id=__id__';"));
-$p_config   = array('id'        => false,
+$p_config   = array(   'id'        => false,
                        'username'  => 'Benutzername', 
                        'firstname' => 'Vorname', 
                        'lastname'  => 'Nachname',
+                       'permission'=> 'Freigabe',
+                       'timerange' => 'Freigabezeitraum',
                       /* 'completed' => 'Fortschritt',
                        'role_name' => 'Rolle',*/
                        'p_search'  => array('username', 'firstname', 'lastname'),
                        'p_options' => $p_options,
                        't_config'  => $t_config); 
 
-setPaginator('walletuserPaginator', $TEMPLATE, $users, 'results', 'index.php?action=wallet&wallet='.$wallet->id, $p_config); //set Paginator 
+setPaginator('walletuserPaginator', $TEMPLATE, $users, 'results', 'index.php?action=walletView&wallet='.$wallet->id, $p_config); //set Paginator 
