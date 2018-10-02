@@ -150,7 +150,7 @@
                     <div id="default_walletuserPaginator_position" >
                             {html_paginator id='walletuserPaginator' title='Freigaben'} 
                     </div>
-                {elseif $showuser eq true}Die Sammelmappe wurde keinem Benutzer freigegeben{/if}
+                {else}<p> Die Sammelmappe wurde keinem Benutzer freigegeben</p>{/if}
                     <div class="alert alert-info">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                         {$wallet->description}<br>
