@@ -209,7 +209,7 @@ function checkrow(/*rowNr,link*/) {
         $(document).ajaxStart(function() { Pace.restart(); });
         $("#curriculum_content").parent().load(arguments[3] + "&ajax=true #curriculum_content"); //.parent to replace #curriculum_content
         $(document.getElementById("div_print_certificate")).removeClass("hidden");
-        window.location.assign(arguments[3]);
+        //window.location.assign(arguments[3]);            //do not reload ! -> floting_table won't work
     }
 }
 /*  Function without fixed layout
@@ -247,7 +247,7 @@ function floating_table(wrapper, defaultTop, paginator, field_array, target, sou
     $("#"+wrapper).scroll(function(e) {
             var scrollTop = $(e.target).scrollTop();
             
-            if ((scrollTop > defaultTop-50) && (small === false)){
+            if ((scrollTop > defaultTop) && (small === false)){
                 for(var i = 0, j = field_array.length; i < j; ++i) {
                     $('td[name='+paginator+'_col_'+field_array[i]+']').addClass("hidden");
                 }
@@ -256,7 +256,7 @@ function floating_table(wrapper, defaultTop, paginator, field_array, target, sou
                 small    = true;
             } 
              
-            if ((scrollTop < defaultTop-50) && (small === true)){
+            if ((scrollTop < defaultTop) && (small === true)){
                 small = false;
                 $("#"+source).appendTo("#"+default_position);
                 for(var i = 0, j = field_array.length; i < j; ++i) {
@@ -1000,4 +1000,26 @@ function InitScripts(){
             $('#popup_generate').nyroModal();
         });
     }
-    
+
+function filterBySubject(selectedSubject){
+  $("#subject_ajax>div").each(function(index, node) {
+    var material = $(node);
+    if ( selectedSubject === "false") {
+        material.show();
+    } else {
+        var subjects = material.find(".subjectItem");
+        var showMaterial = false;
+        subjects.each(function(indexA, nodeA) {
+            var subjectText = nodeA.textContent;
+            if (subjectText === selectedSubject) {
+                showMaterial = true;
+            }
+        })
+        if (showMaterial) {
+            material.show();
+        } else {
+            material.hide();
+        }
+    }
+  });
+}
