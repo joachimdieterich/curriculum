@@ -429,6 +429,15 @@ class Form {
         }
        
         $html  = ' <div id="material_'.$id.'" class="info-box">';
+        if (isset($subjects)){
+            $html .= '<span name="subjects" style="display: none">';
+            $html .= '<ul>';
+            foreach ($subjects as $subject) {
+                $html .= '<li class="subjectItem">'.$subject.'</li>';
+            }
+            $html .= '</ul>';
+            $html .= '</span>';
+        }
         if (isset($preview)){
             $html .= '<span class="info-box-icon bg-aqua"><div id="modal-preview" style="position:relative;height:100%;width:100%;background: url(\''.$preview.'\') center ;background-size: cover; background-repeat: no-repeat;">';
             if (isset($license_icon)){
