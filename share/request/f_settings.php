@@ -24,7 +24,7 @@
 */
 $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
-include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
+include_once(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $CFG, $USER,$TEMPLATE;
 $USER           = $_SESSION['USER'];
 $func           = $_GET['func'];
@@ -123,6 +123,8 @@ $content .=   ' </ul>
                             <li class="active"><a href="#sub_tab_3_1" data-toggle="tab" aria-expanded="true" >Nutzungsbedingungen</a></li>
                             <li ><a href="#sub_tab_3_2" data-toggle="tab" aria-expanded="false" >Impressum</a></li>
                             <li ><a href="#sub_tab_3_3" data-toggle="tab" aria-expanded="false" >Datenschutz</a></li>
+                            <li ><a href="#sub_tab_3_4" data-toggle="tab" aria-expanded="false" >Was ist...</a></li>
+                            <li ><a href="#sub_tab_3_5" data-toggle="tab" aria-expanded="false" >Wie arbeite ich mit...</a></li>
                           </ul>
                         </div>
                         <div class="tab-content">';
@@ -140,8 +142,18 @@ $content .=   ' </ul>
         $content .= Form::info(['id' => 'global_privacy_info', 'content' => 'Hier können Sie die Datenschutzerklärung ändern.']);
         $content .= Form::input_textarea('global_privacy', $terms->get('terms', 'privacy')[0]->title, $terms->get('terms', 'privacy')[0]->content, $error, '');
         $content .= Form::input_button(['id' => 'global_privacy_save','label'=>'Speichern',  'icon'=>'fa fa-save']);
-        $content .=  '</div>
-                      </div><!-- /.tab-pane -->';
+        $content .= '</div>
+                     <div class="tab-pane" id="sub_tab_3_4">';
+#        $content .= Form::info(['id' => 'global_whatIsIt_info', 'content' => 'Hier können Sie globale Informationen ändern.']);
+        $content .= Form::input_textarea('global_whatIsIt', $terms->get('information', 1)[0]->title, $terms->get('information', 1)[0]->content, $error, '');
+        $content .= Form::input_button(['id' => 'global_whatIsIt_save','label'=>'Speichern',  'icon'=>'fa fa-save']);
+        $content .= '</div>
+                     <div class="tab-pane" id="sub_tab_3_5">';
+#        $content .= Form::info(['id' => 'global_howToWork_info', 'content' => 'Hier können Sie globale Informationen ändern.']);
+        $content .= Form::input_textarea('global_howToWork', $terms->get('information', 2)[0]->title, $terms->get('information', 2)[0]->content, $error, '');
+        $content .= Form::input_button(['id' => 'global_howToWork_save','label'=>'Speichern',  'icon'=>'fa fa-save']);
+        $content .= '</div>
+                     </div><!-- /.tab-pane -->';
     }
      $content .= '</div>';
 $content .= '</form>';
