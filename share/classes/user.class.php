@@ -861,9 +861,9 @@ class User {
                                         $role_filter = 'AND ro.id = '.intval($role_id); 
                                     }
                                     if ($group_id  == 'false'){ 
-                                        $group_filter = 'ANY (SELECT group_id FROM groups_enrolments WHERE user_id = '.intval($USER->id).' AND status =  1)'; 
+                                        $group_filter = 'AND ge.group_id = ANY (SELECT id FROM groups WHERE institution_id = '.intval($institution_id).')';
                                     } else { 
-                                        $group_filter = intval($group_id); 
+                                        $group_filter = 'AND ge.group_id = '.intval($group_id); 
                                     }
                             
                                     $db = DB::prepare('SELECT DISTINCT us.* FROM users AS us, groups_enrolments AS ge 
@@ -875,7 +875,7 @@ class User {
                                                             AND ro.order_id > (SELECT order_id FROM roles WHERE id = ?))
                                                         AND ge.user_id = us.id 
                                                         AND ge.status = 1
-                                                        AND ge.group_id = '.$group_filter.' '.$order_param); // HACK to prevent edit of super user
+                                                        '.$group_filter.' '.$order_param); // HACK to prevent edit of super user
                                     $db->execute(array($institution_id, $USER->role_id)); 
                                 } else if (checkCapabilities('user:userListGroup', $USER->role_id,false)) { //Teacher
                                     if ($role_id == 'false'){ 
