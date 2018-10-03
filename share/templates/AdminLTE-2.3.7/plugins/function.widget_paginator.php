@@ -115,7 +115,6 @@ function smarty_function_widget_paginator($params, $template) {
     if (isset($values)){
         foreach ($values as $_val){ $list[] = $_val->id; }
         foreach ($values as $_val){
-            $opt = '';
             foreach ($keys as $k_key => $k_val){
                 if ($k_key == 'id'){
                      $_id = $_val->$k_key; // aktuelle id
@@ -124,13 +123,22 @@ function smarty_function_widget_paginator($params, $template) {
                         $p_options_type         = '';
                         $p_options_icon         = '';
                         $p_options_tooltip      = '';
+                        $opt = array();
                         if (array_key_exists('onclick', (array)$o_val)){ $p_options_type    = 'onclick'; }
                         if (array_key_exists('href',    (array)$o_val)){ $p_options_type    = 'href'; }
                         if (array_key_exists('icon',    (array)$o_val)){ $p_options_icon    = $o_val['icon']; }
                         if (array_key_exists('tooltip', (array)$o_val)){ $p_options_tooltip = $o_val['tooltip']; }
                         if (array_key_exists('capability',    (array)$o_val)){
                             if ($o_val['capability'] == true){ 
-                                $opt[$o_key] = '<a name="'.$o_key.'" type="button" style="color:#FFF;" class="'.$p_options_icon.'" '; if ($p_options_tooltip != ''){ $opt[$o_key] .= "data-toggle='tooltip' title='".$p_options_tooltip."'";} if ($p_options_type != ''){  $opt[$o_key] .= $p_options_type.'="'.str_replace('__id__', $_id, $o_val[$p_options_type]).'"></a>'; };
+                                $opt[$o_key] = '<a name="'.$o_key.'" type="button" style="color:#FFF;" class="'.$p_options_icon.'" '; 
+                                if ($p_options_tooltip != ''){ 
+                                    $opt[$o_key] .= "data-toggle='tooltip' title='".$p_options_tooltip."'";
+                                    
+                                } 
+                                if ($p_options_type != ''){  
+                                    $opt[$o_key] .= $p_options_type.'="'.str_replace('__id__', $_id, $o_val[$p_options_type]).'"></a>'; 
+                                    
+                                };
                             }
                         }
                     }     
