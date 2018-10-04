@@ -71,6 +71,11 @@ class Form {
       * @return string
       */
     public static function input_text($id, $label, $input, $error, $placeholder ='Text...', $type='text', $min=null, $max=null, $class_left='col-sm-3', $class_right='col-sm-9', $readonly = null){
+        switch($type){
+            case 'string': $type = 'text'; break;
+            case 'int':    $type = 'number'; break;
+            default: break;
+        }
         $form = "<div class='form-group ".validate_msg($error, $id, true)."'>
                   <label class='control-label {$class_left}' for='{$id}'>{$label}</label>
                   <div class='{$class_right}'>".validate_msg($error, $id)."<input id='{$id}' name='{$id}' type='{$type}'";
@@ -117,18 +122,22 @@ class Form {
         return $form;
     }
     
-    public static function input_switch($id, $label, $input, $error, $class_left='col-sm-3', $class_right='col-sm-9'){
+    public static function input_switch($id, $label, $input, $error, $show_id = false, $class_left='col-sm-3', $class_right='col-sm-9'){
         $form = '<div class="form-group '.validate_msg($error, $id, true).'">
-                  <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'<br><small>'.$input->capability.'</small></label>
-                  <div class="'.$class_right.'" style="padding-left:85px;">'.validate_msg($error, $id).'
-                <input type="checkbox" name="'.$input->capability.'" id="'.$input->capability.'" class="ios-toggle" ';
-                if ($input->permission == 1){
+                  <label class="control-label '.$class_left.'" for="'.$id.'">'.$label;
+        if ($show_id){
+            $form .='<br><small>'.$id.'</small>';
+            
+        }
+        $form .='</label><div class="'.$class_right.'" style="padding-left:85px;">'.validate_msg($error, $id).'
+                <input type="checkbox" name="'.$id.'" id="'.$id.'" class="ios-toggle" ';
+                if ($input == 1){
                     $form .= ' value="true" checked ';
                 } else {
                     $form .= ' value="false" ';
                 }
-                $form .= ' onclick="switchValue(\''.$input->capability.'\');"/>
-                 <label for="'.$input->capability.'" class="checkbox-label" data-off="nicht erlaubt" data-on="erlaubt"></label>'; 
+                $form .= ' onclick="switchValue(\''.$id.'\');"/>
+                 <label for="'.$id.'" class="checkbox-label" data-off="nicht erlaubt" data-on="erlaubt"></label>'; 
         $form .= '</div></div>';  
 
         return $form;
