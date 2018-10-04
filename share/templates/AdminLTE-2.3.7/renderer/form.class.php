@@ -127,7 +127,6 @@ class Form {
                   <label class="control-label '.$class_left.'" for="'.$id.'">'.$label;
         if ($show_id){
             $form .='<br><small>'.$id.'</small>';
-            
         }
         $form .='</label><div class="'.$class_right.'" style="padding-left:85px;">'.validate_msg($error, $id).'
                 <input type="checkbox" name="'.$id.'" id="'.$id.'" class="ios-toggle" ';
