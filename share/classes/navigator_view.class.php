@@ -82,7 +82,11 @@ class Navigator_view extends Navigator {
                         /* curriculum */
                         case 2:     $s->id      = $block->nb_id;
                                     $s->title   = $block->nb_title;
-                                    $s->onclick = "index.php?action=view&curriculum_id={$block->nb_target_id}";
+                                    if ($block->nb_target_id != ""){
+                                        $s->onclick = "index.php?action=view&curriculum_id={$block->nb_target_id}";
+                                    }else{
+                                        $s->onclick = "index.php?action=view&curriculum_id={$block->nb_reference_id}";
+                                    }
                                     $search[] = clone $s;
                             break;
                         /* content */
