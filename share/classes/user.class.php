@@ -1096,7 +1096,7 @@ class User {
                                     $users[]            = clone $this; 
                                 }               
                 break;
-            case 'wallet_shared':  $db = DB::prepare('SELECT us.*, ie.role_id, ws.permission, ws.timestart, ws.timeend, ws.id AS ws_id FROM users AS us, groups_enrolments AS ge, curriculum_enrolments AS ce, institution_enrolments as ie, groups as gr, wallet_sharing AS ws
+            case 'wallet_shared':  $db = DB::prepare('SELECT DISTINCT us.*, ie.role_id, ws.permission, ws.timestart, ws.timeend, ws.id AS ws_id FROM users AS us, groups_enrolments AS ge, curriculum_enrolments AS ce, institution_enrolments as ie, groups as gr, wallet_sharing AS ws
                                                 WHERE us.id = ge.user_id 
                                                 AND ce.curriculum_id = ?
                                                 AND ce.status = 1
