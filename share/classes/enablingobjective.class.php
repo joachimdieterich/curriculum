@@ -193,8 +193,9 @@ class EnablingObjective {
             $db_02->execute(array($result->id));
             $res_02 = $db_02->fetchObject();
             $this->files['local']       = $res_02->MAX;
-            if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
-                $this->files['repository']  = $CFG->repository->count(1,$result->id);
+            $this->files['repository'] = 0;
+            if (isset($CFG->settings->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
+                $this->files['repository'] += repository_plugin_base::count_child_repos($CFG->settings->repository, $result->id, 'enabling_objective');
             } 
             if (isset($CFG->settings->webservice)){ // prüfen, ob webservice Plugin vorhanden ist.
                 $ws     = get_plugin('webservice', $CFG->settings->webservice);
@@ -256,9 +257,11 @@ class EnablingObjective {
                                     $db_03->execute(array($result->id));
                                     $res_03 = $db_03->fetchObject();
                                     $this->files['local'] = $res_03->MAX; //nummer of materials
-                                    if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
-                                        $this->files['repository']  = $CFG->repository->count(1,$result->id);
-                                    } 
+                                    $this->files['repository'] = 0;
+                                    if (isset($CFG->settings->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
+                                        $this->files['repository'] += repository_plugin_base::count_child_repos($CFG->settings->repository, $result->id, 'enabling_objective');
+                                    }
+                                    
                                     if (isset($CFG->settings->webservice)){ // prüfen, ob webservice Plugin vorhanden ist.
                                         $ws     = get_plugin('webservice', $CFG->settings->webservice);
                                         $this->files['webservice']  = $ws->count($_SESSION['CONTEXT']['enabling_objective']->id,$result->id);
@@ -369,9 +372,10 @@ class EnablingObjective {
                                     $db_03->execute(array($result->id));
                                     $res_03 = $db_03->fetchObject();
                                     $this->files['local'] = $res_03->MAX; //nummer of materials
-                                    if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
-                                        $this->files['repository']  = $CFG->repository->count(1,$result->id);
-                                    } 
+                                    $this->files['repository'] = 0;
+                                    if (isset($CFG->settings->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
+                                        $this->files['repository'] += repository_plugin_base::count_child_repos($CFG->settings->repository, $result->id, 'enabling_objective');
+                                    }
                                     if (isset($CFG->settings->webservice)){ // prüfen, ob webservice Plugin vorhanden ist.
                                         $ws     = get_plugin('webservice', $CFG->settings->webservice);
                                         $this->files['webservice']  = $ws->count($_SESSION['CONTEXT']['enabling_objective']->id,$result->id);
