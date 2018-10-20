@@ -24,10 +24,10 @@
 date_default_timezone_set('Europe/Berlin');                         // Zeitzone setzen
 
 include_once('config.php');
-include('libs/Smarty-3.0.6/libs/Smarty.class.php');
-include('libs/Smarty-3.0.6/libs/SmartyPaginate.class.php');
-include('include.php');                                             // Klassen laden
-include('function.php'); 
+include_once('libs/Smarty-3.0.6/libs/Smarty.class.php');
+include_once('libs/Smarty-3.0.6/libs/SmartyPaginate.class.php');
+include_once('include.php');                                             // Klassen laden
+include_once('function.php'); 
 
 global $CFG;
 global $USER;                                                       // Nutzerdaten
@@ -43,17 +43,17 @@ session_start();                                                    // Starte Se
 /* Load Plugins */
 $config = new Config();
 if (isset($CFG->db_configured)){
-    $CFG->settings = $config->load(); //load additional settings from db
-    if (isset($CFG->settings->repository)){
-        $CFG->repository = get_plugin('repository',$CFG->settings->repository);
+    if (!isset($_SESSION['CFG']->settings)){
+        $config->load(); //load additional settings from db
+    } else {
+        $CFG->settings = $_SESSION['CFG']->settings;
     }
-    /* load user template config */
     
+    /* load user template config */
     if (isset($_SESSION['USER']->id)){
-        $config = new Config();
         $c = $config->get('user', 'template', 'userFiles', $_SESSION['USER']->id);
         if ($c){
-            $CFG->settings->template = $c->value;
+            $CFG->settings->template = $c[0]->value;
         }
     }
     /*if (isset($CFG->settings->auth)){
@@ -97,8 +97,8 @@ if (isset($CFG->settings->login_wallpaper)){
 }
 
 if (!isset($CFG->settings->template)){ 
-    $CFG->settings           = new stdClass();
-    $CFG->settings->template = 'Bootflat-2.0.4'; // fallback for installation process
+    //$CFG->settings           = new stdClass(); // now called in config.class.php do not call here, it will delete current settings
+    $CFG->settings->template = 'AdminLTE-2.3.7'; // fallback for installation process
 } 
 if (isset($CFG->settings->guest_usr)){ 
   $TEMPLATE->assign('cfg_guest_usr',$CFG->settings->guest_usr);
