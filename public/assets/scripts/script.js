@@ -578,16 +578,14 @@ function formloader(/*form, func, id, []*/){
     }
 }
 
-function processor(/*proc, func, val, [..., reload = false]*/){ // if reload = false: prevent reload
+function processor(/*proc, func, val, [..., reload = false], pluginpath*/){ // if reload = false: prevent reload
+    reload = true;
     if (typeof(arguments[3]) !== 'undefined'){
-        if(arguments[3].reload == 'undefined'){
-            reload = true;
+        if(arguments[3].reload == 'undefined'){ //do nothing, reload already set
         } else {
             reload = false;
         }
-    } else {
-        reload = true;
-    }
+    } 
     if (typeof(arguments[4]) !== 'undefined'){
         getRequest("../share/plugins/"+ arguments[4] +"/processors/p_"+ arguments[0] +".php?func="+ arguments[1] +"&val="+ arguments[2]+"&"+jQuery.param(arguments[3]));
     } else if (typeof(arguments[3]) !== 'undefined'){
@@ -598,9 +596,11 @@ function processor(/*proc, func, val, [..., reload = false]*/){ // if reload = f
     req = XMLobject();
     if(req) {  
         req.onreadystatechange =  function() {
-          if(this.readyState == this.DONE) {
-                window.location.reload(reload);
-          }
+            if(this.readyState == this.DONE) {
+                if (reload == true){
+                    window.location.reload();
+                } 
+            }
         }
     }
     req.open("GET", url, false); //false --> important for print function
@@ -1054,3 +1054,25 @@ function filterBySubject(selectedSubject){
     }
   });
 }
+/**
+ * 
+ * @param {array} object : this, url
+ * @returns {undefined}
+ */
+function ajaxSubmit(obj, file, table, params){
+$.ajax({ 
+    url:  "../share/processors/"+file+"?func=ajaxsubmit" ,
+    data: { id: $(obj).attr('id'), value: $(obj).val(), table: table, func: 'ajaxsubmit', params: params},
+    type: 'post'
+}).done(function(responseData) {
+    $("#form-group_"+jQuerySelectorEscape($(obj).attr('id'))).addClass( "has-success");
+    console.log('Done: ', responseData);
+}).fail(function() {
+    console.log('Failed');
+});
+}
+
+function jQuerySelectorEscape(expression) {
+      return expression.replace(/[!"#$%&'()*+,.\/:;<=>?@\[\\\]^`{|}~]/g, '\\$&');
+  }
+        
