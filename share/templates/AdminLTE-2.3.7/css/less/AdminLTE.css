@@ -340,7 +340,7 @@ a:focus {
   text-align: center;
   font-size: 9px;
   padding: 2px 3px;
-  line-height: .9;
+  line-height: 0.9;
 }
 .main-header .logo {
   -webkit-transition: width 0.3s ease-in-out;
@@ -1612,6 +1612,10 @@ a:focus {
 .box-group .box {
   margin-bottom: 0px;
 }
+.boxcontent > ul {
+  padding-left: 20px !important;
+  padding-right: 5px !important;
+}
 .box {
   border-radius: 0px;
   position: relative;
@@ -1884,7 +1888,7 @@ a:focus {
   left: auto;
 }
 .box-header > .box-tools .dropdown-menu > li > a {
-  color: #444!important;
+  color: #444 !important;
 }
 .btn-box-tool {
   padding: 5px;
