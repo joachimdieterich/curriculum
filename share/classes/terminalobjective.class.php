@@ -224,8 +224,9 @@ class TerminalObjective {
                                     $db_02->execute(array($result->id));
                                     $res_02 = $db_02->fetchObject();
                                     $this->files['local']       = $res_02->MAX;
-                                    if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
-                                        $this->files['repository'] = $CFG->repository->count(0,$result->id);
+                                    $this->files['repository'] = 0;
+                                    if (is_object($CFG->settings->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
+                                        $this->files['repository'] += repository_plugin_base::count_child_repos($CFG->settings->repository, $result->id, 'terminal_objective');
                                     } 
                                     if (isset($CFG->settings->webservice)){ // prüfen, ob webservice Plugin vorhanden ist.
                                         $ws     = get_plugin('webservice', $CFG->settings->webservice);
@@ -243,6 +244,9 @@ class TerminalObjective {
                                             $res_04d = $db_04d->fetchObject();
                                             $this->files['references']  += $res_04d->MAX;
                                         }
+                                        /*check for quotes*/
+                                        $quote       = new Quote();
+                                        $this->files['references']  += count($quote->get($_SESSION['CONTEXT']['terminal_objective']->context_id, $result->id)); //todo: add new count func to quote.class.php to get faster processing
                                     } else {
                                         $db_04       = DB::prepare('SELECT COUNT(*) AS MAX FROM reference WHERE context_id = ? AND reference_id = ?');
                                         $db_04->execute(array( $_SESSION['CONTEXT']['terminal_objective']->context_id, $result->id));
