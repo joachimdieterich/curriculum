@@ -15,6 +15,7 @@
  * Über diese Klasse lassen sich die Bezüge zu den Kompetenzen der KMK Strategie (sodis.de) einbinden.
  */
 class repository_plugin_sodis extends repository_plugin_base { 
+    const PLUGINNAME = 'sodis';
     public $titles; //array to filter double entries
     
     
@@ -38,10 +39,9 @@ class repository_plugin_sodis extends repository_plugin_base {
     public function get($dependency, $id){
         global $CFG;
          if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
-             $repository_db   = 'plugin_'.$CFG->settings->repository;
              $type            = $this->resolveDependency($dependency);
-             $db              = DB::prepare("SELECT reference FROM $repository_db WHERE objective_id = ? AND type = ?");
-             $db->execute(array($id, $type));
+             $db              = DB::prepare("SELECT reference FROM plugin_repo WHERE objective_id = ? AND type = ? AND repo = ?");
+             $db->execute(array($id, $type, $CFG->settings->repository));
              $result          = $db->fetchObject();
              if (isset($result->reference)) {
                  $references  = array();
