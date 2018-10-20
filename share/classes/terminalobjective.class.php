@@ -244,7 +244,7 @@ class TerminalObjective {
                                             $res_04d = $db_04d->fetchObject();
                                             $this->files['references']  += $res_04d->MAX;
                                         }
-                                        /*check for quotes*/
+                                        /*check for quotes, yet only for terminal objectives*/
                                         $quote       = new Quote();
                                         $this->files['references']  += count($quote->get($_SESSION['CONTEXT']['terminal_objective']->context_id, $result->id)); //todo: add new count func to quote.class.php to get faster processing
                                     } else {
