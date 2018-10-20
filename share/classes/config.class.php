@@ -34,11 +34,16 @@ class Config {
     public function __construct() {
         
     }
-    
+    /**
+     * Load global config
+     * @global $CFG
+     */
     public function load(){
+        global $CFG;
         $db = DB::prepare('SELECT * FROM config WHERE context_id = (SELECT context_id FROM context WHERE context = ?) AND reference_id = 0'); //load std values
         $db->execute(array('config'));
         $config = new stdClass();
+        $CFG->settings = new stdClass();
         while($result = $db->fetchObject()) { 
             if ($result->type == "bool") {
                 if (strtolower($result->value) == "false") {
@@ -46,10 +51,23 @@ class Config {
                 }
             }
             settype($result->value, $result->type); //store var with proper type ! for PHP < 4.2.0 change type "bool" to "boolean" and "int" to "integer"
-            //error_log($result->name.': '.json_encode(gettype($result->value)).' -> '.$result->value);
-            $config->{$result->name} = $result->value;
-        }
-        return $config;
+            
+            /**
+             * check for plugin and load existing plugins
+             */
+            switch ($result->name) {
+                case 'repository':
+                case 'auth':
+                case 'webservice':  if (!isset($CFG->settings->{$result->name})){
+                                        $CFG->settings->{$result->name} = new stdClass();
+                                    }
+                                    $CFG->settings->{$result->name}->{$result->value} = get_plugin($result->name,$result->value); //store class in $CFG->settings
+                    break;
+                
+                default:            $CFG->settings->{$result->name} = $result->value; //store value in $CFG->settings
+                    break;
+            }
+        } 
     }
     
     public function load_plugin_config($plugin){
@@ -57,7 +75,8 @@ class Config {
         $db->execute(array($plugin));
         $config = new stdClass();
         while($result = $db->fetchObject()) { 
-            $config->{$result->name} = $result->value;
+            //$config->{$result->name} = $result->value;
+            $config->{$result->name} = $result;
         }
         return $config;
     }
@@ -75,31 +94,60 @@ class Config {
         }
     }
     
-    public function get($dependency = 'global', $name = null, $context = null, $reference_id = null){
-        if ($name         == null){ $name         = $this->name; }
-        if ($context      == null){ $context      = $this->context; }
+    public function get($dependency = 'global', $name = null, $context_id = null, $reference_id = null){
+        if ($context_id      == null){ $context_id      = $this->context_id; }
         if ($reference_id == null){ $reference_id = $this->reference_id; }
         switch ($dependency) {
-            case 'global':  $db = DB::prepare('SELECT * FROM config WHERE name = ? AND context_id = (SELECT context_id FROM context WHERE context = ?) AND reference_id = 0'); //load std values
-                            $db->execute(array($name, 'config'));
+            case 'global':  if ($name == null){
+                                $db = DB::prepare('SELECT * FROM config WHERE context_id = ? AND reference_id = 0 ORDER BY name'); //load std values
+                                $db->execute(array(19)); //19 == context_id for config
+                            } else {
+                                $db = DB::prepare('SELECT * FROM config WHERE name = ? AND context_id = ? AND reference_id = 0'); //load std values
+                                $db->execute(array($name, 19)); //19 == context_id for config
+                            }
+                            
                 break;
             case 'user':
-            case 'institution':
-                            $db = DB::prepare('SELECT * FROM config WHERE name = ? AND context_id = (SELECT context_id FROM context WHERE context = ?) AND reference_id = ?'); //load std values
-                            $db->execute(array($name, $context, $reference_id));
+            case 'institution': if ($name == null){
+                                    $db = DB::prepare('SELECT * FROM config WHERE context_id = ? AND reference_id = ?'); //load std values
+                                    $db->execute(array($context_id, $reference_id));
+                                } else {                  
+                                    $db = DB::prepare('SELECT * FROM config WHERE name = ? AND context_id = ? AND reference_id = ?'); //load std values
+                                    $db->execute(array($name, $context_id, $reference_id));
+                                }
+                            
                 break;
 
             default:
                 break;
         }
-        $result = $db->fetchObject();
-        if ($result){
-            foreach ($result as $key => $value) {
-                $this->{$key} = $value;
+        
+        $entrys = array();
+        while($result = $db->fetchObject()) { 
+            foreach ($result AS $key => $value){
+                $this->$key = $value;
             }
-            return $this;
-        } else { return false;}
+            $entrys[]            = clone $this;
+        } 
+        
+        if (!empty($entrys)){ 
+            return $entrys;
+        } else {
+            return false;
+        }
         
     }
     
+    public function set_config_plugin($plugin, $name, $value){
+        $db = DB::prepare('SELECT id FROM config_plugins WHERE plugin = ? AND name = ?');
+        $db->execute(array($plugin, $name));
+        $id = $db->fetchColumn();
+        if($id > 0) { 
+            $db = DB::prepare('UPDATE config_plugins SET plugin = ?, name = ?, value = ? WHERE id = ?');
+            return $db->execute(array($plugin, $name, $value, $id));
+        } else {
+            $db = DB::prepare('INSERT INTO config_plugins (plugin,name,value) VALUES (?,?,?)');
+            return $db->execute(array($plugin, $name, $value));
+        }
+    }
 }
