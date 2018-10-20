@@ -22,8 +22,8 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.    
 */
-include(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
-include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
+include_once(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
+include_once(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 $_SESSION['USER']->semester_id    = filter_input(INPUT_GET, 'val', FILTER_VALIDATE_INT);      // Neuer Lernzeitraum übernehmen
 /*$TEMPLATE->assign('my_semester_id', $_SESSION['USER']->semester_id); */
 $change_semester      = new Semester($_SESSION['USER']->semester_id);
