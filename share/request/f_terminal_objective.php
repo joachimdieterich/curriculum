@@ -57,7 +57,7 @@
 
 $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
-include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
+include_once(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER, $CFG;
 $USER                   = $_SESSION['USER'];
 $terminal_objective_id  = '';
@@ -78,8 +78,8 @@ switch ($func) {
                         $$key = $value;
                     }
                     
-                    if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
-                        $reference  = $CFG->repository->getReference('terminal_objective', $ter_objective->id);
+                    if (isset($CFG->settings->repository->omega)){ // prüfen, ob omega Repository Plugin vorhanden ist. //todo global solution for plugins
+                        $reference  = $CFG->settings->repository->omega->getReference('terminal_objective', $ter_objective->id);
                     }
                     $header                       = 'Thema bearbeiten';           
         break;

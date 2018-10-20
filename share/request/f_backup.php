@@ -24,7 +24,7 @@
 */
 $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
-include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
+include_once(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $CFG, $USER;
 $USER           = $_SESSION['USER'];
 
@@ -79,6 +79,7 @@ $content .= Form::input_select('curriculum_id', 'Lehrplan', $options, 'course', 
 $format_array = array('XML curriculum' => 'xml',
                 'XML RLP Digitale Lehrpläne' => 'xml-rlp',
                 'XML edu-sharing Sammlungen' => 'xml-edu-sharing',
+                'XML edu-sharing Metadatenset' => 'xml-edu-sharing-metadata',
                 'IMSCC Moodle' => 'imscc'
                );
 $format_obj = new stdClass();

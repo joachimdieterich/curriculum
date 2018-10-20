@@ -24,7 +24,7 @@
 */
 $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
-//include(dirname(__FILE__).'/../login-check.php');  //don't check login -> terms should be available without login
+//include_once(dirname(__FILE__).'/../login-check.php');  //don't check login -> terms should be available without login
 global $CFG, $TEMPLATE;
 
 $footer   = ''; 

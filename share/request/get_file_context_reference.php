@@ -2,10 +2,10 @@
 /** This file is part of curriculum - http://www.joachimdieterich.de
 * 
 * @package core
-* @filename get_grade.php
-* @copyright 2015 Joachim Dieterich
+* @filename get_file_context_referecne.php
+* @copyright 2018 Joachim Dieterich
 * @author Joachim Dieterich
-* @date 2016.09.23 11:10
+* @date 2018.10.08 12:10
 * @license: 
 *
 * The MIT License (MIT)
@@ -22,20 +22,34 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-$base_url   = dirname(__FILE__).'/../';
+$base_url  = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include_once(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER;
-$USER       = $_SESSION['USER'];
+$USER      = $_SESSION['USER'];
 
-$grade      = new Grade();
-$grades     = $grade->getGrades('institution', filter_input(INPUT_GET, 'dependency_id', FILTER_VALIDATE_INT));
-$html       = '';
-foreach ($grades as $value) {
-    $html  .= '<option label="'.$value->grade.'" value="'.$value->id.'"'; 
+switch (filter_input(INPUT_GET, 'dependency_id', FILTER_VALIDATE_INT)) { //format is used to get case
+    case 1:     //todo
+        break;  
+    case 2:     //todo
+        break;
+    case 3:     //todo
+        break;  
+    case 4:     //todo
+        break;
+    default:
+        break;
+}
+
+
+
+$html      = '';
+
+foreach ($obj as $value) {
+    $html  .=  '<option label="'.strip_tags($value->$objective).'" value="'.$value->id.'"'; 
     if (filter_input(INPUT_GET, 'select_id', FILTER_VALIDATE_INT) == $value->id) { 
-        $html  .= ' selected="selected"'; 
+        $html  .= ' selected="selected"';    
     } 
-    $html  .= '>'.$value->grade.'</option>';
+    $html  .= '><span>'.strip_tags($value->$objective).'<span></option>';
 }
 echo json_encode(array('html'=>$html));
