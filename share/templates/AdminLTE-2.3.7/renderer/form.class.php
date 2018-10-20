@@ -33,7 +33,7 @@ class Form {
         $icon       = '';
         $label      = 'submit';
         foreach($params as $key => $val) { $$key = $val; }  
-        return "<button id=\"btn_{$id}\"type=\"submit\" name=\"{$id}\" class=\"{$class}\" onclick=\"{$onclick}\">
+        return "<button id=\"btn_{$id}\"type=\"{$type}\" name=\"{$id}\" class=\"{$class}\" onclick=\"{$onclick}\">
                     <span class=\"{$icon}\"></span> {$label}
                 </button>";
     }
@@ -70,13 +70,13 @@ class Form {
       * @param string $class_right
       * @return string
       */
-    public static function input_text($id, $label, $input, $error, $placeholder ='Text...', $type='text', $min=null, $max=null, $class_left='col-sm-3', $class_right='col-sm-9', $readonly = null){
+    public static function input_text($id, $label, $input, $error, $placeholder ='Text...', $type='text', $min=null, $max=null, $class_left='col-sm-3', $class_right='col-sm-9', $readonly = null, $onchange = null){
         switch($type){
             case 'string': $type = 'text'; break;
             case 'int':    $type = 'number'; break;
             default: break;
         }
-        $form = "<div class='form-group ".validate_msg($error, $id, true)."'>
+        $form = "<div id='form-group_{$id}' class='form-group ".validate_msg($error, $id, true)."'>
                   <label class='control-label {$class_left}' for='{$id}'>{$label}</label>
                   <div class='{$class_right}'>".validate_msg($error, $id)."<input id='{$id}' name='{$id}' type='{$type}'";
                   if ($min) {$form .= "min='{$min}'";}
@@ -87,6 +87,9 @@ class Form {
         } 
         if (isset($readonly)) { 
             $form .=  " readonly ";  
+        }
+        if (isset($onchange)) { 
+            $form .=  " onchange='{$onchange}'";  
         } 
         $form .= " /> </div></div>";  
 

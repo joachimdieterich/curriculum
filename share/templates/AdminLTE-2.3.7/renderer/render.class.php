@@ -274,6 +274,8 @@ class Render {
                     break;
                 case '.pdf':    if ($file->getThumb() == false){ $icon = true; } else { $url = $file->getThumb(); }          
                     break;
+                case NULL: return ''; //e.g. edusharing links do not render in Thumblist
+                    break;
                 case '.url':    
                 default:        $icon = true;
                     break;
@@ -554,6 +556,7 @@ class Render {
        global $CFG, $USER, $PAGE;
        $format      = 'default';
        $type        = 'terminal_objective'; 
+       $show_parents= false;
        $edit        = false;
        $sol_btn     = false;
        $orderup     = false;
@@ -582,7 +585,6 @@ class Render {
        if (!isset($border_color)){
             $border_color = $objective->color; 
         }
-        
         
         //adding format to generate more objective layouts
         switch ($format) {
@@ -635,23 +637,27 @@ class Render {
                 break;
 
             default:
-                $html  =   '<div ';
+                $html  = '';
+                /* Show parent objective? */
+                if ($show_parents AND $type == 'enabling_objective'){ 
+                    $o      = new TerminalObjective();
+                    $o->id  = $objective->terminal_objective_id ;
+                    $o->load();
+                    $html  .= RENDER::objective(["type" =>"terminal_objective", "objective" => $o]);
+                }
+                $html  .=   '<div ';
                 if ($type == 'enabling_objective'){ //id is important to get scroll-to function while creating
                     $html  .= 'id="ena_'.$objective->id.'"';
                 } else {
                     $html  .= 'id="ter_'.$objective->id.'"';
                 }
                 $html  .=   'class="box box-objective ';
-                /*if (isset($highlight)){ //see below ->filter: alpha(opacity=40); opacity: 0.4; -moz-opacity: 0.4; 
-                    if (in_array($type.'_'.$objective->id, $highlight)){
-                        $html  .= 'highlight';
-                    } 
-                } */
                 $style = 'padding-top: 0 !important; background: '.$objective->color.'; border: 1px solid '.$border_color;
                 if (($objective->files['references'] == false AND $reference_view == true) OR isset($highlight) AND !in_array($type.'_'.$objective->id, $highlight)){
                    $style .= 'filter: alpha(opacity=40); opacity: 0.4; -moz-opacity: 0.4;';
                 } 
                 $html  .= '" style="'.$style.'">';
+                
                 /*************** Header ***************/
                 if ($type == 'enabling_objective'){
                     $html  .= '<div id="ena_header_'.$objective->id.'" class="boxheader bg-'.$objective->accomplished_status_id.'" >';
@@ -731,11 +737,11 @@ class Render {
                   if ($type == 'terminal_objective'){
                      $html  .=' <a class="collapse_btn" data-toggle="collapse" data-target="#collaps_ter_'.$objective->id.'" data-toggle="tooltip" title="Kompetenzen einklappen bzw. ausklappen"><i class="fa fa-compress box-sm-icon '.$text_class.'" style="padding-left:5px;"></i></a>';   
                   }
-                  $html  .='  </div>';    
+                  $html  .='  </div>';  
                  /*************** ./Header ***************/
                  /*************** Body ***************/    
                  $html  .='  <div id="'.$type.'_'.$objective->id.'" class="panel-body boxwrap" >
-                                 <div class="boxscroll" ';
+                                 <div class="boxscroll" '; 
                                      if ($type == 'terminal_objective'){
                                          $html  .='style="background: '.$objective->color.'"';
                                      }

@@ -111,7 +111,26 @@ if (isset($paginator) AND isset($paginator_search) AND isset($order)) {
                               </li> <?php 
                           }
                       }
-                  } ?>
+                  } 
+                  
+                  //Load available f_add_reference Files -> todo global implementation
+                  $config = new Config();
+                  $repository  = $config->get('global', 'repository');
+                  foreach($repository AS $repo){
+                    if (file_exists('../../../plugins/repository/'.$repo->value.'/request/f_add_reference.php')){
+                        ?>
+                        <li class="treeview">
+                            <a onclick="formloader('add_reference', '<?php echo $context?>', <?php echo $ref_id?>, {}, 'repository/<?php echo $repo->value?>');$.nmTop().close();clear();">
+                                 <i class="fa fa-puzzle-piece"></i> <span><?php echo $repo->value?></span>
+                             </a>
+                        </li>
+                        <?php
+                    }
+                  }
+                  //End plugins
+                  
+                  ?>
+                              
             </ul>
           </section>
         </aside>
