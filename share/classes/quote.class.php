@@ -145,7 +145,9 @@ class Quote {
                             //$matches[1] == quote only
                             $this->reference_title  = $content->title;
                             $this->quote_link       = $content->id;
-                            return  $matches[1];
+                            if (isset($matches[1])){
+                                return  $matches[1];
+                            }
                 break;
             case 'curriculum_content': 
                             $content = new Content();
