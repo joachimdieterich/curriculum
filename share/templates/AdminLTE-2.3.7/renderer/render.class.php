@@ -681,12 +681,12 @@ class Render {
                              $position   = 'pull-right';
                          }
                          if ($orderup){
-                             $html  .= '<span class="fa fa-arrow-'.$icon_up.' '.$position.' box-sm-icon '.$icon_class.'" onclick=\'processor("orderObjective", "'.$type.'", "'.$objective->id.'", {"order":"up"});\'></span>';
+                             $html  .= '<span class="fa fa-arrow-'.$icon_up.' '.$position.' box-sm-icon '.$icon_class.'" onclick=\'processor("orderObjective", "'.$type.'", "'.$objective->id.'", {"order":"up","reload":"true"});\'></span>';
                          }
                          $html  .= '<span class="fa fa-minus pull-right box-sm-icon '.$icon_class.' margin-r-5" onclick=\'del("'.$type.'", '.$objective->id.');\'></span>
                                     <span class="fa fa-edit pull-right box-sm-icon '.$icon_class.'" onclick=\'formloader("'.$type.'", "edit", '.$objective->id.');\'></span>';
                          if ($orderdown){
-                             $html  .= '<span class="fa fa-arrow-'.$icon_down.' pull-left box-sm-icon '.$icon_class.'" onclick=\'processor("orderObjective", "'.$type.'", "'.$objective->id.'", {"order":"down"});\'></span>';
+                             $html  .= '<span class="fa fa-arrow-'.$icon_down.' pull-left box-sm-icon '.$icon_class.'" onclick=\'processor("orderObjective", "'.$type.'", "'.$objective->id.'", {"order":"down","reload":"true"});\'></span>';
                          }
                      } else {
                         $c_menu_array               = array();
