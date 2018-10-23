@@ -587,7 +587,7 @@ function processor(/*proc, func, val, [..., reload = false], pluginpath*/){ // i
             reload = JSON.parse(arguments[3].reload); //JSOM.parse to get boolean from string
         }
     } 
-    alert(reload);
+    
     if (typeof(arguments[4]) !== 'undefined'){
         getRequest("../share/plugins/"+ arguments[4] +"/processors/p_"+ arguments[0] +".php?func="+ arguments[1] +"&val="+ arguments[2]+"&"+jQuery.param(arguments[3]));
     } else if (typeof(arguments[3]) !== 'undefined'){
