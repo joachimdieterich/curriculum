@@ -583,9 +583,7 @@ function processor(/*proc, func, val, [..., reload = false], pluginpath*/){ // i
     if (typeof(arguments[3]) !== 'undefined'){
         if(arguments[3].reload == 'undefined'){ //do nothing, reload already set
             reload = false;
-        } else {
-            reload = JSON.parse(arguments[3].reload); //JSOM.parse to get boolean from string
-        }
+        } 
     } 
     
     if (typeof(arguments[4]) !== 'undefined'){
