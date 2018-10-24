@@ -133,8 +133,8 @@ if ($my_upload->upload() OR filter_var($fileURL, FILTER_VALIDATE_URL)) {//in dat
     $file->enabling_objective_id = $enaID;  //replace with refid
     $file->reference_id          = $ref_id;
     
-    error_log("Feldausgabe".$title);
-    error_log(json_encode($file));
+    //error_log("Feldausgabe".$title);
+    //error_log(json_encode($file));
     switch ($action) {
         case 'upload':  $copy_link         = ' <input type="submit" id="closelink" name="Submit" value="Datei verwenden"/>';
                         $file->filename    = str_replace(' ', '_', $my_upload->the_file);
