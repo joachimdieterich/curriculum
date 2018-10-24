@@ -374,10 +374,11 @@ class Curriculum {
         
         $xml = new DOMDocument( "1.0", "UTF-8" );
         $xml->load($CFG->backup_root.$import_folder.'/'.$import_folder.'.xml');
-        if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
+        if (isset($CFG->repository)){   // prüfen, ob Repository Plugin vorhanden ist.
             $ext_reference = get_plugin('repository', $CFG->settings->repository);
         }
         foreach($xml->getElementsByTagName('curriculum') as $curriculum) {
+                $this->subject_id = 1;  //fallback todo: fallback options for all fields -> validator
                 $old_cur_id              = $curriculum->getAttribute('id');
             if (!$preset) { // Werte aus backup nutzen -> sonst Werte des Formulars nutzen
                  $this->curriculum        = $curriculum->getAttribute('curriculum');
@@ -388,8 +389,8 @@ class Curriculum {
                  } 
                  $s = new Subject();
                  if ($s->load('subject', $curriculum->getAttribute('subject'))){
-                      $this->subject_id   = $s->id;
-                 }
+                     $this->subject_id   = $s->id;
+                 } 
                  $sch = new Schooltype();
                  if ($sch->load('schooltype', $curriculum->getAttribute('schooltype'))){
                      $this->schooltype_id = $sch->id; 
@@ -434,6 +435,7 @@ class Curriculum {
             $t->order_id           = $ter->getAttribute('order_id');
             $t->repeat_interval    = $ter->getAttribute('repeat_interval');
             $t->color              = $ter->getAttribute('color');
+            $t->type_id               = $ter->getAttribute('type_id');
             $t->creator_id         = $USER->id;
             $t_id                  = $t->add();                                      // add terminal objective
             $t_ref                 = $ter->getAttribute('ext_reference');
