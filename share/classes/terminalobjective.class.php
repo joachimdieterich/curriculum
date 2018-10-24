@@ -75,16 +75,17 @@ class TerminalObjective {
      */
     public $enabling_objectives; 
     public $files;
-    /**
-     * add objective
-     * @return mixed 
-     */
-    public $type;
+    
     /**
      * type of terminalobjective
      * @return string;
      */
+    public $type_id;
     
+    /**
+     * add objective
+     * @return mixed 
+     */
     public function add(){
         global $USER;
         checkCapabilities('objectives:addTerminalObjective', $USER->role_id);
