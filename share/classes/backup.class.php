@@ -111,6 +111,11 @@ class Backup {
                             $file->type             = '.zip';
                             $zip                    = true;
                 break;
+            case 'xml-edu-sharing-metadata': $this->generate_edusharing_metadataset($c, $timestamp_folder);                      // export für edu-sharing sammlungen
+                            $file->filename         = $timestamp_folder.'.zip';
+                            $file->type             = '.zip';
+                            $zip                    = true;
+                break;
 
             case 'imscc':   include (dirname(__FILE__).'../../libs/Backup/cc_constants.php');   // Konstanten laden
                             mkdir($this->temp_path, 0700);                                      // Lese- und Schreibrechte nur für den Besitzer
@@ -353,6 +358,97 @@ class Backup {
         $file = $this->temp_path.'/'.$filename.'.xml'; // Backup / [cur_id] / 
         file_put_contents($file, $xml->saveXML());
     }
+    public function generate_edusharing_metadataset($c, $filename){
+        global $CFG; 
+
+        $xml = new DOMDocument("1.0", "UTF-8"); 
+        /* root */
+        $root = $xml->createElement('valuespaces');
+            /* curriculum valuespace (c1)*/
+            $c1     = $xml->createElement("valuespace");
+                /* keys (c2) */
+            //Schooltype
+                $c2 = $xml->createElement("key"); 
+                $schooltype = new Schooltype();
+                $schooltype->load($c->schooltype_id);
+                $c2->setAttribute('cap', $schooltype->schooltype); 
+                $c2->nodeValue = $c->schooltype_id; //match id to edusharing id
+                $level_1 = $c2->nodeValue;
+                $c1->appendChild($c2);
+            //Subject   
+                $c2 = $xml->createElement("key"); 
+                $c2->setAttribute('cap', $c->subject); 
+                $c2->setAttribute('parent', $level_1); 
+                $c2->nodeValue = $level_1.$c->subject_id; //match id to edusharing id
+                $level_2 = $c2->nodeValue;
+                $c1->appendChild($c2);
+            //Subject "Teilfach"
+                $c2 = $xml->createElement("key"); 
+                $c2->setAttribute('cap', $c->subject."DE"); 
+                $c2->setAttribute('parent', $level_2); 
+                $c2->nodeValue = $level_2."00"; //match id to edusharing id
+                $level_3 = $c2->nodeValue;
+                $c1->appendChild($c2);
+            //Grade
+                $c2 = $xml->createElement("key"); 
+                $c2->setAttribute('cap', $c->curriculum); 
+                $c2->setAttribute('parent', $level_3); 
+                $c2->nodeValue = $level_3.$c->grade_id; //match id to edusharing id
+                $level_4 = $c2->nodeValue;
+                $c1->appendChild($c2); 
+                
+                /* terminal_objectives */
+                $t = 0;
+                foreach($c->terminal_objectives as $ter_value){
+                    switch ($ter_value->type_id) {
+                        case 1: $caption = "Kompetenzen";   //competencies
+                            break;
+                        case 2: $caption = "Inhalte";   //Topics/Content
+                            break;
+                        default:
+                            break;
+                    }
+                    // Level 5 
+                    $c2 = $xml->createElement("key"); 
+                    $c2->setAttribute('cap', $caption); 
+                    $c2->setAttribute('parent', $level_4); 
+                    $c2->nodeValue = $level_4.sprintf("%02d", $ter_value->type_id); //match id to edusharing id
+                    $level_5 = $c2->nodeValue;
+                    $c1->appendChild($c2);
+                    // Level 6 //
+                    $c2 = $xml->createElement("key"); 
+                    $c2->setAttribute('cap',  strip_tags(preg_replace( "/\r|\n|\t/", " ", $ter_value->terminal_objective))); //remove carriage return, newlines and tabs  
+                    $c2->setAttribute('parent', $level_5); 
+                    $c2->nodeValue = $level_5.sprintf("%02d", $t); 
+                    $t++;
+                    $level_6 = $c2->nodeValue;
+                    $c1->appendChild($c2); 
+                    
+                    // Level 7 enabling_objectives
+                    $e = 0;
+                    if (count($ter_value->enabling_objectives) >= 1 AND $ter_value->enabling_objectives != false){
+                        foreach($ter_value->enabling_objectives as $ena_value){ 
+                            $c2 = $xml->createElement("key"); 
+                            
+                            $c2->setAttribute('cap', strip_tags(preg_replace( "/\r|\n|\t/", " ", $ena_value->enabling_objective))); //remove carriage return, newlines and tabs  
+                            $c2->setAttribute('parent', $level_6); 
+                            $e++;
+                            $c2->nodeValue = $level_6.sprintf("%02d", $e); 
+                            $c1->appendChild($c2); 
+                        }
+                    }
+                }  
+                    
+                $c1->appendChild($c2);
+            $root->appendChild($c1);
+        $xml->appendChild($root);
+        
+        $xml->preserveWhiteSpace = false; 
+        $xml->formatOutput = true; 
+        
+        $file = $this->temp_path.'/'.$filename.'.xml'; // Backup / [cur_id] / 
+        file_put_contents($file, $xml->saveXML());
+    }
     
     public function generateXML($c, $filename){
         global $CFG; 
@@ -391,6 +487,7 @@ class Backup {
                 $ter->setAttribute("order_id",           $ter_value->order_id);
                 $ter->setAttribute("repeat_interval",    $ter_value->repeat_interval);
                 $ter->setAttribute("color",              $ter_value->color);
+                $ter->setAttribute("type_id",            $ter_value->type_id);
                 if (isset($ext_ref)){
                     $ter->setAttribute("ext_reference",  $ext_ref->getReference('terminal_objective', $ter_value->id));
                 }
