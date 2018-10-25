@@ -84,7 +84,6 @@ switch ($func) {
 
 $f_content  = null;
 $content    = null; 
-$m_boxes    = '';
     
 if (!$files AND !isset($references) AND !isset($sodis)){
     $content .= 'Es gibt leider keine Eintragungen zum gewählten Lernziel.';
@@ -376,12 +375,10 @@ if (!$files AND !isset($references) AND !isset($sodis)){
                 $content .='<span id="subject_ajax">';
                 $content   .= RENDER::external_media($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), $media_render_data);;
                 $content   .='</span>';
-                $content   .='</div>';
+                $content   .='</div>';  
             } else {
-                $content   .= $m_boxes.'</div>';
+                $content   .= Form::info_box($m_boxes_data[$i]).'</div>'; //render internal files
             }
-            unset($m_boxes);
-            $m_boxes = '';
         }
 
     }
