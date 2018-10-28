@@ -350,7 +350,7 @@ if (!$files AND !isset($references) AND !isset($sodis)){
                                   'content'     => $m_content,
                                   'footer'      => $m_footer);
         unset($m_id, $preview, $m_preview, $m_icon_class, $m_delete, $m_url, $m_onclick, $m_title, $m_description, $m_subjects, $m_player, $m_content, $m_footer, $m_hits, $f_versions, $license);
-
+        error_log(json_encode($m_boxes_data[$i]));
         /* context box */   
         /* generate tabs for each file context*/
         $close = false;
@@ -372,15 +372,17 @@ if (!$files AND !isset($references) AND !isset($sodis)){
                 $media_render_data['m_boxes_json']   = urlencode(json_encode($m_boxes_data, JSON_UNESCAPED_SLASHES));
                 asort($used_subjects);
                 if (!empty($used_subjects)) { $content .= render_subject_filter($used_subjects, $media_render_data); }
-                $content .='<span id="subject_ajax">';
+                $content   .='<span id="subject_ajax">';
                 $content   .= RENDER::external_media($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), $media_render_data);;
                 $content   .='</span>';
                 $content   .='</div>';  
             } else {
-                $content   .= Form::info_box($m_boxes_data[$i]).'</div>'; //render internal files
+                foreach ($m_boxes_data AS $m_box){
+                    $content   .= Form::info_box($m_boxes_data[$i]).'</div>'; //render internal files
+                }
+                unset($m_boxes_data);
             }
         }
-
     }
     
         /* internal reference*/
