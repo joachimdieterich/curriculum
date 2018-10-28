@@ -378,7 +378,7 @@ if (!$files AND !isset($references) AND !isset($sodis)){
                 $content   .='</div>';  
             } else {
                 foreach ($m_boxes_data AS $m_box){
-                    $content   .= Form::info_box($m_boxes_data[$i]).'</div>'; //render internal files
+                    $content   .= Form::info_box($m_box).'</div>'; //render internal files
                 }
                 unset($m_boxes_data);
             }
