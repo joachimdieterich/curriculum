@@ -184,3 +184,9 @@ if (isset($_SESSION['anchor'])){
     //error_log($_SESSION['anchor']);
     $_SESSION['anchor'] = null;
 }
+
+if(isset($_SESSION['PAGE']->config['tab'])){
+    $TEMPLATE->assign($_SESSION['PAGE']->config['tab'],  true);
+} else {
+    $TEMPLATE->assign('tab_type_id_1',  true);
+}
