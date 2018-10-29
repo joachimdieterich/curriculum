@@ -135,7 +135,7 @@
                     {if count($ter_obj_given_type_ids) > 1}
                         {foreach name=type_ids_li item=type_id from=$ter_obj_type_id} 
                             {if $type_id->id|in_array:$ter_obj_given_type_ids}
-                                <li class="{if $smarty.foreach.type_ids_li.first}active{/if} "><a href="#tab_type_id_{$type_id->id}" data-toggle="tab">{$type_id->type}</a></li>
+                                <li class='{if isset($tab_type_id_{$type_id->id})}active{/if} '><a href="#tab_type_id_{$type_id->id}" data-toggle="tab" onclick='processor("config","page", "config",{["tab"=>"tab_type_id_{$type_id->id}"]|@json_encode nofilter});'>{$type_id->type}</a></li>
                             {/if}
                         {/foreach}
                     {/if}
@@ -143,7 +143,7 @@
                 <div class="tab-content" style="padding-top:10px;">
                     {foreach name=type_ids_ct item=type_id from=$ter_obj_type_id} 
                     {if $type_id->id|in_array:$ter_obj_given_type_ids}
-                        <div class="tab-pane {if $smarty.foreach.type_ids_ct.first}active{/if}" id="tab_type_id_{$type_id->id}">
+                        <div class="tab-pane {if isset($tab_type_id_{$type_id->id})}active{/if}" id="tab_type_id_{$type_id->id}">
                             {foreach name=foreach_ter key=terid item=ter from=$terminal_objectives}   
                             <div class="row " >
                                 <div class="col-xs-12"> 
