@@ -21,7 +21,7 @@ class repository_plugin_sodis extends repository_plugin_base {
     
     public function getReference($dependency, $id){
         global $CFG;
-        if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
+        if (isset($CFG->settings->repository->sodis)){ // prüfen, ob Repository Plugin vorhanden ist.
            $repository_db  = 'plugin_'.$CFG->settings->repository;
            $db             = DB::prepare("SELECT reference FROM $repository_db WHERE objective_id = ? AND type = ?");  // repository plugin is needed
            $db->execute(array($id, $this->resolveDependency($dependency)));
@@ -38,10 +38,11 @@ class repository_plugin_sodis extends repository_plugin_base {
 
     public function get($dependency, $id){
         global $CFG;
-         if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
+        
+         if (isset($CFG->settings->repository->sodis)){ // prüfen, ob Repository Plugin vorhanden ist.
              $type            = $this->resolveDependency($dependency);
              $db              = DB::prepare("SELECT reference FROM plugin_repo WHERE objective_id = ? AND type = ? AND repo = ?");
-             $db->execute(array($id, $type, $CFG->settings->repository));
+             $db->execute(array($id, $type, 'sodis'));
              $result          = $db->fetchObject();
              if (isset($result->reference)) {
                  $references  = array();
