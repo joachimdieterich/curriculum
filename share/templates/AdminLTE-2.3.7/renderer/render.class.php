@@ -2350,45 +2350,46 @@ public static function render_reference_entry($ref, $context_id){
 }
 
 public static function quote($quotes, $get){
-    $content     = '';  
-    RENDER::sortByProp($quotes, 'curriculum', 'asc');
-    
-    if ($get['schooltype_id'] != 'false'){
-        $quotes  = ofilter($quotes, ['schooltype_id' => $get['schooltype_id']]);
-    }
-    if ($get['subject_id'] != 'false'){
-         $quotes  = ofilter($quotes, ['subject_id' => $get['subject_id']]);
-    }
-    if ($get['curriculum_id'] != 'false'){
-         $quotes  = ofilter($quotes, ['curriculum_id' => $get['curriculum_id']]);
-    }
-    if ($get['grade_id'] != 'false'){
-         $quotes  = ofilter($quotes, ['grade_id' => $get['grade_id']]);
-    }
-    if (isset($quotes)){
-        $cur_id = '';
-        foreach ($quotes as $ref) {
-            if ($ref->reference_object->id != $cur_id){
-                if ($cur_id != ''){
-                    $content .= '</span>';  
-                }
-                $cur_id = $ref->reference_object->id;
-                $content .= '<span class="col-xs-12 bg-light-aqua" data-toggle="collapse" data-target="#cur_'.$cur_id.'"><h4 class="text-black">'.$ref->reference_object->curriculum.'<button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#cur_'.$cur_id.'" aria-expanded="true" data-toggle="tooltip" title="Fach einklappen bzw. ausklappen"><i class="fa fa-expand"></i></button></h4></span><hr style="clear:both;">';
-                $content .= '<span id ="cur_'.$cur_id.'" class="collapse out">';
-            }
-            $content .= '<blockquote>'.$ref->quote.'<small>'.$ref->reference_object->curriculum.', <cite="'.$ref->reference_title.'" class="pointer_hand"><a onclick="formloader(\'content\', \'show\','.$ref->quote_link.');">'.$ref->reference_title.'</a></cite></small></blockquote>'; 
-        }
-        $content .= '</span>'; //close last subject span
-    } 
-    
-    if (count($quotes) == 0) {
-        $content .= 'Keine Textbezüge vorhanden.';
-    }
+    if ($quotes != false){
+        $content     = '';  
+        RENDER::sortByProp($quotes, 'curriculum', 'asc');
 
-    if ($get['ajax'] == 'true'){  
-        echo $content;
-    } else {
-        return $content;
+        if ($get['schooltype_id'] != 'false'){
+            $quotes  = ofilter($quotes, ['schooltype_id' => $get['schooltype_id']]);
+        }
+        if ($get['subject_id'] != 'false'){
+             $quotes  = ofilter($quotes, ['subject_id' => $get['subject_id']]);
+        }
+        if ($get['curriculum_id'] != 'false'){
+             $quotes  = ofilter($quotes, ['curriculum_id' => $get['curriculum_id']]);
+        }
+        if ($get['grade_id'] != 'false'){
+             $quotes  = ofilter($quotes, ['grade_id' => $get['grade_id']]);
+        }
+        if (isset($quotes)){
+            $cur_id = '';
+            foreach ($quotes as $ref) {
+                if ($ref->reference_object->id != $cur_id){
+                    if ($cur_id != ''){
+                        $content .= '</span>';  
+                    }
+                    $cur_id = $ref->reference_object->id;
+                    $content .= '<span class="col-xs-12 bg-light-aqua" data-toggle="collapse" data-target="#cur_'.$cur_id.'"><h4 class="text-black">'.$ref->reference_object->curriculum.'<button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#cur_'.$cur_id.'" aria-expanded="true" data-toggle="tooltip" title="Fach einklappen bzw. ausklappen"><i class="fa fa-expand"></i></button></h4></span><hr style="clear:both;">';
+                    $content .= '<span id ="cur_'.$cur_id.'" class="collapse out">';
+                }
+                $content .= '<blockquote>'.$ref->quote.'<small>'.$ref->reference_object->curriculum.', <cite="'.$ref->reference_title.'" class="pointer_hand"><a onclick="formloader(\'content\', \'show\','.$ref->quote_link.');">'.$ref->reference_title.'</a></cite></small></blockquote>'; 
+            }
+            $content .= '</span>'; //close last subject span
+        } 
+        if (count($quotes) == 0) {
+        $content .= 'Keine Textbezüge vorhanden.';
+        }
+
+        if ($get['ajax'] == 'true'){  
+            echo $content;
+        } else {
+            return $content;
+        }
     }
 }
 
