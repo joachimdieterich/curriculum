@@ -100,8 +100,12 @@ if (!$files AND !isset($references) AND !isset($sodis)){
     } else {
         $file_context_count[7] = 0;  
     }
-    if (isset($quotes)){
-        $file_context_count[8] = count($quotes); // counter for file_context 8 --> quotes referecne
+    if (isset($quotes) ){
+        if ($quotes != false){
+            $file_context_count[8] = count($quotes); // counter for file_context 8 --> quotes referecne
+        } else {
+            $file_context_count[8] = 0;
+        }
     } else {
         $file_context_count[8] = 0;
     }
@@ -195,7 +199,8 @@ if (!$files AND !isset($references) AND !isset($sodis)){
                 case 5: $level_header = 'Externe Medien'; break;
                 case 6: $level_header = 'Externe Aufgaben'; break;
                 case 7: $level_header = 'Überfachliche Bezüge'; break;
-                case 8: $level_header = 'KMK'; break;
+                case 8: $level_header = 'Textstellen'; break;
+                case 9: $level_header = 'KMK'; break;
                 default: break;
             }*/ $file_context       = $files[$i]->file_context+1; //file_context auf nächstes Level setzen
         }
@@ -350,7 +355,7 @@ if (!$files AND !isset($references) AND !isset($sodis)){
                                   'content'     => $m_content,
                                   'footer'      => $m_footer);
         unset($m_id, $preview, $m_preview, $m_icon_class, $m_delete, $m_url, $m_onclick, $m_title, $m_description, $m_subjects, $m_player, $m_content, $m_footer, $m_hits, $f_versions, $license);
-        error_log(json_encode($m_boxes_data[$i]));
+        //error_log(json_encode($m_boxes_data[$i]));
         /* context box */   
         /* generate tabs for each file context*/
         $close = false;
