@@ -10,7 +10,7 @@
 {block name=content}
 <div class="login-box">
     <div class="login-logo"><br>
-        <img src="assets/images/favicon/apple-touch-icon-57x57.png"></img> <br>
+        <img alt="curriculum-logo" src="assets/images/favicon/apple-touch-icon-57x57.png"/> <br>
         <b>{$app_title}</b>
     </div><!-- /.login-logo -->
     <div class="login-box-body">

@@ -65,6 +65,34 @@ class WalletSharing {
         
     }
     
+    public function getId($id = null){
+        //global $USER;
+        if ($id == null){ $id = $this->id; }
+        $db     = DB::prepare('SELECT ws.id FROM wallet_sharing AS ws WHERE ws.wallet_id = ? AND ws.reference_id = ?');
+        $db->execute(array($this->wallet_id, $this->reference_id));
+        $result = $db->fetchColumn();
+        if ($result){
+            $this->id  = $result;
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    public function isShared(){
+        global $USER;
+        checkCapabilities('wallet:share', $USER->role_id);
+        $db = DB::prepare('SELECT COUNT(wallet_id) FROM wallet_sharing WHERE wallet_id = ? AND reference_id = ?');
+        $db->execute(array($this->wallet_id, $this->reference_id));
+        if($db->fetchColumn() >= 1) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
     public function add(){
         global $USER;
         checkCapabilities('wallet:share', $USER->role_id);
@@ -77,16 +105,35 @@ class WalletSharing {
         } else {
             return false;
         }
+
     }
     
-    public function delete($id = null){
-        if ($id == null){ $id = $this->id; }
+    public function update(){
+        global $USER;
+        checkCapabilities('wallet:share', $USER->role_id);
+        list ($this->timestart, $this->timeend) = explode(' - ',$this->timerange); // copy timestart and timeend from timerage
+        $this->timestart = date('Y-m-d G:i:s', strtotime($this->timestart));
+        $this->timeend   = date('Y-m-d G:i:s', strtotime($this->timeend));
+        $db = DB::prepare('UPDATE wallet_sharing SET context_id = ?, permission = ?, timestart = ?, timeend = ? WHERE wallet_id = ? AND reference_id = ?');
+        return $db->execute(array($this->context_id, $this->permission, $this->timestart, $this->timeend, $this->wallet_id, $this->reference_id));
+
+    }
+
+    public function delete(){
         global $USER, $LOG;
         checkCapabilities('wallet:share', $USER->role_id);
+        $this->getId();
         $this->load();
-        $LOG->add($USER->id, 'walletsharing.class.php', dirname(__FILE__), 'Delete walletsharing: id = '.$this->id.', creator_id: '.$this->creator_id);
-        $db = DB::prepare('DELETE FROM wallet_sharing WHERE id = ?');
-        return $db->execute(array($id));
+        $content            = new WalletContent();
+        $content->wallet_id = $this->wallet_id;
+        $this->content      = $content->get('user', $this->reference_id);
+        if ( !empty($this->content)) {
+            return false;
+        } else {
+            $LOG->add($USER->id, 'walletsharing.class.php', dirname(__FILE__), 'Delete walletsharing: id = '.$this->id.', creator_id: '.$this->creator_id);
+            $db = DB::prepare('DELETE FROM wallet_sharing WHERE id = ?');
+            return $db->execute(array($this->id));
+        }
     }
    
 }

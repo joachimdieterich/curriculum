@@ -22,8 +22,8 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-include(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
-include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
+include_once(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
+include_once(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER, $CFG;
 $USER            = $_SESSION['USER'];
 if (!isset($_SESSION['PAGE']->target_url)){     //if target_url is not set -> use last PAGE url
@@ -59,8 +59,14 @@ if($validated_data === false) {/* validation failed */
     if (isset($_POST['user_list'])){
         $wallet_sharing->context_id = $_SESSION['CONTEXT']['userFiles']->context_id;
         foreach ($_POST['user_list'] as $wallet_sharing->reference_id) {
-            if ($wallet_sharing->add()){
-            $_SESSION['PAGE']->message[] = array('message' => 'Sammelmappe geteilt', 'icon' => 'fa-share-alt text-success');
+            if ($wallet_sharing->isShared()){
+                if ($wallet_sharing->update()){
+                    $_SESSION['PAGE']->message[] = array('message' => 'Sammelmappenteilung aktualisiert', 'icon' => 'fa-share-alt text-success');
+                }
+            } else {
+                if ($wallet_sharing->add()){
+                    $_SESSION['PAGE']->message[] = array('message' => 'Sammelmappe geteilt', 'icon' => 'fa-share-alt text-success');
+                }
             }
         }
     }

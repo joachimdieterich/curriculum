@@ -103,6 +103,26 @@ class File {
      * @since 0.9
      * @var string
      */
+    public $publisher;
+    /**
+     * publisher of file content
+     * @var string
+     */
+    public $publishingCompany;
+    /**
+     * publisher Company of file content
+     * @var string
+     */
+    public $place;
+    /**
+     * place of publication
+     * @var string;
+     */
+    public $date;
+    /**
+     * date of publication
+     * @var string;
+     */
     public $license; 
     /**
      * id of curriculum
@@ -125,6 +145,12 @@ class File {
      */
     public $reference_id;
     public $hits;
+    
+    /**
+     * Orgin of file, e.g. internal, edusharing, ...
+     * @var string 
+     */
+    public $orgin;
     /**
      * add file
      * @return mixed 
@@ -136,12 +162,13 @@ class File {
         if ($this->curriculum_id < 1)        { $this->curriculum_id         = NULL; }
         if ($this->terminal_objective_id < 1){ $this->terminal_objective_id = NULL; }
         if ($this->enabling_objective_id < 1){ $this->enabling_objective_id = NULL; }
-        $db             = DB::prepare('INSERT INTO files (title, filename, description, author, license, type, path, context_id, file_context, creator_id, cur_id, ter_id, ena_id, reference_id) 
-                            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
-        if($db->execute(array($this->title, $this->filename, $this->description, $this->author, $this->license, $this->type, $this->path, $this->context_id, $this->file_context, $USER->id, $this->curriculum_id, $this->terminal_objective_id, $this->enabling_objective_id, $this->reference_id))){
+        if (!isset($this->orgin)){ $this->orgin = 'internal'; }
+        $db             = DB::prepare('INSERT INTO files (title, filename, description, author, license, type, path, context_id, file_context, creator_id, cur_id, ter_id, ena_id, reference_id, publisher, publishingCompany, place, date, orgin) 
+                            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
+        if($db->execute(array($this->title, $this->filename, $this->description, $this->author, $this->license, $this->type, $this->path, $this->context_id, $this->file_context, $USER->id, $this->curriculum_id, $this->terminal_objective_id, $this->enabling_objective_id, $this->reference_id, $this->publisher, $this->publishingCompany, $this->place, $this->date, $this->orgin))){
             $lastInsertId = DB::lastInsertId();                 //get last insert id bevor using db again!
             $LOG->add($USER->id, 'uploadframe.php', dirname(__FILE__), 'Context: '.$this->context_id.' Upload: '.$this->path.''.$this->filename);
-            $_SESSION['PAGE']->message[] = array('message' => 'Datei erfolgreich hochgeladen', 'icon' => 'fa-file text-success');
+            $_SESSION['PAGE']->message[] = array('message' => 'Datei erfolgreich hochgeladen. / Link erfolgreich gesetzt.', 'icon' => 'fa-file text-success');
             return $lastInsertId; 
         } else {
             return false; 
@@ -155,8 +182,8 @@ class File {
     public function update(){
         global $USER;
         checkCapabilities('file:update', $USER->role_id);
-        $db = DB::prepare('UPDATE files SET title = ?,  description = ?, license = ?, author = ?, file_context = ?, context_id = ? WHERE id = ?');
-        return $db->execute(array($this->title,  $this->description, $this->license, $this->author, $this->file_context, $this->context_id, $this->id));
+        $db = DB::prepare('UPDATE files SET title = ?,  description = ?, license = ?, author = ?, file_context = ?, context_id = ?, publisher = ?, publishingCompany = ?, place = ?, date = ? WHERE id = ?');
+        return $db->execute(array($this->title,  $this->description, $this->license, $this->author, $this->file_context, $this->context_id, $this->publisher, $this->publishingCompany, $this->place, $this->date, $this->id));
     }
 
     /**
@@ -226,6 +253,10 @@ class File {
             $this->type                  = $result->type;
             $this->context_id            = $result->context_id;
             $this->file_context          = $result->file_context;
+            $this->publisher             = $result->publisher;
+            $this->publishingCompany     = $result->publishingCompany;
+            $this->place                 = $result->place;
+            $this->date                  = $result->date;
             if (isset($result->context_path)){
                 $this->context_path      = $result->context_path;
             }
@@ -238,7 +269,8 @@ class File {
             $this->terminal_objective_id = $result->ter_id;
             $this->enabling_objective_id = $result->ena_id;
             $this->creation_time         = $result->creation_time;
-            $this->creator_id            = $result->creator_id;   
+            $this->creator_id            = $result->creator_id;
+            $this->orgin                 = $result->orgin;
             if (isset($result->hits)){
                 $this->hits              = $result->hits;
             }
@@ -545,9 +577,12 @@ class File {
                 $files[]                     = clone $this;       
         }
            
-        if (isset($CFG->repository) AND $externalFiles == true){
-           $repo  = get_plugin('repository', $CFG->settings->repository);
-           $files = $repo->getFiles($dependency, $id, $files); 
+        if (isset($CFG->settings->repository) AND $externalFiles == true){
+            foreach ($CFG->settings->repository as $r) {
+                if (method_exists($r,'getFiles')){
+                    $files = $r->getFiles($dependency, $id, $files); 
+                }
+            }
         } 
         
         if (isset($CFG->settings->webservice)){
@@ -628,6 +663,38 @@ class File {
         } 
         
         return $occurrence;
+    }
+    
+     public function checkSubscription($file_id, $context_id, $reference_id, $file_context, $file_context_reference_id){
+        $db = DB::prepare('SELECT count(id) FROM file_subscriptions WHERE file_id = ? AND context_id = ? AND reference_id = ? AND file_context = ? AND file_context_reference_id');
+        $db->execute(array($file_id, $context_id, $reference_id, $file_context, $file_context_reference_id));
+        if ($db->fetchColumn() > 0){
+            return true;
+        } else {
+            return false; 
+        }    
+    }
+    /**
+     * 
+     * @param type $file_id
+     * @param type $context_id
+     * @param type $reference_id
+     * @param type $file_context
+     * @param type $file_context_reference_id
+     * @return false only on error
+     */
+    public function subscribe($file_id, $context_id, $reference_id, $file_context, $file_context_reference_id){
+        foreach($file_context_reference_id AS $f_ct_ref_id)
+        if ($this->checkSubscription($file_id, $context_id, $reference_id, $file_context, $f_ct_ref_id)) {
+            // do nothing already subscribed 
+        } else {
+            $db = DB::prepare('INSERT INTO file_subscriptions (file_id,context_id,reference_id,file_context,file_context_reference_id) 
+                                VALUES (?,?,?,?,?)');
+            if (!$db->execute(array($file_id, $context_id, $reference_id, $file_context, $f_ct_ref_id))){
+                return false;
+            }
+        } 
+        
     }
     /**
      * function used during the install process to set up creator id to new admin

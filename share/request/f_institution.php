@@ -24,7 +24,7 @@
 */
 $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
-include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
+include_once(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $CFG, $USER, $INSTITUTION;
 $USER           = $_SESSION['USER'];
 $INSTITUTION    = $_SESSION['INSTITUTION'];
@@ -135,7 +135,7 @@ if ($semester_id){
 }
 $content .= Form::input_text('paginator_limit', 'Listeneinträge / Seite', $paginator_limit, $error, '30','number',5,150);
 $content .= Form::input_text('acc_days', 'Lernerfolge x Tage anzeigen', $acc_days, $error, '7','number',1,356);
-$content .= Form::input_text('timeout', 'Timeout (Minuten)', $acc_days, $error, '15','number',1,240);
+$content .= Form::input_text('timeout', 'Timeout (Minuten)', $timeout, $error, '15','number',1,240);
 $content .= '<input type="hidden" name="csv_size" id="csv_size" value="'.$csv_size.'"/>';
 $content .= '<input type="hidden" name="avatar_size" id="avatar_size" value="'.$csv_size.'"/>';
 $content .= '<input type="hidden" name="material_size" id="material_size" value="'.$csv_size.'"/>';

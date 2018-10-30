@@ -49,6 +49,9 @@ if (isset($func)){
                         $receiver_id       = filter_input(INPUT_GET, 'id',    FILTER_UNSAFE_RAW);
         case 'new':     checkCapabilities('mail:postMail', $USER->role_id, false, true);
                         $header            = 'Nachricht schreiben';
+        case 'new-to':  checkCapabilities('mail:postMail', $USER->role_id, false, true);
+                        $header            = 'Nachricht schreiben';
+                        $receiver_id       = filter_input(INPUT_GET, 'id',    FILTER_UNSAFE_RAW);
         break;
         case 'reply':
         case 'forward': checkCapabilities('mail:postMail', $USER->role_id, false, true);

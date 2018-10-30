@@ -89,16 +89,22 @@ function uploadFile(form, func, fSelector, fName, fProgress, fPercent)
  
     formData.append("upload",       file);                                            //Fügt dem formData Objekt unser File Objekt hinzu
     if (document.getElementById('uploadform') !== null){                           // append formData in uploadframe.php
-        formData.append("action",       document.getElementById('action').value); 
-        formData.append("ref_id",       document.getElementById('ref_id').value); 
-        formData.append("target",       document.getElementById('target').value); 
-        formData.append("format",       document.getElementById('format').value); 
-        formData.append("context",      document.getElementById('context').value); 
-        formData.append("title",        document.getElementById('title').value); 
-        formData.append("description",  document.getElementById('description').value);
-        formData.append("license",      document.getElementById('license').value);
-        formData.append("file_context", document.getElementById('file_context').value);
+        formData.append("action",               document.getElementById('action').value); 
+        formData.append("ref_id",               document.getElementById('ref_id').value); 
+        formData.append("target",               document.getElementById('target').value); 
+        formData.append("format",               document.getElementById('format').value); 
+        formData.append("context",              document.getElementById('context').value); 
+        formData.append("title",                document.getElementById('title').value); 
+        formData.append("description",          document.getElementById('description').value);
+        formData.append("author",               document.getElementById('author').value);
+        formData.append("license",              document.getElementById('license').value);
+        formData.append("file_context",         document.getElementById('file_context').value);
+        formData.append("publisher",            document.getElementById('publisher').value);
+        formData.append("publishingCompany",    document.getElementById('publishingCompany').value);
+        formData.append("place",                document.getElementById('place').value);
+        formData.append("date",                 document.getElementById('date').value);
     }
+
     if (func === 'import'){
         formData.append("context",      'backup'); 
     } 
@@ -163,9 +169,14 @@ function uploadURL()
         formData.append("context",      document.getElementById('context').value); 
         formData.append("title",        document.getElementById('title').value); 
         formData.append("description",  document.getElementById('description').value);
+        formData.append("author",       document.getElementById('author').value);
         formData.append("license",      document.getElementById('license').value);
         formData.append("file_context", document.getElementById('file_context').value);
         formData.append("fileURL",      document.getElementById('fileURL').value);
+        formData.append("publisher",            document.getElementById('publisher').value);
+        formData.append("publishingCompany",    document.getElementById('publishingCompany').value);
+        formData.append("place",                document.getElementById('place').value);
+        formData.append("date",                 document.getElementById('date').value);
     }
     client.onerror = function(e) { alert("onError"); };
     

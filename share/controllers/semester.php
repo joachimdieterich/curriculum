@@ -42,7 +42,7 @@ $p_widget  = array('header'       => 'semester',
                    'subheader01'  => 'description',
                    'subheader02'  => 'institution'); //false ==> don't show icon on widget
 $p_config = array('id'            => 'checkbox',
-                  'semester'      => 'Lerzeitraum', 
+                  'semester'      => 'Lernzeitraum', 
                   'description'   => 'Beschreibung',
                   'institution'   => 'Institution',
                   'begin'         => 'Lernzeitraum-Beginn',

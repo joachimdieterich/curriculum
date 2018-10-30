@@ -24,7 +24,7 @@
 */
 $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
-include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
+include_once(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $CFG, $USER, $INSTITUTION;
 $USER           = $_SESSION['USER'];
 $INSTITUTION    = $_SESSION['INSTITUTION'];
@@ -41,10 +41,15 @@ $institution_id = null;
 $grade_id       = null;       
 $schooltype_id  = null;  
 $state_id       = null;
+$publisher      = null;
+$publishingCompany = null;
+$place          = null;
+$date           = null;
 $color          = '#3cc95b';
 $error          = null;
 $object         = file_get_contents("php://input");
 $data           = json_decode($object, true);
+
 if (is_array($data)) {
     foreach ($data as $key => $value){
         $$key = $value;
@@ -142,6 +147,10 @@ if (isset($id)) { $content .= 'value="'.$id.'"';} $content .= '>';
 
 $content .= Form::input_text('curriculum', 'Titel des Lehrplans', $curriculum, $error, 'z. B. Deutsch');
 //$content .= Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung');
+$content .= Form::input_text('publisher', 'Herausgeber', $publisher, $error, 'z. B. Land Rheinland-Pfalz');
+$content .= Form::input_text('publishingCompany', 'Verlag', $publishingCompany, $error, 'z. B. Digitalverlag');
+$content .= Form::input_text('place', 'Ort', $place, $error, 'z. B. Landau');
+$content .= Form::input_text('date', 'Datum/Jahr', $date, $error, 'z. B. 27.04.1987');
 $content .= Form::input_textarea('description', 'Beschreibung', $description, $error, 'Beschreibung');
 /* Fächer */ 
 $subjects                   = new Subject();                                                      

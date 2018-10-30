@@ -22,8 +22,8 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-include(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
-include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
+include_once(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
+include_once(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER, $CFG;
 $USER   = $_SESSION['USER'];
 if (!isset($_SESSION['PAGE']->target_url)){     //if target_url is not set -> use last PAGE url
@@ -45,7 +45,6 @@ $_POST = $gump->sanitize($_POST);       //sanitize $_POST
 $enabling_objective->terminal_objective_id  = $_POST['terminal_objective_id'];
 $enabling_objective->curriculum_id          = $_POST['curriculum_id'];
 $enabling_objective->repeat_interval        = $_POST['repeat_interval'];
-//$enabling_objective->creator_id             = $USER->id; // now set in add funciton
 
 $gump->validation_rules(array(
 'curriculum_id'             => 'required',
@@ -54,7 +53,7 @@ $gump->validation_rules(array(
 $validated_data = $gump->run($_POST);
 if($validated_data === false) {/* validation failed */
     $_SESSION['FORM']            = new stdClass();
-    $_SESSION['FORM']->form      = 'enablingObjective';
+    $_SESSION['FORM']->form      = 'enabling_objective';
     foreach($enabling_objective as $key => $value){
         $_SESSION['FORM']->$key  = $value;
     } 
@@ -72,13 +71,13 @@ if($validated_data === false) {/* validation failed */
     $_SESSION['FORM']            = null;                     // reset Session Form object
     $curriculum                  = $_POST['curriculum_id'];   
 }
-if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
-    $repo = $CFG->repository;
+if (isset($CFG->settings->repository->omega)){ // prüfen, ob Repository Plugin vorhanden ist. //todo global solution use file_subscription
+    $repo = $CFG->settings->repository->omega;
 }
 if (filter_input(INPUT_POST, 'reference', FILTER_UNSAFE_RAW)){
     $repo->setReference('enabling_objective', $ena_id, filter_input(INPUT_POST, 'reference', FILTER_UNSAFE_RAW));
 } else {
-    $repo->setReference('enabling_objective', $ena_id, ''); // damit update übernommen wird
+    $repo->setReference('enabling_objective', $ena_id); // damit update übernommen wird
 }
 
 header('Location:'.$_SESSION['PAGE']->target_url);

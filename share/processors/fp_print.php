@@ -22,8 +22,8 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-include(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
-include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
+include_once(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
+include_once(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER, $CFG;
 $USER   = $_SESSION['USER'];
 if (!isset($_SESSION['PAGE']->target_url)){     //if target_url is not set -> use last PAGE url
@@ -49,7 +49,7 @@ switch ($func) {
                             foreach ($ter as $ter_value){
                                 $content .= '<pagebreak orientation="landscape"/><div style="padding:5px;background:'.$ter_value->color.'">'.strip_tags($ter_value->terminal_objective).'</div>';
                                 $content .= '<table style="width:100%; border-collapse: collapse;border: 1px solid #EBEBEB;">';
-                                $content .= '<thead><tr style="background: #F2DBDB"><td>Lernziel / Kompetenz</td><td>Bezüge / Querverweise</td><td>Materialien</td></tr></thead>';
+                                $content .= '<thead><tr style="background: #F2DBDB"><td>Lernziel / Kompetenz</td><td>Bezüge / Überfachliche Bezüge</td><td>Materialien</td></tr></thead>';
                                 $content    .= '<tr><td valign="top" style="width:30%;border: 1px solid '.$ter_value->color.';"><small>'.strip_tags($ter_value->description).'</small></td>';
                                 /* Bezüge */
                                 $content    .= '<td valign="top" style="width:40%;border: 1px solid '.$ter_value->color.';"><small>'. render_reference('terminal_objective', $ter_value->id).'</small></td>';
@@ -78,7 +78,7 @@ switch ($func) {
                                 $content .= '<pagebreak>';
                                 $pagebreak = false;
                             }
-                            $content           .= '<h1>Hinweise zum Lehrplan</h1>';
+                            $content           .= '<h1>Digitalisierte Texte des Lehrplans</h1>';
                             $con                = new Content();
                             $content_entries    = $con->get('curriculum', $id );
                             foreach ($content_entries AS $content_entry){
@@ -92,82 +92,7 @@ switch ($func) {
                             }
                         }
                         if (isset($_POST['print_reference'])){ // print reference
-                           if ($pagebreak){
-                                $content .= '<pagebreak>';
-                                $pagebreak = false;
-                            }
-                            $content .= '<h1>Bezüge / Querverweise</h1>'; 
-                            $ter_obj  = new TerminalObjective();         //load terminal objectives
-                            $ter      = $ter_obj->getObjectives('certificate', $id);
-                            foreach ($ter as $ter_value) {
-                                $ena_obj                = new EnablingObjective();         //load enabling objectives
-                                $ena_obj->curriculum_id = $id;
-                                $ena                    = $ena_obj->getObjectives('terminal_objective', $ter_value->id);
-                                $reference = new Reference(); // todo: create function for both terminal and enabling objective (removes double code)
-                                $references = $reference->get('reference_id', $_SESSION['CONTEXT']['terminal_objective']->context_id, $ter_value->id);
-                                if (count($references) > 0){
-                                    $content    .= '<div style="padding:5px;background:'.$ter_value->color.'; color:'.getContrastColor($ter_value->color).';">'.strip_tags($ter_value->terminal_objective).'</div>';
-                                } 
-                                foreach ($references as $ref) { 
-                                    $content .= '<columns column-count="2" vAlign="justify" column-gap="25" />';
-                                    $content .= '<p><small><strong>Lehrplan</strong></small> '.$ref->curriculum_object->curriculum.'<br>';
-                                    $content .= '<small><strong>Ausbildungsrichtung</strong></small> '.$ref->schooltype.'<br>';
-                                    $content .= '<small><strong>Fach</strong></small> '.$ref->curriculum_object->subject.'<br>';
-                                    $content .= '<small><strong>Klassenstufe</strong></small> '.$ref->grade.'<br>';
-                                    $content .= '<small><strong>Thema</strong></small> '.strip_tags($ref->terminal_object->terminal_objective).'<br>';
-                                    if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id){
-                                        $content .= '<small><strong>Lernziel/Kompetenz</strong></small> '.strip_tags($ref->enabling_object->enabling_objective).'<br>';
-                                    }
-                                    if (isset($ref->content_object->content)){
-                                        if ($ref->content_object->content != ''){
-                                            $content .= '<small><strong>Hinweise</strong></small> '.strip_tags($ref->content_object->content).'<br>';
-                                        }
-                                    }
-                                    $content .= '</p>';
-                                    $content .= '<columns column-count="1" vAlign="justify" column-gap="0" />';
-
-                                }
-                                
-                                foreach ($ena as $ena_value) {
-                                        $ena_obj->id        = $ena_value->id;
-                                        $ena_obj->load();  
-                                        $reference = new Reference();
-                                        $references = $reference->get('reference_id', $_SESSION['CONTEXT']['enabling_objective']->context_id, $ena_obj->id);
-                                        if (count($references) > 0){
-                                            $content    .= '<div style="padding:5px;background:'.$ter_value->color.'; color:'.getContrastColor($ter_value->color).';">'.strip_tags($ter_value->terminal_objective).'</div>';
-                                            $content    .= '<div style="padding:5px;border:1px solid '.$ter_value->color.';">'.strip_tags($ena_value->enabling_objective).'</div>';
-                                        }
-                                        foreach ($references as $ref) {
-                                           /* if ($ref->context_id == $_SESSION['CONTEXT']['terminal_objective']->context_id){
-                                                $content    .= '<div style="padding:5px;background:'.$ter_value->color.'; color:'.getContrastColor($ter_value->color).';">'.strip_tags($ter_value->terminal_objective).'</div>';
-                                            } else {
-                                                $content    .= '<div style="padding:5px;background:'.$ter_value->color.'; color:'.getContrastColor($ter_value->color).';">'.strip_tags($ena_value->enabling_objective).'</div>';
-                                            }*/
-                                            $content .= '<columns column-count="2" vAlign="justify" column-gap="25" />';
-                                            $content .= '<p><small><strong>Lehrplan</strong></small> '.$ref->curriculum_object->curriculum.'<br>';
-                                            $content .= '<small><strong>Ausbildungsrichtung</strong></small> '.$ref->schooltype.'<br>';
-                                            $content .= '<small><strong>Fach</strong></small> '.$ref->curriculum_object->subject.'<br>';
-                                            $content .= '<small><strong>Klassenstufe</strong></small> '.$ref->grade.'<br>';
-                                            $content .= '<small><strong>Thema</strong></small> '.strip_tags($ref->terminal_object->terminal_objective).'<br>';
-                                            if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id){
-                                                $content .= '<small><strong>Lernziel/Kompetenz</strong></small> '.strip_tags($ref->enabling_object->enabling_objective).'<br>';
-                                            }
-                                            if (isset($ref->content_object->content)){
-                                                if ($ref->content_object->content != ''){
-                                                    $content .= '<small><strong>Hinweise</strong></small> '.strip_tags($ref->content_object->content).'<br>';
-                                                }
-                                            }
-                                            $content .= '</p>';
-                                            $content .= '<columns column-count="1" vAlign="justify" column-gap="0" />';
-
-                                        }   
-                                }
-                            }
-                            
-                            if (count($ena) > 0){
-                                $pagebreak = true;   
-                            }
-                           
+                           $content .= RENDER::print_reference(array('id' => $id, 'pagebreak' => $pagebreak, 'quotes' => true));
                         }
                         if (isset($_POST['print_glossar'])){ // print glossar
                             if ($pagebreak){

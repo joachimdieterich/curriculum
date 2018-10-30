@@ -20,46 +20,40 @@ function toggleAll(){
 <!-- Main content -->
 <section class="content">
     <div class="row">
-        <div class="col-md-6 col-md-offset-4">
-            {FORM::input_select('search', '', $search_navigator, 'nb_title', 'nb_id', '', '', '', 'Suchen (Schnellzugriff > noch nicht fertig)', '', '')}
+        <div class="col-md-6 col-centered">
+            {FORM::input_select('search', '', $search_navigator, 'title', 'onclick', '', '', 'window.location.assign(this.value);', 'Schnellzugriff', '', '')}
         </div>
-        {if checkCapabilities('navigator:add', $my_role_id, false)}    
+        {*if checkCapabilities('navigator:add', $my_role_id, false)}    
             <div class="pull-left" style="padding: 0 0 10px 15px;">
                 <button type="button" class="btn btn-default " onclick="formloader('help','new');" ><i class="fa fa-plus"></i> Datei hinzufügen</button>
             </div>
-        {/if}
+        {/if*}
     </div>
     <div class="row"> 
         <div class="{$navigator[0]->nv_top_width_class} ">
-            <div style="margin: auto;" >
             {foreach key=nav_id item=nav from=$navigator}
                 {if $nav->nb_position eq 'top'}
                     {RENDER::navigator_item($nav)}
                 {/if}
             {/foreach}
-            </div>
         </div>
     </div>
     <div class="row" > 
-        <div class="{$navigator[0]->nv_content_width_class}" >
-            <div style="margin: auto;" >
+        <div class="{$navigator[0]->nv_content_width_class}" >     
             {foreach key=nav_id item=nav from=$navigator}
                 {if $nav->nb_position eq 'content'}
                     {RENDER::navigator_item($nav)}
                 {/if}
             {/foreach}
-            </div>
         </div>
     </div>
     <div class="row" > 
         <div class="{$navigator[0]->nv_content_width_class}" >
-            <div style="margin: auto;" >
             {foreach key=nav_id item=nav from=$navigator}
                 {if $nav->nb_position eq 'footer'}
                     {RENDER::navigator_item($nav)}
                 {/if}
             {/foreach}
-            </div>
         </div>
     </div>
 </section>

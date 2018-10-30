@@ -22,8 +22,8 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-include(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
-include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
+include_once(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
+include_once(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER,$CFG, $PAGE;
 $USER   = $_SESSION['USER'];
 $func   = filter_input(INPUT_GET, 'func',           FILTER_SANITIZE_STRING);
@@ -35,6 +35,20 @@ switch ($func) { //$func == db table name
                             $c->$dependency = filter_input(INPUT_GET, 'input', FILTER_UNSAFE_RAW);
                             $c->set($dependency, filter_input(INPUT_GET, 'val', FILTER_VALIDATE_INT));
         break;
+    case "parentalAuthority": $u              = new User();   
+                              $u->unsetChildren(filter_input(INPUT_GET, 'val', FILTER_VALIDATE_INT), filter_input(INPUT_GET, 'child_id', FILTER_VALIDATE_INT));
+        break;
+    case "ajaxsubmit":      
+                            switch ($_POST['table']) {
+                                case 'config_plugins':  $c = new Config();
+                                                        error_log($c->set_config_plugin($_POST['params']['plugin'], $_POST['params']['name'], $_POST['value']));
+
+                                    break;
+
+                                default:
+                                    break;
+                            }
+        break; 
   
     default: break;
 }

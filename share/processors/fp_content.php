@@ -22,8 +22,8 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-include(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
-include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
+include_once(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
+include_once(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER, $CFG;
 $USER   = $_SESSION['USER'];
 if (!isset($_SESSION['PAGE']->target_url)){     //if target_url is not set -> use last PAGE url
@@ -31,8 +31,16 @@ if (!isset($_SESSION['PAGE']->target_url)){     //if target_url is not set -> us
 }
 $content                = new Content();
 $purify = HTMLPurifier_Config::createDefault();
+$purify->set('Attr.EnableID', true);
 $purify->set('Core.Encoding', 'UTF-8'); // replace with your encoding
 $purify->set('HTML.Doctype', 'HTML 4.01 Transitional'); // replace with your doctype
+$purify->set('HTML.DefinitionID', 'Quote'); //enable Quote tag
+$purify->set('HTML.DefinitionRev', 1);
+// allow name and id attributes
+
+if ($def = $purify->maybeGetRawHTMLDefinition()) {
+    $def->addElement('quote', 'Block', 'Inline', 'Common', array('id' => 'Text'));
+}
 
 $purifier               = new HTMLPurifier($purify);
 $content->content       = $purifier->purify(filter_input(INPUT_POST, 'content', FILTER_UNSAFE_RAW));

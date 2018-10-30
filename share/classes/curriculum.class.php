@@ -107,17 +107,42 @@ class Curriculum {
      * @var type 
      */
     public $terminal_objectives;
-    
+    /**
+     * contains click counter value (table statistics)
+     * @var int 
+     */
+    public $clicks;
     /**
      * add curriculum to db
      * @return mixed 
+     */    
+    public $publisher;
+    /**
+     * publisher of curriculum
+     * @var string
      */
+    public $publishingCompany;
+    /**
+     * publisher of Curriculum
+     * @var string
+     */
+    public $place;
+    /**
+     * place of publication
+     * @var string
+     */
+    public $date;
+    /**
+     * date of publication
+     * @var string
+     */
+    
     public function add(){
         global $USER;
         checkCapabilities('curriculum:add', $USER->role_id);
-        $db = DB::prepare('INSERT INTO curriculum (curriculum, description, grade_id, subject_id, schooltype_id, state_id, icon_id, country_id, color, creator_id) 
-                                            VALUES (?,?,?,?,?,?,?,?,?,?)');
-        $db->execute(array($this->curriculum, $this->description, $this->grade_id, $this->subject_id, $this->schooltype_id, $this->state_id, $this->icon_id, $this->country_id, $this->color, $USER->id));
+        $db = DB::prepare('INSERT INTO curriculum (curriculum, description, grade_id, subject_id, schooltype_id, state_id, icon_id, country_id, color, creator_id, publisher, publishingCompany, place, date) 
+                                            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
+        $db->execute(array($this->curriculum, $this->description, $this->grade_id, $this->subject_id, $this->schooltype_id, $this->state_id, $this->icon_id, $this->country_id, $this->color, $USER->id, $this->publisher, $this->publishingCompany, $this->place, $this->date));
         return DB::lastInsertId();
     }
     
@@ -128,9 +153,16 @@ class Curriculum {
     public function update(){
         global $USER;
         checkCapabilities('curriculum:update', $USER->role_id); 
-        $db = DB::prepare('UPDATE curriculum SET curriculum = ?, description = ?, grade_id = ?, subject_id = ?, schooltype_id = ?, state_id = ?, icon_id = ?, country_id = ?, color = ?
+        $db = DB::prepare('UPDATE curriculum SET curriculum = ?, description = ?, grade_id = ?, subject_id = ?, schooltype_id = ?, state_id = ?, icon_id = ?, country_id = ?, color = ?, publisher = ?, publishingCompany = ?, place = ?, date = ? 
                                                 WHERE id = ?');
-        return $db->execute(array($this->curriculum, $this->description, $this->grade_id, $this->subject_id, $this->schooltype_id, $this->state_id, $this->icon_id, $this->country_id, $this->color, $this->id));
+        return $db->execute(array($this->curriculum, $this->description, $this->grade_id, $this->subject_id, $this->schooltype_id, $this->state_id, $this->icon_id, $this->country_id, $this->color, $this->publisher, $this->publishingCompany, $this->place, $this->date, $this->id));
+    }
+    
+    public function setOwner($new_owner){
+        global $USER;
+        checkCapabilities('curriculum:update', $USER->role_id); 
+        $db = DB::prepare('UPDATE curriculum SET creator_id = ? WHERE id = ?');
+        return $db->execute(array($new_owner, $this->id));
     }
     
     /**
@@ -196,6 +228,11 @@ class Curriculum {
         $this->color            = $result->color;
         $this->creation_time    = $result->creation_time;
         $this->creator_id       = $result->creator_id;
+        $this->publisher        = $result->publisher;
+        $this->publishingCompany= $result->publishingCompany;
+        $this->place            = $result->place;
+        $this->date             = $result->date;
+        
         if ($load_terminal_objectives){
             $terminal_objectives = new TerminalObjective();
             $this->terminal_objectives = $terminal_objectives->getObjectives('curriculum', $this->id, true);
@@ -265,11 +302,22 @@ class Curriculum {
                                                 AND cu.schooltype_id = sc.id AND cu.grade_id = gr.id 
                                                 AND cu.subject_id = su.id AND cu.icon_id = fl.id 
                                                 AND cu.id IN (SELECT cure.curriculum_id 
-                                                FROM curriculum_enrolments AS cure WHERE cure.group_id IN (SELECT ge.group_id FROM groups_enrolments AS ge WHERE ge.status = 1 AND ge.user_id = ?))) '.$order_param);
+                                                FROM curriculum_enrolments AS cure WHERE cure.status = 1 AND cure.group_id IN (SELECT ge.group_id FROM groups_enrolments AS ge WHERE ge.status = 1 AND ge.user_id = ?))) '.$order_param);
                                 $db->execute(array($id, $id));
                             }
                             while($result = $db->fetchObject()) {
-                                $curriculum[] = $result; //result Data wird an setPaginator vergeben
+                                //get statistics
+                                $db2 = DB::prepare('SELECT clicks FROM statistics WHERE context_id = ? AND reference_id = ?');
+                                $db2->execute(array($_SESSION['CONTEXT']['curriculum']->context_id, $result->id));
+                                $stat_result  = $db2->fetchObject();
+                                if (isset($stat_result->clicks)){
+                                    $result->clicks = $stat_result->clicks;
+                                } else {
+                                    $result->clicks = 0;
+                                }
+                                
+                                //get statistics
+                                $curriculum[] = $result;  //result Data wird an setPaginator vergeben
                             } 
                 break; 
             default:  break;
@@ -326,10 +374,11 @@ class Curriculum {
         
         $xml = new DOMDocument( "1.0", "UTF-8" );
         $xml->load($CFG->backup_root.$import_folder.'/'.$import_folder.'.xml');
-        if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
+        if (isset($CFG->repository)){   // prüfen, ob Repository Plugin vorhanden ist.
             $ext_reference = get_plugin('repository', $CFG->settings->repository);
         }
         foreach($xml->getElementsByTagName('curriculum') as $curriculum) {
+                $this->subject_id = 1;  //fallback todo: fallback options for all fields -> validator
                 $old_cur_id              = $curriculum->getAttribute('id');
             if (!$preset) { // Werte aus backup nutzen -> sonst Werte des Formulars nutzen
                  $this->curriculum        = $curriculum->getAttribute('curriculum');
@@ -340,8 +389,8 @@ class Curriculum {
                  } 
                  $s = new Subject();
                  if ($s->load('subject', $curriculum->getAttribute('subject'))){
-                      $this->subject_id   = $s->id;
-                 }
+                     $this->subject_id   = $s->id;
+                 } 
                  $sch = new Schooltype();
                  if ($sch->load('schooltype', $curriculum->getAttribute('schooltype'))){
                      $this->schooltype_id = $sch->id; 
@@ -386,6 +435,7 @@ class Curriculum {
             $t->order_id           = $ter->getAttribute('order_id');
             $t->repeat_interval    = $ter->getAttribute('repeat_interval');
             $t->color              = $ter->getAttribute('color');
+            $t->type_id               = $ter->getAttribute('type_id');
             $t->creator_id         = $USER->id;
             $t_id                  = $t->add();                                      // add terminal objective
             $t_ref                 = $ter->getAttribute('ext_reference');
@@ -499,7 +549,7 @@ class Curriculum {
         $content->reference_id  = $cur_id;
         $content->add();
     }
-   
+    
    public function checkEnrolment($status = '1'){
         $db = DB::prepare('SELECT ce.*, gp.groups, ins.institution FROM curriculum_enrolments AS ce, 
 							groups AS gp,
@@ -519,6 +569,27 @@ class Curriculum {
             return false;
         }
     } 
+    
+    /* Used by reference view: Get group based on curriculum*/
+    public function getGroupsByUserAndCurriculum($user_id, $curriculum_id = null, $status = 1) {
+        if ($curriculum_id == null){
+            $curriculum_id = $this->id;
+        }
+        $db = DB::prepare('SELECT ce.group_id FROM curriculum_enrolments AS ce, groups_enrolments AS ge
+						WHERE ce.curriculum_id = ?
+						AND ce.status = ?
+						AND ce.group_id = ge.group_id AND ge.user_id = ?'); //ORDER BY institution for statistic chart
+        $db->execute(array($curriculum_id, $status, $user_id));
+        
+        while($result = $db->fetchObject()) { 
+            $groups[] = $result; 
+        } 
+        if (isset($groups)){
+            return $groups; 
+        } else {
+            return false;
+        }
+    }
    
    /**
     * function used during the install process to set up creator id to new admin
@@ -531,4 +602,66 @@ class Curriculum {
             return $db->execute(array($this->creator_id));
         }
     }
+    
+    public function getFieldArray($id, $dependency = 'curriculum_content', $field ='id'){
+        $ids = array();
+        switch ($dependency) {
+            case 'curriculum_content':  $db     = DB::prepare('SELECT ct.'.$field.' FROM content AS ct, content_subscriptions AS cts WHERE  cts.context_id = ?
+                                                        AND cts.reference_id = ?
+                                                        AND cts.content_id = ct.id');
+                                        $db->execute(array($_SESSION['CONTEXT']['curriculum']->context_id, $id));
+                                        while($r = $db->fetchObject()) { 
+                                          $ids[] = $r->$field;
+                                        }
+
+                break;
+            case 'terminal_objectives': $db     = DB::prepare('SELECT '.$field.' FROM terminalObjectives WHERE curriculum_id = ?');
+                                        $db->execute(array($id));
+                                        while($r = $db->fetchObject()) { 
+                                          $ids[] = $r->$field;
+                                        }
+                break;
+            case 'enabling_objectives': $db     = DB::prepare('SELECT '.$field.' FROM enablingObjectives WHERE curriculum_id = ?');
+                                        $db->execute(array($id));
+                                        while($r = $db->fetchObject()) { 
+                                          $ids[] = $r->$field;
+                                        }
+                break;
+
+            default:
+                break;
+        }
+        
+        if (isset($ids)){
+            return $ids;
+        } else {
+            return false; 
+        }
+    }
+    
+    public function loadConfig($dependency = 'reference'){
+        switch ($dependency) {
+            case 'reference':   $db = DB::prepare('SELECT reference_id FROM config_curriculum WHERE curriculum_id = ? AND context_id = 26');
+                                $db->execute(array($this->id));
+                                $config_curriculum = array();
+                                while($result = $db->fetchObject()) { 
+                                        $config_curriculum[] = $result->reference_id; 
+                                }
+                break;
+
+            default:    $db = DB::prepare('SELECT * FROM config_curriculum WHERE curriculum_id = ?');
+                        $db->execute(array($this->id));
+                        $config_curriculum = array();
+                        while($result = $db->fetchObject()) { 
+                                $config_curriculum[] = $result; 
+                        }
+                break;
+        }
+        if (isset($config_curriculum)){
+            return $config_curriculum;
+        } else {
+            return false;
+        }
+    }
+    
 }

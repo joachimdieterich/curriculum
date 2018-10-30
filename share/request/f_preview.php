@@ -24,7 +24,7 @@
 */
 $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
-include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
+include_once(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER;
 global $CFG;
 $USER       = $_SESSION['USER'];
@@ -50,7 +50,7 @@ switch ($func) {
 
     case 'file':    $file->load(filter_input(INPUT_GET, 'id',   FILTER_SANITIZE_STRING));
                     $title      = $file->title;               
-                    $category   = $_SESSION['CONTEXT'][$file->context_id]->context;
+                    $category   = $_SESSION['CONTEXT'][$file->context_id]->context . ' (ID: '.filter_input(INPUT_GET, 'id',   FILTER_SANITIZE_STRING). ')';
                     $padding    = 'padding:0px;';
                     if ($file->type != '.url'){
                         $options    = '<a href="'.$file->getFileUrl().'" class="btn btn-default btn-xs pull-right" style="margin-right:20px;"><i class="fa fa-cloud-download"></i></a>';

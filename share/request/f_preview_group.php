@@ -24,7 +24,7 @@
 */
 $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
-include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
+include_once(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER;
 $USER       = $_SESSION['USER'];
 $func       = $_GET['func'];
@@ -48,7 +48,7 @@ $content    = Render::box_widget(array('widget_title' => 'Lehrpläne',
 $users      = new User();
 $u_list     = $users->getGroupMembers('group', $g->id);
 $list       = array();
-foreach($u_list AS $ul){
+foreach((array)$u_list AS $ul){
     $users      = new User();
     $users->load('id', $ul, false);
     $list[] = clone $users;

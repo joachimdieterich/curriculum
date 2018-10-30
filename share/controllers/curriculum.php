@@ -38,6 +38,10 @@ $p_options = array('delete' => array('onclick'      => "del('curriculum',__id__)
                                      'capability'   => checkCapabilities('curriculum:delete', $USER->role_id, false),
                                      'icon'         => 'fa fa-trash', 
                                      'tooltip'      => 'löschen'),
+                   'owner' => array('onclick'      => "formloader('curriculum_owner','set',__id__);", 
+                                     'capability'   => checkCapabilities('curriculum:update', $USER->role_id, false),
+                                     'icon'         => 'fa fa-user', 
+                                     'tooltip'      => 'Besitzer ändern'),
                    'edit'   => array('onclick'      => "formloader('curriculum','edit',__id__);",
                                      'capability'   => checkCapabilities('curriculum:update', $USER->role_id, false),
                                      'icon'         => 'fa fa-edit',
@@ -61,6 +65,7 @@ $t_config      = array('td'     => array('onclick'         => "location.href='in
 $p_config  = array('id'         => 'checkbox',
                    'curriculum'  => 'Lehrplan', 
                    /*'description' => 'Beschreibung', */
+                   'clicks'      => 'Aufrufe',
                    'subject'     => 'Fach',
                    'grade'       => 'Klassenstufe',
                    'schooltype'  => 'Schultyp',

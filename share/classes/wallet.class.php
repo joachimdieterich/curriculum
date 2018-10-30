@@ -200,6 +200,7 @@ class Wallet {
                                                             AND co.context_id = ws.context_id 
                                                             AND wa.id = ws.wallet_id
                                                             AND ws.reference_id = ?
+                                                            AND ws.timestart < NOW()
                                                             ');
                             $db->execute(array($context, $id));
                 break;

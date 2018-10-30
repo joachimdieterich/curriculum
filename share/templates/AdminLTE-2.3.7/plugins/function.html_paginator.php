@@ -128,21 +128,21 @@ function smarty_function_html_paginator($params, $template) {
         foreach ($keys as $_key => $_val){
             if ($_key == 'id'){
                 $html .= '<td style="width:25px">';
-                $html .= '<input type="checkbox" id="'.$id.'_allonPage" ';
-                if (isset($page['onclick'])){        
-                    $html .= 'onclick="'.$page['onclick'].'"';
-                } else {
-                    $html .= 'onclick="checkrow(\'page\', \''.$id.'\', \'true\');"';
+                if ($config[$_key] == 'checkbox'){ // column id
+                    $html .= '<input type="checkbox" id="'.$id.'_allonPage" ';
+                    if (isset($page['onclick'])){
+                        $html .= 'onclick="'.$page['onclick'].'"';
+                    } else {
+                        $html .= 'onclick="checkrow(\'page\', \''.$id.'\', \'true\');"';
+                    }
+                    $html .= '>';
                 }
-                $html .= '></td>';
+                $html .= '</td>';
             } else if ($_key == 'p_options'){
                 $html .= '<td><i class="fa fa-print pull-right margin-r-5" style="padding-top:5px" onclick="processor(\'print\',\'paginator\',\''.$id.'\')"></i></td>';
             } else {
                 if (array_key_exists($_key, $config) AND SmartyPaginate::getColumnVisibility($_key,$id)){
-                    $html .= '<td name="'.$id.'_col_'.$_key.'">'.smarty_function_paginate_order(array('id' => $id, 'key' => $_key, 'text' => $config[$_key]), $template);
-                    /*if ($_key == 'username' OR $_key == 'firstname' OR $_key == 'lastname'  OR $_key == 'email' OR $_key == 'city' OR $_key == 'curriculum' OR $_key == 'description'){ // hack: muss dynamisch gemacht werden
-                        $html .= '<input class="pull-right" id="'.$id.'_col_'.$_key.'_search" name="p_search" style="width:25px;" type="text" value="" onclick="toggle_input_size(\''.$id.'_col_'.$_key.'_search\');"  onblur="toggle_input_size(\''.$id.'_col_'.$_key.'_search\', false);" onkeydown="if (event.keyCode == 13) {event.preventDefault(); processor(\'config\',\'paginator_search\',\''.$id.'\',{\'order\':\''.$_key.'\', \'search\':this.value});}">'; //event.preventDefault() importent to use paginator in <form>
-                    } */
+                    $html .= '<td name="'.$id.'_col_'.$_key.'">'.smarty_function_paginate_order(array('id' => $id, 'key' => $_key, 'text' => $config[$_key], 'search' => $config['p_search']), $template);
                     if (SmartyPaginate::_getOrder($id) == $_key) {
                         $html .= ' <i class="text-primary pull-right fa fa-sort-'.strtolower(SmartyPaginate::_getSort($id)).'"></i>';
                     }
@@ -176,8 +176,13 @@ function smarty_function_html_paginator($params, $template) {
                         }
                         $html .= ' /></td>';
                     } else {
+                        if ($config[$k_key] == 'no-checkrow'){ // column id
+                        $html .= '<tr id="row'.$_val->$k_key.'">'
+                                . '<td ><input class="hidden" type="checkbox" id="'.$_val->$k_key.'" name="id[]" value='.$_val->$k_key.' /></td>';
+                      } else {
                         $html .= '<tr id="row'.$_val->$k_key.'" onclick="checkrow(\''.$_val->$k_key.'\', \''.$id.'\',  \'true\')">'
                                 . '<td ><input class="hidden" type="checkbox" id="'.$_val->$k_key.'" name="id[]" value='.$_val->$k_key.' /></td>';
+                      }
                     }
                     $_id = $_val->$k_key; // aktuelle id
 
@@ -226,16 +231,18 @@ function smarty_function_html_paginator($params, $template) {
             if (isset($url)){
             $html .= '<input style="width:40px; text-align:right; margin-bottom:2px;" name="p_search" type="text" value="'.SmartyPaginate::getLimit($id).'"  onkeydown="if (event.keyCode == 13) {event.preventDefault(); window.location.href = \''.$url.'&paginator='.$id.'&paginator_limit=\'+this.value;}"> Einträge / Seite ';
         }
-        $html .= ' <input type="checkbox" id="'.$id.'_all" value="all" ';
-        if (isset($all['onclick'])){        
-            $html .= 'onclick="'.$all['onclick'].'"';
-        } else {
-            $html .= 'onclick="checkrow(\'all\', \''.$id.'\', \'true\');"';
+        if ($config['id'] == 'checkbox'){ // column id
+            $html .= ' <input type="checkbox" id="'.$id.'_all" value="all" ';
+            if (isset($all['onclick'])){
+                $html .= 'onclick="'.$all['onclick'].'"';
+            } else {
+                $html .= 'onclick="checkrow(\'all\', \''.$id.'\', \'true\');"';
+            }
+            $html .= '> Alle ';
+            $html .= '<span id="span_unselect" class="hidden"><input type="checkbox" id="p_unselect" value="p_unselect" onclick="checkrow(\'none\', \''.$id.'\', \'true\');"> Auswahl aufheben </span>';
+
+            $html .= ' | <span id="count_selection">'.count($selected_id).'</span> Datensätze markiert</span><br>';
         }
-        $html .= '> Alle ';
-        $html .= '<span id="span_unselect" class="hidden"><input type="checkbox" id="p_unselect" value="p_unselect" onclick="checkrow(\'none\', \''.$id.'\', \'true\');"> Auswahl aufheben </span>';
-        
-        $html .= ' | <span id="count_selection">'.count($selected_id).'</span> Datensätze markiert</span><br>';
     } 
     $html .= '</div></div>';
     return $html;

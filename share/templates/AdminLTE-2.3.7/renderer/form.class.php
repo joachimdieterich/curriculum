@@ -33,7 +33,7 @@ class Form {
         $icon       = '';
         $label      = 'submit';
         foreach($params as $key => $val) { $$key = $val; }  
-        return "<button id=\"btn_{$id}\"type=\"submit\" name=\"{$id}\" class=\"{$class}\" onclick=\"{$onclick}\">
+        return "<button id=\"btn_{$id}\"type=\"{$type}\" name=\"{$id}\" class=\"{$class}\" onclick=\"{$onclick}\">
                     <span class=\"{$icon}\"></span> {$label}
                 </button>";
     }
@@ -70,8 +70,13 @@ class Form {
       * @param string $class_right
       * @return string
       */
-    public static function input_text($id, $label, $input, $error, $placeholder ='Text...', $type='text', $min=null, $max=null, $class_left='col-sm-3', $class_right='col-sm-9', $readonly = null){
-        $form = "<div class='form-group ".validate_msg($error, $id, true)."'>
+    public static function input_text($id, $label, $input, $error, $placeholder ='Text...', $type='text', $min=null, $max=null, $class_left='col-sm-3', $class_right='col-sm-9', $readonly = null, $onchange = null){
+        switch($type){
+            case 'string': $type = 'text'; break;
+            case 'int':    $type = 'number'; break;
+            default: break;
+        }
+        $form = "<div id='form-group_{$id}' class='form-group ".validate_msg($error, $id, true)."'>
                   <label class='control-label {$class_left}' for='{$id}'>{$label}</label>
                   <div class='{$class_right}'>".validate_msg($error, $id)."<input id='{$id}' name='{$id}' type='{$type}'";
                   if ($min) {$form .= "min='{$min}'";}
@@ -82,6 +87,9 @@ class Form {
         } 
         if (isset($readonly)) { 
             $form .=  " readonly ";  
+        }
+        if (isset($onchange)) { 
+            $form .=  " onchange='{$onchange}'";  
         } 
         $form .= " /> </div></div>";  
 
@@ -117,18 +125,21 @@ class Form {
         return $form;
     }
     
-    public static function input_switch($id, $label, $input, $error, $class_left='col-sm-3', $class_right='col-sm-9'){
+    public static function input_switch($id, $label, $input, $error, $show_id = false, $class_left='col-sm-3', $class_right='col-sm-9'){
         $form = '<div class="form-group '.validate_msg($error, $id, true).'">
-                  <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'<br><small>'.$input->capability.'</small></label>
-                  <div class="'.$class_right.'" style="padding-left:85px;">'.validate_msg($error, $id).'
-                <input type="checkbox" name="'.$input->capability.'" id="'.$input->capability.'" class="ios-toggle" ';
-                if ($input->permission == 1){
+                  <label class="control-label '.$class_left.'" for="'.$id.'">'.$label;
+        if ($show_id){
+            $form .='<br><small>'.$id.'</small>';
+        }
+        $form .='</label><div class="'.$class_right.'" style="padding-left:85px;">'.validate_msg($error, $id).'
+                <input type="checkbox" name="'.$id.'" id="'.$id.'" class="ios-toggle" ';
+                if ($input == 1){
                     $form .= ' value="true" checked ';
                 } else {
                     $form .= ' value="false" ';
                 }
-                $form .= ' onclick="switchValue(\''.$input->capability.'\');"/>
-                 <label for="'.$input->capability.'" class="checkbox-label" data-off="nicht erlaubt" data-on="erlaubt"></label>'; 
+                $form .= ' onclick="switchValue(\''.$id.'\');"/>
+                 <label for="'.$id.'" class="checkbox-label" data-off="nicht erlaubt" data-on="erlaubt"></label>'; 
         $form .= '</div></div>';  
 
         return $form;
@@ -280,7 +291,7 @@ class Form {
     public static function input_dropdown($id, $label, $select_data, $select_label, $select_value, $input, $error, $onclick= '', $placeholder ='---'){
         $class          =  "notifications-menu";
         $count_semester = count($select_data);
-        $form = '<li class="dropdown '.$class.'" >
+        $form = '<li class="dropdown '.$class.'" data-toggle="tooltip" data-placement="bottom" title="Schule/Zeitraum wechseln">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 15px 8px 15px 8px;">
                       <i class="fa fa-history"></i>';
                       //<span class="label label-warning">'.$count_semester.'</span>
@@ -388,7 +399,7 @@ class Form {
         }
 
         $html = '<div id="'.$target.'" class="modal-dialog" style="overflow-y: initial !important;" >
-                    <div id="modal" class="modal-content" ><!-- height is dynamic set by popupFunction() -->
+                    <div id="modal" class="modal-content" onmousedown="dragstart(this)"><!-- height is dynamic set by popupFunction() -->
                         <div class="modal-header">';
                         if (isset($h_content)){
                             $html .= $h_content;
@@ -429,6 +440,15 @@ class Form {
         }
        
         $html  = ' <div id="material_'.$id.'" class="info-box">';
+        if (isset($subjects)){
+            $html .= '<span name="subjects" style="display: none">';
+            $html .= '<ul>';
+            foreach ($subjects as $subject) {
+                $html .= '<li class="subjectItem">'.$subject.'</li>';
+            }
+            $html .= '</ul>';
+            $html .= '</span>';
+        }
         if (isset($preview)){
             $html .= '<span class="info-box-icon bg-aqua"><div id="modal-preview" style="position:relative;height:100%;width:100%;background: url(\''.$preview.'\') center ;background-size: cover; background-repeat: no-repeat;">';
             if (isset($license_icon)){

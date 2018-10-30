@@ -42,7 +42,7 @@ if (isset($_GET) ){
                 $update->status = 2;     
             }
             $update->log    = $UPDATE->log;
-            $update->update();
+            $update->doUpdate();
         }        
     }
 } 
@@ -53,23 +53,17 @@ if (checkCapabilities('system:update', $USER->role_id, false)){
         $last_update = false; // no update file available
     } else {
         foreach ($update_files as $value) {
-            switch ($value) {
-                case '.':
-                case '..':
-                    break;
-                default:    //error_log($value);
-                            if (!$update->load('filename', $value)){            // update(file) not in db --> add to db
-                                global $UPDATE;
-                                include($CFG->share_root.'update/'.$value);
-                                
-                                $update->filename       = $value;
-                                $update->description    = $UPDATE->info;
-                                $update->status         = 0;
-                                $update->add();
-                            }
-                            
-                    break;
-            }   
+            if (preg_match('/[0-9]{12}.php$/',$value)){
+                if (!$update->load('filename', $value)){            // update(file) not in db --> add to db
+                    global $UPDATE;
+                    include($CFG->share_root.'update/'.$value);
+ 
+                    $update->filename       = $value;
+                    $update->description    = $UPDATE->info;
+                    $update->status         = 0;
+                    $update->add();
+                }
+            }  
         }
     }
 

@@ -187,6 +187,12 @@ class User {
     public $online; 
     
     /**
+     *
+     * @var array of user_ids 
+     */
+    public $children_id;
+    
+    /**
      * User class constructor
      * @param mixed $user_value 
      */
@@ -297,7 +303,9 @@ class User {
         } else {
             $this->token             = $result->token;   
         }
-        $this->auth                 = $result->auth;
+        if (isset($result->auth)){
+            $this->auth              = $result->auth;
+        }
     }
     public function set($dependency, $value, $id = NULL){
         if ($id == null){ $id = $this->id; }
@@ -322,7 +330,23 @@ class User {
         $db = DB::prepare('SELECT COUNT(id) FROM users WHERE UPPER(username) = UPPER(?)');
         $db->execute(array($this->username));
         if($db->fetchColumn() >= 1) { 
+            $db1 = DB::prepare('SELECT id FROM users WHERE  UPPER(username) = UPPER(?)'); //load user id to get group enrolment working issue #150
+            $db1->execute(array($this->username));
+            $result = $db1->fetchObject(); 
+            $this->id = $result->id;
             $PAGE->message[] = array('message' => 'Benutzer '.$this->firstname.' '.$this->lastname.'('.$this->username.') existiert bereits', 'icon' => 'fa fa-user text-warning');// Schließen und speichern
+            if (is_array($institution_id)){                                          //duplicate (s. else statement)-> make function 
+                    $this->enroleToInstitutions($institution_id);                    //enrol to multiple Institutions
+                } else {  
+                    $this->enroleToInstitution($institution_id);                    // enrol to one Institution
+                    if (is_int($group_id)){                                         // enrol to group if id is set
+                        $db_01 = DB::prepare('SELECT COUNT(id) FROM groups WHERE id = ? AND institution_id = ?'); //check if group is enroled to given institution
+                        $db_01->execute(array($group_id, $institution_id));
+                        if($db_01->fetchColumn() >= 1) {
+                            $this->enroleToGroup(array($group_id));
+                        }
+                    }
+                }
         } else {
             if (!isset($this->paginator_limit)){ $this->paginator_limit = $CFG->settings->paginator_limit; } //fallback
             if (!isset($this->acc_days))       { $this->acc_days        = $CFG->settings->acc_days; }        //fallback
@@ -394,16 +418,16 @@ class User {
     public function delete(){
         global $USER, $LOG;
         checkCapabilities('user:delete', $USER->role_id);
-        $this->load('id', $this->id, false);
+        $this->load('id', $this->id);
         $LOG->add($USER->id, 'user.class.php', dirname(__FILE__), 'Delete user: ('.$this->resolveUserId($this->id).'), creator_id: '.$this->creator_id);
         $role_check             = new Roles();
         $role_check->load('id', $this->role_id);
         $delete_user_order_id   = $role_check->order_id;
         $role_check->load('id', $USER->role_id);
         $user_order_id          = $role_check->order_id;
-        error_log ($delete_user_order_id.'< target  user >'.$user_order_id);
+        //error_log ($delete_user_order_id.'< target  user >'.$user_order_id);
         if ($this->id != $USER->id){
-            //if ($delete_user_order_id >= $user_order_id){ //user can only delete other user who has a higher role_order_id 
+            if ($delete_user_order_id >= $user_order_id){ //user can only delete other user who has a higher role_order_id 
             
                 $db = DB::prepare('DELETE FROM users WHERE id = ?');
                 if ($db->execute(array($this->id))) {
@@ -420,9 +444,9 @@ class User {
                     $_SESSION['PAGE']->message[] = array('message' => 'Benutzerkonten wurden erfolgreich gelöscht!', 'icon' => 'fa-user text-success');
                     return $db2->execute(array($this->id));
                 } else {return false;}   
-            /*} else {
+            } else {
                 $_SESSION['PAGE']->message[] = array('message' => 'Sie können keine Nutzer mit einer übergeordneter Rollen löschen!', 'icon' => 'fa-user text-warning');
-            }*/
+            }
         } else {
             $_SESSION['PAGE']->message[] = array('message' => 'Man kann sich nicht selbst löschen!', 'icon' => 'fa-user text-warning');
         }
@@ -641,6 +665,7 @@ class User {
             } else { 
                 $db                 = DB::prepare('INSERT INTO groups_enrolments (status,group_id,user_id,creator_id) VALUES (1,?,?,?)');  //Status 1 == enroled
                 if ($db->execute(array($group_id, $this->id, $USER->id))){
+                    
                     $_SESSION['PAGE']->message[]    = array('message' => '<strong>'.$this->username.'</strong> in <strong>'.$groups->group.'</strong> eingeschrieben.', 'icon' => 'fa-user text-success');
                 }
             }   
@@ -836,9 +861,9 @@ class User {
                                         $role_filter = 'AND ro.id = '.intval($role_id); 
                                     }
                                     if ($group_id  == 'false'){ 
-                                        $group_filter = 'ANY (SELECT group_id FROM groups_enrolments WHERE user_id = '.intval($USER->id).' AND status =  1)'; 
+                                        $group_filter = 'AND ge.group_id = ANY (SELECT id FROM groups WHERE institution_id = '.intval($institution_id).')';
                                     } else { 
-                                        $group_filter = intval($group_id); 
+                                        $group_filter = 'AND ge.group_id = '.intval($group_id); 
                                     }
                             
                                     $db = DB::prepare('SELECT DISTINCT us.* FROM users AS us, groups_enrolments AS ge 
@@ -850,7 +875,7 @@ class User {
                                                             AND ro.order_id > (SELECT order_id FROM roles WHERE id = ?))
                                                         AND ge.user_id = us.id 
                                                         AND ge.status = 1
-                                                        AND ge.group_id = '.$group_filter.' '.$order_param); // HACK to prevent edit of super user
+                                                        '.$group_filter.' '.$order_param); // HACK to prevent edit of super user
                                     $db->execute(array($institution_id, $USER->role_id)); 
                                 } else if (checkCapabilities('user:userListGroup', $USER->role_id,false)) { //Teacher
                                     if ($role_id == 'false'){ 
@@ -887,22 +912,33 @@ class User {
             default:  break;
         }
 
-        while($result = $db->fetchObject()) { 
-            $this->id           = $result->id; 
-            $this->username     = $result->username;
-            $this->firstname    = $result->firstname;
-            $this->lastname     = $result->lastname;
-            $this->email        = $result->email;
-            $this->postalcode   = $result->postalcode;
-            $this->city         = $result->city;
-            $this->avatar_id    = $result->avatar_id;
-            if (isset($result->role_name)){
-                $this->role_name    = $result->role_name;
+        while($result = $db->fetchObject()) {
+            $sortableUser = new stdClass();
+            if (checkCapabilities('user:shortUserList', $USER->role_id, false)){
+                $sortableUser->id           = $result->id;
+                $sortableUser->firstname    = $result->firstname;
+                $sortableUser->lastname     = $result->lastname;
+                $sortableUser->username     = $result->username;
+                $sortableUser->avatar_id    = $result->avatar_id;
             }
-            $users[] = clone $this;
+            else {
+                $sortableUser->id           = $result->id;
+                $sortableUser->username     = $result->username;
+                $sortableUser->firstname    = $result->firstname;
+                $sortableUser->lastname     = $result->lastname;
+                $sortableUser->email        = $result->email;
+                $sortableUser->postalcode   = $result->postalcode;
+                $sortableUser->city         = $result->city;
+                $sortableUser->avatar_id    = $result->avatar_id;
+                if (isset($result->role_name)){
+                   $sortableUser->role_name = $result->role_name;
+                }
+            }
+            $users[] = clone $sortableUser;
         } 
-            return $users;
+        return $users;
     }
+
     
     /**
      * Reset Password
@@ -1060,7 +1096,7 @@ class User {
                                     $users[]            = clone $this; 
                                 }               
                 break;
-            case 'wallet_shared':  $db = DB::prepare('SELECT us.*, ie.role_id, ws.permission FROM users AS us, groups_enrolments AS ge, curriculum_enrolments AS ce, institution_enrolments as ie, groups as gr, wallet_sharing AS ws
+            case 'wallet_shared':  $db = DB::prepare('SELECT DISTINCT us.*, ie.role_id, ws.permission, ws.timestart, ws.timeend, ws.id AS ws_id FROM users AS us, groups_enrolments AS ge, curriculum_enrolments AS ce, institution_enrolments as ie, groups as gr, wallet_sharing AS ws
                                                 WHERE us.id = ge.user_id 
                                                 AND ce.curriculum_id = ?
                                                 AND ce.status = 1
@@ -1080,6 +1116,7 @@ class User {
                                 $db->execute(array($id, 'userFiles', $wallet_id, $wallet_id)); 
                                 while($result = $db->fetchObject()) {  
                                     $this->id           = $result->id;
+                                    $this->ws_id        = $result->ws_id;
                                     $this->username     = $result->username;
                                     $this->firstname    = $result->firstname; 
                                     $this->lastname     = $result->lastname; 
@@ -1095,6 +1132,7 @@ class User {
                                         default:
                                             break;
                                     }
+                                    $this->timerange    = $result->timestart.' - '.$result->timeend;
                                    
                                     $users[]            = clone $this; 
                                 }               
@@ -1205,6 +1243,7 @@ class User {
     * @return boolean
     */
    public function setLastLogin(){           
+        Statistic::setStatistics(1, $this->id); //statistic count logins
         $db = DB::prepare('UPDATE users SET last_login = NOW(), token = ? WHERE UPPER(username) = UPPER(?) AND password = ?');
         return $db->execute(array(getToken(), $this->username, $this->password));
    }
@@ -1472,7 +1511,37 @@ class User {
         }   
     }
     
+    public function setChildren($parent, $child){
+        global $USER;
+        checkCapabilities('user:parentalAuthority', $USER->role_id);
+        $db = DB::prepare('SELECT count(id) FROM parental_authority WHERE parent_id = ? AND child_id = ?');
+        $db->execute(array($parent, $child));
+        if($db->fetchColumn() > 0) {
+            // entry already exists
+             $_SESSION['PAGE']->message[] = array('message' => 'Das Kind wurde bereits dem Erziehungsberechtigten zugeordnet.', 'icon' => 'fa-child text-info');    
+            return true;
+        } else { 
+            $db = DB::prepare('INSERT INTO parental_authority (parent_id,child_id) VALUES (?,?)');//Status 1 == accepted
+             $_SESSION['PAGE']->message[] = array('message' => 'Das Kind wurde dem Erziehungsberechtigten zugeordnet.', 'icon' => 'fa-child text-success');    
+            return $db->execute(array($parent, $child));
+        }
+    }
+    public function unsetChildren($parent, $child){
+        global $USER;
+        checkCapabilities('user:parentalAuthority', $USER->role_id);
+        $db = DB::prepare('DELETE FROM parental_authority WHERE parent_id = ? AND child_id = ?');
+        if($db->execute(array($parent, $child))) {
+            // entry already exists
+             $_SESSION['PAGE']->message[] = array('message' => 'Die Zuorndung wurde aufgehoben.', 'icon' => 'fa-child text-success');    
+            return true;
+        } else { 
+            return false; // do nothing
+        }
+    }
+    
+    
     public function getChildren(){
+        global $USER;
         $db     = DB::prepare('SELECT child_id FROM parental_authority WHERE parent_id = ?');
         $db->execute(array($this->id));
         $users  = array();

@@ -24,7 +24,7 @@
 */
 $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
-include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
+include_once(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER, $CFG;
 $USER           = $_SESSION['USER'];
 //$role_id        = null;
@@ -76,7 +76,7 @@ foreach ($capabilities as $key => $value) {
                      <div class="col-sm-9"><h4>'.substr($value->capability, 0, $pos).'</h4></div></div>';
     }
     if (isset($_SESSION['FORM']->{$value->capability})){$value->permission = 1;} // if validation failed get permission from session
-    $content .= Form::input_switch($value->capability, $value->name, $value, $error, 'col-sm-6', 'col-sm-6');
+    $content .= Form::input_switch($value->capability, $value->name, $value->permission, $error, true, 'col-sm-6', 'col-sm-6');
     $section = substr($value->capability, 0, $pos);
 }
 $content .= '</form>';

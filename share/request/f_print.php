@@ -24,7 +24,7 @@
 */
 $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
-include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
+include_once(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER;
 $USER               = $_SESSION['USER'];
 $func               = $_GET['func'];
@@ -68,7 +68,7 @@ if (isset($id)) {                                                               
 
 $content  .= Form::info(array('id' => 'info', 'label' => '', 'content' => 'Bitte wählen Sie aus, was gedruckt werden soll:'));
 $content  .= Form::input_checkbox('print_curriculum', 'Lehrplanraster', $print_curriculum, $error);
-$content  .= Form::input_checkbox('print_content', 'Hinweise zum Lehrplan ', $print_content, $error);
+$content  .= Form::input_checkbox('print_content', 'Digitalisierte Texte des Lehrplans ', $print_content, $error);
 $content  .= Form::input_checkbox('print_glossar', 'Glossar', $print_glossar, $error);
 $content  .= Form::input_checkbox('print_files', 'Dateien zum Lehrplan', $print_files, $error);
 $content  .= Form::input_checkbox('print_reference', 'Lehrplanbezüge', $print_reference, $error);
@@ -76,7 +76,7 @@ $content  .= Form::input_checkbox('print_material', 'Materialien', $print_materi
 
 
 $content .= '</form>';
-$footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_print\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>'; 
+$footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_print\').submit();closePopup(\'null\');"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>'; 
 
 $html = Form::modal(array('target'      => 'null',
                           'title'       => $header,

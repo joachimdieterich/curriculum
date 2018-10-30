@@ -25,6 +25,7 @@
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 class Render {
+    static $sortKey;
    
     public static function accomplish($string, $student, $teacher){
         global $s, $t;
@@ -44,6 +45,7 @@ class Render {
         $link   = true;
         $email  = false; 
         $token  = false;
+        $html   = '';
         
         if (!is_array($params)){ //hack to use json_arrays from smarty
             $params = json_decode($params);
@@ -170,11 +172,12 @@ class Render {
                 } else {
                     $student_status = 'x';
                 }
-                $html   = '<a class="pointer_hand"><i id="'.$id.'_green" style="font-size:18px;" class="'.$green.' margin-r-5 text-green pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'1\')"></i></a>'
+                if (checkCapabilities('course:selfAssessment', $USER->role_id, false) OR $teacher == $student) { // show in view
+                 $html   = '<a class="pointer_hand"><i id="'.$id.'_green" style="font-size:18px;" class="'.$green.' margin-r-5 text-green pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'1\')"></i></a>'
                     . '<a class="pointer_hand"><i id="'.$id.'_orange" style="font-size:18px;" class="'.$orange.' margin-r-5 text-orange pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'2\')"></i></a>'
                     . '<a class="pointer_hand"><i id="'.$id.'_red" style="font-size:18px;" class="'.$red.' margin-r-5 text-red pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'0\')"></i></a>'
                     . '<a class="pointer_hand"><i id="'.$id.'_white" style="font-size:18px;" class="'.$white.' margin-r-5 text-gray pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'3\')"></i></a>';
-                
+                }
             }
             
             if ($link){
@@ -223,7 +226,12 @@ class Render {
                 break;
             case '.url':    $content     ='<iframe src="'.$file->filename.'" style="width:100%; height: 600px;"></iframe>';
                 break;
-            default:        if (checkCapabilities('plugin:useEmbeddableGoogleDocumentViewer', $USER->role_id, false) AND !is_array(getimagesize($CFG->curriculumdata_root.$file->full_path))){
+            default:        if ($file->orgin != 'internal'){
+                                $reponame = 'repository_plugin_'.$file->orgin;
+                                $repo     = new $reponame;
+                                $content  = $repo->render($file);  
+                            }
+                            else if (checkCapabilities('plugin:useEmbeddableGoogleDocumentViewer', $USER->role_id, false) AND !is_array(getimagesize($CFG->curriculumdata_root.$file->full_path))){
                                 $content = '<iframe src="http://docs.google.com/gview?url='.$CFG->access_token_url .$file->addFileToken($file->id).'&embedded=true" style="width:100%; height:500px;" frameborder="0"></iframe>';
                             } else {
                                 $content = RENDER::thumb(array('file_list' => array($file->id), 'tag' => 'div'));
@@ -265,6 +273,8 @@ class Render {
                 case '.jpg':    if ($file->getThumb() == false){ $url = $file->getFileUrl(); } else { $url = $file->getThumb(); }          
                     break;
                 case '.pdf':    if ($file->getThumb() == false){ $icon = true; } else { $url = $file->getThumb(); }          
+                    break;
+                case NULL: return ''; //e.g. edusharing links do not render in Thumblist
                     break;
                 case '.url':    
                 default:        $icon = true;
@@ -546,10 +556,12 @@ class Render {
        global $CFG, $USER, $PAGE;
        $format      = 'default';
        $type        = 'terminal_objective'; 
+       $show_parents= false;
        $edit        = false;
        $sol_btn     = false;
        $orderup     = false;
        $orderdown   = false;
+       $reference_view = false; // 'hide' objectives without references
        //$objective 
        foreach($params as $key => $val) {
             $$key = $val;
@@ -573,7 +585,6 @@ class Render {
        if (!isset($border_color)){
             $border_color = $objective->color; 
         }
-        
         
         //adding format to generate more objective layouts
         switch ($format) {
@@ -612,11 +623,11 @@ class Render {
                 /*************** Footer ***************/
                 $html  .= '  <div class="boxfooter">';
                 if ($objective->description != ''){
-                    $html  .='<span class="fa fa-info pull-right box-sm-icon text-primary" style=" margin-right:3px;" data-toggle="tooltip" title="Beschreibung" onclick="formloader(\'description\', \''.$type.'\', '.$objective->id.');"></span>';
+                    $html  .='<span class="fa fa-info pull-right box-sm-icon text-primary" style=" margin-right:3px;" onclick="formloader(\'description\', \''.$type.'\', '.$objective->id.');"></span>';
                 }
                 $html  .='<span class="pull-left margin-r-10">';
-                if (checkCapabilities('file:loadMaterial', $USER->role_id, false) AND ($objective->files['local'] != '0' OR $objective->files['repository'] != '' OR isset($objective->files['webservice']) )){
-                    $html  .='<span class="fa fa-briefcase box-sm-icon text-primary margin-r-5 pull-left" style="cursor:pointer; padding-top:3px;" data-toggle="tooltip" title="Materialien und Aufgaben" onclick="formloader(\'material\',\''.$type.'\','.$objective->id.')"></span>';
+                if (checkCapabilities('file:loadMaterial', $USER->role_id, false) AND ($objective->files['local'] != 0 OR $objective->files['repository'] != 0 OR isset($objective->files['webservice']) )){
+                    $html  .='<span class="fa fa-briefcase box-sm-icon text-primary margin-r-5 pull-left" style="cursor:pointer; padding-top:3px;" onclick="formloader(\'material\',\''.$type.'\','.$objective->id.')"></span>';
                 } else {
                     $html  .='<span class="fa fa-briefcase box-sm-icon deactivate text-gray margin-r-5 pull-left" style="cursor:not-allowed;padding-top:3px;" data-toggle="tooltip" title="Keine Materialien verfügbar"></span>';
                 }
@@ -626,19 +637,27 @@ class Render {
                 break;
 
             default:
-                $html  =   '<div ';
+                $html  = '';
+                /* Show parent objective? */
+                if ($show_parents AND $type == 'enabling_objective'){ 
+                    $o      = new TerminalObjective();
+                    $o->id  = $objective->terminal_objective_id ;
+                    $o->load();
+                    $html  .= RENDER::objective(["type" =>"terminal_objective", "objective" => $o]);
+                }
+                $html  .=   '<div ';
                 if ($type == 'enabling_objective'){ //id is important to get scroll-to function while creating
                     $html  .= 'id="ena_'.$objective->id.'"';
                 } else {
                     $html  .= 'id="ter_'.$objective->id.'"';
                 }
                 $html  .=   'class="box box-objective ';
-                if (isset($highlight)){
-                    if (in_array($type.'_'.$objective->id, $highlight)){
-                        $html  .= 'highlight';
-                    } 
-                }
-                $html  .= '" style="padding-top: 0 !important; background: '.$objective->color.'; border: 1px solid '.$border_color.'">';
+                $style = 'padding-top: 0 !important; background: '.$objective->color.'; border: 1px solid '.$border_color;
+                if (($objective->files['references'] == false AND $reference_view == true) OR isset($highlight) AND !in_array($type.'_'.$objective->id, $highlight)){
+                   $style .= 'filter: alpha(opacity=40); opacity: 0.4; -moz-opacity: 0.4;';
+                } 
+                $html  .= '" style="'.$style.'">';
+                
                 /*************** Header ***************/
                 if ($type == 'enabling_objective'){
                     $html  .= '<div id="ena_header_'.$objective->id.'" class="boxheader bg-'.$objective->accomplished_status_id.'" >';
@@ -662,12 +681,12 @@ class Render {
                              $position   = 'pull-right';
                          }
                          if ($orderup){
-                             $html  .= '<span class="fa fa-arrow-'.$icon_up.' '.$position.' box-sm-icon '.$icon_class.'" onclick=\'processor("orderObjective", "'.$type.'", "'.$objective->id.'", {"order":"up"});\'></span>';
+                             $html  .= '<span class="fa fa-arrow-'.$icon_up.' '.$position.' box-sm-icon '.$icon_class.'" onclick=\'processor("orderObjective", "'.$type.'", "'.$objective->id.'", {"order":"up","reload":"true"});\'></span>';
                          }
                          $html  .= '<span class="fa fa-minus pull-right box-sm-icon '.$icon_class.' margin-r-5" onclick=\'del("'.$type.'", '.$objective->id.');\'></span>
                                     <span class="fa fa-edit pull-right box-sm-icon '.$icon_class.'" onclick=\'formloader("'.$type.'", "edit", '.$objective->id.');\'></span>';
                          if ($orderdown){
-                             $html  .= '<span class="fa fa-arrow-'.$icon_down.' pull-left box-sm-icon '.$icon_class.'" onclick=\'processor("orderObjective", "'.$type.'", "'.$objective->id.'", {"order":"down"});\'></span>';
+                             $html  .= '<span class="fa fa-arrow-'.$icon_down.' pull-left box-sm-icon '.$icon_class.'" onclick=\'processor("orderObjective", "'.$type.'", "'.$objective->id.'", {"order":"down","reload":"true"});\'></span>';
                          }
                      } else {
                         $c_menu_array               = array();
@@ -718,11 +737,11 @@ class Render {
                   if ($type == 'terminal_objective'){
                      $html  .=' <a class="collapse_btn" data-toggle="collapse" data-target="#collaps_ter_'.$objective->id.'" data-toggle="tooltip" title="Kompetenzen einklappen bzw. ausklappen"><i class="fa fa-compress box-sm-icon '.$text_class.'" style="padding-left:5px;"></i></a>';   
                   }
-                  $html  .='  </div>';    
+                  $html  .='  </div>';  
                  /*************** ./Header ***************/
                  /*************** Body ***************/    
                  $html  .='  <div id="'.$type.'_'.$objective->id.'" class="panel-body boxwrap" >
-                                 <div class="boxscroll" ';
+                                 <div class="boxscroll" '; 
                                      if ($type == 'terminal_objective'){
                                          $html  .='style="background: '.$objective->color.'"';
                                      }
@@ -736,8 +755,8 @@ class Render {
                                      $html  .='<span class="fa fa-info pull-right box-sm-icon '.$icon_class.'" style=" margin-right:3px;" data-toggle="tooltip" title="Beschreibung" onclick="formloader(\'description\', \''.$type.'\', '.$objective->id.');"></span>';
                                  }
                                  $html  .='<span class="pull-left margin-r-10">';
-                                 if (checkCapabilities('file:loadMaterial', $USER->role_id, false) AND ($objective->files['local'] != '0' OR $objective->files['repository'] != '' OR isset($objective->files['webservice']) )){
-                                     $html  .='<span class="fa fa-briefcase box-sm-icon '.$icon_class.' margin-r-5 pull-left" style="cursor:pointer; padding-top:3px;" data-toggle="tooltip" title="Materialien und Aufgaben" onclick="formloader(\'material\',\''.$type.'\','.$objective->id.')"></span>';
+                                 if (checkCapabilities('file:loadMaterial', $USER->role_id, false) AND ($objective->files['local'] != 0 OR $objective->files['repository'] != 0 OR isset($objective->files['webservice']) OR $objective->files['references'] != false )){
+                                     $html  .='<span class="fa fa-briefcase box-sm-icon '.$icon_class.' margin-r-5 pull-left" style="cursor:pointer; padding-top:3px;" onclick="formloader(\'material\',\''.$type.'\','.$objective->id.')"></span>';
                                  } else {
                                      $html  .='<span class="fa fa-briefcase box-sm-icon deactivate '.$icon_class.' margin-r-5 pull-left" style="cursor:not-allowed;padding-top:3px;" data-toggle="tooltip" title="Keine Materialien verfügbar"></span>';
                                  }
@@ -764,13 +783,14 @@ class Render {
                                  } else {
 
                                      if ($type != 'terminal_objective'){
-                                         if (checkCapabilities('reference:show', $USER->role_id, false)){
+                                         /*if (checkCapabilities('reference:show', $USER->role_id, false)){
                                              $html  .= '<span class="fa fa-link text-primary box-sm-icon pull-left" data-toggle="tooltip" title="Lehr- /Rahmenplanbezüge" onclick=\'formloader("reference_view", "'.$type.'", "'.$objective->id.'");\'></span>';
-                                         }
+                                         }*/
                                          if (checkCapabilities('reference:add', $USER->role_id, false)){
                                              $html  .= '<span class="box-sm-icon pull-right text-primary" data-toggle="tooltip" title="Lehr- /Rahmenplanbezug hinzufügen" onclick=\'formloader("reference", "new", "'.$objective->id.'", {"context":"enabling_objective"});\'><i class="fa fa-link text-primary box-sm-icon"><i class="fa fa-plus fa-xs"></i></i></span>';
                                          }
-                                         if (checkCapabilities('course:selfAssessment', $USER->role_id, false)){
+                                         if (checkCapabilities('course:selfAssessment', $USER->role_id, false) OR checkCapabilities('course:setAccomplishedStatus', $USER->role_id, false) OR
+                                             checkCapabilities('objectives:setStatus', $USER->role_id, false) ) {
                                              if (is_array($user_id)){
                                                  $user_id = implode(',',$user_id);
                                              }
@@ -781,15 +801,15 @@ class Render {
                                                  $html  .='<span class="fa fa-check-square-o pull-right box-sm-icon '.$icon_class.'" onclick=\'formloader("quiz","enabling_objective","'.$objective->id.'");\'></span>';
                                              }
                                          }
-                                         if (checkCapabilities('webservice:linkModuleResults', $USER->role_id, false) AND isset($PAGE->action) AND $objective->files['webservice'] != ''){
-                                             if ($PAGE->action == 'view'){
+                                         if (checkCapabilities('webservice:linkModuleResults', $USER->role_id, false) AND isset($PAGE->action) AND isset($objective->files['webservice'])){
+                                             if ($PAGE->action == 'view' AND $objective->files['webservice'] != ''){
                                                  $html  .='<span class="box-sm-icon '.$icon_class.'" onclick=\'processor("link_module_result","enabling_objective","'.$objective->id.'","","webservice/moodle");\'><i class="fa fa-external-link-square  fa-rotate-180"></i></span>';
                                              }
                                          }
                                      } else {
-                                         if (checkCapabilities('reference:show', $USER->role_id, false)){
+                                         /*if (checkCapabilities('reference:show', $USER->role_id, false)){
                                              $html  .= '<span class="fa fa-link '.$icon_class.' box-sm-icon pull-left" data-toggle="tooltip" title="Lehr- /Rahmenplanbezüge" onclick=\'formloader("reference_view", "'.$type.'", "'.$objective->id.'");\'></span>';
-                                         }
+                                         }*/
                                          if (checkCapabilities('reference:add', $USER->role_id, false)){
                                              $html  .= '<span class="box-sm-icon pull-right '.$icon_class.'" data-toggle="tooltip" title="Lehr- /Rahmenplanbezug hinzufügen" onclick=\'formloader("reference", "new", "'.$objective->id.'", {"context":"terminal_objective"});\'><i class="fa fa-link '.$text_class.' box-sm-icon"><i class="fa fa-plus fa-xs"></i></i></span>';
                                          }    
@@ -1224,17 +1244,17 @@ class Render {
                       if ($show_description){
                             $r .=  '<br><span class="text small">'.$tsk->description.'</span>';
                       }
-                        if (checkCapabilities('task:update', $USER->role_id, false)){
+                        if (checkCapabilities('task:update', $USER->role_id, false) AND $onclick == false){
                             $r   .= '<div class="tools">
-                                        <i class="fa fa-edit" onclick="formloader(\'task\',\'edit\', '.$tsk->id.')"></i>
-                                        <i class="fa fa-trash-o" onclick="del(\'task\', '.$tsk->id.')"></i>
+                                        <i class="fa fa-edit" onclick="formloader(\'task\',\'edit\', \''.$tsk->id.'\');"></i>
+                                        <i class="fa fa-trash-o" onclick="del(\'task\', '.$tsk->id.');"></i>
                                     </div>';
                         }
         $r       .= '</li>';
                  }
                  
         if (checkCapabilities('task:add', $USER->role_id, false) AND $add == true){            
-            $r   .= '<li><a class="btn btn-primary btn-xs" onclick="formloader(\'task\',\''.$context.'\', '.$reference_id.')"><i class="fa fa-plus"></i> Aufgabe hinzufügen</a></li> </ul>';
+            $r   .= '<li><a class="btn btn-primary btn-xs" onclick="formloader(\'task\',\''.$context.'\', '.$reference_id.')"><i class="fa fa-plus"></i> Aufgabe/Notiz hinzufügen</a></li> </ul>';
         }
         return $r;
     }
@@ -1245,10 +1265,10 @@ class Render {
         $r = '';
         if (!empty($tasks)){
             $r .= "<h4>{$heading}</h4>";
-            $r .= Render::todoList($tasks, $dependency, $id, false, true, true, false);
+            $r .= Render::todoList($tasks, $dependency, $id, true, true, true, false);
             $r .= '<hr>';
-        }
-        
+        } 
+       
         return $r;
     }
     
@@ -1792,23 +1812,25 @@ class Render {
                             <button type="button" class="'.$btn_type.' dropdown-toggle" data-toggle="dropdown">'.$label.' </button>
                             <ul class="dropdown-menu" role="menu">';
                             foreach($entrys as $key => $val) {
-                                switch ($type) {
-                                    case 'content':
-                                        $html .= '<li><a onclick="formloader(\'content\', \'show\','.$val->id.');">'.$val->title.'</span></a></li>';
-                                    break;
-                                    case 'file':
-                                        $html .= '<li><a onclick="formloader(\'preview\',\'file\','.$val->id.');">'.$val->title.'</span></a></li>';
-                                    break;
-                                    case 'menu':
-                                        if (isset($val->href)){
-                                            $html .= '<li><a href="'.$val->href.'" class="'.$val->href_class.'">'.$val->title.'</span></a></li>';
-                                        } else {
-                                            $html .= '<li><a onclick="'.$val->onclick.'">'.$val->title.'</span></a></li>';
-                                        }
-                                    break;
-                                    
-                                    default:
+                                if (isset($val->title)){ //prevent error_logs if empty entries are given
+                                    switch ($type) {
+                                        case 'content':
+                                            $html .= '<li><a onclick="formloader(\'content\', \'show\','.$val->id.');">'.$val->title.'</span></a></li>';
                                         break;
+                                        case 'file':
+                                            $html .= '<li><a onclick="formloader(\'preview\',\'file\','.$val->id.');">'.$val->title.'</span></a></li>';
+                                        break;
+                                        case 'menu':
+                                            if (isset($val->href)){
+                                                $html .= '<li><a href="'.$val->href.'" class="'.$val->href_class.'">'.$val->title.'</span></a></li>';
+                                            } else {
+                                                $html .= '<li><a onclick="'.$val->onclick.'">'.$val->title.'</span></a></li>';
+                                            }
+                                        break;
+
+                                        default:
+                                            break;
+                                    }
                                 }
                                 
                             }
@@ -1819,11 +1841,12 @@ class Render {
     }
     
     public static function box($params){
-        $status             = 'collapsed-box';
-        $header_content     = 'Title';
-        $header_box_tools   = '';
+        $status                     = 'collapsed-box';
+        $header_content             = 'Title';
+        $header_box_tools_left      = '';
+        $header_box_tools_right     = '';
         
-        $body_content       = '';
+        $body_content               = '';
         //$footer_content     = '';
         
         foreach($params as $key => $val) {
@@ -1832,9 +1855,14 @@ class Render {
         $html   = '';
         $html  .= '<div class="box '.$status.' bottom-buffer-20">
                             <div class="box-header with-border">
-                                  <h3 class="box-title">'.$header_content.'</h3>
-                                  <div class="box-tools pull-right">
-                                  '.$header_box_tools.'
+                                  '.$header_box_tools_left;
+                                  if (isset($header_onclick)){
+                                    $html  .='<h3 class="box-title" '.$header_onclick.'> '.$header_content.'</h3>'; 
+                                  } else {
+                                    $html  .='<h3 class="box-title"> '.$header_content.'</h3>';
+                                  }
+                                   $html  .='<div class="box-tools pull-right">
+                                  '.$header_box_tools_right.'
                                   </div>
                             </div><!-- /.box-header -->
                             <div class="box-body" >
@@ -1854,7 +1882,6 @@ class Render {
         $data_ride   = 'carousel';
         $slides     = array(); //[caption => '...', content => '...']
         foreach($params as $key => $val) {
-            //error_log($key.' -> '. $val);
             $$key = $val;
         }
         $html = '<div id="'.$carousel_id.'" class="carousel slide" data-ride="'.$data_ride.'" >
@@ -1891,104 +1918,204 @@ class Render {
 
 
     public static function navigator_item($params){
-        global $CFG;
+        global $CFG, $USER;
         
         foreach($params as $key => $val) {
-            //error_log($key.' -> '. $val);
             $$key = $val;
         }
         $html = '';
-        switch ($nb_context_id) {
-            
-            case 2:     $cur                = new Curriculum();
-                        $cur->id            = $nb_target; 
-                        $cur->load(false);
-                        $file_id            = $cur->icon_id;
-                        $widget_onclick     = "location.href='index.php?action=view&curriculum_id={$nb_target}';";
-                        $html = RENDER::paginator_widget(array('widget_title' => $nb_title, 'file_id' => $file_id, 'widget_onclick' => $widget_onclick));
-                break;
-            case 15:    $content            = new Content();
-                        $content->load('id', $nb_reference_id);
-                        
-                        /*$s                  = array();
-                        $slides             = new stdClass();
-                        $slides->caption    =  'Slide2';
-                        $slides->content    =  '$content->content';
-                        $s[]                = clone $slides;
-                        */
-                        /*$slides             = new stdClass();
-                        $slides->caption    =  $content->title;
-                        $slides->content    =  $content->content;
-                        $s[]                = clone $slides;
-                        */
-                       //error_log(json_encode($s));
-                        
-                        
-                        $html              .= RENDER::box(array('header_box_tools' => '<button class="btn btn-box-tool" onclick="processor(\'print\',\'content\', \''.$nb_reference_id.'\')"><i class="fa fa-print"></i></button><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_content' => $content->title, 'content_id' => $nb_reference_id, 'body_content' => $content->content/*RENDER::carousel(array('data_ride' => '', 'slides' => $s))*/));
-                break; 
-            case 16:    $c = new Curriculum();
-                        $curricula = $c->getCurricula('group', $nb_reference_id);
-                        foreach ($curricula as $cur) {
-                            $html .= RENDER::paginator_widget(["widget_title" =>$cur->curriculum, "ref_id" => $cur->id, "group_id" => $nb_reference_id]);
-                        }
-                        
-                break;
-            
-            case 29:    $f = new File();
-                        $f->load($nb_reference_id);
-                        $html = '<div class="'.$nb_width_class.'">'.RENDER::file($f).'</div>';
-                break;
-            case 31:    $widget_onclick = "location.href='index.php?action=navigator&nv_id={$nb_target}';";
-                        $html = RENDER::paginator_widget(array('widget_title' => $nb_title, 'file_id' => $nb_file_id, 'widget_onclick' => $widget_onclick));
+        if ($nb_visible == 1 OR(checkCapabilities('navigator:add', $USER->role_id, false) == true )){  //is visible?
+            switch ($nb_context_id) {
+                /*curriculum*/
+                case 2:     $cur                = new Curriculum();
+                            $cur->id            = $nb_reference_id; 
+                            $cur->load(false);
+                            $enroled_groups     = $cur->getGroupsByUserAndCurriculum($USER->id);
+                            $file_id            = $cur->icon_id;
+                            $widget_onclick     = "location.href='index.php?action=view&curriculum_id={$nb_reference_id}&group={$enroled_groups[0]->group_id}';";
+                            if (checkCapabilities('navigator:add', $USER->role_id, false)){
+                            $opt[]              = '<a type="button" style="color:#FFF;" class="fa fa-edit" onclick="formloader(\'navigator_item\', \'edit\','.$nb_id.', {\'nb_navigator_view_id\':\''.$nb_navigator_view_id.'\'})";></a>';
+                            $html               = RENDER::paginator_widget(array('widget_title' => $nb_title, 'widget_desc' => $nb_description, 'file_id' => $file_id, 'widget_onclick' => $widget_onclick, 'opt' => $opt, 'global_onclick' => true));
+                            } else {
+                               $html               = RENDER::paginator_widget(array('widget_title' => $nb_title, 'widget_desc' => $nb_description, 'file_id' => $file_id, 'widget_onclick' => $widget_onclick, 'global_onclick' => true));
+                            }
+                            
+                    break;
+                case 15:    $content            = new Content();
+                            $content->load('id', $nb_reference_id);
+                            if (checkCapabilities('navigator:add', $USER->role_id, false)){
+                                $html          .= RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool" onclick="formloader(\'content\',\'edit\', \''.$nb_reference_id.'\')"><i class="fa fa-edit"></i></button><button class="btn btn-box-tool" onclick="processor(\'print\',\'content\', \''.$nb_reference_id.'\')"><i class="fa fa-print"></i></button><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_onclick' => 'data-widget="collapse"', 'header_content' => $content->title, 'content_id' => $nb_reference_id, 'body_content' => $content->content));
+                            } else {
+                                $html          .= RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool" onclick="processor(\'print\',\'content\', \''.$nb_reference_id.'\')"><i class="fa fa-print"></i></button><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_onclick' => 'data-widget="collapse"', 'header_onclick' => 'data-widget="collapse"', 'header_content' => $content->title, 'content_id' => $nb_reference_id, 'body_content' => $content->content));
+                            }
+                            
+                    break; 
+                case 16:    $c                  = new Curriculum();
+                            $curricula          = $c->getCurricula('group', $nb_reference_id);
+                            foreach ($curricula as $cur) {
+                                $html          .= RENDER::paginator_widget(["widget_title" =>$cur->curriculum, 'widget_desc' => $nb_description, "ref_id" => $cur->id, "group_id" => $nb_reference_id, 'global_onclick' => true]);
+                            }
 
-                break;
-            
-            default:
-                break;
-        }
-        
+                    break;
+
+                case 29:    $f                  = new File();
+                            $f->load($nb_reference_id);
+                            $widget_onclick     = "location.href='../share/accessfile.php?id={$nb_reference_id}';";                        
+                            $html               = RENDER::paginator_widget(array('widget_title' => $nb_title, 'widget_desc' => $nb_description, 'file_id' => $nb_file_id, 'widget_onclick' => $widget_onclick , 'global_onclick' => true));
+                            //$html               = '<div class="'.$nb_width_class.'">'.RENDER::file($f).'</div>';
+                    break;
+                case 31:    if ($nb_target_context_id == $_SESSION['CONTEXT']['file']->context_id){
+                                $f                  = new File();
+                                $f->load($nb_target_id);
+                                $widget_onclick     = "location.href='{$f->path}'";
+                            } else {
+                                $widget_onclick     = "location.href='index.php?action=navigator&nv_id={$nb_target_id}';";
+                            }
+
+                            $html               = RENDER::paginator_widget(array('widget_title' => $nb_title, 'widget_desc' => $nb_description, 'file_id' => $nb_file_id, 'widget_onclick' => $widget_onclick, 'global_onclick' => true));
+
+                    break;
+
+                case 33:    /* Book */
+                            $html               = RENDER::book(array('book_id' => $nb_reference_id));
+                            //$html               = RENDER::book(array('book_id' => $b->id, 'book_title' => $b->title, 'toc'=> $toc, 'book_content' => RENDER::carousel(array('data_ride' => '', 'slides' => $s))));
+                            //$html = RENDER::carousel(array('data_ride' => '', 'slides' => $s));
+
+                    break;
+
+                default:
+                    break;
+            }
+        } 
         return $html;     
     }
+    
+    public static function book($params){
+        foreach($params as $key => $val) {
+            $$key = $val;
+        }
+        $b                  = new Book();
+        $book               = $b->get('book', $book_id);
+        
+        $s                  = array();
+        $toc                = array(); //Table of Contents
+        $i = 0;
+        foreach($book AS $content){
+            $slide             = new stdClass();
+            $ct                = new Content();
+            $ct->load('id', $content->content_id);
+            $slide->caption    = $ct->title;
+            $toc[$i]['id']     = $content->content_id;
+            $toc[$i]['title']  = $ct->title;
+            $i++;
+            $slide->content    = $ct->content;
+            $slides[]          = clone $slide;
+            unset($slide);
+        }
+        
+        $left_menu = '<i class="fa fa-bars dropdown-toggle" data-toggle="dropdown"></i><ul class="dropdown-menu" role="menu">';
+        $i = 0;
+        foreach($toc AS $t){
+            $left_menu .= '<li><a data-slide-to="'.$i.'" data-target="#carousel">'.$t["title"].'</a></li>';
+            $i++;
+        }
+                    
+        $left_menu .='</ul>';
+        $carousel_id = 'carousel';
+        $data_ride   = ''; // if 'carousel' pages auto-slide
+
+        $book_content = '<div id="'.$carousel_id.'" class="carousel slide" data-interval="false" data-ride="'.$data_ride.'" >
+                    <ol class="carousel-indicators " style="bottom:5px;">';
+                    $active_class = 'active';
+                    $i = 0; 
+                    foreach ($slides as $s) {
+                        $book_content .= '<li data-target="#'.$carousel_id.'" data-slide-to="'.$i.'" ';
+                        if ($active_class == 'active') { //todo --> change css class
+                            $book_content .= 'style="background:#333;" ';
+                        } else {
+                            $book_content .= 'style="border: 1px solid #333;" ';
+                        }
+                        $book_content .= 'class=" '.$active_class.'"></li>';
+                        if ($active_class == 'active'){ $active_class = ''; }
+                        $i++;
+                    }
+        $book_content .='   </ol>
+                <div class="carousel-inner" >';
+                    $active_class = 'active';
+                    $i = 0; 
+                    foreach ($slides as $s) {
+                        $book_content .= '<div class="item '.$active_class.'" >
+                                    <div style="overflow: scroll;  height: 400px;" >'.$s->content.'</div>
+                                    <div class="carousel-caption text-black" style="position:static;">'.$s->caption.'</div>
+                                </div>';
+                        if ($active_class == 'active'){ $active_class = ''; }
+                        $i++;
+                    }
+        $book_content .='</div>
+                <a class="left carousel-control" href="#'.$carousel_id.'" data-slide="prev">
+                  <span class="fa fa-angle-left text-black" style="bottom: 22px; top: auto !important;"></span>
+                </a>
+                <a class="right carousel-control" href="#'.$carousel_id.'" data-slide="next">
+                  <span class="fa fa-angle-right text-black" style="bottom: 22px; top: auto !important;"></span>
+                </a>
+              </div>';
+        
+        
+        
+        //$left_menu = '<i class="fa fa-bars dropdown-toggle" data-toggle="dropdown"></i>';
+        return $html = RENDER::box(array('header_box_tools_left' => $left_menu,'header_box_tools_right' => '<button class="btn btn-box-tool" onclick="processor(\'print\',\'book\', \''.$b->id.'\')"><i class="fa fa-print"></i></button><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_onclick' => 'data-widget="collapse"', 'header_content' => $b->title, 'content_id' => $b->id, 'body_content' => $book_content));
+    }
+    
+    
+    
     public static function paginator_widget($params){
         global $CFG;
         /*default params*/
         $class_width    = 'col-md-6';
         $widget_type    = 'curriculum';
-        $bg_color       = 'bg-white';
+        $bg_color       = 'bg-primary';
         $widget_title   = 'Titel';
         $widget_desc    = '';
         $bg_badge       = 'bg-green';
         $href           = '#';
         //$onclick_badge  = '';
         $opt            = array(); 
-        $widget_onclick        = ''; 
+        $widget_onclick = ''; 
         
         foreach($params as $key => $val) {
             $$key = $val;
         }
         if (isset($file_id)){
-            $icon_url           = $CFG->access_id_url.$file_id;
+            $icon_url           = $CFG->access_id_url.$file_id;//.'&size=t';
         } else if (!isset($icon_url)){
             $cur                = new Curriculum();
             $cur->id            = $ref_id; 
             $cur->load(false);
-            $icon_url           = $CFG->access_id_url.$cur->icon_id;
+            $icon_url           = $CFG->access_id_url.$cur->icon_id;//.'&size=t';
             $widget_onclick     = "location.href='index.php?action=view&curriculum_id={$ref_id}&group={$group_id}';";
         } 
         
-        $html   =  '<div class="box box-objective bg-white '.$bg_color.'" style="height: 300px !important; padding: 0; background: url(\''.$icon_url.'\') center center;  background-size: cover;" margin-bottom" >'; 
-        $html   .= '                <span class="bg-white no-padding" style="background-color: #fff; position:absolute; bottom:0px; height: 120px;width:100%;text-align: center;">'
-                . '<span class="col-xs-12" style="background-color: '.$bg_color.'; position:absolute; display:block; left:0;right:0;bottom:120px;">';
-        foreach ($opt as $k =>$o) {
-                $html .= '<span style="margin-right:15px;padding:5px;text-shadow: 1px 1px #FF0000;" class="fa">'.$o.'</span>';    
+        $html   =  '<div class="box box-objective bg-white '.$bg_color.'" style="height: 300px !important; padding: 0; background: url(\''.$icon_url.'\') center center;  background-size: cover;"  ';
+        
+        $html   .= '>'; 
+        if (count($opt) > 0){
+            $html   .= '<span class="col-xs-12 '.$bg_color.'" style="background-color: '.$bg_color.'; position:absolute; display:block; left:0;right:0;top:0px;" >';
+                       foreach ($opt as $k =>$o) {
+                               $html .= '<span style="margin-right:12px;padding:5px;text-shadow: 1px 1px #FF0000;" class="fa">'.$o.'</span>';    
+                       }
+            $html .= '</span>';
+        }        
+        $html   .= '<span class="no-padding pointer_hand" style="position:absolute; bottom:0px; height: 275px;width:100%;"';
+        if (isset($global_onclick)){
+            $html   .= ' onclick="'.$widget_onclick.'"';
         }
-        $html .= '</span>';
+        $html   .= '></span><span class="bg-white no-padding pointer_hand" style="background-color: #fff; position:absolute; bottom:0px; height: 120px;width:100%;text-align: center;" >'; 
                 $html   .= '<div class="caption text-center">';
                 if (isset($widget_timerange)){
                     $html   .= '<small>'.$widget_timerange.'</small>';
                 }
-                        $html   .= '  <h5 class="events-heading text-ellipse"><a onclick="'.$widget_onclick.'">'.$widget_title.'</a></h5>
-                                  <p style="overflow: scroll; width: 100%; height: 60px;">'.$widget_desc.'</p>
+                        $html   .= '  <h5 class="events-heading text-center"><a onclick="'.$widget_onclick.'">'.$widget_title.'</a></h5>
+                                  <p style="height: 60px;" class="margin text-muted">'.$widget_desc.'</p>
                                 </div>';
                         
         $html   .=     '</span>
@@ -2039,7 +2166,7 @@ class Render {
                             $href_regex = preg_replace_callback('/__([^&]*)__/', 
                                     function($r){
                                         global $v;
-                                        return $v->$r[1]; 
+                                        return $v->{$r[1]}; 
                                     }, $href);
                                 
                             $html   .= '<li><a href="'.$href_regex.'">'.$l;
@@ -2139,4 +2266,575 @@ class Render {
             
         }
     }
+    
+    public static function reference($func, $id, $get){
+    $content     = '';
+    $reference   = new Reference();
+    $references  = $reference->get('reference_id', $_SESSION['CONTEXT'][$func]->context_id, $id);
+    Reference::sortByProp($references, 'curriculum', 'asc');
+    
+    if ($get['schooltype_id'] != 'false'){
+        $references  = ofilter($references, ['schooltype_id' => $get['schooltype_id']]);
+    }
+    if ($get['subject_id'] != 'false'){
+         $references  = ofilter($references, ['subject_id' => $get['subject_id']]);
+    }
+    if ($get['curriculum_id'] != 'false'){
+         $references  = ofilter($references, ['curriculum_id' => $get['curriculum_id']]);
+    }
+    if ($get['grade_id'] != 'false'){
+         $references  = ofilter($references, ['grade_id' => $get['grade_id']]);
+    }
+    if (isset($references)){
+        $curriculum_id = '';
+        $count_ref = count($references);
+        foreach ($references as $ref) {
+            if ($ref->curriculum_id != $curriculum_id){
+                if ($curriculum_id != ''){
+                    $content .= '</span>';
+                }
+                $curriculum_id = $ref->curriculum_id;
+                if ($count_ref > 1){
+                    $content .= '<span class="col-xs-12 bg-light-aqua" data-toggle="collapse" data-target="#curriculum_'.$curriculum_id.'"><h4 class="text-black" >'.$ref->curriculum_object->curriculum.' <small>'.$ref->schooltype.'</small><button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#curriculum_'.$curriculum_id.'" aria-expanded="true" data-toggle="tooltip" title="Fach einklappen bzw. ausklappen"><i class="fa fa-expand"></i></button></h4></span><hr style="clear:both;">';
+                    $content .= '<span id ="curriculum_'.$curriculum_id.'" class="collapse out">';
+                } else {
+                    $content .= '<span class="col-xs-12 bg-light-aqua" data-toggle="collapse" data-target="#curriculum_'.$curriculum_id.'"><h4 class="text-black" >'.$ref->curriculum_object->curriculum.' <small>'.$ref->schooltype.'</small><button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#curriculum_'.$curriculum_id.'" aria-expanded="true" data-toggle="tooltip" title="Fach einklappen bzw. ausklappen"><i class="fa fa-compress"></i></button></h4></span><hr style="clear:both;">';
+                    $content .= '<span id ="curriculum_'.$curriculum_id.'" class="collapse in">';
+                }
+            }
+            $content .= RENDER::render_reference_entry($ref, $_SESSION['CONTEXT']['terminal_objective']->context_id);
+        }
+        $content .= '</span>'; //close last subject span
+    } 
+    
+    if (count($references) == 0) {
+        $content .= 'Keine überfachliche Bezüge vorhanden.';
+    }
+
+    if ($get['ajax'] == 'true'){  
+        echo $content;
+    } else {
+        return $content;
+    }
+}
+
+
+
+public static function render_reference_entry($ref, $context_id){
+    global $USER;
+    $c  = '<div class="row">
+            <div class="col-xs-12 col-sm-3 pull-left"><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('format' => 'reference', 'objective' => $ref->terminal_object, 'color')).'</div>';
+            if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
+              $c .= '<div class="col-xs-12 col-sm-3"><dt>Lernziel/Kompetenz</dt>'.Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $ref->enabling_object, 'border_color' => $ref->terminal_object->color)).'</div>';
+            }
+            $c .= '
+           <div class="col-xs-12 col-sm-6 pull-right">';
+            if (checkCapabilities('reference:add',    $USER->role_id, false, true)){
+                $c .= '<a onclick="del(\'reference\', '.$ref->id.');" class="btn btn-default btn-xs pull-right" data-toggle="tooltip" title="" data-original-title="Referenz löschen" style="margin-right:5px;"><i class="fa fa-trash"></i></a>';
+                //$c .= '<a onclick="formloader(\'reference\', \'edit\', '.$ref->id.', {\'context_id\': \''.$context_id.'\'});" class="btn btn-default btn-xs pull-right" data-toggle="tooltip" title="" data-original-title="Referenz editieren" style="margin-right:5px;"><i class="fa fa-edit"></i></a>';
+            }
+    
+            $c .= '<br><dt>Anregungen zur Unterrichtsgestaltung <dd> ';
+            if (isset($ref->content_object->content)){
+                if ($ref->content_object->content != ''){
+                    $c .= strip_tags($ref->content_object->content);
+                }
+            }
+            $c .='</dd></dt>';
+            if (checkCapabilities('reference:add',    $USER->role_id, false, true)){
+                $c .= '<a onclick="formloader(\'content\', \'edit\','.$ref->content_object->id.');" class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-edit"></i></a>';
+            }
+    $c .= '</div></div><hr style="clear:both;">';
+    
+    return $c;
+}
+
+public static function quote($quotes, $get){
+    $content     = '';  
+    RENDER::sortByProp($quotes, 'curriculum', 'asc');
+    
+    if ($get['schooltype_id'] != 'false'){
+        $quotes  = ofilter($quotes, ['schooltype_id' => $get['schooltype_id']]);
+    }
+    if ($get['subject_id'] != 'false'){
+         $quotes  = ofilter($quotes, ['subject_id' => $get['subject_id']]);
+    }
+    if ($get['curriculum_id'] != 'false'){
+         $quotes  = ofilter($quotes, ['curriculum_id' => $get['curriculum_id']]);
+    }
+    if ($get['grade_id'] != 'false'){
+         $quotes  = ofilter($quotes, ['grade_id' => $get['grade_id']]);
+    }
+    if (isset($quotes)){
+        $cur_id = '';
+        foreach ($quotes as $ref) {
+            if ($ref->reference_object->id != $cur_id){
+                if ($cur_id != ''){
+                    $content .= '</span>';  
+                }
+                $cur_id = $ref->reference_object->id;
+                $content .= '<span class="col-xs-12 bg-light-aqua" data-toggle="collapse" data-target="#cur_'.$cur_id.'"><h4 class="text-black">'.$ref->reference_object->curriculum.'<button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#cur_'.$cur_id.'" aria-expanded="true" data-toggle="tooltip" title="Fach einklappen bzw. ausklappen"><i class="fa fa-expand"></i></button></h4></span><hr style="clear:both;">';
+                $content .= '<span id ="cur_'.$cur_id.'" class="collapse out">';
+            }
+            $content .= '<blockquote>'.$ref->quote.'<small>'.$ref->reference_object->curriculum.', <cite="'.$ref->reference_title.'" class="pointer_hand"><a onclick="formloader(\'content\', \'show\','.$ref->quote_link.');">'.$ref->reference_title.'</a></cite></small></blockquote>'; 
+        }
+        $content .= '</span>'; //close last subject span
+    } 
+    
+    if (count($quotes) == 0) {
+        $content .= 'Keine Textbezüge vorhanden.';
+    }
+
+    if ($get['ajax'] == 'true'){  
+        echo $content;
+    } else {
+        return $content;
+    }
+}
+
+public static function quote_reference($quotes){
+    $content     = '';  
+    RENDER::sortByProp($quotes, 'quote_link', 'asc');
+    if (isset($quotes)){
+        $content_id = '';
+        $quote_id   = '';
+        
+        foreach ($quotes as $ref) {
+            if ($ref->quote_link != $content_id){ //if new content render Title
+                if ($content_id != ''){
+                    $content .= '</span>';  
+                }
+                $content .= '<span class="col-xs-12 bg-light-aqua" data-toggle="collapse" data-target="#ct_'.$content_id.'"><h4 class="text-black">'.$ref->reference_title.'<button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#ct_'.$content_id.'" aria-expanded="true" data-toggle="tooltip" title="Fach einklappen bzw. ausklappen"><i class="fa fa-expand"></i></button></h4></span><hr style="clear:both;">';
+                $content .= '<span id ="ct_'.$content_id.'" class="collapse out">';
+                }
+                $content_id = $ref->quote_link;
+                if ($ref->id == $quote_id){ 
+                    
+                    $content .= '<div class="col-xs-12 col-sm-3 pull-right">';
+                    if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
+                      $content .= '<dt>Lernziel/Kompetenz</dt>'.Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $ref->enabling_object, 'border_color' => $ref->terminal_object->color));
+                    }
+                    $content .= '</div>';
+                    $content .= '<div class="col-xs-12 col-sm-3 pull-right"><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('format' => 'reference', 'objective' => $ref->terminal_object, 'color')).'</div>';
+                    
+                } else { //if new quote render quote
+                    $content .= '<div class="col-xs-12 col-sm-6"><h4>Fundstelle im Text:</h4><br><blockquote>'.$ref->quote.'<small>, <cite="'.$ref->reference_title.'" class="pointer_hand"><a onclick="formloader(\'content\', \'show\','.$ref->quote_link.');">'.$ref->reference_title.'</a></cite></small></blockquote></div>'; 
+                    $c        = new Curriculum();    
+                    $c->id    = $ref->terminal_object->curriculum_id;
+                    $c->load();
+                    $content .= '<div class="col-xs-12 col-sm-6 pull-right"><h4>'.$c->curriculum.'</h4></div>';
+                    $content .= '<div class="col-xs-12 col-sm-3 pull-right">';
+                    if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
+                      $content .= '<dt>Lernziel/Kompetenz</dt>'.Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $ref->enabling_object, 'border_color' => $ref->terminal_object->color));
+                    }
+                    $content .= '</div>';
+                    $content .= '<div class="col-xs-12 col-sm-3 pull-right"><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('format' => 'reference', 'objective' => $ref->terminal_object, 'color')).'</div>';
+                    
+                }
+                $content .='<hr style="clear:both;">';
+                $quote_id = $ref->id;   
+        }
+        $content .= '</span>'; //close last content span
+    }
+    if (count($quotes) == 0) {
+        // $content .= 'Keine Textbezüge vorhanden.';
+        // do nothing 
+    } else {
+        return '<div class="col-xs-12 top-buffer" >'.RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool"><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_onclick' => 'data-widget="collapse"', 'header_content' => 'Textbezüge im Lehrplan', 'content_id' => null, 'body_content' => $content)).'</div>';
+    }
+    
+    
+}
+
+    public static function sorter_asc( $a, $b ){
+        return strcasecmp( $a->{self::$sortKey}, $b->{self::$sortKey} );
+    }
+    
+    public static function sorter_desc( $a, $b ){
+        return strcasecmp( $b->{self::$sortKey}, $a->{self::$sortKey} );
+    }
+
+    public static function sortByProp( &$collection, $prop, $direction = 'asc' ){
+        self::$sortKey = $prop;
+        switch ($direction) {
+            case 'desc': usort( $collection, array( __CLASS__, 'sorter_desc' ) );
+                 break;
+
+            default:    usort( $collection, array( __CLASS__, 'sorter_asc' ) );
+                break;
+        }
+        
+    }
+    
+    
+    public static function search($dependency = 'view', $id, $get ){
+        $content = '';
+        switch ($dependency) {
+            case 'view':$s          = new Search();
+                        $s->id      = $id; //cur_id
+                        $s->search  = $get['search'];
+                        $content    = Render::render_search_results('content', array('search_results' => $s->content(), 'get' => $get));  
+                break;
+
+            default:
+                break;
+        }
+        
+        
+        if ($get['ajax'] == 'true'){  
+            echo $content;
+        } else {
+            return $content;
+        }
+    }
+    
+    public static function render_search_results($dependency = 'content', $params ){
+        $content     = ''; 
+        //RENDER::sortByProp($params['search_results'], 'title', 'asc');
+        /*Maybe realize further filter options with ofilter()*/
+        $c_id = '';
+        $empty = true;
+        if (count($params['search_results']) < 1){
+            return '';
+        }
+        foreach ($params['search_results'] as $s_result) {
+            if ($s_result['id'] != $c_id){
+                if ($c_id != ''){
+                    $content .= '</span>';  
+                }
+                $c_id = $s_result['id'];
+                
+                if (!empty($s_result['matches'])){
+                    $content .= '<span class="col-xs-12 bg-light-aqua" data-toggle="collapse" data-target="#s_result_'.$c_id.'"><h4 class="text-black">'.$s_result['title'].'<button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#s_result_'.$c_id.'" aria-expanded="true" data-toggle="tooltip" title="Text einklappen bzw. ausklappen"><i class="fa fa-expand"></i></button></h4></span><hr style="clear:both;">';
+                    $content .= '<span id ="s_result_'.$c_id.'" class="collapse out">';
+                }
+            }
+            foreach ($s_result['matches'] AS $m_result){
+                $content .= '<blockquote>'.str_ireplace ( $params['get']['search'] , '<span class="bg-yellow color-palette">'.$params['get']['search'].'</span>' , $m_result ).'<small>'.$s_result['title'].', <cite="'.$s_result['title'].'" class="pointer_hand"><a onclick="formloader(\'content\', \'show\','.$s_result['id'].');">'.$s_result['title'].'</a></cite></small></blockquote>'; 
+                $empty = false;
+            }   
+        }
+        $content .= '</span>'; //close last subject span
+         
+        if ($empty == true){
+            return '';
+        } else {
+            return '<div class="col-xs-12 top-buffer" >'.RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool"><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_onclick' => 'data-widget="collapse"', 'header_content' => 'Suchergebnisse', 'content_id' => null, 'body_content' => $content)).'</div>';
+        }
+    }
+    
+    public static function print_reference($params){
+        $content    = '';
+        $pagebreak  = false; 
+        foreach($params as $key => $val) {
+            $$key   = $val;
+        }
+        if ($pagebreak){
+            $content  .= '<pagebreak>';
+            $pagebreak = false;
+        }
+        
+        $c                  = new Curriculum();
+        $c->id              = $id;
+        $c->load(false);
+        $content .= '<h3>'. $c->curriculum.'</h3>'; 
+        
+        $content .= '<h4>Bezüge zu den Kompetenzen / Lernziele</h4>'; 
+        $ter_obj  = new TerminalObjective();         //load terminal objectives
+        $ter      = $ter_obj->getObjectives('certificate', $id);
+        $temp_ter_id = 0;
+        foreach ($ter as $ter_value) {
+            $ena_obj                = new EnablingObjective();         //load enabling objectives
+            $ena_obj->curriculum_id = $id;
+            $ena                    = $ena_obj->getObjectives('terminal_objective', $ter_value->id);
+            $reference   = new Reference(); // todo: create function for both terminal and enabling objective (removes double code)
+           
+            $references  = $reference->get('reference_id', $_SESSION['CONTEXT']['terminal_objective']->context_id, $ter_value->id);
+            if (count($references) > 0){
+                $content    .= SELF::print_reference_objectives(array('references' => $references, 'ter_value' => $ter_value));
+                $print_ter = false; 
+            } else {
+                $print_ter = true;
+            }
+            if(count($references) > 0 OR $temp_ter_id == 0){ $temp_ter_id = $ter_value->id; }
+            if (is_array($ena)){
+                foreach ($ena as $ena_value) {
+                    $ena_obj->id        = $ena_value->id;
+                    $ena_obj->load();  
+                    $reference = new Reference();
+                    $references = $reference->get('reference_id', $_SESSION['CONTEXT']['enabling_objective']->context_id, $ena_obj->id);
+                    
+                    //if ($temp_ter_id != $ter_value->id OR $temp_ter_id == 0){ $print_ter = true; } else { $print_ter = false; }
+                    $content    .= SELF::print_reference_objectives(array('references' => $references, 'dependency' => 'enabling_objective', 'ter_value' => $ter_value, 'ena_value' => $ena_value, 'print_ter' => $print_ter));
+                }
+            }
+           
+            
+         }
+
+         if (count($ena) > 0){
+             $pagebreak = true;   
+         }
+         
+        /* Print Text References*/
+        $linked_curricula   = $c->loadConfig(); 
+        foreach ($linked_curricula as $l_cur_id) {
+
+            $ter_ids = $c->getFieldArray($l_cur_id, 'terminal_objectives');
+            $ena_ids = $c->getFieldArray($l_cur_id, 'enabling_objectives');
+            $ct_ids  = $c->getFieldArray($id, 'curriculum_content');
+            $quote   = new Quote(); 
+            $cur_ct_refs = $quote->get('curriculum_content', $ct_ids, $ter_ids, $ena_ids);
+            if (count($cur_ct_refs) > 0){
+                $content .= '<h4>Bezüge zu Lehrplantexten</h4>'; 
+                $content .= RENDER::print_reference_quote(array('references' => $cur_ct_refs, 'curriculum_id' => $id ));
+            }
+        }
+         
+         return $content;
+    }
+    /**
+     * Generate References 
+     * @param array $params
+     * @return string html
+     */
+    public static function print_reference_objectives($params){
+        $content     = ''; 
+        $dependency  = 'terminal_objective';
+        $print_ter   = true;
+        $temp_cur_id = 0;
+        $temp_ter_id = 0;
+        $temp_ena_id = 0;
+        foreach($params as $key => $val) {
+            $$key   = $val;
+        }
+        
+        if (count($references) > 0){
+            switch ($dependency) {
+                case 'terminal_objective':
+                         $content    .= '<div style="padding:2px;border:1px solid '.$ter_value->color.';background:'.$ter_value->color.'; color:'.getContrastColor($ter_value->color).';"><small>'.strip_tags($ter_value->terminal_objective).'</small></div>';
+                    break;
+                case 'enabling_objective':
+                    if ($print_ter){
+                        $content    .= '<div style="padding:2px;border:1px solid '.$ter_value->color.';background:'.$ter_value->color.'; color:'.getContrastColor($ter_value->color).';"><small>'.strip_tags($ter_value->terminal_objective, '<br>').'</small></div>';
+                    }
+                        $content    .= '<div style="padding:2px;border:1px solid '.$ter_value->color.';background:#FFF; color:#000;"><small>'.strip_tags($ena_value->enabling_objective, '<br>').'</small></div>';
+                    break;
+
+                default:
+                    break;
+            }
+
+            if (!empty($references)){
+                $content    .='<table  frame="box" style="width:100%; overflow: wrap; vertical-align: top; autosize:1;">';   
+            }
+            $i   = 0;
+            $j   = 0;
+             
+            $max = count($references);
+            foreach ($references as $ref) { 
+                $j_max = 1;
+                $k_max = 1;
+                $css = 'border-bottom:0.5pt solid black;'; 
+                if ($temp_cur_id == 0 OR $temp_cur_id != $ref->curriculum_object->id){
+                    $content    .= '<tr><td colspan="3" style="height:10px;"></td> </tr><tr><td colspan="3" style="width:100%;margin-top:10px;background:#DDD; "><small>Überfachlicher Bezug zu <i> '.strip_tags($ref->curriculum_object->curriculum).'</i>' .'</small></td></tr>';
+                    if ($i == 0) {
+                        $content    .='<tr><thead><th style="width:30%; '.$css.'"><small>Kompetenz/Inhalt</small></th><th style="width:30%; '.$css.'"><small>Teilkompetenz/Konkretisierung</small></th><th style="width:40%; '.$css.'"><small>Anregung zur Unterrichtsgestaltung</small></th></thead></tr>';  
+                    }
+                    $temp_cur_id = $ref->curriculum_object->id;
+                }
+                if ($i == $max - 1 OR $references[$i+1]->curriculum_object->id != $temp_cur_id) { 
+                    $css = 'padding-bottom: 10px;'; 
+                } 
+               
+                $content    .='<tr>';
+                    if (isset($references[$i+1]->terminal_object->terminal_objective)) {
+                        if ($references[$i+1]->terminal_object->id == $ref->terminal_object->id){
+                           $css = '' ;
+                        } else {
+                           $css = 'border-bottom:0.5pt solid black;';   
+                        }    
+                    } 
+
+                    $content    .='<td style="width:30%; '.$css.'">';   
+                    if ($temp_ter_id == 0 OR $temp_ter_id != $ref->terminal_object->id){
+                        RENDER::reference('terminal_objective', $ref->terminal_object->id, array('schooltype_id' => 'false', 'subject_id' => 'false', 'curriculum_id' => 'false', 'grade_id' => 'false', 'ajax' => 'false')) .'</div>';
+                        $content .= '<small>'.strip_tags($ref->terminal_object->terminal_objective).'</small>';
+                        $temp_ter_id = $ref->terminal_object->id;   
+                    }
+                    $content .= '</td>';
+
+                    if ($i == $max - 1 OR $references[$i+1]->curriculum_object->id != $temp_cur_id) { 
+                        $css = 'padding-bottom: 10px;'; 
+                    } else {
+                        $css = 'border-bottom:0.5pt solid black;';   
+                    }
+   
+                    if (isset($references[$i+1]->enabling_object->enabling_objective)) {
+                        if ($references[$i+1]->enabling_object->id == $ref->enabling_object->id){
+                           $css = '' ;
+                        } else {
+                           $css = 'border-bottom:0.5pt solid black;';   
+                        }    
+                    } 
+                    $content    .='<td style="width:30%; '.$css.'">';  
+                    if ($temp_ena_id == 0 OR $temp_ena_id != $ref->enabling_object->id){
+                        if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id){
+                            $content .= '<small>'.strip_tags($ref->enabling_object->enabling_objective, '<br>').'</small>';
+                            $temp_ena_id = $ref->enabling_object->id;
+                        }
+                    }
+                    $content    .='</td>';
+                    
+                    if (isset($references[$i+1]->content_object->content)) {
+                        if ($references[$i+1]->content_object->content == $ref->content_object->content){
+                           $css = '' ;
+                        } else {
+                           $css = 'border-bottom:0.5pt solid black;';   
+                        }    
+                    }
+                    /* Print reference content */
+                    $content    .='<td style="width:40%; '.$css.'">'; 
+                    if (isset($ref->content_object->content)){
+                        if ($ref->content_object->content != ''){
+                            if (isset($references[$i-1]->content_object->content)){
+                                if ($references[$i-1]->content_object->content != $ref->content_object->content){
+                                    $content .= '<small>'.strip_tags($ref->content_object->content, '<br>').'</small>' ;
+                                }
+                            } else {
+                                $content .= '<small>'.strip_tags($ref->content_object->content, '<br>').'</small>' ; 
+                            }
+                        }
+                    }
+                    $content .= '</td>';
+                    
+                $content    .='</tr>';
+                $i++;
+            }
+             if (!empty($references)){
+                $content    .='</table><br><br>';
+            }
+        
+        }
+        
+        return $content; 
+    }
+    public static function print_reference_quote($params){
+        $content     = '';    
+        $temp_ref_id = 0;
+        $temp_cur_id = 0;
+        $temp_ter_id = 0;
+        $temp_ena_id = 0;
+        $content_id  = '';
+       
+        foreach($params as $key => $val) {
+            $$key   = $val;
+        }
+        
+        if (count($references) > 0 ){
+            if (!empty($references)){
+                $content    .='<table  frame="box" style="width:100%; overflow: wrap; vertical-align: top; autosize:1;">';   
+            }
+            
+            $c        = new Curriculum();    
+            $c->id    = $curriculum_id;
+            $c->load();
+            $content .= '<tr><td colspan="3" style="height:10px;"></td> </tr><tr><td colspan="3" style="width:100%;margin-top:10px;background:#DDD; "><small>'.$c->curriculum.'</small></td></tr>';
+            
+            $i = 0;
+            $max = count($references);
+            foreach ($references as $ref) { 
+                $css = 'border-bottom:0.5pt solid black;'; 
+                if ($ref->quote_link != $content_id){ //if new content render Title
+                    $content .= '<tr><td colspan="3" style="height:10px;"></td> </tr><tr><td colspan="3" style="width:100%;margin-top:10px;background:#DDD; "><small>'.$ref->reference_title.'</small></td></tr>';
+                    if ($i == 0) {
+                        $content    .='<tr><thead><th style="width:30%; '.$css.'"><small>Kompetenz/Inhalt</small></th><th style="width:30%; '.$css.'"><small>Teilkompetenz/Konkretisierung</small></th><th style="width:40%; '.$css.'"><small>Fundstelle im Text</small></th></thead></tr>';  
+                    }
+                    
+                }
+                $content_id = $ref->quote_link;
+                
+                $content    .='<tr><td style="width:30%; '.$css.'">';   
+                if ($temp_ter_id == 0 OR $temp_ter_id != $ref->terminal_object->id){     
+                    if ($ref->context_id == $_SESSION['CONTEXT']['terminal_objective']->context_id) {
+                        $content .= '<small>'.strip_tags($ref->terminal_object->terminal_objective).'</small>';
+                        $temp_ter_id = $ref->terminal_object->id;   
+                    }    
+                }
+                $content    .='</td><td style="width:30%; '.$css.'">';  
+                if ($temp_ena_id == 0 OR $temp_ena_id != $ref->enabling_object->id){
+                    if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id){
+                        $content .= '<small>'.strip_tags($ref->enabling_object->enabling_objective, '<br>').'</small>';
+                        $temp_ena_id = $ref->enabling_object->id;
+                    }
+                }
+                if (isset($references[$i+1]->content_object->content)){
+                    if ($ref->content_object->content == $references[$i+1]->content_object->content){
+                        $css = '';
+                    }
+                }
+                
+                if (isset($references[$i+1]->quote)) {
+                        if ($references[$i+1]->quote == $ref->quote){
+                           $css = '' ;
+                        } else {
+                           $css = 'border-bottom:0.5pt solid black;';   
+                        }    
+                    }
+                
+                $content    .='</td><td style="width:40%; '.$css.'">'; 
+                if ($ref->quote != ''){
+                    if (isset($references[$i-1]->quote)){
+                        if ($references[$i-1]->quote != $ref->quote){
+                            $content .= '<small>'.strip_tags($ref->quote, '<br>').'</small>' ;
+                        }
+                    } else {
+                        $content .= '<small>'.strip_tags($ref->quote, '<br>').'</small>' ; 
+                    }
+                }
+                $content .= '</td>';
+                $content    .='</tr>';
+                $i++;                
+            }
+             if (!empty($references)){
+                $content    .='</table><br><br>';
+            }
+        
+        }
+        
+        return $content; 
+    }
+    
+    /**
+     * 
+     * @param string $func
+     * @param int $id
+     * @param array $get
+     * @return string
+     */
+    public static function external_media($func, $id, $get){
+        $content     = '';
+        $subject   = new Subject();
+        if ($get['m_boxes_json'] != []){
+            $m_boxes_data  = json_decode(urldecode($get['m_boxes_json']), true);
+            $subject_id = '';
+
+            foreach ($m_boxes_data as $m_box) {
+                if (isset($m_box['title'])) {
+                    if (in_array($get['subject'], $m_box['subjects']) or $get['subject'] == 'false') {
+                        $content .= Form::info_box($m_box);
+                    }
+                }
+            }
+        } else {
+            $content .= 'Keine Medien für dieses Lernziel/Fach vorhanden vorhanden.';
+        }
+        if ($get['ajax'] == 'true'){ 
+            echo $content;
+        } else {
+            return $content;
+        }
+    }
+    
+    
 }

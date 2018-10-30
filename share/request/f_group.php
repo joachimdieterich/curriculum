@@ -24,7 +24,7 @@
 */
 $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
-include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
+include_once(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $CFG, $USER, $COURSE;
 $USER           = $_SESSION['USER'];
 $func           = $_GET['func'];
@@ -91,7 +91,7 @@ if ($institution_id == null){
 }
 $semesters                  = new Semester();  //Load Semesters
 $semesters->institution_id  = $institution_id;
-$content .= Form::input_select('semester_id', 'Lernzeitraum', $semesters->getSemesters('institution',$institution_id), 'semester, institution', 'id', $semester_id , $error);
+$content .= Form::input_select('semester_id', 'Lernzeitraum', $semesters->getSemesters('institution',$institution_id), 'semester', 'id', $semester_id , $error);
 
 $grades                     = new Grade();                                      //Load Grades
 $grades->institution_id     = $USER->institutions; 

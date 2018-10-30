@@ -8,8 +8,8 @@
     
     <!-- Page specific script -->
     <!-- fullCalendar 2.2.5 -->
-    <script src="{$template_url}plugins/fullcalendar-scheduler-1.9.2/lib/fullcalendar.min.js"></script>
-    <script src="{$template_url}plugins/fullcalendar-scheduler-1.9.2/locale/de.js"></script>
+    <script src="{$template_url}plugins/fullcalendar/fullcalendar.min.js"></script>
+    <script src="{$template_url}plugins/fullcalendar/lang/de.js"></script>
      <!-- Slimscroll -->
     <script src="{$template_url}plugins/slimScroll/jquery.slimscroll.min.js"></script>
     <!-- FastClick -->
@@ -17,8 +17,8 @@
     <!-- AdminLTE App -->
     <!--script src="{$template_url}js/app.min.js"></script-->
     <!-- jQuery UI 1.11.4 -->
-    <script src="{$template_url}plugins/fullcalendar-scheduler-1.9.2/lib/jquery-ui.min.js"></script>
-    <script src="{$template_url}plugins/fullcalendar-scheduler-1.9.2//scheduler.min.js"></script>
+    <script src="{$template_url}plugins/fullcalendar/jquery-ui.min.js"></script>
+/*    <script src="{$template_url}plugins/fullcalendar-scheduler-1.9.2//scheduler.min.js"></script> */
       {literal}
     <script>
       $(function () {
@@ -175,9 +175,9 @@
 {/block}
 {block name=additional_stylesheets}{$smarty.block.parent} 
 <!-- fullCalendar 2.2.5-->
-<link rel="stylesheet" href="{$template_url}plugins/fullcalendar-scheduler-1.9.2/lib/fullcalendar.min.css">
-<link rel="stylesheet" href="{$template_url}plugins/fullcalendar-scheduler-1.9.2/lib/fullcalendar.print.min.css" media="print">
-<link rel="stylesheet" href="{$template_url}plugins/fullcalendar-scheduler-1.9.2//scheduler.min.css" media="print">
+<link rel="stylesheet" href="{$template_url}plugins/fullcalendar/fullcalendar.min.css">
+<link rel="stylesheet" href="{$template_url}plugins/fullcalendar/fullcalendar.print.min.css" media="print">
+/* <link rel="stylesheet" href="{$template_url}plugins/fullcalendar-scheduler-1.9.2//scheduler.min.css" media="print"> */
 {/block}
 
 {block name=content}

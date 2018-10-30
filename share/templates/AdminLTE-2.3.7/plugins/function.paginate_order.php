@@ -49,7 +49,11 @@ function smarty_function_paginate_order($params, &$smarty) {
                 $_id = $_val;
                 break;
             default:
-                $_attrs[] = $_key . '="' . $_val . '"';
+                if (!is_array($_val)){
+                    $_attrs[] = $_key . '="' . $_val . '"';
+                } else {
+                    $_attrs[] = $_key . '="' . implode(',', $_val) . '"'; 
+                }
                 break;   
         }
     }
@@ -79,7 +83,13 @@ function smarty_function_paginate_order($params, &$smarty) {
     if ($params['key'] == 'role_name' OR $params['key'] == 'completed'){         //Hack to get group sorting working
         $params['key'] = '';
     } 
-    return '<strong><a href="' . str_replace('&','&amp;', $_url) . '&paginator='.$_id.'&order='.$params['key'].'&sort='.$sort.'"' . $_attrs . '>' . $_text . '</a></strong>';
+    
+    if (in_array($params['key'], $params['search'])){
+        return '<strong><a href="' . str_replace('&','&amp;', $_url) . '&paginator='.$_id.'&order='.$params['key'].'&sort='.$sort.'"' . $_attrs . '>' . $_text . '</a></strong>';
+    } else {
+        return '<strong>' . $_text . '</strong>';
+    }
+    
 }
 
 ?>

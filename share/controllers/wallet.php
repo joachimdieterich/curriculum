@@ -35,7 +35,10 @@ if (isset($_POST) ){
 if (isset($_GET['view'])){
     switch ($_GET['view']) {
         case 'shared':  $wallet   = new Wallet();
-                        $TEMPLATE->assign('wallet', $wallet->get('shared', $USER->id, 'userFiles')); 
+                        $TEMPLATE->assign('wallet', $wallet->get('shared', $USER->id, 'userFiles'));
+                        $TEMPLATE->assign('breadcrumb',  array('Sammelmappe' => 'index.php?action=wallet', 'Freigaben' => 'index.php?action=wallet&view=shared'));
+                        $TEMPLATE->assign('page_title', 'freigegebene Sammelmappen');
+                        setPaginator('walletP', $TEMPLATE, $wallet->get('shared', $USER->id, 'userFiles'), 'wa_val', 'index.php?action=wallet&view=shared', $p_config);
             break;
 
         default:
@@ -43,8 +46,7 @@ if (isset($_GET['view'])){
     }
 } else {
     $wallet   = new Wallet();
-    $TEMPLATE->assign('wallet', $wallet->get('search', $search));   
-    
+    //$TEMPLATE->assign('wallet', $wallet->get('search', $search));
     $p_options = array('delete' => array('onclick'    => "del('wallet',__id__);", 
                                         'capability'  => checkCapabilities('wallet:delete', $USER->role_id, false),
                                         'icon'        => 'fa fa-trash',
@@ -62,8 +64,8 @@ if (isset($_GET['view'])){
                        'subheader02'  => 'timerange',
                        'file_id'      => 'file_id',
                        'bg_image'     => 'file_id',); //false ==> don't show icon on widget
-    $t_config      = array('td'     => array('onclick'         => "location.href='index.php?action=walletView&wallet=__id__'"));
-    $p_config =   array('id'          => 'checkbox',
+    $t_config  =   array('td'     => array('onclick'         => "location.href='index.php?action=walletView&wallet=__id__'"));
+    $p_config  =   array('id'          => 'no-checkrow',
                         'title'       => 'Titel', 
                         /*'description' => 'Beschreibung',*/
                         'timerange'   => 'Zeitraum',
@@ -71,7 +73,14 @@ if (isset($_GET['view'])){
                         'p_search'    => array('title','description'),
                         'p_widget'    => $p_widget, 
                         'p_options'   => $p_options);
-    setPaginator('walletP', $TEMPLATE, $wallet->get('search', $search), 'wa_val', 'index.php?action=wallet', $p_config); 
-    
+    //setPaginator('walletP', $TEMPLATE, $wallet->get('search', $search), 'wa_val', 'index.php?action=wallet', $p_config); 
+    if ( empty($wallet->get('search', $search))) {
+        $TEMPLATE->assign('wallet', $wallet->get('shared', $USER->id, 'userFiles'));
+        $TEMPLATE->assign('page_title', 'freigegebene Sammelmappen');
+        setPaginator('walletP', $TEMPLATE, $wallet->get('shared', $USER->id, 'userFiles'), 'wa_val', 'index.php?action=wallet&view=shared', $p_config);
+    } else {
+        $TEMPLATE->assign('wallet', $wallet->get('search', $search));
+        setPaginator('walletP', $TEMPLATE, $wallet->get('search', $search), 'wa_val', 'index.php?action=wallet', $p_config);
+    }
     
 }

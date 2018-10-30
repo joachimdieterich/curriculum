@@ -8,6 +8,13 @@
     }
 }
 
+.boxcontent {
+    > ul {
+        padding-left: 20px !important;
+        padding-right: 5px !important;
+    }
+}
+
 .box {
   border-radius: 0px;
   position: relative;
@@ -575,7 +582,8 @@
             /*width: 170px; *//*20px more than box to hide scrollbar*/
             padding-top: 5px;
             padding-right: 25px; /*for Firefox only*/
-            overflow: auto;
+            overflow-x: hidden;
+            overflow-y: auto;
             height: 100px!important;  
         }
 
@@ -583,14 +591,14 @@
             width: 100%;
             overflow:hidden;
             margin: 0px !important;
-            padding: 0px;
+            padding: 0 0 0 20px;
         } 
 
 
         .boxcontent {    /*Hack: boxwrap, boxscroll and boxcontent used to hide scroll crossbrowser compatible*/
             margin: 0px;
             font-size: 90%;
-            padding-left: 30px;
+            padding-left: 10px;
             padding-right: 60px;
             font-size: 90%;
         }    
@@ -652,7 +660,8 @@
             width:200px; 
             padding-top: 5px;
             padding-right: 25px; /*for Firefox only*/
-            overflow: auto;
+            overflow-x: hidden;
+            overflow-y: auto;
             height: 150px!important;  
             background:
 		/* Shadow covers */

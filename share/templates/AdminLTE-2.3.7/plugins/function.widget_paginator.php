@@ -115,7 +115,6 @@ function smarty_function_widget_paginator($params, $template) {
     if (isset($values)){
         foreach ($values as $_val){ $list[] = $_val->id; }
         foreach ($values as $_val){
-            $opt = '';
             foreach ($keys as $k_key => $k_val){
                 if ($k_key == 'id'){
                      $_id = $_val->$k_key; // aktuelle id
@@ -124,13 +123,22 @@ function smarty_function_widget_paginator($params, $template) {
                         $p_options_type         = '';
                         $p_options_icon         = '';
                         $p_options_tooltip      = '';
+                        $opt = array();
                         if (array_key_exists('onclick', (array)$o_val)){ $p_options_type    = 'onclick'; }
                         if (array_key_exists('href',    (array)$o_val)){ $p_options_type    = 'href'; }
                         if (array_key_exists('icon',    (array)$o_val)){ $p_options_icon    = $o_val['icon']; }
                         if (array_key_exists('tooltip', (array)$o_val)){ $p_options_tooltip = $o_val['tooltip']; }
                         if (array_key_exists('capability',    (array)$o_val)){
                             if ($o_val['capability'] == true){ 
-                                $opt[$o_key] = '<a name="'.$o_key.'" type="button" style="color:#FFF;" class="'.$p_options_icon.'" '; if ($p_options_tooltip != ''){ $opt[$o_key] .= "data-toggle='tooltip' title='".$p_options_tooltip."'";} if ($p_options_type != ''){  $opt[$o_key] .= $p_options_type.'="'.str_replace('__id__', $_id, $o_val[$p_options_type]).'"></a>'; };
+                                $opt[$o_key] = '<a name="'.$o_key.'" type="button" style="color:#FFF;" class="'.$p_options_icon.'" '; 
+                                if ($p_options_tooltip != ''){ 
+                                    $opt[$o_key] .= "data-toggle='tooltip' title='".$p_options_tooltip."'";
+                                    
+                                } 
+                                if ($p_options_type != ''){  
+                                    $opt[$o_key] .= $p_options_type.'="'.str_replace('__id__', $_id, $o_val[$p_options_type]).'"></a>'; 
+                                    
+                                };
                             }
                         }
                     }     
@@ -163,45 +171,6 @@ function smarty_function_widget_paginator($params, $template) {
             $html .= '<div class="col-lg-3 col-md-4 col-sm-12 margin-bottom">'.
                     Render::paginator_widget(array('widget_title' => $header, 'widget_desc' => $subheader01, 'widget_onclick' =>  $widget_onclick, 'widget_timerange' => $subheader02, 'icon_url' => $CFG->access_id_url.$file_id/*.'&size=t'*/, 'bg_color' =>  $_val->color,'opt' => $opt))
                     .'</div>';
-            /*$html .= '<div class="col-lg-4 col-md-6 col-sm-12 margin-bottom">
-                      <div class="box box-widget widget-user collapsed-box bottom-buffer-20">
-                        <span class="col-xs-12" ';
-                            if (isset($config['p_widget']['bg_image'])){ 
-                                $html .= 'style=" padding: 0; background: url(\''.$CFG->access_id_url.$file_id.'&size=t\') center center;  background-size: cover;"';
-                            }
-                        $html .= ' ">';
-                        $html .= '<div class="widget-user-header no-margin" style=" background: '.ak_convert_hex2rgba($_val->color).';"  >
-                                <span class="pull-right no-margin text-white">'.$opt['delete'].'</span>
-                                <h3 class="widget-user-username text-white-shadow" >'.$header.'</h3> 
-                                <h5 class="widget-user-desc text-white" >'.$subheader01 .'</h5>
-                                <h5 class="widget-user-desc text-white "  >'.$subheader02.'</h5>
-                                <span class="col-xs-12" style="background-color: '.substr($_val->color, 0,7).'; position:absolute; display:block; left:0;right:0;bottom:0;">';
-                                if (isset($expand)){ 
-                                    $html .= '<a type="button" style="padding:5px;" class="pull-right fa fa-chevron-circle-down text-white" data-widget="collapse"></a>';
-                                }
-                                foreach ($opt as $k =>$o) {
-                                    if ($k != 'delete'){ // skip delete button 
-                                        $html .= '<span style="margin-right:15px;padding:5px;text-shadow: 1px 1px #FF0000;" class="fa">'.$o.'</span>';    
-                                    }
-                                }
-                        $html .= '</span>
-                            </div>
-                        </span>';
-                        if (isset($config['p_widget']['circle_image'])){ 
-                            $html .= '<div style="position: absolute;top: 75px;right: 15px;" >';
-                            $html .= '  <img class="img-circle img-bordered-sm" style="height:40px;width:40px;" src="'.$CFG->access_id_url.$file_id.'&size=t" alt="User Avatar">';
-                            $html .= '</div>';
-                        }
-                if (isset($expand)){     
-                    $html .= '<div class="box-footer no-padding" >
-                          <ul class="nav nav-stacked">
-                            <li style="padding: 10px 15px; overflow:hidden;">'.$expand.'</li>
-                          </ul>
-                        </div>';
-                }
-              $html .= '</div><!-- /.widget-user -->
-                    </div>
-                    <!-- /.col -->';*/
         }
         
         $html .= '</div>'; //table end

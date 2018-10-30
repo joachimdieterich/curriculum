@@ -66,7 +66,7 @@ class Comment {
     
     public function add(){
         global $USER;
-        checkCapabilities('comment:add', $USER->role_id);
+        if ($this->context_id != 18) { checkCapabilities('comment:add', $USER->role_id); }
         $db = DB::prepare('INSERT INTO comments (text,reference_id,context_id, parent_id, creator_id) VALUES (?,?,?,?,?)');
         if ($db->execute(array($this->text, $this->reference_id, $this->context_id, $this->parent_id, $USER->id))){
             return DB::lastInsertId();

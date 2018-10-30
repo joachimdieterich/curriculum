@@ -22,13 +22,14 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-include(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
-include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
+include_once(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
+include_once(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER, $CFG;
 $USER   = $_SESSION['USER'];
 if (!isset($_SESSION['PAGE']->target_url)){     //if target_url is not set -> use last PAGE url
     $_SESSION['PAGE']->target_url       = $_SESSION['PAGE']->url;
 }
+
 $task  = new Task();
 
 $purify = HTMLPurifier_Config::createDefault();

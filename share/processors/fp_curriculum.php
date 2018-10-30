@@ -22,8 +22,8 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-include(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
-include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
+include_once(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
+include_once(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER, $CFG;
 $USER            = $_SESSION['USER'];
 if (!isset($_SESSION['PAGE']->target_url)){     //if target_url is not set -> use last PAGE url
@@ -54,16 +54,20 @@ $gump->validation_rules(array(
 
 
 if (isset($_POST['id'])){
-    $curriculum->id         = filter_input(INPUT_POST, 'id',             FILTER_VALIDATE_INT);
+    $curriculum->id                 = filter_input(INPUT_POST, 'id',             FILTER_VALIDATE_INT);
 }
-$curriculum->curriculum     = filter_input(INPUT_POST, 'curriculum',     FILTER_SANITIZE_STRING);
-$curriculum->subject_id     = filter_input(INPUT_POST, 'subject_id',     FILTER_VALIDATE_INT);
-$curriculum->grade_id       = filter_input(INPUT_POST, 'grade_id',       FILTER_VALIDATE_INT);
-$curriculum->schooltype_id  = filter_input(INPUT_POST, 'schooltype_id',  FILTER_VALIDATE_INT);
-$curriculum->state_id       = filter_input(INPUT_POST, 'state_id',       FILTER_VALIDATE_INT);
-$curriculum->country_id     = filter_input(INPUT_POST, 'country_id',     FILTER_VALIDATE_INT);
-$curriculum->icon_id        = filter_input(INPUT_POST, 'icon_id',        FILTER_VALIDATE_INT);#
-$curriculum->color          = filter_input(INPUT_POST, 'color',     FILTER_SANITIZE_STRING).'AA'; //AA -> setting opacity
+$curriculum->curriculum             = filter_input(INPUT_POST, 'curriculum',     FILTER_SANITIZE_STRING);
+$curriculum->publisher              = filter_input(INPUT_POST, 'publisher',      FILTER_SANITIZE_STRING);
+$curriculum->publishingCompany      = filter_input(INPUT_POST, 'publishingCompany',     FILTER_SANITIZE_STRING);
+$curriculum->place                  = filter_input(INPUT_POST, 'place',          FILTER_SANITIZE_STRING);
+$curriculum->date                   = filter_input(INPUT_POST, 'date',           FILTER_SANITIZE_STRING);
+$curriculum->subject_id             = filter_input(INPUT_POST, 'subject_id',     FILTER_VALIDATE_INT);
+$curriculum->grade_id               = filter_input(INPUT_POST, 'grade_id',       FILTER_VALIDATE_INT);
+$curriculum->schooltype_id          = filter_input(INPUT_POST, 'schooltype_id',  FILTER_VALIDATE_INT);
+$curriculum->state_id               = filter_input(INPUT_POST, 'state_id',       FILTER_VALIDATE_INT);
+$curriculum->country_id             = filter_input(INPUT_POST, 'country_id',     FILTER_VALIDATE_INT);
+$curriculum->icon_id                = filter_input(INPUT_POST, 'icon_id',        FILTER_VALIDATE_INT);#
+$curriculum->color                  = filter_input(INPUT_POST, 'color',          FILTER_SANITIZE_STRING).'AA'; //AA -> setting opacity
 
 $validated_data  = $gump->run($_POST);
 if (!isset($_POST['state'])){ $_POST['state'] = 1; }

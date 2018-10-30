@@ -24,28 +24,26 @@
 */
 global $PAGE, $USER, $TEMPLATE;
  
-$search = false;
-$navigator_view = 1;
+$search             = false;
+$navigator          = new Navigator_item();
+$navigator->getNavigatorByInstitution($USER->institution_id);
+$allowed_navigator  = $navigator->na_id;
+$navigator->getFirstView($navigator->na_id);
+$navigator_view     = $navigator->nv_id;                            //load navigator_id from 
 if (isset($_POST) ){
     if (isset($_POST['search'])){
         $search = filter_input(INPUT_POST, 'search', FILTER_SANITIZE_STRING);
         $TEMPLATE->assign('navigator_reset', true); 
-    }
-    
+    }   
 }
 if (isset($_GET)){
     if (isset($_GET['nv_id'])){
         $navigator_view = $_GET['nv_id'];
     }
 }
-$content        = new Content();
-$content->load('id', 1239);
-$TEMPLATE->assign('top_text', $content); 
 
-$navigator   = new Navigator();
-//$navigator_view = 1;
-//error_log(json_encode($navigator->get($navigator_view)));
 $navigator_bocks = $navigator->get($navigator_view);
+if ($navigator_bocks[0]->na_id != $allowed_navigator){ die(); } //security check
 $b_array     = $navigator->getBreadcrumbs($navigator_view);
 $breadcrumbs = array();
 
@@ -53,8 +51,7 @@ foreach (array_reverse($b_array) as $value) {
     $breadcrumbs[$value->nv_title] = 'index.php?action=navigator&nv_id='.$value->nb_navigator_view_id;
 }
 $breadcrumbs[$navigator_bocks[0]->nv_title] = '';
-//error_log(json_encode($breadcrumbs));
 $TEMPLATE->assign('breadcrumb',  $breadcrumbs);
-$TEMPLATE->assign('search_navigator', $navigator->getChildren($navigator_view)); 
+$TEMPLATE->assign('search_navigator', $navigator->searchfield_content($navigator_view)); 
 $TEMPLATE->assign('page_title', $navigator_bocks[0]->na_title); 
 $TEMPLATE->assign('navigator', $navigator_bocks);   

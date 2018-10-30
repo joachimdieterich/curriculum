@@ -12,20 +12,9 @@
                 resizeBlocks('row_objectives_userlist', ['coursebook'])
         );
         $(document).ready(function () {
-            function findTopPos(obj) {
-                var curleft = curtop = 0;
-                if (obj.offsetParent) {
-                  curtop = obj.offsetTop
-                  while (obj = obj.offsetParent) {
-                    curtop += obj.offsetTop
-                  }
-                }
-                return curtop;
-            }
-            defaultTop  = findTopPos($("#container_userPaginator")[0]);  
             small       = false;
             if ($('#f_userlist').hasClass('active')){
-                floating_table('body-wrapper', defaultTop, 'userPaginator', ['username', 'role_name', 'completed', 'online'], 'menu_top_placeholder', 'container_userPaginator', 'default_userPaginator_position');
+                floating_table('body-wrapper', 'userPaginator', ['username', 'role_name', 'completed', 'online'], 'menu_top_placeholder', 'container_userPaginator', 'default_userPaginator_position');
             }
         });
     </script>
@@ -46,7 +35,7 @@
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
                     <li {if isset($f_userlist)}class="active"{/if}><a href="#f_userlist" data-toggle="tab" onclick='processor("config","page", "config",{["tab"=>"f_userlist"]|@json_encode nofilter});'>Kursliste</a></li>
-                    {if isset($coursebook)} 
+                    {if isset($coursebook) AND checkCapabilities('menu:readCourseBook', $my_role_id, false)}
                         <li {if isset($f_coursebook)}class="active"{/if}><a href="#f_coursebook" data-toggle="tab" onclick='processor("config","page", "config",{["tab"=>"f_coursebook"]|@json_encode nofilter});'>Kursbuch</a></li>
                     {/if}
                 </ul>
@@ -62,7 +51,7 @@
                                         {*Zertifikat*}
                                         <div class="col-md-2 col-sm-12">
                                             <div class='btn btn-default' onclick="formloader('generate_certificate','',{$sel_curriculum});">
-                                                <span class="fa fa-files-o" aria-hidden="true"></span> {if count($selected_user_id) > 1} Zertifikate erstellen{else} Zertifikat erstellen{/if}
+                                                <span class="fa fa-files-o" aria-hidden="true"></span> {if count($selected_user_id) > 1} Zertifikate/Gruppen-Übersicht {else} Zertifikat/Gruppen-Übersicht {/if}erstellen
                                             </div>
                                         </div>
                                         <input id="certificate_template" class="hidden" value="false"/>{* hack to get js working if no user is selected, todo: remve certificate_template in js not used any more *}
@@ -107,11 +96,11 @@
                     <p class="pull-right">Farb-Legende:
                     <button class="btn btn-success btn-flat" style="cursor:default">selbständig erreicht</button>
                     <button class="btn btn-warning btn-flat" style="cursor:default">mit Hilfe erreicht</button>
-                    <button class="btn btn-default disabled btn-flat" style="cursor:default">nicht bearbeitet</button>
                     <button class="btn btn-danger btn-flat" style="cursor:default">nicht erreicht</button>
+                    <button class="btn btn-default disabled btn-flat" style="cursor:default">nicht bearbeitet</button>
                     </p>
                 </div>
-                <div class="box-body">
+                <div class="box-body" style="min-height:400px;">
         
                 {if $show_course != '' and isset($terminalObjectives)} 
                     {foreach key=terid item=ter from=$terminalObjectives}

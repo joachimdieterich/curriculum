@@ -24,12 +24,12 @@
 */
 $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
-include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
+include_once(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER;
 $USER       = $_SESSION['USER'];
 $func       = $_GET['func'];
 $content    = '';
-
+$header     = 'Beschreibung';
 $ter        = new TerminalObjective();
 switch ($func) {
     case 'curriculum':          $cur        = new Curriculum();
@@ -60,9 +60,13 @@ switch ($func) {
 
 
 switch ($func) {
-    case 'terminal_objective':
+    case 'terminal_objective':  
     case 'enabling_objective':  $ter->load();
-                                if ($ter->description AND $ter->description != ''){         $content .= $ter->description; } 
+                                $header = 'Beschreibung<br><small><b>Lernziel / Kompetenz</b><br>'.strip_tags($ter->terminal_objective).'</small><br>';
+                                if (isset($ena)){
+                                   $header .= '<small>- '.strip_tags($ena->enabling_objective).'</small>';
+                                }
+                                if ($ter->description AND $ter->description != ''){         $content .=  $ter->description; } 
                                 if (isset($ena->description)){  $content .= '<br>'.$ena->description; } 
                                 if (!isset($ena->description) && !isset($ter->description)){    
                                   $content .= 'Keine Beschreibung vorhanden';
@@ -73,7 +77,7 @@ switch ($func) {
 
 
 $html = Form::modal(array('target' => 'null',
-                          'title'   => 'Beschreibung',
+                          'title'   => $header,
                           'content' => $content));
 
 echo json_encode(array('html'=>$html));

@@ -22,13 +22,23 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-include(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
-include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
+include_once(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
+include_once(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER, $CFG;
 $USER   = $_SESSION['USER'];
 $func   = filter_input(INPUT_GET, 'func',  FILTER_SANITIZE_STRING);
 $id     = filter_input(INPUT_GET, 'val',   FILTER_SANITIZE_STRING); // kein INT --> System ID -1
 switch ($func) {
+    case "book":                $b                  = new Book();
+                                $book               = $b->get('book', $id);
+                                $content            = '';
+                                foreach($book AS $bo){
+                                    $c              = new Content();
+                                    $c->load('id', $bo->content_id);
+                                    $content       .= '<strong>'.$c->title.'</strong><br><br>'.$c->content;
+                                    unset($c);
+                                }
+        break;
     case "content":             $c            = new Content();
                                 $c->load('id', $id);           
                                 $content = '<strong>'.$c->title.'</strong><br><br>'.$c->content;

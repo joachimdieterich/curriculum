@@ -209,7 +209,7 @@ function checkrow(/*rowNr,link*/) {
         $(document).ajaxStart(function() { Pace.restart(); });
         $("#curriculum_content").parent().load(arguments[3] + "&ajax=true #curriculum_content"); //.parent to replace #curriculum_content
         $(document.getElementById("div_print_certificate")).removeClass("hidden");
-        //window.location.assign(arguments[3]);        
+        //window.location.assign(arguments[3]);            //do not reload ! -> floting_table won't work
     }
 }
 /*  Function without fixed layout
@@ -243,24 +243,51 @@ function floating_table(wrapper, defaultTop, headerHeight, main_sidebar_class, p
 }*/
 
 /* floating_table with fixed header */
-function floating_table(wrapper, defaultTop, paginator, field_array, target, source, default_position){
+function findBottomPos(obj) {
+    var curbottom = 0;
+    if (obj.offsetParent) {
+      var offsetHeight = obj.offsetHeight;
+      curbottom = obj.offsetTop + offsetHeight
+      while (obj = obj.offsetParent) {
+        curbottom += obj.offsetTop
+      }
+    }
+    return curbottom;
+}
+
+function findTopPos(obj) {
+    var curtop = 0;
+    if (obj.offsetParent) {
+      curtop = obj.offsetTop
+      while (obj = obj.offsetParent) {
+        curtop += obj.offsetTop
+      }
+    }
+    return curtop;
+}
+
+function floating_table(wrapper, paginator, field_array, target, source, default_position){
     $("#"+wrapper).scroll(function(e) {
             var scrollTop = $(e.target).scrollTop();
-            
-            if ((scrollTop > defaultTop-50) && (small === false)){
+            defaultTop    = findTopPos($("#"+default_position)[0]);
+            defaultBottom = findBottomPos($("#"+default_position)[0]);
+            defaultHeight = defaultBottom-defaultTop;
+            if ((scrollTop > defaultBottom-50) && (small === false)){
                 for(var i = 0, j = field_array.length; i < j; ++i) {
                     $('td[name='+paginator+'_col_'+field_array[i]+']').addClass("hidden");
                 }
                 $("#"+source).appendTo("#"+target);
+                $('<div id="dummySpacePaginator" style="height: '+defaultHeight+'px;"></div>').appendTo("#"+default_position);
                 $("#"+target).css({'background-color': '#ecf0f5', 'webkit-transform':'translate3d(0,0,0)'});
                 small    = true;
-            } 
-             
-            if ((scrollTop < defaultTop-50) && (small === true)){
-                small = false;
-                $("#"+source).appendTo("#"+default_position);
-                for(var i = 0, j = field_array.length; i < j; ++i) {
-                    $('td[name='+paginator+'_col_'+field_array[i]+']').removeClass("hidden");
+            } else {
+                if ((scrollTop < defaultBottom-50) && (small === true)){
+                    small = false;
+                    $("#"+source).appendTo("#"+default_position);
+                    $("#dummySpacePaginator").remove();
+                    for(var i = 0, j = field_array.length; i < j; ++i) {
+                        $('td[name='+paginator+'_col_'+field_array[i]+']').removeClass("hidden");
+                    }
                 }
             }
         });
@@ -540,16 +567,25 @@ function curriculumdocs(link) {
  * @returns {undefined}
  */
 function formloader(/*form, func, id, []*/){
+    var url = window.location.href;
+    var tab = url.substring(url.indexOf("#") + 1);
     if (typeof(arguments[4]) !== 'undefined'){
-        getRequest("../share/plugins/"+ arguments[4] +"/request/f_"+ arguments[0] +".php?func="+ arguments[1] +"&id="+ arguments[2]+"&"+jQuery.param(arguments[3]));
+        getRequest("../share/plugins/"+ arguments[4] +"/request/f_"+ arguments[0] +".php?func="+ arguments[1] +"&id="+ arguments[2]+"&"+jQuery.param(arguments[3])+"&tab="+tab);
     } else if (typeof(arguments[3]) !== 'undefined'){
-        getRequest("../share/request/f_"+ arguments[0] +".php?func="+ arguments[1] +"&id="+ arguments[2]+"&"+jQuery.param(arguments[3]));        
+        getRequest("../share/request/f_"+ arguments[0] +".php?func="+ arguments[1] +"&id="+ arguments[2]+"&"+jQuery.param(arguments[3])+"&tab="+tab);        
     } else {
-        getRequest("../share/request/f_"+ arguments[0] +".php?func="+ arguments[1] +"&id="+ arguments[2]);
+        getRequest("../share/request/f_"+ arguments[0] +".php?func="+ arguments[1] +"&id="+ arguments[2]+"&tab="+tab);
     }
 }
 
-function processor(/*proc, func, val, []*/){
+function processor(/*proc, func, val, [..., reload = false], pluginpath*/){ // if reload = false: prevent reload
+    reload = true;
+    if (typeof(arguments[3]) !== 'undefined'){
+        if(arguments[3].reload == 'undefined'){ //do nothing, reload already set
+            reload = false;
+        } 
+    } 
+    
     if (typeof(arguments[4]) !== 'undefined'){
         getRequest("../share/plugins/"+ arguments[4] +"/processors/p_"+ arguments[0] +".php?func="+ arguments[1] +"&val="+ arguments[2]+"&"+jQuery.param(arguments[3]));
     } else if (typeof(arguments[3]) !== 'undefined'){
@@ -559,10 +595,16 @@ function processor(/*proc, func, val, []*/){
     }
     req = XMLobject();
     if(req) {  
-        req.onreadystatechange =  window.location.reload();
-        req.open("GET", url, false); //false --> important for print function
-        req.send(null);
+        req.onreadystatechange =  function() {
+            if(this.readyState == this.DONE) {
+                if (reload == true){
+                    window.location.reload();
+                } 
+            }
+        }
     }
+    req.open("GET", url, false); //false --> important for print function
+    req.send(null);
 }
 
 function comment(/*func reference_id, context_id, text, (parent_id)*/){
@@ -583,7 +625,11 @@ function comment(/*func reference_id, context_id, text, (parent_id)*/){
  **/
 function del() {
     if (confirm("Datensatz wirklich l\u00f6schen?")) {
-        var url = "../share/processors/p_delete.php?db="+arguments[0]+"&id="+ arguments[1]; 
+        if (typeof(arguments[2]) !== 'undefined'){
+            var url = "../share/processors/p_delete.php?db="+arguments[0]+"&id="+ arguments[1]+"&ref_id="+ arguments[2];
+    } else {
+            var url = "../share/processors/p_delete.php?db="+arguments[0]+"&id="+ arguments[1];
+    }
         
         req = XMLobject();
         if(req) {      
@@ -796,12 +842,21 @@ function popupFunction(e){
     textareas = document.getElementsByTagName("textarea");                      // Replace the <textarea id="editor1"> with a CKEditor instance, using default configuration
     for (var i = 0, len = textareas.length; i < len; i++) {
         CKEDITOR.dtd.$removeEmpty['i'] = false;
-        CKEDITOR.replace(textareas[i].id, { toolbarStartupExpanded : false});
+        if (i == 0){                                                            // only collapse first editor -> description editors sould show toolbar
+            CKEDITOR.replace(textareas[i].id, { toolbarStartupExpanded : false});
+        } else {
+            CKEDITOR.replace(textareas[i].id, { toolbarStartupExpanded : true});
+        }
         CKEDITOR.on('instanceReady',function(){
             resizeModal();      // if ckeditor is used, then modal has to be resized after ckeditor is ready
         }); 
     }
     $(".select2").select2();
+    
+    $('button[data-toggle="collapse"]').click(function () {
+        $(this).find('i.fa').toggleClass('fa-compress fa-expand');
+    });
+    
     /*var config = {
       '.chosen-select'           : {},
       '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -976,3 +1031,48 @@ function InitScripts(){
             $('#popup_generate').nyroModal();
         });
     }
+
+function filterBySubject(selectedSubject){
+  $("#subject_ajax>div").each(function(index, node) {
+    var material = $(node);
+    if ( selectedSubject === "false") {
+        material.show();
+    } else {
+        var subjects = material.find(".subjectItem");
+        var showMaterial = false;
+        subjects.each(function(indexA, nodeA) {
+            var subjectText = nodeA.textContent;
+            if (subjectText === selectedSubject) {
+                showMaterial = true;
+            }
+        })
+        if (showMaterial) {
+            material.show();
+        } else {
+            material.hide();
+        }
+    }
+  });
+}
+/**
+ * 
+ * @param {array} object : this, url
+ * @returns {undefined}
+ */
+function ajaxSubmit(obj, file, table, params){
+$.ajax({ 
+    url:  "../share/processors/"+file+"?func=ajaxsubmit" ,
+    data: { id: $(obj).attr('id'), value: $(obj).val(), table: table, func: 'ajaxsubmit', params: params},
+    type: 'post'
+}).done(function(responseData) {
+    $("#form-group_"+jQuerySelectorEscape($(obj).attr('id'))).addClass( "has-success");
+    console.log('Done: ', responseData);
+}).fail(function() {
+    console.log('Failed');
+});
+}
+
+function jQuerySelectorEscape(expression) {
+      return expression.replace(/[!"#$%&'()*+,.\/:;<=>?@\[\\\]^`{|}~]/g, '\\$&');
+  }
+        

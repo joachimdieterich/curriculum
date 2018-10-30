@@ -22,8 +22,8 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-include(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
-include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
+include_once(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Funktionen
+include_once(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER, $CFG;
 $USER            = $_SESSION['USER'];
 if (!isset($_SESSION['PAGE']->target_url)){     //if target_url is not set -> use last PAGE url
@@ -71,6 +71,54 @@ if($validated_data === false) {/* validation failed */
         }
     }
     
+    if (isset($_POST['global_imprint_save'])){    // edit Imprint
+        $content->get('terms', 'imprint');
+        $purify           = HTMLPurifier_Config::createDefault();
+        $purify->set('Core.Encoding', 'UTF-8'); // replace with your encoding
+        $purify->set('HTML.Doctype', 'HTML 4.01 Transitional'); // replace with your doctype
+        $purifier         = new HTMLPurifier($purify);
+        $content->content = $purifier->purify(filter_input(INPUT_POST, 'global_imprint', FILTER_UNSAFE_RAW)); //replace with new version
+        if (checkCapabilities('user:userListComplete', $USER->role_id, false)){ //== superadmin
+            $content->update();
+        }
+    }
+
+    if (isset($_POST['global_privacy_save'])){    // edit privacy note
+        $content->get('terms', 'privacy');
+        $purify           = HTMLPurifier_Config::createDefault();
+        $purify->set('Core.Encoding', 'UTF-8'); // replace with your encoding
+        $purify->set('HTML.Doctype', 'HTML 4.01 Transitional'); // replace with your doctype
+        $purifier         = new HTMLPurifier($purify);
+        $content->content = $purifier->purify(filter_input(INPUT_POST, 'global_privacy', FILTER_UNSAFE_RAW)); //replace with new version
+        if (checkCapabilities('user:userListComplete', $USER->role_id, false)){ //== superadmin
+            $content->update();
+        }
+    }
+
+    if (isset($_POST['global_whatIsIt_save'])){    // edit privacy note
+        $content->get('information', 1);
+        $purify           = HTMLPurifier_Config::createDefault();
+        $purify->set('Core.Encoding', 'UTF-8'); // replace with your encoding
+        $purify->set('HTML.Doctype', 'HTML 4.01 Transitional'); // replace with your doctype
+        $purifier         = new HTMLPurifier($purify);
+        $content->content = $purifier->purify(filter_input(INPUT_POST, 'global_whatIsIt', FILTER_UNSAFE_RAW)); //replace with new version
+        if (checkCapabilities('user:userListComplete', $USER->role_id, false)){ //== superadmin
+            $content->update();
+        }
+    }
+
+    if (isset($_POST['global_howToWork_save'])){    // edit privacy note
+        $content->get('information', 2);
+        $purify           = HTMLPurifier_Config::createDefault();
+        $purify->set('Core.Encoding', 'UTF-8'); // replace with your encoding
+        $purify->set('HTML.Doctype', 'HTML 4.01 Transitional'); // replace with your doctype
+        $purifier         = new HTMLPurifier($purify);
+        $content->content = $purifier->purify(filter_input(INPUT_POST, 'global_howToWork', FILTER_UNSAFE_RAW)); //replace with new version
+        if (checkCapabilities('user:userListComplete', $USER->role_id, false)){ //== superadmin
+            $content->update();
+        }
+    }
+
     if (isset($_POST['user_signature_save'])){    // edit signature
         $content->get('signature', $USER->id);
         

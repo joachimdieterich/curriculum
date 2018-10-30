@@ -84,20 +84,33 @@ if ($selected_curriculum_id != '' AND !isset($_GET['ajax'])) {
                            'lastname'  => 'Nachname',
                            'completed' => 'Fortschritt',
                            'role_name' => 'Rolle',
-                           'online'    => 'Status', /* status test */
+                           /*'online'    => 'Status',  status test */
                            'p_search'  => array('username', 'firstname', 'lastname'),
                            'p_options' => $p_options,
                            't_config'  => $t_config);
     } else {
-       $p_config   = array('id'        => 'checkbox',
-                           'username'  => 'Benutzername', 
-                           'firstname' => 'Vorname', 
-                           'lastname'  => 'Nachname',
-                           'completed' => 'Fortschritt',
-                           'role_name' => 'Rolle',
-                           'p_search'  => array('username', 'firstname', 'lastname'),
-                           'p_options' => $p_options,
-                           't_config'  => $t_config); 
+      if (checkCapabilities('user:shortUserList', $USER->role_id, false)){
+          $p_config   = array('id'        => 'checkbox',
+                              'username'  => 'Benutzername',
+                              'firstname' => 'Vorname',
+                              'lastname'  => 'Nachname',
+                              'completed' => 'Fortschritt',
+                           /* 'role_name' => 'Rolle',  */
+                              'p_search'  => array('username', 'firstname', 'lastname'),
+                              'p_options' => $p_options,
+                              't_config'  => $t_config);
+      }
+      else {
+          $p_config   = array('id'        => 'checkbox',
+                              'username'  => 'Benutzername',
+                              'firstname' => 'Vorname',
+                              'lastname'  => 'Nachname',
+                              'completed' => 'Fortschritt',
+                              'role_name' => 'Rolle',
+                              'p_search'  => array('username', 'firstname', 'lastname'),
+                              'p_options' => $p_options,
+                              't_config'  => $t_config);
+      }
     }
     setPaginator('userPaginator', $TEMPLATE, $users, 'results', 'index.php?action=objectives&course='.$selected_curriculumforURL, $p_config); //set Paginator    
     /*course book*/
@@ -142,4 +155,4 @@ if(checkCapabilities('user:userList',         $USER->role_id, false)){
 }
 
 $content = new Content();
-$TEMPLATE->assign('cur_content', array('label'=>'Hinweise zum Lehrplan', 'entrys'=> $content->get('curriculum', $selected_curriculum_id)));
+$TEMPLATE->assign('cur_content', array('label'=>'Digitalisierte Texte des Lehrplans', 'entrys'=> $content->get('curriculum', $selected_curriculum_id)));

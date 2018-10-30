@@ -24,7 +24,7 @@
 */
 $base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
-include(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
+include_once(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $CFG, $USER, $COURSE;
 $USER           = $_SESSION['USER'];
 
@@ -45,7 +45,7 @@ if (is_array($data)) {
             
 if (isset($func)){
     switch ($func) {
-        default:    $header                      = 'Zertifikat generieren';
+        default:    $header                      = 'Lernstand bzw. Zertifikat drucken';
                     $certificate                 = new Certificate();                               // Load certificate_templates
                     $certificate->institution_id = $USER->institutions;
                     $certificate->curriculum_id  = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
@@ -67,7 +67,7 @@ $content   ='<form id="form_generate_certificate" class="form-horizontal" role="
 if (isset($currentUrlId)){ $content .= $currentUrlId; }
 $content  .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
 $content  .= '<input type="hidden" name="curriculum_id" id="curriculum_id" value="'.$certificate->curriculum_id.'"/> ';
-$content  .= Form::input_select('certificate_id', 'Zertifikat', $certificates , 'certificate, institution', 'id', $certificate_id , $error);
+$content  .= Form::input_select('certificate_id', 'Druckvorlage', $certificates , 'certificate, institution', 'id', $certificate_id , $error);
 $content  .= Form::input_text('date', 'Ausgabedatum', date("d.m.Y"), $error, 'z. B. 22.01.2017');
 $content  .= Form::info(array('id' => 'info', 'label' => 'Hinweis', 'content' => 'Wen Sie die folgende Checkbox aktivieren, wird das Zertifikat  dem Schüler / Student zusätzlich im PDF bereitgestellt und kann von diesem heruntergeladen werden.'));
 $content  .= Form::input_checkbox('deliver', 'Datei für Lerner bereitstellen?', $deliver, $error);

@@ -11,7 +11,7 @@
             {/if}  
             <li class="header">Lehrpläne</li>
             {if $my_enrolments != ''}
-                {if $cfg_guest_usr == $my_username}
+                {if ($cfg_guest_usr == $my_username) || ($my_role_name eq 'Indexer') || count($my_enrolments) > 10}
                     <select id="guest_menu" name="guest_menu" class="select2 form-control" onchange="location = this.value;">
                         <option value="false">Bitte Lehrplan wählen...</option>
                         {foreach item=cur_menu from=$my_enrolments name=enrolments}
@@ -22,9 +22,11 @@
                     </select>
 
                     {else}
+                        {$menu_index = 0}
                         {foreach item=cur_menu from=$my_enrolments name=enrolments}
                             {if $cur_menu->semester_id eq $my_semester_id}
-                                    {if {$smarty.foreach.enrolments.index} neq 5} 
+                                    {$menu_index = $menu_index + 1}
++                                {if {$menu_index} neq 5} 
                                     <li {if isset($page_curriculum )}{if ($page_curriculum eq $cur_menu->id) && ($page_group eq $cur_menu->group_id)} class="active treeview"{/if}{/if}>                                
                                         <a class="text-ellipse" href="index.php?action=view&curriculum_id={$cur_menu->id}&group={$cur_menu->group_id}" >
                                             {*<span style="position: absolute;left: 0;top: 0;bottom:0px;right:0; background: url('{$access_file}{$cur_menu->icon_id|resolve_file_id:"t"}') center; background-size: cover; "></span>
@@ -38,9 +40,8 @@
                                             </div>
                                         </div>
                                     </li>
-                                    {/if}
-                                    {if {$smarty.foreach.enrolments.index} eq 5} 
-                                        <li class=" treeview"><a><span>Weitere Einträge</span><i class="fa fa-angle-left pull-right"></i></a> 
+                                    {else}
+                                    <li class=" treeview"><a><span>Weitere Einträge</span><i class="fa fa-angle-left pull-right"></i></a>
                                         <ul class="treeview-menu" style="display: none;">
                                         {assign var="submenu" value=true} 
                                         <li {if isset($page_curriculum )}{if ($page_curriculum eq $cur_menu->id) && ($page_group eq $cur_menu->group_id)} class="active treeview"{/if}{/if}>                                

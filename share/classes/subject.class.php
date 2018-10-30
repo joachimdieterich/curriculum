@@ -73,11 +73,23 @@ class Subject {
                                                         'institution'    => 'ins')); 
        
         $subjects       = array();
-        $db             = DB::prepare('SELECT sub.*, ins.institution 
-                                       FROM subjects AS sub, institution AS ins 
-                                       WHERE (sub.institution_id  = ANY (SELECT institution_id FROM institution_enrolments WHERE institution_id = ins.id AND user_id = ?) OR sub.institution_id = 0)
-                                       AND sub.institution_id= ins.id '.$order_param);
-        $db->execute(array($USER->id));
+        if(checkCapabilities('subject:addglobalsubject', $USER->role_id, false)){
+            $db         = DB::prepare('SELECT sub.*, ins.institution, sco.schooltype
+                                       FROM subjects AS sub
+                                       LEFT JOIN schooltype AS sco ON (sub.schooltype_id = sco.id)
+                                       LEFT JOIN institution AS ins ON (sub.institution_id = ins.id)
+                                       WHERE (sub.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE institution_id = ins.id AND user_id = ?)
+                                       OR sub.institution_id = 0 )'.$order_param);
+            $db->execute(array($USER->id));
+        } else {
+            $db         = DB::prepare('SELECT sub.*, ins.institution, sco.schooltype
+                                       FROM subjects AS sub
+                                       LEFT JOIN schooltype AS sco ON (sub.schooltype_id = sco.id)
+                                       LEFT JOIN institution AS ins ON (sub.institution_id = ins.id)
+                                       WHERE (sub.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE institution_id = ins.id AND user_id = ?)
+                                       OR (sub.institution_id = 0 AND sub.schooltype_id = ?))'.$order_param);
+            $db->execute(array($USER->id, $USER->institution->schooltype_id));
+        }
         while($result = $db->fetchObject()) { 
                 $this->id                   = $result->id;
                 $this->subject              = $result->subject;
@@ -86,7 +98,13 @@ class Subject {
                 $this->creation_timestamp   = $result->creation_time;
                 $this->creator_id           = $result->creator_id;
                 $this->institution_id       = $result->institution_id;
-                $this->institution          = $result->institution;
+                $this->schooltype           = $result->schooltype;
+                $this->schooltype_id        = $result->schooltype_id;
+                if ($this->schooltype == "") {
+                    $this->institution      = $result->institution;
+                } else {
+                    $this->institution      = $result->institution.' ('.$this->schooltype.')';
+                }
                 $subjects[] = clone $this;
         } 
          if (isset($subjects)) {    

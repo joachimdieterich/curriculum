@@ -121,9 +121,9 @@
                         <div class="btn-group">
                             {if $wallet->creator_id eq $my_id OR $wallet->permission eq 2}
                                 {if $edit eq true}
-                                    <button type="button" class="btn btn-default"><a href="{removeUrlParameter($page_url, 'edit')}"><i class="fa fa-check"></i></a></button>
+                                    <a class="btn btn-default" href="{removeUrlParameter($page_url, 'edit')}"><i class="fa fa-check"></i></a></button>
                                 {else}
-                                    <button type="button" class="btn btn-default"><a href="{$page_url}&edit=true"><i class="fa fa-edit"></i></a></button>
+                                    <a class="btn btn-default" href="{$page_url}&edit=true"><i class="fa fa-edit"></i></a></button>
                                 {/if}
                             {/if}    
                             {if $wallet->creator_id eq $my_id} 
@@ -150,13 +150,13 @@
                     <div id="default_walletuserPaginator_position" >
                             {html_paginator id='walletuserPaginator' title='Freigaben'} 
                     </div>
-                {elseif $showuser eq true}Die Sammelmappe wurde keinem Benutzer freigegeben{/if}
+                {else}<p> Die Sammelmappe wurde keinem Benutzer freigegeben</p>{/if}
                     <div class="alert alert-info">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                         {$wallet->description}<br>
                         
                         {foreach key=oid item=o from=$objectives}
-                            {if $sel_user_id}
+                            {if $sel_user_id AND $my_role_id != 0}
                                 <div style="display:inline-table">{RENDER::objective(["type" =>"enabling_objective", "objective" => $o , "user_id" => $sel_user_id])}</div>
                             {else}
                                 <div style="display:inline-table">{RENDER::objective(["type" =>"enabling_objective", "objective" => $o ])}</div>

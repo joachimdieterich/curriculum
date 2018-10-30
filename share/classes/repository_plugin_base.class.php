@@ -26,4 +26,21 @@
 */
 class repository_plugin_base {
     
+    /**
+     * iterates array of repos to get number of references based on id and type
+     * @param array $repos 
+     * @param int $id of 
+     * @param string $type
+     * @return int
+     */
+    public static function count_child_repos ($repos, $id, $type){
+        $count = 0;
+        foreach ($repos as $r) {
+            if (method_exists($r,'count')){
+                $count += $r->count($type,$id);
+            }
+        }
+        return $count;
+    }
+    
 }

@@ -42,7 +42,7 @@ class Update {
         $db->execute(array($this->filename, $this->description, $this->status, $USER->id));
     }
     
-    public function update(){
+    public function doUpdate(){
         global $USER;
         $db = DB::prepare('UPDATE updates SET status = ?, log = ?, timestamp_installed = NOW(), user_id = ? WHERE filename = ?');
         return $db->execute(array($this->status, $this->log, $USER->id, $this->filename));

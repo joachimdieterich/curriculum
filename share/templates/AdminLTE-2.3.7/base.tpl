@@ -14,7 +14,6 @@
         {/foreach} 
     {/if}
 {/function}
-   
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -46,8 +45,8 @@
         <!-- Theme style -->
         <link rel="stylesheet" href="{$template_url}css/less/AdminLTE.min.css">
         <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
-        <link rel="stylesheet" href="{$template_url}css/less/skins/_all-skins.css">
-        <!--link rel="stylesheet" href="{$template_url}css/skins/skin-blue-light.min.css"-->
+        <!--link rel="stylesheet" href="{$template_url}css/less/skins/_all-skins.min.css"-->
+        <link rel="stylesheet" href="{$template_url}css/skins/skin-blue.min.css">
           <!-- Pace style -->
         <link rel="stylesheet" href="{$template_url}plugins/pace/pace.min.css">
         <!-- Bootstrap Color Picker -->
@@ -60,21 +59,10 @@
     </head>
     
     {if in_array($page_action, array('login', 'lock', 'extern'))}
-    <body class="hold-transition {if $page_action eq 'login' OR  $page_action eq 'extern'}login-page{/if} {if $page_action eq 'lock'}lockscreen{/if}" style="background-image: url('{$random_bg}'); background-size: cover;" >
+    <body class="hold-transition {if $page_action eq 'login' OR  $page_action eq 'extern'}login-page{/if} {if $page_action eq 'lock'}lockscreen{/if}" {if $cfg_login_wallpaper}style="background-image: url('{$random_bg}'); background-size: cover;"{/if} >
+        <div id="popup" class="modal" onload="popupFunction(this.id);"><div class="modal-dialog"><div class="box"><div class="box-header"><h3 class="box-title">Loading...</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div></div></div> <!-- Popup -->    
         {block name=content} {/block}
-    </body>
-    {*elseif in_array($page_action, array('navigator'))}
-    <body class="skin-blue {$page_layout}" data-spy="scroll" data-target=".modal-body" style=" -webkit-overflow-scrolling:touch; overflow:auto;" > 
-         <div id="body-wrapper" class="wrapper"> 
-             <div id="content-wrapper" class="content-wrapper">
-                <div id="popup" class="modal" onload="popupFunction(this.id);"><div class="modal-dialog"><div class="box"><div class="box-header"><h3 class="box-title">Loading...</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div></div></div> <!-- Popup -->    
-                {block name=content} {/block}
-            </div> 
-        </div>
-    </body>
-    *}
     {else}
-    
     <body class="hold-transition {$page_layout} skin-blue" data-spy="scroll" data-target=".modal-body" style=" -webkit-overflow-scrolling:touch; overflow:auto;" > 
         <div id="body-wrapper" class="{$page_body_wrapper}"> 
             {if $page_header}
@@ -82,14 +70,14 @@
               <!-- Logo -->
               <a href="index.php?action=dashboard" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
-                <span class="logo-mini"><img class="pull-left" style="margin-top: 5px; margin-left: 2px;" src="{$request_url}assets/images/logo.png"/></span>
+                <span class="logo-mini"><img class="pull-left" style="margin-top: 5px; margin-left: 2px;" src="{$request_url}assets/images/logo.png"  data-toggle="tooltip" data-placement="bottom" title="Startseite" /></span>
                 <!-- logo for regular state and mobile devices -->
-                <span class="logo-lg"><img class="pull-left" style="margin-top: 5px;" src="{$request_url}assets/images/logo.png"/><b>{$app_title}</b></span>
+                <span class="logo-lg"><img class="pull-left" style="margin-top: 5px;" src="{$request_url}assets/images/logo.png" data-toggle="tooltip" data-placement="bottom" title="Startseite" /><b>{$app_title}</b></span>
               </a>
                 
                 <!-- Header Navbar: style can be found in header.less -->
-                <nav class="navbar navbar-static-top" role="navigation" {if isset($page_bg_file_id)}style="background: url('{$access_file_id}{$page_bg_file_id}') center center;  background-size: cover;"{/if}>
-                    
+                <nav class="navbar navbar-static-top" role="navigation" {if (isset($page_bg_file_id) AND $cfg_show_subjectIcon != "NEVER")}style="background: url('{$access_file_id}{$page_bg_file_id}') center center;  background-size: cover;"{/if}>
+                    <!-- isset($page_bg_file_id) AND  -->
                     {if isset($my_id)}
                     <!-- Sidebar toggle button-->
                     <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
@@ -101,19 +89,19 @@
                       <ul class="nav navbar-nav">
                         {if checkCapabilities('dashboard:globalAdmin', $my_role_id, false)}  
                         <li>   
-                        <a href="index.php?action=statistic" style="padding: 15px 8px 15px 8px;">
+                        <a href="index.php?action=statistic" style="padding: 15px 8px 15px 8px;" data-toggle="tooltip" data-placement="bottom" title="Statistik">
                             <i class="fa fa-pie-chart"></i>
                           </a>
                         </li>  
                         {/if}
                         <li>   
-                        <a href="index.php?action=help" style="padding: 15px 8px 15px 8px;">
+                        <a href="index.php?action=help" style="padding: 15px 8px 15px 8px;" data-toggle="tooltip" data-placement="bottom" title="Hilfe">
                             <i class="fa fa-graduation-cap"></i>
                           </a>
                         </li>
                         {if checkCapabilities('menu:readTasks', $my_role_id, false)}  
                         <li>     
-                        <a href="index.php?action=task" style="padding: 15px 8px 15px 8px;">
+                        <a href="index.php?action=task" style="padding: 15px 8px 15px 8px;" data-toggle="tooltip" data-placement="bottom" title="Aufgaben">
                             <i class="fa fa-tasks"></i>
                           </a>
                         </li>
@@ -124,13 +112,13 @@
                              {Form::input_dropdown('institution_id', '', $my_institutions, 'institution', 'institution_id', $my_institution_id, null, "processor('config','institution_id', this.getAttribute('data-id'));")}
                          {/if} 
                          <li class="calendar-menu">   
-                        <a href="index.php?action=calendar" style="padding: 15px 8px 15px 8px;">
+                        <a href="index.php?action=calendar" style="padding: 15px 8px 15px 8px;" data-toggle="tooltip" data-placement="bottom" title="Kalender">
                             <i class="fa fa-calendar"></i>
                           </a>
                         </li>  
                         {if checkCapabilities('menu:readTimeline', $my_role_id, false)}  
                         <li class="timeline-menu">   
-                        <a href="index.php?action=portfolio" style="padding: 15px 8px 15px 8px;">
+                        <a href="index.php?action=portfolio" style="padding: 15px 8px 15px 8px;" data-toggle="tooltip" data-placement="bottom" title="Timeline">
                             <i class="fa fa-cubes"></i>
                           </a>
                         </li> 
@@ -138,8 +126,8 @@
                         {if checkCapabilities('menu:readMessages', $my_role_id, false)}
                             {if isset($mails)}  
                             <!-- Messages: style can be found in dropdown.less-->
-                            <li class="dropdown messages-menu">
-                              <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 15px 8px 15px 8px;">
+                            <li class="dropdown messages-menu" data-toggle="tooltip" data-placement="bottom" title="Nachrichten">
+                              <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 15px 8px 15px 8px;" title="">
                                 <i class="fa fa-envelope-o"></i>
                                 <span class="label label-success">{count($mails)}</span>
                               </a>
@@ -170,7 +158,7 @@
                             </li>
                             {else}
                             <li class=" messages-menu">   
-                                <a href="index.php?action=messages&function=showInbox" style="padding: 15px 8px 15px 8px;"><i class="fa fa-envelope-o"></i></a>
+                                <a href="index.php?action=messages&function=showInbox" style="padding: 15px 8px 15px 8px;" data-toggle="tooltip" data-placement="bottom" title="Nachrichten"><i class="fa fa-envelope-o"></i></a>
                             </li>
                             {/if} 
                         {/if}
@@ -178,7 +166,7 @@
                         {if isset($page_message)}
                         <!-- Notifications: style can be found in dropdown.less -->
                         <li class="dropdown notifications-menu open">
-                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 15px 8px 15px 8px;">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 15px 8px 15px 8px;" title="Benachrichtigungen">
                             <i class="fa fa-bell-o"></i>
                             <span class="label label-warning">{count($page_message)}</span>
                           </a>
@@ -204,8 +192,8 @@
                         {/if}
 
                         <!-- User Account: style can be found in dropdown.less -->
-                        <li class="dropdown user user-menu">
-                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 15px 8px 15px 8px;">
+                        <li class="dropdown user user-menu"  data-toggle="tooltip" data-placement="bottom" title="Benutzer verwalten">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="" style="padding: 15px 8px 15px 8px;">
                             <img src="{$access_file}{$my_avatar}" class="user-image" alt="User Image">
                             <span class="hidden-xs">{$my_firstname} {$my_lastname}</span>
                           </a>
@@ -215,7 +203,7 @@
                               <img src="{$access_file}{$my_avatar}" class="img-circle" alt="User Image">
                               <p>
                                 {$my_firstname} {$my_lastname} - {$my_role_name}
-                                <small>Mitglied seit {$my_creation_time}</small>
+                                {*<small>Mitglied seit {$my_creation_time}</small>*}
                               </p>
                             </li>
                             <!-- Menu Body -->
@@ -243,12 +231,13 @@
                           </ul>
                         </li>
                         {if checkCapabilities('template:change', $my_role_id, false)}
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-gears"></i></a>
+                            <li class="dropdown" data-toggle="tooltip" data-placement="bottom" title="Einstellungen">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" title=""><i class="fa fa-gears"></i></a>
                                 <ul class="dropdown-menu" role="menu">
                                   <li><a href="#" onclick="formloader('settings', 'edit');">Einstellungen</a></li>
                                   <li class="divider"></li>
                                   <li><a href="index.php?action=navigator">Navigator (Test)</a></li>
+                                  <li><a href="index.php?action=debug">Debug / Userfeedback</a></li>
                                   <li><a href="index.php?action=update">Updates</a></li>
                                 </ul>
                             </li>
@@ -278,9 +267,12 @@
             
             <footer class="main-footer">
                 <div class="pull-right hidden-xs">
-                  <b>Version</b> {$app_version}
+                  <b>Version</b> {$app_version} 
                 </div>
-                {$app_footer} {block name=footer} {/block}
+                <a class="btn-xs margin-r-10 pull-right" onclick='formloader("content", "new", null,{["label_title"=>"Betreff", "label_content"=>"Fehler beschreiben", "label_header"=>"Fehler melden","label_save"=>"Meldung abschicken", "context"=>"debug", "reference_id"=> 0]|@json_encode nofilter});'>
+                    <i class="fa fa-bullhorn text-warning"></i> Fehler melden
+                </a>
+                {$app_footer} {block name=footer}  <small><a onclick="formloader('terms', 'imprint')">Impressum</a> / <a onclick="formloader('terms', 'privacy')">Datenschutz</a></small>{/block}
             </footer>    
               
             {*block name=sidebar_right}{include file='sidebar_right.tpl'}{/block*}
@@ -290,21 +282,21 @@
     <script src="{$lib_url}ckeditor/ckeditor.js"></script><!-- CK Editor -->
     <script src="{$template_url}plugins/moment/moment.min.js"></script><!-- moment -->
     <script src="{$media_url}scripts/jquery-2.2.1.min.js"></script> <!-- jQuery 2.2.1 -->
-    <script src="{$media_url}scripts/alterClass.min.js"></script> <!-- jQuery 2.2.1 -->
+    <script src="{$media_url}scripts/alterClass.min.js"></script> <!-- alter class -->
     <script src="{$template_url}bootstrap/js/bootstrap.min.js"></script><!-- Bootstrap 3.3.5 -->
     <script src="{$template_url}js/app.min.js"></script><!-- AdminLTE App -->
     <script src="{$template_url}plugins/slimScroll/jquery.slimscroll.min.js"></script><!-- SlimScroll 1.3.0 -->
     <script src="{$template_url}plugins/pace/pace.min.js"></script>
     <script src="{$template_url}plugins/mark/jquery.mark.min.js"></script>
     <script src="{$media_url}scripts/curriculum.min.js"></script><!-- curriculum settings (sidebar) -->
-    <script src="{$media_url}jquery.nyroModal/js/jquery.nyroModal.custom.js"></script> <!-- jquery.nyroModal -->
+    <script src="{$media_url}jquery.nyroModal/js/jquery.nyroModal.custom.min.js"></script> <!-- jquery.nyroModal -->
     <script src="{$media_url}scripts/script.min.js"></script> 
     <script src="{$media_url}scripts/PDFObject-master/pdfobject.min.js"></script> 
     <script src="{$media_url}scripts/file.min.js"></script>
     <script src="{$media_url}scripts/dragndrop.min.js"></script>
     <!-- Select2 -->
     <link rel="stylesheet" href="{$template_url}plugins/select2/select2.min.css">
-    <script src="{$template_url}plugins/select2/select2.min.js" type="text/javascript"></script>
+    <script src="{$template_url}plugins/select2/select2.min.js"></script>
     <link rel="stylesheet" href="{$template_url}css/less/select2.min.css">
     <!-- MathJax -->
     {literal}
@@ -315,9 +307,57 @@
               tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
             });
         </script>
+        <!-- popup drag -->
+    <script>
+        var elem = document.getElementById('popup');
+        elem.addEventListener('mousemove', drag);
+        elem.addEventListener('mouseup', dragstop);	
+
+       //Das Objekt, das gerade bewegt wird.
+        var dragobjekt = null;
+
+        // Position, an der das Objekt angeklickt wurde.
+        var dragx = 0;
+        var dragy = 0;
+
+       // Mausposition
+       var posx = 0;
+       var posy = 0;
+
+
+    function dragstart(element) {
+       //Wird aufgerufen, wenn ein Objekt bewegt werden soll.
+
+      dragobjekt = element;
+      dragx = posx - dragobjekt.offsetLeft;
+      dragy = posy - dragobjekt.offsetTop;
+    }
+
+
+    function dragstop() {
+      //Wird aufgerufen, wenn ein Objekt nicht mehr bewegt werden soll.
+
+      dragobjekt=null;
+    }
+
+
+    function drag(ereignis) {
+      //Wird aufgerufen, wenn die Maus bewegt wird und bewegt bei Bedarf das Objekt.
+
+      posx = document.all ? window.event.clientX : ereignis.pageX;
+      posy = document.all ? window.event.clientY : ereignis.pageY;
+      if(dragobjekt != null) {
+        dragobjekt.style.left = (posx - dragx) + "px";
+        dragobjekt.style.top = (posy - dragy) + "px";
+      }
+    }
+
+    </script> 
+    <!-- popup drag -->
     {/literal}
      <script src="{$lib_url}MathJax-master/MathJax.js"></script><!-- MathJax-->
     {block name=additional_scripts} 
+        
     <!-- Logout - Timer  -->
     {if isset($institution_timeout)}
     <script type="text/javascript">
