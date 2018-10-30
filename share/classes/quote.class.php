@@ -128,8 +128,11 @@ class Quote {
                         }
                 break;
         }
-       
-        return $entrys;
+        if (!empty($entrys)) {                       
+            return $entrys;
+        } else {
+            return false;
+        }
         
     }
             
