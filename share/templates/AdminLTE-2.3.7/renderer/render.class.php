@@ -2394,8 +2394,8 @@ public static function quote($quotes, $get){
 
 public static function quote_reference($quotes){
     $content     = '';  
-    RENDER::sortByProp($quotes, 'quote_link', 'asc');
-    if (isset($quotes)){
+    if (isset($quotes) AND $quotes != false){
+        RENDER::sortByProp($quotes, 'quote_link', 'asc');
         $content_id = '';
         $quote_id   = '';
         
@@ -2435,15 +2435,9 @@ public static function quote_reference($quotes){
                 $quote_id = $ref->id;   
         }
         $content .= '</span>'; //close last content span
-    }
-    if (count($quotes) == 0) {
-        // $content .= 'Keine Textbezüge vorhanden.';
-        // do nothing 
-    } else {
+        
         return '<div class="col-xs-12 top-buffer" >'.RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool"><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_onclick' => 'data-widget="collapse"', 'header_content' => 'Textbezüge im Lehrplan', 'content_id' => null, 'body_content' => $content)).'</div>';
     }
-    
-    
 }
 
     public static function sorter_asc( $a, $b ){
