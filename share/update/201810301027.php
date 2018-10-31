@@ -29,15 +29,13 @@ $UPDATE         = new stdClass();
 $UPDATE->info   = "Update Add Print context";
 if (isset($_GET['execute'])){
     $UPDATE->log = "Executing context update\n";
-    $db= DB::prepare("INSERT INTO `context` (`id`, `context`, `context_id`, `path`) VALUES (36, 'print', 36, NULL);");
-    if (true){
+    $db= DB::prepare("INSERT INTO `context` (`id`, `context`, `context_id`, `path`) VALUES (37, 'print', 37, NULL);");
+    if ($db->execute(array())){
         $UPDATE->log = "Executing context update successful installed <br><br>";
         $UPDATE->installed = true;
     } else {
         $UPDATE->log = "Executing context update failed. More infos -> error.log ";
         $UPDATE->installed = false;
     }     
-            
-
 }
 
