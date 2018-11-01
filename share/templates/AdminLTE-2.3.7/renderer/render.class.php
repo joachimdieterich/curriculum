@@ -1933,7 +1933,7 @@ class Render {
                             $enroled_groups     = $cur->getGroupsByUserAndCurriculum($USER->id);
                             $file_id            = $cur->icon_id;
                             $widget_onclick     = "location.href='index.php?action=view&curriculum_id={$nb_reference_id}&group={$enroled_groups[0]->group_id}';";
-                            if (checkCapabilities('navigator:add', $USER->role_id, false)){
+                            if (checkCapabilities('navigator:update', $USER->role_id, false)){
                             $opt[]              = '<a type="button" style="color:#FFF;" class="fa fa-edit" onclick="formloader(\'navigator_item\', \'edit\','.$nb_id.', {\'nb_navigator_view_id\':\''.$nb_navigator_view_id.'\'})";></a>';
                             $html               = RENDER::paginator_widget(array('widget_title' => $nb_title, 'widget_desc' => $nb_description, 'file_id' => $file_id, 'widget_onclick' => $widget_onclick, 'opt' => $opt, 'global_onclick' => true));
                             } else {
@@ -1943,7 +1943,7 @@ class Render {
                     break;
                 case 15:    $content            = new Content();
                             $content->load('id', $nb_reference_id);
-                            if (checkCapabilities('navigator:add', $USER->role_id, false)){
+                            if (checkCapabilities('navigator:update', $USER->role_id, false)){
                                 $html          .= RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool" onclick="formloader(\'content\',\'edit\', \''.$nb_reference_id.'\')"><i class="fa fa-edit"></i></button><button class="btn btn-box-tool" onclick="processor(\'print\',\'content\', \''.$nb_reference_id.'\')"><i class="fa fa-print"></i></button><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_onclick' => 'data-widget="collapse"', 'header_content' => $content->title, 'content_id' => $nb_reference_id, 'body_content' => $content->content));
                             } else {
                                 $html          .= RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool" onclick="processor(\'print\',\'content\', \''.$nb_reference_id.'\')"><i class="fa fa-print"></i></button><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_onclick' => 'data-widget="collapse"', 'header_onclick' => 'data-widget="collapse"', 'header_content' => $content->title, 'content_id' => $nb_reference_id, 'body_content' => $content->content));
