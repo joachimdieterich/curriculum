@@ -89,6 +89,7 @@ if (isset($reference_curriculum_id)){
     $quote   = new Quote(); 
     $TEMPLATE->assign('curriculum_content_references', $quote->get('curriculum_content', $ct_ids, $ter_ids, $ena_ids)); // load quote references
     $ter_objects = $terminal_objectives->getObjectives('curriculum', $PAGE->curriculum, false, $ter_ids, $ena_ids);
+    //error_log(json_encode($ter_objects[0]));
     $TEMPLATE->assign('terminal_objectives', $ter_objects);
     $_SESSION['PAGE']->s_key   = 'curriculum_id';
     $_SESSION['PAGE']->s_value = $reference_curriculum_id;
@@ -189,8 +190,16 @@ if(isset($_SESSION['PAGE']->config['tab'])){
     if (in_array(substr($_SESSION['PAGE']->config['tab'], strrpos($_SESSION['PAGE']->config['tab'], '_') + 1), $ter_obj_given_type_ids)){ //check if type is given //e.g. if user calls an other curriculum
         $TEMPLATE->assign($_SESSION['PAGE']->config['tab'],  true);
     } else {
-        $TEMPLATE->assign('tab_type_id_1',  true);
+        set_active_type_id($ter_obj_given_type_ids);
     }
 } else {
-    $TEMPLATE->assign('tab_type_id_1',  true);
+    set_active_type_id($ter_obj_given_type_ids);
+}
+
+//set active tab if no selection was made
+function set_active_type_id($ter_obj_given_type_ids){
+    global $TEMPLATE;
+    if (count($ter_obj_given_type_ids) == 1) {
+        $TEMPLATE->assign('tab_type_id_'.$ter_obj_given_type_ids[0],  true);
+    }  
 }
