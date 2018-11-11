@@ -36,7 +36,7 @@ if (isset($_GET['execute'])){
                                     (5, 'Themenfelder (Einführungsphase)'),
                                     (6, 'Themenfelder (Qualifikationsphase)',
                                     (7, 'Themenfelder (Ausbildungsabschnitt I)',
-                                    (8, 'Themenfelder (Ausbildungsabschnitt II),
+                                    (8, 'Themenfelder (Ausbildungsabschnitt II)',
                                     (9, 'Abschlussprofil');");
     if ($db->execute(array())){
         $UPDATE->log .= "<b class=\"text-success\">Update finished - OK</b><br>";
