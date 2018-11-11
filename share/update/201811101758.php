@@ -34,7 +34,10 @@ if (isset($_GET['execute'])){
     $db= DB::prepare("INSERT INTO `objective_type` (`id`, `type`) VALUES
                                     (4, 'Bildungsstandards'),
                                     (5, 'Themenfelder (Einführungsphase)'),
-                                    (6, 'Themenfelder (Qualifikationsphase)');");
+                                    (6, 'Themenfelder (Qualifikationsphase)',
+                                    (7, 'Themenfelder (Ausbildungsabschnitt I)',
+                                    (8, 'Themenfelder (Ausbildungsabschnitt II),
+                                    (9, 'Abschlussprofil');");
     if ($db->execute(array())){
         $UPDATE->log .= "<b class=\"text-success\">Update finished - OK</b><br>";
         $UPDATE->installed = true;
