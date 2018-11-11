@@ -190,16 +190,8 @@ if(isset($_SESSION['PAGE']->config['tab'])){
     if (in_array(substr($_SESSION['PAGE']->config['tab'], strrpos($_SESSION['PAGE']->config['tab'], '_') + 1), $ter_obj_given_type_ids)){ //check if type is given //e.g. if user calls an other curriculum
         $TEMPLATE->assign($_SESSION['PAGE']->config['tab'],  true);
     } else {
-        set_active_type_id($ter_obj_given_type_ids);
+        $TEMPLATE->assign('tab_type_id_'.$ter_obj_given_type_ids[0],  true);
     }
 } else {
-    set_active_type_id($ter_obj_given_type_ids);
-}
-
-//set active tab if no selection was made
-function set_active_type_id($ter_obj_given_type_ids){
-    global $TEMPLATE;
-    if (count($ter_obj_given_type_ids) == 1) {
-        $TEMPLATE->assign('tab_type_id_'.$ter_obj_given_type_ids[0],  true);
-    }  
+    $TEMPLATE->assign('tab_type_id_'.$ter_obj_given_type_ids[0],  true);
 }
