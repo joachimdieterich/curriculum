@@ -2373,8 +2373,23 @@ public static function quote($quotes, $get){
                     if ($cur_id != ''){
                         $content .= '</span>';  
                     }
-                    $cur_id = $ref->reference_object->id;
-                    $content .= '<span class="col-xs-12 bg-light-aqua" data-toggle="collapse" data-target="#cur_'.$cur_id.'"><h4 class="text-black">'.$ref->reference_object->curriculum.'<button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#cur_'.$cur_id.'" aria-expanded="true" data-toggle="tooltip" title="Fach einklappen bzw. ausklappen"><i class="fa fa-expand"></i></button></h4></span><hr style="clear:both;">';
+                    $cur_id             = $ref->reference_object->id;
+                    $qus                = new Quote();
+                    $qus->reference_id  = $ref->reference_id;
+                    $quote_subscriptions= $qus->getQuoteSubscriptions();
+                    $curriculum = $ref->reference_object->curriculum;
+                    if ($quote_subscriptions){
+                        $i = 0;
+                        foreach ($quote_subscriptions as $qus_entry) {
+                            if ($i == 0){
+                                $curriculum = $qus_entry->curriculum;
+                            } else {
+                                $curriculum .= ', '.$qus_entry->curriculum;
+                            }
+                            $i++;
+                        }
+                    } 
+                    $content .= '<span class="col-xs-12 bg-light-aqua" data-toggle="collapse" data-target="#cur_'.$cur_id.'"><h4 class="text-black">'.$curriculum.'<button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#cur_'.$cur_id.'" aria-expanded="true" data-toggle="tooltip" title="Fach einklappen bzw. ausklappen"><i class="fa fa-expand"></i></button></h4></span><hr style="clear:both;">';
                     $content .= '<span id ="cur_'.$cur_id.'" class="collapse out">';
                 }
                 $content .= '<blockquote>'.$ref->quote.'<small>'.$ref->reference_object->curriculum.', <cite="'.$ref->reference_title.'" class="pointer_hand"><a onclick="formloader(\'content\', \'show\','.$ref->quote_link.');">'.$ref->reference_title.'</a></cite></small></blockquote>'; 
