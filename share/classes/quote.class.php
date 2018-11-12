@@ -166,6 +166,22 @@ class Quote {
                 break;
         } 
     }
+    
+    public function getQuoteSubscriptions(){
+        $db = DB::prepare('SELECT cu.curriculum  FROM content_subscriptions AS cts, curriculum AS cu WHERE cts.content_id = ? AND cts.reference_id = cu.id AND cts.context_id = ?');
+        $db->execute(array($this->reference_id, $_SESSION['CONTEXT']['curriculum']->context_id));
+        $entrys = array();
+        while($result = $db->fetchObject()) { 
+            $titles         = new stdClass();
+            $titles->curriculum  = $result->curriculum;
+            $entrys[]       = clone $titles;        //it has to be clone, to get the object and not the reference
+        }
+        if (!empty($entrys)) {                       
+            return $entrys;
+        } else {
+            return false;
+        }
+    }
       
     
 }
