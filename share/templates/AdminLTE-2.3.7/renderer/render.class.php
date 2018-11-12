@@ -2413,42 +2413,39 @@ public static function quote_reference($quotes){
     if (isset($quotes) AND $quotes != false){
         RENDER::sortByProp($quotes, 'quote_link', 'asc');
         $content_id = '';
-        $quote_id   = '';
-        
-        foreach ($quotes as $ref) {
-            if ($ref->quote_link != $content_id){ //if new content render Title
+        $quote_max  = count($quotes); //amount of quotes
+        for ($i = 0; $i < $quote_max; $i++){
+            if ($quotes[$i]->quote_link != $content_id){ //if new content render Title
                 if ($content_id != ''){
                     $content .= '</span>';  
                 }
-                $content .= '<span class="col-xs-12 bg-light-aqua" data-toggle="collapse" data-target="#ct_'.$content_id.'"><h4 class="text-black">'.$ref->reference_title.'<button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#ct_'.$content_id.'" aria-expanded="true" data-toggle="tooltip" title="Fach einklappen bzw. ausklappen"><i class="fa fa-expand"></i></button></h4></span><hr style="clear:both;">';
+                $content .= '<span class="col-xs-12 bg-light-aqua" data-toggle="collapse" data-target="#ct_'.$content_id.'"><h4 class="text-black">'.$quotes[$i]->reference_title.'<button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#ct_'.$content_id.'" aria-expanded="true" data-toggle="tooltip" title="Fach einklappen bzw. ausklappen"><i class="fa fa-expand"></i></button></h4></span><hr style="clear:both;">';
                 $content .= '<span id ="ct_'.$content_id.'" class="collapse out">';
                 }
-                $content_id = $ref->quote_link;
-                if ($ref->id == $quote_id){ 
-                    
-                    $content .= '<div class="col-xs-12 col-sm-3 pull-right">';
-                    if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
-                      $content .= '<dt>Lernziel/Kompetenz</dt>'.Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $ref->enabling_object, 'border_color' => $ref->terminal_object->color));
-                    }
-                    $content .= '</div>';
-                    $content .= '<div class="col-xs-12 col-sm-3 pull-right"><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('format' => 'reference', 'objective' => $ref->terminal_object, 'color')).'</div>';
-                    
-                } else { //if new quote render quote
-                    $content .= '<div class="col-xs-12 col-sm-6"><h4>Fundstelle im Text:</h4><br><blockquote>'.$ref->quote.'<small>, <cite="'.$ref->reference_title.'" class="pointer_hand"><a onclick="formloader(\'content\', \'show\','.$ref->quote_link.');">'.$ref->reference_title.'</a></cite></small></blockquote></div>'; 
-                    $c        = new Curriculum();    
-                    $c->id    = $ref->terminal_object->curriculum_id;
-                    $c->load();
-                    $content .= '<div class="col-xs-12 col-sm-6 pull-right"><h4>'.$c->curriculum.'</h4></div>';
-                    $content .= '<div class="col-xs-12 col-sm-3 pull-right">';
-                    if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
-                      $content .= '<dt>Lernziel/Kompetenz</dt>'.Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $ref->enabling_object, 'border_color' => $ref->terminal_object->color));
-                    }
-                    $content .= '</div>';
-                    $content .= '<div class="col-xs-12 col-sm-3 pull-right"><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('format' => 'reference', 'objective' => $ref->terminal_object, 'color')).'</div>';
-                    
+                $content_id = $quotes[$i]->quote_link;
+                $content .= '<div class="col-xs-12 col-sm-6"><h4>Fundstelle im Text:</h4><br><blockquote>'.$quotes[$i]->quote.'<small>, <cite="'.$quotes[$i]->reference_title.'" class="pointer_hand"><a onclick="formloader(\'content\', \'show\','.$quotes[$i]->quote_link.');">'.$quotes[$i]->reference_title.'</a></cite></small></blockquote></div>'; 
+                $c        = new Curriculum();    
+                $c->id    = $quotes[$i]->terminal_object->curriculum_id;
+                $c->load();
+                $content .= '<div class="col-xs-12 col-sm-6 pull-right"><h4>'.$c->curriculum.'</h4></div>';
+                $content .= '<div class="col-xs-12 col-sm-6 pull-right">';
+                if ($quotes[$i]->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
+                  $content .= Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $ref->enabling_object, 'border_color' => $ref->terminal_object->color));
                 }
-                $content .='<hr style="clear:both;">';
-                $quote_id = $ref->id;   
+                $content .= Render::objective(array('format' => 'reference', 'objective' => $quotes[$i]->terminal_object, 'color'));
+                $quote_id = $quotes[$i]->id;   
+                while (isset($quotes[$i+1])) { //check and render next objective until new quote is given
+                    if ($quotes[$i+1]->id == $quote_id){
+                        if ($quotes[$i+1]->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
+                          $content .= Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $quotes[$i+1]->enabling_object, 'border_color' => $quotes[$i+1]->terminal_object->color));
+                        }
+                        $content .= Render::objective(array('format' => 'reference', 'objective' => $quotes[$i+1]->terminal_object, 'color'));
+                        $i++;    
+                    } else {
+                        break;
+                    }
+                }
+                $content .='</div><hr style="clear:both;">';
         }
         $content .= '</span>'; //close last content span
         
