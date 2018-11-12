@@ -28,6 +28,7 @@ global $USER;
 $USER   = $_SESSION['USER'];
 $db     = filter_input(INPUT_GET, 'db',           FILTER_SANITIZE_STRING);
 $id     = filter_input(INPUT_GET, 'id',           FILTER_SANITIZE_STRING); // kein INT --> System ID -1
+$ref_id = filter_input(INPUT_GET, 'ref_id',       FILTER_VALIDATE_INT); 
 switch ($db) {
     case "certificate":         $t = new Certificate();         break;
     case "curriculum":          $t = new Curriculum();          break;
@@ -47,12 +48,17 @@ switch ($db) {
     case "task":                $t = new Task();                break;
     case "courseBook":          $t = new CourseBook();          break;
     case "comment":             $t = new Comment();             break;
-    case "content":             $t = new Content();             break;
+    case "content":             $t = new Content();      
+                                if (isset($ref_id)){
+                                    $t->reference_id = $ref_id; //to delete only subscriptions
+                                }
+                                break;
     case "wallet":              $t = new Wallet();              break;
     case "wallet_content":      $t = new WalletContent();       break;
     case "reference":           $t = new Reference();           break;
     default: break;
 }
+
 
 $t->id = $id;
 if ($t->delete()){
