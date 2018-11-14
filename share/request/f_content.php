@@ -84,10 +84,12 @@ if (isset($_GET['func'])){
                             }
                             $options   .= '<a onclick="del(\'content\','.$content->id.''.$ref_id.');" class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-trash"></i></a>';
                         }
+                        $label_header   = $content->title;
                         if (checkCapabilities('content:update', $USER->role_id, false, true)){
+                            $label_header   = $content->title.'<small> (ID:'.$content->id.')</small>' ; //show id 
                             $options   .= '<a onclick="formloader(\'content\', \'edit\','.$content->id.')" class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-edit"></i></a>';
                         }
-                        $label_header   = $content->title;
+                        
                         /*$html           = '';
                         $ter     = new TerminalObjective();
                         $ter->id = 325;
