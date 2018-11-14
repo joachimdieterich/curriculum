@@ -34,17 +34,18 @@ $purify = HTMLPurifier_Config::createDefault();
 $purify->set('Attr.EnableID', true);
 $purify->set('Core.Encoding', 'UTF-8'); // replace with your encoding
 $purify->set('HTML.Doctype', 'HTML 4.01 Transitional'); // replace with your doctype
-$purify->set('HTML.DefinitionID', 'Quote'); //enable Quote tag
+$purify->set('HTML.DefinitionID', '1'); //enable Quote tag DO NOT CHANGE
+$purify->set('Cache.DefinitionImpl', null); // TODO: remove this later!
 $purify->set('HTML.DefinitionRev', 1);
 // allow name and id attributes
 
-if ($def = $purify->maybeGetRawHTMLDefinition()) {
-    $def->addElement('quote', 'Block', 'Inline', 'Common', array('id' => 'Text'));
-}
+$def = $purify->maybeGetRawHTMLDefinition();
+$def->addElement('quote', 'Block', 'Optional:Flow', 'Common', array('id' => 'Text')); //DO NOT CHANGE!! 
 
 $purifier               = new HTMLPurifier($purify);
+error_log(filter_input(INPUT_POST, 'content', FILTER_UNSAFE_RAW));
 $content->content       = $purifier->purify(filter_input(INPUT_POST, 'content', FILTER_UNSAFE_RAW));
-
+error_log($content->content);
 
 $gump = new Gump();    /* Validation */
 $_POST = $gump->sanitize($_POST);       //sanitize $_POST
