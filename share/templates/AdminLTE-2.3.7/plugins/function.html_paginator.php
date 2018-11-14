@@ -73,9 +73,9 @@ function smarty_function_html_paginator($params, $template) {
                   </div>';
     } else {
         $html .= '<div class="col-sm-34 col-xs-9 btn-group pull-left" ><div class="input-group">
-          <input type="text" name="q" id="q" class="form-control" placeholder="Suche..." onkeydown="if (event.keyCode == 13) {event.preventDefault(); processor(\'config\',\'paginator_search\',\''.$id.'\',{\'order\':\'\',\'search\':this.value});}">
+          <input type="text" name="q" id="q" class="form-control" placeholder="Suche..." onkeydown="if (event.keyCode == 13) {event.preventDefault(); processor(\'config\',\'paginator_search\',\''.$id.'\',{\'order\':\'\',\'reload\':\'true\',\'search\':this.value});}">
               <span class="input-group-btn">
-                <button type="submit" name="search" id="search-btn" class="btn btn-flat" onclick="processor(\'config\',\'paginator_search\',\''.$id.'\',{\'order\':\'\',\'search\':document.getElementById(\'q\').value});"><i class="fa fa-search"></i>
+                <button type="submit" name="search" id="search-btn" class="btn btn-flat" onclick="processor(\'config\',\'paginator_search\',\''.$id.'\',{\'order\':\'\',\'reload\':\'true\',\'search\':document.getElementById(\'q\').value});"><i class="fa fa-search"></i>
                 </button>
               </span>
         </div></div>';
