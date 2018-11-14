@@ -40,12 +40,15 @@ $purify->set('HTML.DefinitionRev', 1);
 // allow name and id attributes
 
 $def = $purify->maybeGetRawHTMLDefinition();
+/* http://htmlpurifier.org/docs/enduser-customize.html */
 $def->addElement('quote', 'Block', 'Optional:Flow', 'Common', array('id' => 'Text')); //DO NOT CHANGE!! 
 
 $purifier               = new HTMLPurifier($purify);
-error_log(filter_input(INPUT_POST, 'content', FILTER_UNSAFE_RAW));
-$content->content       = $purifier->purify(filter_input(INPUT_POST, 'content', FILTER_UNSAFE_RAW));
-error_log($content->content);
+//error_log(filter_input(INPUT_POST, 'content', FILTER_UNSAFE_RAW));
+//$content->content       = $purifier->purify(filter_input(INPUT_POST, 'content', FILTER_UNSAFE_RAW));
+//TODO
+$content->content       = filter_input(INPUT_POST, 'content', FILTER_UNSAFE_RAW);//$purifier->purify(filter_input(INPUT_POST, 'content', FILTER_UNSAFE_RAW));
+///error_log($content->content);
 
 $gump = new Gump();    /* Validation */
 $_POST = $gump->sanitize($_POST);       //sanitize $_POST
