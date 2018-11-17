@@ -10,7 +10,7 @@
 {block name=content}
   
 <!-- Content Header (Page header) -->
-{content_header p_title=$page_title pages=$breadcrumb help='http://docs.joachimdieterich.de/index.php?title=Benutzerliste_importieren'}  
+{content_header p_title=$page_title pages=$breadcrumb help='https://curriculumonline.gitbook.io/documentation/benutzerhandbuch/benutzerverwaltung'}  
 
 <!-- Main content -->
 <section class="content">
