@@ -17,7 +17,12 @@
         {if isset($acc_info)}
             {$acc_info}
         {/if}
-        <input id="close"  class="btn btn-primary btn-block btn-flat visible" value="Fenster schließen" onclick="self.close();"></input>
+        {if isset($btn_target)}
+            <input id="close"  class="btn btn-primary btn-block btn-flat visible" value="Fenster schließen" onclick="location.href='{$btn_target}'"></input>
+        {else}
+            <input id="close"  class="btn btn-primary btn-block btn-flat visible" value="Fenster schließen" onclick="self.close();"></input>
+        {/if}
+        
     </div><!-- /.login-box-body -->
     <div class="box-footer">
           <div class="">
