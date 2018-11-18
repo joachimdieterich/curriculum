@@ -98,7 +98,7 @@ class Quote {
                                 default:
                                     break;
                             }
-                            error_log($this->id.': '.$this->terminal_objective_id. ': '. $this->reference_id);
+                            //error_log($this->id.': '.$this->terminal_objective_id. ': '. $this->reference_id);
                             $this->quote         = $this->getQuote('curriculum_content', $_SESSION['CONTEXT'][$this->context_id]->context);
                             $entrys[]            = clone $this;        //it has to be clone, to get the object and not the reference
                         }
