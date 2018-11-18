@@ -37,6 +37,7 @@ class Quote {
     public $creator_id; 
     public $creator; 
     public $curriculum; //for sorting
+    public $terminal_objective_id; //for sorting
    
     public function load($id = null){
         if ($id == null){ $id = $this->id; }
@@ -65,10 +66,11 @@ class Quote {
         if (empty($reference_id)){ return null; } //FIX 
         switch ($dependency) {
             case 'curriculum_content':
-                        $db = DB::prepare('SELECT DISTINCT qus.quote_id, qus.context_id, qus.reference_id, qus.file_context, qus.status, qu.context_id AS qu_context_id, qu.reference_id AS content_id FROM quote_subscriptions AS qus, quote AS qu 
+                        $db = DB::prepare('SELECT DISTINCT qus.quote_id, qus.context_id, qus.reference_id, qus.file_context, qus.status, qu.context_id AS qu_context_id, qu.reference_id AS content_id, ter.id AS terminal_objective_id FROM quote_subscriptions AS qus, quote AS qu, terminalObjectives AS ter
                                             WHERE qu.reference_id IN ('.implode(",", $reference_id).') AND qu.context_id = 15 AND qus.status = 1 AND qu.id = qus.quote_id
+                                            AND ter.id = (SELECT id FROM terminalObjectives WHERE ((qus.context_id = 27 AND id = qus.reference_id) OR (qus.context_id = 12 AND id = (SELECT terminal_objective_id FROM enablingObjectives WHERE id = qus.reference_id))))
                                             AND ((qus.context_id = 27 AND qus.reference_id IN ('.implode(",", $ter_ids).'))
-                                            OR  (qus.context_id = 12 AND qus.reference_id IN ('.implode(",", $ena_ids).'))) ORDER BY qu.reference_id, qus.quote_id');
+                                            OR  (qus.context_id = 12 AND qus.reference_id IN ('.implode(",", $ena_ids).'))) ORDER BY qu.reference_id, qus.quote_id, ter.id');
                         $db->execute(array());
                         while($result = $db->fetchObject()) { 
                             $this->id            = $result->quote_id;
@@ -80,6 +82,7 @@ class Quote {
                                                 $t->id                      = $this->reference_id;
                                                 $t->load();
                                                 $this->terminal_object      = $t;   
+                                                $this->terminal_objective_id= $result->terminal_objective_id;   
                                     break;
                                 case 12:        $e                          = new EnablingObjective();
                                                 $e->id                      = $this->reference_id;
@@ -89,12 +92,13 @@ class Quote {
                                                 $t->id                      = $e->terminal_objective_id;
                                                 $t->load();
                                                 $this->terminal_object      = $t;
+                                                $this->terminal_objective_id= $result->terminal_objective_id;   
                                     break;
 
                                 default:
                                     break;
                             }
-                            //error_log($this->id.': '.$this->reference_id);
+                            error_log($this->id.': '.$this->terminal_objective_id. ': '. $this->reference_id);
                             $this->quote         = $this->getQuote('curriculum_content', $_SESSION['CONTEXT'][$this->context_id]->context);
                             $entrys[]            = clone $this;        //it has to be clone, to get the object and not the reference
                         }
