@@ -2409,6 +2409,7 @@ public static function quote($quotes, $get){
 }
 
 public static function quote_reference($quotes){
+    global $USER;
     $content     = '';  
     if (isset($quotes) AND $quotes != false){
         RENDER::sortByProp($quotes, 'quote_link', 'asc');
@@ -2423,7 +2424,12 @@ public static function quote_reference($quotes){
                 $content .= '<span id ="ct_'.$content_id.'" class="collapse out">';
                 }
                 $content_id = $quotes[$i]->quote_link;
-                $content .= '<div class="col-xs-12 col-sm-6"><h4>Fundstelle im Text:</h4><br><blockquote>'.$quotes[$i]->quote.'<small>, <cite="'.$quotes[$i]->reference_title.'" class="pointer_hand"><a onclick="formloader(\'content\', \'show\','.$quotes[$i]->quote_link.');">'.$quotes[$i]->reference_title.'</a></cite></small></blockquote></div>'; 
+                if (checkCapabilities('reference:update', $USER->role_id, false)){ //just for debugging
+                    $quote_id = '(ID: '.$quotes[$i]->id.') ';
+                } else {
+                   $quote_id = ''; 
+                }
+                $content .= '<div class="col-xs-12 col-sm-6"><h4>Fundstelle im Text:</h4><br><blockquote>'.$quote_id.$quotes[$i]->quote.'<small>, <cite="'.$quotes[$i]->reference_title.'" class="pointer_hand"><a onclick="formloader(\'content\', \'show\','.$quotes[$i]->quote_link.');">'.$quotes[$i]->reference_title.'</a></cite></small></blockquote></div>'; 
                 $c        = new Curriculum();    
                 $c->id    = $quotes[$i]->terminal_object->curriculum_id;
                 $c->load();
