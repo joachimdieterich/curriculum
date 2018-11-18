@@ -2439,20 +2439,17 @@ public static function quote_reference($quotes){
                   $content .= Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $quotes[$i]->enabling_object, 'border_color' => $quotes[$i]->terminal_object->color));
                 }
                 $quote_id = $quotes[$i]->id;   
-                $ter_id   = $quotes[$i]->terminal_object;
                 while (isset($quotes[$i+1])) { //check and render next objective until new quote is given
                     if ($quotes[$i+1]->id == $quote_id){
-                        if ($quotes[$i+1]->id == $quote_id AND $quotes[$i+1]->terminal_object== $ter_id){
+                        if ($quotes[$i+1]->id == $quote_id AND $quotes[$i+1]->terminal_objective_id == $quotes[$i]->terminal_objective_id){
                             if ($quotes[$i+1]->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
                               $content .= Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $quotes[$i+1]->enabling_object, 'border_color' => $quotes[$i+1]->terminal_object->color));
                             }
                         } else {
                             $content .= Render::objective(array('format' => 'reference', 'objective' => $quotes[$i+1]->terminal_object, 'color'));
-                            if ($quotes[$i]->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
+                            if ($quotes[$i+1]->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
                                 $content .= Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $quotes[$i+1]->enabling_object, 'border_color' => $quotes[$i]->terminal_object->color));
-                              }
-                            $quote_id = $quotes[$i+1]->id;   
-                            $ter_id   = $quotes[$i+1]->terminal_object;
+                            }
                         }
                             $i++;    
                     } else {
