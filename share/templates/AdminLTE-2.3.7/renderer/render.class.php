@@ -2448,6 +2448,9 @@ public static function quote_reference($quotes){
                             }
                         } else {
                             $content .= Render::objective(array('format' => 'reference', 'objective' => $quotes[$i+1]->terminal_object, 'color'));
+                            if ($quotes[$i]->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
+                                $content .= Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $quotes[$i+1]->enabling_object, 'border_color' => $quotes[$i]->terminal_object->color));
+                              }
                             $quote_id = $quotes[$i+1]->id;   
                             $ter_id   = $quotes[$i+1]->terminal_object;
                         }
