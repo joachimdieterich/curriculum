@@ -68,7 +68,7 @@ class Quote {
                         $db = DB::prepare('SELECT DISTINCT qus.quote_id, qus.context_id, qus.reference_id, qus.file_context, qus.status, qu.context_id AS qu_context_id, qu.reference_id AS content_id FROM quote_subscriptions AS qus, quote AS qu 
                                             WHERE qu.reference_id IN ('.implode(",", $reference_id).') AND qu.context_id = 15 AND qus.status = 1 AND qu.id = qus.quote_id
                                             AND ((qus.context_id = 27 AND qus.reference_id IN ('.implode(",", $ter_ids).'))
-                                            OR  (qus.context_id = 12 AND qus.reference_id IN ('.implode(",", $ena_ids).'))) ORDER BY qu.reference_id, qus.quote_id, qus.reference_id');
+                                            OR  (qus.context_id = 12 AND qus.reference_id IN ('.implode(",", $ena_ids).'))) ORDER BY qu.reference_id, qus.quote_id, qus.reference_id, qus.context_id, ');
                         $db->execute(array());
                         while($result = $db->fetchObject()) { 
                             $this->id            = $result->quote_id;
