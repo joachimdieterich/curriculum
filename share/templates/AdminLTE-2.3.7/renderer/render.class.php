@@ -2412,7 +2412,6 @@ public static function quote_reference($quotes){
     global $USER;
     $content     = '';  
     if (isset($quotes) AND $quotes != false){
-        RENDER::sortByProp($quotes, 'quote_link', 'asc');
         $content_id = '';
         $quote_max  = count($quotes); //amount of quotes
         for ($i = 0; $i < $quote_max; $i++){
@@ -2435,17 +2434,16 @@ public static function quote_reference($quotes){
                 $c->load();
                 $content .= '<div class="col-xs-12 col-sm-6 pull-right"><h4>'.$c->curriculum.'</h4></div>';
                 $content .= '<div class="col-xs-12 col-sm-6 pull-right">';
-                if ($quotes[$i]->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
-                  $content .= Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $ref->enabling_object, 'border_color' => $ref->terminal_object->color));
-                }
                 $content .= Render::objective(array('format' => 'reference', 'objective' => $quotes[$i]->terminal_object, 'color'));
+                if ($quotes[$i]->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
+                  $content .= Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $quotes[$i]->enabling_object, 'border_color' => $quotes[$i]->terminal_object->color));
+                }
                 $quote_id = $quotes[$i]->id;   
                 while (isset($quotes[$i+1])) { //check and render next objective until new quote is given
                     if ($quotes[$i+1]->id == $quote_id){
                         if ($quotes[$i+1]->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
                           $content .= Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $quotes[$i+1]->enabling_object, 'border_color' => $quotes[$i+1]->terminal_object->color));
                         }
-                        $content .= Render::objective(array('format' => 'reference', 'objective' => $quotes[$i+1]->terminal_object, 'color'));
                         $i++;    
                     } else {
                         break;
