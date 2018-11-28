@@ -40,7 +40,7 @@ $(window).on("popstate", function() {
 
 {block name=content}
 <!-- Content Header (Page header) -->
-{content_header p_title=$page_title pages=$breadcrumb help=''}       
+{content_header p_title=$page_title pages=$breadcrumb help='https://curriculumonline.gitbook.io/documentation/'}       
 <!-- Main content -->
 <section class="content">
     <div class="row">

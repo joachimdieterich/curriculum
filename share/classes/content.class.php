@@ -62,12 +62,45 @@ class Content {
     }
     
     public function delete(){
-        global $USER, $LOG;
+        global $USER, $LOG, $PAGE;
+        $ref_id = $this->reference_id; //load possible reference over js del function
         checkCapabilities('content:delete', $USER->role_id);
         $this->load();
         $LOG->add($USER->id, 'content.class.php', dirname(__FILE__), 'Delete content: '.$this->title.', creator_id: '.$this->creator_id);
-        $db = DB::prepare('DELETE FROM content WHERE id = ?');
-        return $db->execute(array($this->id));
+        /* ONLY DELETE IF NOT SUBSCRIBED */
+        $db00     = DB::prepare('SELECT COUNT(id) FROM content_subscriptions WHERE content_id = ?');
+        $db00->execute(array($this->id));
+        $count  = $db00->fetchColumn();
+        if ($count > 1){
+            /* delete entry from content_subscriptions */
+            if (is_integer($ref_id)){
+                $db01 = DB::prepare('DELETE FROM content_subscriptions WHERE content_id = ? AND reference_id = ?');
+                $db01->execute(array($this->id, $ref_id)); 
+            } else {
+                $db01a = DB::prepare('DELETE FROM content_subscriptions WHERE content_id = ? ');
+                $db01a->execute(array($this->id));
+            }
+            return false; 
+        } else {
+            $db02 = DB::prepare('DELETE FROM content WHERE id = ?');
+            if ($db02->execute(array($this->id))){
+                /* check for quotes in deleted content*/
+                $db03     = DB::prepare('SELECT * FROM quote WHERE context_id = ? AND reference_id = ?');
+                $db03->execute(array($_SESSION['CONTEXT']['content']->context_id, $this->id));
+                while($result = $db03->fetchObject()) { 
+                    /* delete entry from quote_subscriptions */
+                    //error_log(json_encode($result));
+                    $db04 = DB::prepare('DELETE FROM quote_subscriptions WHERE quote_id = ?');
+                    $db04->execute(array($result->id));
+                    /* delete entry from quote */
+                    $db05 = DB::prepare('DELETE FROM quote WHERE id = ?');
+                    $db05->execute(array($result->id));
+                }
+                return true;
+            } else {
+                return false;
+            } 
+        }     
     } 
     
     public function load($dependency = 'id', $value = null){

@@ -52,7 +52,7 @@ class Form {
         $class_right    = 'col-sm-9';
         foreach($params as $key => $val) { $$key = $val; }   
 
-        return "<div class=\"form-group\">
+        return "<div id=\"{$id}_form_group\"class=\"form-group\">
                   <label class=\"control-label {$class_left}\" for=\"{$id}\">{$label}</label>
                   <div class=\"{$class_right}\">{$content}</div>
                 </div>";
@@ -76,7 +76,7 @@ class Form {
             case 'int':    $type = 'number'; break;
             default: break;
         }
-        $form = "<div id='form-group_{$id}' class='form-group ".validate_msg($error, $id, true)."'>
+        $form = "<div id='{$id}_form_group' class='form-group ".validate_msg($error, $id, true)."'>
                   <label class='control-label {$class_left}' for='{$id}'>{$label}</label>
                   <div class='{$class_right}'>".validate_msg($error, $id)."<input id='{$id}' name='{$id}' type='{$type}'";
                   if ($min) {$form .= "min='{$min}'";}
@@ -97,7 +97,7 @@ class Form {
     }
     
     public static function input_textarea($id, $label, $input, $error, $placeholder ='Text...', $class_left='col-sm-3', $class_right='col-sm-9'){
-        $form  = "<div class='form-group ".validate_msg($error, $id, true)."'><label class='control-label {$class_left}' for='{$id}'>{$label}</label>
+        $form  = "<div id='{$id}_form_group' class='form-group ".validate_msg($error, $id, true)."'><label class='control-label {$class_left}' for='{$id}'>{$label}</label>
                   <div class='{$class_right}'>
                   <textarea id='{$id}' name='{$id}' class='ckeditor' rows='10' cols='80' style='visibility: hidden; display: none;'>";
         if (isset($input)) { 
@@ -112,7 +112,7 @@ class Form {
     }
     
     public static function input_checkbox($id, $label, $input, $error, $type='checkbox', $onclick='', $class_left='col-sm-3', $class_right='col-sm-9'){
-        $form = '<div class="form-group '.validate_msg($error, $id, true).'">
+        $form = '<div id="'.$id.'_form_group" class="form-group '.validate_msg($error, $id, true).'">
                   <div class="col-sm-offset-3 '.$class_right.'">
                   <div class="checkbox"><label>
                   <input id="'.$id.'" name="'.$id.'" type="'.$type.'"';
@@ -126,7 +126,7 @@ class Form {
     }
     
     public static function input_switch($id, $label, $input, $error, $show_id = false, $class_left='col-sm-3', $class_right='col-sm-9'){
-        $form = '<div class="form-group '.validate_msg($error, $id, true).'">
+        $form = '<div id="'.$id.'_form_group" class="form-group '.validate_msg($error, $id, true).'">
                   <label class="control-label '.$class_left.'" for="'.$id.'">'.$label;
         if ($show_id){
             $form .='<br><small>'.$id.'</small>';
@@ -161,7 +161,7 @@ class Form {
      */
     public static function input_select($id, $label, $select_data, $select_label, $select_value, $input, $error, $onchange= '', $placeholder ='---', $class_left='col-sm-3', $class_right='col-sm-9', $disabled = ''){
         $limiter        = ' '; //todo: $params array 
-        $form = '<div class="form-group '.validate_msg($error, $id, true).'">';
+        $form = '<div id="'.$id.'_form_group" class="form-group '.validate_msg($error, $id, true).'">';
         if ($class_left != ''){ // if left class is empty no label is set
             $form .= ' <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>';
         }
@@ -205,7 +205,7 @@ class Form {
         $limiter        = ' ';
         foreach($params as $key => $val) { $$key = $val; }
         
-        $form = '<div class="form-group '.validate_msg($error, $id, true).'">
+        $form = '<div id="'.$id.'_form_group" class="form-group '.validate_msg($error, $id, true).'">
                     <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
                     <div class="'.$class_right.'">
                         <select multiple id="'.$id.'" name="'.$id.'[]" class="select2 form-control" style="height:'.$height.';" onchange="'.$onchange.'">';
@@ -243,7 +243,7 @@ class Form {
         foreach($params as $key => $val) {
             $$key = $val;
         }
-        $form = '<div class="form-group">
+        $form = '<div id="'.$id.'_form_group" class="form-group">
                     <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
                     <div class="'.$class_right.'">'.validate_msg($error, $id).'    
                         <div id="colorpicker" class="input-group color-picker colorpicker-element" >
@@ -264,7 +264,7 @@ class Form {
         foreach($params as $key => $val) {
             $$key = $val;
         }
-        $form = ' <div class="form-group">
+        $form = '<div id="'.$id.'_form_group" class="form-group">
                     <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
                     <div class="'.$class_right.'">'.validate_msg($error, $id).'    
                         <div class="input-group">
@@ -291,7 +291,7 @@ class Form {
     public static function input_dropdown($id, $label, $select_data, $select_label, $select_value, $input, $error, $onclick= '', $placeholder ='---'){
         $class          =  "notifications-menu";
         $count_semester = count($select_data);
-        $form = '<li class="dropdown '.$class.'" data-toggle="tooltip" data-placement="bottom" title="Schule/Zeitraum wechseln">
+        $form = '<li id="'.$id.'_dropdown" class="dropdown '.$class.'" data-toggle="tooltip" data-placement="bottom" title="Schule/Zeitraum wechseln">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="padding: 15px 8px 15px 8px;">
                       <i class="fa fa-history"></i>';
                       //<span class="label label-warning">'.$count_semester.'</span>
@@ -399,8 +399,8 @@ class Form {
         }
 
         $html = '<div id="'.$target.'" class="modal-dialog" style="overflow-y: initial !important;" >
-                    <div id="modal" class="modal-content" onmousedown="dragstart(this)"><!-- height is dynamic set by popupFunction() -->
-                        <div class="modal-header">';
+                    <div id="modal" class="modal-content" ><!-- height is dynamic set by popupFunction() -->
+                        <div class="modal-header" onmousedown="dragstart(this)">';
                         if (isset($h_content)){
                             $html .= $h_content;
                         } else {

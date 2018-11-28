@@ -49,8 +49,7 @@
             }
             defaultTop  = findTopPos($("#container_walletuserPaginator")[0]);  
             small       = false;
-            floating_table('body-wrapper', defaultTop, 'widgetuserPaginator', ['username'], 'menu_top_placeholder', 'container_walletuserPaginator', 'default_walletuserPaginator_position');
-            
+            floating_table('body-wrapper', 'widgetuserPaginator', ['username'], 'menu_top_placeholder', 'container_walletuserPaginator', 'default_walletuserPaginator_position'); 
         });
     </script>
     
@@ -97,7 +96,7 @@
 
 {block name=content}
 <!-- Content Header (Page header) -->
-{content_header p_title=$page_title pages=$breadcrumb help=''}       
+{content_header p_title=$page_title pages=$breadcrumb help='https://curriculumonline.gitbook.io/documentation/'}       
 <!-- Main content -->
 <section class="content">
     <div class="row">
@@ -144,22 +143,32 @@
                     <strong>{$wallet->title}</strong><br>{$wallet->timerange}
                 </div>
                 <div class="panel-body">
-                    
                     {if isset($walletuserPaginator)}   
                     <p> Bitte  Schüler aus der Liste auswählen um die Sammelmappe zu sehen.</p>
                     <div id="default_walletuserPaginator_position" >
-                            {html_paginator id='walletuserPaginator' title='Freigaben'} 
+                        {html_paginator id='walletuserPaginator' title='Freigaben'} 
                     </div>
                 {else}<p> Die Sammelmappe wurde keinem Benutzer freigegeben</p>{/if}
                     <div class="alert alert-info">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                         {$wallet->description}<br>
-                        
+                        {assign var="ter_obj_id" value='false'} 
                         {foreach key=oid item=o from=$objectives}
                             {if $sel_user_id AND $my_role_id != 0}
-                                <div style="display:inline-table">{RENDER::objective(["type" =>"enabling_objective", "objective" => $o , "user_id" => $sel_user_id])}</div>
+                                {if $ter_obj_id eq $o->terminal_objective_id}
+                                    <div style="display:inline-table">{RENDER::objective(["type" =>"enabling_objective", "objective" => $o , "user_id" => $sel_user_id])}</div>
+                                {else}
+                                    <div style="display:inline-table">{RENDER::objective(["type" =>"enabling_objective", "objective" => $o , "user_id" => $sel_user_id, "show_parents" => true])}</div>
+                                {/if}
+                                {assign var="ter_obj_id" value=$o->terminal_objective_id} 
                             {else}
-                                <div style="display:inline-table">{RENDER::objective(["type" =>"enabling_objective", "objective" => $o ])}</div>
+                                {if $ter_obj_id eq $o->terminal_objective_id}
+                                     <div style="display:inline-table">{RENDER::objective(["type" =>"enabling_objective", "objective" => $o])}</div>
+                                {else}
+                                    <div style="display:inline-table">{RENDER::objective(["type" =>"enabling_objective", "objective" => $o, "show_parents" => true])}</div>
+                                {/if}
+                                
+                                {assign var="ter_obj_id" value=$o->terminal_objective_id} 
                             {/if}
                         {/foreach}
                     </div>

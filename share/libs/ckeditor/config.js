@@ -24,6 +24,8 @@ CKEDITOR.editorConfig = function( config ) {
   config.toolbar = "Full";
   config.toolbarCanCollapse = true;
   config.allowedContent = true;
+  config.fillEmptyBlocks = false;
+  config.tabSpaces = 0;
   config.mathJaxLib = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML';
   CKEDITOR.dtd.$removeEmpty['i'] = false;
   CKEDITOR.dtd.$removeEmpty.i = 0;

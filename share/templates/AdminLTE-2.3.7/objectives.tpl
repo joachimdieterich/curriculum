@@ -26,7 +26,7 @@
 
 {block name=content} 
 <!-- Content Header (Page header) -->
-{content_header p_title=$page_title pages=$breadcrumb help='http://docs.joachimdieterich.de/index.php?title=Lernstand'}   
+{content_header p_title=$page_title pages=$breadcrumb help='https://curriculumonline.gitbook.io/documentation/benutzerhandbuch/lernstand'}   
 
 <!-- Main content, id section_content used to reload content with ajax-->
 <section id="section_content" class="content">

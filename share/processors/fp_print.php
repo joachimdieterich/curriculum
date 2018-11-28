@@ -73,6 +73,31 @@ switch ($func) {
                                 $content .= '<pagebreak orientation="portrait"/>';
                             }
                         }
+                        if (isset($_POST['print_curriculum_matrix'])){ /* print curriculum matrix content*/
+                                $cur      = new Curriculum();
+                                $cur->id  = $id;
+                                $cur->load();
+                                $content .= '<h1>'.$cur->curriculum.'</h1>';
+                                $content .= '<img src="'.$CFG->access_id_url.$cur->icon_id.'"  style="width:100%;" ></p>';
+                                $content .= '<small>'.$cur->description.'</small>';
+                            
+                                $content .= '<pagebreak orientation="landscape"/>';
+                                $content .= '<table style="width:100%; border-collapse: collapse;border: 1px solid #EBEBEB;">';
+                            foreach ($ter as $ter_value){
+                                /*Row*/
+                                $content .= '<tr style="background: '.$ter_value->color.'">';
+                                $content .= '<td valign="top" style="padding:5px;"><small>'.strip_tags($ter_value->terminal_objective).'</small></td>';
+                                foreach($ter_value->enabling_objectives AS $ena_value){
+                                    $content    .= '<td valign="top" style="padding:5px;"><small>'.strip_tags($ena_value->enabling_objective).'</small></td>';
+                                }
+                                '</tr>';
+                            }
+                            $content .= '</table>';
+                            
+                            if (count($ter) > 0){
+                                $content .= '<pagebreak orientation="portrait"/>';
+                            }
+                        }
                         if (isset($_POST['print_content'])){ /* print curriculum content*/
                             if ($pagebreak){
                                 $content .= '<pagebreak>';
@@ -170,7 +195,7 @@ $_SESSION['FORM']                  = null;                     // reset Session 
 
 $_SESSION['PAGE']->print          = new stdClass();
 $_SESSION['PAGE']->print->content = $content;
-
+Statistic::setStatistics($_SESSION['CONTEXT']['print']->context_id, $id); 
 
 header('Location:'.$_SESSION['PAGE']->target_url);
 

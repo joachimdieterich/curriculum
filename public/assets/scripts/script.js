@@ -40,21 +40,37 @@ function switchValue(ElementID){
         document.getElementById(ElementID).value = 'true';
     }
 }
-
-function toggle(){ 
-    for(var i = 0, j = arguments[0].length; i < j; ++i) {
-        if ($(document.getElementById(arguments[0][i])).hasClass("hidden")){
-            $(document.getElementById(arguments[0][i])).removeClass("hidden");
+/* toggle visibility of argument[0] and argument[1] (once). If argument[2] (=id of checkbox) is given, the toggle works in both directions */
+function toggle(){ //deprecated
+    if (typeof(arguments[2]) !== 'undefined'){ 
+        if ($('#'+arguments[2]).is(':checked')){
+            first_array = "visible";
+            second_array = "hidden";
+        } else {
+            first_array = "hidden";
+            second_array = "visible";
         }
-        $(document.getElementById(arguments[0][i])).addClass("visible");
+    } else {
+        first_array = "visible";
+        second_array = "hidden";
     }
-    for(var i = 0, j = arguments[1].length; i < j; ++i) {
-        if ($(document.getElementById(arguments[1][i])).hasClass("visible")){
-            $(document.getElementById(arguments[1][i])).removeClass("visible");
+    
+    for(var i = 0, j = arguments[0].length; i < j; ++i) {
+        if ($(document.getElementById(arguments[0][i])).hasClass(second_array)){
+            $(document.getElementById(arguments[0][i])).removeClass(second_array);
         }
-        $(document.getElementById(arguments[1][i])).addClass("hidden");
-    }	
+            $(document.getElementById(arguments[0][i])).addClass(first_array);
+        }
+    for(var i = 0, j = arguments[1].length; i < j; ++i) {
+        if ($(document.getElementById(arguments[1][i])).hasClass(first_array)){
+            $(document.getElementById(arguments[1][i])).removeClass(first_array);
+        }
+        $(document.getElementById(arguments[1][i])).addClass(second_array);
+    }
+    	
 }
+
+
 function toggle_sidebar(){
     if ($(document.getElementById(arguments[0])).hasClass("sidebar-collapse")){
         $(document.getElementById(arguments[0])).removeClass("sidebar-collapse");
@@ -581,9 +597,9 @@ function formloader(/*form, func, id, []*/){
 function processor(/*proc, func, val, [..., reload = false], pluginpath*/){ // if reload = false: prevent reload
     reload = true;
     if (typeof(arguments[3]) !== 'undefined'){
-        if(arguments[3].reload == 'undefined'){ //do nothing, reload already set
+        if(typeof(arguments[3].reload) == 'undefined'){ //don't reload
             reload = false;
-        } 
+        } // else not needed ->reload already set.
     } 
     
     if (typeof(arguments[4]) !== 'undefined'){
@@ -1065,7 +1081,7 @@ $.ajax({
     data: { id: $(obj).attr('id'), value: $(obj).val(), table: table, func: 'ajaxsubmit', params: params},
     type: 'post'
 }).done(function(responseData) {
-    $("#form-group_"+jQuerySelectorEscape($(obj).attr('id'))).addClass( "has-success");
+    $("#"+jQuerySelectorEscape($(obj).attr('id'))+"_form_group").addClass( "has-success");
     console.log('Done: ', responseData);
 }).fail(function() {
     console.log('Failed');

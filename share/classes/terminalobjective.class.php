@@ -246,8 +246,14 @@ class TerminalObjective {
                                             $this->files['references']  += $res_04d->MAX;
                                         }
                                         /*check for quotes, yet only for terminal objectives*/
-                                        $quote       = new Quote();
-                                        $this->files['references']  += count($quote->get($_SESSION['CONTEXT']['terminal_objective']->context_id, $result->id)); //todo: add new count func to quote.class.php to get faster processing
+                                        $quote  = new Quote();
+                                        $quotes = $quote->get($_SESSION['CONTEXT']['terminal_objective']->context_id, $result->id);
+                                        if ($quotes == false){
+                                            $this->files['references'] += 0; 
+                                        } else {
+                                            $this->files['references']  += count($quotes); //todo: add new count func to quote.class.php to get faster processing
+                                        }
+                                        
                                     } else {
                                         $db_04       = DB::prepare('SELECT COUNT(*) AS MAX FROM reference WHERE context_id = ? AND reference_id = ?');
                                         $db_04->execute(array( $_SESSION['CONTEXT']['terminal_objective']->context_id, $result->id));

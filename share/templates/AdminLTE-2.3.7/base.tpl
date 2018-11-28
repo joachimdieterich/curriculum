@@ -320,17 +320,16 @@
         var dragx = 0;
         var dragy = 0;
 
-       // Mausposition
-       var posx = 0;
-       var posy = 0;
+        // Mausposition
+        var posx = 0;
+        var posy = 0;
 
 
     function dragstart(element) {
        //Wird aufgerufen, wenn ein Objekt bewegt werden soll.
-
-      dragobjekt = element;
-      dragx = posx - dragobjekt.offsetLeft;
-      dragy = posy - dragobjekt.offsetTop;
+        dragobjekt = document.getElementById('modal');
+        dragx = posx - dragobjekt.offsetLeft;
+        dragy = posy - dragobjekt.offsetTop;
     }
 
 
@@ -352,7 +351,7 @@
       }
     }
 
-    </script> 
+    </script>
     <!-- popup drag -->
     {/literal}
      <script src="{$lib_url}MathJax-master/MathJax.js"></script><!-- MathJax-->

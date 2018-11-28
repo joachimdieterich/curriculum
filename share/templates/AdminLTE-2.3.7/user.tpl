@@ -25,7 +25,7 @@
 {block name=content}
     
 <!-- Content Header (Page header) -->
-{content_header p_title=$page_title pages=$breadcrumb help='http://docs.joachimdieterich.de/index.php?title=Benutzerverwaltung'}      
+{content_header p_title=$page_title pages=$breadcrumb help='https://curriculumonline.gitbook.io/documentation/benutzerhandbuch/benutzerverwaltung'}      
   
 <!-- Main content -->
 <section class="content">
@@ -44,8 +44,13 @@
                             </button>
                         {/if}
                         {if checkCapabilities('user:userListComplete', $my_role_id, false)}
-                        <button type="button" class="btn btn-default" onclick="location.href='index.php?action=user&lost=true';"><a  href="#">
-                            <span class="fa fa-group" aria-hidden="true"></span> Nicht zugeordnete Benutzer</a>
+                        <button type="button" class="btn btn-default" onclick="location.href='index.php?action=user&filter=lost';"><a  href="#">
+                            <span class="fa fa-users" aria-hidden="true"></span> Nicht zugeordnete Benutzer</a>
+                        </button>
+                        {/if}
+                        {if checkCapabilities('user:userListComplete', $my_role_id, false)}
+                        <button type="button" class="btn btn-default" onclick="location.href='index.php?action=user&filter=register';"><a  href="#">
+                            <span class="fa fa-user-times" aria-hidden="true"></span> offene Registrierungen</a>
                         </button>
                         {/if}
                     </div>
@@ -80,6 +85,9 @@
                                 {/if}
                                 {if checkCapabilities('user:updateRole', $my_role_id, false)}
                                     <li {if isset($f_institution)}class="active"{/if}><a href="#f_institution" data-toggle="tab">Institution / Rolle</a></li>
+                                {/if}
+                                {if checkCapabilities('user:userListComplete', $my_role_id, false)}
+                                    <li {if isset($f_register)}class="active"{/if}><a href="#f_register" data-toggle="tab"><span class="text-warning">Registerung bestätigen</span></a></li>
                                 {/if}
                                 {if checkCapabilities('user:delete', $my_role_id, false)}
                                     <li {if isset($f_delete)}class="active"{/if}><a href="#f_delete" data-toggle="tab"><span class="text-danger">löschen</span></a></li>
@@ -136,6 +144,14 @@
                                             {Form::input_button(['id' => 'expelInstitution', 'label' => 'ausschreiben', 'icon' => 'fa fa-minus-circle', 'class' => 'btn btn-default'])}
                                         {/if} 
                                         </div>
+                                        </div>
+                                    </div>
+                                {/if}
+                                {if checkCapabilities('user:userListComplete', $my_role_id, false)}
+                                    <div id="f_register" class="tab-pane row {if isset($f_register)}active{/if}" >
+                                        <div class="form-horizontal col-xs-12">
+                                            {Form::info(['id' => 'user_info', 'content' => 'Registerung für die markierten Benutzer bestätigen.'])}
+                                            {Form::input_button(['id' => 'acceptUser', 'label' => 'Benutzer bestätigen', 'icon' => 'fa fa-user-plus', 'class' => 'btn btn-default'])}
                                         </div>
                                     </div>
                                 {/if}

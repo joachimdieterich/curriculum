@@ -9,7 +9,7 @@
 
 {block name=content}
 <!-- Content Header (Page header) -->
-{content_header p_title=$page_title pages=$breadcrumb help='http://docs.joachimdieterich.de/index.php?title=Lehrplan_anlegen'} 
+{content_header p_title=$page_title pages=$breadcrumb help='https://curriculumonline.gitbook.io/documentation/benutzerhandbuch/lehrplan'} 
 <!-- Main content -->
 <section class="content">
     <div class="row">

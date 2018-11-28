@@ -79,12 +79,17 @@ if (isset($_GET['func'])){
         case "show":    $content        = new Content();
                         $content->load('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
                         if (checkCapabilities('content:delete', $USER->role_id, false, true)){
-                            $options   .= '<a onclick="del(\'content\','.$content->id.');" class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-trash"></i></a>';
-                        }
-                        if (checkCapabilities('content:update', $USER->role_id, false, true)){
-                            $options   .= '<a onclick="formloader(\'content\', \'edit\','.$content->id.')" class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-edit"></i></a>';
+                            if (isset($_SESSION['PAGE']->curriculum)){
+                                $ref_id = ', '.$_SESSION['PAGE']->curriculum;
+                            }
+                            $options   .= '<a onclick="del(\'content\','.$content->id.''.$ref_id.');" class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-trash"></i></a>';
                         }
                         $label_header   = $content->title;
+                        if (checkCapabilities('content:update', $USER->role_id, false, true)){
+                            $label_header   = $content->title.'<small> (ID:'.$content->id.')</small>' ; //show id 
+                            $options   .= '<a onclick="formloader(\'content\', \'edit\','.$content->id.')" class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-edit"></i></a>';
+                        }
+                        
                         /*$html           = '';
                         $ter     = new TerminalObjective();
                         $ter->id = 325;

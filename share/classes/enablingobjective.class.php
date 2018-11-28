@@ -194,13 +194,9 @@ class EnablingObjective {
             $res_02 = $db_02->fetchObject();
             $this->files['local']       = $res_02->MAX;
             $this->files['repository'] = 0;
-            if (isset($CFG->settings->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
-                $this->files['repository'] += repository_plugin_base::count_child_repos($CFG->settings->repository, $result->id, 'enabling_objective');
-            } 
-            if (isset($CFG->settings->webservice)){ // prüfen, ob webservice Plugin vorhanden ist.
-                $ws     = get_plugin('webservice', $CFG->settings->webservice);
-                $this->files['webservice']  = $ws->count($_SESSION['CONTEXT']['enabling_objective']->id,$result->id);
-            }
+            $this->count_in_repos();                        //count linked files in repos
+            $this->count_in_webservice();                   //count linked ressources in webservices
+            $this->count_references();                      //store amount in $this->files['references']  
         }   
     }
     /**
@@ -256,21 +252,11 @@ class EnablingObjective {
                                     $db_03 = DB::prepare('SELECT COUNT(*) AS MAX FROM files AS fi WHERE ena_id = ? AND context_id = 2');
                                     $db_03->execute(array($result->id));
                                     $res_03 = $db_03->fetchObject();
-                                    $this->files['local'] = $res_03->MAX; //nummer of materials
+                                    $this->files['local'] = $res_03->MAX;           //nummer of materials
                                     $this->files['repository'] = 0;
-                                    if (isset($CFG->settings->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
-                                        $this->files['repository'] += repository_plugin_base::count_child_repos($CFG->settings->repository, $result->id, 'enabling_objective');
-                                    }
-                                    
-                                    if (isset($CFG->settings->webservice)){ // prüfen, ob webservice Plugin vorhanden ist.
-                                        $ws     = get_plugin('webservice', $CFG->settings->webservice);
-                                        $this->files['webservice']  = $ws->count($_SESSION['CONTEXT']['enabling_objective']->id,$result->id);
-                                    }
-                                    /* Check if references are available for this enabling objective*/
-                                    $db_04       = DB::prepare('SELECT COUNT(*) AS MAX FROM reference WHERE context_id = ? AND reference_id = ?');
-                                    $db_04->execute(array( $_SESSION['CONTEXT']['enabling_objective']->context_id, $result->id));
-                                    $res_04 = $db_04->fetchObject();
-                                    $this->files['references']  = $res_04->MAX;
+                                    $this->count_in_repos();                        //count linked files in repos
+                                    $this->count_in_webservice();                   //count linked ressources in webservices
+                                    $this->count_references();                      //store amount in $this->files['references']
                                     
                                     $objectives[]               = clone $this; 
                                 }  
@@ -373,30 +359,17 @@ class EnablingObjective {
                                     $res_03 = $db_03->fetchObject();
                                     $this->files['local'] = $res_03->MAX; //nummer of materials
                                     $this->files['repository'] = 0;
-                                    if (isset($CFG->settings->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
-                                        $this->files['repository'] += repository_plugin_base::count_child_repos($CFG->settings->repository, $result->id, 'enabling_objective');
-                                    }
-                                    if (isset($CFG->settings->webservice)){ // prüfen, ob webservice Plugin vorhanden ist.
-                                        $ws     = get_plugin('webservice', $CFG->settings->webservice);
-                                        $this->files['webservice']  = $ws->count($_SESSION['CONTEXT']['enabling_objective']->id,$result->id);
-                                    }
+                                    $this->count_in_repos();                        //count linked files in repos
+                                    $this->count_in_webservice();                   //count linked ressources in webservices
+                                    
                                     /* Check if references are available for this enabling objective*/
                                     if (is_array($reference_ter_ids) OR is_array($reference_ena_ids)){ //check if view mode == reference_view
-                                        $db_04c       = DB::prepare('SELECT COUNT(*) AS MAX FROM reference WHERE context_id = ? AND reference_id IN ('.implode(",", $reference_ter_ids).') AND unique_id IN (SELECT unique_id FROM reference WHERE context_id = ? AND reference_id = ?)');
-                                        $db_04c->execute(array( $_SESSION['CONTEXT']['terminal_objective']->context_id, $_SESSION['CONTEXT']['enabling_objective']->context_id, $result->id));
-                                        $res_04c = $db_04c->fetchObject();
-                                        $this->files['references']  = $res_04c->MAX;
-                                        if ($res_04c->MAX == 0){ // only check ena ids if nothing found yet
-                                            $db_04d       = DB::prepare('SELECT COUNT(*) AS MAX FROM reference WHERE context_id = ? AND reference_id IN ('.implode(",", $reference_ena_ids).') AND unique_id IN (SELECT unique_id FROM reference WHERE context_id = ? AND reference_id = ?)');
-                                            $db_04d->execute(array( $_SESSION['CONTEXT']['enabling_objective']->context_id, $_SESSION['CONTEXT']['enabling_objective']->context_id, $result->id));
-                                            $res_04d = $db_04d->fetchObject();
-                                            $this->files['references']  += $res_04d->MAX;
+                                        $this->count_references('terminal_objective',$reference_ter_ids); //store amount in $this->files['references']
+                                        if ($this->files['references'] == 0){ // only check ena ids if nothing found yet
+                                            $this->count_references('enabling_objective',$reference_ena_ids); //store amount in $this->files['references']
                                         }
                                     } else {
-                                        $db_04       = DB::prepare('SELECT COUNT(*) AS MAX FROM reference WHERE context_id = ? AND reference_id = ?');
-                                        $db_04->execute(array( $_SESSION['CONTEXT']['enabling_objective']->context_id, $result->id));
-                                        $res_04 = $db_04->fetchObject();
-                                        $this->files['references']  = $res_04->MAX;
+                                        $this->count_references(); //store amount in $this->files['references']
                                     }
                                     
                                     /* Check if Quiz is available for this enabling objective*/
@@ -828,6 +801,48 @@ class EnablingObjective {
         }
     }
     
+    
+    /* Count references for this enabling objective*/
+    public function count_references($dependency = 'enabling_objective', $objective_array = false){
+        switch ($dependency){
+            case 'terminal_objective':
+                        if (is_array($objective_array)){
+                        $db = DB::prepare('SELECT COUNT(*) AS MAX FROM reference WHERE context_id = ? AND reference_id IN ('.implode(",", $objective_array).') AND unique_id IN (SELECT unique_id FROM reference WHERE context_id = ? AND reference_id = ?)');
+                        $db->execute(array($_SESSION['CONTEXT']['terminal_objective']->context_id, $_SESSION['CONTEXT']['enabling_objective']->context_id, $this->id));
+                        $r  = $db->fetchObject();
+                        $this->files['references']  = $r->MAX;
+                        }
+                break;
+            case 'enabling_objective':  
+            default:    if (is_array($objective_array)){
+                            $db = DB::prepare('SELECT COUNT(*) AS MAX FROM reference WHERE context_id = ? AND reference_id IN ('.implode(",", $objective_array).') AND unique_id IN (SELECT unique_id FROM reference WHERE context_id = ? AND reference_id = ?)');
+                            $db->execute(array($_SESSION['CONTEXT']['enabling_objective']->context_id, $_SESSION['CONTEXT']['enabling_objective']->context_id, $this->id));
+                            $r  = $db->fetchObject();
+                            $this->files['references']  += $r->MAX;
+                        } else {
+                            $db = DB::prepare('SELECT COUNT(*) AS MAX FROM reference WHERE context_id = ? AND reference_id = ?');
+                            $db->execute(array($_SESSION['CONTEXT']['enabling_objective']->context_id, $this->id));
+                            $r  = $db->fetchObject();
+                            $this->files['references']  = $r->MAX;
+                        }
+                break;
+        }
+    }
+    
+    public function count_in_repos(){
+        global $CFG;
+        if (isset($CFG->settings->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
+            $this->files['repository'] += repository_plugin_base::count_child_repos($CFG->settings->repository, $this->id, 'enabling_objective');
+        } 
+    }
+    
+    public function count_in_webservice(){
+        global $CFG;
+        if (isset($CFG->settings->webservice)){ // prüfen, ob webservice Plugin vorhanden ist.
+            $ws     = get_plugin('webservice', $CFG->settings->webservice);
+            $this->files['webservice']  = $ws->count($_SESSION['CONTEXT']['enabling_objective']->id,$this->id);
+        }
+    }
     /**
     * function used during the install process to set up creator id to new admin
     * @return boolean

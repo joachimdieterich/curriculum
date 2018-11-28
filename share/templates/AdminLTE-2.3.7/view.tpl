@@ -63,8 +63,8 @@
 
 {block name=content}
 <!-- Content Header (Page header) -->
-{if isset($showaddObjectives)}{assign var="help" value="http://docs.joachimdieterich.de/index.php?title=Lehrplan_anlegen"}
-{else}{assign var="help" value="http://docs.joachimdieterich.de/index.php?title=Lehrplan"}{/if}
+{if isset($showaddObjectives)}{assign var="help" value="https://curriculumonline.gitbook.io/documentation/benutzerhandbuch/benutzerverwaltung"}
+{else}{assign var="help" value="https://curriculumonline.gitbook.io/documentation/benutzerhandbuch/benutzerverwaltung"}{/if}
 {content_header p_title="{$course[0]->curriculum}" pages=$breadcrumb help= $help}       
 
 <!-- Main content -->

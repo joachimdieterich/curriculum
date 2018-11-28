@@ -1933,7 +1933,7 @@ class Render {
                             $enroled_groups     = $cur->getGroupsByUserAndCurriculum($USER->id);
                             $file_id            = $cur->icon_id;
                             $widget_onclick     = "location.href='index.php?action=view&curriculum_id={$nb_reference_id}&group={$enroled_groups[0]->group_id}';";
-                            if (checkCapabilities('navigator:add', $USER->role_id, false)){
+                            if (checkCapabilities('navigator:update', $USER->role_id, false)){
                             $opt[]              = '<a type="button" style="color:#FFF;" class="fa fa-edit" onclick="formloader(\'navigator_item\', \'edit\','.$nb_id.', {\'nb_navigator_view_id\':\''.$nb_navigator_view_id.'\'})";></a>';
                             $html               = RENDER::paginator_widget(array('widget_title' => $nb_title, 'widget_desc' => $nb_description, 'file_id' => $file_id, 'widget_onclick' => $widget_onclick, 'opt' => $opt, 'global_onclick' => true));
                             } else {
@@ -1943,7 +1943,7 @@ class Render {
                     break;
                 case 15:    $content            = new Content();
                             $content->load('id', $nb_reference_id);
-                            if (checkCapabilities('navigator:add', $USER->role_id, false)){
+                            if (checkCapabilities('navigator:update', $USER->role_id, false)){
                                 $html          .= RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool" onclick="formloader(\'content\',\'edit\', \''.$nb_reference_id.'\')"><i class="fa fa-edit"></i></button><button class="btn btn-box-tool" onclick="processor(\'print\',\'content\', \''.$nb_reference_id.'\')"><i class="fa fa-print"></i></button><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_onclick' => 'data-widget="collapse"', 'header_content' => $content->title, 'content_id' => $nb_reference_id, 'body_content' => $content->content));
                             } else {
                                 $html          .= RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool" onclick="processor(\'print\',\'content\', \''.$nb_reference_id.'\')"><i class="fa fa-print"></i></button><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_onclick' => 'data-widget="collapse"', 'header_onclick' => 'data-widget="collapse"', 'header_content' => $content->title, 'content_id' => $nb_reference_id, 'body_content' => $content->content));
@@ -2350,100 +2350,118 @@ public static function render_reference_entry($ref, $context_id){
 }
 
 public static function quote($quotes, $get){
-    $content     = '';  
-    RENDER::sortByProp($quotes, 'curriculum', 'asc');
-    
-    if ($get['schooltype_id'] != 'false'){
-        $quotes  = ofilter($quotes, ['schooltype_id' => $get['schooltype_id']]);
-    }
-    if ($get['subject_id'] != 'false'){
-         $quotes  = ofilter($quotes, ['subject_id' => $get['subject_id']]);
-    }
-    if ($get['curriculum_id'] != 'false'){
-         $quotes  = ofilter($quotes, ['curriculum_id' => $get['curriculum_id']]);
-    }
-    if ($get['grade_id'] != 'false'){
-         $quotes  = ofilter($quotes, ['grade_id' => $get['grade_id']]);
-    }
-    if (isset($quotes)){
-        $cur_id = '';
-        foreach ($quotes as $ref) {
-            if ($ref->reference_object->id != $cur_id){
-                if ($cur_id != ''){
-                    $content .= '</span>';  
-                }
-                $cur_id = $ref->reference_object->id;
-                $content .= '<span class="col-xs-12 bg-light-aqua" data-toggle="collapse" data-target="#cur_'.$cur_id.'"><h4 class="text-black">'.$ref->reference_object->curriculum.'<button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#cur_'.$cur_id.'" aria-expanded="true" data-toggle="tooltip" title="Fach einklappen bzw. ausklappen"><i class="fa fa-expand"></i></button></h4></span><hr style="clear:both;">';
-                $content .= '<span id ="cur_'.$cur_id.'" class="collapse out">';
-            }
-            $content .= '<blockquote>'.$ref->quote.'<small>'.$ref->reference_object->curriculum.', <cite="'.$ref->reference_title.'" class="pointer_hand"><a onclick="formloader(\'content\', \'show\','.$ref->quote_link.');">'.$ref->reference_title.'</a></cite></small></blockquote>'; 
-        }
-        $content .= '</span>'; //close last subject span
-    } 
-    
-    if (count($quotes) == 0) {
-        $content .= 'Keine Textbezüge vorhanden.';
-    }
+    if ($quotes != false){
+        $content     = '';  
+        RENDER::sortByProp($quotes, 'curriculum', 'asc');
 
-    if ($get['ajax'] == 'true'){  
-        echo $content;
-    } else {
-        return $content;
+        if ($get['schooltype_id'] != 'false'){
+            $quotes  = ofilter($quotes, ['schooltype_id' => $get['schooltype_id']]);
+        }
+        if ($get['subject_id'] != 'false'){
+             $quotes  = ofilter($quotes, ['subject_id' => $get['subject_id']]);
+        }
+        if ($get['curriculum_id'] != 'false'){
+             $quotes  = ofilter($quotes, ['curriculum_id' => $get['curriculum_id']]);
+        }
+        if ($get['grade_id'] != 'false'){
+             $quotes  = ofilter($quotes, ['grade_id' => $get['grade_id']]);
+        }
+        if (isset($quotes)){
+            $cur_id = '';
+            foreach ($quotes as $ref) {
+                if ($ref->reference_object->id != $cur_id){
+                    if ($cur_id != ''){
+                        $content .= '</span>';  
+                    }
+                    $cur_id             = $ref->reference_object->id;
+                    $qus                = new Quote();
+                    $qus->reference_id  = $ref->reference_id;
+                    $quote_subscriptions= $qus->getQuoteSubscriptions();
+                    $curriculum = $ref->reference_object->curriculum;
+                    if ($quote_subscriptions){
+                        $i = 0;
+                        foreach ($quote_subscriptions as $qus_entry) {
+                            if ($i == 0){
+                                $curriculum = $qus_entry->curriculum;
+                            } else {
+                                $curriculum .= ', '.$qus_entry->curriculum;
+                            }
+                            $i++;
+                        }
+                    } 
+                    $content .= '<span class="col-xs-12 bg-light-aqua" data-toggle="collapse" data-target="#cur_'.$cur_id.'"><h4 class="text-black">'.$curriculum.'<button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#cur_'.$cur_id.'" aria-expanded="true" data-toggle="tooltip" title="Fach einklappen bzw. ausklappen"><i class="fa fa-expand"></i></button></h4></span><hr style="clear:both;">';
+                    $content .= '<span id ="cur_'.$cur_id.'" class="collapse out">';
+                }
+                $content .= '<blockquote>'.$ref->quote.'<small>'.$ref->reference_object->curriculum.', <cite="'.$ref->reference_title.'" class="pointer_hand"><a onclick="formloader(\'content\', \'show\','.$ref->quote_link.');">'.$ref->reference_title.'</a></cite></small></blockquote>'; 
+            }
+            $content .= '</span>'; //close last subject span
+        } 
+        if (count($quotes) == 0) {
+        $content .= 'Keine Textbezüge vorhanden.';
+        }
+
+        if ($get['ajax'] == 'true'){  
+            echo $content;
+        } else {
+            return $content;
+        }
     }
 }
 
 public static function quote_reference($quotes){
+    global $USER;
     $content     = '';  
-    RENDER::sortByProp($quotes, 'quote_link', 'asc');
-    if (isset($quotes)){
+    if (isset($quotes) AND $quotes != false){
         $content_id = '';
-        $quote_id   = '';
-        
-        foreach ($quotes as $ref) {
-            if ($ref->quote_link != $content_id){ //if new content render Title
+        $quote_max  = count($quotes); //amount of quotes
+        for ($i = 0; $i < $quote_max; $i++){
+            if ($quotes[$i]->quote_link != $content_id){ //if new content render Title
                 if ($content_id != ''){
                     $content .= '</span>';  
                 }
-                $content .= '<span class="col-xs-12 bg-light-aqua" data-toggle="collapse" data-target="#ct_'.$content_id.'"><h4 class="text-black">'.$ref->reference_title.'<button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#ct_'.$content_id.'" aria-expanded="true" data-toggle="tooltip" title="Fach einklappen bzw. ausklappen"><i class="fa fa-expand"></i></button></h4></span><hr style="clear:both;">';
+                $content .= '<span class="col-xs-12 bg-light-aqua" data-toggle="collapse" data-target="#ct_'.$content_id.'"><h4 class="text-black">'.$quotes[$i]->reference_title.'<button class="btn btn-box-tool pull-right" style="padding-top:0;" type="button" data-toggle="collapse" data-target="#ct_'.$content_id.'" aria-expanded="true" data-toggle="tooltip" title="Fach einklappen bzw. ausklappen"><i class="fa fa-expand"></i></button></h4></span><hr style="clear:both;">';
                 $content .= '<span id ="ct_'.$content_id.'" class="collapse out">';
                 }
-                $content_id = $ref->quote_link;
-                if ($ref->id == $quote_id){ 
-                    
-                    $content .= '<div class="col-xs-12 col-sm-3 pull-right">';
-                    if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
-                      $content .= '<dt>Lernziel/Kompetenz</dt>'.Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $ref->enabling_object, 'border_color' => $ref->terminal_object->color));
-                    }
-                    $content .= '</div>';
-                    $content .= '<div class="col-xs-12 col-sm-3 pull-right"><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('format' => 'reference', 'objective' => $ref->terminal_object, 'color')).'</div>';
-                    
-                } else { //if new quote render quote
-                    $content .= '<div class="col-xs-12 col-sm-6"><h4>Fundstelle im Text:</h4><br><blockquote>'.$ref->quote.'<small>, <cite="'.$ref->reference_title.'" class="pointer_hand"><a onclick="formloader(\'content\', \'show\','.$ref->quote_link.');">'.$ref->reference_title.'</a></cite></small></blockquote></div>'; 
-                    $c        = new Curriculum();    
-                    $c->id    = $ref->terminal_object->curriculum_id;
-                    $c->load();
-                    $content .= '<div class="col-xs-12 col-sm-6 pull-right"><h4>'.$c->curriculum.'</h4></div>';
-                    $content .= '<div class="col-xs-12 col-sm-3 pull-right">';
-                    if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
-                      $content .= '<dt>Lernziel/Kompetenz</dt>'.Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $ref->enabling_object, 'border_color' => $ref->terminal_object->color));
-                    }
-                    $content .= '</div>';
-                    $content .= '<div class="col-xs-12 col-sm-3 pull-right"><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('format' => 'reference', 'objective' => $ref->terminal_object, 'color')).'</div>';
-                    
+                $content_id = $quotes[$i]->quote_link;
+                if (checkCapabilities('reference:update', $USER->role_id, false)){ //just for debugging
+                    $quote_id = '(ID: '.$quotes[$i]->id.') ';
+                } else {
+                   $quote_id = ''; 
                 }
-                $content .='<hr style="clear:both;">';
-                $quote_id = $ref->id;   
+                $content .= '<div class="col-xs-12 col-sm-6"><h4>Fundstelle im Text:</h4><br><blockquote>'.$quote_id.$quotes[$i]->quote.'<small>, <cite="'.$quotes[$i]->reference_title.'" class="pointer_hand"><a onclick="formloader(\'content\', \'show\','.$quotes[$i]->quote_link.');">'.$quotes[$i]->reference_title.'</a></cite></small></blockquote></div>'; 
+                $c        = new Curriculum();    
+                $c->id    = $quotes[$i]->terminal_object->curriculum_id;
+                $c->load();
+                $content .= '<div class="col-xs-12 col-sm-6 pull-right"><h4>'.$c->curriculum.'</h4></div>';
+                $content .= '<div class="col-xs-12 col-sm-6 pull-right">';
+                $content .= Render::objective(array('format' => 'reference', 'objective' => $quotes[$i]->terminal_object, 'color'));
+                if ($quotes[$i]->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
+                  $content .= Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $quotes[$i]->enabling_object, 'border_color' => $quotes[$i]->terminal_object->color));
+                }
+                $quote_id = $quotes[$i]->id;   
+                while (isset($quotes[$i+1])) { //check and render next objective until new quote is given
+                    if ($quotes[$i+1]->id == $quote_id){
+                        if ($quotes[$i+1]->id == $quote_id AND $quotes[$i+1]->terminal_objective_id == $quotes[$i]->terminal_objective_id){
+                            if ($quotes[$i+1]->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
+                              $content .= Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $quotes[$i+1]->enabling_object, 'border_color' => $quotes[$i+1]->terminal_object->color));
+                            }
+                        } else {
+                            $content .= Render::objective(array('format' => 'reference', 'objective' => $quotes[$i+1]->terminal_object, 'color'));
+                            if ($quotes[$i+1]->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
+                                $content .= Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $quotes[$i+1]->enabling_object, 'border_color' => $quotes[$i]->terminal_object->color));
+                            }
+                        }
+                            $i++;    
+                    } else {
+                        break;
+                    }
+                }
+                $content .='</div><hr style="clear:both;">';
         }
         $content .= '</span>'; //close last content span
-    }
-    if (count($quotes) == 0) {
-        // $content .= 'Keine Textbezüge vorhanden.';
-        // do nothing 
-    } else {
+        
         return '<div class="col-xs-12 top-buffer" >'.RENDER::box(array('header_box_tools_right' => '<button class="btn btn-box-tool"><button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-expand"></i></button>', 'header_onclick' => 'data-widget="collapse"', 'header_content' => 'Textbezüge im Lehrplan', 'content_id' => null, 'body_content' => $content)).'</div>';
     }
-    
-    
 }
 
     public static function sorter_asc( $a, $b ){
