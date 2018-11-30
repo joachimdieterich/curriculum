@@ -73,11 +73,12 @@ if($validated_data === false) {/* validation failed */
 }
 if (isset($CFG->settings->repository->omega)){ // prüfen, ob Repository Plugin vorhanden ist. //todo global solution use file_subscription
     $repo = $CFG->settings->repository->omega;
+    if (filter_input(INPUT_POST, 'reference', FILTER_UNSAFE_RAW)){
+        $repo->setReference('enabling_objective', $ena_id, filter_input(INPUT_POST, 'reference', FILTER_UNSAFE_RAW));
+    } else {
+        $repo->setReference('enabling_objective', $ena_id); // damit update übernommen wird
+    }
 }
-if (filter_input(INPUT_POST, 'reference', FILTER_UNSAFE_RAW)){
-    $repo->setReference('enabling_objective', $ena_id, filter_input(INPUT_POST, 'reference', FILTER_UNSAFE_RAW));
-} else {
-    $repo->setReference('enabling_objective', $ena_id); // damit update übernommen wird
-}
+
 
 header('Location:'.$_SESSION['PAGE']->target_url);
