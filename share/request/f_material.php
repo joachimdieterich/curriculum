@@ -415,8 +415,8 @@ if (!$files AND !isset($references) AND !isset($sodis)){
                     $content .= render_reference_entry($ref, $_SESSION['CONTEXT']['terminal_objective']->context_id);
                 }*/
                 $content   .='</span>';
-            $content .='</div>';
         }
+         $content .='</div>';
     }
         /* end internal reference*/
     /* quotes */    
