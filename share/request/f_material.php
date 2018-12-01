@@ -88,45 +88,42 @@ $content    = null;
 if (!$files AND !isset($references) AND !isset($sodis)){
     $content .= 'Es gibt leider keine Eintragungen zum gewählten Lernziel.';
 } else {
-    /* Tab header */
-    $file_context_count[1] = 0; // counter for file_context 1
-    $file_context_count[2] = 0; // counter for file_context 2
-    $file_context_count[3] = 0; // counter for file_context 3
-    $file_context_count[4] = 0; // counter for file_context 4
+    /* Tab header */    
+    $file_context_count[1] = 0; // counter for file_context 1 --> global
+    $file_context_count[2] = 0; // counter for file_context 2 --> institution
+    $file_context_count[3] = 0; // counter for file_context 3 --> group
+    $file_context_count[4] = 0; // counter for file_context 4 --> user
     $file_context_count[5] = 0; // counter for file_context 5 --> external reference
     $file_context_count[6] = 0; // counter for file_context 6 --> external webservice ressource
-    if (isset($references)){
-        $file_context_count[7] = count($references); // counter for file_context 7 --> internal reference
-    } else {
-        $file_context_count[7] = 0;  
-    }
-    if (isset($quotes) ){
-        if ($quotes != false){
-            $file_context_count[8] = count($quotes); // counter for file_context 8 --> quotes referecne
-        } else {
-            $file_context_count[8] = 0;
-        }
-    } else {
-        $file_context_count[8] = 0;
-    }
-    if (isset($sodis)){
-        $file_context_count[9] = count($sodis); // counter for file_context 9 --> external sodis reference
-    } else {
-        $file_context_count[9] = 0;
-    }
-    for($i = 0; $i < count($files); $i++) {
+    $file_context_count[7] = 0; // counter for file_context 7 --> internal reference
+    $file_context_count[8] = 0; // counter for file_context 8 --> quotes referecne
+    $file_context_count[9] = 0; // counter for file_context 9 --> external sodis reference
+    
+    for($i = 0; $i < count($files); $i++) {         // counter for file context 1-6
         $file_context_count[$files[$i]->file_context]++;
     }
+    if (isset($references)){
+        $file_context_count[7] = count($references); // counter for file_context 7 --> internal reference
+    } 
+    if (isset($quotes)){
+        if ($quotes != false){
+            $file_context_count[8] = count($quotes); // counter for file_context 8 --> quotes referecne
+        }
+    } 
+    if (isset($sodis)){
+        $file_context_count[9] = count($sodis);     // counter for file_context 9 --> external sodis reference
+    } 
+    
     $content .= '<div class="nav-tabs-custom">';
     $active   = array( '1' => '', '2' => '', '3' => '','4' => '','5' => '','6' => '', '7' => '', '8' => '', '9' => '');
     foreach ($file_context_count as $key => $value) { // mark first tab with files as "active"
+        $active[$key] = ''; //deactivate == default
         if ($value > 0){
             $active[$key] = 'active';
             break;
-        } else {
-            $active[$key] = '';
-        }
+        } 
     }
+    /* Nav Tabs */
     $content .= '<ul class="nav nav-tabs">';
     if ($file_context_count[1] != 0){
         $content .= '<li class="'.$active[1].'"><a href="#f_context_1" data-toggle="tab" >Global <span class="label label-primary">'.$file_context_count[1].'</span></a></li>';
@@ -155,12 +152,10 @@ if (!$files AND !isset($references) AND !isset($sodis)){
     if ($file_context_count[9] != 0){
         $content .= '<li class="'.$active[9].'"><a href="#f_context_9" data-toggle="tab" >KMK <span class="label label-primary">'.$file_context_count[9].'</span></a></li>';
     }
-    
-    
     $content .='</ul>';
+    
     /* tab content*/
     $content .='<div class="tab-content">';
-    
     $file_context       = 1;
     $used_subjects      = [];
     $m_boxes_data       = [];
@@ -314,7 +309,6 @@ if (!$files AND !isset($references) AND !isset($sodis)){
                 }
             }
             $m_footer .= '</div></div><!-- ./col -->
-                
                     <div class="col-xs-3 text-center" style="border-right: 1px solid #f4f4f4">
                       <div id="sparkline-2"></div><div class="knob-label">';
             if (isset($m_hits)){ $m_footer .= ' '.$m_hits.' Aufrufe'; }
@@ -369,7 +363,7 @@ if (!$files AND !isset($references) AND !isset($sodis)){
                 $content   .=' active';
             }
             $content   .='" id="f_context_'.($file_context-1).'">';
-            if ($file_context_count[5] != 0 ) {
+            if ($file_context_count[5] != 0 AND ($file_context-1) == 5) {
                 $media_render_data            = [];
                 $media_render_data['subject'] = 'false';
                 $media_render_data['ajax']    = 'false';
@@ -380,17 +374,17 @@ if (!$files AND !isset($references) AND !isset($sodis)){
                 $content   .='<span id="subject_ajax">';
                 $content   .= RENDER::external_media($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), $media_render_data);;
                 $content   .='</span>';
-                $content   .='</div>';  
-            } else {
+            } else { 
                 foreach ($m_boxes_data AS $m_box){
-                    $content   .= Form::info_box($m_box).'</div>'; //render internal files
+                    $content   .= Form::info_box($m_box); //render internal files
                 }
                 unset($m_boxes_data);
             }
+             $content   .='</div>';  
         }
     }
     
-        /* internal reference*/
+    /* internal reference*/
     if (isset($references)){
         $content   .='<div class="tab-pane';
             if ($active[7] == 'active' ){
@@ -421,23 +415,24 @@ if (!$files AND !isset($references) AND !isset($sodis)){
         /* end internal reference*/
     /* quotes */    
     if (isset($quotes)){
-        $content   .='<div class="tab-pane';
-        if ($active[8] == 'active' ){
-            $content   .=' active';
-        }
-        $content .= '" id="f_context_8">';
         if (count($quotes) > 0 ){
-            $content .= '<br>'.RENDER::quote($quotes, array('schooltype_id' => 'false', 'subject_id' => 'false', 'curriculum_id' => 'false', 'grade_id' => 'false', 'ajax' => 'false')).'<hr></div>';
+            $content   .='<div class="tab-pane';
+            if ($active[8] == 'active' ){
+                $content   .=' active';
+            }
+            $content .= '" id="f_context_8">';
+            $content .= '<br>'.RENDER::quote($quotes, array('schooltype_id' => 'false', 'subject_id' => 'false', 'curriculum_id' => 'false', 'grade_id' => 'false', 'ajax' => 'false')).'<hr>';
+            $content .='</div>';
         }
     }   
     /* end quotes */
-        /* external sodis reference*/
+    /* external sodis reference*/
     if (isset($sodis)){
-        $content   .='<div class="tab-pane';
-        if ($active[9] == 'active' ){
-            $content   .=' active';
-        }
         if (count($sodis) > 0 ){
+            $content   .='<div class="tab-pane';
+            if ($active[9] == 'active' ){
+                $content   .=' active';
+            }
             $sodis_content = '<br><h4><small><strong>'.$repo->config('kmk').'</strong></small></h4><hr>';
             foreach ($sodis as $s) {
                 $r = json_decode($s);
@@ -446,11 +441,9 @@ if (!$files AND !isset($references) AND !isset($sodis)){
             $content   .='" id="f_context_9">'.$sodis_content.'</div>';
         }
     }   
-    /* end external sodis reference*/    
-                         
-                                    
+    /* end external sodis reference*/                          
     $content   .='</div><!-- /.tab-content -->
-                        </div><!-- /.nav-tab-custom -->';
+                  </div><!-- /.nav-tab-custom -->';
 }
 
 
