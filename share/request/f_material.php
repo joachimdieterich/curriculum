@@ -34,14 +34,11 @@ $m_license_icon = null; //to prevent error logs
 $file       = new File();
 $repo       = get_plugin('repository', 'sodis');
 $func       = filter_input(INPUT_GET, 'func', FILTER_UNSAFE_RAW);
-//$s_sort     = null; 
-if (isset($_GET['s_key'])){ $s_key =  $_GET['s_key']; } else { $s_key =  'curriculum'; }
-/*if (isset($_SESSION['PAGE']->s_key))  { $s_key  =  $_SESSION['PAGE']->s_key; } 
-if (isset($_SESSION['PAGE']->s_value)){ $s_sort =  $_SESSION['PAGE']->s_value; }  */
 
+if (isset($_GET['s_key'])){ $s_key =  $_GET['s_key']; } else { $s_key =  'curriculum'; }
 
 switch ($func) {
-    case 'enabling_objective':  //$_SESSION['anchor'] = 'ena_'.filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+    case 'enabling_objective':  
     case 'terminal_objective':  Statistic::setStatistics($_SESSION['CONTEXT'][$func]->context_id, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT)); // click counter
                                 $files       = $file->getFiles($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => true));
                                 $sodis       = $repo->get($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
@@ -80,7 +77,6 @@ switch ($func) {
     default:
         break;
 }
-
 
 $f_content  = null;
 $content    = null; 
@@ -124,33 +120,21 @@ if (!$files AND !isset($references) AND !isset($sodis)){
         } 
     }
     /* Nav Tabs */
+    $tabs   = array('1' => 'Global', 
+                    '2' => 'Institution', 
+                    '3' => 'Gruppe',
+                    '4' => 'Persönlich',
+                    '5' => 'Externe Medien',
+                    '6' => 'Externe Aufgaben', 
+                    '7' => 'Überfachliche Bezüge', 
+                    '8' => 'Textstellen-/Bezüge', 
+                    '9' => 'KMK');
     $content .= '<ul class="nav nav-tabs">';
-    if ($file_context_count[1] != 0){
-        $content .= '<li class="'.$active[1].'"><a href="#f_context_1" data-toggle="tab" >Global <span class="label label-primary">'.$file_context_count[1].'</span></a></li>';
-    }  
-    if ($file_context_count[2] != 0){
-        $content .= '<li class="'.$active[2].'"><a href="#f_context_2" data-toggle="tab" >Institution <span class="label label-primary">'.$file_context_count[2].'</span></a></li>';
-    }
-    if ($file_context_count[3] != 0){
-        $content .= '<li class="'.$active[3].'"><a href="#f_context_3" data-toggle="tab" >Gruppe <span class="label label-primary">'.$file_context_count[3].'</span></a></li>';
-    }
-    if ($file_context_count[4] != 0){
-        $content .= '<li class="'.$active[4].'"><a href="#f_context_4" data-toggle="tab" >Persönlich <span class="label label-primary">'.$file_context_count[4].'</span></a></li>';
-    }
-    if ($file_context_count[5] != 0){
-        $content .= '<li class="'.$active[5].'"><a href="#f_context_5" data-toggle="tab" >Externe Medien <span class="label label-primary">'.$file_context_count[5].'</span></a></li>';
-    }
-    if ($file_context_count[6] != 0){
-        $content .= '<li class="'.$active[6].'"><a href="#f_context_6" data-toggle="tab" >Externe Aufgaben <span class="label label-primary">'.$file_context_count[6].'</span></a></li>';
-    }
-    if ($file_context_count[7] != 0){
-        $content .= '<li class="'.$active[7].'"><a href="#f_context_7" data-toggle="tab" >Überfachliche Bezüge <span class="label label-primary">'.$file_context_count[7].'</span></a></li>';
-    }
-    if ($file_context_count[8] != 0){
-        $content .= '<li class="'.$active[8].'"><a href="#f_context_8" data-toggle="tab" >Textstellen-/Bezüge <span class="label label-primary">'.$file_context_count[8].'</span></a></li>';
-    }
-    if ($file_context_count[9] != 0){
-        $content .= '<li class="'.$active[9].'"><a href="#f_context_9" data-toggle="tab" >KMK <span class="label label-primary">'.$file_context_count[9].'</span></a></li>';
+    
+    foreach ($tabs as $key => $value) {
+        if ($file_context_count[$key] != 0){
+            $content .= '<li class="'.$active[$key].'"><a href="#f_context_'.$key.'" data-toggle="tab" >'.$value.' <span class="label label-primary">'.$file_context_count[$key].'</span></a></li>';
+        }
     }
     $content .='</ul>';
     
@@ -176,9 +160,9 @@ if (!$files AND !isset($references) AND !isset($sodis)){
         $m_delete       = null;
         $m_content      = ''; 
         if (isset($files[$i]->subjects)){
-            foreach ( $files[$i]->subjects as $file_subj) {
+            foreach ($files[$i]->subjects as $file_subj) {
                 if (! isset($used_subjects[$file_subj])) {
-                    if ( in_array($file_subj, $allowed_subjects) ) {
+                    if (in_array($file_subj, $allowed_subjects) ) {
                         $used_subjects[$file_subj]->subject_id = $file_subj;
                         $used_subjects[$file_subj]->subject    = $file_subj;
                     }
@@ -227,10 +211,8 @@ if (!$files AND !isset($references) AND !isset($sodis)){
             }
         }
         /* . Icon */
-
         if ($files[$i]->type == 'internal'){ 
-            $m_onclick      = 'updateFileHits('.$files[$i]->id.')'; 
-        
+            $m_onclick = 'updateFileHits('.$files[$i]->id.')'; 
         } else { 
             $m_onclick = false; //deactivate onclick ! 
         }
@@ -238,7 +220,7 @@ if (!$files AND !isset($references) AND !isset($sodis)){
         if ($func == 'solution'){
             $m_title = $files[$i]->author.': '.$m_title;
         } else {
-            $m_title        = $files[$i]->title;
+            $m_title = $files[$i]->title;
         }
         $m_description  = $files[$i]->description;
         if (isset($files[$i]->subjects)){
@@ -256,6 +238,7 @@ if (!$files AND !isset($references) AND !isset($sodis)){
                             $m_player =  '<audio width="100%" controls preload="none" onplay="updateFileHits('.$files[$i]->id.')">
                                             <source src="'.$CFG->access_id_url.$files[$i]->id.'" type="audio/mpeg" />
                                         Your browser does not support the audio element.</audio>';
+                            $m_url = $CFG->access_id_url.$files[$i]->id;
                 break;
             case '.mp4':    /* Player*/ 
             case '.mov':    $m_player =  '<video width="100%" controls onplay="updateFileHits('.$files[$i]->id.')">
@@ -294,7 +277,6 @@ if (!$files AND !isset($references) AND !isset($sodis)){
         }
 
         /* Material footer */
-        /* End Material footer*/
         if ($files[$i]->type != 'external'){
             $m_footer .= '<div class="info-box-text" style="padding-top:10px;white-space:normal; text-transform:none; display:block;">
                            <div class="row">
@@ -303,7 +285,6 @@ if (!$files AND !isset($references) AND !isset($sodis)){
             if (isset($license->license)){ 
                 if (isset($license->file_id)){ 
                     $m_license_icon = $CFG->access_id_url.$license->file_id;
-                    //$m_footer .= '<img src="'.$CFG->access_id_url.$_SESSION['LICENSE'][$files[$i]->license]->file_id.'" height="30"/>'; //-->now on thumbnail
                 } else {
                     $m_footer .= $license->license; 
                 }
@@ -334,7 +315,8 @@ if (!$files AND !isset($references) AND !isset($sodis)){
                             </div><!-- ./col -->
                            </div><!-- ./row -->
                           </div><!-- ./info-box-text -->';
-        }   
+        } 
+        /* End Material footer*/
         $m_boxes_data[$i] = array('id'          => $m_id,
                                   'preview'     => $m_preview,
                                   'license_icon'=> $m_license_icon,
@@ -349,7 +331,7 @@ if (!$files AND !isset($references) AND !isset($sodis)){
                                   'content'     => $m_content,
                                   'footer'      => $m_footer);
         unset($m_id, $preview, $m_preview, $m_icon_class, $m_delete, $m_url, $m_onclick, $m_title, $m_description, $m_subjects, $m_player, $m_content, $m_footer, $m_hits, $f_versions, $license);
-        //error_log(json_encode($m_boxes_data[$i]));
+        
         /* context box */   
         /* generate tabs for each file context*/
         $close = false;
@@ -367,12 +349,11 @@ if (!$files AND !isset($references) AND !isset($sodis)){
                 $media_render_data            = [];
                 $media_render_data['subject'] = 'false';
                 $media_render_data['ajax']    = 'false';
-                # $media_render_data['m_boxes_json']   = urlencode(base64_encode(htmlentities(json_encode($m_boxes_data, JSON_UNESCAPED_SLASHES))));
                 $media_render_data['m_boxes_json']   = urlencode(json_encode($m_boxes_data, JSON_UNESCAPED_SLASHES));
                 asort($used_subjects);
-                if (!empty($used_subjects)) { $content .= render_subject_filter($used_subjects, $media_render_data); }
+                if (!empty($used_subjects)) { $content .= render_subject_filter($used_subjects); }
                 $content   .='<span id="subject_ajax">';
-                $content   .= RENDER::external_media($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), $media_render_data);;
+                $content   .= RENDER::external_media($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), $media_render_data);
                 $content   .='</span>';
             } else { 
                 foreach ($m_boxes_data AS $m_box){
@@ -386,33 +367,20 @@ if (!$files AND !isset($references) AND !isset($sodis)){
     
     /* internal reference*/
     if (isset($references)){
-        $content   .='<div class="tab-pane';
+        if (count($references) > 0 ){
+            $content   .='<div class="tab-pane';
             if ($active[7] == 'active' ){
                 $content   .=' active';
             }
-            if (count($references) > 0 ){
-                $content .='" id="f_context_7">';
-                $content .= render_filter($schooltype_id  = null, $subject_id = null, $curriculum_id = null, $grade_id = null);
-                $content .='<span id="reference_ajax">';
-               /* if (isset($s_key)){
-                    switch ($s_key) {
-                        case 'curriculum_id': $c_id = $s_sort;
-                            break;
-
-                        default: $c_id = 'false';
-                            break;
-                    }
-                }*/
-                
-                $content .= RENDER::reference($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), array('schooltype_id' => 'false', 'subject_id' => 'false', 'curriculum_id' => 'false', 'grade_id' => 'false', 'ajax' => 'false'));
-                /*foreach ($references as $ref) {
-                    $content .= render_reference_entry($ref, $_SESSION['CONTEXT']['terminal_objective']->context_id);
-                }*/
-                $content   .='</span>';
+            $content .='" id="f_context_7">';
+            $content .= render_filter($schooltype_id  = null, $subject_id = null, $curriculum_id = null, $grade_id = null);
+            $content .='<span id="reference_ajax">';
+            $content .= RENDER::reference($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), array('schooltype_id' => 'false', 'subject_id' => 'false', 'curriculum_id' => 'false', 'grade_id' => 'false', 'ajax' => 'false'));
+            $content   .='</span>';
+            $content .='</div>';
         }
-         $content .='</div>';
     }
-        /* end internal reference*/
+    /* end internal reference*/
     /* quotes */    
     if (isset($quotes)){
         if (count($quotes) > 0 ){
@@ -473,22 +441,10 @@ function render_filter($schooltype_id  = null, $subject_id = null, $curriculum_i
     $c    .= '</div>';
     return $c;
 }
-function render_subject_filter($subjects, $media_render_data, $subject_id = null){
-    global $USER;
+function render_subject_filter($subjects, $subject_id = null){
     $c    = '<div class="row">';
     $c   .= '<span class="col-sm-3 pull-left">';
-    $c   .= Form::input_select(
-                  'subject',
-                  '',
-                  $subjects,
-                  'subject',
-                  'subject_id',
-                  $subject_id,
-                  null,
-                  "filterBySubject(this.value)",
-                  'Nach Fach filtern',
-                  'col-xs-0',
-                  'col-xs-12').'</span>';
-    $c    .= '</div>';
+    $c   .= Form::input_select('subject','',$subjects,'subject','subject_id',$subject_id,null,"filterBySubject(this.value)",'Nach Fach filtern','col-xs-0','col-xs-12');
+    $c   .= '</span></div>';
     return $c;
 }
