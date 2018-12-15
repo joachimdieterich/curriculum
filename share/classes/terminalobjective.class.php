@@ -247,20 +247,19 @@ class TerminalObjective {
                                         }
                                         /*check for quotes, yet only for terminal objectives*/
                                         $quote  = new Quote();
-                                        $quotes = $quote->get($_SESSION['CONTEXT']['terminal_objective']->context_id, $result->id);
+                                        $quotes = $quote->get($_SESSION['CONTEXT']['terminal_objective']->context_id, $result->id, $reference_ter_ids);
                                         if ($quotes == false){
                                             $this->files['references'] += 0; 
                                         } else {
                                             $this->files['references']  += count($quotes); //todo: add new count func to quote.class.php to get faster processing
                                         }
-                                        
                                     } else {
                                         $db_04       = DB::prepare('SELECT COUNT(*) AS MAX FROM reference WHERE context_id = ? AND reference_id = ?');
                                         $db_04->execute(array( $_SESSION['CONTEXT']['terminal_objective']->context_id, $result->id));
                                         $res_04 = $db_04->fetchObject();
                                         $this->files['references']  = $res_04->MAX;
                                     }
-                                    
+
                                     $objectives[]               = clone $this; 
                                 }
                                 break;
