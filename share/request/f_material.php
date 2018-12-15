@@ -373,9 +373,16 @@ if (!$files AND !isset($references) AND !isset($sodis)){
                 $content   .=' active';
             }
             $content .='" id="f_context_7">';
-            $content .= render_filter($schooltype_id  = null, $subject_id = null, $curriculum_id = null, $grade_id = null);
-            $content .='<span id="reference_ajax">';
-            $content .= RENDER::reference($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), array('schooltype_id' => 'false', 'subject_id' => 'false', 'curriculum_id' => 'false', 'grade_id' => 'false', 'ajax' => 'false'));
+            if ($_SESSION['PAGE']->reference_curriculum_id == false){
+                $content .= render_filter($schooltype_id  = null, $subject_id = null, $curriculum_id = null, $grade_id = null);
+                $content .='<span id="reference_ajax">';
+                $content .= RENDER::reference($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), array('schooltype_id' => 'false', 'subject_id' => 'false', 'curriculum_id' => 'false', 'grade_id' => 'false', 'ajax' => 'false'));
+            } else {
+                $content .= render_filter($schooltype_id  = null, $subject_id = null, $curriculum_id = $_SESSION['PAGE']->reference_curriculum_id, $grade_id = null);
+                $content .='<span id="reference_ajax">';
+                $content .= RENDER::reference($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), array('schooltype_id' => 'false', 'subject_id' => 'false', 'curriculum_id' => $_SESSION['PAGE']->reference_curriculum_id, 'grade_id' => 'false', 'ajax' => 'false'));
+            }
+            
             $content   .='</span>';
             $content .='</div>';
         }
