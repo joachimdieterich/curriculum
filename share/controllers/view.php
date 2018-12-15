@@ -46,9 +46,11 @@ if ($_GET){
                                             $TEMPLATE->assign('reference_curriculum_list', $reference_curriculum_list);   
                                             if (filter_input(INPUT_GET, 'reference_view', FILTER_VALIDATE_INT)){
                                                 $reference_curriculum_id = filter_input(INPUT_GET, 'reference_view', FILTER_VALIDATE_INT);
+                                                $_SESSION['PAGE']->reference_curriculum_id = $reference_curriculum_id;
                                                 $TEMPLATE->assign('selected_curriculum_id', $reference_curriculum_id);  
                                             } else {
-                                                $TEMPLATE->assign('selected_curriculum_id', false);   
+                                                $TEMPLATE->assign('selected_curriculum_id', false);  
+                                                $_SESSION['PAGE']->reference_curriculum_id = false;
                                             }
                                               
         case isset($_GET['curriculum_id']): $PAGE->curriculum = $_GET['curriculum_id'];
