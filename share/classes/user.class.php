@@ -148,10 +148,15 @@ class User {
      */
     public $creator_id; 
     /**
-     * Array of institutions
+     * Array of institutions arrays
      * @var array 
      */
     public $institutions = array();
+    /**
+     * Array of institution ids (used to get faster queries)
+     * @var array 
+     */
+    public $institution_ids = array();
     /**
      * current institution id (depends on current semester)
      * @var int 
@@ -167,6 +172,16 @@ class User {
      * @var array
      */    
     public $enrolments = array();
+    /**
+     * Array of group ids (used to get faster queries)
+     * @var array 
+     */
+    public $group_ids = array();
+    /**
+     * Array of curriculum ids (used to get faster queries)
+     * @var array 
+     */
+    public $curriuclum_ids = array();
     /**
      * token for authentication
      * @var string 
@@ -450,6 +465,21 @@ class User {
         } else {
             $_SESSION['PAGE']->message[] = array('message' => 'Man kann sich nicht selbst löschen!', 'icon' => 'fa-user text-warning');
         }
+    }
+    
+    /**
+     * accept user registration
+     */
+    public function acceptUser(){
+        global $USER, $LOG;
+        checkCapabilities('user:delete', $USER->role_id);
+        $this->load('id', $this->id);
+        $LOG->add($USER->id, 'user.class.php', dirname(__FILE__), 'Accept user: ('.$this->resolveUserId($this->id).'), creator_id: '.$this->creator_id);
+        $db = DB::prepare('UPDATE users SET confirmed = 1, creator_id = ? WHERE id = ?');
+        $db->execute(array($USER->id, $this->id));
+         $_SESSION['PAGE']->message[] = array('message' => 'Der Account von <b>'.$this->resolveUserId($this->id).'</b>wurden bestätigt', 'icon' => 'fa-user-plus text-success');
+            
+        
     }
     /**
      * change password
@@ -813,7 +843,7 @@ class User {
      * @param int $id
      * @return array of object 
      */
-    public function userList($dependency = 'institution', $paginator = '', $lost = false, $institution_id = 'false', $role_id = 'false', $group_id = 'false' ){
+    public function userList($dependency = 'institution', $paginator = '', $filter = false, $institution_id = 'false', $role_id = 'false', $group_id = 'false' ){
         global $USER;
         $order_param = orderPaginator($paginator, array('id'        => 'us',
                                                         'username'  => 'us',
@@ -827,10 +857,19 @@ class User {
         $users = array();                      //Array of grades
         switch ($dependency) {
             case 'institution': if(checkCapabilities('user:userListComplete', $USER->role_id,false)){ //Global Admin
-                                    if ($lost){
-                                        $db = DB::prepare('SELECT us.* FROM users AS us, institution_enrolments AS ie 
-                                                WHERE us.id = us.id AND ie.user_id = us.id AND ie.status = 0 '.$order_param); //hack id = id to user search
-                                        $db->execute(); 
+                                    if ($filter){
+                                        switch ($filter) {
+                                            case 'register':    $db = DB::prepare('SELECT us.* FROM users AS us WHERE us.confirmed = 4 '.$order_param); 
+                                                                $db->execute(); 
+                                                break;
+                                            case 'lost':        $db = DB::prepare('SELECT us.* FROM users AS us, institution_enrolments AS ie 
+                                                                             WHERE us.id = us.id AND ie.user_id = us.id AND ie.status = 0 '.$order_param); //hack id = id to user search
+                                                                $db->execute(); 
+                                                break;
+
+                                            default:
+                                                break;
+                                        }
                                     } else {
                                         $db = DB::prepare('SELECT us.* FROM users AS us WHERE us.id = us.id '.$order_param); //hack id = id to user search
                                         $db->execute(); 
@@ -1330,8 +1369,17 @@ class User {
             //$c->base_curriculum_id  = null; //if no niveau / level is set base_curriculum_id = null;
             $e                      = new EnablingObjective();
             $result->completed      = $e->getPercentageOfCompletion($result->id, $this->id);
-            $data[]                 = $result;         
+            $data[]                 = $result;  
+            if (!in_array($result->group_id, $this->group_ids)){
+                array_push($this->group_ids, $result->group_id);
+            }
+            if (!in_array($result->id, $this->curriuclum_ids)){
+                array_push($this->curriuclum_ids, $result->id);
+            }
+            //array_push($this->group_ids,        $result->group_id); //add group_id to group_ids array for better queries
+            //array_push($this->curriuclum_ids,   $result->id);       //add curriuclum_id to curriuclum_ids array for better queries
         } 
+      
         if (isset($data)){ return $data; } 
         else             { return false; }
     }
@@ -1351,6 +1399,9 @@ class User {
                 $data[$result->institution_id] = $result->institution;
             } else {
                 $data[] = $result;         
+            }
+            if (!in_array($result->institution_id, $this->institution_ids)){
+                array_push($this->institution_ids, $result->institution_id);
             }
         } 
         
