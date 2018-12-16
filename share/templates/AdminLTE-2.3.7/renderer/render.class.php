@@ -2287,7 +2287,8 @@ class Render {
     }
     if (isset($references)){
         $curriculum_id = '';
-        $count_ref = count($references);
+        //$count_ref = count($references);
+        $count_ref = count(array_unique(array_column($references, 'curriculum_id'))); // count amount of different curricula
         foreach ($references as $ref) {
             if ($ref->curriculum_id != $curriculum_id){
                 if ($curriculum_id != ''){
