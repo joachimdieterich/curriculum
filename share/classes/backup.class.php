@@ -467,7 +467,7 @@ class Backup {
         $sch->load();
         $cur->setAttribute("schooltype",    $sch->schooltype);
         $cur->setAttribute("state_id",      $c->state_id);
-        $cur->setAttribute("description",   $c->description);
+        $cur->setAttribute("description",   htmlspecialchars($c->description, ENT_QUOTES));
         $cur->setAttribute("country_id",    $c->country_id);
         $cur->setAttribute("creation_time", $c->creation_time);
         $usr = new User($c->creator_id);
@@ -482,8 +482,8 @@ class Backup {
             foreach($c->terminal_objectives as $ter_value){ 
                 $ter = $xml->createElement("terminal_objective");
                 $ter->setAttribute("id",                 $ter_value->id);
-                $ter->setAttribute("terminal_objective", $ter_value->terminal_objective);
-                $ter->setAttribute("description",        $ter_value->description);
+                $ter->setAttribute("terminal_objective", htmlspecialchars($ter_value->terminal_objective, ENT_QUOTES));
+                $ter->setAttribute("description",        htmlspecialchars($ter_value->description, ENT_QUOTES));
                 $ter->setAttribute("order_id",           $ter_value->order_id);
                 $ter->setAttribute("repeat_interval",    $ter_value->repeat_interval);
                 $ter->setAttribute("color",              $ter_value->color);
@@ -500,8 +500,8 @@ class Backup {
                     foreach($ter_value->enabling_objectives as $ena_value){ 
                         $ena = $xml->createElement('enabling_objective');
                         $ena->setAttribute('id',                 $ena_value->id);
-                        $ena->setAttribute('enabling_objective', $ena_value->enabling_objective);
-                        $ena->setAttribute('description',        $ena_value->description);
+                        $ena->setAttribute('enabling_objective', htmlspecialchars($ena_value->enabling_objective, ENT_QUOTES));
+                        $ena->setAttribute('description',        htmlspecialchars($ena_value->description, ENT_QUOTES));
                         $ena->setAttribute('order_id',           $ena_value->order_id);
                         $ena->setAttribute('repeat_interval',    $ena_value->repeat_interval);
                         if (isset($ext_ref)){
@@ -536,9 +536,9 @@ class Backup {
         if (count($content_entries) >= 1){
             foreach($content_entries as $con_value){ 
                 $content_tag         = $xml->createElement($element_tag);
-                $content_tag_title   = $xml->createElement("title", $con_value->title);
+                $content_tag_title   = $xml->createElement("title", htmlspecialchars($con_value->title, ENT_QUOTES));
                 $content_tag->appendChild($content_tag_title);
-                $content_tag_content = $xml->createElement("text", $con_value->content);
+                $content_tag_content = $xml->createElement("text", htmlspecialchars($con_value->content, ENT_QUOTES));
                 $content_tag->appendChild($content_tag_content);   
                 $parent_node->appendChild($content_tag);
             }
