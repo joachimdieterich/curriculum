@@ -46,9 +46,11 @@ if ($_GET){
                                             $TEMPLATE->assign('reference_curriculum_list', $reference_curriculum_list);   
                                             if (filter_input(INPUT_GET, 'reference_view', FILTER_VALIDATE_INT)){
                                                 $reference_curriculum_id = filter_input(INPUT_GET, 'reference_view', FILTER_VALIDATE_INT);
+                                                $_SESSION['PAGE']->reference_curriculum_id = $reference_curriculum_id;
                                                 $TEMPLATE->assign('selected_curriculum_id', $reference_curriculum_id);  
                                             } else {
-                                                $TEMPLATE->assign('selected_curriculum_id', false);   
+                                                $TEMPLATE->assign('selected_curriculum_id', false);  
+                                                $_SESSION['PAGE']->reference_curriculum_id = false;
                                             }
                                               
         case isset($_GET['curriculum_id']): $PAGE->curriculum = $_GET['curriculum_id'];
@@ -89,7 +91,6 @@ if (isset($reference_curriculum_id)){
     $quote   = new Quote(); 
     $TEMPLATE->assign('curriculum_content_references', $quote->get('curriculum_content', $ct_ids, $ter_ids, $ena_ids)); // load quote references
     $ter_objects = $terminal_objectives->getObjectives('curriculum', $PAGE->curriculum, false, $ter_ids, $ena_ids);
-    //error_log(json_encode($ter_objects[0]));
     $TEMPLATE->assign('terminal_objectives', $ter_objects);
     $_SESSION['PAGE']->s_key   = 'curriculum_id';
     $_SESSION['PAGE']->s_value = $reference_curriculum_id;
@@ -139,9 +140,6 @@ switch ($function) {
                                 $content_menu_obj->title    = '<i class="fa fa-edit" style="padding-right:5px;"></i> Lehrplaneigenschaften bearbeiten';
                                 $c_menu_array[]             = clone $content_menu_obj;
                             }
-                            
-                            
-                            
                             $content_menu = array('type' => 'menu', 'label' => '<i class="fa fa-caret-down"></i>', 'entrys' => $c_menu_array);
                             $TEMPLATE->assign('content_menu', $content_menu); 
         break;

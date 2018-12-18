@@ -105,9 +105,25 @@ class Quote {
                 break;
 
 
-            default:    $db = DB::prepare('SELECT qu.* FROM quote AS qu, quote_subscriptions AS qus 
-                                        WHERE qu.id = qus.quote_id AND qus.context_id = ? AND qus.reference_id = ?');
-                        $db->execute(array($dependency, $reference_id));
+            default:    if ($ter_ids != null){
+                            $cur_ids = array();
+                            foreach ($ter_ids as $ter){
+                                $t              = new TerminalObjective();
+                                $t->id          = $ter;
+                                $t->load();
+                                array_push($cur_ids, $t->curriculum_id);
+                            }
+                            $db = DB::prepare('SELECT qu.* FROM quote AS qu, quote_subscriptions AS qus 
+                                        WHERE qu.id = qus.quote_id AND qus.context_id = ? AND qus.reference_id = ? AND qu.reference_id IN (SELECT ct.id FROM content AS ct, content_subscriptions AS cts WHERE cts.context_id = 2
+                                                        AND cts.reference_id IN ('.implode(",", $cur_ids).')
+                                                        AND cts.content_id = ct.id)');
+                            $db->execute(array($dependency, $reference_id));
+                            unset($cur_ids);
+                        } else {
+                            $db = DB::prepare('SELECT qu.* FROM quote AS qu, quote_subscriptions AS qus 
+                                            WHERE qu.id = qus.quote_id AND qus.context_id = ? AND qus.reference_id = ?');
+                            $db->execute(array($dependency, $reference_id));
+                        }
                         
                         while($result = $db->fetchObject()) { 
                             $this->id            = $result->id;
