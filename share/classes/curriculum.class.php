@@ -382,7 +382,7 @@ class Curriculum {
                 $old_cur_id              = $curriculum->getAttribute('id');
             if (!$preset) { // Werte aus backup nutzen -> sonst Werte des Formulars nutzen
                  $this->curriculum        = $curriculum->getAttribute('curriculum');
-                 $this->description       = $curriculum->getAttribute('description');
+                 $this->description       = htmlspecialchars_decode($curriculum->getAttribute('description'), ENT_QUOTES);
                  $g = new Grade();
                  if ($g->load('grade', $curriculum->getAttribute('grade'))){ // else use preset $this->grade_id
                      $this->grade_id      = $g->id;
@@ -430,8 +430,8 @@ class Curriculum {
             $t = new TerminalObjective();
             $old_ter_id            = $ter->getAttribute('id');
             $t->curriculum_id      = $c_id;
-            $t->terminal_objective = $ter->getAttribute('terminal_objective');
-            $t->description        = $ter->getAttribute('description');
+            $t->terminal_objective = htmlspecialchars_decode($ter->getAttribute('terminal_objective'), ENT_QUOTES);
+            $t->description        = htmlspecialchars_decode($ter->getAttribute('description'), ENT_QUOTES);
             $t->order_id           = $ter->getAttribute('order_id');
             $t->repeat_interval    = $ter->getAttribute('repeat_interval');
             $t->color              = $ter->getAttribute('color');
@@ -460,8 +460,8 @@ class Curriculum {
                 $old_ena_id                  = $ena->getAttribute('id');
                 $e->curriculum_id            = $c_id;
                 $e->terminal_objective_id    = $t_id;
-                $e->enabling_objective       = $ena->getAttribute('enabling_objective');
-                $e->description              = $ena->getAttribute('description');
+                $e->enabling_objective       = htmlspecialchars_decode($ena->getAttribute('enabling_objective'), ENT_QUOTES);
+                $e->description              = htmlspecialchars_decode($ena->getAttribute('description'), ENT_QUOTES);
                 $e->order_id                 = $ena->getAttribute('order_id');
                 $e->repeat_interval          = $ena->getAttribute('repeat_interval');
                 $e->creator_id               = $USER->id;
@@ -542,7 +542,7 @@ class Curriculum {
         global $USER;
         $content = new Content();
         $content->title         = getImmediateChildrenByTagName($content_node, 'title')[0]->nodeValue;
-        $content->content       = getImmediateChildrenByTagName($content_node, 'text')[0]->nodeValue;
+        $content->content       = htmlspecialchars_decode(getImmediateChildrenByTagName($content_node, 'text')[0]->nodeValue, ENT_QUOTES);
         $content->file_context  = 1;
         $content->creator_id    = $USER->id;
         $content->context_id    = $_SESSION['CONTEXT'][$context]->id;
