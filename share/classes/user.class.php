@@ -183,6 +183,11 @@ class User {
      */
     public $curriuclum_ids = array();
     /**
+     * Array of 'course_ids" (used to get faster queries) id of curriculum_enrolements
+     * @var array 
+     */
+    public $course_ids = array();
+    /**
      * token for authentication
      * @var string 
      */
@@ -1352,7 +1357,7 @@ class User {
      * @return string | array
      */
    public function get_curriculum_enrolments() { 
-        $db = DB::prepare('SELECT cu.curriculum, cu.id, cu.grade_id, cu.icon_id, cu.color, gp.id AS group_id, gp.semester_id, gp.groups 
+        $db = DB::prepare('SELECT ce.id AS course_id, cu.curriculum, cu.id, cu.grade_id, cu.icon_id, cu.color, gp.id AS group_id, gp.semester_id, gp.groups 
                             FROM curriculum_enrolments AS ce, groups AS gp, institution_enrolments AS ie, groups_enrolments AS ge, curriculum AS cu 
                             WHERE cu.id = ce.curriculum_id 
                             AND ce.status = 1 
@@ -1378,6 +1383,9 @@ class User {
             }
             if (!in_array($result->id, $this->curriuclum_ids)){
                 array_push($this->curriuclum_ids, $result->id);
+            }
+            if (!in_array($result->course_id, $this->course_ids)){
+                array_push($this->course_ids, $result->course_id);
             }
             //array_push($this->group_ids,        $result->group_id); //add group_id to group_ids array for better queries
             //array_push($this->curriuclum_ids,   $result->id);       //add curriuclum_id to curriuclum_ids array for better queries
