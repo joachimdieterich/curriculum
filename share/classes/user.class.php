@@ -817,7 +817,10 @@ class User {
                             $current_group_id = $gp->id; //get existing group_id
                         }
                     }
-                    if (!isset($confirmed_position))      { $this->confirmed  = '3'; }                        else { $this->confirmed  = $data[$confirmed_position]; } 
+                    if (!isset($confirmed_position))      { $this->confirmed  = '3'; } else { 
+                        $this->confirmed  = $data[$confirmed_position]; 
+                        if ($this->confirmed == 0){ $this->confirmed  = '3'; } //confirmed darf nicht 0 sein!
+                    } 
 
                     $validated_data = $this->validate();
                     if ($validated_data === true) {
