@@ -127,7 +127,6 @@ if ($_GET['func'] != "show"){
     $html   .= Form::input_text('title', $label_title, $title, $error, 'Titel');
     $html   .= Form::input_textarea('content', $label_content, $content, $error, 'Beschreibung');
     $c       = new Context();
-    //error_log($show_file_context);
     if ($show_file_context === true){
         $html   .=  Form::input_select('file_context', 'Freigabe-Level', $c->get(), 'description', 'id', $context , $error);
     } 
