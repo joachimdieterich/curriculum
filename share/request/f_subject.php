@@ -68,7 +68,16 @@ $content = '<form id="form_subject" method="post" action="../share/processors/fp
 $content .= Form::input_text('subject', 'Fach', $subject, $error, 'z. B. Mathematik');
 $content .= Form::input_text('subject_short', 'Kürzel', $subject_short, $error, 'z. B. MA');
 $content .= Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung');
-$content .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'institution_id', $institution_id , $error);
+$institutions       = $USER->institutions;
+if(checkCapabilities('subject:addglobalsubject', $USER->role_id, false)){ // set for global ADMIN!
+    $ins                 = new stdClass();
+    $ins->institution_id = 0; 
+    $ins->institution    = 'globales Fach';
+    $institutions[]      = $ins;
+}
+
+$content .= Form::input_select('institution_id', 'Institution', $institutions, 'institution', 'institution_id', $institution_id , $error);
+
 $content .= '</form>';
 $footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_subject\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';
 
