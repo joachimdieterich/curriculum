@@ -32,7 +32,7 @@ if (isset($_GET['execute'])){
     $UPDATE->log = "Starte Update...<br>"; 
    
     $db= DB::prepare("INSERT INTO `capabilities` (`capability`, `name`, `description`, `type`, `component`) VALUES
-	('subject:addglobalentries', 'Nutzer darf globale Fächer, Klassenstufen usw. anlegen', 'Ability to add global entries', 'write', 'curriculum');");
+	('curriculum:addglobalentries', 'Nutzer darf globale Fächer, Klassenstufen usw. anlegen', 'Ability to add global entries', 'write', 'curriculum');");
     if ($db->execute(array())){
         $UPDATE->log .= "<b class=\"text-success\">Update finished - OK</b><br>";
         $UPDATE->installed = true;
