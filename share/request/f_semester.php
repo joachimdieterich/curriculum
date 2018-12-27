@@ -38,13 +38,15 @@ $sem_obj         = new Semester();
 $func            = $_GET['func'];
 
 switch ($func) {
-    case 'edit':    $sem_obj->id        = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);  // edit case: id == ena_id
-                    $semester_id        = $sem_obj->id;
-                    $sem_obj->load();                                 //Läd die bestehenden Daten aus der db
-                    foreach ($sem_obj as $key => $value){
-                        $$key = $value;
+    case 'edit':    if(checkCapabilities('subject:addglobalentries', $USER->role_id, true, true)){ // set for global ADMIN!
+                        $sem_obj->id        = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);  // edit case: id == ena_id
+                        $semester_id        = $sem_obj->id;
+                        $sem_obj->load();                                 //Läd die bestehenden Daten aus der db
+                        foreach ($sem_obj as $key => $value){
+                            $$key = $value;
+                        }
+                        $header                       = 'Lernzeitraum aktualisieren';         
                     }
-                    $header                       = 'Lernzeitraum aktualisieren';           
         break;
     case 'new':     $header                       = 'Lernzeitraum hinzufügen';
         break;
