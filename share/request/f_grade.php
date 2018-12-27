@@ -70,7 +70,7 @@ $institutions       = $USER->institutions;
 if(checkCapabilities('subject:addglobalentries', $USER->role_id, false)){ // set for global ADMIN!
     $ins                 = new stdClass();
     $ins->institution_id = 0; 
-    $ins->institution    = 'globales Fach';
+    $ins->institution    = 'globale(s) Klassenstufe/Lernalter';
     $institutions[]      = $ins;
 }
 $content .= Form::input_select('institution_id', 'Institution', $institutions, 'institution', 'institution_id', $institution_id , $error);
