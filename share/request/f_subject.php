@@ -75,7 +75,6 @@ if(checkCapabilities('subject:addglobalsubject', $USER->role_id, false)){ // set
     $ins->institution    = 'globales Fach';
     $institutions[]      = $ins;
 }
-
 $content .= Form::input_select('institution_id', 'Institution', $institutions, 'institution', 'institution_id', $institution_id , $error);
 
 $content .= '</form>';
