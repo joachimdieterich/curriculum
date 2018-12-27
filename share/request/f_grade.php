@@ -67,7 +67,7 @@ $content = '<form id="form_grade" method="post" action="../share/processors/fp_g
 $content .= Form::input_text('grade', 'Klassenstufe', $grade, $error, 'z. B. 7. Klasse');
 $content .= Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung');
 $institutions       = $USER->institutions;
-if(checkCapabilities('subject:addglobalentries', $USER->role_id, false)){ // set for global ADMIN!
+if(checkCapabilities('curriculum:addglobalentries', $USER->role_id, false)){ // set for global ADMIN!
     $ins                 = new stdClass();
     $ins->institution_id = 0; 
     $ins->institution    = 'globale(s) Klassenstufe/Lernalter';
