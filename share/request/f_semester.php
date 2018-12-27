@@ -38,7 +38,7 @@ $sem_obj         = new Semester();
 $func            = $_GET['func'];
 
 switch ($func) {
-    case 'edit':    if(checkCapabilities('subject:addglobalentries', $USER->role_id, true, true)){ // set for global ADMIN!
+    case 'edit':    if(checkCapabilities('curriculum:addglobalentries', $USER->role_id, true, true)){ // set for global ADMIN!
                         $sem_obj->id        = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);  // edit case: id == ena_id
                         $semester_id        = $sem_obj->id;
                         $sem_obj->load();                                 //Läd die bestehenden Daten aus der db
@@ -70,7 +70,7 @@ $content .= Form::input_text('semester', 'Lernzeitraum', $semester, $error, 'z. 
 $content .= Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung');
 $content .= Form::input_date(array('id'=>'timerange', 'label' => 'Dauer' , 'time' => $timerange, 'error' => $error, 'placeholder' => '', $type = 'date'));
 $institutions       = $USER->institutions;
-if(checkCapabilities('subject:addglobalentries', $USER->role_id, false)){ // set for global ADMIN!
+if(checkCapabilities('curriculum:addglobalentries', $USER->role_id, false)){ // set for global ADMIN!
     $ins                 = new stdClass();
     $ins->institution_id = 0; 
     $ins->institution    = 'globaler Lernzeitraum';
