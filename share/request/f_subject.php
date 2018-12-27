@@ -69,7 +69,7 @@ $content .= Form::input_text('subject', 'Fach', $subject, $error, 'z. B. Mathema
 $content .= Form::input_text('subject_short', 'Kürzel', $subject_short, $error, 'z. B. MA');
 $content .= Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung');
 $institutions       = $USER->institutions;
-if(checkCapabilities('subject:addglobalsubject', $USER->role_id, false)){ // set for global ADMIN!
+if(checkCapabilities('subject:addglobalentries', $USER->role_id, false)){ // set for global ADMIN!
     $ins                 = new stdClass();
     $ins->institution_id = 0; 
     $ins->institution    = 'globales Fach';
