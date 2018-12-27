@@ -66,7 +66,14 @@ $content = '<form id="form_grade" method="post" action="../share/processors/fp_g
 <input type="hidden" name="func" id="func" value="'.$func.'"/>'; 
 $content .= Form::input_text('grade', 'Klassenstufe', $grade, $error, 'z. B. 7. Klasse');
 $content .= Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung');
-$content .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'institution_id', $institution_id , $error);
+$institutions       = $USER->institutions;
+if(checkCapabilities('subject:addglobalentries', $USER->role_id, false)){ // set for global ADMIN!
+    $ins                 = new stdClass();
+    $ins->institution_id = 0; 
+    $ins->institution    = 'globales Fach';
+    $institutions[]      = $ins;
+}
+$content .= Form::input_select('institution_id', 'Institution', $institutions, 'institution', 'institution_id', $institution_id , $error);
 $content .= '</form>';
 $footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_grade\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';
 
