@@ -46,6 +46,31 @@ class Institution {
      */
     public $description;
     /**
+     * street
+     * @var string
+     */
+    public $street;
+    /**
+     * postalcode
+     * @var string 
+     */
+    public $postalcode; 
+    /**
+     * city
+     * @var string 
+     */
+    public $city; 
+    /**
+     * phone
+     * @var string 
+     */
+    public $phone; 
+    /**
+     * email
+     * @var string 
+     */
+    public $email; 
+    /**
      * id of schooltype, default null
      * @var int 
      */
@@ -104,6 +129,11 @@ class Institution {
           $this->confirmed          = $result->confirmed;
           $this->institution        = $result->institution; 
           $this->description        = $result->description; 
+          $this->street             = $result->street; 
+          $this->postalcode         = $result->postalcode; 
+          $this->city               = $result->city; 
+          $this->phone              = $result->phone; 
+          $this->email              = $result->email; 
           $this->schooltype_id      = $result->schooltype_id; 
           $this->country_id         = $result->country_id; 
           $this->state_id           = $result->state_id; 
@@ -140,11 +170,11 @@ class Institution {
         if($db->fetchColumn() >= 1) { 
             return false;
         } else {
-            $db = DB::prepare('INSERT INTO institution (institution, description, schooltype_id, country_id, state_id, creator_id, confirmed, 
+            $db = DB::prepare('INSERT INTO institution (institution, description, street, postalcode, city, phone, email, schooltype_id, country_id, state_id, creator_id, confirmed, 
                                paginator_limit, std_role, csv_size, avatar_size, material_size, acc_days,
                                timeout, semester_id, file_id) 
-                                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
-            if ($db->execute(array($this->institution, $this->description, $this->schooltype_id, $this->country_id, $this->state_id, $USER->id, $this->confirmed, $this->paginator_limit, $this->std_role, $this->csv_size, $this->avatar_size, $this->material_size, $this->acc_days, $this->timeout, $this->semester_id, $this->file_id))){    
+                                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
+            if ($db->execute(array($this->institution, $this->description, $this->street, $this->postalcode, $this->city, $this->phone, $this->email, $this->schooltype_id, $this->country_id, $this->state_id, $USER->id, $this->confirmed, $this->paginator_limit, $this->std_role, $this->csv_size, $this->avatar_size, $this->material_size, $this->acc_days, $this->timeout, $this->semester_id, $this->file_id))){    
                 return DB::lastInsertId();
             } else {return false;} 
         }
@@ -189,8 +219,8 @@ class Institution {
         global $USER;
         checkCapabilities('institution:update', $USER->role_id);
         if ($install){
-            $db = DB::prepare('UPDATE institution SET institution = ?, description= ?, schooltype_id= ?, country_id= ?, state_id= ?, confirmed = ? WHERE id > 0');
-            if ($db->execute(array($this->institution, $this->description, $this->schooltype_id, $this->country_id, $this->state_id, $this->confirmed, ))){
+            $db = DB::prepare('UPDATE institution SET institution = ?, description = ?, street = ?, postalcode = ?, city = ?, phone = ?, email = ?, schooltype_id = ?, country_id = ?, state_id = ?, confirmed = ? WHERE id > 0');
+            if ($db->execute(array($this->institution, $this->description, $this->street, $this->postalcode, $this->city, $this->phone, $this->email, $this->schooltype_id, $this->country_id, $this->state_id, $this->confirmed, ))){
                 $db = DB::prepare('SELECT id FROM institution WHERE institution = ?');
                 if ($db->execute(array($this->institution))) {
                     $result = $db->fetchObject();
@@ -198,9 +228,9 @@ class Institution {
                 } else { return false; }
             } 
         } else {
-            $db = DB::prepare('UPDATE institution SET institution = ?, description= ?, schooltype_id= ?, country_id= ?, state_id= ?, confirmed = ?, paginator_limit = ?, std_role = ?, csv_size = ?, avatar_size = ?, material_size = ?, acc_days = ?, timeout = ?, semester_id = ? , file_id = ? 
+            $db = DB::prepare('UPDATE institution SET institution = ?, description= ?, street = ?, postalcode = ?, city = ?, phone = ?, email = ?, schooltype_id= ?, country_id= ?, state_id= ?, confirmed = ?, paginator_limit = ?, std_role = ?, csv_size = ?, avatar_size = ?, material_size = ?, acc_days = ?, timeout = ?, semester_id = ? , file_id = ? 
                                     WHERE id = ?');
-            return $db->execute(array($this->institution, $this->description, $this->schooltype_id, $this->country_id, $this->state_id, $this->confirmed, $this->paginator_limit, $this->std_role, $this->csv_size, $this->avatar_size, $this->material_size, $this->acc_days, $this->timeout, $this->semester_id, $this->file_id, $this->id));
+            return $db->execute(array($this->institution, $this->description, $this->street, $this->postalcode, $this->city, $this->phone, $this->email, $this->schooltype_id, $this->country_id, $this->state_id, $this->confirmed, $this->paginator_limit, $this->std_role, $this->csv_size, $this->avatar_size, $this->material_size, $this->acc_days, $this->timeout, $this->semester_id, $this->file_id, $this->id));
         }
     }
     
@@ -228,6 +258,11 @@ class Institution {
             $INSTITUTION->id                = $result->id;
             $INSTITUTION->institution       = $result->institution;
             $INSTITUTION->description       = $result->description;
+            $INSTITUTION->street            = $result->street; 
+            $INSTITUTION->postalcode        = $result->postalcode; 
+            $INSTITUTION->city              = $result->city; 
+            $INSTITUTION->phone             = $result->phone; 
+            $INSTITUTION->email             = $result->email; 
             $INSTITUTION->schooltype        = $result->schooltype_id;
             $INSTITUTION->country_id        = $result->country_id;
             $INSTITUTION->state_id          = $result->id;
@@ -266,6 +301,11 @@ class Institution {
         $order_param = orderPaginator($paginator, array('id'            => 'ins',
                                                         'institution'   => 'ins',
                                                         'description'   => 'ins',
+                                                        'street'        => 'ins',
+                                                        'postalcode'    => 'ins',
+                                                        'city'          => 'ins',
+                                                        'phone'         => 'ins',
+                                                        'email'         => 'ins',
                                                         'schooltype_id' => 'ins',
                                                         'creation_time' => 'ins',
                                                         'schooltype'    => 'sch',
@@ -273,14 +313,14 @@ class Institution {
                                                         'state'         => 'sta',
                                                         'de'            => 'co',));  
         switch ($dependency) {
-            case 'user':$db = DB::prepare('SELECT ins.id, ins.institution, ins.description, ins.file_id, sch.schooltype AS schooltype_id, sta.state AS state_id, ins.country_id, ins.file_id, co.de AS country, ins.creation_time, usr.username AS creator_id, ro.role
+            case 'user':$db = DB::prepare('SELECT ins.id, ins.institution, ins.description, ins.street, ins.postalcode, ins.city, ins.phone, ins.email, ins.file_id, sch.schooltype AS schooltype_id, sta.state AS state_id, ins.country_id, ins.file_id, co.de AS country, ins.creation_time, usr.username AS creator_id, ro.role
                             FROM institution AS ins, schooltype AS sch, state AS sta, countries AS co, users AS usr, institution_enrolments AS ie, roles AS ro
                             WHERE sch.id = ins.schooltype_id AND sta.id = ins.state_id AND co.id = ins.country_id AND usr.id = ins.creator_id AND ro.id = ie.role_id
                             AND ie.institution_id = ins.id AND ie.user_id = ? AND ie.status = 1 '.$order_param);
                         $db->execute(array($id));
                 break;
             
-            case 'all': $db = DB::prepare('SELECT ins.id, ins.institution, ins.description, sch.schooltype AS schooltype_id, sta.state AS state_id, ins.country_id, co.de AS country, ins.creation_time, ins.file_id, usr.username AS creator_id 
+            case 'all': $db = DB::prepare('SELECT ins.id, ins.institution, ins.description, ins.street, ins.postalcode, ins.city, ins.phone, ins.email, sch.schooltype AS schooltype_id, sta.state AS state_id, ins.country_id, co.de AS country, ins.creation_time, ins.file_id, usr.username AS creator_id 
                             FROM institution AS ins, schooltype AS sch, state AS sta, countries AS co, users AS usr
                             WHERE sch.id = ins.schooltype_id AND sta.id = ins.state_id AND co.id = ins.country_id AND usr.id = ins.creator_id '.$order_param);
                         $db->execute();
