@@ -28,6 +28,7 @@ require ($base_url.'login-check.php');
 global $CFG, $USER;
 $USER           = $_SESSION['USER'];
 $func           = $_GET['func'];
+$error          = null;
 $object         = file_get_contents("php://input");
 $data           = json_decode($object, true);
 if (is_array($data)) {
