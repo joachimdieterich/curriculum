@@ -119,13 +119,14 @@ function setPaginator($instance, $template, $data, $returnVar, $currentURL, $con
     $SmartyPaginate         = new SmartyPaginate(); 
     $SmartyPaginate->connect($instance);
     //$CFG->paginator_name    = &$instance;  
-    if ($instance == 'inboxPaginator' || $instance == 'outboxPaginator'){       // Mail Paginatoren haben anderes Limit, evtl. für jeden Paginator indiv. machen
+    /*if ($instance == 'inboxPaginator' || $instance == 'outboxPaginator'){       // Mail Paginatoren haben anderes Limit, evtl. für jeden Paginator indiv. machen
         $SmartyPaginate->setLimit($CFG->settings->mail_paginator_limit, $instance);
     } else {          
         if (filter_input(INPUT_GET, 'paginator_limit', FILTER_UNSAFE_RAW) && filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW)){
             SmartyPaginate::setLimit(filter_input(INPUT_GET, 'paginator_limit', FILTER_UNSAFE_RAW), filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW));
         } 
-    }
+    }*/
+    $SmartyPaginate->setLimit($USER->paginator_limit, $instance); //get paginator_limit from USER
     $SmartyPaginate->setUrl($currentURL, $instance);
     $SmartyPaginate->setWidth($width, $instance);
     $SmartyPaginate->setUrlVar($instance, $instance);
@@ -142,7 +143,6 @@ function setPaginator($instance, $template, $data, $returnVar, $currentURL, $con
         $all = array();
         foreach($data as $d){ $all[] = $d->id; }
         SmartyPaginate::setSelectAll($all, $instance);    //set all ids of data to paginator selectall
-        //SmartyPaginate::setSelectAll(implode(",", $all), $instance);    //set all ids of data to paginator selectall
         
         $template->assign($returnVar, array_slice($data, $SmartyPaginate->getCurrentIndex($instance), $SmartyPaginate->getLimit($instance)), $instance); //hack for message paginator
         SmartyPaginate::setData(array_slice($data, $SmartyPaginate->getCurrentIndex($instance), $SmartyPaginate->getLimit($instance)), $instance);
