@@ -114,8 +114,8 @@ function curPageName() {
  * @param array $config
  * @param string $width 
  */
-function setPaginator($instance, $template, $data, $returnVar, $currentURL, $config = false, $width = 'col-sm-12') {
-    global $CFG, $USER;
+function setPaginator($instance, $data, $returnVar, $currentURL, $config = false, $width = 'col-sm-12') {
+    global $CFG, $USER, $TEMPLATE;
     $SmartyPaginate         = new SmartyPaginate(); 
     $SmartyPaginate->connect($instance);
     //$CFG->paginator_name    = &$instance;  
@@ -144,15 +144,15 @@ function setPaginator($instance, $template, $data, $returnVar, $currentURL, $con
         foreach($data as $d){ $all[] = $d->id; }
         SmartyPaginate::setSelectAll($all, $instance);    //set all ids of data to paginator selectall
         
-        $template->assign($returnVar, array_slice($data, $SmartyPaginate->getCurrentIndex($instance), $SmartyPaginate->getLimit($instance)), $instance); //hack for message paginator
+        $TEMPLATE->assign($returnVar, array_slice($data, $SmartyPaginate->getCurrentIndex($instance), $SmartyPaginate->getLimit($instance)), $instance); //hack for message paginator
         SmartyPaginate::setData(array_slice($data, $SmartyPaginate->getCurrentIndex($instance), $SmartyPaginate->getLimit($instance)), $instance);
         SmartyPaginate::setConfig($config, $instance); // set config
     } else {
         SmartyPaginate::setData(null,$instance);
     }
     
-    $template->assign('currentUrlId', $SmartyPaginate->getCurrentIndex($instance)+1); 
-    $SmartyPaginate->assign($template, $instance, $instance);
+    $TEMPLATE->assign('currentUrlId', $SmartyPaginate->getCurrentIndex($instance)+1); 
+    $SmartyPaginate->assign($TEMPLATE, $instance, $instance);
 }
 
 /**
