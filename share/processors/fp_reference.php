@@ -84,7 +84,9 @@ if($validated_data === false) {/* validation failed */
             $reference->target_reference_id = $ena_id; 
             if ($reference->add()){
                 $_SESSION['PAGE']->message[] = array('message' => 'Referenz hinzufgefügt', 'icon' => 'fa-link text-success');
-            } 
+            } else {
+                $_SESSION['PAGE']->message[] = array('message' => 'Referenz konnte nicht hinzugefügt werden', 'icon' => 'fa-link text-warning');
+            }
         }
     } else if (isset($_POST['terminal_objective_id'])){
         $reference->context_id          = $_SESSION['CONTEXT']['terminal_objective']->context_id; 
@@ -92,7 +94,9 @@ if($validated_data === false) {/* validation failed */
         $reference->target_reference_id = $_POST['terminal_objective_id'];
         if ($reference->add()){
             $_SESSION['PAGE']->message[] = array('message' => 'Referenz hinzufgefügt', 'icon' => 'fa-link text-success');
-        } 
+        } else {
+            $_SESSION['PAGE']->message[] = array('message' => 'Referenz konnte nicht hinzugefügt werden', 'icon' => 'fa-link text-warning');
+        }
     }
     
     /*switch ($_POST['func']) {
