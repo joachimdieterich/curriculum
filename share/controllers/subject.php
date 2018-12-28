@@ -47,4 +47,4 @@ $p_config =   array('id'         => 'checkbox',
                   'p_search'      => array('subject','description','subject_short','institution'),
                   'p_widget'      => $p_widget, 
                   'p_options'     => $p_options);
-setPaginator('subjectP', $TEMPLATE, $subject->getSubjects('subjectP'), 'su_val', 'index.php?action=subject', $p_config); 
+setPaginator('subjectP', $subject->getSubjects('subjectP'), 'su_val', 'index.php?action=subject', $p_config); 
