@@ -47,4 +47,4 @@ $p_config =   array('id'          => 'checkbox',
                     'p_search'    => array('grade','description','institution'),
                     'p_widget'    => $p_widget, 
                     'p_options'   => $p_options);
-setPaginator('gradeP', $TEMPLATE, $grade->getGrades('all', null, 'gradeP'), 'gr_val', 'index.php?action=grade', $p_config); 
+setPaginator('gradeP', $grade->getGrades('all', null, 'gradeP'), 'gr_val', 'index.php?action=grade', $p_config); 
