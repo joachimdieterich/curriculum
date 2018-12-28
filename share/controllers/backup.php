@@ -59,4 +59,4 @@ $p_config = array('id'            => 'checkbox',
                   'p_search'      => array('title','description'),
                   'p_widget'      => $p_widget, 
                   'p_options'     => $p_options);
-setPaginator('fileBackupPaginator', $TEMPLATE, $backup_list, 'fb_val', 'index.php?action=backup', $p_config);      
+setPaginator('fileBackupPaginator', $backup_list, 'fb_val', 'index.php?action=backup', $p_config);      
