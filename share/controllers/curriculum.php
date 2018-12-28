@@ -75,4 +75,4 @@ $p_config  = array('id'         => 'checkbox',
                    't_config'  => $t_config,
                    'p_search'    => array('curriculum','description','grade','schooltype','state','subject'),
                    'p_widget'    => $p_widget);
-setPaginator('curriculumP', $TEMPLATE, $curriculum->getCurricula('user', $USER->id, 'curriculumP'), 'cu_val', 'index.php?action=curriculum', $p_config);
+setPaginator('curriculumP', $curriculum->getCurricula('user', $USER->id, 'curriculumP'), 'cu_val', 'index.php?action=curriculum', $p_config);
