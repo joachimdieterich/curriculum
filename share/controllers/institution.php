@@ -63,4 +63,4 @@ $p_view    = array('id'           => 'checkbox',
                   'p_widget'      => $p_widget, 
                   'p_options'     => $p_options);
 $institution = new Institution();
-setPaginator('institutionP', $TEMPLATE, $institution->getInstitutions('all', 'institutionP'), 'in_val', 'index.php?action=institution', $p_view); //set Paginator   
+setPaginator('institutionP', $institution->getInstitutions('all', 'institutionP'), 'in_val', 'index.php?action=institution', $p_view); //set Paginator   
