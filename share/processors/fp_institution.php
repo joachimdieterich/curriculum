@@ -54,6 +54,11 @@ if($validated_data === false) {/* validation failed */
     }
     $new_institution->institution       = filter_input(INPUT_POST, 'institution',       FILTER_SANITIZE_STRING);
     $new_institution->description       = filter_input(INPUT_POST, 'description',       FILTER_SANITIZE_STRING);
+    $new_institution->street            = filter_input(INPUT_POST, 'street',            FILTER_SANITIZE_STRING);
+    $new_institution->postalcode        = filter_input(INPUT_POST, 'postalcode',        FILTER_SANITIZE_STRING);
+    $new_institution->city              = filter_input(INPUT_POST, 'city',              FILTER_SANITIZE_STRING);
+    $new_institution->phone             = filter_input(INPUT_POST, 'phone',             FILTER_SANITIZE_STRING);
+    $new_institution->email             = filter_input(INPUT_POST, 'email',             FILTER_SANITIZE_STRING);
     $new_institution->schooltype_id     = filter_input(INPUT_POST, 'schooltype_id',     FILTER_VALIDATE_INT);
     $new_institution->country_id        = filter_input(INPUT_POST, 'country_id',        FILTER_VALIDATE_INT);
     $new_institution->state_id          = filter_input(INPUT_POST, 'state_id',          FILTER_VALIDATE_INT);
