@@ -36,6 +36,6 @@ if (checkCapabilities('menu:readLog', $USER->role_id)){
                   'action'          => 'Aktion',
                   'url'             => 'URL',
                   'info'            => 'Info');
-    setPaginator('logP', $TEMPLATE, $LOG->getLogs('logP'), 'lo_val', 'index.php?action=log', $p_config);
+    setPaginator('logP', $LOG->getLogs('logP'), 'lo_val', 'index.php?action=log', $p_config);
     $TEMPLATE->assign('ccs_page_log', true); 
 } 
