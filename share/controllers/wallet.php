@@ -77,10 +77,10 @@ if (isset($_GET['view'])){
     if ( empty($wallet->get('search', $search))) {
         $TEMPLATE->assign('wallet', $wallet->get('shared', $USER->id, 'userFiles'));
         $TEMPLATE->assign('page_title', 'freigegebene Sammelmappen');
-        setPaginator('walletP', $TEMPLATE, $wallet->get('shared', $USER->id, 'userFiles'), 'wa_val', 'index.php?action=wallet&view=shared', $p_config);
+        setPaginator('walletP', $wallet->get('shared', $USER->id, 'userFiles'), 'wa_val', 'index.php?action=wallet&view=shared', $p_config);
     } else {
         $TEMPLATE->assign('wallet', $wallet->get('search', $search));
-        setPaginator('walletP', $TEMPLATE, $wallet->get('search', $search), 'wa_val', 'index.php?action=wallet', $p_config);
+        setPaginator('walletP', $wallet->get('search', $search), 'wa_val', 'index.php?action=wallet', $p_config);
     }
     
 }
