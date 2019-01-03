@@ -107,7 +107,6 @@ function curPageName() {
  * Set paginator
  * @global object $CFG, $INSTITUTION, PAGE
  * @param string $instance
- * @param array $template
  * @param array $resultData
  * @param string $returnVar
  * @param string $currentURL 
@@ -253,17 +252,14 @@ function convertByteToKbyte($byte){
 
 function return_bytes($val) {
     $val = trim($val);
-    $last = strtolower($val[strlen($val)-1]);
-    switch($last) {
-        // The 'G' modifier is available since PHP 5.1.0
-        case 'g':
-            $val *= (1024 * 1024 * 1024); //1073741824
+    $last = $val[strlen($val)-1];
+    $val = substr($val, 0, -1); //remove size extention
+    switch(strtolower($last)) {  
+        case 'g': $val *= (1024 * 1024 * 1024); //1073741824 // The 'G' modifier is available since PHP 5.1.0
             break;
-        case 'm':
-            $val *= (1024 * 1024); //1048576
+        case 'm': $val *= (1024 * 1024); //1048576
             break;
-        case 'k':
-            $val *= 1024;
+        case 'k': $val *= 1024;
             break;
     }
 
