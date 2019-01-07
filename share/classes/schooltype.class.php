@@ -148,6 +148,7 @@ class Schooltype {
      */
     public function getSchooltypes($for_session = false, $paginator = ''){
         $order_param = orderPaginator($paginator, array('id'            => 'sc',
+                                                        'schooltype'    => 'sc',
                                                         'description'   => 'sc',
                                                         'country_id'    => 'sc',
                                                         'state_id'      => 'sc',
