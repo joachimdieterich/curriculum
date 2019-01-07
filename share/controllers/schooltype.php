@@ -45,4 +45,4 @@ $p_config =   array('id'         => 'checkbox',
                   'p_search'      => array('schooltype','description', 'state'),
                   'p_widget'      => $p_widget, 
                   'p_options'     => $p_options);
-setPaginator('schooltypeP', $schooltype->getSchooltypes(), 'id', 'index.php?action=schooltype', $p_config); 
+setPaginator('schooltypeP', $schooltype->getSchooltypes(false, 'schooltypeP'), 'id', 'index.php?action=schooltype', $p_config); 
