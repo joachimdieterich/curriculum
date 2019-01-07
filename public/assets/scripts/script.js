@@ -1092,4 +1092,13 @@ $.ajax({
 function jQuerySelectorEscape(expression) {
       return expression.replace(/[!"#$%&'()*+,.\/:;<=>?@\[\\\]^`{|}~]/g, '\\$&');
   }
-        
+ 
+function selectAll(id){
+    if($("#"+id+"_checkbox").is(':checked') ){
+        $("#"+id+" > option").prop("selected","selected");
+        $("#"+id).trigger("change");
+    }else{
+        $("#"+id+" > option").removeAttr("selected");
+         $("#"+id).trigger("change");
+     }
+}
