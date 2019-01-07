@@ -170,6 +170,13 @@
                         </a>
                     </li>
                 {/if}
+                {if checkCapabilities('menu:readSchooltype', $my_role_id, false)}   
+                    <li class="treeview {if $page_action eq 'schooltype'}active{/if}">
+                        <a href="index.php?action=schooltype">
+                            <i class="fa fa-list-alt"></i><span>Schul-/Institutionstypen</span>
+                        </a>
+                    </li>
+                {/if}
             {/if}
             
             {if checkCapabilities('menu:readLog', $my_role_id, false)}
