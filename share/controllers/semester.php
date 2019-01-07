@@ -52,4 +52,4 @@ $p_config = array('id'            => 'checkbox',
                   'p_search'      => array('semester','description','institution'),
                   'p_widget'      => $p_widget, 
                   'p_options'     => $p_options);
-setPaginator('semesterP', $TEMPLATE, $semesters->getSemesters('all',null,'semesterP'), 'se_val', 'index.php?action=semester', $p_config); 
+setPaginator('semesterP', $semesters->getSemesters('all',null,'semesterP'), 'se_val', 'index.php?action=semester', $p_config); 

@@ -112,7 +112,7 @@ if ($selected_curriculum_id != '' AND !isset($_GET['ajax'])) {
                               't_config'  => $t_config);
       }
     }
-    setPaginator('userPaginator', $TEMPLATE, $users, 'results', 'index.php?action=objectives&course='.$selected_curriculumforURL, $p_config); //set Paginator    
+    setPaginator('userPaginator', $users, 'results', 'index.php?action=objectives&course='.$selected_curriculumforURL, $p_config); //set Paginator    
     /*course book*/
     $sel_course     = $courses->getCourseId($selected_curriculum_id, $selected_group);
     $coursebook     = new CourseBook();

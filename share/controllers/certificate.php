@@ -50,4 +50,4 @@ $p_config =  array('id'           => 'checkbox',
                   'p_search'      => array('certificate','description','institution','template'),
                   'p_widget'      => $p_widget, 
                   'p_options'     => $p_options);
-setPaginator('certificateP', $TEMPLATE, $certificates->getCertificates('certificateP'), 'ct_val', 'index.php?action=certificate', $p_config); //set Paginator
+setPaginator('certificateP', $certificates->getCertificates('certificateP'), 'ct_val', 'index.php?action=certificate', $p_config); //set Paginator

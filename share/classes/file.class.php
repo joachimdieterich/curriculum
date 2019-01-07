@@ -193,20 +193,21 @@ class File {
     public function delete(){
         global $CFG, $USER, $LOG;
         checkCapabilities('file:delete', $USER->role_id);
-        $this->load();
-        $db = DB::prepare('DELETE FROM files WHERE id=?');
-        if ($db->execute(array($this->id))){/* unlink file*/
-            $path = $CFG->curriculumdata_root.$_SESSION['CONTEXT'][$this->context_id]->path;
-            if ($path) {
-                $LOG->add($USER->id, 'uploadframe.php', dirname(__FILE__), 'Context: '.$this->context_id.' Delete: '.$this->path.''.$this->filename);
-                if ($this->type == ".url"){ // bei urls muss keine Datei gelöscht werden 
-                    return true;
-                } else {
-                    return $this->deleteVersions($path); 
-                }   
+        if ($this->load()){  //file exist?
+            $db = DB::prepare('DELETE FROM files WHERE id=?');
+            if ($db->execute(array($this->id))){/* unlink file*/
+                $path = $CFG->curriculumdata_root.$_SESSION['CONTEXT'][$this->context_id]->path;
+                if ($path) {
+                    $LOG->add($USER->id, 'uploadframe.php', dirname(__FILE__), 'Context: '.$this->context_id.' Delete: '.$this->path.''.$this->filename);
+                    if ($this->type == ".url"){ // bei urls muss keine Datei gelöscht werden 
+                        return true;
+                    } else {
+                        return $this->deleteVersions($path); 
+                    }   
+                }
+            } else {
+                return false;
             }
-        } else {
-            return false;
         }
     } 
 

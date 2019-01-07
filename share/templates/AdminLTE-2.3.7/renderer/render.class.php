@@ -1072,11 +1072,10 @@ class Render {
      * @return string
      */
     public static function filelist($url, $dependency, $view, $target, $id){
-        global $TEMPLATE;
         $file    = new File();
         $files   = $file->getFiles($dependency, $id, 'filelist_'.$dependency);
         
-        setPaginator('filelist_'.$dependency, $TEMPLATE, $files, 'fi_val', $url); //set Paginator for filelist
+        setPaginator('filelist_'.$dependency, $files, 'fi_val', $url); //set Paginator for filelist
         $content = '<div class="box-body scroll_list" style="overflow:auto;" ><form name="'.$url.'" action="'.$url.'" method="post" enctype="multipart/form-data" >';
                     
         switch ($view) {

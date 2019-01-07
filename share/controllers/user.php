@@ -55,6 +55,8 @@ if (isset($_POST) ){
                     break; 
                 case isset($_POST['expelGroups']):  $edit_user->expelFromGroup($_POST['groups']);
                     break;     
+                case isset($_POST['acceptUser']):  $edit_user->acceptUser(); //acception registration
+                    break;     
                 case isset($_POST['enroleInstitution']): 
                                     if (isset($_POST['institution'])){
                                         $institution->id = $_POST['institution'];
@@ -152,11 +154,11 @@ else {
 $TEMPLATE->assign('filter_institution_id', false);
 if (isset($_GET['filter_institution'])){
     if ($_GET['filter_institution'] == 'false'){
-        $u = $users->userList('institution', 'userP', filter_input(INPUT_GET, 'lost', FILTER_VALIDATE_BOOLEAN));
+        $u = $users->userList('institution', 'userP', filter_input(INPUT_GET, 'filter', FILTER_UNSAFE_RAW));
     } else {
         $TEMPLATE->assign('filter_group_id', $_GET['filter_group']);
         $TEMPLATE->assign('filter_role_id', $_GET['filter_role']);
-        $u = $users->userList('filter_institution', 'userP', filter_input(INPUT_GET, 'lost', FILTER_VALIDATE_BOOLEAN), $_GET['filter_institution'], $_GET['filter_role'], $_GET['filter_group']);
+        $u = $users->userList('filter_institution', 'userP', filter_input(INPUT_GET, 'filter', FILTER_UNSAFE_RAW), $_GET['filter_institution'], $_GET['filter_role'], $_GET['filter_group']);
         
         $TEMPLATE->assign('filter_institution_id', $_GET['filter_institution']);
         $role      = new Roles();
@@ -167,7 +169,7 @@ if (isset($_GET['filter_institution'])){
         $TEMPLATE->assign('groups',     $groups   );
     }
 } else {
-    $u = $users->userList('institution', 'userP', filter_input(INPUT_GET, 'lost', FILTER_VALIDATE_BOOLEAN));
+    $u = $users->userList('institution', 'userP', filter_input(INPUT_GET, 'filter', FILTER_UNSAFE_RAW));
 }
 
 if(isset($_SESSION['PAGE']->config['tab'])){
@@ -176,4 +178,4 @@ if(isset($_SESSION['PAGE']->config['tab'])){
     $TEMPLATE->assign('f_password',  true);
 }
 
-setPaginator('userP', $TEMPLATE, $u, 'us_val', 'index.php?action=user', $p_config); //set Paginator
+setPaginator('userP', $u, 'us_val', 'index.php?action=user', $p_config); //set Paginator

@@ -269,7 +269,7 @@
                 <div class="pull-right hidden-xs">
                   <b>Version</b> {$app_version} 
                 </div>
-                <a class="btn-xs margin-r-10 pull-right" onclick='formloader("content", "new", null,{["label_title"=>"Betreff", "label_content"=>"Fehler beschreiben", "label_header"=>"Fehler melden","label_save"=>"Meldung abschicken", "context"=>"debug", "reference_id"=> 0]|@json_encode nofilter});'>
+                <a class="btn-xs margin-r-10 pull-right" onclick='formloader("content", "new", null,{["label_title"=>"Betreff", "label_content"=>"Fehler beschreiben", "label_header"=>"Fehler melden","label_save"=>"Meldung abschicken", "context"=>"debug", "show_file_context"=>"false", "reference_id"=> 0]|@json_encode nofilter});'>
                     <i class="fa fa-bullhorn text-warning"></i> Fehler melden
                 </a>
                 {$app_footer} {block name=footer}  <small><a onclick="formloader('terms', 'imprint')">Impressum</a> / <a onclick="formloader('terms', 'privacy')">Datenschutz</a></small>{/block}

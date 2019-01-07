@@ -23,13 +23,12 @@
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 global $PAGE, $USER, $TEMPLATE;
- 
 $search             = false;
 $navigator          = new Navigator_item();
 $navigator->getNavigatorByInstitution($USER->institution_id);
 $allowed_navigator  = $navigator->na_id;
 $navigator->getFirstView($navigator->na_id);
-$navigator_view     = $navigator->nv_id;                            //load navigator_id from 
+$navigator_view     = $navigator->nv_id;                            //load navigator_id from db 
 if (isset($_POST) ){
     if (isset($_POST['search'])){
         $search = filter_input(INPUT_POST, 'search', FILTER_SANITIZE_STRING);
@@ -39,6 +38,27 @@ if (isset($_POST) ){
 if (isset($_GET)){
     if (isset($_GET['nv_id'])){
         $navigator_view = $_GET['nv_id'];
+    }  elseif (checkCapabilities('navigator:add', $USER->role_id, false)) {
+        $p_options = array('delete' => array('onclick'    => "del('subject',__id__);", 
+                                            'capability' => checkCapabilities('navigator:delete', $USER->role_id, false),
+                                            'icon'       => 'fa fa-trash',
+                                            'tooltip'    => 'löschen',),
+                           'edit'  => array('onclick'    => "formloader('subject','edit',__id__);",
+                                            'capability' => checkCapabilities('navigator:update', $USER->role_id, false),
+                                            'icon'       => 'fa fa-edit',
+                                            'tooltip'    => 'bearbeiten'));
+       $p_widget  = array('header'      => 'na_title'/*,
+                          'subheader01' => 'description',
+                          'subheader02' => 'institution'*/); //false ==> don't show icon on widget
+       $p_config =   array('id'         => 'checkbox',
+                           'na_title'     => 'Fach', 
+                         'institution'   => 'Institution', 
+                         'p_search'      => array('na_title','institution'),
+                         'p_widget'      => $p_widget, 
+                         'p_options'     => $p_options);
+        $navigators = new Navigator();
+        setPaginator('navigatorP', $navigators->get(), 'na_id', 'index.php?action=navigator', $p_config);  
+        $TEMPLATE->assign('navigatorP',  true); //show navigator paginator ? 
     }
 }
 

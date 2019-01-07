@@ -38,13 +38,15 @@ $sem_obj         = new Semester();
 $func            = $_GET['func'];
 
 switch ($func) {
-    case 'edit':    $sem_obj->id        = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);  // edit case: id == ena_id
-                    $semester_id        = $sem_obj->id;
-                    $sem_obj->load();                                 //Läd die bestehenden Daten aus der db
-                    foreach ($sem_obj as $key => $value){
-                        $$key = $value;
+    case 'edit':    if(checkCapabilities('curriculum:addglobalentries', $USER->role_id, true, true)){ // set for global ADMIN!
+                        $sem_obj->id        = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);  // edit case: id == ena_id
+                        $semester_id        = $sem_obj->id;
+                        $sem_obj->load();                                 //Läd die bestehenden Daten aus der db
+                        foreach ($sem_obj as $key => $value){
+                            $$key = $value;
+                        }
+                        $header                       = 'Lernzeitraum aktualisieren';         
                     }
-                    $header                       = 'Lernzeitraum aktualisieren';           
         break;
     case 'new':     $header                       = 'Lernzeitraum hinzufügen';
         break;
@@ -67,7 +69,14 @@ $content = '<form id="form_semester" method="post" action="../share/processors/f
 $content .= Form::input_text('semester', 'Lernzeitraum', $semester, $error, 'z. B. Schuljahr 2015/16');
 $content .= Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung');
 $content .= Form::input_date(array('id'=>'timerange', 'label' => 'Dauer' , 'time' => $timerange, 'error' => $error, 'placeholder' => '', $type = 'date'));
-$content .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'institution_id', $institution_id , $error);
+$institutions       = $USER->institutions;
+if(checkCapabilities('curriculum:addglobalentries', $USER->role_id, false)){ // set for global ADMIN!
+    $ins                 = new stdClass();
+    $ins->institution_id = 0; 
+    $ins->institution    = 'globaler Lernzeitraum';
+    $institutions[]      = $ins;
+}
+$content .= Form::input_select('institution_id', 'Institution', $institutions, 'institution', 'institution_id', $institution_id , $error);
 $content .= '</form>';
 $footer   = '<button type="submit" class="btn btn-primary fa fa-plus pull-right" onclick="document.getElementById(\'form_semester\').submit();"> '.$header.'</button>';
 $html     = Form::modal(array('title'     => $header,

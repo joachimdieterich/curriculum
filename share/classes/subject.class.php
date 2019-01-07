@@ -73,7 +73,7 @@ class Subject {
                                                         'institution'    => 'ins')); 
        
         $subjects       = array();
-        if(checkCapabilities('subject:addglobalsubject', $USER->role_id, false)){ // set for global ADMIN!
+        if(checkCapabilities('curriculum:addglobalentries', $USER->role_id, false)){ // set for global ADMIN!
             $db         = DB::prepare('SELECT sub.*, ins.institution, sco.schooltype
                                        FROM subjects AS sub
                                        LEFT JOIN schooltype AS sco ON (sub.schooltype_id = sco.id)

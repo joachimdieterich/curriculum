@@ -49,6 +49,11 @@ $p_widget  = array('header'     => 'institution',
 $p_view    = array('id'           => 'checkbox', 
                   'institution'   => 'Institution', 
                   'description'   => 'Beschreibung', 
+                  'street'        => 'Straße', 
+                  'postalcode'    => 'PLZ', 
+                  'city'          => 'city', 
+                  'phone'         => 'Telefon', 
+                  'email'         => 'Email', 
                   'schooltype_id' => 'Schultyp',
                   'state_id'      => 'Bundesland/Region',
                   'de'            => 'Land',
@@ -58,4 +63,4 @@ $p_view    = array('id'           => 'checkbox',
                   'p_widget'      => $p_widget, 
                   'p_options'     => $p_options);
 $institution = new Institution();
-setPaginator('institutionP', $TEMPLATE, $institution->getInstitutions('all', 'institutionP'), 'in_val', 'index.php?action=institution', $p_view); //set Paginator   
+setPaginator('institutionP', $institution->getInstitutions('all', 'institutionP'), 'in_val', 'index.php?action=institution', $p_view); //set Paginator   

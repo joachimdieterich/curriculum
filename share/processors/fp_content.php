@@ -53,7 +53,11 @@ $content->content       = filter_input(INPUT_POST, 'content', FILTER_UNSAFE_RAW)
 $gump = new Gump();    /* Validation */
 $_POST = $gump->sanitize($_POST);       //sanitize $_POST
 $content->context_id    = $_POST['context_id'];
-$content->file_context  = $_POST['file_context'];
+if (isset($_POST['file_context'])){
+    $content->file_context  = $_POST['file_context'];
+} else {
+    $content->file_context  = 4; // if file_context is not set, file_context == private (4)
+}
 $content->reference_id  = $_POST['reference_id'];
 $content->title         = $_POST['title'];
 

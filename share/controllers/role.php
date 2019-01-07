@@ -44,4 +44,4 @@ $p_config =   array('id'        => 'checkbox',
                   'p_search'    => array('role','description'),
                   'p_widget'    => $p_widget,
                   'p_options'   => $p_options);
-setPaginator('roleP', $TEMPLATE, $role->get('roleP'), 'ro_val', 'index.php?action=role', $p_config); //set Paginator
+setPaginator('roleP', $role->get('roleP'), 'ro_val', 'index.php?action=role', $p_config); //set Paginator

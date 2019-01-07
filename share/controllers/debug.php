@@ -43,4 +43,4 @@ $p_config =   array('id'          => 'checkbox',
                     'p_search'    => array('content','description'),
                     'p_widget'    => $p_widget, 
                     'p_options'   => $p_options);
-setPaginator('debugP', $TEMPLATE, $debug_content->get('debug', 0), 'id', 'index.php?action=debug', $p_config); 
+setPaginator('debugP', $debug_content->get('debug', 0), 'id', 'index.php?action=debug', $p_config); 

@@ -117,5 +117,5 @@ function inbox($mailbox){
 /*function deletbox($mailbox){
     global $USER, $TEMPLATE;
     $mailbox->loadDeletedMessages($USER->id);
-    setPaginator('deleted_messagesPaginator', $TEMPLATE, $mailbox->deleted_messages, 'deleted', 'index.php?action=messages&function=showDeleted'); //set Paginator    
+    setPaginator('deleted_messagesPaginator', $mailbox->deleted_messages, 'deleted', 'index.php?action=messages&function=showDeleted'); //set Paginator    
 }*/

@@ -36,10 +36,12 @@ $content     = null;
 $context     = null;
 $timecreated = null;
 $creator_id  = null;
-$label_title     = isset($_GET['label_title']) ? $_GET['label_title'] : 'Titel';
-$label_content   = isset($_GET['label_content']) ? $_GET['label_content'] : 'Beschreibung';
-$label_header    = isset($_GET['label_header']) ? $_GET['label_header'] : 'Inhalt hinzufügen';
-$label_save      = isset($_GET['label_save']) ? $_GET['label_save'] : 'Inhalt speichern';
+
+$show_file_context = isset($_GET['show_file_context']) ? $_GET['show_file_context'] : true;
+$label_title       = isset($_GET['label_title']) ? $_GET['label_title'] : 'Titel';
+$label_content     = isset($_GET['label_content']) ? $_GET['label_content'] : 'Beschreibung';
+$label_header      = isset($_GET['label_header']) ? $_GET['label_header'] : 'Inhalt hinzufügen';
+$label_save        = isset($_GET['label_save']) ? $_GET['label_save'] : 'Inhalt speichern';
   
 $footer      = '';
 $options     = '';
@@ -125,7 +127,9 @@ if ($_GET['func'] != "show"){
     $html   .= Form::input_text('title', $label_title, $title, $error, 'Titel');
     $html   .= Form::input_textarea('content', $label_content, $content, $error, 'Beschreibung');
     $c       = new Context();
-    $html   .=  Form::input_select('file_context', 'Freigabe-Level', $c->get(), 'description', 'id', $context , $error);
+    if ($show_file_context === true){
+        $html   .=  Form::input_select('file_context', 'Freigabe-Level', $c->get(), 'description', 'id', $context , $error);
+    } 
     $html   .= '</form>';
     $footer .= '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_content\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$label_save.'</button>';
 }

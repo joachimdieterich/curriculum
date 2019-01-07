@@ -529,7 +529,7 @@ class Render {
     /* add all possible options (ter and ena) to this objective function*/
     public static function objective($params){
        global $CFG, $USER;
-       $type        = 'terminal_objective'; 
+       $type        = 'terminal_objective';       
        $edit        = false;
        //
        //$objective 
@@ -828,10 +828,9 @@ class Render {
      * @return string
      */
     public static function filelist($url, $dependency, $view, $target, $id){
-        global $TEMPLATE;
         $file    = new File();
         $files   = $file->getFiles($dependency, $id, 'filelist_'.$dependency);
-        setPaginator('filelist_'.$dependency, $TEMPLATE, $files, 'fi_val', $url); //set Paginator for filelist
+        setPaginator('filelist_'.$dependency, $files, 'fi_val', $url); //set Paginator for filelist
         $content = '<div class="panel-body scroll_list" style="overflow:auto;"><form name="'.$url.'" action="'.$url.'" method="post" enctype="multipart/form-data" >';
                     
         switch ($view) {
@@ -874,6 +873,9 @@ class Render {
                         <th style="width:50px;">Typ</th>
                     </tr>';
         foreach ($files as $f) {
+            if ($f->type == NULL) { //e.g. edusharing links do not render
+                continue;
+            }
             $content .= '<tr>';
             $content .= '<td><div class="btn-group"><button type="button" class="btn btn-xs btn-flat dropdown-toggle" data-toggle="dropdown">
                                 <span class="caret"></span>

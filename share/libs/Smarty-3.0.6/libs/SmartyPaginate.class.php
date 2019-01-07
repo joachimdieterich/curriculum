@@ -69,8 +69,13 @@ class SmartyPaginate {
      * @param string $id the pagination id
      */
     static function reset($id = 'default') {
+        global $USER;
+        $paginator_limit = 10; //default
+        if (isset($USER->paginator_limit)){
+            $paginator_limit = $USER->paginator_limit;
+        }
         $_SESSION['SmartyPaginate'][$id] = array(
-            'item_limit' => 10,
+            'item_limit' => $paginator_limit,
             'item_total' => null,
             'current_item' => 1,
             'urlvar' => 'next',

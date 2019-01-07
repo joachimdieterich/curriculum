@@ -107,25 +107,25 @@ function curPageName() {
  * Set paginator
  * @global object $CFG, $INSTITUTION, PAGE
  * @param string $instance
- * @param array $template
  * @param array $resultData
  * @param string $returnVar
  * @param string $currentURL 
  * @param array $config
  * @param string $width 
  */
-function setPaginator($instance, $template, $data, $returnVar, $currentURL, $config = false, $width = 'col-sm-12') {
-    global $CFG, $USER;
+function setPaginator($instance, $data, $returnVar, $currentURL, $config = false, $width = 'col-sm-12') {
+    global $CFG, $USER, $TEMPLATE;
     $SmartyPaginate         = new SmartyPaginate(); 
     $SmartyPaginate->connect($instance);
     //$CFG->paginator_name    = &$instance;  
-    if ($instance == 'inboxPaginator' || $instance == 'outboxPaginator'){       // Mail Paginatoren haben anderes Limit, evtl. für jeden Paginator indiv. machen
+    /*if ($instance == 'inboxPaginator' || $instance == 'outboxPaginator'){       // Mail Paginatoren haben anderes Limit, evtl. für jeden Paginator indiv. machen
         $SmartyPaginate->setLimit($CFG->settings->mail_paginator_limit, $instance);
     } else {          
         if (filter_input(INPUT_GET, 'paginator_limit', FILTER_UNSAFE_RAW) && filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW)){
             SmartyPaginate::setLimit(filter_input(INPUT_GET, 'paginator_limit', FILTER_UNSAFE_RAW), filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW));
         } 
-    }
+    }*/
+    $SmartyPaginate->setLimit($USER->paginator_limit, $instance); //get paginator_limit from USER
     $SmartyPaginate->setUrl($currentURL, $instance);
     $SmartyPaginate->setWidth($width, $instance);
     $SmartyPaginate->setUrlVar($instance, $instance);
@@ -142,17 +142,16 @@ function setPaginator($instance, $template, $data, $returnVar, $currentURL, $con
         $all = array();
         foreach($data as $d){ $all[] = $d->id; }
         SmartyPaginate::setSelectAll($all, $instance);    //set all ids of data to paginator selectall
-        //SmartyPaginate::setSelectAll(implode(",", $all), $instance);    //set all ids of data to paginator selectall
         
-        $template->assign($returnVar, array_slice($data, $SmartyPaginate->getCurrentIndex($instance), $SmartyPaginate->getLimit($instance)), $instance); //hack for message paginator
+        $TEMPLATE->assign($returnVar, array_slice($data, $SmartyPaginate->getCurrentIndex($instance), $SmartyPaginate->getLimit($instance)), $instance); //hack for message paginator
         SmartyPaginate::setData(array_slice($data, $SmartyPaginate->getCurrentIndex($instance), $SmartyPaginate->getLimit($instance)), $instance);
         SmartyPaginate::setConfig($config, $instance); // set config
     } else {
         SmartyPaginate::setData(null,$instance);
     }
     
-    $template->assign('currentUrlId', $SmartyPaginate->getCurrentIndex($instance)+1); 
-    $SmartyPaginate->assign($template, $instance, $instance);
+    $TEMPLATE->assign('currentUrlId', $SmartyPaginate->getCurrentIndex($instance)+1); 
+    $SmartyPaginate->assign($TEMPLATE, $instance, $instance);
 }
 
 /**
@@ -253,17 +252,14 @@ function convertByteToKbyte($byte){
 
 function return_bytes($val) {
     $val = trim($val);
-    $last = strtolower($val[strlen($val)-1]);
-    switch($last) {
-        // The 'G' modifier is available since PHP 5.1.0
-        case 'g':
-            $val *= (1024 * 1024 * 1024); //1073741824
+    $last = $val[strlen($val)-1];
+    $val = substr($val, 0, -1); //remove size extention
+    switch(strtolower($last)) {  
+        case 'g': $val *= (1024 * 1024 * 1024); //1073741824 // The 'G' modifier is available since PHP 5.1.0
             break;
-        case 'm':
-            $val *= (1024 * 1024); //1048576
+        case 'm': $val *= (1024 * 1024); //1048576
             break;
-        case 'k':
-            $val *= 1024;
+        case 'k': $val *= 1024;
             break;
     }
 

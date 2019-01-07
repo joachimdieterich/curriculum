@@ -41,5 +41,5 @@ if (checkCapabilities('menu:readCourseBook', $USER->role_id)){
                     'creation_time' => 'Datum', 
                     'curriculum_id' => 'Lehrplan_ID', 
                     'curriculum'    => 'Lehrplan');
-    setPaginator('coursebookP', $TEMPLATE, $cb, 'coursebook', 'index.php?action=courseBook', $p_config); //set Paginator   
+    setPaginator('coursebookP', $cb, 'coursebook', 'index.php?action=courseBook', $p_config); //set Paginator   
 } 
