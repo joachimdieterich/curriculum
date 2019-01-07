@@ -46,10 +46,20 @@ class Schooltype {
      */
     public $country_id; 
     /**
+     * countryname
+     * @var string 
+     */
+    public $country; 
+    /**
      * id of state
      * @var int 
      */
     public $state_id; 
+    /**
+     * statename
+     * @var string 
+     */
+    public $state;
     /**
      * timestamp when schooltype was created
      * @var timestamp
@@ -136,16 +146,26 @@ class Schooltype {
      * Get all availible schooltypes 
      * @return array of schooltype objects 
      */
-    public function getSchooltypes($for_session = false){
+    public function getSchooltypes($for_session = false, $paginator = ''){
+        $order_param = orderPaginator($paginator, array('id'            => 'sc',
+                                                        'description'   => 'sc',
+                                                        'country_id'    => 'sc',
+                                                        'state_id'      => 'sc',
+                                                        'country_id'    => 'sc',
+                                                        'de'            => 'cs',
+                                                        'state'         => 'st'
+                                                        ));  
         $schooltypes = array();                      //Array of schooltypes
-        $db          = DB::prepare('SELECT * FROM schooltype');
+        $db          = DB::prepare('SELECT sc.*, st.state, cs.de FROM schooltype AS sc, countries AS cs, state AS st WHERE sc.state_id = st.id AND sc.country_id = cs.id '.$order_param);
         $db->execute();
         while($result = $db->fetchObject()) { 
             $this->id               = $result->id;
             $this->schooltype       = $result->schooltype;
             $this->description      = $result->description;
             $this->country_id       = $result->country_id;
+            $this->country          = $result->de;
             $this->state_id         = $result->state_id;
+            $this->state            = $result->state;
             $this->creation_time    = $result->creation_time;
             $this->creator_id       = $result->creator_id;
             if ($for_session){
