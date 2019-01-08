@@ -39,6 +39,7 @@ switch ($db) {
     case "help":                $t = new Help();                break;
     case "role":                $t = new Roles();               break;      
     case "semester":            $t = new Semester();            break;
+    case "schooltype":          $t = new Schooltype();          break;
     case "subject":             $t = new Subject();             break;
     case "user":                $t = new User();                break;
     case "institution":         $t = new Institution();         break;

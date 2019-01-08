@@ -138,6 +138,10 @@ class Reference {
     public function add(){
         global $USER;
         checkCapabilities('reference:add', $USER->role_id);
+        //check for self references, those are not allowed
+        if ($this->source_context_id == $this->target_context_id AND $this->source_reference_id == $this->target_reference_id){
+            return false;
+        }
         $db = DB::prepare('INSERT INTO reference (unique_id, grade_id, context_id, reference_id, creator_id) VALUES (UUID(),?,?,?,?)');
         if ($db->execute(array($this->grade_id, $this->target_context_id, $this->target_reference_id, $USER->id))){
             $this->id               = DB::lastInsertId();  

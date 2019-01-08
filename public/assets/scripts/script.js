@@ -597,9 +597,10 @@ function formloader(/*form, func, id, []*/){
 function processor(/*proc, func, val, [..., reload = false], pluginpath*/){ // if reload = false: prevent reload
     reload = true;
     if (typeof(arguments[3]) !== 'undefined'){
-        if(typeof(arguments[3].reload) == 'undefined'){ //don't reload
-            reload = false;
-        } // else not needed ->reload already set.
+        if(typeof(arguments[3].reload) !== 'undefined'){ //don't reload
+            var boolValue = "true";                      //hack to get boolean
+            reload = (boolValue == arguments[3].reload); //hack to get boolean
+        }// else not needed ->reload already set.
     } 
     
     if (typeof(arguments[4]) !== 'undefined'){
@@ -1091,4 +1092,13 @@ $.ajax({
 function jQuerySelectorEscape(expression) {
       return expression.replace(/[!"#$%&'()*+,.\/:;<=>?@\[\\\]^`{|}~]/g, '\\$&');
   }
-        
+ 
+function selectAll(id){
+    if($("#"+id+"_checkbox").is(':checked') ){
+        $("#"+id+" > option").prop("selected","selected");
+        $("#"+id).trigger("change");
+    }else{
+        $("#"+id+" > option").removeAttr("selected");
+         $("#"+id).trigger("change");
+     }
+}

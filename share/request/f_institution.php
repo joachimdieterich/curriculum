@@ -31,24 +31,29 @@ $INSTITUTION    = $_SESSION['INSTITUTION'];
 $func           = $_GET['func'];
 $cur            = new Curriculum();
 /*Variablen anlegen -> vermeidet unnötige if-Abfragen im Formular*/
-$id                     =   null; 
-$institution            =   null; 
-$description            =   null; 
-$schooltype_id          =   null; 
-$btn_newSchooltype      =   null;
-$new_schooltype         =   null;
-$schooltype_description =   null; 
-$country_id             =   null;
-$state_id               =   null;
-$file_id                =   $CFG->settings->standard_ins_logo_id; 
-$paginator_limit        =   $CFG->settings->paginator_limit;
-$std_role               =   $CFG->settings->standard_role;
-$csv_size               =   $CFG->settings->csv_size;
-$avatar_size            =   $CFG->settings->avatar_size;
-$acc_days               =   $CFG->settings->acc_days;
-$timeout                =   $CFG->settings->timeout;
-$semester_id            =   null; 
-$error                  =   null;
+$id                     = null; 
+$institution            = null; 
+$description            = null; 
+$schooltype_id          = null; 
+$btn_newSchooltype      = null;
+$new_schooltype         = null;
+$schooltype_description = null; 
+$street                 = null;
+$postalcode             = null;
+$city                   = null;
+$phone                  = null;
+$email                  = null;
+$country_id             = null;
+$state_id               = null;
+$file_id                = $CFG->settings->standard_ins_logo_id; 
+$paginator_limit        = $CFG->settings->paginator_limit;
+$std_role               = $CFG->settings->standard_role;
+$csv_size               = $CFG->settings->csv_size;
+$avatar_size            = $CFG->settings->avatar_size;
+$acc_days               = $CFG->settings->acc_days;
+$timeout                = $CFG->settings->timeout;
+$semester_id            = null; 
+$error                  = null;
 $object                 = file_get_contents("php://input");
 $data                   = json_decode($object, true);
 if (is_array($data)) {
@@ -96,6 +101,11 @@ if (isset($id)) {                                                               
 }
 $content .= Form::input_text('institution', 'Institution / Schule', $institution, $error, 'z. B. Realschule Plus Landau');
 $content .= Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung');
+$content .= Form::input_text('street',      'Straße',       $street, $error, 'Straße');
+$content .= Form::input_text('postalcode',  'Postleitzahl', $postalcode, $error, 'PLZ');
+$content .= Form::input_text('city',        'Ort',          $city, $error, 'Ort');
+$content .= Form::input_text('phone',       'Telefon',      $phone, $error, 'Telefonnummer');
+$content .= Form::input_text('email',       'Email',        $email, $error, 'Email-Adresse');
 
 /* schooltypes */ 
 $sch     = new Schooltype();
@@ -139,9 +149,6 @@ $content .= Form::input_text('timeout', 'Timeout (Minuten)', $timeout, $error, '
 $content .= '<input type="hidden" name="csv_size" id="csv_size" value="'.$csv_size.'"/>';
 $content .= '<input type="hidden" name="avatar_size" id="avatar_size" value="'.$csv_size.'"/>';
 $content .= '<input type="hidden" name="material_size" id="material_size" value="'.$csv_size.'"/>';
-/*$content .= Form::input_text('csv_size', 'CSV-Dateien (byte)', $csv_size, $error, '30','number',5000,1048576); 
-$content .= Form::input_text('avatar_size', 'Profilfotos (byte)', $csv_size, $error, '30','number',5000,1048576);
-$content .= Form::input_text('material_size', 'Dateien (byte)', $csv_size, $error, '30','number',5000,1048576);*/
 $content .= '</form>';
 $footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_institution\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button> ';
   

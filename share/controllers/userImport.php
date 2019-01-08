@@ -80,4 +80,4 @@ $p_options =    $p_config =   array('id'         => 'checkbox',
                                     'country_id' => 'Land', 
                                     'role_name'  => 'Rolle', 
                                     'p_options'  => array());
-setPaginator('newUsersPaginator', $TEMPLATE, $new_users->newUsers($USER->id, 'newUsersPaginator'), 'nusr_val', 'index.php?action=userImport', $p_config);
+setPaginator('newUsersPaginator', $new_users->newUsers($USER->id, 'newUsersPaginator'), 'nusr_val', 'index.php?action=userImport', $p_config);

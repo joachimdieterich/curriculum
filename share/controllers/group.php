@@ -121,4 +121,4 @@ $p_config =   array('id'            => 'checkbox',
                     'p_search'    => array('groups','description', 'grade', 'semester', 'institution'),
                     'p_widget'     => $p_widget,
                     'p_options'     => $p_options);
-setPaginator('groupP', $TEMPLATE, $groups->getGroups('group', $USER->id,'groupP'), 'gp_val', 'index.php?action=group', $p_config); //set Paginator
+setPaginator('groupP', $groups->getGroups('group', $USER->id,'groupP'), 'gp_val', 'index.php?action=group', $p_config); //set Paginator

@@ -3,10 +3,10 @@
 *  This file is part of curriculum - http://www.joachimdieterich.de
 * 
 * @package core
-* @filename subject.php
-* @copyright 2013 Joachim Dieterich
+* @filename schooltype.php
+* @copyright 2019 Joachim Dieterich
 * @author Joachim Dieterich
-* @date 2013.03.08 13:26
+* @date 2019.01.07 14:42
 * @license: 
 *
 * The MIT License (MIT)
@@ -24,27 +24,25 @@
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 global $USER, $TEMPLATE;
-$TEMPLATE->assign('page_title', 'Fächer');
-$TEMPLATE->assign('breadcrumb',  array('Fächer' => 'index.php?action=subject'));
-$subject                    = new Subject();
-$subject->institution_id    = $USER->institutions;
-$p_options = array('delete' => array('onclick'    => "del('subject',__id__);", 
-                                     'capability' => checkCapabilities('subject:delete', $USER->role_id, false),
+$TEMPLATE->assign('page_title', 'Schul-/Institutionstyp');
+$TEMPLATE->assign('breadcrumb',  array('Schul-/Institutionstyp' => 'index.php?action=schooltype'));
+$schooltype                 = new Schooltype();
+$p_options = array('delete' => array('onclick'    => "del('schooltype',__id__);", 
+                                     'capability' => checkCapabilities('schooltype:delete', $USER->role_id, false),
                                      'icon'       => 'fa fa-trash',
                                      'tooltip'    => 'löschen',),
-                    'edit'  => array('onclick'    => "formloader('subject','edit',__id__);",
-                                     'capability' => checkCapabilities('subject:update', $USER->role_id, false),
+                    'edit'  => array('onclick'    => "formloader('schooltype','edit',__id__);",
+                                     'capability' => checkCapabilities('schooltype:update', $USER->role_id, false),
                                      'icon'       => 'fa fa-edit',
                                      'tooltip'    => 'bearbeiten'));
-$p_widget  = array('header'      => 'subject',
-                   'subheader01' => 'description',
-                   'subheader02' => 'institution'); //false ==> don't show icon on widget
+$p_widget  = array('header'      => 'schooltype',
+                   'subheader01' => 'description');
 $p_config =   array('id'         => 'checkbox',
-                    'subject'     => 'Fach', 
-                  'subject_short' => 'Kürzel',
+                    'schooltype' => 'Schul-/Institutionstyp', 
                   'description'   => 'Beschreibung', 
-                  'institution'   => 'Institution', 
-                  'p_search'      => array('subject','description','subject_short','institution'),
+                  'state'         => 'Bundesland',
+                  'country'       => 'Land',
+                  'p_search'      => array('schooltype','description', 'state'),
                   'p_widget'      => $p_widget, 
                   'p_options'     => $p_options);
-setPaginator('subjectP', $subject->getSubjects('subjectP'), 'su_val', 'index.php?action=subject', $p_config); 
+setPaginator('schooltypeP', $schooltype->getSchooltypes(false, 'schooltypeP'), 'id', 'index.php?action=schooltype', $p_config); 
