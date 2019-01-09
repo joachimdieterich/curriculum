@@ -64,6 +64,11 @@ if (isset($CFG->db_configured)){
 $TEMPLATE = new Smarty();
 
 /* Load Language Pack */
+if (isset($CFG->settings->language)){
+    $language = $CFG->settings->language;
+} else {
+    $language = 'DE';
+}
 require '../share/language/'.$CFG->settings->language.'.php';
 $TEMPLATE->assign('lang',   $lang);  
 
