@@ -35,7 +35,8 @@ if (checkCapabilities('menu:readLog', $USER->role_id)){
                   'username'        => 'Username',
                   'action'          => 'Aktion',
                   'url'             => 'URL',
-                  'info'            => 'Info');
+                  'info'            => 'Info', 
+                  'p_search'   => array('creation_time','ip','username','action','url','info'),);
     setPaginator('logP', $LOG->getLogs('logP'), 'lo_val', 'index.php?action=log', $p_config);
     $TEMPLATE->assign('ccs_page_log', true); 
 } 

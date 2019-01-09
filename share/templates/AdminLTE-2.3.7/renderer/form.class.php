@@ -25,7 +25,11 @@
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 class Form {
-    
+    /**
+     * Button
+     * @param array $params Possible params: id, label, type (default: submit), class (default: btn btn-default), onclick, icon
+     * @return string HTML
+     */
     public static function input_button ($params){
         $class      = 'btn btn-default';
         $type       = 'submit';
@@ -33,29 +37,25 @@ class Form {
         $icon       = '';
         $label      = 'submit';
         foreach($params as $key => $val) { $$key = $val; }  
-        return "<button id=\"btn_{$id}\"type=\"{$type}\" name=\"{$id}\" class=\"{$class}\" onclick=\"{$onclick}\">
-                    <span class=\"{$icon}\"></span> {$label}
-                </button>";
+        return "<button id='btn_{$id}' type='{$type}' name='{$id}' class='{$class}' onclick=".$onclick.">
+                    <span class='{$icon}'></span> {$label}
+                </button>"; //onclick only works if concat without curly braces
+                    
     }
     
     /**
-     * info
-     * 
      * Infotext
-     * 
      * @param array $params Possible params: id, label, content, class_left (default: col-sm-3), class_right (default: col-sm-9)
      * @return string HTML
      */
     public static function info($params){
         $label          = '';
-        $class_left     = 'col-sm-3'; 
+        $error          = null;
+        $class_left     = 'col-sm-3';
         $class_right    = 'col-sm-9';
-        foreach($params as $key => $val) { $$key = $val; }   
-
-        return "<div id=\"{$id}_form_group\"class=\"form-group\">
-                  <label class=\"control-label {$class_left}\" for=\"{$id}\">{$label}</label>
-                  <div class=\"{$class_right}\">{$content}</div>
-                </div>";
+        
+        foreach($params as $key => $val) { $$key = $val; } 
+        return self::form_group($id, $content, $label, $error, $class_left, $class_right);
     }
     
      /**
@@ -71,58 +71,44 @@ class Form {
       * @return string
       */
     public static function input_text($id, $label, $input, $error, $placeholder ='Text...', $type='text', $min=null, $max=null, $class_left='col-sm-3', $class_right='col-sm-9', $readonly = null, $onchange = null){
+        $min_html       = '';
+        $max_html       = '';
+        $input_html     = '';
+        $readonly_html  = '';
+        $onchange_html  = '';
         switch($type){
             case 'string': $type = 'text'; break;
             case 'int':    $type = 'number'; break;
-            default: break;
+            default:       break;
         }
-        $form = "<div id='{$id}_form_group' class='form-group ".validate_msg($error, $id, true)."'>
-                  <label class='control-label {$class_left}' for='{$id}'>{$label}</label>
-                  <div class='{$class_right}'>".validate_msg($error, $id)."<input id='{$id}' name='{$id}' type='{$type}'";
-                  if ($min) {$form .= "min='{$min}'";}
-                  if ($min) {$form .= "max='{$max}'";}
-        $form .= "class='form-control' placeholder='{$placeholder}'";
-        if (isset($input)) { 
-            $form .=  "value='{$input}'";  
-        } 
-        if (isset($readonly)) { 
-            $form .=  " readonly ";  
-        }
-        if (isset($onchange)) { 
-            $form .=  " onchange='{$onchange}'";  
-        } 
-        $form .= " /> </div></div>";  
-
-        return $form;
+        if ($min) { $min_html .= "min='{$min}'"; } 
+        if ($min) { $max_html .= "max='{$max}'"; } 
+        if (isset($input)){ $input_html .=  "value='{$input}'"; } 
+        if (isset($readonly)) { $readonly_html .=  " readonly "; }
+        if (isset($onchange)) { $onchange_html .=  " onchange='{$onchange}'"; } 
+        $form = "<input id='{$id}' name='{$id}' type='{$type}' {$min_html} {$max_html} class='form-control' placeholder='{$placeholder}' {$input_html} {$readonly_html} {$onchange_html}/>";
+        
+        return self::form_group($id, $form, $label, $error, $class_left, $class_right);
     }
     
     public static function input_textarea($id, $label, $input, $error, $placeholder ='Text...', $class_left='col-sm-3', $class_right='col-sm-9'){
-        $form  = "<div id='{$id}_form_group' class='form-group ".validate_msg($error, $id, true)."'><label class='control-label {$class_left}' for='{$id}'>{$label}</label>
-                  <div class='{$class_right}'>
-                  <textarea id='{$id}' name='{$id}' class='ckeditor' rows='10' cols='80' style='visibility: hidden; display: none;'>";
+        $form  = "<textarea id='{$id}' name='{$id}' class='ckeditor' rows='10' cols='80' style='visibility: hidden; display: none;'>";
         if (isset($input)) { 
             $form .=  $input;  
         } else {
             $form .=  $placeholder;
         }
-        $form .= "</textarea>
-                  </div></div>"; 
-
-        return $form;
+        $form .= "</textarea>"; 
+        return self::form_group($id, $form, $label, $error, $class_left, $class_right);
     }
     
     public static function input_checkbox($id, $label, $input, $error, $type='checkbox', $onclick='', $class_left='col-sm-3', $class_right='col-sm-9'){
-        $form = '<div id="'.$id.'_form_group" class="form-group '.validate_msg($error, $id, true).'">
-                  <div class="col-sm-offset-3 '.$class_right.'">
-                  <div class="checkbox"><label>
-                  <input id="'.$id.'" name="'.$id.'" type="'.$type.'"';
+        $form = '<input id="'.$id.'" name="'.$id.'" type="'.$type.'"';
         if ($input == true){
             $form .= 'checked="checked';
         }    
-        $form .= ' onclick="'.$onclick.'" ';
-        $form .= ' /> '.$label.' </label></div></div></div>';  
-
-        return $form;
+        $form .= ' onclick="'.$onclick.'" />';
+        return self::form_group($id, $form, $label, $error, $class_left, $class_right);
     }
     
     public static function input_switch($id, $label, $input, $error, $show_id = false, $class_left='col-sm-3', $class_right='col-sm-9'){
@@ -161,78 +147,70 @@ class Form {
      */
     public static function input_select($id, $label, $select_data, $select_label, $select_value, $input, $error, $onchange= '', $placeholder ='---', $class_left='col-sm-3', $class_right='col-sm-9', $disabled = ''){
         $limiter        = ' '; //todo: $params array 
-        $form = '<div id="'.$id.'_form_group" class="form-group '.validate_msg($error, $id, true).'">';
-        if ($class_left != ''){ // if left class is empty no label is set
-            $form .= ' <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>';
-        }
-        $form .= ' <div class="'.$class_right.'">
-                      <select id="'.$id.'" name="'.$id.'" class="select2 form-control" onchange="'.$onchange.'" '.$disabled.'>';
-                       if (count($select_data) > 0){
-                             if ($placeholder != '---'){
-                                $form .= '<option value="false">'.$placeholder.'</option>';
-                             }
-                            foreach ($select_data as $value) {
-                                if (strpos($select_label, ',')){ // more than one field in select_label
-                                    foreach (explode(', ', $select_label) as $f) {
-                                        $fields[]  = $value->$f;
-                                    }
-                                    $label = implode($limiter, $fields);
-                                    unset($fields);
-                                } else {
-                                    $label  = $value->$select_label;
-                                }
-                                $form .= '<option label="'.$label.'" value="'.$value->$select_value.'"'; if ($input == $value->$select_value){ $form .= 'selected="selected"'; } $form .= '>'.$label.'</option>';
-                            }
-                       } else {
-                           $form .= '<option label="'.$placeholder.'" value="false">'.$placeholder.'</option>';
-                       }
+        $select_entries = $placeholder; 
+        $form = '<select id="'.$id.'" name="'.$id.'" class="select2 form-control" onchange="'.$onchange.'" '.$disabled.'>';
+            if (count($select_data) > 0){
+                  if ($placeholder != '---'){
+                     $form .= '<option value="false">'.$placeholder.'</option>';
+                  }
+                 foreach ($select_data as $value) {
+                     if (strpos($select_label, ',')){ // more than one field in select_label
+                         foreach (explode(', ', $select_label) as $f) {
+                             $fields[]  = $value->$f;
+                         }
+                         $select_entries = implode($limiter, $fields);
+                         unset($fields);
+                     } else {
+                         $select_entries  = $value->$select_label;
+                     }
+                     $form .= '<option label="'.$select_entries.'" value="'.$value->$select_value.'"'; if ($input == $value->$select_value){ $form .= 'selected="selected"'; } $form .= '>'.$select_entries.'</option>';
+                 }
+            } else {
+                $form .= '<option label="'.$placeholder.'" value="false">'.$placeholder.'</option>';
+            }
         $form .= '</select> ';
-        $form .= '</div></div>';
         if ($disabled != ''){       
             $form .= '<input type="hidden" name="'.$id.'" value="'.$input.'" />'; //to get value on submit
         }
         
-        return $form;
+        return self::form_group($id, $form, $label, $error, $class_left, $class_right);
     }
     public static function input_select_multiple($params){
         /*$id, $label, $select_data, $select_label, $select_value, $input*/
         $error          = null;
         $onchange       = '';
         $placeholder    = '---';
+        $select_entries = $placeholder; 
         $class_left     = 'col-sm-3';
         $class_right    = 'col-sm-9';
         $height         = '135px';
         $limiter        = ' ';
         foreach($params as $key => $val) { $$key = $val; }
         
-        $form = '<div id="'.$id.'_form_group" class="form-group '.validate_msg($error, $id, true).'">
-                    <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
-                    <div class="'.$class_right.'">
-                        <select multiple id="'.$id.'" name="'.$id.'[]" class="select2 form-control" style="height:'.$height.';" onchange="'.$onchange.'">';
+        $form = '<select multiple id="'.$id.'" name="'.$id.'[]" class="select2 form-control" style="height:'.$height.';" onchange="'.$onchange.'">';
                         if (count($select_data) > 0 AND gettype($select_data) != "boolean"){
                             foreach ($select_data as $value) {
                                 if (strpos($select_label, ',')){ // more than one field in select_label                   
                                     foreach (explode(', ', $select_label) as $f) {
                                         $fields[]  = $value->$f;
                                     }
-                                    $label = implode($limiter, $fields);
+                                    $select_entries = implode($limiter, $fields);
                                     unset($fields);
                                 } else {
-                                    $label  = $value->$select_label;
+                                    $select_entries  = $value->$select_label;
                                 }
-                                $form .= '<option label="'.strip_tags($label).'" value="'.$value->$select_value.'"'; 
+                                $form .= '<option label="'.strip_tags($select_entries).'" value="'.$value->$select_value.'"'; 
                                     if (is_array($input)){
                                         if (in_array($value->$select_value, $input)){ $form .= 'selected="selected"'; } 
                                     }
-                                $form .= '>'.strip_tags($label).'</option>';
+                                $form .= '>'.strip_tags($select_entries).'</option>';
                             }
                         } else {
                            $form .= '<option label="'.$placeholder.'">'.$placeholder.'</option>';
                         }
-        $form .= '</select> ';
-        $form .= '</div></div>';
+        $form .= '</select><span class="pull-right" >Alles auswählen <input type="checkbox" id="'.$id.'_checkbox" onclick="selectAll(\''.$id.'\');" ></span>';
         
-        return $form;
+        return self::form_group($id, $form, $label, $error, $class_left, $class_right);
     }
     
     public static function input_color($params){
@@ -243,18 +221,13 @@ class Form {
         foreach($params as $key => $val) {
             $$key = $val;
         }
-        $form = '<div id="'.$id.'_form_group" class="form-group">
-                    <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
-                    <div class="'.$class_right.'">'.validate_msg($error, $id).'    
-                        <div id="colorpicker" class="input-group color-picker colorpicker-element" >
-                          <input id="'.$id.'" name="'.$id.'" type="text" class="form-control" value="'.$rgb.'">
-                          <div class="input-group-addon">
-                            <i style="background-color: '.$rgb.';"></i>
-                          </div>
-                        </div><!-- /.input group -->
-                    </div><!-- /.div class_right -->
-                  </div>';
-        return $form;
+        $form = "<div id='colorpicker' class='input-group color-picker colorpicker-element' >
+                    <input id='{$id}' name='{$id}' type='text' class='form-control' value='{$rgb}'>
+                    <div class='input-group-addon'>
+                      <i style='background-color: {$rgb};'></i>
+                    </div>
+                </div>";
+        return self::form_group($id, $form, $label, $error, $class_left, $class_right);
     }
     
     public static function input_date($params){
@@ -264,27 +237,17 @@ class Form {
         foreach($params as $key => $val) {
             $$key = $val;
         }
-        $form = '<div id="'.$id.'_form_group" class="form-group">
-                    <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
-                    <div class="'.$class_right.'">'.validate_msg($error, $id).'    
-                        <div class="input-group">
-                        <div class="input-group-addon">
-                            <i class="fa ';
         switch ($type) {
-            case 'date':    $form .= 'fa-calendar';
-                break;
-            case 'time':    $form .= 'fa-clock-o';
-                break;
-            default:        $form .= 'fa-calendar';
-                break;
-        }             
-        $form .=            '"></i>
-                        </div>
-                        <input id="'.$id.'" name="'.$id.'" type="text" class="form-control datepicker" data-provide="datepicker" value="'.$time.'">
-                        </div>  
-                    </div><!-- /.div class_right -->
-                  </div>';
-        return $form;
+            case 'date':    $icon .= 'fa-calendar'; break;
+            case 'time':    $icon .= 'fa-clock-o';  break;
+            default:        $icon .= 'fa-calendar'; break;
+        }
+        
+        $form = "<div class='input-group'>
+                    <div class='input-group-addon'><i class='fa {$icon}'></i></div>
+                <input id='{$id}' name='{$id}' type='text' class='form-control datepicker' data-provide='datepicker' value='{$time}'>
+                </div>";
+        return self::form_group($id, $form, $label, $error, $class_left, $class_right);
     }
     
     
@@ -309,25 +272,16 @@ class Form {
                 } else {
                     $label  = $value->$select_label;
                 }
-                $form .= '<li>
-                            <a href="#" data-id="'.$value->$select_value.'" onclick="'.$onclick.'">
-                              <i class="text-aqua"></i> ';
+                $form .= '<li><a href="#" data-id="'.$value->$select_value.'" onclick="'.$onclick.'"><i class="text-aqua"></i> ';
                                 if ($input == $value->$select_value){ 
                                     $form .= '<b>'.$label.'</b>'; 
                                 } else {
                                     $form .= $label; 
-                                }
-                                
-                $form .= '  </a>
-                          </li>';
-                          //<!--option label="'.$label.'" value="'.$value->$select_value.'"'; if ($input == $value->$select_value){ $form .= 'selected="selected"'; } $form .= '>'.$label.'</option>';
+                                }        
+                $form .= '  </a></li>';
             }
        } else {
-                $form .= '<li>
-                            <a href="#">
-                              <i class="text-aqua"></i> '.$placeholder.'
-                            </a>
-                          </li>';
+                $form .= '<li><a href="#"><i class="text-aqua"></i> '.$placeholder.'</a></li>';
        }
                           
         $form .= '      </ul>
@@ -335,35 +289,27 @@ class Form {
                       <li class="footer"><!-- <a href="#">View all</a>--></li>
                     </ul>
                  </li>';
-        return $form;
-                
+        return $form;          
     }
     
     public static function upload_form($id, $label, $input, $error, $onclick='', $class_left='col-sm-3', $class_right='col-sm-9'){
-        $form = '<div id="'.$id.'" class="form-group '.validate_msg($error, $id, true).'">
-                    <label class="control-label '.$class_left.'" for="'.$id.'">'.$label.'</label>
-                    <div class="'.$class_right.'">
-                        <p id="'.$id.'_fName" class="hidden"></p>
-                        <p id="'.$id.'_fSize" class="hidden"></p>
-                        <p id="'.$id.'_fType" class="hidden"></p>
-                        <div id="'.$id.'_fProgress" class="progress">
-                            <div id="'.$id.'_fProgress_bar" class="progress-bar progress-bar-primary progress-bar-striped" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                                <span class="sr-only" id="'.$id.'_fPercent"></span>
-                            </div>
-                        </div>
-                    
-                        <button id="'.$id.'_fUpload" name="fUpload" type="button" value="" class="btn btn-primary pull-right hidden " onclick="uploadFile(\''.$id.'\');">
-                            <span class="fa fa-cloud-upload" aria-hidden="true" ></span>'.$label.'
-                        </button>
-                        <button id="'.$id.'_fAbort" name="fAbort" type="button" value="" class="btn btn-primary pull-right hidden" onclick="uploadAbort(\''.$id.'\');">
-                            <span class="fa fa-times" aria-hidden="true"></span> Abbrechen
-                        </button>
-                        <input id="'.$id.'_fSelector" name="file" type="file" class="btn btn-primary col-sm-12" onchange="fileChange(\''.$id.'\');">
+        $form = '<p id="'.$id.'_fName" class="hidden"></p>
+                <p id="'.$id.'_fSize" class="hidden"></p>
+                <p id="'.$id.'_fType" class="hidden"></p>
+                <div id="'.$id.'_fProgress" class="progress">
+                    <div id="'.$id.'_fProgress_bar" class="progress-bar progress-bar-primary progress-bar-striped" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                        <span class="sr-only" id="'.$id.'_fPercent"></span>
                     </div>
-                </div>  
-            ';
-        
-        return $form; 
+                </div>
+
+                <button id="'.$id.'_fUpload" name="fUpload" type="button" value="" class="btn btn-primary pull-right hidden " onclick="uploadFile(\''.$id.'\');">
+                    <span class="fa fa-cloud-upload" aria-hidden="true" ></span>'.$label.'
+                </button>
+                <button id="'.$id.'_fAbort" name="fAbort" type="button" value="" class="btn btn-primary pull-right hidden" onclick="uploadAbort(\''.$id.'\');">
+                    <span class="fa fa-times" aria-hidden="true"></span> Abbrechen
+                </button>
+                <input id="'.$id.'_fSelector" name="file" type="file" class="btn btn-primary col-sm-12" onchange="fileChange(\''.$id.'\');">';
+        return self::form_group($id, $form, $label, $error, $class_left, $class_right);
     }
     
     public static function error($params){
@@ -379,9 +325,7 @@ class Form {
                     Hier gehts zurück auf die  <a href="index.php?action=dashboard">Startseite</a>.</p>
             </div><!-- /.error-content -->
         </div><!-- /.error-page -->';
-        
-        return $html;
-                
+        return $html;     
     }
     
     /**
@@ -441,13 +385,11 @@ class Form {
        
         $html  = ' <div id="material_'.$id.'" class="info-box">';
         if (isset($subjects)){
-            $html .= '<span name="subjects" style="display: none">';
-            $html .= '<ul>';
+            $html .= '<span name="subjects" style="display: none"><ul>';
             foreach ($subjects as $subject) {
                 $html .= '<li class="subjectItem">'.$subject.'</li>';
             }
-            $html .= '</ul>';
-            $html .= '</span>';
+            $html .= '</ul></span>';
         }
         if (isset($preview)){
             $html .= '<span class="info-box-icon bg-aqua"><div id="modal-preview" style="position:relative;height:100%;width:100%;background: url(\''.$preview.'\') center ;background-size: cover; background-repeat: no-repeat;">';
@@ -459,9 +401,7 @@ class Form {
            $html .= RENDER::thumb(array('file_list' => $id, 'format' => 'thumb', 'width' => '90px', 'height' => '90px'));
         }
         /* Box content */
-        $html .= '<div class="info-box-content">';
-        
-        $html .= '<div class="pull-right">';
+        $html .= '<div class="info-box-content"><div class="pull-right">';
         if (isset($url)){
             $html .= '<button class="btn btn-box-tool"><a href="'.$url.'" target="_blank"><i class="fa fa-download"></i></a></button>';
         }
@@ -480,14 +420,18 @@ class Form {
         if ($onclick != false){
             $html .= 'onclick="formloader(\'preview\',\'file\','.$id.');'.$onclick.';"';
         }
-        $html .= '>'.$title.'</a></span>
-                      <span>'.$description;
-        
-        $html .='</span> ';
-        $html .= $footer;
-        $html .= ' </div>'; // .info-box-content
-        $html .= ' </div>'; // .info-box
+        $html .= '>'.$title.'</a></span><span>'.$description.'</span> ';
+        $html .= $footer.' </div></div>'; // .info-box-content // .info-box
         return $html;   
+    }
+    
+    private static function form_group($id, $content, $label = '', $e = null, $css_l = 'col-sm-3', $css_r = 'col-sm-9') {
+        $form =  "<div id='{$id}_form_group' class='form-group ".validate_msg($e, $id, true)."'>";
+        if ($css_l != ''){ // if left class is empty no label is set
+            $form .= "<label class='control-label {$css_l}' for='{$id}'>{$label}</label>";
+        }
+        $form .= "<div class='{$css_r}'>".validate_msg($e, $id)."{$content}</div></div>";
+        return $form;        
     }
     
 }
