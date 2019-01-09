@@ -69,7 +69,7 @@ if (isset($CFG->settings->language)){
 } else {
     $language = 'DE';
 }
-require '../share/language/'.$CFG->settings->language.'.php';
+require '../share/language/'.$language.'.php';
 $TEMPLATE->assign('lang',   $lang);  
 
 $TEMPLATE->assign('tb_param',       $CFG->tb_param);
