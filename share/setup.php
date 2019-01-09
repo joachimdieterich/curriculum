@@ -63,6 +63,10 @@ if (isset($CFG->db_configured)){
 
 $TEMPLATE = new Smarty();
 
+/* Load Language Pack */
+require '../share/language/'.$CFG->settings->language.'.php';
+$TEMPLATE->assign('lang',   $lang);  
+
 $TEMPLATE->assign('tb_param',       $CFG->tb_param);
 $TEMPLATE->assign('global_timeout', $CFG->settings->timeout);
 $TEMPLATE->assign('message_timeout',$CFG->settings->message_timeout);
