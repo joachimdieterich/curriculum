@@ -170,10 +170,8 @@ class Institution {
         if($db->fetchColumn() >= 1) { 
             return false;
         } else {
-            $db = DB::prepare('INSERT INTO institution (institution, description, street, postalcode, city, phone, email, schooltype_id, country_id, state_id, creator_id, confirmed, 
-                               paginator_limit, std_role, csv_size, avatar_size, material_size, acc_days,
-                               timeout, semester_id, file_id) 
-                                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
+            $db = DB::prepare('INSERT INTO institution (institution, description, street, postalcode, city, phone, email, schooltype_id, country_id, state_id, creator_id, confirmed, paginator_limit, std_role, csv_size, avatar_size, material_size, acc_days, timeout, semester_id, file_id) 
+                                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
             if ($db->execute(array($this->institution, $this->description, $this->street, $this->postalcode, $this->city, $this->phone, $this->email, $this->schooltype_id, $this->country_id, $this->state_id, $USER->id, $this->confirmed, $this->paginator_limit, $this->std_role, $this->csv_size, $this->avatar_size, $this->material_size, $this->acc_days, $this->timeout, $this->semester_id, $this->file_id))){    
                 return DB::lastInsertId();
             } else {return false;} 
