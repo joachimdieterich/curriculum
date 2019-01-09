@@ -82,7 +82,13 @@ class Log {
     public function getLogs($paginator = '') {
         global $USER;
         checkCapabilities('log:getLogs', $USER->role_id);
-        $order_param    = orderPaginator($paginator); 
+        $order_param    = orderPaginator($paginator, array('id'         => 'lg',
+                                                        'username'      => 'us',
+                                                        'creation_time' => 'lg', 
+                                                        'ip'            => 'lg', 
+                                                        'action'        => 'lg', 
+                                                        'url'           => 'lg', 
+                                                        'info'          => 'lg')); 
         $log            = array();
         $db             = DB::prepare('SELECT lg.*, us.username FROM log AS lg, users AS us WHERE lg.user_id = us.id '.$order_param );
         $db->execute();
