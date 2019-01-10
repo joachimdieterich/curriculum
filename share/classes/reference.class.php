@@ -142,8 +142,8 @@ class Reference {
         if ($this->source_context_id == $this->target_context_id AND $this->source_reference_id == $this->target_reference_id){
             return false;
         }
-        $db = DB::prepare('INSERT INTO reference (unique_id, grade_id, context_id, reference_id, creator_id) VALUES (UUID(),?,?,?,?)');
-        if ($db->execute(array($this->grade_id, $this->target_context_id, $this->target_reference_id, $USER->id))){
+        $db = DB::prepare('INSERT INTO reference (unique_id, grade_id, context_id, reference_id, creator_id, file_context) VALUES (UUID(),?,?,?,?,?)');
+        if ($db->execute(array($this->grade_id, $this->target_context_id, $this->target_reference_id, $USER->id, $this->file_context))){
             $this->id               = DB::lastInsertId();  
             $this->load();
             // Add content subscription to target reference
@@ -154,8 +154,8 @@ class Reference {
             $content->reference_id  = $this->id;
             $content->add();
             // Add source reference
-            $db = DB::prepare('INSERT INTO reference (unique_id, grade_id, context_id, reference_id, creator_id) VALUES (?,?,?,?,?)');
-            $db->execute(array($this->unique_id,  $this->grade_id, $this->source_context_id, $this->source_reference_id, $USER->id));
+            $db = DB::prepare('INSERT INTO reference (unique_id, grade_id, context_id, reference_id, creator_id, file_context) VALUES (?,?,?,?,?,?)');
+            $db->execute(array($this->unique_id,  $this->grade_id, $this->source_context_id, $this->source_reference_id, $USER->id, $this->file_context));
             // Add content subscription to source reference
             $content->reference_id  = DB::lastInsertId();
             $content->addSubscription();
@@ -192,13 +192,21 @@ class Reference {
     }
     
     public function get($dependency, $context_id, $id){
+        global $USER;
         $db = DB::prepare('SELECT re.id FROM reference AS re WHERE re.context_id = ? AND re.'.$dependency.' = ?');
         $db->execute(array($context_id, $id));
         $r  = array();
         while($result = $db->fetchObject()) { 
             $this->load('id',        $result->id); 
             //$this->load('unique_id', $this->unique_id); //load entry with matching unique_id
-            $r = array_merge((array)$r, (array)$this->getUniqueIDs());
+            if (($this->file_context == 1)||($USER->id == $this->creator_id)){
+                $r = array_merge((array)$r, (array)$this->getUniqueIDs());
+            }elseif($this->file_context == 2){
+                $creator = new User($this->creator_id);
+                if (in_array($USER->institution_id, $creator->institution_ids)){
+                    $r = array_merge((array)$r, (array)$this->getUniqueIDs());
+                }
+            }
             //$r[]  = clone $this;
         } 
         
