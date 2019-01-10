@@ -1,11 +1,12 @@
-<?php 
+<?php
+
 /** This file is part of curriculum - http://www.joachimdieterich.de
-* 
-* @package core
-* @filename Log.php
-* @copyright 2013 Joachim Dieterich
+* FormProcessor
+* @package language
+* @filename DE_RLP.php
+* @copyright 2019 Joachim Dieterich
 * @author Joachim Dieterich
-* @date 2013.03.08 13:26
+* @date 2019.01.09 19:10
 * @license: 
 *
 * The MIT License (MIT)
@@ -22,21 +23,12 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-global $USER, $TEMPLATE, $PAGE, $LOG;
 
-$TEMPLATE->assign('page_title', 'Berichte'); 
-$TEMPLATE->assign('breadcrumb',  array('Berichte' => 'index.php?action=log'));
-$LOG->add($USER->id, 'view', $PAGE->url, 'Log'); 
-    
-if (checkCapabilities('menu:readLog', $USER->role_id)){
-    $p_config =   array('id'        => 'checkbox', 
-                  'creation_time'   => 'Datum/Zeit', 
-                  'ip'              => 'IP',
-                  'username'        => 'Username',
-                  'action'          => 'Aktion',
-                  'url'             => 'URL',
-                  'info'            => 'Info', 
-                  'p_search'   => array('creation_time','ip','username','action','url','info'),);
-    setPaginator('logP', $LOG->getLogs('logP'), 'lo_val', 'index.php?action=log', $p_config);
-    $TEMPLATE->assign('ccs_page_log', true); 
-} 
+if (empty($lang) || !is_array($lang))
+{
+	$lang = array();
+}
+
+$lang = array_merge($lang, array(
+	'REF_SELECTOR_TITLE'		=> 'Überfachliche Bezüge/MedienkomP@ss',
+));
