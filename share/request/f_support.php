@@ -41,7 +41,7 @@ switch ($func) {
 $header = "Unterstützung anfordern";
 
 if ($result){
-    $content .= 'Folgende Benutzer haben das Lernziel: <strong>'.$enabling_objective->enabling_objective.'</strong> bereits erreicht und können dir helfen:<br>';
+    $content .= 'Folgende Benutzer haben die Kompetenz: <strong>'.$enabling_objective->enabling_objective.'</strong> bereits erreicht und können dir helfen:<br>';
 
     $users   = new User();
     if (count($result) > 10){$max = 10;} else {$max = count($result);}
@@ -55,7 +55,7 @@ if ($result){
                       </div><br>';
     }
 } else {
-    $content .= ' Leider gibt es keinen Benutzer, der dieses Lernziel erreicht hat';
+    $content .= ' Leider gibt es keinen Benutzer, der diese Kompetenz erreicht hat';
 }
 $footer = '';
 
