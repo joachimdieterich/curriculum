@@ -170,7 +170,7 @@ if ($my_upload->upload() OR filter_var($fileURL, FILTER_VALIDATE_URL)) {//in dat
             $mail->sender_id    = $USER->id;
             $mail->receiver_id  = $teachers[$i]; //current Teacher
             $mail->subject      = $CFG->app_title.': '.$USER->firstname.' '.$USER->lastname.' ('.$USER->username.') hat eine Lösung eingereicht';
-            $mail->message      = '<p>Zum Lernziel: <strong>'.$enabling_objective->enabling_objective.'</strong> hat '.$USER->firstname.' '.$USER->lastname.' ('.$USER->username.') folgende Lösung eingereicht:<br>'; 
+            $mail->message      = '<p>Zur Kompetenz: <strong>'.$enabling_objective->enabling_objective.'</strong> hat '.$USER->firstname.' '.$USER->lastname.' ('.$USER->username.') folgende Lösung eingereicht:<br>'; 
             if ($CFG->settings->messaging == 'email'){                          // if email messaging is activated
                 $file->load($file->id);
                 $mail->email->addAttachment($CFG->curriculumdata_root.$file->full_path, $file->filename);   //Add solution to email 
