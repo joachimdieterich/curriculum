@@ -494,7 +494,7 @@ class Render {
                               if ($permission > 0){
                                 $html  .= ' | <a id="answer_'.$cm->id.'" onclick="toggle([\'comment_'.$cm->id.'\', \'cmbtn_'.$cm->id.'\'], [\'answer_'.$cm->id.'\'])">Antworten</a></p>';
                               }
-                              $html .='<textarea id="comment_'.$cm->id.'" name="comment"  class="hidden" style="width:100%;"></textarea>
+                              $html .='<textarea id="comment_'.$cm->id.'" name="comment"  class="hidden no_editor" style="width:100%;"></textarea>
                                         <button id="cmbtn_'.$cm->id.'" type="submit" class="btn btn-primary pull-right hidden" onclick="comment(\'new\','.$cm->reference_id.', '.$cm->context_id.', document.getElementById(\'comment_'.$cm->id.'\').value, '.$cm->id.');"><i class="fa fa-commenting-o margin-r-10"></i>Kommentar abschicken</button>';
             /* sub comments */
             if (!empty($cm->comment)){
@@ -538,7 +538,7 @@ class Render {
                                 if ($permission > 0){  
                                     $html .= ' | <a id="answer_'.$cm->id.'" onclick="toggle([\'comment_'.$cm->id.'\', \'cmbtn_'.$cm->id.'\'], [\'answer_'.$cm->id.'\'])">Antworten</a></p>';
                                 }
-                                $html .='<textarea id="comment_'.$cm->id.'" name="comment"  class="hidden" style="width:100%;"></textarea>
+                                $html .='<textarea id="comment_'.$cm->id.'" name="comment"  class="hidden no_editor " style="width:100%;"></textarea>
                                         <button id="cmbtn_'.$cm->id.'" type="submit" class="btn btn-primary pull-right hidden" onclick="comment(\'new\','.$cm->reference_id.', '.$cm->context_id.', document.getElementById(\'comment_'.$cm->id.'\').value, '.$cm->id.');"><i class="fa fa-commenting-o margin-r-10"></i>Kommentar abschicken</button>';
                                 if (!empty($cm->comment)){
                                     $html .= RENDER::sub_comments(array('comment' => $cm->comment));
@@ -2325,7 +2325,7 @@ public static function render_reference_entry($ref, $context_id){
     $c  = '<div class="row">
             <div class="col-xs-12 col-sm-3 pull-left"><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('format' => 'reference', 'objective' => $ref->terminal_object, 'color')).'</div>';
             if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
-              $c .= '<div class="col-xs-12 col-sm-3"><dt>Lernziel/Kompetenz</dt>'.Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $ref->enabling_object, 'border_color' => $ref->terminal_object->color)).'</div>';
+              $c .= '<div class="col-xs-12 col-sm-3"><dt>Kompetenz</dt>'.Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $ref->enabling_object, 'border_color' => $ref->terminal_object->color)).'</div>';
             }
             $c .= '
            <div class="col-xs-12 col-sm-6 pull-right">';
@@ -2557,7 +2557,7 @@ public static function quote_reference($quotes){
         $c->load(false);
         $content .= '<h3>'. $c->curriculum.'</h3>'; 
         
-        $content .= '<h4>Bezüge zu den Kompetenzen / Lernziele</h4>'; 
+        $content .= '<h4>Bezüge zu den Kompetenzen</h4>'; 
         $ter_obj  = new TerminalObjective();         //load terminal objectives
         $ter      = $ter_obj->getObjectives('certificate', $id);
         $temp_ter_id = 0;
@@ -2845,7 +2845,7 @@ public static function quote_reference($quotes){
                 }
             }
         } else {
-            $content .= 'Keine Medien für dieses Lernziel/Fach vorhanden vorhanden.';
+            $content .= 'Keine Medien für dieses Kompetenz, dieses Fach vorhanden vorhanden.';
         }
         if ($get['ajax'] == 'true'){ 
             echo $content;
@@ -2854,5 +2854,11 @@ public static function quote_reference($quotes){
         }
     }
     
-    
+    public static function plugin_config( $plugin_class ){
+        $plugin = new $plugin_class();
+        if (method_exists($plugin,'plugin_config')){
+            return $plugin->plugin_config();
+        }
+        //return $plugin::PLUGINNAME;
+    }
 }
