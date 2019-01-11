@@ -114,8 +114,8 @@ class Cron {
                         $mail = new Mail();
                         $mail->sender_id    = $execUser;
                         $mail->receiver_id  = $objectives[$i]->accomplished_users;
-                        $mail->subject      = 'Lernziel "'.$objectives[$i]->enabling_objective; 
-                        $mail->message      = 'Lernziel "'.$objectives[$i]->enabling_objective.'" muss erneut nachgewiesen werden. Bitte Lernziel-Nachweis einreichen.';
+                        $mail->subject      = 'Kompetenz "'.$objectives[$i]->enabling_objective; 
+                        $mail->message      = 'Kompetenz "'.$objectives[$i]->enabling_objective.'" muss erneut nachgewiesen werden. Bitte Kompetenz-Nachweis einreichen.';
                         $mail->status       = true; 
                         $mail->postMail();
                         $message           .= '- Benachrichtigung verschickt.<br>';
