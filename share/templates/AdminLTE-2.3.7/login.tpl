@@ -11,11 +11,12 @@
 
 {block name=content}
 <div class="login-box">
-    <div class="login-logo"><br>
+    
+      <div class="login-box-body">
+          <div class="login-logo">
           <img alt="curriculum-logo" src="assets/images/favicon/apple-touch-icon-57x57.png"/> <br>
         <b>{$app_title}</b>
       </div><!-- /.login-logo -->
-      <div class="login-box-body">
           <p id="reset_info" class="login-box-msg hidden">Bitte geben Sie Ihren Benutzername ein und klicken auf "Passwort zurücksetzen".<br>Über Ihren Administrator bekommen Sie dann die neue Zugangsdaten. </p>
         {if isset($page_message)}
             <strong>{FORM::info('error', '',$page_message[0]['message'], '','col-sm-12 text-red')}</strong>
