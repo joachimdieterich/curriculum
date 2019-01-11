@@ -127,7 +127,7 @@ if (isset($id)) {                                                               
 }
 
 switch ($type) {
-    case 'enabling_objective': $type_text = "dem Lernziel bzw. der Kompetenz";
+    case 'enabling_objective': $type_text = "der Kompetenz";
         break;
     case 'terminal_objective': $type_text = "dem Thema bzw. Kompetenzbereich"; 
         break;
@@ -143,7 +143,7 @@ if ($id == null) {
 
 
 $content .= Form::input_select('terminal_objective_id', 'Thema / Kompetenzbereich', $terminal_objectives, 'terminal_objective', 'id', $terminal_objective_id , $error, 'getValues(\'objectives\', this.value, \'enabling_objective_id\', \'enabling_objective_from_terminal_objective\');');
-$content .= Form::input_select_multiple(array('id' => 'enabling_objective_id', 'label' => 'Kompetenzen/ Lernziele', 'select_data' => $enabling_objectives, 'select_label' => 'enabling_objective', 'select_value' => 'id', 'input' => array($enabling_objective_id), 'error' => $error)); 
+$content .= Form::input_select_multiple(array('id' => 'enabling_objective_id', 'label' => 'Kompetenzen', 'select_data' => $enabling_objectives, 'select_label' => 'enabling_objective', 'select_value' => 'id', 'input' => array($enabling_objective_id), 'error' => $error)); 
 
 $grades   = new Grade();    //Load Grades
 $content .= Form::info(array('id' => 'grade_info', 'content' => 'Im folgendenden Feld kann falls nötig die Klassenstufe präzisiert werden.'));
