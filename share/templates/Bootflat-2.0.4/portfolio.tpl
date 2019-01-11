@@ -32,7 +32,7 @@
                     <div class="events">
                         <h4 class="events-heading"><a href="#">{$art->curriculum}</a> {$art->accomplished_teacher}</h4>
                         <div class="events-body">
-                            Du hast folgendes Lernziel erfolgreich abgeschlossen.
+                            Du hast folgende Kompetenz erfolgreich abgeschlossen.
                             <h4 class="events-heading">{$art->title}</h4> 
                            {$art->description}
                         </div>
@@ -47,7 +47,7 @@
                     <div class="events">
                         <h4 class="events-heading"><a href="#">{$art->curriculum}</a></h4>
                         <div class="events-body">
-                            Du hast folgende Daten zum Lernziel {$art->title} eingereicht.
+                            Du hast folgende Daten zur Kompetenz {$art->title} eingereicht.
                             <div class="mailbox-attachments clearfix">
                                 {Render::thumb(array($art->id))}    
                             </div>
@@ -96,7 +96,7 @@
                     <div class="events">
                         <h4 class="events-heading"><a href="#">Material hochgeladen</a></h4>
                         <div class="events-body">
-                            Du hast die folgende Datei für den Lehrplan "{$art->curriculum}", Lernziel: {$art->title} hochgeladen.
+                            Du hast die folgende Datei für den Lehrplan "{$art->curriculum}", Kompetenz: {$art->title} hochgeladen.
                             <div class="mailbox-attachments clearfix">
                                 {Render::thumb(array($art->id))}    
                             </div>
