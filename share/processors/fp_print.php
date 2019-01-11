@@ -49,7 +49,7 @@ switch ($func) {
                             foreach ($ter as $ter_value){
                                 $content .= '<pagebreak orientation="landscape"/><div style="padding:5px;background:'.$ter_value->color.'">'.strip_tags($ter_value->terminal_objective).'</div>';
                                 $content .= '<table style="width:100%; border-collapse: collapse;border: 1px solid #EBEBEB;">';
-                                $content .= '<thead><tr style="background: #F2DBDB"><td>Lernziel / Kompetenz</td><td>Bezüge / Überfachliche Bezüge</td><td>Materialien</td></tr></thead>';
+                                $content .= '<thead><tr style="background: #F2DBDB"><td>Kompetenz</td><td>Bezüge / Überfachliche Bezüge</td><td>Materialien</td></tr></thead>';
                                 $content    .= '<tr><td valign="top" style="width:30%;border: 1px solid '.$ter_value->color.';"><small>'.strip_tags($ter_value->description).'</small></td>';
                                 /* Bezüge */
                                 $content    .= '<td valign="top" style="width:40%;border: 1px solid '.$ter_value->color.';"><small>'. render_reference('terminal_objective', $ter_value->id).'</small></td>';
@@ -221,7 +221,7 @@ function render_reference_entry($ref){
     $content  = '<p><small><strong>Lehrplan</strong><br> '.$ref->curriculum_object->curriculum.' ('.$ref->curriculum_object->subject.', '.$ref->grade.')<br>
                  <strong>Thema</strong><br> '.strip_tags($ref->terminal_object->terminal_objective).'<br>';
     if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
-        $content .= ' <strong>Lernziel/Kompetenz</strong><br> '.strip_tags($ref->enabling_object->enabling_objective).'<br>';
+        $content .= ' <strong>Kompetenz</strong><br> '.strip_tags($ref->enabling_object->enabling_objective).'<br>';
     }
     
     if (isset($ref->content_object->content)){
