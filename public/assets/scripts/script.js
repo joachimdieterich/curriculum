@@ -595,12 +595,16 @@ function formloader(/*form, func, id, []*/){
 }
 
 function processor(/*proc, func, val, [..., reload = false], pluginpath*/){ // if reload = false: prevent reload
-    reload = true;
+    reload   = true;
+    callback = false;
     if (typeof(arguments[3]) !== 'undefined'){
         if(typeof(arguments[3].reload) !== 'undefined'){ //don't reload
             var boolValue = "true";                      //hack to get boolean
             reload = (boolValue == arguments[3].reload); //hack to get boolean
         }// else not needed ->reload already set.
+        if(typeof(arguments[3].callback) !== 'undefined'){ 
+            callback = arguments[3].callback; 
+        }
     } 
     
     if (typeof(arguments[4]) !== 'undefined'){
@@ -616,7 +620,10 @@ function processor(/*proc, func, val, [..., reload = false], pluginpath*/){ // i
             if(this.readyState == this.DONE) {
                 if (reload == true){
                     window.location.reload();
-                } 
+                } else if (callback === "innerHTML"){  //if callback == innerHTML is set, innerHTML of response.id is set
+                    response = JSON.parse(req.responseText);
+                    document.getElementById(response.id).innerHTML = response.html;
+                }
             }
         }
     }
@@ -858,15 +865,19 @@ function popupFunction(e){
     
     textareas = document.getElementsByTagName("textarea");                      // Replace the <textarea id="editor1"> with a CKEditor instance, using default configuration
     for (var i = 0, len = textareas.length; i < len; i++) {
-        CKEDITOR.dtd.$removeEmpty['i'] = false;
-        if (i == 0){                                                            // only collapse first editor -> description editors sould show toolbar
-            CKEDITOR.replace(textareas[i].id, { toolbarStartupExpanded : false});
+        if ($("#"+textareas[i].id).hasClass("no_editor")){
+         //do nothing
         } else {
-            CKEDITOR.replace(textareas[i].id, { toolbarStartupExpanded : true});
+            CKEDITOR.dtd.$removeEmpty['i'] = false;
+            if (i == 0){                                                            // only collapse first editor -> description editors sould show toolbar
+                CKEDITOR.replace(textareas[i].id, { toolbarStartupExpanded : false});
+            } else {
+                CKEDITOR.replace(textareas[i].id, { toolbarStartupExpanded : true});
+            }
+            CKEDITOR.on('instanceReady',function(){
+                resizeModal();      // if ckeditor is used, then modal has to be resized after ckeditor is ready
+            }); 
         }
-        CKEDITOR.on('instanceReady',function(){
-            resizeModal();      // if ckeditor is used, then modal has to be resized after ckeditor is ready
-        }); 
     }
     $(".select2").select2();
     
