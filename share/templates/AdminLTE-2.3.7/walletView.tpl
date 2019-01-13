@@ -135,7 +135,7 @@
                             {/if}
                         </div>
                     </div>
-                    {if $wallet->creator_id eq $my_id}
+                    {if ($wallet->creator_id eq $my_id) AND is_array($userlist)}
                         <div class="pull-right margin-r-5">
                             {Form::input_select('wallet_user_id', '', $userlist, 'firstname, lastname', 'id', $sel_user_id, null, "window.location.assign('index.php?action=walletView&wallet={$wallet->id}&user_id='+this.value);", 'Sammelmappe von Kursteilnehmer wählen...', '', 'col-sm-12')}
                         </div>
@@ -222,7 +222,7 @@
                     {/if}
                 
                     <h4>Kommentare <small>| Achtung! Kommentare sind für alle sichtbar, die diese Sammelmappe bearbeiten sollen.</small></h4>
-                    {RENDER::comments(["comments" => $wallet->comments, "permission" => $wallet->permission])}
+                    {RENDER::comments(["id"=> $wallet->id, "context" => "wallet"])}
 
                     {if $wallet->permission > 0}
                         Neuen Kommentar hinzufügen

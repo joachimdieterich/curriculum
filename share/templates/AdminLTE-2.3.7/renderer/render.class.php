@@ -165,7 +165,7 @@ class Render {
                         . '<a class="pointer_hand" data-toggle="tooltip" title="Selbsteinschätzung: Ich kann das mit Hilfe." ><i id="'.$id.'_orange" style="font-size:18px;" class="'.$orange.' margin-r-5 text-orange pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \'2'.$teacher_status.'\')"></i></a>'
                         . '<a class="pointer_hand" data-toggle="tooltip" title="Selbsteinschätzung: Ich kann das noch nicht." ><i id="'.$id.'_red" style="font-size:18px;" class="'.$red.' margin-r-5 text-red pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \'0'.$teacher_status.'\')"></i></a>'
                         . '<a class="pointer_hand" data-toggle="tooltip" title="Selbsteinschätzung: Ich habe das noch nicht bearbeitet." ><i id="'.$id.'_white" style="font-size:18px;" class="'.$white.' margin-r-5 text-gray pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \'3'.$teacher_status.'\')"></i></a>';
-            } else {
+            } else { //teacher
                 $status = $ena->accomplished_status_id;
                 if (strlen($status) > 1){
                     $student_status = substr($status, 0,1);
@@ -176,7 +176,8 @@ class Render {
                  $html   = '<a class="pointer_hand"><i id="'.$id.'_green" style="font-size:18px;" class="'.$green.' margin-r-5 text-green pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'1\')"></i></a>'
                     . '<a class="pointer_hand"><i id="'.$id.'_orange" style="font-size:18px;" class="'.$orange.' margin-r-5 text-orange pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'2\')"></i></a>'
                     . '<a class="pointer_hand"><i id="'.$id.'_red" style="font-size:18px;" class="'.$red.' margin-r-5 text-red pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'0\')"></i></a>'
-                    . '<a class="pointer_hand"><i id="'.$id.'_white" style="font-size:18px;" class="'.$white.' margin-r-5 text-gray pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'3\')"></i></a>';
+                    . '<a class="pointer_hand"><i id="'.$id.'_white" style="font-size:18px;" class="'.$white.' margin-r-5 text-gray pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'3\')"></i></a>'
+                    . '<a class="pointer_hand"><i id="'.$id.'_comment" style="font-size:18px;" class="fa fa-comments text-primary margin-r-5 pointer_hand" onclick="formloader(\'comment\',\'accomplished\','.$id.');"></i></a>';
                 }
             }
             
@@ -461,13 +462,30 @@ class Render {
        $html .=   '</span></div></div>';
         return $html;  
     }
-    
+    /**
+     * 
+     * @global type $CFG
+     * @global type $USER
+     * @param array $params array(
+     *                            'permission' => 1         // Add / Delete comments
+     * 
+     *                            )
+     * @return string
+     */
     public static function comments($params){
         global $CFG, $USER;
         foreach($params as $key => $val) {
              $$key = $val;
         }
         if (!isset($permission)){ $permission = 1; }
+        /* Load comments based on id and context */
+        if (isset($id) AND isset($context)){
+            $cm                 = new Comment();
+            $cm->reference_id   = $id;
+            $cm->context        = $context; 
+            $comments           = $cm->get('reference');
+        }
+        
         $html = '<ul class="media-list ">';
         foreach ($comments as $cm) {
             $u      = new User();
@@ -485,20 +503,20 @@ class Render {
                           </h4>
                               <p class="media-heading">'.$cm->text.'<br>';
                               if ($cm->creator_id == $USER->id){
-                                  if ($permission > 0){
+                                  if (($permission > 0) AND checkCapabilities('comment:delete', $USER->role_id, false, true)){
                                     $html  .= '<a class="text-red" onclick="del(\'comment\','.$cm->id.');"><i class="fa fa-trash "></i></a>';
                                   }
                               } else {
-                                $html  .= '<a class="text-red" onclick=""><i class="fa fa-exclamation-triangle "></i> Kommentar melden</a>';
+                                $html .= '<a class="text-red" onclick=""><i class="fa fa-exclamation-triangle "></i> Kommentar melden</a>';
                               }
-                              if ($permission > 0){
-                                $html  .= ' | <a id="answer_'.$cm->id.'" onclick="toggle([\'comment_'.$cm->id.'\', \'cmbtn_'.$cm->id.'\'], [\'answer_'.$cm->id.'\'])">Antworten</a></p>';
-                              }
-                              $html .='<textarea id="comment_'.$cm->id.'" name="comment"  class="hidden no_editor" style="width:100%;"></textarea>
+                              if (($permission > 0) AND checkCapabilities('comment:add', $USER->role_id, false, true)){
+                                $html .= ' | <a id="answer_'.$cm->id.'" onclick="toggle([\'comment_'.$cm->id.'\', \'cmbtn_'.$cm->id.'\'], [\'answer_'.$cm->id.'\'])">Antworten</a></p>';
+                                $html .='<textarea id="comment_'.$cm->id.'" name="comment"  class="hidden no_editor" style="width:100%;"></textarea>
                                         <button id="cmbtn_'.$cm->id.'" type="submit" class="btn btn-primary pull-right hidden" onclick="comment(\'new\','.$cm->reference_id.', '.$cm->context_id.', document.getElementById(\'comment_'.$cm->id.'\').value, '.$cm->id.');"><i class="fa fa-commenting-o margin-r-10"></i>Kommentar abschicken</button>';
+                             }
             /* sub comments */
             if (!empty($cm->comment)){
-              $html .= RENDER::sub_comments(array('comment' => $cm->comment));
+                $html .= RENDER::sub_comments(array('comment' => $cm->comment));
             }
             $html .= '</li><hr class="dashed">';
         }
@@ -529,17 +547,17 @@ class Render {
                             </h4>
                                 <p class="media-heading">'.$cm->text.'<br>';
                                 if ($cm->creator_id == $USER->id){
-                                    if ($permission > 0){
+                                    if (checkCapabilities('comment:delete', $USER->role_id, false, true)){
                                         $html  .= '<a class="text-red" onclick="del(\'comment\','.$cm->id.');"><i class="fa fa-trash "></i></a>';
                                     }
                                   } else {
                                     $html  .= '<a class="text-red" onclick=""><i class="fa fa-exclamation-triangle "></i> Kommentar melden</a>';
                                   }
-                                if ($permission > 0){  
+                                if (checkCapabilities('comment:add', $USER->role_id, false, true)){  
                                     $html .= ' | <a id="answer_'.$cm->id.'" onclick="toggle([\'comment_'.$cm->id.'\', \'cmbtn_'.$cm->id.'\'], [\'answer_'.$cm->id.'\'])">Antworten</a></p>';
-                                }
-                                $html .='<textarea id="comment_'.$cm->id.'" name="comment"  class="hidden no_editor " style="width:100%;"></textarea>
-                                        <button id="cmbtn_'.$cm->id.'" type="submit" class="btn btn-primary pull-right hidden" onclick="comment(\'new\','.$cm->reference_id.', '.$cm->context_id.', document.getElementById(\'comment_'.$cm->id.'\').value, '.$cm->id.');"><i class="fa fa-commenting-o margin-r-10"></i>Kommentar abschicken</button>';
+                                    $html .='<textarea id="comment_'.$cm->id.'" name="comment"  class="hidden no_editor " style="width:100%;"></textarea>
+                                            <button id="cmbtn_'.$cm->id.'" type="submit" class="btn btn-primary pull-right hidden" onclick="comment(\'new\','.$cm->reference_id.', '.$cm->context_id.', document.getElementById(\'comment_'.$cm->id.'\').value, '.$cm->id.');"><i class="fa fa-commenting-o margin-r-10"></i>Kommentar abschicken</button>';
+                                 }
                                 if (!empty($cm->comment)){
                                     $html .= RENDER::sub_comments(array('comment' => $cm->comment));
                                 }                         
@@ -1722,11 +1740,13 @@ class Render {
                             <div id="block_instance_'.$id.'_body" class="box-body" style="overflow: scroll; width: 100%; max-height: '.$height.';">';
                                     foreach ($blog->content as $value) {
                                         $author->load('id', $value->creator_id);
+                                        /* TODO implement count function for shorter syntax */
                                         $comments = new Comment();
                                         $comments->context = 'content';
                                         $comments->reference_id = $value->id;
                                         $c = $comments->get('reference');
                                         $c_max = count($c);
+                                        /**/
                                         $html  .=  '<div class="post">
                                                         <div class="user-block">
                                                           <img class="img-circle img-bordered-sm" src="'.$CFG->access_id_url.$author->avatar_id.'" alt="user image">
@@ -1747,7 +1767,7 @@ class Render {
                                                               ('.$c_max.')</a></li>
                                                         </ul>
                                                         <div class="bottom-buffer-20 hidden" id="comments_'.$value->id.'"><b>Kommentare</b>';
-                                        $html  .=       RENDER::comments(["comments" => $c, "permission" => '1']); //todo permission over rolecheck
+                                        $html  .=       RENDER::comments(["id" => $value->id, "context" => "content"]); 
                                         $html  .=     '<textarea id="comment" name="comment"  style="width:100%;"></textarea>
                                                        <p><button type="submit" class="btn btn-primary pull-right" onclick="comment(\'new\','.$value->id.', 15, document.getElementById(\'comment\').value);">
                                                            <i class="fa fa-commenting-o margin-r-10"></i>Kommentar abschicken</button></p><br>
@@ -2845,7 +2865,7 @@ public static function quote_reference($quotes){
                 }
             }
         } else {
-            $content .= 'Keine Medien für dieses Kompetenz, dieses Fach vorhanden vorhanden.';
+            $content .= 'Keine Medien für diese Kompetenz, dieses Fach vorhanden vorhanden.';
         }
         if ($get['ajax'] == 'true'){ 
             echo $content;

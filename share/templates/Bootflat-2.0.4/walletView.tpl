@@ -112,7 +112,7 @@
                     {/if}
                 
                     <h4>Kommentare</h4>
-                    {RENDER::comments(["comments" => $wallet->comments, "permission" => $wallet->permission])}
+                    {RENDER::comments(["id"=> $wallet->id, "context" => "wallet"])}
 
                     {if $wallet->permission > 0}
                         Neuen Kommentar hinzufügen
