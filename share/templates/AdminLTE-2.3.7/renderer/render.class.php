@@ -521,6 +521,15 @@ class Render {
             $html .= '</li><hr class="dashed">';
         }
         $html .=  '</ul>';
+        
+        /* add Comments */
+        if (checkCapabilities('comment:add', $USER->role_id, false, true)){  
+        $html.= 'Neuen Kommentar hinzufügen
+                <textarea id="comment" name="comment" class="no_editor" style="width:100%;"></textarea>
+                <button type="submit" class="btn btn-primary pull-right" onclick="comment(\'new\','.$id.', \''.$_SESSION['CONTEXT'][$context]->context_id.'\', document.getElementById(\'comment\').value);"><i class="fa fa-commenting-o margin-r-10"></i> Kommentar abschicken</button>';
+        } else {
+            $html .= "Sie haben nicht die Berechtigung Kommentare zu schreiben.";
+        }
 
         return $html;
     }
@@ -1768,10 +1777,7 @@ class Render {
                                                         </ul>
                                                         <div class="bottom-buffer-20 hidden" id="comments_'.$value->id.'"><b>Kommentare</b>';
                                         $html  .=       RENDER::comments(["id" => $value->id, "context" => "content"]); 
-                                        $html  .=     '<textarea id="comment" name="comment"  style="width:100%;"></textarea>
-                                                       <p><button type="submit" class="btn btn-primary pull-right" onclick="comment(\'new\','.$value->id.', 15, document.getElementById(\'comment\').value);">
-                                                           <i class="fa fa-commenting-o margin-r-10"></i>Kommentar abschicken</button></p><br>
-                                                       </div>
+                                        $html  .=     '</div>
                                                     </div>';
                                     }    
              $html  .= '     </div>

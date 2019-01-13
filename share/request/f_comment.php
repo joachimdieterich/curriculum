@@ -46,9 +46,6 @@ if (isset($func)){
                     $us                 = new User();
                     $ena_id             = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
                     $acc_id             = $us->getAccomplished($ena_id, $USER->id, $_SESSION['CONTEXT']['enabling_objective']->context_id);
-                    if (isset($acc_id->id)){
-                         $id                = $acc_id->id;
-                    }
             break;
         default:    
             
@@ -66,21 +63,11 @@ if (isset($_SESSION['FORM'])){
 }
 $footer  = '<button type="submit" class="btn btn-primary pull-right" onclick="closePopup()"><i class="fa fa-commenting-o margin-r-10"></i> Schließen</button>'; //Default
 if (isset($acc_id->id)){
-    
     $content = RENDER::comments(["id"=> $acc_id->id, "context"=> "accomplished"]);
-    if (checkCapabilities('comment:add', $USER->role_id, false, true)){  
-        $content.= 'Neuen Kommentar hinzufügen
-                <textarea id="comment" name="comment" class="no_editor" style="width:100%;"></textarea>';          
-        $footer  = '<button type="submit" class="btn btn-primary pull-right" onclick="comment(\'new\','.$id.', 38, document.getElementById(\'comment\').value);"><i class="fa fa-commenting-o margin-r-10"></i> Kommentar abschicken</button>';
-    } else {
-        $content .= "Sie haben nicht die Berechtigung Kommentare zu schreiben.";
-    }
-    
 } else {
     $content = 'Kommentare können erst gemacht werden, wenn ein Lernstand gesetzt wurde.';
 }
 $html     = Form::modal(array('title'     => $header,
-                              'content'   => $content, 
-                              'f_content' => $footer));  
+                              'content'   => $content));  
 
 echo json_encode(array('html'=>$html));

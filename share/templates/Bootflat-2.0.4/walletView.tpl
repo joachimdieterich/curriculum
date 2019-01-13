@@ -112,14 +112,7 @@
                     {/if}
                 
                     <h4>Kommentare</h4>
-                    {RENDER::comments(["id"=> $wallet->id, "context" => "wallet"])}
-
-                    {if $wallet->permission > 0}
-                        Neuen Kommentar hinzufügen
-                        <textarea id="comment" name="comment"  style="width:100%;"></textarea>
-                        <button type="submit" class="btn btn-primary pull-right" onclick="comment('new',{$wallet->id}, 18, document.getElementById('comment').value);"><i class="fa fa-commenting-o margin-r-10"></i>Kommentar abschicken</button>
-                    {/if}
-                
+                    {RENDER::comments(["id"=> $wallet->id, "context" => "wallet", "permission" => $wallet->permission])}
                 </div>
             </div>        
         </div>

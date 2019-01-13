@@ -66,9 +66,5 @@ $comments->context = 'task';
 $comments->reference_id = $t->id;
 $content .= '<hr><h4>Kommentare</h4>';
 $content .=  RENDER::comments(["id" => $t->id, "context" => "task"]);
-$content .= 'Neuen Kommentar hinzufügen
-            <textarea id="comment" name="comment"  style="width:100%;"></textarea>
-            <button type="submit" class="btn btn-primary pull-right" onclick="comment(\'new\','.$t->id.', 13, document.getElementById(\'comment\').value);">'
-        . '<i class="fa fa-commenting-o margin-r-10"></i> Kommentar abschicken</button>';
 $content .= '</div></div>';
 echo $content;                 
