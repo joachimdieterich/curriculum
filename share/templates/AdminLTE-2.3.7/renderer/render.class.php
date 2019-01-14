@@ -469,8 +469,8 @@ class Render {
                        <a class="pull-left" href="#" >
                          <div style="height:'.$size.'px;width:'.$size.'px;background: url('.$CFG->access_id_url.$u->avatar_id.') center right;background-size: cover; background-repeat: no-repeat;"></div>
                         </a>
-                        <a style="cursor:pointer;" class="text-red margin-r-10 pull-right" onclick=\'processor("set","comments",'.$cm->id.', {"dependency":"dislikes", "reload":"false", "callback":"innerHTML"});\'><i class="fa fa-thumbs-o-down margin-r-5"></i><span id="dislikes_'.$cm->id.'"> '.$cm->dislikes.'</span></a>
-                        <a style="cursor:pointer;" class="text-green margin-r-10 pull-right" onclick=\'processor("set","comments",'.$cm->id.', {"dependency":"likes", "reload":"false",  "callback":"innerHTML"});\'><i class="fa fa-thumbs-o-up margin-r-5"></i><span id="likes_'.$cm->id.'"> '.$cm->likes.' </span></a>
+                        <a style="cursor:pointer;" class="text-red margin-r-10 pull-right" onclick=\'processor("set","likes",'.$cm->id.', {"dependency":"dislikes", "reload":"false", "callback":"innerHTML"});\'><i class="fa fa-thumbs-o-down margin-r-5"></i><span id="dislikes_'.$cm->id.'"> '.$cm->dislikes.'</span></a>
+                        <a style="cursor:pointer;" class="text-green margin-r-10 pull-right" onclick=\'processor("set","likes",'.$cm->id.', {"dependency":"likes", "reload":"false",  "callback":"innerHTML"});\'><i class="fa fa-thumbs-o-up margin-r-5"></i><span id="likes_'.$cm->id.'"> '.$cm->likes.' </span></a>
                         
                       <div class="media-body" >
                           <h4 class="media-heading">'.$u->username.' <small class="text-black margin-r-10"> '.$cm->creation_time.'</small> 
@@ -525,8 +525,8 @@ class Render {
                         </a>                        
                         <div class="media-body" >
                             <h4 class="media-heading">'.$u->username.' <small class="text-black margin-r-10"> '.$cm->creation_time.'</small>
-                                <a style="cursor:pointer;" class="text-green margin-r-10 " onclick=\'processor("set","comments",'.$cm->id.', {"dependency":"likes", "input":"'.($cm->likes+1).'"});\'><i class="fa fa-thumbs-o-up margin-r-5"></i> '.$cm->likes.' </a>
-                                <a style="cursor:pointer;" class="text-red margin-r-10 " onclick=\'processor("set","comments",'.$cm->id.', {"dependency":"dislikes", "input":"'.($cm->dislikes+1).'"});\'><i class="fa fa-thumbs-o-down margin-r-5"></i> '.$cm->dislikes.' </a>
+                                <a style="cursor:pointer;" class="text-green margin-r-10 " onclick=\'processor("set","likes",'.$cm->id.', {"dependency":"likes", "input":"'.($cm->likes+1).'"});\'><i class="fa fa-thumbs-o-up margin-r-5"></i> '.$cm->likes.' </a>
+                                <a style="cursor:pointer;" class="text-red margin-r-10 " onclick=\'processor("set","likes",'.$cm->id.', {"dependency":"dislikes", "input":"'.($cm->dislikes+1).'"});\'><i class="fa fa-thumbs-o-down margin-r-5"></i> '.$cm->dislikes.' </a>
                             </h4>
                                 <p class="media-heading">'.$cm->text.'<br>';
                                 if ($cm->creator_id == $USER->id){
