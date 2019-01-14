@@ -74,7 +74,7 @@ if($validated_data === false) {/* validation failed */
         $_SESSION['FORM']            = null;                     // reset Session Form object 
     } else {
         $block->context_id = 11;    //todo --> selector to use more contexts
-        $block->region     ='';     //not used yet
+        //$block->region     ='';     //not used yet
         $block->institution_id = $USER->institution_id;
         $block->add();
         
