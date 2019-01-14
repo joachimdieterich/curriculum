@@ -33,6 +33,33 @@ switch ($func) {
                     $t->id  = filter_input(INPUT_GET, 'val', FILTER_SANITIZE_STRING); // kein INT --> System ID -1
                     $t->accomplish('user', $USER->id); 
         break;
+    case "enabling_objective":  $acc               = new Accomplish();
+                                $acc->context_id   = $_SESSION['CONTEXT'][$func]->context_id;
+                                $acc->reference_id = filter_input(INPUT_GET, 'val', FILTER_SANITIZE_STRING); // kein INT
+                                $acc->creator_id   = $USER->id;
+                                $acc->status_id    = filter_input(INPUT_GET, 'status_id', FILTER_SANITIZE_STRING); 
+                                switch ($_SESSION['PAGE']->action) {
+                                    case 'view':        $selected_user_id = array($USER->id); //Selbsteinschätzung (auch für Lehrer!)
+                                        break;
+                                    case 'objectives':  $selected_user_id = SmartyPaginate::_getSelection('userPaginator'); //Fremdeinschätzung.
+                                        break;
+
+                                    default:
+                                        break;
+                                }
+                                foreach ($selected_user_id as $user) {
+                                    $acc->user_id  = $user;
+                                    if ($acc->user_id == $USER->id){
+                                        $teacher   = false;  // Selbsteinschätzung
+                                    } else {
+                                        $teacher   = true;   // Fremdeinschätzung
+                                    }
+                                    $status = $acc->set($teacher);
+                                }
+                                echo json_encode(array('element_id'=> filter_input(INPUT_GET, 'element_id', FILTER_SANITIZE_STRING), 'status'=>$status));
+                                
+                                
+        break;
                             
     default: break;
 }
