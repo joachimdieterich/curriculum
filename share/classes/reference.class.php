@@ -197,6 +197,7 @@ class Reference {
         $db->execute(array($context_id, $id));
         $r  = array();
         while($result = $db->fetchObject()) { 
+            
             $this->load('id',        $result->id); 
             //$this->load('unique_id', $this->unique_id); //load entry with matching unique_id
             if (($this->file_context == 1)||($USER->id == $this->creator_id)){

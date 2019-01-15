@@ -45,7 +45,7 @@ class Content {
    
     public function add($subscribe = true){
         global $USER;
-        $db = DB::prepare('INSERT INTO content (title,content,timecreated,creator_id) VALUES (?,?,NOW(),?)');
+        $db = DB::prepare('INSERT INTO content (title,content,creator_id) VALUES (?,?,?)');
         if($db->execute(array($this->title, $this->content, $USER->id))){
             $this->id = DB::lastInsertId(); 
             if ($subscribe) { $this->addSubscription(); }
@@ -189,7 +189,7 @@ class Content {
             $_SESSION['PAGE']->message[] = array('message' => 'Referenz ist bereits verknüpft', 'icon' => 'fa-link text-warning');
             return false;
         } else {
-            $db = DB::prepare('INSERT INTO content_subscriptions (content_id,context_id,file_context,reference_id,timecreated,status,creator_id) VALUES (?,?,?,?,NOW(),?,?)');
+            $db = DB::prepare('INSERT INTO content_subscriptions (content_id,context_id,file_context,reference_id,status,creator_id) VALUES (?,?,?,?,?,?)');
             return $db->execute(array($this->id, $this->context_id, $this->file_context, $this->reference_id,1,$USER->id));
         } 
     }
