@@ -101,8 +101,11 @@ if (isset($reference_curriculum_id)){
     $TEMPLATE->assign('reference_view', false);
 }
 $types = new TerminalObjective();
-$ter_obj_given_type_ids = array_unique(array_map(function($e) { return is_object($e) ? $e->type_id : $e['type_id'];}, $ter_objects));//Fix for php version < 7
-//$TEMPLATE->assign('ter_obj_given_type_ids', array_unique(array_column($ter_objects, 'type_id')))array column for objects available since php version 7
+if($ter_objects){
+    $ter_obj_given_type_ids = array_unique(array_map(function($e) { return is_object($e) ? $e->type_id : $e['type_id'];}, $ter_objects));//Fix for php version < 7
+} else {
+    $ter_obj_given_type_ids = array();
+}
 
 $TEMPLATE->assign('ter_obj_given_type_ids', $ter_obj_given_type_ids); 
 $TEMPLATE->assign('ter_obj_type_id', $types->getType());
@@ -127,10 +130,10 @@ switch ($function) {
                             //splitbutton
                             
                             $content_menu_obj->onclick  = "formloader('content', 'new', null,{'context_id':'2', 'reference_id':'{$PAGE->curriculum}'});";
-                            $content_menu_obj->title    = '<i class="fa fa-plus"></i> Neuen Hinweis erstellen';
+                            $content_menu_obj->title    = '<i class="fa fa-plus"></i> Lehrplantext erstellen';
                             $c_menu_array[]             = clone $content_menu_obj;
                             $content_menu_obj->onclick  = "formloader('content_subscribe','curriculum',null,{'context_id':'2', 'reference_id':'{$PAGE->curriculum}'});";
-                            $content_menu_obj->title    = '<i class="fa fa-link"></i>Hinweise aus anderem Lehrplan übernehmen';
+                            $content_menu_obj->title    = '<i class="fa fa-link"></i> Lehrplantext aus anderem Lehrplan übernehmen';
                             $c_menu_array[]             = clone $content_menu_obj;
                             $content_menu_obj->onclick  = "formloader('description','curriculum','{$PAGE->curriculum}');";
                             $content_menu_obj->title    = '<i class="fa fa-info" style="padding-right:5px;"></i> Information zum Lehrplan';
@@ -180,7 +183,6 @@ if (!empty($glossar)){
 
 if (isset($_SESSION['anchor'])){
     $TEMPLATE->assign('anchor',$_SESSION['anchor']);
-    //error_log($_SESSION['anchor']);
     $_SESSION['anchor'] = null;
 }
 
@@ -191,5 +193,7 @@ if(isset($_SESSION['PAGE']->config['tab'])){
         $TEMPLATE->assign('tab_type_id_'.$ter_obj_given_type_ids[0],  true);
     }
 } else {
+    if ($ter_obj_given_type_ids){
     $TEMPLATE->assign('tab_type_id_'.$ter_obj_given_type_ids[0],  true);
+    }
 }

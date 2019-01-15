@@ -135,7 +135,7 @@
                     {if count($ter_obj_given_type_ids) > 1}
                         {foreach name=type_ids_li item=type_id from=$ter_obj_type_id} 
                             {if $type_id->id|in_array:$ter_obj_given_type_ids}
-                                <li class='{if isset($tab_type_id_{$type_id->id})}active{/if} '><a href="#tab_type_id_{$type_id->id}" data-toggle="tab" onclick='processor("config","page", "config",{["tab"=>"tab_type_id_{$type_id->id}"]|@json_encode nofilter});'>{$type_id->type}</a></li>
+                                <li id="nav_tab_{$type_id->id}" class='{if isset($tab_type_id_{$type_id->id})}active{/if} '><a href="#tab_type_id_{$type_id->id}" data-toggle="tab" onclick='processor("config","page", "config",{["tab"=>"tab_type_id_{$type_id->id}"]|@json_encode nofilter});'>{$type_id->type}</a></li>
                             {/if}
                         {/foreach}
                     {/if}
