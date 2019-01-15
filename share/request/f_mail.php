@@ -86,14 +86,14 @@ $content .= '"><input type="hidden" name="mail_id" id="mail_id" value="'.$mail_i
             <input type="hidden" name="func" id="func" value="'.$func.'"/>';
 $content .= '<div class="nav-tabs-custom">';
 $content .= '<ul class="nav nav-tabs">
-          <li class="active"><a href="#persons" data-toggle="tab" aria-expanded="false" onclick="toggle([\'persons\', \'add_person_btn\'], [\'groups\', \'add_group_btn\']);">Personen</a></li>
-          <li class=""><a href="#groups" data-toggle="tab" aria-expanded="true" onclick="toggle([\'groups\',  \'add_group_btn\'], [\'persons\', \'add_person_btn\']);">Gruppen</a></li>';    
+          <li id="nav_tab_users" class="active"><a href="#tab_users" data-toggle="tab" aria-expanded="false" onclick="toggle([\'tab_users\', \'add_person_btn\'], [\'tab_groups\', \'add_group_btn\']);">Personen</a></li>
+          <li id="nav_tab_groups" class=""><a href="#tab_groups" data-toggle="tab" aria-expanded="true" onclick="toggle([\'tab_groups\',  \'add_group_btn\'], [\'tab_users\', \'add_person_btn\']);">Gruppen</a></li>';    
 $content .='</ul>
           <div class="tab-content">
-            <div class="tab-pane active" id="persons">
+            <div id="tab_users" class="tab-pane active">
             '. Form::input_select('receiver_id', 'Empfänger', $USER->getGroupMembers(), 'firstname, lastname', 'id', $receiver_id , $error) .'
             <input id="add_person" name="add_person" type="submit" class="hidden"/></div><!-- /.tab-pane -->';
-$content .= '<div class="tab-pane" id="groups">';
+$content .= '<div id="tab_groups" class="tab-pane">';
 $groups = new Group();
 $content .= Form::input_select('group_id', 'Empfänger', $groups->getGroups('group', $USER->id), 'group, institution', 'id', $group_id , $error);
 $content .= '<input id="add_group" name="add_group" type="submit" class="hidden"/></div><!-- /.tab-pane -->';
