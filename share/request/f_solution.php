@@ -53,7 +53,7 @@ switch ($func) {
 }
 
 if (!$solutions){
-    $content .= 'Es gibt keine Einreichung zum gewählten Lernziel.';
+    $content .= 'Es gibt keine Einreichung zur gewählten Kompetenz.';
 } else {
     /* Tab header */
     $file_context_count[1] = 0; // counter for file_context 1

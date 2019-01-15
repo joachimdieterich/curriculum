@@ -42,10 +42,24 @@ class Render {
     public static function accCheckboxes($params){
         //$id, $student, $teacher
         global $USER, $CFG;
-        $link   = true;
-        $email  = false; 
-        $token  = false;
-        $html   = '';
+        $link       = true;
+        $email      = false; 
+        $token      = false;
+        $html       = '';
+        $style      = 'style="font-size:18px;"';
+        $options = array('green' => array('status' => 1,
+                                          'tooltip'=> 'data-toggle="tooltip" title="Selbsteinschätzung: Ich kann das selbstständig."'), 
+                         'orange'=> array('status' => 2, 
+                                          'tooltip'=> 'data-toggle="tooltip" title="Selbsteinschätzung: Ich kann das mit Hilfe."'), 
+                         'red'   => array('status' => 0, 
+                                          'tooltip'=> 'data-toggle="tooltip" title="Selbsteinschätzung: Ich kann das noch nicht."'), 
+                         'white' => array('status' => 3, 
+                                          'tooltip'=> 'data-toggle="tooltip" title="Selbsteinschätzung: Ich habe das noch nicht bearbeitet."'));   //available options
+         
+        $css_green  = 'margin-r-5 text-green pointer_hand';
+        $css_orange = 'margin-r-5 text-orange pointer_hand';
+        $css_red    = 'margin-r-5 text-red pointer_hand';
+        $css_white  = 'margin-r-5 text-gray pointer_hand';
         
         if (!is_array($params)){ //hack to use json_arrays from smarty
             $params = json_decode($params);
@@ -55,81 +69,56 @@ class Render {
         $ena       = new EnablingObjective();
         $ena->id   = $id;
         $ena->getObjectives('enabling_objective_status', $student); // get status of objective
-
-        $red       = 'fa fa-circle-o';
-        $green     = 'fa fa-circle-o';
-        $orange    = 'fa fa-circle-o';
-        $white     = 'fa fa-circle-o';
-
-        switch (true) {
-            case $ena->accomplished_status_id === 'x0': $red    = 'fa fa-check-circle-o';
-                       $bg     = 'bg-red';
+        
+        //generate css class based on accomplished status
+        if (strlen($ena->accomplished_status_id) == 1){ //fallback check for older versions
+            $ena->accomplished_status_id = 'x'.$ena->accomplished_status_id;
+        }
+        $student_bit = substr($ena->accomplished_status_id, 0,1);
+        switch (true) { //Student Part of status (first char)
+            case $student_bit === '0':   $red      = '-circle';
+                        $green = $orange = $white = '-circle-o';
                 break;
-            case $ena->accomplished_status_id === '0x': $red    = 'fa fa-circle';
-                       $bg     = 'bg-red';
+            case $student_bit === '1':   $green    = '-circle';
+                        $red = $orange = $white = '-circle-o';
                 break;
-            case $ena->accomplished_status_id === '00': $red    = 'fa fa-check-circle';
-                       $bg     = 'bg-red';
+            case $student_bit === '2':   $orange   = '-circle';
+                        $green = $red = $white = '-circle-o';
                 break;
-            case $ena->accomplished_status_id === '01': $red    = 'fa fa-circle';
-                       $green  = 'fa fa-check-circle-o';
-                       $bg     = 'bg-green';
+            case $student_bit === '3':   $white    = '-circle';
+                        $green = $red = $orange = '-circle-o';
                 break;
-            case $ena->accomplished_status_id === '02': $red    = 'fa fa-circle';
-                       $orange  = 'fa fa-check-circle-o';
-                       $bg     = 'bg-orange';
+            
+            default:    $green = $red = $orange = $white ='-circle-o';
                 break;
-            case $ena->accomplished_status_id === '03': $red    = 'fa fa-circle';
-                       $white  = 'fa fa-check-circle-o';
-                       $bg     = 'bg-white';
+        }
+        $teacher_bit = substr($ena->accomplished_status_id, 1,1);
+        switch (true) { //Teacher Part of status (second char)
+            case $teacher_bit === '0':   $red      = 'fa fa-check'.$red;
+                        $green    = 'fa fa'.$green;
+                        $orange   = 'fa fa'.$orange;
+                        $white    = 'fa fa'.$white;
                 break;
-            case $ena->accomplished_status_id === 'x1': $green  = 'fa fa-check-circle-o';
+            case $teacher_bit === '1':   $green    = 'fa fa-check'.$green;
+                        $red      = 'fa fa'.$red;
+                        $orange   = 'fa fa'.$orange;
+                        $white    = 'fa fa'.$white;
                 break;
-            case $ena->accomplished_status_id === '1x': $green  = 'fa fa-circle';
+            case $teacher_bit === '2':   $orange   = 'fa fa-check'.$orange;
+                        $red      =  'fa fa'.$red;
+                        $green    =  'fa fa'.$green;
+                        $white    =  'fa fa'.$white;
                 break;
-            case $ena->accomplished_status_id === '10': $red    = 'fa fa-check-circle-o';
-                     $green  = 'fa fa-circle';
-                break;
-            case $ena->accomplished_status_id === '11': $green  = 'fa fa-check-circle';
-                break;
-            case $ena->accomplished_status_id === '12': $green  = 'fa fa-circle';
-                     $orange = 'fa fa-check-circle-o';
-                break;
-            case $ena->accomplished_status_id === '13': $green  = 'fa fa-circle';
-                     $white  = 'fa fa-check-circle-o';
-                break;
-            case $ena->accomplished_status_id === 'x2': $orange = 'fa fa-check-circle-o';
-                break;
-            case $ena->accomplished_status_id === '2x': $orange = 'fa fa-circle';
-                break;
-            case $ena->accomplished_status_id === '20': $orange = 'fa fa-circle';
-                     $red    = 'fa fa-check-circle-o';
-                break;
-            case $ena->accomplished_status_id === '21': $orange = 'fa fa-circle';
-                     $green  = 'fa fa-check-circle-o';
-                break;
-            case $ena->accomplished_status_id === '22': $orange = 'fa fa-check-circle';
-                break;
-            case $ena->accomplished_status_id === '23': $orange = 'fa fa-circle';
-                                                        $white  = 'fa fa-check-circle-o';
-                break;
-            case $ena->accomplished_status_id === 'x3': $white  = 'fa fa-check-circle-o';
-                break;
-            case $ena->accomplished_status_id === '3x': $white  = 'fa fa-circle';
-                break;
-            case $ena->accomplished_status_id === '30': $white  = 'fa fa-circle';
-                       $red    = 'fa fa-check-circle-o';
-                break;
-            case $ena->accomplished_status_id === '31': $white  = 'fa fa-circle';
-                     $green  = 'fa fa-check-circle-o';
-                break;
-            case $ena->accomplished_status_id === '32': $white  = 'fa fa-circle';
-                     $orange = 'fa fa-check-circle-o';
-                break;
-            case $ena->accomplished_status_id === '33': $white  = 'fa fa-check-circle';
+            case $teacher_bit === '3':   $white    = 'fa fa-check'.$white;
+                        $red      =  'fa fa'.$red;
+                        $green    =  'fa fa'.$green;
+                        $orange   =  'fa fa'.$orange;                        
                 break;
 
-            default:
+            default:    $red      =  'fa fa'.$red;
+                        $green    =  'fa fa'.$green;
+                        $orange   =  'fa fa'.$orange;
+                        $white    =  'fa fa'.$white;
                 break;
         }
 
@@ -154,29 +143,15 @@ class Render {
                 . '<br><a href="'.$CFG->base_url.'public/index.php?action=extern&teacher='.$teacher.'&student='.$student.'&ena_id='.$id.'&status='.$student_status.'0'.'&token='.$token.'">... nicht erreicht.</a>';
         } else if ($USER->id != $student OR $student == $teacher){ // 2. Bedingung bewirkt, dass als Lehrer eigene Einreichungen bewerten kann --> für Demonstration der Plattform wichtig
             if ((!checkCapabilities('objectives:setStatus', $USER->role_id, false))){ //if student
-               $status = $ena->accomplished_status_id;
-                if (strlen($status) > 1){
-                    $teacher_status = substr($status, 1,1);
-                } else {
-                    $teacher_status = 'x';
-                }
-                $teacher = $student;
-                $html   = '<a class="pointer_hand" data-toggle="tooltip" title="Selbsteinschätzung: Ich kann das selbstständig." ><i id="'.$id.'_green" style="font-size:18px;" class="'.$green.' margin-r-5 text-green pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \'1'.$teacher_status.'\')"></i></a>'
-                        . '<a class="pointer_hand" data-toggle="tooltip" title="Selbsteinschätzung: Ich kann das mit Hilfe." ><i id="'.$id.'_orange" style="font-size:18px;" class="'.$orange.' margin-r-5 text-orange pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \'2'.$teacher_status.'\')"></i></a>'
-                        . '<a class="pointer_hand" data-toggle="tooltip" title="Selbsteinschätzung: Ich kann das noch nicht." ><i id="'.$id.'_red" style="font-size:18px;" class="'.$red.' margin-r-5 text-red pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \'0'.$teacher_status.'\')"></i></a>'
-                        . '<a class="pointer_hand" data-toggle="tooltip" title="Selbsteinschätzung: Ich habe das noch nicht bearbeitet." ><i id="'.$id.'_white" style="font-size:18px;" class="'.$white.' margin-r-5 text-gray pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \'3'.$teacher_status.'\')"></i></a>';
-            } else {
-                $status = $ena->accomplished_status_id;
-                if (strlen($status) > 1){
-                    $student_status = substr($status, 0,1);
-                } else {
-                    $student_status = 'x';
-                }
+                foreach($options AS $key => $val){
+                        $html   .= '<a class="pointer_hand" '.$val['tooltip'].'><i id="'.$id.'_'.$key.'"  '.$style.' class="'.$$key.' '.${'css_'.$key}.'"   onclick="processor(\'accomplish\', \'enabling_objective\', '.$id.',{\'status_id\':'.$val['status'].', \'reload\':\'false\', \'callback\':\'setElementById\'});"></i></a>';   
+                    }
+            } else { //teacher
                 if (checkCapabilities('course:selfAssessment', $USER->role_id, false) OR $teacher == $student) { // show in view
-                 $html   = '<a class="pointer_hand"><i id="'.$id.'_green" style="font-size:18px;" class="'.$green.' margin-r-5 text-green pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'1\')"></i></a>'
-                    . '<a class="pointer_hand"><i id="'.$id.'_orange" style="font-size:18px;" class="'.$orange.' margin-r-5 text-orange pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'2\')"></i></a>'
-                    . '<a class="pointer_hand"><i id="'.$id.'_red" style="font-size:18px;" class="'.$red.' margin-r-5 text-red pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'0\')"></i></a>'
-                    . '<a class="pointer_hand"><i id="'.$id.'_white" style="font-size:18px;" class="'.$white.' margin-r-5 text-gray pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'3\')"></i></a>';
+                    foreach($options AS $key => $val){
+                        $html   .= '<a class="pointer_hand"><i id="'.$id.'_'.$key.'"  '.$style.' class="'.$$key.' '.${'css_'.$key}.'"   onclick="processor(\'accomplish\', \'enabling_objective\', '.$id.',{\'status_id\':'.$val['status'].', \'reload\':\'false\', \'callback\':\'setElementById\'});"></i></a>';   
+                    }
+                    $html  .= '<a class="pointer_hand"><i id="'.$id.'_comment" '.$style.' class="fa fa-comments text-primary margin-r-5 pointer_hand" onclick="formloader(\'comment\',\'accomplished\','.$id.');"></i></a>';
                 }
             }
             
@@ -461,13 +436,30 @@ class Render {
        $html .=   '</span></div></div>';
         return $html;  
     }
-    
+    /**
+     * 
+     * @global type $CFG
+     * @global type $USER
+     * @param array $params array(
+     *                            'permission' => 1         // Add / Delete comments
+     * 
+     *                            )
+     * @return string
+     */
     public static function comments($params){
         global $CFG, $USER;
         foreach($params as $key => $val) {
              $$key = $val;
         }
         if (!isset($permission)){ $permission = 1; }
+        /* Load comments based on id and context */
+        if (isset($id) AND isset($context)){
+            $cm                 = new Comment();
+            $cm->reference_id   = $id;
+            $cm->context        = $context; 
+            $comments           = $cm->get('reference');
+        }
+        
         $html = '<ul class="media-list ">';
         foreach ($comments as $cm) {
             $u      = new User();
@@ -477,32 +469,41 @@ class Render {
                        <a class="pull-left" href="#" >
                          <div style="height:'.$size.'px;width:'.$size.'px;background: url('.$CFG->access_id_url.$u->avatar_id.') center right;background-size: cover; background-repeat: no-repeat;"></div>
                         </a>
-                        <a style="cursor:pointer;" class="text-red margin-r-10 pull-right" onclick=\'processor("set","comments",'.$cm->id.', {"dependency":"dislikes", "input":"'.($cm->dislikes+1).'"});\'><i class="fa fa-thumbs-o-down margin-r-5"></i> '.$cm->dislikes.' </a>
-                        <a style="cursor:pointer;" class="text-green margin-r-10 pull-right" onclick=\'processor("set","comments",'.$cm->id.', {"dependency":"likes", "input":"'.($cm->likes+1).'"});\'><i class="fa fa-thumbs-o-up margin-r-5"></i> '.$cm->likes.' </a>
+                        <a style="cursor:pointer;" class="text-red margin-r-10 pull-right" onclick=\'processor("set","comments",'.$cm->id.', {"dependency":"dislikes", "reload":"false", "callback":"innerHTML"});\'><i class="fa fa-thumbs-o-down margin-r-5"></i><span id="dislikes_'.$cm->id.'"> '.$cm->dislikes.'</span></a>
+                        <a style="cursor:pointer;" class="text-green margin-r-10 pull-right" onclick=\'processor("set","comments",'.$cm->id.', {"dependency":"likes", "reload":"false",  "callback":"innerHTML"});\'><i class="fa fa-thumbs-o-up margin-r-5"></i><span id="likes_'.$cm->id.'"> '.$cm->likes.' </span></a>
                         
                       <div class="media-body" >
                           <h4 class="media-heading">'.$u->username.' <small class="text-black margin-r-10"> '.$cm->creation_time.'</small> 
                           </h4>
                               <p class="media-heading">'.$cm->text.'<br>';
                               if ($cm->creator_id == $USER->id){
-                                  if ($permission > 0){
+                                  if (($permission > 0) AND checkCapabilities('comment:delete', $USER->role_id, false, true)){
                                     $html  .= '<a class="text-red" onclick="del(\'comment\','.$cm->id.');"><i class="fa fa-trash "></i></a>';
                                   }
                               } else {
-                                $html  .= '<a class="text-red" onclick=""><i class="fa fa-exclamation-triangle "></i> Kommentar melden</a>';
+                                $html .= '<a class="text-red" onclick=""><i class="fa fa-exclamation-triangle "></i> Kommentar melden</a>';
                               }
-                              if ($permission > 0){
-                                $html  .= ' | <a id="answer_'.$cm->id.'" onclick="toggle([\'comment_'.$cm->id.'\', \'cmbtn_'.$cm->id.'\'], [\'answer_'.$cm->id.'\'])">Antworten</a></p>';
-                              }
-                              $html .='<textarea id="comment_'.$cm->id.'" name="comment"  class="hidden" style="width:100%;"></textarea>
+                              if (($permission > 0) AND checkCapabilities('comment:add', $USER->role_id, false, true)){
+                                $html .= ' | <a id="answer_'.$cm->id.'" onclick="toggle([\'comment_'.$cm->id.'\', \'cmbtn_'.$cm->id.'\'], [\'answer_'.$cm->id.'\'])">Antworten</a></p>';
+                                $html .='<textarea id="comment_'.$cm->id.'" name="comment"  class="hidden no_editor" style="width:100%;"></textarea>
                                         <button id="cmbtn_'.$cm->id.'" type="submit" class="btn btn-primary pull-right hidden" onclick="comment(\'new\','.$cm->reference_id.', '.$cm->context_id.', document.getElementById(\'comment_'.$cm->id.'\').value, '.$cm->id.');"><i class="fa fa-commenting-o margin-r-10"></i>Kommentar abschicken</button>';
+                             }
             /* sub comments */
             if (!empty($cm->comment)){
-              $html .= RENDER::sub_comments(array('comment' => $cm->comment));
+                $html .= RENDER::sub_comments(array('comment' => $cm->comment));
             }
             $html .= '</li><hr class="dashed">';
         }
         $html .=  '</ul>';
+        
+        /* add Comments */
+        if (checkCapabilities('comment:add', $USER->role_id, false, true)){  
+        $html.= 'Neuen Kommentar hinzufügen
+                <textarea id="comment" name="comment" class="no_editor" style="width:100%;"></textarea>
+                <button type="submit" class="btn btn-primary pull-right" onclick="comment(\'new\','.$id.', \''.$_SESSION['CONTEXT'][$context]->context_id.'\', document.getElementById(\'comment\').value);"><i class="fa fa-commenting-o margin-r-10"></i> Kommentar abschicken</button>';
+        } else {
+            $html .= "Sie haben nicht die Berechtigung Kommentare zu schreiben.";
+        }
 
         return $html;
     }
@@ -529,17 +530,17 @@ class Render {
                             </h4>
                                 <p class="media-heading">'.$cm->text.'<br>';
                                 if ($cm->creator_id == $USER->id){
-                                    if ($permission > 0){
+                                    if (checkCapabilities('comment:delete', $USER->role_id, false, true)){
                                         $html  .= '<a class="text-red" onclick="del(\'comment\','.$cm->id.');"><i class="fa fa-trash "></i></a>';
                                     }
                                   } else {
                                     $html  .= '<a class="text-red" onclick=""><i class="fa fa-exclamation-triangle "></i> Kommentar melden</a>';
                                   }
-                                if ($permission > 0){  
+                                if (checkCapabilities('comment:add', $USER->role_id, false, true)){  
                                     $html .= ' | <a id="answer_'.$cm->id.'" onclick="toggle([\'comment_'.$cm->id.'\', \'cmbtn_'.$cm->id.'\'], [\'answer_'.$cm->id.'\'])">Antworten</a></p>';
-                                }
-                                $html .='<textarea id="comment_'.$cm->id.'" name="comment"  class="hidden" style="width:100%;"></textarea>
-                                        <button id="cmbtn_'.$cm->id.'" type="submit" class="btn btn-primary pull-right hidden" onclick="comment(\'new\','.$cm->reference_id.', '.$cm->context_id.', document.getElementById(\'comment_'.$cm->id.'\').value, '.$cm->id.');"><i class="fa fa-commenting-o margin-r-10"></i>Kommentar abschicken</button>';
+                                    $html .='<textarea id="comment_'.$cm->id.'" name="comment"  class="hidden no_editor " style="width:100%;"></textarea>
+                                            <button id="cmbtn_'.$cm->id.'" type="submit" class="btn btn-primary pull-right hidden" onclick="comment(\'new\','.$cm->reference_id.', '.$cm->context_id.', document.getElementById(\'comment_'.$cm->id.'\').value, '.$cm->id.');"><i class="fa fa-commenting-o margin-r-10"></i>Kommentar abschicken</button>';
+                                 }
                                 if (!empty($cm->comment)){
                                     $html .= RENDER::sub_comments(array('comment' => $cm->comment));
                                 }                         
@@ -1722,11 +1723,13 @@ class Render {
                             <div id="block_instance_'.$id.'_body" class="box-body" style="overflow: scroll; width: 100%; max-height: '.$height.';">';
                                     foreach ($blog->content as $value) {
                                         $author->load('id', $value->creator_id);
+                                        /* TODO implement count function for shorter syntax */
                                         $comments = new Comment();
                                         $comments->context = 'content';
                                         $comments->reference_id = $value->id;
                                         $c = $comments->get('reference');
                                         $c_max = count($c);
+                                        /**/
                                         $html  .=  '<div class="post">
                                                         <div class="user-block">
                                                           <img class="img-circle img-bordered-sm" src="'.$CFG->access_id_url.$author->avatar_id.'" alt="user image">
@@ -1747,11 +1750,8 @@ class Render {
                                                               ('.$c_max.')</a></li>
                                                         </ul>
                                                         <div class="bottom-buffer-20 hidden" id="comments_'.$value->id.'"><b>Kommentare</b>';
-                                        $html  .=       RENDER::comments(["comments" => $c, "permission" => '1']); //todo permission over rolecheck
-                                        $html  .=     '<textarea id="comment" name="comment"  style="width:100%;"></textarea>
-                                                       <p><button type="submit" class="btn btn-primary pull-right" onclick="comment(\'new\','.$value->id.', 15, document.getElementById(\'comment\').value);">
-                                                           <i class="fa fa-commenting-o margin-r-10"></i>Kommentar abschicken</button></p><br>
-                                                       </div>
+                                        $html  .=       RENDER::comments(["id" => $value->id, "context" => "content"]); 
+                                        $html  .=     '</div>
                                                     </div>';
                                     }    
              $html  .= '     </div>
@@ -2325,7 +2325,7 @@ public static function render_reference_entry($ref, $context_id){
     $c  = '<div class="row">
             <div class="col-xs-12 col-sm-3 pull-left"><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('format' => 'reference', 'objective' => $ref->terminal_object, 'color')).'</div>';
             if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
-              $c .= '<div class="col-xs-12 col-sm-3"><dt>Lernziel/Kompetenz</dt>'.Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $ref->enabling_object, 'border_color' => $ref->terminal_object->color)).'</div>';
+              $c .= '<div class="col-xs-12 col-sm-3"><dt>Kompetenz</dt>'.Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $ref->enabling_object, 'border_color' => $ref->terminal_object->color)).'</div>';
             }
             $c .= '
            <div class="col-xs-12 col-sm-6 pull-right">';
@@ -2557,7 +2557,7 @@ public static function quote_reference($quotes){
         $c->load(false);
         $content .= '<h3>'. $c->curriculum.'</h3>'; 
         
-        $content .= '<h4>Bezüge zu den Kompetenzen / Lernziele</h4>'; 
+        $content .= '<h4>Bezüge zu den Kompetenzen</h4>'; 
         $ter_obj  = new TerminalObjective();         //load terminal objectives
         $ter      = $ter_obj->getObjectives('certificate', $id);
         $temp_ter_id = 0;
@@ -2845,7 +2845,7 @@ public static function quote_reference($quotes){
                 }
             }
         } else {
-            $content .= 'Keine Medien für dieses Lernziel/Fach vorhanden vorhanden.';
+            $content .= 'Keine Medien für diese Kompetenz, dieses Fach vorhanden vorhanden.';
         }
         if ($get['ajax'] == 'true'){ 
             echo $content;
@@ -2854,5 +2854,11 @@ public static function quote_reference($quotes){
         }
     }
     
-    
+    public static function plugin_config( $plugin_class ){
+        $plugin = new $plugin_class();
+        if (method_exists($plugin,'plugin_config')){
+            return $plugin->plugin_config();
+        }
+        //return $plugin::PLUGINNAME;
+    }
 }

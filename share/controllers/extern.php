@@ -32,13 +32,13 @@ if(isset($_GET['teacher']) AND isset($_GET['student']) AND isset($_GET['ena_id']
     $ena->load();
     
     if ($ena->setAccomplishedStatus('extern', filter_input(INPUT_GET, 'student', FILTER_VALIDATE_INT), filter_input(INPUT_GET, 'teacher', FILTER_VALIDATE_INT), filter_input(INPUT_GET, 'status', FILTER_SANITIZE_STRING), filter_input(INPUT_GET, 'token', FILTER_SANITIZE_STRING))){
-        $info = 'Lernstand zum Lernziel / zur Kompetenz <br><br>'
+        $info = 'Lernstand zur Kompetenz <br><br>'
                 .$ena->enabling_objective.' <br><br>'
                 . 'wurde erfolgreich gesetzt. <br><br>'
                 . 'Sie können das Fenster jetzt schließen.<br><br>';
     } else {
         $info = '<strong>Es ist ein Fehler aufgetreten.</strong><br><br>'
-                . 'Lernstand zum Lernziel / zur Kompetenz <br><br>'
+                . 'Lernstand zur Kompetenz <br><br>'
                 . $ena->enabling_objective.' <br><br>konnte nicht gesetzt werden.<br><br> '
                 . 'Das kann mehrere Gründe haben: <br>'
                 . '- Lernstand wurde bereits gesetzt.<br>'
@@ -47,6 +47,17 @@ if(isset($_GET['teacher']) AND isset($_GET['student']) AND isset($_GET['ena_id']
     }
     
     $TEMPLATE->assign('acc_info',  $info);
+}
+if (isset($_GET['register'])){
+    switch ($_GET['register']) {
+        case 'true':     $TEMPLATE->assign('acc_info',  '<b>Vielen Dank für Ihre Registrierung!</b><br /><br />Sobald Sie vom Administrator freigegeben sind, können Sie sich anmelden.<br /><br />');
+            break;
+        case 'false':    $TEMPLATE->assign('acc_info',  '<b>Bei der Registrierung ist ein Fehler aufgetreten.</b><br /><br />Bitte wenden Sie sich an den Administrator.<br />');
+
+        default:
+            break;
+    }
+    $TEMPLATE->assign('btn_target',  'index.php?action=login');
 }
 
 

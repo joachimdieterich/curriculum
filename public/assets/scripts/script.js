@@ -441,99 +441,60 @@ function hideFile() { //nach dem l\u00f6schen wird das thumbnail ausgeblendet
 }
 
 function setStatusColor(ena_id, status){
-    red    = 'fa fa-circle-o';
-    green  = 'fa fa-circle-o';
-    orange = 'fa fa-circle-o';
-    white  = 'fa fa-circle-o';
     bg     = 'bg-white';
+    s_bit  = status.charAt(0); //Selbsteinschätzung
+    t_bit  = status.charAt(1); //Fremdeinschätzung
     
-    switch (true) {
-        case (status === 'x0'): red    = 'fa fa-check-circle-o';
-                                bg     = 'bg-red';
+    switch (true){
+        case (s_bit === '0'):   red    = '-circle';
+                                green  = orange = white = '-circle-o';
+                break;
+        case (s_bit === '1'):   green  = '-circle';
+                                red    = orange = white = '-circle-o';
             break;
-        case (status === '0x'): red  = 'fa fa-circle';
+        case (s_bit === '2'):   orange = '-circle';
+                                green  = red = white = '-circle-o';
             break;
-        case (status === '00'): red    = 'fa fa-check-circle';
-                                bg     = 'bg-red';
-            break;
-        case (status === '01'): red    = 'fa fa-circle';
-                                green  = 'fa fa-check-circle-o';
-                                bg     = 'bg-green';
-            break;
-        case (status === '02'): red    = 'fa fa-circle';
-                                orange  = 'fa fa-check-circle-o';
-                                bg     = 'bg-orange';
-            break;
-        case (status === '03'): red    = 'fa fa-circle';
-                                white  = 'fa fa-check-circle-o';
-                                bg     = 'bg-white';
-            break;
-        case  (status === 'x1'): green  = 'fa fa-check-circle-o';
-                                bg     = 'bg-green';
-            break;
-        case (status === '1x'): green  = 'fa fa-circle';
-            break;
-        case (status === '10'): red    = 'fa fa-check-circle-o';
-                                green  = 'fa fa-circle';
-                                bg     = 'bg-red';
-            break;
-        case (status === '11'): green  = 'fa fa-check-circle';
-                                bg     = 'bg-green';
-            break;
-        case (status === '12'): green  = 'fa fa-circle';
-                                orange = 'fa fa-check-circle-o';
-                                bg     = 'bg-orange';
-            break;
-        case (status === '13'): green  = 'fa fa-circle';
-                                white  = 'fa fa-check-circle-o';
-                                bg     = 'bg-white';
-            break;
-        case  (status === 'x2'): orange = 'fa fa-check-circle-o';
-                                bg     = 'bg-orange';
-            break;
-        case  (status === '2x'): orange = 'fa fa-circle';
-            break;
-        case (status === '20'): orange = 'fa fa-circle';
-                                red    = 'fa fa-check-circle-o';
-                                bg     = 'bg-red';
-            break;
-        case (status === '21'): orange = 'fa fa-circle';
-                                green  = 'fa fa-check-circle-o';
-                                bg     = 'bg-green';
-            break;
-        case (status === '22'): orange = 'fa fa-check-circle';
-                                bg     = 'bg-orange';
-            break;
-        case (status === '23'): orange = 'fa fa-circle';
-                                white  = 'fa fa-check-circle-o';
-                                bg     = 'bg-white';
-            break;
-        case (status ===  '3'): white  = 'fa fa-check-circle-o';
-            break;
-        case (status === '3x'): white  = 'fa fa-circle';
-            break;
-        case (status === 'x3'): white  = 'fa fa-check-circle-o';
-            break;
-        case (status === '30'): white  = 'fa fa-circle';
-                                red    = 'fa fa-check-circle-o';
-                                bg     = 'bg-red';
-            break;
-        case (status === '31'): white  = 'fa fa-circle';
-                                green  = 'fa fa-check-circle-o';
-                                bg     = 'bg-green';
-            break;
-        case (status === '32'): white  = 'fa fa-circle';
-                                orange = 'fa fa-check-circle-o';
-                                bg     = 'bg-orange';
-            break;
-        case (status === '33'): white  = 'fa fa-check-circle';
-                                bg     = 'bg-white';
+        case (s_bit === '3'):   white  = '-circle';
+                                green  = red = orange = '-circle-o';
             break;
 
-        default:
+        default:                green = red = orange = white ='-circle-o';
             break;
     }
+    
+    switch (true) { //Teacher Part of status (second char)
+        case (t_bit === '0'):   red      = 'fa fa-check'+red;
+                                green    = 'fa fa'+green;
+                                orange   = 'fa fa'+orange;
+                                white    = 'fa fa'+white;
+                                bg     = 'bg-red';
+            break;
+        case (t_bit === '1'):   green    = 'fa fa-check'+green;
+                                red      = 'fa fa'+red;
+                                orange   = 'fa fa'+orange;
+                                white    = 'fa fa'+white;
+                                bg       = 'bg-green';
+            break;
+        case (t_bit === '2'):   orange   = 'fa fa-check'+orange;
+                                red      =  'fa fa'+red;
+                                green    =  'fa fa'+green;
+                                white    =  'fa fa'+white;
+                                bg     = 'bg-orange';
+            break;
+        case (t_bit === '3'):   white    = 'fa fa-check'+white;
+                                red      =  'fa fa'+red;
+                                green    =  'fa fa'+green;
+                                orange   =  'fa fa'+orange;  
+                                bg     = 'bg-white';
+            break;
 
+         default:               red      =  'fa fa'+red;
+                                green    =  'fa fa'+green;
+                                orange   =  'fa fa'+orange;
+                                white    =  'fa fa'+white;
+            break;
+    }
     document.getElementById(ena_id+"_green").className  = 'margin-r-5 '+green+' text-green pointer_hand';
     document.getElementById(ena_id+"_orange").className = 'margin-r-5 '+orange+' text-orange pointer_hand';
     document.getElementById(ena_id+"_white").className  = 'margin-r-5 '+white+' text-gray pointer_hand';
@@ -541,21 +502,6 @@ function setStatusColor(ena_id, status){
     $(document.getElementById("ena_header_"+ena_id)).alterClass('bg-*', 'bg-'+status);
 }
 
-
-//SetAccomplishedObjectives
-function setAccomplishedObjectives(creatorID, userID, enablingObjectiveID, statusID){       
-    var url = "../share/processors/p_setAccObjectives.php?userID="+ userID +"&creatorID="+ creatorID +"&enablingObjectiveID="+ enablingObjectiveID+"&statusID="+statusID;
-    req = XMLobject();
-    if(req) {        
-        req.onreadystatechange = function (){
-            if (req.readyState===4 && req.status===200){
-                setStatusColor(enablingObjectiveID, statusID);
-            }
-        };
-        req.open("GET", url, true);
-        req.send(null);
-    }
-}
 /**
  * 
  * @param {string} url
@@ -573,7 +519,7 @@ function getRequest(url){
 }
 
 function curriculumdocs(link) {
-    window.open(link, '_blank', '')
+    window.open(link, '_blank', '');
 }
 
 /*
@@ -595,12 +541,17 @@ function formloader(/*form, func, id, []*/){
 }
 
 function processor(/*proc, func, val, [..., reload = false], pluginpath*/){ // if reload = false: prevent reload
-    reload = true;
+    reload   = true;
+    callback = false;
+    id       = arguments[2];
     if (typeof(arguments[3]) !== 'undefined'){
         if(typeof(arguments[3].reload) !== 'undefined'){ //don't reload
             var boolValue = "true";                      //hack to get boolean
             reload = (boolValue == arguments[3].reload); //hack to get boolean
         }// else not needed ->reload already set.
+        if(typeof(arguments[3].callback) !== 'undefined'){ 
+            callback = arguments[3].callback; 
+        }
     } 
     
     if (typeof(arguments[4]) !== 'undefined'){
@@ -616,7 +567,13 @@ function processor(/*proc, func, val, [..., reload = false], pluginpath*/){ // i
             if(this.readyState == this.DONE) {
                 if (reload == true){
                     window.location.reload();
-                } 
+                } else if (callback === "innerHTML"){  //if callback == innerHTML is set, innerHTML of response.id is set
+                    response = JSON.parse(req.responseText);
+                    document.getElementById(response.id).innerHTML = response.html;
+                } else if (callback === "setElementById"){ //set accomplished
+                    response = JSON.parse(req.responseText);
+                    setStatusColor(id, response.status);
+                }
             }
         }
     }
@@ -858,15 +815,19 @@ function popupFunction(e){
     
     textareas = document.getElementsByTagName("textarea");                      // Replace the <textarea id="editor1"> with a CKEditor instance, using default configuration
     for (var i = 0, len = textareas.length; i < len; i++) {
-        CKEDITOR.dtd.$removeEmpty['i'] = false;
-        if (i == 0){                                                            // only collapse first editor -> description editors sould show toolbar
-            CKEDITOR.replace(textareas[i].id, { toolbarStartupExpanded : false});
+        if ($("#"+textareas[i].id).hasClass("no_editor")){
+         //do nothing
         } else {
-            CKEDITOR.replace(textareas[i].id, { toolbarStartupExpanded : true});
+            CKEDITOR.dtd.$removeEmpty['i'] = false;
+            if (i == 0){                                                            // only collapse first editor -> description editors sould show toolbar
+                CKEDITOR.replace(textareas[i].id, { toolbarStartupExpanded : false});
+            } else {
+                CKEDITOR.replace(textareas[i].id, { toolbarStartupExpanded : true});
+            }
+            CKEDITOR.on('instanceReady',function(){
+                resizeModal();      // if ckeditor is used, then modal has to be resized after ckeditor is ready
+            }); 
         }
-        CKEDITOR.on('instanceReady',function(){
-            resizeModal();      // if ckeditor is used, then modal has to be resized after ckeditor is ready
-        }); 
     }
     $(".select2").select2();
     

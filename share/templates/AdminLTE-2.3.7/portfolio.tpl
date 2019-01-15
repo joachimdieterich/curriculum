@@ -39,7 +39,7 @@
                     <span class="time"><i class="fa fa-clock-o"></i> {$art->creation_time}</span>
                     <h3 class="timeline-header"><a href="#">{$art->curriculum}</a> {$art->accomplished_teacher}</h3>
                     <div class="timeline-body">
-                        Du hast folgendes Lernziel erfolgreich abgeschlossen.
+                        Du hast folgende Kompetenz erfolgreich abgeschlossen.
                         <h4>{$art->title}</h4> 
                        {$art->description}
                     </div>
@@ -59,7 +59,7 @@
                     <span class="time"><i class="fa fa-clock-o"></i> {$art->creation_time}</span>
                     <h3 class="timeline-header"><a href="#">{$art->curriculum}</a></h3>
                     <div class="timeline-body">
-                        Du hast folgende Daten zum Lernziel {$art->title} eingereicht.
+                        Du hast folgende Daten zur Kompetenz {$art->title} eingereicht.
                         <div class="box-footer">
                             <ul class="mailbox-attachments clearfix">
                                 {Render::thumb(['file_list'=>$art->id])}    
@@ -128,7 +128,7 @@
                     <span class="time"><i class="fa fa-clock-o"></i> {$art->creation_time}</span>
                     <h3 class="timeline-header"><a href="#">Material hochgeladen</a></h3>
                     <div class="timeline-body">
-                        Du hast die folgende Datei für den Lehrplan "{$art->curriculum}", Lernziel: {$art->title} hochgeladen.
+                        Du hast die folgende Datei für den Lehrplan "{$art->curriculum}", Kompetenz: {$art->title} hochgeladen.
                         <div class="box-footer">
                             <ul class="mailbox-attachments clearfix">
                                 {Render::thumb(['file_list'=>$art->id])}    
