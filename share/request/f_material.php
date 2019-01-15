@@ -130,10 +130,9 @@ if (!$files AND !isset($references) AND !isset($sodis)){
                     '8' => 'Textstellen-/Bezüge', 
                     '9' => 'KMK');
     $content .= '<ul class="nav nav-tabs">';
-    
     foreach ($tabs as $key => $value) {
         if ($file_context_count[$key] != 0){
-            $content .= '<li class="'.$active[$key].'"><a href="#f_context_'.$key.'" data-toggle="tab" >'.$value.' <span class="label label-primary">'.$file_context_count[$key].'</span></a></li>';
+            $content .= '<li id="nav_tab_'.$key.'" class="'.$active[$key].'"><a href="#tab_'.$key.'" data-toggle="tab" >'.$value.' <span class="label label-primary">'.$file_context_count[$key].'</span></a></li>';
         }
     }
     $content .='</ul>';
@@ -344,7 +343,7 @@ if (!$files AND !isset($references) AND !isset($sodis)){
             if ($active[$file_context-1] == 'active' ){
                 $content   .=' active';
             }
-            $content   .='" id="f_context_'.($file_context-1).'">';
+            $content   .='" id="tab_'.($file_context-1).'">';
             if ($file_context_count[5] != 0 AND ($file_context-1) == 5) {
                 $media_render_data            = [];
                 $media_render_data['subject'] = 'false';
@@ -372,7 +371,7 @@ if (!$files AND !isset($references) AND !isset($sodis)){
             if ($active[7] == 'active' ){
                 $content   .=' active';
             }
-            $content .='" id="f_context_7">';
+            $content .='" id="tab_7">';
             if ($_SESSION['PAGE']->reference_curriculum_id == false){
                 $content .= render_filter($schooltype_id  = null, $subject_id = null, $curriculum_id = null, $grade_id = null);
                 $content .='<span id="reference_ajax">';
@@ -397,7 +396,7 @@ if (!$files AND !isset($references) AND !isset($sodis)){
             if ($active[8] == 'active' ){
                 $content   .=' active';
             }
-            $content .= '" id="f_context_8">';
+            $content .= '" id="tab_8">';
             $content .= '<br>'.RENDER::quote($quotes, array('schooltype_id' => 'false', 'subject_id' => 'false', 'curriculum_id' => 'false', 'grade_id' => 'false', 'ajax' => 'false')).'<hr>';
             $content .='</div>';
         }
@@ -415,7 +414,7 @@ if (!$files AND !isset($references) AND !isset($sodis)){
                 $r = json_decode($s);
                 $sodis_content   .= '<li>'.str_replace("0", ".", substr($r->get[0]->id, 5)).'. '.$r->get[0]->description.'</li>';   
             }
-            $content   .='" id="f_context_9">'.$sodis_content.'</div>';
+            $content   .='" id="tab_9">'.$sodis_content.'</div>';
         }
     }   
     /* end external sodis reference*/                          
