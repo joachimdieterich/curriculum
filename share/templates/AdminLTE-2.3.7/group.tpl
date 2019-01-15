@@ -29,13 +29,13 @@
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
                         {if checkCapabilities('user:resetPassword', $my_role_id, false)}
-                            <li class="active"><a href="#f_group" data-toggle="tab">Lerngruppe</a></li>
+                            <li id="nav_tab_enrolments" class="active"><a href="#tab_enrolments" data-toggle="tab">Einschreibungen</a></li>
                         {/if}
                     </ul>
                     <div class="tab-content">
                         {if checkCapabilities('groups:enrol', $my_role_id, false) OR checkCapabilities('groups:expel', $my_role_id, false)}
                             {if isset($curriculum_list)}
-                                <div id="f_group" class="tab-pane active row" >
+                                <div id="tab_enrolments" class="tab-pane active row" >
                                     <div class="form-horizontal col-xs-12">
                                         {Form::info(['id' => 'group_info', 'content' => 'Markierte Lerngruppe(n)in Lehrplan ein- und ausschreiben'])}
                                         {Form::input_select_multiple(['id' => 'curriculum', 'label' => 'Lehrplan', 'select_data' => $curriculum_list, 'select_label' => 'curriculum', 'select_value' => 'id', 'input' => null, 'error' => null, 'limiter' => ' | ' ])}
