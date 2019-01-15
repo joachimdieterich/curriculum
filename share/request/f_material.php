@@ -385,6 +385,8 @@ if (!$files AND !isset($references) AND !isset($sodis)){
             
             $content   .='</span>';
             $content .='</div>';
+        }else{
+            $content .= 'Es bestehen keine Bezüge auf Ihrem Freigabelevel.';
         }
     }
     /* end internal reference*/
