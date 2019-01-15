@@ -131,7 +131,6 @@ if (checkCapabilities('user:shortUserList', $USER->role_id, false)){
                    /* 'city'       => 'Ort', */
                    /* 'state'      => 'Bundesland', */
                    /* 'country'    => 'Land', */
-                      ''           => 'Rolle',
                       'p_search'   => array('username','firstname','lastname'),
                       'p_widget'   => $p_widget,
                       'p_options'  => $p_options);
@@ -146,7 +145,6 @@ else {
                       'city'       => 'Ort',
                    /* 'state'      => 'Bundesland', */
                    /* 'country'    => 'Land', */
-                      ''           => 'Rolle',
                       'p_search'   => array('username','firstname','lastname','email','postalcode','city'),
                       'p_widget'   => $p_widget,
                       'p_options'  => $p_options);
@@ -175,7 +173,7 @@ if (isset($_GET['filter_institution'])){
 if(isset($_SESSION['PAGE']->config['tab'])){
     $TEMPLATE->assign($_SESSION['PAGE']->config['tab'],  true);
 } else {
-    $TEMPLATE->assign('f_password',  true);
+    $TEMPLATE->assign('tab_password',  true);
 }
 
 setPaginator('userP', $u, 'us_val', 'index.php?action=user', $p_config); //set Paginator

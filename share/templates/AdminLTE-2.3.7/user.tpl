@@ -13,11 +13,10 @@
     return false;
     }
     
-    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-  var target = $(e.target).attr("href") // activated tab
-  processor("config","page", "config",{literal}{{/literal}"tab": target.substring(1), "reload": "false"{literal}}{/literal});
- 
-});
+  $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+    var target = $(e.target).attr("href") // activated tab
+    processor("config","page", "config",{literal}{{/literal}"tab": target.substring(1), "reload": "false"{literal}}{/literal});
+  });
 </script>
 {/block}
 {block name=additional_stylesheets}{$smarty.block.parent}{/block}
@@ -78,25 +77,25 @@
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">
                                 {if checkCapabilities('user:resetPassword', $my_role_id, false)}
-                                    <li {if isset($f_password)}class="active"{/if}><a href="#f_password" data-toggle="tab">Passwort</a></li>
+                                    <li id="nav_tab_password" {if isset($tab_password)}class="active"{/if}><a href="#tab_password" data-toggle="tab">Passwort</a></li>
                                 {/if}
                                 {if checkCapabilities('user:enroleToGroup', $my_role_id, false) OR checkCapabilities('user:expelFromGroup', $my_role_id, false)}
-                                    <li {if isset($f_group)}class="active"{/if}><a href="#f_group" data-toggle="tab">Lerngruppe</a></li>
+                                    <li id="nav_tab_group" {if isset($tab_group)}class="active"{/if}><a href="#tab_group" data-toggle="tab">Lerngruppe</a></li>
                                 {/if}
                                 {if checkCapabilities('user:updateRole', $my_role_id, false)}
-                                    <li {if isset($f_institution)}class="active"{/if}><a href="#f_institution" data-toggle="tab">Institution / Rolle</a></li>
+                                    <li id="nav_tab_institution" {if isset($f_institution)}class="active"{/if}><a href="#tab_institution" data-toggle="tab">Institution / Rolle</a></li>
                                 {/if}
                                 {if checkCapabilities('user:userListComplete', $my_role_id, false)}
-                                    <li {if isset($f_register)}class="active"{/if}><a href="#f_register" data-toggle="tab"><span class="text-warning">Registerung bestätigen</span></a></li>
+                                    <li id="nav_tab_register" {if isset($f_register)}class="active"{/if}><a href="#tab_register" data-toggle="tab"><span class="text-warning">Registerung bestätigen</span></a></li>
                                 {/if}
                                 {if checkCapabilities('user:delete', $my_role_id, false)}
-                                    <li {if isset($f_delete)}class="active"{/if}><a href="#f_delete" data-toggle="tab"><span class="text-danger">löschen</span></a></li>
+                                    <li id="nav_tab_delete" {if isset($tab_delete)}class="active"{/if}><a href="#tab_delete" data-toggle="tab"><span class="text-danger">löschen</span></a></li>
                                 {/if}
                             </ul>
 
                             <div class="tab-content">
                                 {if checkCapabilities('user:resetPassword', $my_role_id, false)}
-                                    <div id="f_password" class="tab-pane {if isset($f_password)}active{/if} row " >
+                                    <div id="tab_password" class="tab-pane {if isset($tab_password)}active{/if} row " >
                                         <div class="form-horizontal col-xs-12">
                                         {Form::info(['id' => 'pw_info', 'content' => 'Neues Passwort für markierte Benutzer festlegen. Passwort muss mind. 6 Zeichen lang sein.'])}
                                         {Form::input_text('pwchange', 'Passwort', '', null, '', 'password')}
@@ -107,7 +106,7 @@
                                     </div>
                                 {/if}
                                 {if checkCapabilities('user:enroleToGroup', $my_role_id, false) OR checkCapabilities('user:expelFromGroup', $my_role_id, false)}
-                                    <div id="f_group" class="tab-pane row {if isset($f_group)}active{/if}" >
+                                    <div id="tab_group" class="tab-pane row {if isset($tab_group)}active{/if}" >
                                         <div class="form-horizontal col-xs-12">
                                             {Form::info(['id' => 'group_info', 'content' => 'Markierte Benutzer in Lerngruppe ein bzw. ausschreiben.<br> <strong>Benutzer muss an der entsprechenden Institution eingeschrieben sein, damit  die Lerngruppe angezeigt wird.</strong>'])}
                                             {if isset($myInstitutions)}
@@ -128,7 +127,7 @@
                                     </div>
                                 {/if}
                                 {if checkCapabilities('user:updateRole', $my_role_id, false)}
-                                    <div id="f_institution" class="tab-pane row {if isset($f_institution)}active{/if}" >
+                                    <div id="tab_institution" class="tab-pane row {if isset($tab_institution)}active{/if}" >
                                         <div class="form-horizontal col-xs-12">
                                             {Form::info(['id' => 'role_info', 'content' => 'Beim Zuweisen einer Rolle werden die markierten Nutzer automatisch in die aktuelle/ausgewählte Institution eingeschrieben bzw. die Daten aktualisiert.'])}
                                         {if isset($myInstitutions)}
@@ -148,7 +147,7 @@
                                     </div>
                                 {/if}
                                 {if checkCapabilities('user:userListComplete', $my_role_id, false)}
-                                    <div id="f_register" class="tab-pane row {if isset($f_register)}active{/if}" >
+                                    <div id="tab_register" class="tab-pane row {if isset($tab_register)}active{/if}" >
                                         <div class="form-horizontal col-xs-12">
                                             {Form::info(['id' => 'user_info', 'content' => 'Registerung für die markierten Benutzer bestätigen.'])}
                                             {Form::input_button(['id' => 'acceptUser', 'label' => 'Benutzer bestätigen', 'icon' => 'fa fa-user-plus', 'class' => 'btn btn-default'])}
@@ -156,7 +155,7 @@
                                     </div>
                                 {/if}
                                 {if checkCapabilities('user:delete', $my_role_id, false)}
-                                    <div id="f_delete" class="tab-pane row {if isset($f_delete)}active{/if}" >
+                                    <div id="tab_delete" class="tab-pane row {if isset($tab_delete)}active{/if}" >
                                         <div class="form-horizontal col-xs-12">
                                             {Form::info(['id' => 'user_info', 'content' => 'Markierte Benutzer löschen.'])}
                                             {Form::input_button(['id' => 'submitdeleteUser', 'label' => 'löschen', 'icon' => 'fa fa-minus-circle', 'type' => 'button', 'onclick' => 'userdelete()', 'class' => 'btn btn-default pull-right'])}
