@@ -238,9 +238,9 @@ class Form {
             $$key = $val;
         }
         switch ($type) {
-            case 'date':    $icon .= 'fa-calendar'; break;
-            case 'time':    $icon .= 'fa-clock-o';  break;
-            default:        $icon .= 'fa-calendar'; break;
+            case 'date':    $icon = 'fa-calendar'; break;
+            case 'time':    $icon = 'fa-clock-o';  break;
+            default:        $icon = 'fa-calendar'; break;
         }
         
         $form = "<div class='input-group'>

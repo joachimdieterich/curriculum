@@ -54,12 +54,12 @@ switch ($func) {
                                     $objective   = new EnablingObjective();
                                     $objective->id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT); 
                                     $objective->load();
-                                    $header     = 'Aktenkoffer<br><small><b>Lernziel / Kompetenz</b><br>'.strip_tags($objective->enabling_objective).'</small>'; 
+                                    $header     = 'Aktenkoffer<br><small><b>Kompetenz/Bereich</b><br>'.strip_tags($objective->enabling_objective).'</small>'; 
                                 } else {
                                     $objective   = new TerminalObjective();
                                     $objective->id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT); 
                                     $objective->load();
-                                    $header     = 'Aktenkoffer<br><small><b>Lernziel / Kompetenz</b><br>'.strip_tags($objective->terminal_objective).'</small>'; 
+                                    $header     = 'Aktenkoffer<br><small><b>Kompetenz/Bereich</b><br>'.strip_tags($objective->terminal_objective).'</small>'; 
                                 }
         break;
     case 'id' :         $files  = $file->getFiles('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => false, 'user_id' => filter_input(INPUT_GET, 'user_id', FILTER_VALIDATE_INT)));
@@ -82,7 +82,7 @@ $f_content  = null;
 $content    = null; 
     
 if (!$files AND !isset($references) AND !isset($sodis)){
-    $content .= 'Es gibt leider keine Eintragungen zum gewählten Lernziel.';
+    $content .= 'Es gibt leider keine Eintragungen zur gewählten Kompetenz.';
 } else {
     /* Tab header */    
     $file_context_count[1] = 0; // counter for file_context 1 --> global
@@ -427,10 +427,10 @@ if (!$files AND !isset($references) AND !isset($sodis)){
 if (filter_input(INPUT_GET, 'target', FILTER_SANITIZE_STRING)){
     $target = filter_input(INPUT_GET, 'target', FILTER_SANITIZE_STRING);
 } else { $target = 'popup'; }
-$html     = Form::modal(array('target'   => 'null',
-                                 'title' => $header, 
-                               'content' => $content, 
-                            'background' => '#ecf0f5'));  
+$html     = Form::modal(array('target' => 'null',
+                               'title' => $header, 
+                             'content' => $content, 
+                          'background' => '#ecf0f5'));  
 echo json_encode(array('html'=> $html, 'target' => $target));
 
 

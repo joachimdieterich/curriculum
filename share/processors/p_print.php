@@ -125,7 +125,7 @@ switch ($func) {
                                                             $reference  = new Reference();
                                                             $references = $reference->get('reference_id', $_SESSION['CONTEXT']['enabling_objective']->context_id, $ena->id);
 
-                                                            $content    = 'Zum Lernziel / Zur Kompetenz <strong>'.$ena->enabling_objective.'</strong> wurden die folgenden Bezüge gefunden:<br><hr>';
+                                                            $content    = 'Zur Kompetenz <strong>'.$ena->enabling_objective.'</strong> wurden die folgenden Bezüge gefunden:<br><hr>';
                                                             if (count($references) == 0){
                                                                 $content    .= 'Keine Bezüge vorhanden.';
                                                             }
@@ -159,7 +159,7 @@ switch ($func) {
                                                                                     $content .= '<strong>Hinweise: </strong>'.$ct->content.'<br></p>';
                                                                                 }
                                                                                 $content .= '<p><strong>Thema/Kompetenzbereich: </strong>'.Render::objective(array('objective' => $t, 'color')).'</p>';
-                                                                                $content .= '<p><strong>Lernziel/Kompetenz: </strong>'.Render::objective(array('type' => 'enabling_objective', 'objective' => $e, 'border_color' => $t->color)).'</p>';
+                                                                                $content .= '<p><strong>Kompetenz: </strong>'.Render::objective(array('type' => 'enabling_objective', 'objective' => $e, 'border_color' => $t->color)).'</p>';
                                                                                 $content .= '<hr>';
 
 

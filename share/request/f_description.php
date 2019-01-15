@@ -62,7 +62,7 @@ switch ($func) {
 switch ($func) {
     case 'terminal_objective':  
     case 'enabling_objective':  $ter->load();
-                                $header = 'Beschreibung<br><small><b>Lernziel / Kompetenz</b><br>'.strip_tags($ter->terminal_objective).'</small><br>';
+                                $header = 'Beschreibung<br><small><b>Kompetenz</b><br>'.strip_tags($ter->terminal_objective).'</small><br>';
                                 if (isset($ena)){
                                    $header .= '<small>- '.strip_tags($ena->enabling_objective).'</small>';
                                 }

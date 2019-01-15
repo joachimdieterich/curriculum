@@ -113,12 +113,19 @@ $content  ='<div class="nav-tabs-custom">
                 $c->id        = 11;
                 $c->context   = 'Dashboard';
                 $content     .= Form::input_select('context_id', 'Bereich', array($c), 'context', 'id', $context_id , $error);
-                $r            = new stdClass();
-                $r->id        = null;
-                $r->region    = 'Übersicht';
-                $content     .= Form::input_select('region', 'Position', array($r), 'region', 'id', $region , $error);
+                
+                /* Width selector*/
+                $region_classes = array('Linke Spalte'  => 'left',
+                                        'Rechte Spalte' => 'right'
+                                      );
+                $region_obj = new stdClass();
+                foreach ($region_classes as $key => $value) {
+                    $region_obj->label  = $key;
+                    $region_obj->value = $value;
+                    $r[] = clone $region_obj;
+                }
+                $content .= Form::input_select('region', 'Position', $r, 'label', 'value', $region , $error);
                 // Sortierung neues input element generiern
-
                 $roles        = new Roles();
                 $content     .= Form::input_select('role_id', 'Anzeigen für:', $roles->get(), 'role', 'id', $block_id , $error);
                 $content     .= '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_block\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button><br><br>';

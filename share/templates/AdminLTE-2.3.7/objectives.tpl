@@ -122,8 +122,8 @@
                     {/foreach}		
                 {else}
                     {if isset($selected_user_id) and $show_course != ''}
-                        <p>Es wurden noch keine Lernziele eingegeben.</p>
-                        <p>Dies können sie unter Lehrpläne --> Lernziele/Kompetenzen hinzufügen machen.</p>
+                        <p>Es wurden noch keine Kompetenzen eingegeben.</p>
+                        <p>Dies können sie unter Lehrpläne machen.</p>
                     {else} 
                         {if isset($curriculum_id)}<!--Wenn noch keine Lehrpläne angelegt wurden-->
                         <p>Bitte wählen sie einen Benutzer aus.</p>
