@@ -13,7 +13,7 @@
         );
         $(document).ready(function () {
             small       = false;
-            if ($('#f_userlist').hasClass('active')){
+            if ($('#tab_userlist').hasClass('active')){
                 floating_table('body-wrapper', 'userPaginator', ['username', 'role_name', 'completed', 'online'], 'menu_top_placeholder', 'container_userPaginator', 'default_userPaginator_position');
             }
         });
@@ -34,13 +34,13 @@
         <div class="col-sm-12">
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
-                    <li {if isset($f_userlist)}class="active"{/if}><a href="#f_userlist" data-toggle="tab" onclick='processor("config","page", "config",{["tab"=>"f_userlist"]|@json_encode nofilter});'>Kursliste</a></li>
+                    <li id="nav_tab_userlist" {if isset($tab_userlist)}class="active"{/if}><a href="#tab_userlist" data-toggle="tab" onclick='processor("config","page", "config",{["tab"=>"tab_userlist", "reload"=>"false"]|@json_encode nofilter});'>Kursliste</a></li>
                     {if isset($coursebook) AND checkCapabilities('menu:readCourseBook', $my_role_id, false)}
-                        <li {if isset($f_coursebook)}class="active"{/if}><a href="#f_coursebook" data-toggle="tab" onclick='processor("config","page", "config",{["tab"=>"f_coursebook"]|@json_encode nofilter});'>Kursbuch</a></li>
+                        <li id="nav_tab_coursebook" {if isset($tab_coursebook)}class="active"{/if}><a href="#tab_coursebook" data-toggle="tab" onclick='processor("config","page", "config",{["tab"=>"tab_coursebook", "reload"=>"false"]|@json_encode nofilter});'>Kursbuch</a></li>
                     {/if}
                 </ul>
                 <div class="tab-content">
-                    <div class="tab-pane {if isset($f_userlist)}active{/if}" id="f_userlist">
+                    <div id="tab_userlist" class="tab-pane {if isset($tab_userlist)}active{/if}">
                         {if isset($courses)}
                             <form method='post' action='index.php?action=objectives&course={$selected_curriculum_id}{*&userID={implode(',',$selected_user_id)}&next={$currentUrlId}*}'>        
                                 <div class="form-horizontal">
@@ -68,7 +68,7 @@
                         {elseif $showuser eq true}Keine eingeschriebenen Benutzer{/if}
                     </div>
                     {if isset($coursebook)} 
-                    <div class="tab-pane {if isset($f_coursebook)}active{/if}" id="f_coursebook">
+                    <div id="tab_coursebook" class="tab-pane {if isset($tab_coursebook)}active{/if}">
                         {Render::courseBook($coursebook)}
                     </div>
                     {/if}
