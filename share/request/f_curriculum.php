@@ -97,16 +97,16 @@ $content ='';
 if (!isset($edit)){ // Tabs ausblenden wenn im Edit-Modus
 $content .= '<div class="nav-tabs-custom"> 
               <ul class="nav nav-tabs">
-                <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false" onclick="toggle([\'form_curriculum\', \'bAdd\'], [\'tab_1\']);">Lehrplan hinzufügen</a></li>';
+                <li id="nav_tab_add" class="active"><a href="#tab_add" data-toggle="tab" aria-expanded="false" onclick="toggle([\'form_curriculum\', \'bAdd\'], [\'tab_add\']);">Lehrplan hinzufügen</a></li>';
                 if (checkCapabilities('curriculum:import', $USER->role_id, false, true)){
-                  $content .= '<li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="true" onclick="toggle([\'tab_1\'], [\'form_curriculum\', \'bAdd\']);">Lehrplan importieren</a></li>';
+                  $content .= '<li id="nav_tab_import" class=""><a href="#tab_import" data-toggle="tab" aria-expanded="true" onclick="toggle([\'tab_add\'], [\'form_curriculum\', \'bAdd\']);">Lehrplan importieren</a></li>';
                 }
 $content .='</ul>';
 
 $content .= '<div class="tab-content">
-      <div class="tab-pane active" id="tab_1">
+      <div id="tab_add" class="tab-pane active">
       </div><!-- /.tab-pane -->
-      <div class="tab-pane " id="tab_2">
+      <div id="tab_import" class="tab-pane">
         <div id="upload_form">
             <form id="curriculum_upload" action="" method="post" enctype="multipart/form-data">
                 <div class="form-group clearfix">
