@@ -81,12 +81,12 @@ if (isset($_SESSION['FORM'])){
 
 $content  ='<div class="nav-tabs-custom"> 
               <ul class="nav nav-tabs">
-                <li class="active"><a href="#block_new" data-toggle="tab" aria-expanded="false">Neuer Block</a></li>
-                <li class=""><a href="#block_visible" data-toggle="tab" aria-expanded="true" >Ausgeblendete Blöcke</a></li>
+                <li id="nav_tab_new" class="active"><a href="#tab_new" data-toggle="tab" aria-expanded="false">Neuer Block</a></li>
+                <li id="nav_tab_visible" class=""><a href="#tab_visible" data-toggle="tab" aria-expanded="true" >Ausgeblendete Blöcke</a></li>
               </ul>
               <div class="tab-content">
-                <div class="tab-pane active" id="block_new">
-                <form id="form_block"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_block.php"';
+                <div id="tab_new" class="tab-pane active">
+                <form id="form_block" class="form-horizontal" role="form" method="post" action="../share/processors/fp_block.php"';
 
                 if (isset($currentUrlId)){ $content .= $currentUrlId; }
                 $content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
@@ -117,7 +117,7 @@ $content  ='<div class="nav-tabs-custom">
                 /* Width selector*/
                 $region_classes = array('Linke Spalte'  => 'left',
                                         'Rechte Spalte' => 'right'
-                                      );
+                                       );
                 $region_obj = new stdClass();
                 foreach ($region_classes as $key => $value) {
                     $region_obj->label  = $key;
@@ -132,7 +132,7 @@ $content  ='<div class="nav-tabs-custom">
                 $content     .= '</form>  
                  </div><!-- /.tab-pane -->
                  
-                <div class="tab-pane " id="block_visible">';
+                <div id="tab_visible" class="tab-pane" >';
                 $blocks                 = new Block();
                 $ct = new Context();
                 $ct->resolve('context', 'dashboard');
