@@ -53,7 +53,7 @@ $TEMPLATE->assign('sel_group_id',   $selected_group); //only selected group with
 if(isset($_SESSION['PAGE']->config['tab']) AND $selected_curriculum_id != '' AND !isset($_GET['ajax'])){
     $TEMPLATE->assign($_SESSION['PAGE']->config['tab'],  true);
 } else {
-    $TEMPLATE->assign('f_userlist',  true);
+    $TEMPLATE->assign('tab_userlist',  true);
 }
 // load user list
 if ($selected_curriculum_id != '' AND !isset($_GET['ajax'])) {    
