@@ -194,24 +194,29 @@ class File {
         global $CFG, $USER, $LOG;
         checkCapabilities('file:delete', $USER->role_id);
         if ($this->load()){  //file exist?
-            $db = DB::prepare('DELETE FROM files WHERE id=?');
-            if ($db->execute(array($this->id))){/* unlink file*/
-                $path = $CFG->curriculumdata_root.$_SESSION['CONTEXT'][$this->context_id]->path;
-                if ($path) {
-                    $LOG->add($USER->id, 'uploadframe.php', dirname(__FILE__), 'Context: '.$this->context_id.' Delete: '.$this->path.''.$this->filename);
-                    if ($this->type == ".url"){ // bei urls muss keine Datei gelöscht werden 
-                        return true;
-                    } else {
-                        return $this->deleteVersions($path); 
-                    }   
-                }
-            } else {
-                return false;
+            $path = $CFG->curriculumdata_root.$_SESSION['CONTEXT'][$this->context_id]->path.$this->path;
+            if ($path) {
+                $LOG->add($USER->id, 'uploadframe.php', dirname(__FILE__), 'Context: '.$this->context_id.' Delete: '.$this->path.''.$this->filename);
+                if ($this->type == ".url"){ // bei urls muss keine Datei gelöscht werden 
+                    $return = true;                         // not used yet
+                } else {
+                    
+                    $return = $this->deleteVersions($path); // not used yet
+                }   
             }
+        }   
+        $db = DB::prepare('DELETE FROM files WHERE id=?');
+        if ($db->execute(array($this->id))){/* unlink file*/    
+            return true;
+        } else {
+            return false;
         }
+        
     } 
 
     public function deleteVersions($path){
+        if ($this->filename == ''){ return false; } // nothing to do!
+        
         $extension_pos = strrpos($this->filename, '.'); // find position of the last dot, so where the extension starts
         $thumb_xt = substr($this->filename, 0, $extension_pos) . '_xt.png';
         $thumb_t  = substr($this->filename, 0, $extension_pos) . '_t.png';
@@ -221,14 +226,14 @@ class File {
         $thumb_m  = substr($this->filename, 0, $extension_pos) . '_m.png';
         $thumb_l  = substr($this->filename, 0, $extension_pos) . '_l.png';
 
-        if (file_exists($path.$thumb_xt))           { unlink($path.$thumb_xt); }
-        if (file_exists($path.$thumb_t))            { unlink($path.$thumb_t); }
-        if (file_exists($path.$thumb_qs))           { unlink($path.$thumb_qs); }
-        if (file_exists($path.$thumb_xs))           { unlink($path.$thumb_xs); }
-        if (file_exists($path.$thumb_s))            { unlink($path.$thumb_s); }
-        if (file_exists($path.$thumb_m))            { unlink($path.$thumb_m); }
-        if (file_exists($path.$thumb_l))            { unlink($path.$thumb_l); }
-        if (file_exists($path.$this->filename))     { return (unlink($path.$this->filename)); }
+        if (file_exists($path.$thumb_xt))       { unlink($path.$thumb_xt); }
+        if (file_exists($path.$thumb_t))        { unlink($path.$thumb_t);  }
+        if (file_exists($path.$thumb_qs))       { unlink($path.$thumb_qs); }
+        if (file_exists($path.$thumb_xs))       { unlink($path.$thumb_xs); }
+        if (file_exists($path.$thumb_s))        { unlink($path.$thumb_s);  }
+        if (file_exists($path.$thumb_m))        { unlink($path.$thumb_m);  }
+        if (file_exists($path.$thumb_l))        { unlink($path.$thumb_l);  }
+        if (file_exists($path.$this->filename)) { return (unlink($path.$this->filename)); }
     }
 
     /**
