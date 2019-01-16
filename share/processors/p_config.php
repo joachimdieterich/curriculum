@@ -26,12 +26,12 @@ include_once(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Fun
 include_once(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER,$CFG, $PAGE;
 $USER   = $_SESSION['USER'];
-$func   = filter_input(INPUT_GET, 'func',           FILTER_SANITIZE_STRING);
+$func   = filter_input(INPUT_GET, 'func', FILTER_SANITIZE_STRING);
 $object = file_get_contents("php://input");
 
 switch ($func) {
     case "user_paginator":  $u      = new User();        
-                            $val    = filter_input(INPUT_GET, 'val',           FILTER_SANITIZE_STRING); // kein INT --> System ID -1
+                            $val    = filter_input(INPUT_GET, 'val', FILTER_SANITIZE_STRING); // kein INT --> System ID -1
                             $u->update('value', 'paginator_limit', $val);
                             $_SESSION['USER']->paginator_limit = $val;
         break;
