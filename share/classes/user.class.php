@@ -1627,7 +1627,7 @@ class User {
         $db->execute(array($id, $user_id, $context_id));
         $accomplished = new stdClass();
         while($result = $db->fetchObject()) { 
-            foreach ($accomplished as $key => $value) {
+            foreach ($result as $key => $value) {
                 $accomplished->$key = $value;
             }
         }
