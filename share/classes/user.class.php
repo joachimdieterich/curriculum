@@ -1614,6 +1614,25 @@ class User {
         }
         return $users;
     }
+    
+    /**
+     * Get Accomplished entry
+     * @param int $id
+     * @param int $user_id
+     * @param int $context_id
+     * @return \stdClass
+     */
+    public function getAccomplished($id, $user_id, $context_id){
+        $db = DB::prepare('SELECT * FROM user_accomplished WHERE reference_id = ? AND user_id = ? AND context_id = ?');
+        $db->execute(array($id, $user_id, $context_id));
+        $accomplished = new stdClass();
+        while($result = $db->fetchObject()) { 
+            foreach ($accomplished as $key => $value) {
+                $accomplished->$key = $value;
+            }
+        }
+        return $accomplished;
+    }
     /**
     * function used during the install process to set up creator id to new admin
     * @return boolean
