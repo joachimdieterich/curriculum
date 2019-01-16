@@ -461,46 +461,22 @@ class Render {
         }
         
         $html = '<ul class="media-list ">';
-        foreach ($comments as $cm) {
-            $u      = new User();
-            $u->load('id', $cm->creator_id, false);
-            $size   = '48';
-            $html  .= '<li class="media" >
-                       <a class="pull-left" href="#" >
-                         <div style="height:'.$size.'px;width:'.$size.'px;background: url('.$CFG->access_id_url.$u->avatar_id.') center right;background-size: cover; background-repeat: no-repeat;"></div>
-                        </a>
-                        <a style="cursor:pointer;" class="text-red margin-r-10 pull-right" onclick=\'processor("set","likes",'.$cm->id.', {"dependency":"dislikes", "reload":"false", "callback":"innerHTML"});\'><i class="fa fa-thumbs-o-down margin-r-5"></i><span id="dislikes_'.$cm->id.'"> '.$cm->dislikes.'</span></a>
-                        <a style="cursor:pointer;" class="text-green margin-r-10 pull-right" onclick=\'processor("set","likes",'.$cm->id.', {"dependency":"likes", "reload":"false",  "callback":"innerHTML"});\'><i class="fa fa-thumbs-o-up margin-r-5"></i><span id="likes_'.$cm->id.'"> '.$cm->likes.' </span></a>
-                        
-                      <div class="media-body" >
-                          <h4 class="media-heading">'.$u->username.' <small class="text-black margin-r-10"> '.$cm->creation_time.'</small> 
-                          </h4>
-                              <p class="media-heading">'.$cm->text.'<br>';
-                              if ($cm->creator_id == $USER->id){
-                                  if (($permission > 0) AND checkCapabilities('comment:delete', $USER->role_id, false, true)){
-                                    $html  .= '<a class="text-red" onclick="del(\'comment\','.$cm->id.');"><i class="fa fa-trash "></i></a>';
-                                  }
-                              } else {
-                                $html .= '<a class="text-red" onclick=""><i class="fa fa-exclamation-triangle "></i> Kommentar melden</a>';
-                              }
-                              if (($permission > 0) AND checkCapabilities('comment:add', $USER->role_id, false, true)){
-                                $html .= ' | <a id="answer_'.$cm->id.'" onclick="toggle([\'comment_'.$cm->id.'\', \'cmbtn_'.$cm->id.'\'], [\'answer_'.$cm->id.'\'])">Antworten</a></p>';
-                                $html .='<textarea id="comment_'.$cm->id.'" name="comment"  class="hidden no_editor" style="width:100%;"></textarea>
-                                        <button id="cmbtn_'.$cm->id.'" type="submit" class="btn btn-primary pull-right hidden" onclick="comment(\'new\','.$cm->reference_id.', '.$cm->context_id.', document.getElementById(\'comment_'.$cm->id.'\').value, '.$cm->id.');"><i class="fa fa-commenting-o margin-r-10"></i>Kommentar abschicken</button>';
-                             }
-            /* sub comments */
-            if (!empty($cm->comment)){
-                $html .= RENDER::sub_comments(array('comment' => $cm->comment));
-            }
-            $html .= '</li><hr class="dashed">';
+        if (!isset($sub_comment)){
+            $html .= '<li class="media" id="comment_placeholder_'.$id.'"></li>';
+        }
+        
+        foreach ($comments as $c) {
+            $html .= RENDER::comment($c, $permission);
         }
         $html .=  '</ul>';
         
         /* add Comments */
-        if (checkCapabilities('comment:add', $USER->role_id, false, true)){  
-        $html.= 'Neuen Kommentar hinzufügen
+        if (checkCapabilities('comment:add', $USER->role_id, false, true) ){  
+            if (!isset($sub_comment)){
+                $html.= 'Neuen Kommentar hinzufügen
                 <textarea id="comment" name="comment" class="no_editor" style="width:100%;"></textarea>
-                <button type="submit" class="btn btn-primary pull-right" onclick="comment(\'new\','.$id.', \''.$_SESSION['CONTEXT'][$context]->context_id.'\', document.getElementById(\'comment\').value);"><i class="fa fa-commenting-o margin-r-10"></i> Kommentar abschicken</button>';
+                <button type="submit" class="btn btn-primary pull-right" onclick="processor(\'comment\',\'new\','.$id.', {\'context_id\':'.$_SESSION['CONTEXT'][$context]->context_id.', \'text\':document.getElementById(\'comment\').value, \'reload\':\'false\', \'callback\':\'replaceElementByID\', \'elementId\':\'comment_placeholder_'.$id.'\'});"><i class="fa fa-commenting-o margin-r-10"></i> Kommentar abschicken</button>';
+            }
         } else {
             $html .= "Sie haben nicht die Berechtigung Kommentare zu schreiben.";
         }
@@ -508,48 +484,42 @@ class Render {
         return $html;
     }
     
-    public static function sub_comments($params){
+    public static function comment($cm, $permission, $show_add = true){
         global $CFG, $USER;
-        foreach($params as $key => $val) {
-             $$key = $val;
-        }
-        if (!isset($permission)){ $permission = 1; }
-        $html = '';
-        foreach ($comment as $cm){
-            $u = new User();
-            $u->load('id', $cm->creator_id, false);
-            $size = '32';
-            $html .=  '<div class="media ">
-                        <a class="pull-left" href="#" >
-                            <div style="height:'.$size.'px;width:'.$size.'px;background: url('.$CFG->access_id_url.$u->avatar_id.') center right;background-size: cover; background-repeat: no-repeat;"></div>
-                        </a>                        
-                        <div class="media-body" >
-                            <h4 class="media-heading">'.$u->username.' <small class="text-black margin-r-10"> '.$cm->creation_time.'</small>
-                                <a style="cursor:pointer;" class="text-green margin-r-10 " onclick=\'processor("set","likes",'.$cm->id.', {"dependency":"likes", "input":"'.($cm->likes+1).'"});\'><i class="fa fa-thumbs-o-up margin-r-5"></i> '.$cm->likes.' </a>
-                                <a style="cursor:pointer;" class="text-red margin-r-10 " onclick=\'processor("set","likes",'.$cm->id.', {"dependency":"dislikes", "input":"'.($cm->dislikes+1).'"});\'><i class="fa fa-thumbs-o-down margin-r-5"></i> '.$cm->dislikes.' </a>
-                            </h4>
-                                <p class="media-heading">'.$cm->text.'<br>';
-                                if ($cm->creator_id == $USER->id){
-                                    if (checkCapabilities('comment:delete', $USER->role_id, false, true)){
-                                        $html  .= '<a class="text-red" onclick="del(\'comment\','.$cm->id.');"><i class="fa fa-trash "></i></a>';
-                                    }
-                                  } else {
-                                    $html  .= '<a class="text-red" onclick=""><i class="fa fa-exclamation-triangle "></i> Kommentar melden</a>';
-                                  }
-                                if (checkCapabilities('comment:add', $USER->role_id, false, true)){  
-                                    $html .= ' | <a id="answer_'.$cm->id.'" onclick="toggle([\'comment_'.$cm->id.'\', \'cmbtn_'.$cm->id.'\'], [\'answer_'.$cm->id.'\'])">Antworten</a></p>';
-                                    $html .='<textarea id="comment_'.$cm->id.'" name="comment"  class="hidden no_editor " style="width:100%;"></textarea>
-                                            <button id="cmbtn_'.$cm->id.'" type="submit" class="btn btn-primary pull-right hidden" onclick="comment(\'new\','.$cm->reference_id.', '.$cm->context_id.', document.getElementById(\'comment_'.$cm->id.'\').value, '.$cm->id.');"><i class="fa fa-commenting-o margin-r-10"></i>Kommentar abschicken</button>';
-                                 }
-                                if (!empty($cm->comment)){
-                                    $html .= RENDER::sub_comments(array('comment' => $cm->comment));
-                                }                         
-            $html .=  ' </div></div>';
+        $u      = new User();
+        $u->load('id', $cm->creator_id, false);
+        $size   = '48';
+        $html   = '<li id="comment_'.$cm->id.'" class="media" >
+                   <a class="pull-left" href="#" >
+                     <div style="height:'.$size.'px;width:'.$size.'px;background: url('.$CFG->access_id_url.$u->avatar_id.') center right;background-size: cover; background-repeat: no-repeat;"></div>
+                    </a>
+                  <div class="media-body" >
+                  <a style="cursor:pointer;" class="text-red margin-r-10 pull-right" onclick=\'processor("set","likes",'.$cm->id.', {"dependency":"dislikes", "reload":"false", "callback":"innerHTML"});\'><i class="fa fa-thumbs-o-down margin-r-5"></i><span id="dislikes_'.$cm->id.'"> '.$cm->dislikes.'</span></a>
+                    <a style="cursor:pointer;" class="text-green margin-r-10 pull-right" onclick=\'processor("set","likes",'.$cm->id.', {"dependency":"likes", "reload":"false",  "callback":"innerHTML"});\'><i class="fa fa-thumbs-o-up margin-r-5"></i><span id="likes_'.$cm->id.'"> '.$cm->likes.' </span></a>
 
-                
+                      <h4 class="media-heading">'.$u->username.' <small class="text-black margin-r-10"> '.$cm->creation_time.'</small> 
+                      </h4>
+                          <p class="media-heading">'.$cm->text.'<br>';
+                          if ($cm->creator_id == $USER->id){
+                              if (($permission > 0) AND checkCapabilities('comment:delete', $USER->role_id, false, true)){
+                                //$html  .= '<a class="text-red pull-right" onclick="del(\'comment\','.$cm->id.');"><i class="fa fa-trash "></i></a>';
+                                $html  .= '<a class="text-red pull-right" onclick="processor(\'delete\',\'comment\','.$cm->id.', {\'reload\':\'false\', \'callback\':\'replaceElementByID\', \'element_Id\':\'comment_'.$cm->id.'\'});"><i class="fa fa-trash "></i></a>';
+                              }
+                          } else if (!checkCapabilities('comment:delete', $USER->role_id, false, true)) {
+                            $html .= '<a class="text-red" onclick=""><i class="fa fa-exclamation-triangle "></i> Kommentar melden</a>';
+                          }
+                          if (($show_add == true) AND checkCapabilities('comment:add', $USER->role_id, false, true)){
+                            $html .= '<a id="answer_'.$cm->id.'" onclick="toggle([\'comment_text_'.$cm->id.'\', \'cmbtn_'.$cm->id.'\'], [\'answer_'.$cm->id.'\'])"><i class="fa fa-comments"></i></a></p>';
+                            $html .='<textarea id="comment_text_'.$cm->id.'" name="comment"  class="hidden no_editor" style="width:100%;"></textarea>
+                                    <button id="cmbtn_'.$cm->id.'" type="submit" class="btn btn-primary pull-right hidden" onclick="processor(\'comment\',\'new\','.$cm->reference_id.', {\'context_id\':'.$cm->context_id.', \'text\':document.getElementById(\'comment_text_'.$cm->id.'\').value, \'parent_id\':'.$cm->id.', \'reload\':\'false\', \'callback\':\'replaceElementByID\', \'elementId\':\'comment_placeholder_'.$cm->id.'\'});"><i class="fa fa-commenting-o margin-r-10"></i>Kommentar abschicken</button>';
+                         }
+                         $html .='<hr class="dashed">';
+        /* sub comments */
+        if (!empty($cm->comment)){
+            $html .= RENDER::comments(array('comments' => $cm->comment, 'sub_comment' => true));
         }
+        $html .= '<li class="media" id="comment_placeholder_'.$cm->id.'"></li></li>';  
         return $html;
-        
     }
     
     /* add all possible options (ter and ena) to this objective function*/

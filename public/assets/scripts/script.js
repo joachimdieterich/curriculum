@@ -24,6 +24,11 @@
 
 var req;
 
+//to get php like check function
+function isset(v){
+     return !!v; // converting to boolean.
+}
+
 function formatBytes(bytes,decimals) {
    if(bytes === 0) return '0 Byte';
    var k = 1000; // or 1024 for binary
@@ -567,18 +572,43 @@ function processor(/*proc, func, val, [..., reload = false], pluginpath*/){ // i
             if(this.readyState == this.DONE) {
                 if (reload == true){
                     window.location.reload();
-                } else if (callback === "innerHTML"){  //if callback == innerHTML is set, innerHTML of response.id is set
+                } else if (isset(callback)){
                     response = JSON.parse(req.responseText);
-                    document.getElementById(response.id).innerHTML = response.html;
-                } else if (callback === "setElementById"){ //set accomplished
-                    response = JSON.parse(req.responseText);
-                    setStatusColor(id, response.status);
+                    switch (callback){
+                        case 'innerHTML': //if callback == innerHTML is set, innerHTML of response.id is set
+                                    document.getElementById(response.id).innerHTML = response.html;
+                            break;
+                        case 'setElementById':
+                                    setStatusColor(id, response.status);
+                            break;
+                        case 'replaceElementByID':
+                                    replaceElementByID(response);
+                            break;
+                        default: 
+                            break;
+                            
+                    }    
                 }
             }
         }
     }
     req.open("GET", url, false); //false --> important for print function
     req.send(null);
+}
+
+function replaceElementByID(response){
+    if(typeof(response.func) !== 'undefined'){ 
+        switch (response.func){
+            case 'fadeOut': $('#'+response.replaceId).fadeOut("fast");
+                break;
+            case 'fadeIn':  $('#'+response.replaceId).replaceWith(response.element);  
+                break;
+            default:        
+                break;
+        }
+    } else{
+        $('#'+response.replaceId).replaceWith(response.element);
+    }
 }
 
 function comment(/*func reference_id, context_id, text, (parent_id)*/){
