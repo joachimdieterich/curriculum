@@ -36,7 +36,6 @@ if (checkCapabilities('backup:getAllBackups', $USER->role_id, false)) {         
 
 $TEMPLATE->assign('web_backup_path', $CFG->web_backup_path);  
 
-//$p_options = array('delete'     => array('onclick'     => "del('file',__id__);", 
 $p_options = array('delete'     => array('onclick'     => "processor('delete', 'file', __id__, { 'reload': 'false', 'callback': 'replaceElementByID', 'element_Id': 'row__id__'});", 
                                          'capability'  => checkCapabilities('backup:delete', $USER->role_id, false),
                                          'icon'        => 'fa fa-trash',
