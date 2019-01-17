@@ -32,6 +32,7 @@ $db     = filter_input(INPUT_GET, 'func',         FILTER_SANITIZE_STRING); // ke
 $id     = filter_input(INPUT_GET, 'val',          FILTER_SANITIZE_STRING); // kein INT --> System ID -1 //Hack damit del über processor funktioniert
 $ref_id = filter_input(INPUT_GET, 'ref_id',       FILTER_VALIDATE_INT); 
 switch ($db) {
+    case "absent":              $t = new Absent();              break;
     case "certificate":         $t = new Certificate();         break;
     case "curriculum":          $t = new Curriculum();          break;
     case "event":               $t = new Event();               break;

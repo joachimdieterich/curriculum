@@ -50,7 +50,7 @@ if (is_array($data)) {
             
 if (isset($_GET['func'])){
     switch ($_GET['func']) {
-        case "coursebook":  $reference_id =  filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+        case "courseBook":  $reference_id =  filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
         case "new":         checkCapabilities('absent:add',    $USER->role_id, false, true);
                             $header       = 'Fehlende Person(en) erfassen ';
                             $course       = new Course();
