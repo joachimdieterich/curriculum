@@ -63,7 +63,7 @@ if (isset($_GET['func'])){
                         $header     = 'Aufgabe / Notiz hinzufügen';      
             break;
         
-        case "coursebook":  $reference_id =  filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+        case "courseBook":  $reference_id =  filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
         case "new":         checkCapabilities('task:add',    $USER->role_id, false, true);
                             $header     = 'Aufgabe hinzufügen';             
             break;
