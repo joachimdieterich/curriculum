@@ -54,6 +54,14 @@ class Absent {
         return $db->execute(array($this->cb_id, $this->user_id, $this->reason, $this->done,$this->status,$USER->id, $this->id));
     }
     
+    public function delete(){
+        global $USER;
+        checkCapabilities('absent:delete', $USER->role_id);
+        $this->load();
+        $db = DB::prepare('DELETE FROM user_absent WHERE id = ?');
+        return $db->execute(array($this->id));
+    } 
+    
     public function load($dependency = 'id', $value = null, $usr_obj = false){
         if (isset($value)){ $v = $value; } else { $v = $this->id; }
         $db         = DB::prepare('SELECT * FROM user_absent WHERE '.$dependency.' = ?');

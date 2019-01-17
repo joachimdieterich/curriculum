@@ -82,9 +82,9 @@ if (isset($_GET['func'])){
                         $content->load('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
                         if (checkCapabilities('content:delete', $USER->role_id, false, true)){
                             if (isset($_SESSION['PAGE']->curriculum)){
-                                $ref_id = ', '.$_SESSION['PAGE']->curriculum;
+                                $ref_id = $_SESSION['PAGE']->curriculum;
                             }
-                            $options   .= '<a onclick="del(\'content\','.$content->id.''.$ref_id.');" class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-trash"></i></a>';
+                            $options   .= '<a onclick="processor(\'delete\', \'content\', '.$content->id.', { \'ref_id\': '.$ref_id.'});" class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-trash"></i></a>';
                         }
                         $label_header   = $content->title;
                         if (checkCapabilities('content:update', $USER->role_id, false, true)){

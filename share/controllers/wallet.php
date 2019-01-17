@@ -47,7 +47,7 @@ if (isset($_GET['view'])){
 } else {
     $wallet   = new Wallet();
     //$TEMPLATE->assign('wallet', $wallet->get('search', $search));
-    $p_options = array('delete' => array('onclick'    => "del('wallet',__id__);", 
+    $p_options = array('delete' => array('onclick'    => "processor('delete', 'wallet', __id__, { 'reload': 'false', 'callback': 'replaceElementByID', 'element_Id': 'row__id__'});", 
                                         'capability'  => checkCapabilities('wallet:delete', $USER->role_id, false),
                                         'icon'        => 'fa fa-trash',
                                         'tooltip'     => 'löschen'),

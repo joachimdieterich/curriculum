@@ -27,7 +27,7 @@ global $USER, $TEMPLATE;
 $TEMPLATE->assign('page_title', 'Schul-/Institutionstyp');
 $TEMPLATE->assign('breadcrumb',  array('Schul-/Institutionstyp' => 'index.php?action=schooltype'));
 $schooltype                 = new Schooltype();
-$p_options = array('delete' => array('onclick'    => "del('schooltype',__id__);", 
+$p_options = array('delete' => array('onclick'    => "processor('delete', 'schooltype', __id__, { 'reload': 'false', 'callback': 'replaceElementByID', 'element_Id': 'row__id__'});", 
                                      'capability' => checkCapabilities('schooltype:delete', $USER->role_id, false),
                                      'icon'       => 'fa fa-trash',
                                      'tooltip'    => 'löschen',),
