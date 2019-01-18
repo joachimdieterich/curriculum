@@ -30,10 +30,18 @@ $USER       = $_SESSION['USER'];
 $func       = filter_input(INPUT_GET, 'func', FILTER_SANITIZE_STRING);
 
 switch ($func) {
-    case 'user':    $current_user       = new User();
-                    $current_user->load('id', filter_input(INPUT_GET, 'val', FILTER_VALIDATE_INT));
-                    $current_user->expelFromGroup(array(filter_input(INPUT_GET, 'ref_id', FILTER_VALIDATE_INT)));
-                    echo json_encode(array('callback' => $_GET['callback'], 'replaceId'=> $_GET['element_Id'], 'func' => 'fadeOut', 'element'=>''));
+    case 'userfromgroup':   $user       = new User();
+                            $user->load('id', filter_input(INPUT_GET, 'val', FILTER_VALIDATE_INT));
+                            if ($user->expelFromGroup(array(filter_input(INPUT_GET, 'ref_id', FILTER_VALIDATE_INT)))){
+                                echo json_encode(array('callback' => $_GET['callback'], 'replaceId'=> $_GET['element_Id'], 'func' => 'fadeOut', 'element'=>''));
+                            }
+        break;
+    case 'userfrominstitution':
+                            $user       = new User();
+                            $user->id   = filter_input(INPUT_GET, 'val', FILTER_VALIDATE_INT);
+                            if ($user->expelFromInstitution(filter_input(INPUT_GET, 'ref_id', FILTER_VALIDATE_INT))){
+                                echo json_encode(array('callback' => $_GET['callback'], 'replaceId'=> $_GET['element_Id'], 'func' => 'fadeOut', 'element'=>''));
+                            } 
         break;
     default:
         break;
