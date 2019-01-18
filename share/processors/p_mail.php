@@ -2,7 +2,7 @@
 /** This file is part of curriculum - http://www.joachimdieterich.de
 * 
 * @package core
-* @filename getMail.php
+* @filename p_mail.php
 * @copyright 2015 Joachim Dieterich
 * @author Joachim Dieterich
 * @date 2015.06.06 08:42
@@ -27,14 +27,22 @@ $base_url = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen 
 include_once(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER;
-$USER      = $_SESSION['USER'];
-$mail      = new Mail();
-$mail->id  = filter_input(INPUT_GET, 'mailID', FILTER_VALIDATE_INT);
+$USER   = $_SESSION['USER'];
+$html   = '';
+$func   = filter_input(INPUT_GET, 'func', FILTER_SANITIZE_STRING);
 
-$mail->loadMail($mail->id, true);                                                               // Mail laden uns status setzen -> gelesen
-echo  Render::mail($mail, filter_input(INPUT_GET, 'box', FILTER_SANITIZE_STRING));              // Render mail
-
-$correspondence = $mail->loadCorrespondence($mail->id, $mail->sender_id, $mail->receiver_id);   // Render correspondence
-for($i = 1; $i < count($correspondence); $i++) {
-    echo  Render::mail($correspondence[$i]); 
+switch ($func) {
+    case 'get': $mail      = new Mail();
+                $mail->id  = filter_input(INPUT_GET, 'val', FILTER_VALIDATE_INT);
+                $mail->loadMail($mail->id, true);                                                               // Mail laden uns status setzen -> gelesen
+                $html .=  Render::mail($mail, filter_input(INPUT_GET, 'mailbox', FILTER_SANITIZE_STRING));      // Render mail
+                $correspondence = $mail->loadCorrespondence($mail->id, $mail->sender_id, $mail->receiver_id);   // Render correspondence
+                for($i = 1; $i < count($correspondence); $i++) {
+                    $html .=  Render::mail($correspondence[$i]); 
+                }
+                echo json_encode(array('id'=> $_GET['element_id'], 'html'=>$html, 'mailbox'=> $_GET['mailbox'], 'mail_id'=>$_GET['mailbox'].'_'.filter_input(INPUT_GET, 'val', FILTER_VALIDATE_INT)));
+        break;
+ 
+    default:
+        break;
 }

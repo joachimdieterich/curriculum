@@ -115,36 +115,6 @@ function toggle_column(){
     }	
 }
 
-function loadmail(mail_id, mailbox) {
-    document.getElementById('mailbox').innerHTML = '<div class="box"><div class="box-header"><h3 class="box-title">Loading...</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div>';    
-    var url = "../share/request/getMail.php?mailID="+ mail_id+"&box="+mailbox; 
-
-    req = XMLobject();
-        if(req) {        
-            req.onreadystatechange = function(){
-                mail(mail_id, mailbox);
-            };
-            req.open("GET", url, true);
-            req.send(null);
-        }
-}
-
-function mail(mail_id, mailbox) {
-    if (req.readyState === 4) {  
-        if (req.status === 200) {
-            if (req.responseText.length !== 1){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen
-                document.getElementById('mailbox').innerHTML = req.responseText;
-                if ($('li[name*='+mailbox+']').hasClass("active")){ //deactivate all active li tags
-                    $('li[name*='+mailbox+']').removeClass("active");
-                }
-                $('li[name='+mailbox+'_'+mail_id+']').addClass("active");
-            } else {
-                window.location.reload();
-            } 
-        }
-    }   
-}
-
 function loadhtml(dependency, id, source, target, source_width, target_width){
     document.getElementById(target).innerHTML = '<div class="box"><div class="box-header"><h3 class="box-title">Loading...</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div>';    
     var url = "../share/request/get_"+dependency+".php?id="+ id; 
@@ -233,35 +203,6 @@ function checkrow(/*rowNr,link*/) {
         //window.location.assign(arguments[3]);            //do not reload ! -> floting_table won't work
     }
 }
-/*  Function without fixed layout
-function floating_table(wrapper, defaultTop, headerHeight, main_sidebar_class, paginator, field_array, target, source, default_position){
-    $("#"+wrapper).scroll(function(e) {
-            var scrollTop = $(e.target).scrollTop();
-            
-            if ((scrollTop > defaultTop) && (small === false)){
-                for(var i = 0, j = field_array.length; i < j; ++i) {
-                    $('td[name='+paginator+'_col_'+field_array[i]+']').addClass("hidden");
-                }
-                
-                $("#"+source).appendTo("#"+target);
-                $("#"+target).css({'background-color': '#ecf0f5', 'webkit-transform':'translate3d(0,0,0)'});
-                $('.'+main_sidebar_class).css({'top': scrollTop - headerHeight});
-                small    = true;
-            } 
-            if ((scrollTop > defaultTop) && (small === true)){
-                $('.'+main_sidebar_class).css({'top': scrollTop - headerHeight});
-            } 
-            
-            if ((scrollTop < defaultTop) && (small === true)){
-                small = false;
-                $("#"+source).appendTo("#"+default_position);
-                for(var i = 0, j = field_array.length; i < j; ++i) {
-                    $('td[name='+paginator+'_col_'+field_array[i]+']').removeClass("hidden");
-                }
-                $('.'+main_sidebar_class).css({'top': 0});
-            }
-        });
-}*/
 
 /* floating_table with fixed header */
 function findBottomPos(obj) {
@@ -575,8 +516,7 @@ function processor(/*proc, func, val, [..., reload = false], pluginpath*/){ // i
                 } else if (isset(callback)){
                     response = JSON.parse(req.responseText);
                     switch (callback){
-                        case 'innerHTML': //if callback == innerHTML is set, innerHTML of response.id is set
-                                    document.getElementById(response.id).innerHTML = response.html;
+                        case 'innerHTML': innerHTML(response);
                             break;
                         case 'setElementById':
                                     setStatusColor(id, response.status);
@@ -585,8 +525,7 @@ function processor(/*proc, func, val, [..., reload = false], pluginpath*/){ // i
                                     replaceElementByID(response);
                             break;
                         default: 
-                            break;
-                            
+                            break;                            
                     }    
                 }
             }
@@ -595,6 +534,17 @@ function processor(/*proc, func, val, [..., reload = false], pluginpath*/){ // i
     req.open("GET", url, false); //false --> important for print function
     req.send(null);
 }
+
+function innerHTML(response){ //if callback == innerHTML is set, innerHTML of response.id is set
+    document.getElementById(response.id).innerHTML = response.html;
+    if(typeof(response.mailbox) !== 'undefined'){ 
+        if ($('li[name*='+response.mailbox+']').hasClass("active")){ //deactivate all active li tags
+            $('li[name*='+response.mailbox+']').removeClass("active");
+        }
+        $('li[name='+response.mail_id+']').addClass("active");
+    }
+}
+
 
 function replaceElementByID(response){
     if(typeof(response.func) !== 'undefined'){ 
