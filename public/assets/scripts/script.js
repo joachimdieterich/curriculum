@@ -611,94 +611,6 @@ function replaceElementByID(response){
     }
 }
 
-function comment(/*func reference_id, context_id, text, (parent_id)*/){
-    if (typeof(arguments[4]) !== 'undefined'){
-        var url = "../share/processors/p_comment.php?func="+ arguments[0] +"&ref_id="+ arguments[1] + "&context_id=" + arguments[2] + "&text=" + arguments[3] +  "&parent_id=" + arguments[4];
-    } else {
-        var url = "../share/processors/p_comment.php?func="+ arguments[0] +"&ref_id="+ arguments[1] + "&context_id=" + arguments[2] + "&text=" + arguments[3];
-    }
-    req = XMLobject();
-    if(req) {  
-        req.onreadystatechange =  window.location.reload();
-        req.open("GET", url, false); //false --> important for print function
-        req.send(null);
-    }
-}
-/**
- * delete a dataset in a db-table
- **/
-function del() {
-    if (confirm("Datensatz wirklich l\u00f6schen?")) {
-        if (typeof(arguments[2]) !== 'undefined'){
-            var url = "../share/processors/p_delete.php?db="+arguments[0]+"&id="+ arguments[1]+"&ref_id="+ arguments[2];
-    } else {
-            var url = "../share/processors/p_delete.php?db="+arguments[0]+"&id="+ arguments[1];
-    }
-        
-        req = XMLobject();
-        if(req) {      
-            if (arguments[0] === 'message'){                                                    // Mail aus Liste entfernen und geloeschte Mail ausblenden
-              document.getElementById(arguments[2]+'_'+arguments[1]).style.display='none';
-              document.getElementById('mailbox').style.display='none';
-            } else if (arguments[0] === 'file'){
-                var id = arguments[1];
-                req.onreadystatechange = function(){
-                    hideFile(id);
-                };
-            } else {
-               req.onreadystatechange = process; //Dialog mit Meldungen zeigen 
-               //Reload erfolgt ueber Submit des Popups req.onreadystatechange = reloadPage; //window.location.reload() wichtig, damit Aenderungen angezeigt werden
-            }
-            req.open("GET", url, true);
-            req.send(null);
-        }
-    }
-}
-
-function removeMaterial(){
-    if (confirm("Datei wirklich l\u00f6schen?")) {
-        var url     = "../share/request/deleteFile.php?fileID="+ arguments[0];         //Link unterscheidet sich von den anderen Funktionen, da diese Funktion ((nur)vom upload_frame aufgerufen wird
-        var fileID  = arguments[0];
-        req         = XMLobject();
-        if(req) {        
-            req.onreadystatechange = function(){
-                    hideFile(fileID);
-                };
-            req.open("GET", url, true);
-            req.send(null);
-        }
-    }
-}
-
-function deleteFile() {
-    if (confirm("Datei wirklich l\u00f6schen?")) {
-        var url     = "deleteFile.php?fileID="+ arguments[0];         //Link unterscheidet sich von den anderen Funktionen, da diese Funktion ((nur)vom upload_frame aufgerufen wird
-        var fileID  = arguments[0];
-        req         = XMLobject();
-        if(req) {        
-            req.onreadystatechange = function(){
-                    hideFile(fileID);
-                };
-            req.open("GET", url, true);
-            req.send(null);
-        }
-    }
-}
-
-function expelUser() {
-    if (confirm("Benutzer wirklich aus der Lerngruppe ausschreiben?")) {
-        var url     = "../share/request/expelUser.php?groupsID="+ arguments[0] +"&userID="+ arguments[1]; 
-        getRequest(url);
-    }
-}
-
-function expelFromInstituion() {
-    if (confirm("Benutzer wirklich aus der Institution ausschreiben?")) { 
-        var url     = "../share/request/expelFromInstitution.php?institutionID="+ arguments[0] +"&userID="+ arguments[1]; 
-        getRequest(url);
-    }
-}
-
 function getMultipleValues(){
     for(var i = 0, j = arguments.length; i < j; ++i) {
         getValues(arguments[i][0],arguments[i][1],arguments[i][2],arguments[i][3],arguments[i][4]);    
@@ -807,16 +719,6 @@ function sendForm(form_id, file){
     });
     return false;           
     
-}
-
-function updateFileHits(){
-    var url = "../share/request/updateFileHits.php?fileID="+ arguments[0];
-
-    req = XMLobject();
-    if(req) {        
-            req.open("GET", url, true);
-            req.send(null);
-        }  
 }
 
 function resizeModal(){

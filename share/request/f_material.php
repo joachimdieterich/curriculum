@@ -210,8 +210,8 @@ if (!$files AND !isset($references) AND !isset($sodis)){
             }
         }
         /* . Icon */
-        if ($files[$i]->type == 'internal'){ 
-            $m_onclick = 'updateFileHits('.$files[$i]->id.')'; 
+        if ($files[$i]->type == 'internal'){  //has no effect -> todo cleancode 
+            $m_onclick = 'processor("set","count",'.$files[$i]->id.', {"dependency":"fileHits", "reload":"false", "callback":"innerHTML", "element_id":"material_counter_id_'.$files[$i]->id.'"});'; 
         } else { 
             $m_onclick = false; //deactivate onclick ! 
         }
@@ -234,13 +234,13 @@ if (!$files AND !isset($references) AND !isset($sodis)){
             case 'external':  $m_url = $files[$i]->filename;
                 break;
             case '.mp3':    /* Player*/  
-                            $m_player =  '<audio width="100%" controls preload="none" onplay="updateFileHits('.$files[$i]->id.')">
+                            $m_player =  '<audio width="100%" controls preload="none" onplay="processor(\'set\',\'count\',\''.$files[$i]->id.'\', {\'dependency\':\'fileHits\', \'reload\':\'false\', \'callback\':\'innerHTML\', \'element_id\':\'material_counter_id_'.$files[$i]->id.'\'});">
                                             <source src="'.$CFG->access_id_url.$files[$i]->id.'" type="audio/mpeg" />
                                         Your browser does not support the audio element.</audio>';
                             $m_url = $CFG->access_id_url.$files[$i]->id;
                 break;
             case '.mp4':    /* Player*/ 
-            case '.mov':    $m_player =  '<video width="100%" controls onplay="updateFileHits('.$files[$i]->id.')">
+            case '.mov':    $m_player =  '<video width="100%" controls onplay="processor(\'set\',\'count\',\''.$files[$i]->id.'\', {\'dependency\':\'fileHits\', \'reload\':\'false\', \'callback\':\'innerHTML\', \'element_id\':\'material_counter_id_'.$files[$i]->id.'\'});">
                                             <source src="'.$CFG->access_id_url.$files[$i]->id.'&video=true"  type="video/mp4"/>
                                           Your browser does not support the video element.</video>';
                 break;
@@ -290,11 +290,10 @@ if (!$files AND !isset($references) AND !isset($sodis)){
             }
             $m_footer .= '</div></div><!-- ./col -->
                     <div class="col-xs-3 text-center" style="border-right: 1px solid #f4f4f4">
-                      <div id="sparkline-2"></div><div class="knob-label">';
+                      <div id="sparkline-2"></div><div id="material_counter_id_'.$files[$i]->id.'" class="knob-label">';
             if (isset($m_hits)){ $m_footer .= ' '.$m_hits.' Aufrufe'; }
             $m_footer .= '</div>
                     </div><!-- ./col -->
-                    
                     <div class="col-xs-4 text-center">
                       <div id="sparkline-3"></div>
                       <div class="knob-label">';

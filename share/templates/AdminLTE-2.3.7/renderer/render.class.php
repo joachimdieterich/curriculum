@@ -2138,7 +2138,7 @@ class Render {
                                         return $v->{$r[1]}; 
                                     }, $href);
                                 
-                            $html   .= '<li><a href="'.$href_regex.'">'.$l;
+                            $html   .= '<li id="w_row_'.$value->id.'"><a href="'.$href_regex.'">'.$l;
                             if (isset($badge)){
                                 
                                 $onclick = str_replace('__id__', $value->id, $onclick_badge);
@@ -2301,7 +2301,6 @@ public static function render_reference_entry($ref, $context_id){
            <div class="col-xs-12 col-sm-6 pull-right">';
             if (checkCapabilities('reference:add',    $USER->role_id, false, true)){
                 $c .= '<a onclick="processor(\'delete\', \'reference\', '.$ref->id.', { \'reload\': \'false\', \'callback\': \'replaceElementByID\', \'element_Id\': \'reference_entry_'.$ref->id.'\'});" class="btn btn-default btn-xs pull-right" data-toggle="tooltip" title="" data-original-title="Referenz löschen" style="margin-right:5px;"><i class="fa fa-trash"></i></a>';
-                //$c .= '<a onclick="formloader(\'reference\', \'edit\', '.$ref->id.', {\'context_id\': \''.$context_id.'\'});" class="btn btn-default btn-xs pull-right" data-toggle="tooltip" title="" data-original-title="Referenz editieren" style="margin-right:5px;"><i class="fa fa-edit"></i></a>';
             }
     
             $c .= '<br><dt>Anregungen zur Unterrichtsgestaltung <dd> ';

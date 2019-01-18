@@ -51,6 +51,11 @@ switch ($func) { //$func == db table name
                                     break;
                             }
         break; 
+    case "count":           $file        = new File();
+                            $file->id    = filter_input(INPUT_GET, 'val', FILTER_VALIDATE_INT); 
+                            $counter = $file->hit();
+                            echo json_encode(array('id'=> $_GET['element_id'], 'html'=>$counter.' Aufrufe'));
+        break;
   
     default: break;
 }

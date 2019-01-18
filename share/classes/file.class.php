@@ -630,6 +630,9 @@ class File {
     public function hit(){ // hit counter
         $db = DB::prepare('UPDATE files SET hits = hits + 1 WHERE id = ?');
         $db->execute(array($this->id));
+        $db1 = DB::prepare('SELECT hits FROM files WHERE id = ?');
+        $db1->execute(array($this->id));
+        return $db1->fetchColumn();
     }
     /**
      * Überprüft in den folgenden Tabellen, ob die Datei verknüpft ist: 
