@@ -29,7 +29,7 @@ global $USER;
 
 $USER   = $_SESSION['USER'];
 $func   = filter_input(INPUT_GET, 'func', FILTER_SANITIZE_STRING);
-error_log(json_encode($_GET));
+//error_log(json_encode($_GET));
 switch ($func) {
     case 'new':     $cm = new Comment();
                     $cm->text           = filter_input(INPUT_GET, 'text',       FILTER_SANITIZE_STRING);
