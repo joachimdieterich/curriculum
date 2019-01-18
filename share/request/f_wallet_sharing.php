@@ -106,8 +106,7 @@ $content .= '<div class="nav-tabs-custom">
                                        'bg_icon'      => 'fa fa-user',
                                        'bg_badge'     => 'bg-gray ',
                                        'badge'        => 'permission',
-                                       /*'badge_title'  => 'freigabe ',*/
-                                       /*'onclick_badge'=> 'expelUser('.$g->id.',__id__);'*/));
+                                       /*'badge_title'  => 'freigabe ',*/));
     
     $content .='</div><!-- /.tab-pane -->
                 <div class="tab-pane" id="tab_groups">not implemented yet
