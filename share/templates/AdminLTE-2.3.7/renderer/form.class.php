@@ -406,7 +406,7 @@ class Form {
             $html .= '<button class="btn btn-box-tool"><a href="'.$url.'" target="_blank"><i class="fa fa-download"></i></a></button>';
         }
         if (isset($delete)){
-            $html .= '<button class="btn btn-box-tool" onclick="removeMaterial('.$id.')"><i class="fa fa-trash"></i></button>';
+            $html .= '<button class="btn btn-box-tool" onclick="processor(\'delete\', \'file\', '.$id.', { \'reload\': \'false\', \'callback\': \'replaceElementByID\', \'element_Id\': \'material_'.$id.'\'});"><i class="fa fa-trash"></i></button>';
         }
         $html .= '</div>';
         $html .= '<span class="info-box-text">';
