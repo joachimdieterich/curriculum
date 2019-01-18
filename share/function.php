@@ -171,7 +171,7 @@ function resetPaginator($instance){  //resets Paginator to index 1
  * @param table array table shortcuts
  * @return string
  */
-function orderPaginator($instance, $table=null){
+function orderPaginator($instance, $table=null, $id = 'id'){
     //error_log(json_encode(SmartyPaginate::_getSearchField($instance)));
     if ($table AND is_array(SmartyPaginate::_getSearchField($instance))){
         $search = ' AND (';
@@ -190,7 +190,7 @@ function orderPaginator($instance, $table=null){
         if ($order != '' AND isset($table[$order])) {
             $order = ' ORDER BY '. $table[$order].'.'.$order; 
         } else {
-            $order = ' ORDER BY id'.$order; //hack to prevent blank pages if $table[$order !isset]
+            $order = ' ORDER BY '.$id.$order; //hack to prevent blank pages if $table[$order !isset]
         }
         $sort   = SmartyPaginate::getSort('sort', $instance) ;
         
