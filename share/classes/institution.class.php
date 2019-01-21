@@ -311,14 +311,14 @@ class Institution {
                                                         'state'         => 'sta',
                                                         'de'            => 'co',));  
         switch ($dependency) {
-            case 'user':$db = DB::prepare('SELECT ins.id, ins.institution, ins.description, ins.street, ins.postalcode, ins.city, ins.phone, ins.email, ins.file_id, sch.schooltype AS schooltype_id, sta.state AS state_id, ins.country_id, ins.file_id, co.de AS country, ins.creation_time, usr.username AS creator_id, ro.role
+            case 'user':$db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS ins.id, ins.institution, ins.description, ins.street, ins.postalcode, ins.city, ins.phone, ins.email, ins.file_id, sch.schooltype AS schooltype_id, sta.state AS state_id, ins.country_id, ins.file_id, co.de AS country, ins.creation_time, usr.username AS creator_id, ro.role
                             FROM institution AS ins, schooltype AS sch, state AS sta, countries AS co, users AS usr, institution_enrolments AS ie, roles AS ro
                             WHERE sch.id = ins.schooltype_id AND sta.id = ins.state_id AND co.id = ins.country_id AND usr.id = ins.creator_id AND ro.id = ie.role_id
                             AND ie.institution_id = ins.id AND ie.user_id = ? AND ie.status = 1 '.$order_param);
                         $db->execute(array($id));
                 break;
             
-            case 'all': $db = DB::prepare('SELECT ins.id, ins.institution, ins.description, ins.street, ins.postalcode, ins.city, ins.phone, ins.email, sch.schooltype AS schooltype_id, sta.state AS state_id, ins.country_id, co.de AS country, ins.creation_time, ins.file_id, usr.username AS creator_id 
+            case 'all': $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS ins.id, ins.institution, ins.description, ins.street, ins.postalcode, ins.city, ins.phone, ins.email, sch.schooltype AS schooltype_id, sta.state AS state_id, ins.country_id, co.de AS country, ins.creation_time, ins.file_id, usr.username AS creator_id 
                             FROM institution AS ins, schooltype AS sch, state AS sta, countries AS co, users AS usr
                             WHERE sch.id = ins.schooltype_id AND sta.id = ins.state_id AND co.id = ins.country_id AND usr.id = ins.creator_id '.$order_param);
                         $db->execute();
@@ -331,6 +331,11 @@ class Institution {
         while($result = $db->fetchObject()) { 
                 $dataInstitution[] = $result; 
         } 
+        
+        if ($paginator != ''){ 
+             set_item_total($paginator); //set item total based on FOUND ROWS()
+        }
+        
         if (isset($dataInstitution)){
             $value = $dataInstitution;
         } else {

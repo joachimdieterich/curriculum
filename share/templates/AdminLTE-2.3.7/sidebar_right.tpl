@@ -17,7 +17,7 @@
         <div class="form-group">
           <label class="control-sidebar-subheading">
             Datensätze pro Seite
-            <input type="number" class="pull-right color-palette bg-primary" min="5" max="100" value="{$my_paginator_limit}" onchange="processor('config','user_paginator', this.value);">
+            <input type="number" class="pull-right color-palette bg-primary" min="5" max="100" value="{$my_paginator_limit}" onchange="processor('config','paginator_limit', this.value);">
           </label>
           <p>Legt fest, wie viele Einträge pro Seite angezeigt werden.</p>
         </div><!-- /.form-group -->

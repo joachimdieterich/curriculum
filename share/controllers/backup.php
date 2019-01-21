@@ -29,7 +29,7 @@ $TEMPLATE->assign('page_title', 'Sicherungen erstellen');
 $backups            = new File();
 /* load backups and courses */
 if (checkCapabilities('backup:getAllBackups', $USER->role_id, false)) {                          // Administrators
-    $backup_list    = $backups->getFiles('context', $CONTEXT['backup']->id, 'fileBackupPaginator');  
+    $backup_list    = $backups->getFiles('context', $_SESSION['CONTEXT']['backup']->context_id, 'fileBackupPaginator');  
 } else if (checkCapabilities('backup:getMyBackups', $USER->role_id, false)) {                    // Teacher and Tutor
     $backup_list    = $backups->getFiles('backup',  $USER->id, 'fileBackupPaginator');
 } 
@@ -56,7 +56,8 @@ $p_config = array('id'            => 'checkbox',
                   'description'   => 'Beschreibung',
                   'creation_time' => 'Datum',
                   'author'        => 'Erstellt durch',
-                  'p_search'      => array('title','description'),
+                  'p_search'      => array('title','description', 'filename'),
                   'p_widget'      => $p_widget, 
                   'p_options'     => $p_options);
-setPaginator('fileBackupPaginator', $backup_list, 'fb_val', 'index.php?action=backup', $p_config);      
+
+setPaginator('fileBackupPaginator', $backup_list, 'id', 'index.php?action=backup', $p_config);      

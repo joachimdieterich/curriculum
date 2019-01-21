@@ -472,27 +472,27 @@ class File {
                                                         'creation_time' => 'fl',
                                                         'author'        => 'fl')); 
         switch ($dependency) {
-            case 'context':             $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+            case 'context':             $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                         WHERE fl.context_id = ? AND fl.context_id = ct.context_id '.$order_param);
                 $db->execute(array($id));
                 break;
-            case 'userfiles':           $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+            case 'userfiles':           $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                         WHERE fl.creator_id = ? AND fl.context_id = ct.context_id '.$order_param);
                 $db->execute(array($id));
                 break;
             case 'curriculum':          if (isset($cur)){ // if param cur is set, load only files for cur 'level'
-                                            $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+                                            $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                                                     WHERE fl.cur_id = ? AND fl.context_id = 2 AND fl.context_id = ct.context_id 
                                                                                     AND ena_id IS NULL AND ter_id IS NULL '.$order_param);
                                             $db->execute(array($id));
                                         } else {
-                                            $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+                                            $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                                                     WHERE fl.cur_id = ? AND fl.context_id = 2 AND fl.context_id = ct.context_id '.$order_param);
                                             $db->execute(array($id));
                                         }
                 
                 break;
-            case 'terminal_objective':  $db = DB::prepare('SELECT DISTINCT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+            case 'terminal_objective':  $db = DB::prepare('SELECT DISTINCT SQL_CALC_FOUND_ROWS fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                             WHERE fl.ter_id = ? AND ISNULL(fl.ena_id) AND fl.context_id = 2 AND fl.context_id = ct.context_id
                                                             AND( fl.file_context = 1 
                                                             OR ( fl.file_context = 2 AND fl.creator_id = ANY (SELECT user_id from institution_enrolments WHERE institution_id = ? )) 
@@ -501,7 +501,7 @@ class File {
                                                             ORDER BY fl.file_context ASC');
                 $db->execute(array($id, $USER->institution_id, $USER->id, $USER->id));
                 break;
-            case 'enabling_objective':  $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+            case 'enabling_objective':  $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                             WHERE fl.ena_id = ? AND fl.context_id = 2 AND fl.context_id = ct.context_id 
                                                               AND( fl.file_context = 1 
                                                               OR ( fl.file_context = 2 AND fl.creator_id = ANY (SELECT user_id from institution_enrolments WHERE institution_id = ? )) 
@@ -511,32 +511,32 @@ class File {
                 $db->execute(array($id, $USER->institution_id, $USER->id, $USER->id));
                 break;                  
             
-            case 'avatar':              $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+            case 'avatar':              $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                         WHERE fl.creator_id = ? AND fl.context_id = 3 AND fl.context_id = ct.context_id '.$order_param);
                 $db->execute(array($id));
                 break;
-            case 'id':            $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+            case 'id':            $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                         WHERE fl.ena_id = ? AND fl.creator_id = ? AND fl.context_id = ct.context_id AND fl.file_context <> 4 '.$order_param); // file_context <> 4 --> don't show personal files
                 $db->execute(array($id, $user_id)); //$user_id from $params
                 break;
-            case 'solution':            $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+            case 'solution':            $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                         WHERE fl.cur_id = ? AND fl.context_id = 4 AND fl.context_id = ct.context_id '.$order_param);
                 $db->execute(array($id));
                 break;
-            case 'task':                $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+            case 'task':                $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                         WHERE fl.reference_id = ? AND fl.context_id = '.$_SESSION['CONTEXT'][$dependency]->context_id.' AND fl.context_id = ct.context_id '.$order_param);
                 $db->execute(array($id));
                 break;
-            case 'user':                $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+            case 'user':                $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                         WHERE fl.creator_id = ? AND fl.context_id = ct.context_id '.$order_param);             
                 $db->execute(array($id));
                 break;
-            case 'backup':              $db = DB::prepare('SELECT DISTINCT fl.*, ct.path AS context_path FROM files AS fl, context AS ct, curriculum_enrolments AS ce
+            case 'backup':              $db = DB::prepare('SELECT DISTINCT SQL_CALC_FOUND_ROWS fl.*, ct.path AS context_path FROM files AS fl, context AS ct, curriculum_enrolments AS ce
                                                         WHERE fl.context_id = 8 AND fl.context_id = ct.context_id AND fl.cur_id = ce.curriculum_id
                                                         AND ce.group_id = ANY (SELECT gr.group_id FROM groups_enrolments AS gr WHERE gr.user_id =  ?) '.$order_param);  
                                         $db->execute(array($id));
                 break;
-            case 'certificate':         $db = DB::prepare('SELECT DISTINCT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+            case 'certificate':         $db = DB::prepare('SELECT DISTINCT SQL_CALC_FOUND_ROWS fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                             WHERE fl.context_id = 22 AND fl.context_id = ct.context_id AND fl.reference_id = ? '.$order_param);  
                                         $db->execute(array($id));
                 break;
@@ -544,6 +544,9 @@ class File {
             default : break; 
         }                      
 
+        if ($paginator != ''){ 
+             set_item_total($paginator); //set item total based on FOUND ROWS()
+        }
         $files = array(); //Array of files
         while($result = $db->fetchObject()) { 
                 $this->id                    = $result->id;
@@ -582,7 +585,7 @@ class File {
                 }
                 $files[]                     = clone $this;       
         }
-           
+
         if (isset($CFG->settings->repository) AND $externalFiles == true){
             foreach ($CFG->settings->repository as $r) {
                 if (method_exists($r,'getFiles')){

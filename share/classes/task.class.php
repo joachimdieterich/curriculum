@@ -108,7 +108,7 @@ class Task {
                                                         'description'   => 'ta')); 
         $entrys = array();                      //Array of grades
         switch ($dependency) {
-            case 'user':            $db = DB::prepare('SELECT ta.id
+            case 'user':            $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS ta.id
                                                         FROM task AS ta
                                                         WHERE ta.creator_id = ? '.$order_param );
                                     $db->execute(array($USER->id));
@@ -117,7 +117,7 @@ class Task {
             case 'course':
             case 'userFiles':
             case 'institution':
-            case 'group':           $db = DB::prepare('SELECT ta.id
+            case 'group':           $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS ta.id
                                                 FROM task AS ta, task_enrolments AS te, context AS ct
                                                 WHERE ct.context = ? 
                                                 AND ct.context_id = te.context_id
@@ -125,7 +125,7 @@ class Task {
                                                 AND te.task_id = ta.id ORDER BY ta.timeend' );
                                     $db->execute(array($dependency, $id));
                 break;
-            case 'coursebook':      $db = DB::prepare('SELECT DISTINCT ta.id
+            case 'coursebook':      $db = DB::prepare('SELECT DISTINCT SQL_CALC_FOUND_ROWS ta.id
                                                 FROM task AS ta, task_enrolments AS te, context AS ct
                                                 WHERE ct.context = ? 
                                                 AND ct.context_id = te.context_id
@@ -133,7 +133,7 @@ class Task {
                                                 AND te.task_id = ta.id '.$order_param );
                                     $db->execute(array('courseBook', $id));
                 break;
-            case 'upcoming':        $db = DB::prepare('SELECT ta.id FROM task AS ta, task_enrolments AS te, context AS ct, course_book AS cb, curriculum_enrolments AS ce, groups_enrolments AS ge
+            case 'upcoming':        $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS ta.id FROM task AS ta, task_enrolments AS te, context AS ct, course_book AS cb, curriculum_enrolments AS ce, groups_enrolments AS ge
                                                         WHERE ct.context = ?
                                                         AND ct.context_id = te.context_id
                                                         AND te.reference_id = cb.cb_id
@@ -169,7 +169,9 @@ class Task {
                 //}
                 $entrys[]            = clone $this;        //it has to be clone, to get the object and not the reference
         } 
-        
+        if ($paginator != ''){ 
+             set_item_total($paginator); //set item total based on FOUND ROWS()
+        }
         return $entrys;
     }
     

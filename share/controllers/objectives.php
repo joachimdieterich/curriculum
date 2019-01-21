@@ -35,6 +35,7 @@ $show_course                = false;            // zurücksetzen
 $selected_curriculum_id     = (isset($_GET['course']) && trim($_GET['course'] != '') ? $_GET['course'] : '_'); //'_' ist das Trennungszeichen 
 $selected_curriculumforURL  = $selected_curriculum_id;
 
+
 if (isset($_GET['p_select'])){
     unset($_SESSION['SmartyPaginate']['userPaginator']['pagi_selection']);
     SmartyPaginate::setSelection($_GET['p_select'], 'userPaginator');
@@ -46,6 +47,8 @@ $TEMPLATE->assign('selected_curriculum_id',         $selected_curriculum_id);
 $TEMPLATE->assign('selected_certificate_template',  filter_input(INPUT_GET, 'certificate_template', FILTER_VALIDATE_INT));
 
 list ($selected_curriculum_id, $selected_group) = explode('_', $selected_curriculum_id); //$selected_curriculum_id enthält curriculumid_groupid (zb. 32_24) wenn nur '_' gesetzt ist werden beide variabeln ''
+$_SESSION['PAGE']->objectives['cur_id'] = $selected_curriculum_id;
+$_SESSION['PAGE']->objectives['gp_id'] = $selected_group;
 $TEMPLATE->assign('sel_curriculum', $selected_curriculum_id); //only selected curriculum without group
 $TEMPLATE->assign('sel_group_id',   $selected_group); //only selected group without curriculum
   
@@ -72,11 +75,12 @@ if ($selected_curriculum_id != '' AND !isset($_GET['ajax'])) {
                                                    'capability' => checkCapabilities('mail:postMail', $USER->role_id, false),
                                                    'icon'       => 'fa fa-envelope',
                                                    'tooltip'    => 'Nachricht schreiben'));
-    $t_config      = array('table_id'  => array('id'         => 'contentsmalltable'),
-                           'page'      => array('onclick'    => 'checkrow(\'page\', \'userPaginator\', \'false\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&certificate_template=\'+document.getElementById(\'certificate_template\').value);'),
-                           'all'       => array('onclick'    => 'checkrow(\'all\', \'userPaginator\', \'false\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&certificate_template=\'+document.getElementById(\'certificate_template\').value);'),
-                           'checkbox'  => array('onclick'    => 'checkrow(\'__id__\', \'userPaginator\', \'false\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&certificate_template=\'+document.getElementById(\'certificate_template\').value);'),
-                           'td'        => array('onclick'    => 'checkrow(\'__id__\', \'userPaginator\', \'true\', \'index.php?action=objectives&course=\'+document.getElementById(\'course\').value+\'&p_select=__id__&certificate_template=\'+document.getElementById(\'certificate_template\').value);'));
+    $t_config      = array('table_id'   => array('id'         => 'contentsmalltable'),
+                           'page'       => array('onclick'    => 'processor(\'config\', \'paginator_checkrow\', \'page\', {\'reload\': \'false\',\'page\': \'objectives\',  \'paginator\':\'userPaginator\', \'reset\':\'false\',  \'callback\':\'replaceElementByID\', \'replaceId\':\'curriculum_content\'});'),
+                           'all'        => array('onclick'    => 'processor(\'config\', \'paginator_checkrow\', \'all\', {\'reload\': \'false\',\'page\': \'objectives\',  \'paginator\':\'userPaginator\', \'reset\':\'false\',  \'callback\':\'replaceElementByID\', \'replaceId\':\'curriculum_content\'});'),
+                           'checkbox'   => array('onclick'    => 'processor(\'config\', \'paginator_checkrow\', \'__id__\', {\'reload\': \'false\',\'page\': \'objectives\', \'paginator\':\'userPaginator\', \'reset\':\'false\',  \'callback\':\'replaceElementByID\', \'replaceId\':\'curriculum_content\'});'),
+                           'td'         => array('onclick'    => 'processor(\'config\', \'paginator_checkrow\', \'__id__\', {\'reload\': \'false\',\'page\': \'objectives\', \'paginator\':\'userPaginator\', \'reset\':\'true\',  \'callback\':\'replaceElementByID\', \'replaceId\':\'curriculum_content\'});'),
+        );
     if(checkCapabilities('dashboard:globalAdmin', $USER->role_id, false)){
     $p_config      = array('id'        => 'checkbox',
                            'username'  => 'Benutzername', 
@@ -123,10 +127,12 @@ if ($selected_curriculum_id != '' AND !isset($_GET['ajax'])) {
 if ($selected_curriculum_id != '' AND $selected_user_id != '' AND isset($selected_user_id[0])) {
     if (count($selected_user_id) > 1){
         $terminal_objectives = new TerminalObjective();         //load terminal objectives
-        $TEMPLATE->assign('terminalObjectives', $terminal_objectives->getObjectives('curriculum', $selected_curriculum_id));
+        $ter_obj = $terminal_objectives->getObjectives('curriculum', $selected_curriculum_id);
         $enabling_objectives = new EnablingObjective();         //load enabling objectives
-        $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('group', $selected_curriculum_id, $selected_user_id));
+        $ena_obj = $enabling_objectives->getObjectives('group', $selected_curriculum_id, $selected_user_id);
         $show_course         = true; // setzen
+        $TEMPLATE->assign('terminalObjectives', $ter_obj);
+        $TEMPLATE->assign('enabledObjectives', $ena_obj);
     } else {
         $user                = new User(); 
         $user->load('id', $selected_user_id[0], false);
@@ -134,11 +140,15 @@ if ($selected_curriculum_id != '' AND $selected_user_id != '' AND isset($selecte
         $group               = new Group();   
         $TEMPLATE->assign('group', $group->getGroups('course', $selected_group));
         $terminal_objectives = new TerminalObjective();         //load terminal objectives
-        $TEMPLATE->assign('terminalObjectives', $terminal_objectives->getObjectives('curriculum', $selected_curriculum_id));
+        $ter_obj = $terminal_objectives->getObjectives('curriculum', $selected_curriculum_id);
+       
         $enabling_objectives = new EnablingObjective();         //load enabling objectives
         $enabling_objectives->curriculum_id = $selected_curriculum_id;
-        $TEMPLATE->assign('enabledObjectives', $enabling_objectives->getObjectives('user', $selected_user_id[0]));
+        $ena_obj = $enabling_objectives->getObjectives('user', $selected_user_id[0]);
+        
         $show_course         = true; // setzen    
+        $TEMPLATE->assign('terminalObjectives', $ter_obj);
+        $TEMPLATE->assign('enabledObjectives', $ena_obj);
     }     
 }  
 /*******************************************************************************
@@ -155,4 +165,5 @@ if(checkCapabilities('user:userList',         $USER->role_id, false)){
 }
 
 $content = new Content();
-$TEMPLATE->assign('cur_content', array('label'=>'Digitalisierte Texte des Lehrplans', 'entrys'=> $content->get('curriculum', $selected_curriculum_id)));
+$cur_content = array('label'=>'Digitalisierte Texte des Lehrplans', 'entrys'=> $content->get('curriculum', $selected_curriculum_id));
+$TEMPLATE->assign('cur_content', $cur_content);

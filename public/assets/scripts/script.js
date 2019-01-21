@@ -148,60 +148,29 @@ function sethtml(dependency, id, source, target, source_width, target_width) {
 }
 
 
-function update_paginator(paginator){
-    if (req.readyState === 4) {  
-        if (req.status === 200) {
-            if (req.responseText.length !== 0){
-                $("[id^=row]").removeClass("bg-aqua");
-                $("[id^="+paginator+"_]").prop("checked", false);
-                response = JSON.parse(req.responseText);
-                if (typeof(response.length) === 'undefined'){
-                    document.getElementById('count_selection').innerHTML = 0; 
-                    $("[id^="+paginator+"_]").prop("checked", false);
-                    $("#p_unselect").prop("checked", false);
-                    $(document.getElementById("span_unselect")).removeClass("visible");
-                    $(document.getElementById("span_unselect")).addClass("hidden");
-                } else {
-                    document.getElementById('count_selection').innerHTML = response.length; 
-                    for (i = 0; i < response.length; i++) { 
-                        $("#"+paginator+"_"+response[i]).prop("checked", true);  
-                        $("#row"+response[i]).addClass("bg-aqua");
-                    }
-                    $(document.getElementById("span_unselect")).removeClass("hidden");
-                    $(document.getElementById("span_unselect")).addClass("visible");
-                }
-            }
-        }
-    }  
-}
-/**
- * 
- * @param {int} rowNr
- * @returns {undefined}
- */
-function checkrow(/*rowNr,link*/) {
-    paginator = arguments[1];
-    if (arguments.length >= 2) { 
-        var url = "../share/processors/p_config.php?func=paginator_checkrow&val="+ arguments[0] +"&paginator="+paginator+"&reset="+arguments[2];     
+function updatePaginator(response){
+    $("[id^=row]").removeClass("bg-aqua");
+    $("[id^="+response.paginator+"_]").prop("checked", false);
+    if (typeof(response.selection.length) === 'undefined'){
+        document.getElementById('count_selection').innerHTML = 0; 
+        $(document.getElementById("span_unselect")).removeClass("visible");
+        $(document.getElementById("span_unselect")).addClass("hidden");
     } else {
-        var url = "../share/processors/p_config.php?func=paginator_checkrow&val="+ arguments[0] +"&paginator="+paginator;
+        document.getElementById('count_selection').innerHTML = response.selection.length; 
+        for (i = 0; i < response.selection.length; i++) { 
+            $("#"+response.paginator+"_"+response.selection[i]).prop("checked", true);  
+            $("#row"+response.selection[i]).addClass("bg-aqua");
+        }
+        $(document.getElementById("span_unselect")).removeClass("hidden");
+        $(document.getElementById("span_unselect")).addClass("visible");
+        $("#"+response.paginator+"_"+response.val).prop("checked", true);  
     }
-
-    req = XMLobject();
-    if(req) {  
-        req.onreadystatechange = function(){
-            update_paginator(paginator);
-        };
-        req.open("GET", url, false); //false --> important for print function
-        req.send(null);
-    }
+     
+    $("#"+response.paginator+"_page").prop("checked", response.select_page);  
+    $("#"+response.paginator+"_all").prop("checked", response.select_all);  
+    $("#"+response.paginator+"_none").prop("checked", response.select_none);  
     
-    if (arguments.length === 4) { //reload with given url 
-        $(document).ajaxStart(function() { Pace.restart(); });
-        $("#curriculum_content").parent().load(arguments[3] + "&ajax=true #curriculum_content"); //.parent to replace #curriculum_content
-        $(document.getElementById("div_print_certificate")).removeClass("hidden");
-        //window.location.assign(arguments[3]);            //do not reload ! -> floting_table won't work
-    }
+    $('#'+response.replaceId).replaceWith(response.element); 
 }
 
 /* floating_table with fixed header */
@@ -350,16 +319,6 @@ function process(){
 
 /**
  * 
- * @param {string} URL
- * @param {string} target
- */
-function openLink(URL, target) {
-    if (URL !== ''){ //Sortiert "leere" Anfragen aus.
-        window.open(URL, target);
-    } 
-}
-/**
- * 
  * @param {string} ID
  * @param {boolean} checked
  */
@@ -369,21 +328,6 @@ function unmask(ID,checked){
     } else {
         document.getElementById(ID).type = 'password'; 
     }
-}
-
-
-function hideFile() { //nach dem l\u00f6schen wird das thumbnail ausgeblendet
-    if (req.readyState === 4) {  
-        if (req.status === 200) {    
-           if (req.responseText.length !== 1){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen
-                if (document.getElementById('thumb_'+arguments[0])) {
-                    document.getElementById('thumb_'+arguments[0]).style.display='none'; 
-                }
-           } else {
-               window.location.reload();
-           }
-        }
-    }   
 }
 
 function setStatusColor(ena_id, status){
@@ -464,10 +408,6 @@ function getRequest(url){
     }   
 }
 
-function curriculumdocs(link) {
-    window.open(link, '_blank', '');
-}
-
 /*
  * Form Loader
  * Opens Modal
@@ -487,6 +427,11 @@ function formloader(/*form, func, id, []*/){
 }
 
 function processor(/*proc, func, val, [..., reload = false], pluginpath*/){ // if reload = false: prevent reload
+    if (arguments[0] === 'delete'){
+        if (!confirm("Datensatz wirklich l\u00f6schen?")) {
+            return;
+        } 
+    }
     reload   = true;
     callback = false;
     id       = arguments[2];
@@ -552,6 +497,8 @@ function replaceElementByID(response){
             case 'fadeOut': $('#'+response.replaceId).fadeOut("fast");
                 break;
             case 'fadeIn':  $('#'+response.replaceId).replaceWith(response.element);  
+                break;
+            case 'updatePaginator': updatePaginator(response);
                 break;
             default:        
                 break;
@@ -626,36 +573,6 @@ function checkbox_addForm(){//arguments checked, style, id, invers_id -> if chec
     }
 }
 
-function hideMaterial(){
-    document.getElementById('popup').style.visibility='hidden';
-}
-
-function checkPaginatorRow(paginatorName, rowNr) {
-    var ch = document.getElementById(paginatorName+''+rowNr);
-    if(ch) {
-        if (ch.checked === false){
-            ch.checked = true;
-            document.getElementById('row'+rowNr).className = 'activecontenttablerow';
-        } else {
-            ch.checked = false;
-            document.getElementById('row'+rowNr).className = 'contenttablerow';
-        }  
-    }
-}
-
-//Fileuploadframe ausblenden
-function hideUploadframe(){
-       document.getElementById('uploadframe').style.display = 'none';
-}
-
-function confirmDialog(text) {
-    if (confirm(text)){
-        return true; 
-    } else {
-        return false;
-    }
-}
-
 //icon function
 function showSubjectIcon(path, icon){
     document.getElementById('icon_img').style.background =  "url('"+path+icon+"') center center";
@@ -716,17 +633,7 @@ function popupFunction(e){
     $('button[data-toggle="collapse"]').click(function () {
         $(this).find('i.fa').toggleClass('fa-compress fa-expand');
     });
-    
-    /*var config = {
-      '.chosen-select'           : {},
-      '.chosen-select-deselect'  : {allow_single_deselect:true},
-      '.chosen-select-no-single' : {disable_search_threshold:10},
-      '.chosen-select-no-results': {no_results_text:'Keine Treffer!'},
-      '.chosen-select-width'     : {width:"95%"}
-    };
-    for (var selector in config) {
-        $(selector).chosen(config[selector]);
-    }*/  
+
     /*close popup when clicking outside modal*/
     $(function() {
         $("body").click(function(e) {

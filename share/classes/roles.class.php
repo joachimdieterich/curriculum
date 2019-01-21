@@ -171,10 +171,10 @@ class Roles {
                                                         'role' => 'ro',
                                                         'description'    => 'ro')); 
         if ($all){
-            $db          = DB::prepare('SELECT ro.* FROM roles AS ro '.$order_param); // get all roles
+            $db          = DB::prepare('SELECT SQL_CALC_FOUND_ROWS ro.* FROM roles AS ro '.$order_param); // get all roles
             $db->execute();
         } else {
-            $db          = DB::prepare('SELECT ro.* FROM roles AS ro WHERE ro.order_id >= (SELECT ro.order_id FROM roles AS ro WHERE ro.id = ?) '.$order_param); // man darf nur rollen vergeben die unter der eigenen sind. id = id damit suche funktioniert
+            $db          = DB::prepare('SELECT SQL_CALC_FOUND_ROWS ro.* FROM roles AS ro WHERE ro.order_id >= (SELECT ro.order_id FROM roles AS ro WHERE ro.id = ?) '.$order_param); // man darf nur rollen vergeben die unter der eigenen sind. id = id damit suche funktioniert
             $db->execute(array($USER->role_id));
         }
         while ($result = $db->fetchObject()) {
@@ -184,6 +184,10 @@ class Roles {
             $roles[]            = clone $this; 
         }
     
+        if ($paginator != ''){ 
+             set_item_total($paginator); //set item total based on FOUND ROWS()
+        }
+        
         if (isset($roles)){
             return $roles; 
         } else {return false;}

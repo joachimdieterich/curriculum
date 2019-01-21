@@ -335,7 +335,6 @@
 
     function dragstop() {
       //Wird aufgerufen, wenn ein Objekt nicht mehr bewegt werden soll.
-
       dragobjekt=null;
     }
 
