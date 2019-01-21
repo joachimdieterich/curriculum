@@ -1369,7 +1369,7 @@ class Render {
         }
         /*get upcoming events*/
         $events = new Event();
-        $upcoming_events = $events->get('upcoming', $USER->id, '', 5);
+        $upcoming_events = $events->get('upcoming', $USER->id, '');
         if ($USER->role_id === $role_id OR $role_id == $CFG->settings->standard_role){
             if (isset($upcoming_events)){
                 $html ='';
@@ -2830,4 +2830,67 @@ public static function quote_reference($quotes){
         }
         //return $plugin::PLUGINNAME;
     }
+    /**
+     * array($terminalObjectives, $user, $sel_curriculum, $selected_user_id, $enabledObjectives)
+     * */
+    public static function curriculum($params){
+        global $CFG; 
+        foreach($params as $key => $val) {
+            $$key   = $val;
+        }
+        $html = '<div id="curriculum_content" class="row ">';
+        if (isset($terminalObjectives)){  
+            $html .= '<div class="col-xs-12">
+                <div class="box box-default">
+                    <div class="box-header ">';
+                        if (count($selected_user_id) > 1){
+                            $user  = new User(); 
+                            $user->load('id', $selected_user_id[0], false);
+                            if (isset($user->avatar)){
+                                 $html .= Render::split_button($cur_content);
+                                 $html .='<img src="'.$CFG->access_file.$user->avatar.'" style="height:40px;"class="user-image pull-left margin-r-5" alt="User Image">';
+                            }
+                            $html .= Render::badge_preview(["reference_id" => $sel_curriculum, "user_id" => $selected_user_id]);
+                        }
+                        $html .=' <p class="pull-right">Farb-Legende:
+                            <button class="btn btn-success btn-flat" style="cursor:default">selbständig erreicht</button>
+                            <button class="btn btn-warning btn-flat" style="cursor:default">mit Hilfe erreicht</button>
+                            <button class="btn btn-danger btn-flat" style="cursor:default">nicht erreicht</button>
+                            <button class="btn btn-default disabled btn-flat" style="cursor:default">nicht bearbeitet</button>
+                            </p>
+                        </div>';
+                    
+          $html .= '<div class="box-body" style="min-height:400px;">';
+
+                    if ( isset($terminalObjectives)){
+                        foreach ($terminalObjectives as $terid => $ter) {
+                        $html .='<div class="row" ><div class="col-xs-12">';
+                                // Thema
+                                $html .= RENDER::objective(["type" =>"terminal_objective", "objective" => $ter , "user_id" => $selected_user_id,"group_id" => $sel_group_id]);
+                                // Ziele
+                                foreach ($enabledObjectives as $enaid => $ena) {
+                                    if ($ena->terminal_objective_id == $ter->id){
+                                        $html .= RENDER::objective(["type" =>"enabling_objective", "objective" => $ena , "user_id" => $selected_user_id, "group_id" => $sel_group_id, "border_color" => $ter->color]);
+                                    }
+                                }
+                                 $html .='</div></div>';
+                        }
+                    } else {
+                        if (isset($selected_user_id)){
+                            $html .= '<p>Es wurden noch keine Kompetenzen eingegeben.</p>
+                                      <p>Dies können sie unter Lehrpläne machen.</p>';
+                        } else {
+                            if (isset($sel_curriculum)) { //Wenn noch keine Lehrpläne angelegt wurden
+                            $html .= '<p>Bitte wählen sie einen Benutzer aus.</p>';
+                            }            
+                        }
+                    } 
+                    $html .= '</div>
+                </div>
+            </div>';
+        }
+    $html .= '</div>';   
+    return $html;
+    }
+    
 }
