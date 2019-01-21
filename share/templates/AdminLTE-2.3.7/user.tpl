@@ -71,7 +71,7 @@
             </div>
                         
             {* Function Tabs *}
-            <form id='userlist'   method='post' action="index.php?action=user&next={$currentUrlId}">
+            <form id='userlist'   method='post' action="index.php?action=user">
             <div class="row ">
                     <div class="col-sm-12">
                         <div class="nav-tabs-custom">

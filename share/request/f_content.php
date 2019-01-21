@@ -116,13 +116,11 @@ if ($_GET['func'] != "show"){
         }
     }
 
-    $html    ='<form id="form_content"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_content.php"';
-    if (isset($currentUrlId)){ $html .= $currentUrlId; }
-    $html   .= '">
-    <input id="func" name="func" type="hidden" value="'.$func.'"/>
-    <input id="context_id" type="hidden" name="context_id" value="'.$context_id.'"/>
-    <input id="reference_id" type="hidden" name="reference_id" value="'.$reference_id.'"/>
-    <input id="id" name="id" type="text" class="invisible" ';
+    $html    ='<form id="form_content"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_content.php">
+                <input id="func" name="func" type="hidden" value="'.$func.'"/>
+                <input id="context_id" type="hidden" name="context_id" value="'.$context_id.'"/>
+                <input id="reference_id" type="hidden" name="reference_id" value="'.$reference_id.'"/>
+                <input id="id" name="id" type="text" class="invisible" ';
     if (isset($id)) { $html .= 'value="'.$id.'"';} $html .= '>';
     $html   .= Form::input_text('title', $label_title, $title, $error, 'Titel');
     $html   .= Form::input_textarea('content', $label_content, $content, $error, 'Beschreibung');

@@ -84,9 +84,8 @@ switch ($context) {
         break;
 }
 //* Load webservice form from plugin*/
-$content   ='<form id="form_plugin_repository_add_reference" class="form-horizontal" role="form" method="post" action="../share/plugins/repository/edusharing/processors/fp_add_reference.php"';
-if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content  .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
+$content   ='<form id="form_plugin_repository_add_reference" class="form-horizontal" role="form" method="post" action="../share/plugins/repository/edusharing/processors/fp_add_reference.php">
+             <input type="hidden" name="func" id="func" value="'.$func.'"/>';
 if (isset($reference_id)){
 $content  .= '<input type="hidden" name="reference_id" id="reference_id" value="'.$reference_id.'"/> ';
 }

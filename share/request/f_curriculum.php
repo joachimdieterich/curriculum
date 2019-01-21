@@ -137,12 +137,10 @@ $content .= '       <span id="curriculum_upload_fType" class="hidden"></span>
   </div><!-- /.nav-tab-custom -->';
 }
 
-$content .='<form id="form_curriculum"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_curriculum.php"';
-if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content .= '">
-<input id="importFileName" name="importFileName" type="text" class="hidden" value="">
-<input type="hidden" name="func" id="func" value="'.$func.'"/>
-<input id="id" name="id" type="text" class="invisible" ';
+$content .= '<form id="form_curriculum"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_curriculum.php">';
+$content .= '<input id="importFileName" name="importFileName" type="text" class="hidden" value="">
+             <input type="hidden" name="func" id="func" value="'.$func.'"/>
+             <input id="id" name="id" type="text" class="invisible" ';
 if (isset($id)) { $content .= 'value="'.$id.'"';} $content .= '>';
 
 $content .= Form::input_text('curriculum', 'Titel des Lehrplans', $curriculum, $error, 'z. B. Deutsch');

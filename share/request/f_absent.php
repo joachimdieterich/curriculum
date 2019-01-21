@@ -86,11 +86,9 @@ if (isset($_SESSION['FORM'])){
     }
 }
    
-$content ='<form id="form_absent"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_absent.php"';
-
-if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content .= '"><input type="hidden" name="reference_id" id="reference_id" value="'.$reference_id.'"/>
-<input type="hidden" name="func" id="func" value="'.$func.'"/>';
+$content ='<form id="form_absent"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_absent.php">;
+            <input type="hidden" name="reference_id" id="reference_id" value="'.$reference_id.'"/>
+            <input type="hidden" name="func" id="func" value="'.$func.'"/>';
 if (isset($absent_id)){
 $content .= '<input type="hidden" name="absent_id" id="absent_id" value="'.$absent_id.'"/> ';
 $content .= '<input type="hidden" name="user_id" id="user_id" value="'.$user_id.'"/> ';

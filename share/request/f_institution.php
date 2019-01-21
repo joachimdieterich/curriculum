@@ -93,9 +93,8 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$content ='<form id="form_institution" class="form-horizontal" role="form" method="post" action="../share/processors/fp_institution.php"';
-if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
+$content ='<form id="form_institution" class="form-horizontal" role="form" method="post" action="../share/processors/fp_institution.php">
+           <input type="hidden" name="func" id="func" value="'.$func.'"/>';
 if (isset($id)) {                                                               // only set id input field if set! prevents error on validation form reload
      $content .= '<input id="id" name="id" type="text" class="invisible" value="'.$id.'">';
 }

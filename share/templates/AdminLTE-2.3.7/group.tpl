@@ -15,7 +15,7 @@
     <div class="row">
         <div class="col-xs-12">
             <div class="box box-default">
-                <form id='grouplist' method='post' action='index.php?action=group&next={$currentUrlId}'>
+                <form id='grouplist' method='post' action='index.php?action=group'>
                 <div class="box-body">
                     {if checkCapabilities('groups:add', $my_role_id, false)}    
                         <div class="btn-group" role="group" aria-label="...">

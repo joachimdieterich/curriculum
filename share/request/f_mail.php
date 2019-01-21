@@ -80,9 +80,8 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$content = '<form id="form_mail"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_mail.php"';
-if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content .= '"><input type="hidden" name="mail_id" id="mail_id" value="'.$mail_id.'"/>
+$content = '<form id="form_mail"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_mail.php">
+            <input type="hidden" name="mail_id" id="mail_id" value="'.$mail_id.'"/>
             <input type="hidden" name="func" id="func" value="'.$func.'"/>';
 $content .= '<div class="nav-tabs-custom">';
 $content .= '<ul class="nav nav-tabs">

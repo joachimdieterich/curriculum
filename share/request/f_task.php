@@ -91,10 +91,8 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$content  ='<form id="form_task"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_task.php"';
-if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content .= '">
-<input type="hidden" name="func" id="func" value="'.$func.'"/>';
+$content  ='<form id="form_task"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_task.php">
+            <input type="hidden" name="func" id="func" value="'.$func.'"/>';
 if (isset($task_id)){
     $content .= '<input type="hidden" name="task_id" id="task_id" value="'.$task_id.'"/> ';
 }

@@ -89,11 +89,9 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$content  ='<form id="form_courseBook"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_courseBook.php"';
-if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content .= '">
-<input type="hidden" name="func" id="func" value="'.$func.'"/>
-<input id="id" name="id" type="text" class="invisible" ';
+$content  ='<form id="form_courseBook"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_courseBook.php">
+            <input type="hidden" name="func" id="func" value="'.$func.'"/>
+            <input id="id" name="id" type="text" class="invisible" ';
 if (isset($id)) { $content .= 'value="'.$id.'"';} $content .= '>';
 $content .= Form::input_textarea('topic', 'Thema', $topic, $error, 'Stundenthema');
 $content .= Form::input_textarea('description', 'Beschreibung', $description, $error, 'Beschreibung');

@@ -93,10 +93,9 @@ if (isset($_SESSION['FORM'])){
     }
 }
    
-$content ='<form id="form_event"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_event.php"';
-if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>
-<input type="hidden" name="context_id" id="context_id" value="'.$context_id.'"/>';
+$content ='<form id="form_event"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_event.php">
+            <input type="hidden" name="func" id="func" value="'.$func.'"/>
+            <input type="hidden" name="context_id" id="context_id" value="'.$context_id.'"/>';
 if (isset($event_id)){
     $content .= '<input type="hidden" name="event_id" id="event_id" value="'.$event_id.'"/> ';
 }

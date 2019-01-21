@@ -42,7 +42,7 @@
                 <div class="tab-content">
                     <div id="tab_userlist" class="tab-pane {if isset($tab_userlist)}active{/if}">
                         {if isset($courses)}
-                            <form method='post' action='index.php?action=objectives&course={$selected_curriculum_id}{*&userID={implode(',',$selected_user_id)}&next={$currentUrlId}*}'>        
+                            <form method='post' action='index.php?action=objectives&course={$selected_curriculum_id}'>        
                                 <div class="form-horizontal">
                                     <div class="row">
                                         <div class="col-md-4 col-sm-12">
@@ -79,62 +79,18 @@
     
     {*if isset($userPaginator)*}
     
-    <div>
-    <div id="curriculum_content" class="row ">
-    {if $show_course != '' and isset($terminalObjectives)}    
-        <div class="col-xs-12">
-            <div class="box box-default">
-                <div class="box-header ">
-                    {if isset($user->avatar)}
-                        {*if $user->avatar_id neq 0*}
-                        {Render::split_button($cur_content)}
-                        <img src="{$access_file}{$user->avatar}" style="height:40px;"class="user-image pull-left margin-r-5" alt="User Image">
-                        {*/if*}
-                    {/if}
-                    {Render::badge_preview(["reference_id" => $sel_curriculum, "user_id" => $selected_user_id])}
-
-                    <p class="pull-right">Farb-Legende:
-                    <button class="btn btn-success btn-flat" style="cursor:default">selbständig erreicht</button>
-                    <button class="btn btn-warning btn-flat" style="cursor:default">mit Hilfe erreicht</button>
-                    <button class="btn btn-danger btn-flat" style="cursor:default">nicht erreicht</button>
-                    <button class="btn btn-default disabled btn-flat" style="cursor:default">nicht bearbeitet</button>
-                    </p>
-                </div>
-                <div class="box-body" style="min-height:400px;">
-        
-                {if $show_course != '' and isset($terminalObjectives)} 
-                    {foreach key=terid item=ter from=$terminalObjectives}
-                        <div class="row" >
-                            <div class="col-xs-12"> 
-                                {*Thema Row*}
-                                {RENDER::objective(["type" =>"terminal_objective", "objective" => $ter , "user_id" => $selected_user_id,"group_id" => $sel_group_id])}
-                                {*Ende Thema*}
-
-                                {*Anfang Ziel*}
-                                {foreach key=enaid item=ena from=$enabledObjectives}
-                                    {if $ena->terminal_objective_id eq $ter->id}
-                                        {RENDER::objective(["type" =>"enabling_objective", "objective" => $ena , "user_id" => $selected_user_id, "group_id" => $sel_group_id, "border_color" => $ter->color])}
-                                    {/if}
-                                {/foreach}
-                                {*Ende Ziel*}
-                            </div>
-                        </div>
-                    {/foreach}		
-                {else}
-                    {if isset($selected_user_id) and $show_course != ''}
-                        <p>Es wurden noch keine Kompetenzen eingegeben.</p>
-                        <p>Dies können sie unter Lehrpläne machen.</p>
-                    {else} 
-                        {if isset($curriculum_id)}<!--Wenn noch keine Lehrpläne angelegt wurden-->
-                        <p>Bitte wählen sie einen Benutzer aus.</p>
-                        {/if}            
-                    {/if}
-                {/if} 
-                </div>
-            </div>
-        </div>
-    {/if}
-    </div>
+    <div id="curriculum_content">
+        {if isset($selected_user_id)}
+            {Render::curriculum(['show_course' => $show_course, 
+                             'terminalObjectives' => $terminalObjectives,
+                             'enabledObjectives' => $enabledObjectives,
+                             'user' => $user,
+                             'sel_curriculum' => $sel_curriculum,
+                             'selected_user_id' => $selected_user_id,
+                             'sel_group_id' => $sel_group_id,
+                             'cur_content' => $cur_content
+                            ])}
+        {/if}
     </div>
     
 </section>

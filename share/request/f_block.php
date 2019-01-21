@@ -86,10 +86,8 @@ $content  ='<div class="nav-tabs-custom">
               </ul>
               <div class="tab-content">
                 <div id="tab_new" class="tab-pane active">
-                <form id="form_block" class="form-horizontal" role="form" method="post" action="../share/processors/fp_block.php"';
-
-                if (isset($currentUrlId)){ $content .= $currentUrlId; }
-                $content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
+                <form id="form_block" class="form-horizontal" role="form" method="post" action="../share/processors/fp_block.php">
+                <input type="hidden" name="func" id="func" value="'.$func.'"/>';
                 if (isset($id)){
                     $content .= '<input type="hidden" name="id" id="id" value="'.$id.'"/>';
                 }
