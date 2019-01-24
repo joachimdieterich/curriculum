@@ -2137,7 +2137,6 @@ class Render {
                                         global $v;
                                         return $v->{$r[1]}; 
                                     }, $href);
-                                
                             $html   .= '<li id="w_row_'.$value->id.'"><a href="'.$href_regex.'">'.$l;
                             if (isset($badge)){
                                 
