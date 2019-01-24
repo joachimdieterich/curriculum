@@ -36,6 +36,9 @@ class CourseBook {
     public $curriculum_id;
     public $curriculum;
     public $event_id;
+    
+    public $terminalObjective_id;
+    public $enablingObjective_ids;
    
     //public $event;
     public $timestart;
@@ -57,7 +60,29 @@ class CourseBook {
         $this->timestart = date('Y-m-d G:i:s', strtotime($this->timestart));
         $this->timeend   = date('Y-m-d G:i:s', strtotime($this->timeend));
         $db = DB::prepare('INSERT INTO course_book (topic,description,timestart,timeend,course_id,creator_id) VALUES (?,?,?,?,?,?)');
-        return $db->execute(array($this->topic, $this->description,  $this->timestart, $this->timeend, $this->course_id, $USER->id));
+        if ($db->execute(array($this->topic, $this->description,  $this->timestart, $this->timeend, $this->course_id, $USER->id))){
+            $this->id = DB::lastInsertId();
+        }else{
+            return false;
+        }
+        $success = True;
+        $os = new ObjectiveSubscription();
+        $os->creator_id=$this->creator_id;
+        $os->context_id=10;
+        $os->source_id = $this->id;
+        $os->objective_context_id = 27;
+        $os->reference_id = $this->terminalObjective_id;
+        $os->add();
+        $os->objective_context_id = 12;
+        if (is_numeric($this->id)){
+            foreach($this->enablingObjective_ids AS $eoid){
+                $os->reference_id = $eoid;
+                if (!is_numeric($os->add())){
+                    $success = False;
+                }
+            }
+        }
+        return $success;
     }
     
     public function update(){
@@ -67,7 +92,62 @@ class CourseBook {
         $this->timestart = date('Y-m-d G:i:s', strtotime($this->timestart));
         $this->timeend   = date('Y-m-d G:i:s', strtotime($this->timeend));
         $db = DB::prepare('UPDATE course_book SET topic = ?, description = ?, timestart = ?, timeend = ?, course_id = ? WHERE cb_id = ?');
-        return $db->execute(array($this->topic, $this->description,  $this->timestart, $this->timeend, $this->course_id,$this->id));
+        $success = $db->execute(array($this->topic, $this->description,  $this->timestart, $this->timeend, $this->course_id,$this->id));
+        if ($success){
+            $os = new ObjectiveSubscription();
+            $os->id = ObjectiveSubscription::getSubscriptionIds(10, $this->id, 27)[0];
+            $os->load();
+            
+            if ($os->reference_id == $this->terminalObjective_id){
+                #Update der Enable Objectives, terminal ist identisch geblieben
+                $objectiveSubscription_ids = ObjectiveSubscription::getSubscriptionIds(10, $this->id, 12);
+                $vorhandeneEnable_ids = array();
+                $alleEnable_ids = $this->enablingObjective_ids;
+                foreach($objectiveSubscription_ids AS $osid){
+                    $os->id = $osid;
+                    $os->load();
+                    $vorhandeneEnable_ids[] = $os->reference_id;
+                    if (!in_array($os->reference_id, $alleEnable_ids)){
+                        $alleEnable_ids[] = $os->reference_id;
+                    }
+                }
+                foreach ($alleEnable_ids AS $eid){
+                    if (!in_array($eid, $vorhandeneEnable_ids) && in_array($eid, $this->enablingObjective_ids)){
+                        #Enable neu anlegen
+                        $os->creator_id=$this->creator_id;
+                        $os->context_id=10;
+                        $os->source_id = $this->id;
+                        $os->objective_context_id = 12;
+                        $os->reference_id = $eid;
+                        $os->add();
+                    }elseif(in_array($eid, $vorhandeneEnable_ids) && !in_array($eid, $this->enablingObjective_ids)){
+                        ObjectiveSubscription::deleteByContextSourceObjectivecontextReferenceCreator(10, $this->id, 12, $eid, $USER->id);
+                    }
+                }
+                
+                
+            }else{
+                #Terminal hat sich geändert, terminal und enable löschen und neu anlegen
+                ObjectiveSubscription::deleteAllObjectiveSubscriptionsByContextSource(10, $this->id, $USER->id);
+                $os->creator_id=$this->creator_id;
+                $os->context_id=10;
+                $os->source_id = $this->id;
+                $os->objective_context_id = 27;
+                $os->reference_id = $this->terminalObjective_id;
+                $os->add();
+                $os->objective_context_id = 12;
+                if (is_numeric($this->id)){
+                    foreach($this->enablingObjective_ids AS $eoid){
+                        $os->reference_id = $eoid;
+                        if (!is_numeric($os->add())){
+                            $success = False;
+                        }
+                    }
+                }
+            }
+            
+        }
+        return $success;
     }
     
     public function delete(){
@@ -76,7 +156,15 @@ class CourseBook {
         $this->load();
         $LOG->add($USER->id, 'coursebook.class.php', dirname(__FILE__), 'Delete coursebook: '.$this->topic.', course_id: '.$this->course_id.' creator_id: '.$this->creator_id);
         $db = DB::prepare('DELETE FROM course_book WHERE cb_id = ? AND creator_id = ?');
-        return $db->execute(array($this->id, $USER->id));
+        $success = $db->execute(array($this->id, $USER->id));
+        if ($success){
+            $db = DB::prepare('DELETE FROM objective_subscription '
+                    . 'WHERE context_id = 10 '
+                    . 'AND source_id = ? '
+                    . 'AND creator_id = ?');
+            return $db->execute(array($this->id, $USER->id));
+        }
+        return $success;
     } 
     
     public function load($dependency = 'cb_id', $value = null){

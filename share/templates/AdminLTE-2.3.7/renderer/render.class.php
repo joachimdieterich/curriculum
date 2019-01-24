@@ -2861,4 +2861,45 @@ public static function quote_reference($quotes){
         }
         //return $plugin::PLUGINNAME;
     }
+    
+    public static function objective_list($params){
+        global $USER;
+        foreach($params AS $key=>$value){
+            $$key = $value;
+        }
+        
+        switch ($dependency){
+            case 'courseBook':
+                $os = new ObjectiveSubscription();
+                $os->id = ObjectiveSubscription::getSubscriptionIds(10, $id, 27)[0];
+                
+                $code = '';
+                if ($os->load()){
+                    #terminal laden
+                    $terminal = new TerminalObjective();
+                    $terminal->id = $os->reference_id;
+                    $terminal->load();
+                    $code .= '<div style="display:inline-table; padding:10px">' . RENDER::objective(["type" =>"terminal_objective", "objective" => $terminal , "user_id" => $USER->id]) .'</div>';
+                    
+                    #enable laden
+                    $enable = new EnablingObjective();
+                    $enable_ids = ObjectiveSubscription::getSubscriptionIds(10, $id, 12);
+                    foreach ($enable_ids AS $eid){
+                        error_log("HIER");
+                        $enable->id = $eid;
+                        $enable->load();
+                        error_log("Enable" . json_encode($enable));
+                        $code .= '<div style="display:inline-table; padding:10px">' . RENDER::objective(["type" =>"enabling_objective", "objective" => $enable , "user_id" => $USER->id]) .'</div>';
+                        
+                    }
+                }
+                
+                return $code;
+                break;
+            default:
+                return "";
+                break;
+        }
+        
+    }
 }

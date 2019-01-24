@@ -42,9 +42,12 @@ $course_book->description   = $purifier->purify(filter_input(INPUT_POST, 'descri
 $gump = new Gump();    /* Validation */
 $_POST = $gump->sanitize($_POST);       //sanitize $_POST
 //$course_book->event_id      = null;
-$course_book->course_id     = $_POST['course_id'];
-$course_book->timerange     = $_POST['timerange'];
+$course_book->course_id     = $purifier->purify(filter_input(INPUT_POST, 'course_id', FILTER_UNSAFE_RAW));
+$course_book->timerange     = $purifier->purify(filter_input(INPUT_POST, 'timerange', FILTER_UNSAFE_RAW));
 $course_book->task_id       = null; 
+$course_book->terminalObjective_id = filter_input(INPUT_POST, 'terminal_objective_id', FILTER_UNSAFE_RAW);
+$course_book->enablingObjective_ids = $_POST['enabling_objective_id'];
+
 
 $gump->validation_rules(array(
 'topic' => 'required'
