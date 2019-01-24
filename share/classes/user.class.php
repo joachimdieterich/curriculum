@@ -1409,7 +1409,7 @@ class User {
      * @return string | array
      */
    public function get_instiution_enrolments($array = false) { 
-        $db = DB::prepare('SELECT ins.institution, ins.id AS institution_id, ro.id AS role_id, ro.role
+        $db = DB::prepare('SELECT ins.institution, ins.id, ro.id AS role_id, ro.role
                             FROM institution AS ins, institution_enrolments AS ie, roles AS ro
                             WHERE ins.id = ie.institution_id AND ie.status = 1 AND ie.role_id = ro.id
                             AND ie.user_id = ?');
@@ -1417,12 +1417,12 @@ class User {
         
         while($result = $db->fetchObject()) { 
             if ($array == true){ //Array output for quickform
-                $data[$result->institution_id] = $result->institution;
+                $data[$result->id] = $result->institution;
             } else {
                 $data[] = $result;         
             }
-            if (!in_array($result->institution_id, $this->institution_ids)){
-                array_push($this->institution_ids, $result->institution_id);
+            if (!in_array($result->id, $this->institution_ids)){
+                array_push($this->institution_ids, $result->id);
             }
         } 
         
