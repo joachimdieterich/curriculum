@@ -426,12 +426,16 @@ class Form {
     }
     
     private static function form_group($id, $content, $label = '', $e = null, $css_l = 'col-sm-3', $css_r = 'col-sm-9') {
-        $form =  "<div id='{$id}_form_group' class='form-group ".validate_msg($e, $id, true)."'>";
-        if ($css_l != ''){ // if left class is empty no label is set
-            $form .= "<label class='control-label {$css_l}' for='{$id}'>{$label}</label>";
-        }
-        $form .= "<div class='{$css_r}'>".validate_msg($e, $id)."{$content}</div></div>";
-        return $form;        
+        if ($css_l == '' AND $css_r = ''){
+            return $content; //nur das Input-Element wird ausgegeben.
+        } else {
+            $form =  "<div id='{$id}_form_group' class='form-group ".validate_msg($e, $id, true)."'>";
+            if ($css_l != ''){ // if left class is empty no label is set
+                $form .= "<label class='control-label {$css_l}' for='{$id}'>{$label}</label>";
+            }
+            $form .= "<div class='{$css_r}'>".validate_msg($e, $id)."{$content}</div></div>";
+            return $form; 
+        }    
     }
     
 }
