@@ -64,11 +64,13 @@ if (isset($_POST) ){
                                         $institution->id = $USER->institution_id;
                                     }
                                     
-                                    if ($USER->id == $edit_user->id and $USER->role_id == 1) {
-                                       // HACK an admin can't remove own admin-rights
-                                     } else {
-                                       $edit_user->role_id = $_POST['roles'];
-                                     }
+                                    if ($USER->id             == $edit_user->id AND 
+                                        $USER->role_id        == $edit_user->role_id AND
+                                        $USER->institution_id == $institution->id) {
+                                        $PAGE->message[] = array('message' => 'Man kann seine Rolle an der aktuellen Institution kann nicht bearbeiten.', 'icon' => 'fa fa-group text-warning'); // Benutzer dürfen sich nicht selbst an der aktuellen Institution eine geringere Rolle zuweisen. 
+                                    } else {
+                                        $edit_user->role_id = $_POST['roles'];
+                                    }
                                     $edit_user->enroleToInstitution($institution->id);
                     break; 
                 case isset($_POST['expelInstitution']):
