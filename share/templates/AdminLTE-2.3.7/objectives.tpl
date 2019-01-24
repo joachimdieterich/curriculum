@@ -45,7 +45,7 @@
                             <form method='post' action='index.php?action=objectives&course={$selected_curriculum_id}'>        
                                 <div class="form-horizontal">
                                     <div class="row">
-                                        <div class="col-md-4 col-sm-12">
+                                        <div class="col-md-4 col-sm-12" style="margin-left:15px;">
                                             {Form::input_select('course', '', $courses, 'group, curriculum', 'id', $selected_curriculum_id, null, "window.location.assign('index.php?action=objectives&course='+this.value);", 'Kurs / Klasse wählen...', '', 'col-sm-12')}
                                         </div>
                                         {*Zertifikat*}
