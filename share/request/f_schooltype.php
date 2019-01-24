@@ -73,9 +73,8 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$content ='<form id="form_schooltype" class="form-horizontal" role="form" method="post" action="../share/processors/fp_schooltype.php"';
-if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
+$content ='<form id="form_schooltype" class="form-horizontal" role="form" method="post" action="../share/processors/fp_schooltype.php">
+           <input type="hidden" name="func" id="func" value="'.$func.'"/>';
 if (isset($id)) {
      $content .= '<input id="id" name="id" type="text" class="invisible" value="'.$id.'">';
 }

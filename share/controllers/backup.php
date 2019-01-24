@@ -29,14 +29,14 @@ $TEMPLATE->assign('page_title', 'Sicherungen erstellen');
 $backups            = new File();
 /* load backups and courses */
 if (checkCapabilities('backup:getAllBackups', $USER->role_id, false)) {                          // Administrators
-    $backup_list    = $backups->getFiles('context', $CONTEXT['backup']->id, 'fileBackupPaginator');  
+    $backup_list    = $backups->getFiles('context', $_SESSION['CONTEXT']['backup']->context_id, 'fileBackupPaginator');  
 } else if (checkCapabilities('backup:getMyBackups', $USER->role_id, false)) {                    // Teacher and Tutor
     $backup_list    = $backups->getFiles('backup',  $USER->id, 'fileBackupPaginator');
 } 
 
 $TEMPLATE->assign('web_backup_path', $CFG->web_backup_path);  
 
-$p_options = array('delete'     => array('onclick'     => "del('file',__id__);", 
+$p_options = array('delete'     => array('onclick'     => "processor('delete', 'file', __id__, { 'reload': 'false', 'callback': 'replaceElementByID', 'element_Id': 'row__id__'});", 
                                          'capability'  => checkCapabilities('backup:delete', $USER->role_id, false),
                                          'icon'        => 'fa fa-trash',
                                          'tooltip'     => 'löschen'),
@@ -56,7 +56,8 @@ $p_config = array('id'            => 'checkbox',
                   'description'   => 'Beschreibung',
                   'creation_time' => 'Datum',
                   'author'        => 'Erstellt durch',
-                  'p_search'      => array('title','description'),
+                  'p_search'      => array('title','description', 'filename'),
                   'p_widget'      => $p_widget, 
                   'p_options'     => $p_options);
-setPaginator('fileBackupPaginator', $backup_list, 'fb_val', 'index.php?action=backup', $p_config);      
+
+setPaginator('fileBackupPaginator', $backup_list, 'id', 'index.php?action=backup', $p_config);      

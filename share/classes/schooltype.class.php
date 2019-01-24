@@ -157,7 +157,7 @@ class Schooltype {
                                                         'state'         => 'st'
                                                         ));  
         $schooltypes = array();                      //Array of schooltypes
-        $db          = DB::prepare('SELECT sc.*, st.state, cs.de FROM schooltype AS sc, countries AS cs, state AS st WHERE sc.state_id = st.id AND sc.country_id = cs.id '.$order_param);
+        $db          = DB::prepare('SELECT SQL_CALC_FOUND_ROWS sc.*, st.state, cs.de FROM schooltype AS sc, countries AS cs, state AS st WHERE sc.state_id = st.id AND sc.country_id = cs.id '.$order_param);
         $db->execute();
         while($result = $db->fetchObject()) { 
             $this->id               = $result->id;
@@ -171,9 +171,14 @@ class Schooltype {
             $this->creator_id       = $result->creator_id;
             if ($for_session){
                 $schooltypes[$result->schooltype]= clone $this;   // store schooltypes by id and schooltype to resolve both ways
-            }
-            $schooltypes[$result->id]= clone $this;        
+                $schooltypes[$result->id]= clone $this;
+            } else {
+                $schooltypes[]= clone $this;  //to get paginator working
+            }    
         } 
+        if ($paginator != ''){ 
+             set_item_total($paginator); //set item total based on FOUND ROWS()
+        }
         return $schooltypes;
     }
     

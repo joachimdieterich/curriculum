@@ -89,7 +89,7 @@ $semesters->institution_id  = $USER->institutions;
 $TEMPLATE->assign('semester', $semesters->getSemesters());
 
 $groups                     = new Group(); 
-$p_options = array('delete' => array('onclick'      => "del('group',__id__);", 
+$p_options = array('delete' => array('onclick'      => "processor('delete', 'group', __id__, { 'reload': 'false', 'callback': 'replaceElementByID', 'element_Id': 'row__id__'});", 
                                      'capability'   => checkCapabilities('groups:delete', $USER->role_id, false),
                                      'icon'         => 'fa fa-trash', 
                                      'tooltip'      => 'löschen'),

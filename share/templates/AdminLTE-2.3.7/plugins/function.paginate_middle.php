@@ -99,7 +99,6 @@ function smarty_function_paginate_middle($params, &$smarty, $bootstrap = false) 
     $_ret = '';
     
     $_attrs = !empty($_attrs) ? ' ' . implode(' ', $_attrs) : '';
-    
     if(isset($_page_limit)) {
         // find halfway point
         $_page_limit_half = floor($_page_limit / 2);
@@ -140,7 +139,7 @@ function smarty_function_paginate_middle($params, &$smarty, $bootstrap = false) 
                     $_this_url .= SmartyPaginate::getUrlVar($_id) . '=' . $_item;
                     //$_ret .= $_link_prefix . '<a href="' . str_replace('&', '&amp;', $_this_url) . '"' . $_attrs . '>' . $_text . '</a>' . $_link_suffix;
                     if ($bootstrap){
-                        $_ret .= $_link_prefix . '<button type="button" class="btn btn-default" onclick="location.href=$(this).children(\'a:first\').attr(\'href\');"><a href="' . str_replace('&', '&amp;', $_this_url) . '"' . $_attrs . '>' . $_text . '</a>' . $_link_suffix.'</button>';
+                        $_ret .= $_link_prefix . '<button type="button" class="btn btn-default" onclick="processor(\'config\',\'paginator_item\','.$_item.',{\'paginator\':\''.$_id.'\',\'reload\':\'true\'});"><a href="' . str_replace('&', '&amp;', $_this_url) . '"' . $_attrs . '>' . $_text . '</a>' . $_link_suffix.'</button>';
                     } else {
                         $_ret .= $_link_prefix . '<a href="' . str_replace('&', '&amp;', $_this_url) . '"' . $_attrs . '>' . $_text . '</a>' . $_link_suffix;
                     }
@@ -172,9 +171,12 @@ function smarty_function_paginate_middle($params, &$smarty, $bootstrap = false) 
                 
                 //$_ret .= $_link_prefix . '<a href="' . str_replace('&', '&amp;', $_this_url) . '"' . $_attrs . '>' . $_text . '</a>' . $_link_suffix;
                 if ($bootstrap){
-                    $_ret .= $_link_prefix . '<button type="button" class="btn btn-default" onclick="location.href=$(this).children(\'a:first\').attr(\'href\');"><a href="' . str_replace('&', '&amp;', $_this_url) . '"' . $_attrs . '>' . $_text . '</a>' . $_link_suffix.'</button>';
+                    //$_ret .= $_link_prefix . '<button type="button" class="btn btn-default" onclick="location.href=$(this).children(\'a:first\').attr(\'href\');"><a href="' . str_replace('&', '&amp;', $_this_url) . '"' . $_attrs . '>' . $_text . '</a>' . $_link_suffix.'</button>';
+                    $_ret .= $_link_prefix . '<button type="button" class="btn btn-default" onclick="processor(\'config\',\'paginator_item\','.$_item.',{\'paginator\':\''.$_id.'\',\'reload\':\'true\'});">'
+                            . '<a >' . $_text . '</a>' . $_link_suffix.'</button>';
                 } else {
                     $_ret .= $_link_prefix . '<a href="' . str_replace('&', '&amp;', $_this_url) . '"' . $_attrs . '>' . $_text . '</a>' . $_link_suffix;
+                    $_ret .= $_link_prefix . '<a onclick="processor(\'config\',\'paginator_limit\',\''.$_attrs[$id].'\',{\'paginator\':\''.$id.'\',\'reload\':\'true\'});">' . $_text . '</a>' . $_link_suffix;
                 }
                 
             } else {

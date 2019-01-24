@@ -64,11 +64,13 @@ if (isset($_POST) ){
                                         $institution->id = $USER->institution_id;
                                     }
                                     
-                                    if ($USER->id == $edit_user->id and $USER->role_id == 1) {
-                                       // HACK an admin can't remove own admin-rights
-                                     } else {
-                                       $edit_user->role_id = $_POST['roles'];
-                                     }
+                                    if ($USER->id             == $edit_user->id AND 
+                                        $USER->role_id        == $edit_user->role_id AND
+                                        $USER->institution_id == $institution->id) {
+                                        $PAGE->message[] = array('message' => 'Man kann seine Rolle an der aktuellen Institution kann nicht bearbeiten.', 'icon' => 'fa fa-group text-warning'); // Benutzer dürfen sich nicht selbst an der aktuellen Institution eine geringere Rolle zuweisen. 
+                                    } else {
+                                        $edit_user->role_id = $_POST['roles'];
+                                    }
                                     $edit_user->enroleToInstitution($institution->id);
                     break; 
                 case isset($_POST['expelInstitution']):
@@ -100,7 +102,7 @@ $TEMPLATE->assign('groups_array', $group_list);
 $TEMPLATE->assign('myInstitutions', $institution->getInstitutions('user', null, $USER->id));
 
 $users      = new USER();
-$p_options  = array('delete' => array('onclick'     => "del('user',__id__);", 
+$p_options  = array('delete' => array('onclick'     => "processor('delete', 'user', __id__, { 'reload': 'false', 'callback': 'replaceElementByID', 'element_Id': 'row__id__'});", 
                                      'capability'   => checkCapabilities('user:delete', $USER->role_id, false),
                                      'icon'         => 'fa fa-trash',
                                      'tooltip'      => 'löschen'),
@@ -131,7 +133,6 @@ if (checkCapabilities('user:shortUserList', $USER->role_id, false)){
                    /* 'city'       => 'Ort', */
                    /* 'state'      => 'Bundesland', */
                    /* 'country'    => 'Land', */
-                      ''           => 'Rolle',
                       'p_search'   => array('username','firstname','lastname'),
                       'p_widget'   => $p_widget,
                       'p_options'  => $p_options);
@@ -146,7 +147,6 @@ else {
                       'city'       => 'Ort',
                    /* 'state'      => 'Bundesland', */
                    /* 'country'    => 'Land', */
-                      ''           => 'Rolle',
                       'p_search'   => array('username','firstname','lastname','email','postalcode','city'),
                       'p_widget'   => $p_widget,
                       'p_options'  => $p_options);
@@ -175,7 +175,7 @@ if (isset($_GET['filter_institution'])){
 if(isset($_SESSION['PAGE']->config['tab'])){
     $TEMPLATE->assign($_SESSION['PAGE']->config['tab'],  true);
 } else {
-    $TEMPLATE->assign('f_password',  true);
+    $TEMPLATE->assign('tab_password',  true);
 }
 
 setPaginator('userP', $u, 'us_val', 'index.php?action=user', $p_config); //set Paginator

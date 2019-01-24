@@ -36,7 +36,7 @@ $content   =  '<div class="nav-tabs-custom"><div class="box-header">'
             if (checkCapabilities('task:update', $USER->role_id, false)){
             $content   .= '<div class="tools pull-right text-muted">
                             <i class="fa fa-edit" onclick="formloader(\'task\',\'edit\', \''.$t->id.'\');"></i>
-                            <i class="fa fa-trash-o" onclick="del(\'task\', '.$t->id.');"></i>
+                            <i class="fa fa-trash-o" onclick="processor(\'delete\', \'task\', '.$t->id.',{ \'reload\': \'false\', \'callback\': \'replaceElementByID\', \'element_Id\': \'task_right_col\'});"></i>
                         </div>';
             }
 

@@ -90,9 +90,8 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$content  = '<form id="form_profile" class="form-horizontal" role="form" method="post" action="../share/processors/fp_profile.php"';
-if (isset($currentUrlId)){ $html .= $currentUrlId; }
-$content .= '" autocomplete="off"><input type="hidden" name="func" id="func" value="'.$func.'"/>
+$content  = '<form id="form_profile" class="form-horizontal" role="form" method="post" action="../share/processors/fp_profile.php"
+             autocomplete="off"><input type="hidden" name="func" id="func" value="'.$func.'"/>
             <input type="hidden" name="user_id" id="user_id" value="'.$user_id.'"/>
             <input type="hidden" name="avatar_id" id="avatar_id" value="'.$avatar_id.'"/>';
 if ($func == 'new'){

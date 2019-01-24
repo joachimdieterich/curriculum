@@ -67,11 +67,10 @@ if (isset($_SESSION['FORM'])){
 }
    
 $content  = '<div class="row"><div class="col-sm-9">';
-$content .= '<form id="form_file"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_file.php"';
-if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>
-             <input type="hidden" name="context_id" id="context_id" value="'.$context_id.'"/>';
-$content .= '<input type="hidden" name="id" id="id" value="'.$id.'"/> ';
+$content .= '<form id="form_file"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_file.php">
+             <input type="hidden" name="func" id="func" value="'.$func.'"/>
+             <input type="hidden" name="context_id" id="context_id" value="'.$context_id.'"/>
+             <input type="hidden" name="id" id="id" value="'.$id.'"/> ';
 $content .= Form::input_text('title', 'Titel', $title, $error, 'z. B. Diagramm eLearning');
 $content .= Form::input_text('description', 'Beschreibung', $description, $error, 'Beschreibung'); 
 $content .= Form::input_text('author', 'Autor', $author, $error, 'Max Mustermann'); 

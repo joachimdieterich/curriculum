@@ -70,6 +70,7 @@ function smarty_function_paginate_last($params, &$smarty, $bootstrap = false) {
     $_url .= (strpos($_url, '?') === false) ? '?' : '&';
     $_url .= SmartyPaginate::getUrlVar($_id) . '=';
     $_url .= ($_total % $_limit > 0) ? $_total - ( $_total % $_limit ) + 1 : $_total - $_limit + 1;
+    $item_index = ($_total % $_limit > 0) ? $_total - ( $_total % $_limit ) + 1 : $_total - $_limit + 1; //get index of last page
     
    
     if(($_item = SmartyPaginate::_getNextPageItem($_id)) !== false) {
@@ -78,11 +79,12 @@ function smarty_function_paginate_last($params, &$smarty, $bootstrap = false) {
         $_show = false;
     }
     
-    
     if ($bootstrap){
-        return $_show ? '<button type="button" class="btn btn-default"onclick="location.href=$(this).children(\'a:first\').attr(\'href\');"><a class="fa fa-step-forward"href="' . str_replace('&','&amp;', $_url) . '"' . $_attrs . '></a></button>' : '';
+        return $_show ? '<button type="button" class="btn btn-default" onclick="processor(\'config\',\'paginator_item\','.$item_index.',{\'paginator\':\''.$_id.'\',\'reload\':\'true\'});"><a class="fa fa-step-forward" ' . $_attrs . '></a></button>' : '';
+      //return $_show ? '<button type="button" class="btn btn-default"onclick="location.href=$(this).children(\'a:first\').attr(\'href\');"><a class="fa fa-step-forward"href="' . str_replace('&','&amp;', $_url) . '"' . $_attrs . '></a></button>' : '';
     } else {
-        return $_show ? '<a href="' . str_replace('&','&amp;', $_url) . '"' . $_attrs . '>' . $_text . '</a>' : '';
+        return $_show ? '<a onclick="processor(\'config\',\'paginator_item\','.$item_index.',{\'paginator\':\''.$_id.'\',\'reload\':\'true\'});" >' . $_text . '</a>' : '';
+        //return $_show ? '<a onclick="processor(\'config\',\'paginator_limit\',\''.$_attrs[$id].'\',{\'paginator\':\''.$id.'\',\'reload\':\'true\'});" href="' . str_replace('&','&amp;', $_url) . '"' . $_attrs . '>' . $_text . '</a>' : '';
     }
 }
 

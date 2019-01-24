@@ -60,13 +60,12 @@ $cur     = new Curriculum();
 $cur->id = $curriculum_id;
 $cur->load();
 
-$content = '<form id="form_curriculum_owner"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_curriculum_owner.php"';
-if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content .= '"><input type="hidden" name="curriculum_id" id="curriculum_id" value="'.$curriculum_id.'"/>
-             <input type="hidden" name="func" id="func" value="'.$func.'"/>
-             <div>'. Form::input_select('owner_id', 'Neuer Besitzer', $USER->getGroupMembers(), 'firstname, lastname', 'id', $cur->creator_id , $error) .'
-              <input id="set_owner" name="set_owner" type="submit" class="hidden"/>
-             </div>
+$content = '<form id="form_curriculum_owner"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_curriculum_owner.php">
+            <input type="hidden" name="curriculum_id" id="curriculum_id" value="'.$curriculum_id.'"/>
+            <input type="hidden" name="func" id="func" value="'.$func.'"/>
+            <div>'. Form::input_select('owner_id', 'Neuer Besitzer', $USER->getGroupMembers(), 'firstname, lastname', 'id', $cur->creator_id , $error) .'
+                 <input id="set_owner" name="set_owner" type="submit" class="hidden"/>
+            </div>
             </form>';
 $footer   = '<button id="set_owner_btn" type="submit" class="btn btn-primary pull-right" onclick="$(\'#set_owner\').click();" ><i class="fa fa-save margin-r-5"></i>'.$header.'</button> ';
               

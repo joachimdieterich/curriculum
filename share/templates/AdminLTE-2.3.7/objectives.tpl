@@ -13,7 +13,7 @@
         );
         $(document).ready(function () {
             small       = false;
-            if ($('#f_userlist').hasClass('active')){
+            if ($('#tab_userlist').hasClass('active')){
                 floating_table('body-wrapper', 'userPaginator', ['username', 'role_name', 'completed', 'online'], 'menu_top_placeholder', 'container_userPaginator', 'default_userPaginator_position');
             }
         });
@@ -34,15 +34,15 @@
         <div class="col-sm-12">
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs">
-                    <li {if isset($f_userlist)}class="active"{/if}><a href="#f_userlist" data-toggle="tab" onclick='processor("config","page", "config",{["tab"=>"f_userlist"]|@json_encode nofilter});'>Kursliste</a></li>
+                    <li id="nav_tab_userlist" {if isset($tab_userlist)}class="active"{/if}><a href="#tab_userlist" data-toggle="tab" onclick='processor("config","page", "config",{["tab"=>"tab_userlist", "reload"=>"false"]|@json_encode nofilter});'>Kursliste</a></li>
                     {if isset($coursebook) AND checkCapabilities('menu:readCourseBook', $my_role_id, false)}
-                        <li {if isset($f_coursebook)}class="active"{/if}><a href="#f_coursebook" data-toggle="tab" onclick='processor("config","page", "config",{["tab"=>"f_coursebook"]|@json_encode nofilter});'>Kursbuch</a></li>
+                        <li id="nav_tab_coursebook" {if isset($tab_coursebook)}class="active"{/if}><a href="#tab_coursebook" data-toggle="tab" onclick='processor("config","page", "config",{["tab"=>"tab_coursebook", "reload"=>"false"]|@json_encode nofilter});'>Kursbuch</a></li>
                     {/if}
                 </ul>
                 <div class="tab-content">
-                    <div class="tab-pane {if isset($f_userlist)}active{/if}" id="f_userlist">
+                    <div id="tab_userlist" class="tab-pane {if isset($tab_userlist)}active{/if}">
                         {if isset($courses)}
-                            <form method='post' action='index.php?action=objectives&course={$selected_curriculum_id}{*&userID={implode(',',$selected_user_id)}&next={$currentUrlId}*}'>        
+                            <form method='post' action='index.php?action=objectives&course={$selected_curriculum_id}'>        
                                 <div class="form-horizontal">
                                     <div class="row">
                                         <div class="col-md-4 col-sm-12">
@@ -68,7 +68,7 @@
                         {elseif $showuser eq true}Keine eingeschriebenen Benutzer{/if}
                     </div>
                     {if isset($coursebook)} 
-                    <div class="tab-pane {if isset($f_coursebook)}active{/if}" id="f_coursebook">
+                    <div id="tab_coursebook" class="tab-pane {if isset($tab_coursebook)}active{/if}">
                         {Render::courseBook($coursebook)}
                     </div>
                     {/if}
@@ -79,62 +79,18 @@
     
     {*if isset($userPaginator)*}
     
-    <div>
-    <div id="curriculum_content" class="row ">
-    {if $show_course != '' and isset($terminalObjectives)}    
-        <div class="col-xs-12">
-            <div class="box box-default">
-                <div class="box-header ">
-                    {if isset($user->avatar)}
-                        {*if $user->avatar_id neq 0*}
-                        {Render::split_button($cur_content)}
-                        <img src="{$access_file}{$user->avatar}" style="height:40px;"class="user-image pull-left margin-r-5" alt="User Image">
-                        {*/if*}
-                    {/if}
-                    {Render::badge_preview(["reference_id" => $sel_curriculum, "user_id" => $selected_user_id])}
-
-                    <p class="pull-right">Farb-Legende:
-                    <button class="btn btn-success btn-flat" style="cursor:default">selbständig erreicht</button>
-                    <button class="btn btn-warning btn-flat" style="cursor:default">mit Hilfe erreicht</button>
-                    <button class="btn btn-danger btn-flat" style="cursor:default">nicht erreicht</button>
-                    <button class="btn btn-default disabled btn-flat" style="cursor:default">nicht bearbeitet</button>
-                    </p>
-                </div>
-                <div class="box-body" style="min-height:400px;">
-        
-                {if $show_course != '' and isset($terminalObjectives)} 
-                    {foreach key=terid item=ter from=$terminalObjectives}
-                        <div class="row" >
-                            <div class="col-xs-12"> 
-                                {*Thema Row*}
-                                {RENDER::objective(["type" =>"terminal_objective", "objective" => $ter , "user_id" => $selected_user_id,"group_id" => $sel_group_id])}
-                                {*Ende Thema*}
-
-                                {*Anfang Ziel*}
-                                {foreach key=enaid item=ena from=$enabledObjectives}
-                                    {if $ena->terminal_objective_id eq $ter->id}
-                                        {RENDER::objective(["type" =>"enabling_objective", "objective" => $ena , "user_id" => $selected_user_id, "group_id" => $sel_group_id, "border_color" => $ter->color])}
-                                    {/if}
-                                {/foreach}
-                                {*Ende Ziel*}
-                            </div>
-                        </div>
-                    {/foreach}		
-                {else}
-                    {if isset($selected_user_id) and $show_course != ''}
-                        <p>Es wurden noch keine Kompetenzen eingegeben.</p>
-                        <p>Dies können sie unter Lehrpläne machen.</p>
-                    {else} 
-                        {if isset($curriculum_id)}<!--Wenn noch keine Lehrpläne angelegt wurden-->
-                        <p>Bitte wählen sie einen Benutzer aus.</p>
-                        {/if}            
-                    {/if}
-                {/if} 
-                </div>
-            </div>
-        </div>
-    {/if}
-    </div>
+    <div id="curriculum_content">
+        {if isset($selected_user_id)}
+            {Render::curriculum(['show_course' => $show_course, 
+                             'terminalObjectives' => $terminalObjectives,
+                             'enabledObjectives' => $enabledObjectives,
+                             'user' => $user,
+                             'sel_curriculum' => $sel_curriculum,
+                             'selected_user_id' => $selected_user_id,
+                             'sel_group_id' => $sel_group_id,
+                             'cur_content' => $cur_content
+                            ])}
+        {/if}
     </div>
     
 </section>

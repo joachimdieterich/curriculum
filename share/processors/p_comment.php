@@ -27,20 +27,23 @@ include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include_once(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER;
 
-$USER       = $_SESSION['USER'];
-$func       = $_GET['func'];
-
+$USER   = $_SESSION['USER'];
+$func   = filter_input(INPUT_GET, 'func', FILTER_SANITIZE_STRING);
+//error_log(json_encode($_GET));
 switch ($func) {
     case 'new':     $cm = new Comment();
-                    $cm->text           = filter_input(INPUT_GET, 'text',        FILTER_SANITIZE_STRING);
-                    $cm->reference_id   = filter_input(INPUT_GET, 'ref_id',         FILTER_VALIDATE_INT);
-                    $cm->context_id     = filter_input(INPUT_GET, 'context_id',  FILTER_VALIDATE_INT);
+                    $cm->text           = filter_input(INPUT_GET, 'text',       FILTER_SANITIZE_STRING);
+                    $cm->reference_id   = filter_input(INPUT_GET, 'val',        FILTER_VALIDATE_INT);
+                    $cm->context_id     = filter_input(INPUT_GET, 'context_id', FILTER_VALIDATE_INT);
                     if (isset($_GET['parent_id'])){
                         $cm->parent_id  = filter_input(INPUT_GET, 'parent_id',  FILTER_VALIDATE_INT);
                     } else {
                         $cm->parent_id  = null;
                     }
-                    $cm->add();
+                    $new_id = $cm->add();
+                    $context = $_SESSION['CONTEXT']["$cm->context_id"]->context;
+                    $element_id = filter_input(INPUT_GET, 'elementId', FILTER_SANITIZE_STRING);
+                    echo json_encode(array('replaceId'=> $element_id, 'newId' =>  $new_id, 'element'=>'<hr class="dashed">'.RENDER::comment($cm,false, false).'<li class="media" id="'.$element_id.'"></li>'));
     break;
     case 'update':  
         break;

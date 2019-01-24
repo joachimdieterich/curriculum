@@ -71,9 +71,8 @@ if (isset($_SESSION['FORM'])){
     }
 }
    
-$content  = '<form id="form_backup"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_backup.php"';
-if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
+$content  = '<form id="form_backup"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_backup.php">
+             <input type="hidden" name="func" id="func" value="'.$func.'"/>';
 $content .= Form::input_select('curriculum_id', 'Lehrplan', $options, 'course', 'curriculum_id', null , $error);
 /* Format selector*/
 $format_array = array('XML curriculum' => 'xml',

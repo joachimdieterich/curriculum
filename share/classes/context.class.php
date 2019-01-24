@@ -69,7 +69,7 @@ class Context {
                                             $this->context_id    = $result->context_id;
                                             $this->path          = $result->path;
                                             $context[$result->context] = clone $this; 
-                                            $context[$result->id]      = clone $this; // double saved to be able to resolve by context and id
+                                            $context[$result->context_id]      = clone $this; // double saved to be able to resolve by context and id
                                     }             
                 break;
 

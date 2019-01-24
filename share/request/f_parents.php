@@ -63,9 +63,7 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$content ='<form id="form_parents"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_parents.php"';
-if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content .= '">';
+$content ='<form id="form_parents"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_parents.php">';
 $content     .= Form::info(array('id' => 'ref_info', 'content' => '<strong>'.$user->firstname.' '.$user->lastname.' </strong>ist für die folgenden Personen erziehungsberechtigt:' ));
 $content     .= '<div class="form-group">
                   <label class="control-label col-sm-3"></label>

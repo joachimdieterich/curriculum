@@ -76,9 +76,7 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$content ='<form id="form_group"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_group.php"';
-if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content .= '">';
+$content ='<form id="form_group"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_group.php">';
 if (isset($id)){
     $content .= '<input type="hidden" name="group_id" id="group_id" value="'.$id.'"/>';    
 }

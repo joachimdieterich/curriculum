@@ -78,16 +78,16 @@ if (!$solutions){
     }
     $content .= '<ul class="nav nav-tabs">';
     if ($file_context_count[1] != 0){
-        $content .= '<li class="'.$active[1].'"><a href="#f_context_1" data-toggle="tab" >Global <span class="label label-primary">'.$file_context_count[1].'</span></a></li>';
+        $content .= '<li id="nav_tab_1" class="'.$active[1].'"><a href="#tab_1" data-toggle="tab" >Global <span class="label label-primary">'.$file_context_count[1].'</span></a></li>';
     }  
     if ($file_context_count[2] != 0){
-        $content .= '<li class="'.$active[2].'"><a href="#f_context_2" data-toggle="tab" >Institution <span class="label label-primary">'.$file_context_count[2].'</span></a></li>';
+        $content .= '<li id="nav_tab_2" class="'.$active[2].'"><a href="#tab_2" data-toggle="tab" >Institution <span class="label label-primary">'.$file_context_count[2].'</span></a></li>';
     }
     if ($file_context_count[3] != 0){
-        $content .= '<li class="'.$active[3].'"><a href="#f_context_3" data-toggle="tab" >Gruppe <span class="label label-primary">'.$file_context_count[3].'</span></a></li>';
+        $content .= '<li id="nav_tab_3" class="'.$active[3].'"><a href="#tab_3" data-toggle="tab" >Gruppe <span class="label label-primary">'.$file_context_count[3].'</span></a></li>';
     }
     if ($file_context_count[4] != 0){
-        $content .= '<li class="'.$active[4].'"><a href="#f_context_4" data-toggle="tab" >Persönlich <span class="label label-primary">'.$file_context_count[4].'</span></a></li>';
+        $content .= '<li id="nav_tab_4" class="'.$active[4].'"><a href="#tab_4" data-toggle="tab" >Persönlich <span class="label label-primary">'.$file_context_count[4].'</span></a></li>';
     }
     
     $content .='</ul>';
@@ -113,14 +113,14 @@ if (!$solutions){
             if ($active[$file_context-1] == 'active' ){
                 $content   .=' active';
             }
-            $content   .='" id="f_context_'.($file_context-1).'">'.$s_boxes.'</div>';
+            $content   .='" id="tab_'.($file_context-1).'">'.$s_boxes.'</div>';
             unset($s_boxes);
             $s_boxes = '';
         } 
     }
     
     $content   .='</div><!-- /.tab-content -->
-                        </div><!-- /.nav-tab-custom -->';
+                  </div><!-- /.nav-tab-custom -->';
 }
 
 

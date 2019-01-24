@@ -169,14 +169,17 @@ class Wallet {
         return $db->execute(array($this->id));
     }
     
-    public function get($dependency, $id = false, $context = null){
+    public function get($dependency, $id = false, $context = null, $paginator = ''){
         global $USER;
+        $order_param = orderPaginator($paginator, array('id'            => 'wa', 
+                                                        'title'         => 'wa',
+                                                        'description'   => 'wa')); 
         switch ($dependency) {
-            case 'id':      $db = DB::prepare('SELECT wa.id FROM wallet AS wa WHERE wa.id = ?');
+            case 'id':      $db = DB::prepare('SELECT wa.* FROM wallet AS wa WHERE wa.id = ?');
                             $db->execute(array($id));
                 break;
-            case 'user':    $db = DB::prepare('SELECT wa.id FROM wallet AS wa WHERE wa.id = ? AND wa.creator_id = ?');
-                            $db->execute(array($this->id, $USER->id));
+            case 'user':    $db = DB::prepare('SELECT wa.* FROM wallet AS wa WHERE wa.creator_id = ? '.$order_param);
+                            $db->execute(array($id));
                             $content            = new WalletContent();
                             $content->wallet_id = $this->id;
                             $this->content      = $content->get('user', $id);
@@ -185,23 +188,12 @@ class Wallet {
                             $cm->context        = 'wallet'; 
                             $this->comments     = $cm->get('reference');
                 break;
-            case 'search':  if ($id){
-                                $db = DB::prepare('SELECT wa.id FROM wallet AS wa 
-                                                                WHERE wa.creator_id = ? AND wa.title LIKE ? OR wa.description LIKE ? 
-                                                                ORDER BY wa.title');
-                                $db->execute(array($USER->id, '%'.$id.'%', '%'.$id.'%'));
-                            } else {
-                                $db = DB::prepare('SELECT wa.id FROM wallet AS wa WHERE wa.creator_id = ? ORDER BY wa.title');
-                                $db->execute(array($USER->id));
-                            }
-                break;
-            case 'shared':  $db = DB::prepare('SELECT DISTINCT wa.id FROM wallet AS wa, wallet_sharing AS ws, context AS co
+            case 'shared':  $db = DB::prepare('SELECT DISTINCT wa.* FROM wallet AS wa, wallet_sharing AS ws, context AS co
                                                             WHERE co.context = ? 
                                                             AND co.context_id = ws.context_id 
                                                             AND wa.id = ws.wallet_id
                                                             AND ws.reference_id = ?
-                                                            AND ws.timestart < NOW()
-                                                            ');
+                                                            AND ws.timestart < NOW() '.$order_param);
                             $db->execute(array($context, $id));
                 break;
             
@@ -214,7 +206,9 @@ class Wallet {
             $this->load($result->id); 
             $r[]  = clone $this;
         } 
-        
+        if ($paginator != ''){ 
+             set_item_total($paginator); //set item total based on FOUND ROWS()
+        }
         return $r;     
     }
 }

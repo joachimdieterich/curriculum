@@ -194,24 +194,29 @@ class File {
         global $CFG, $USER, $LOG;
         checkCapabilities('file:delete', $USER->role_id);
         if ($this->load()){  //file exist?
-            $db = DB::prepare('DELETE FROM files WHERE id=?');
-            if ($db->execute(array($this->id))){/* unlink file*/
-                $path = $CFG->curriculumdata_root.$_SESSION['CONTEXT'][$this->context_id]->path;
-                if ($path) {
-                    $LOG->add($USER->id, 'uploadframe.php', dirname(__FILE__), 'Context: '.$this->context_id.' Delete: '.$this->path.''.$this->filename);
-                    if ($this->type == ".url"){ // bei urls muss keine Datei gelöscht werden 
-                        return true;
-                    } else {
-                        return $this->deleteVersions($path); 
-                    }   
-                }
-            } else {
-                return false;
+            $path = $CFG->curriculumdata_root.$_SESSION['CONTEXT'][$this->context_id]->path.$this->path;
+            if ($path) {
+                $LOG->add($USER->id, 'uploadframe.php', dirname(__FILE__), 'Context: '.$this->context_id.' Delete: '.$this->path.''.$this->filename);
+                if ($this->type == ".url"){ // bei urls muss keine Datei gelöscht werden 
+                    $return = true;                         // not used yet
+                } else {
+                    
+                    $return = $this->deleteVersions($path); // not used yet
+                }   
             }
+        }   
+        $db = DB::prepare('DELETE FROM files WHERE id=?');
+        if ($db->execute(array($this->id))){/* unlink file*/    
+            return true;
+        } else {
+            return false;
         }
+        
     } 
 
     public function deleteVersions($path){
+        if ($this->filename == ''){ return false; } // nothing to do!
+        
         $extension_pos = strrpos($this->filename, '.'); // find position of the last dot, so where the extension starts
         $thumb_xt = substr($this->filename, 0, $extension_pos) . '_xt.png';
         $thumb_t  = substr($this->filename, 0, $extension_pos) . '_t.png';
@@ -221,14 +226,14 @@ class File {
         $thumb_m  = substr($this->filename, 0, $extension_pos) . '_m.png';
         $thumb_l  = substr($this->filename, 0, $extension_pos) . '_l.png';
 
-        if (file_exists($path.$thumb_xt))           { unlink($path.$thumb_xt); }
-        if (file_exists($path.$thumb_t))            { unlink($path.$thumb_t); }
-        if (file_exists($path.$thumb_qs))           { unlink($path.$thumb_qs); }
-        if (file_exists($path.$thumb_xs))           { unlink($path.$thumb_xs); }
-        if (file_exists($path.$thumb_s))            { unlink($path.$thumb_s); }
-        if (file_exists($path.$thumb_m))            { unlink($path.$thumb_m); }
-        if (file_exists($path.$thumb_l))            { unlink($path.$thumb_l); }
-        if (file_exists($path.$this->filename))     { return (unlink($path.$this->filename)); }
+        if (file_exists($path.$thumb_xt))       { unlink($path.$thumb_xt); }
+        if (file_exists($path.$thumb_t))        { unlink($path.$thumb_t);  }
+        if (file_exists($path.$thumb_qs))       { unlink($path.$thumb_qs); }
+        if (file_exists($path.$thumb_xs))       { unlink($path.$thumb_xs); }
+        if (file_exists($path.$thumb_s))        { unlink($path.$thumb_s);  }
+        if (file_exists($path.$thumb_m))        { unlink($path.$thumb_m);  }
+        if (file_exists($path.$thumb_l))        { unlink($path.$thumb_l);  }
+        if (file_exists($path.$this->filename)) { return (unlink($path.$this->filename)); }
     }
 
     /**
@@ -467,27 +472,27 @@ class File {
                                                         'creation_time' => 'fl',
                                                         'author'        => 'fl')); 
         switch ($dependency) {
-            case 'context':             $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+            case 'context':             $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                         WHERE fl.context_id = ? AND fl.context_id = ct.context_id '.$order_param);
                 $db->execute(array($id));
                 break;
-            case 'userfiles':           $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+            case 'userfiles':           $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                         WHERE fl.creator_id = ? AND fl.context_id = ct.context_id '.$order_param);
                 $db->execute(array($id));
                 break;
             case 'curriculum':          if (isset($cur)){ // if param cur is set, load only files for cur 'level'
-                                            $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+                                            $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                                                     WHERE fl.cur_id = ? AND fl.context_id = 2 AND fl.context_id = ct.context_id 
                                                                                     AND ena_id IS NULL AND ter_id IS NULL '.$order_param);
                                             $db->execute(array($id));
                                         } else {
-                                            $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+                                            $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                                                     WHERE fl.cur_id = ? AND fl.context_id = 2 AND fl.context_id = ct.context_id '.$order_param);
                                             $db->execute(array($id));
                                         }
                 
                 break;
-            case 'terminal_objective':  $db = DB::prepare('SELECT DISTINCT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+            case 'terminal_objective':  $db = DB::prepare('SELECT DISTINCT SQL_CALC_FOUND_ROWS fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                             WHERE fl.ter_id = ? AND ISNULL(fl.ena_id) AND fl.context_id = 2 AND fl.context_id = ct.context_id
                                                             AND( fl.file_context = 1 
                                                             OR ( fl.file_context = 2 AND fl.creator_id = ANY (SELECT user_id from institution_enrolments WHERE institution_id = ? )) 
@@ -496,7 +501,7 @@ class File {
                                                             ORDER BY fl.file_context ASC');
                 $db->execute(array($id, $USER->institution_id, $USER->id, $USER->id));
                 break;
-            case 'enabling_objective':  $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+            case 'enabling_objective':  $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                             WHERE fl.ena_id = ? AND fl.context_id = 2 AND fl.context_id = ct.context_id 
                                                               AND( fl.file_context = 1 
                                                               OR ( fl.file_context = 2 AND fl.creator_id = ANY (SELECT user_id from institution_enrolments WHERE institution_id = ? )) 
@@ -506,32 +511,32 @@ class File {
                 $db->execute(array($id, $USER->institution_id, $USER->id, $USER->id));
                 break;                  
             
-            case 'avatar':              $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+            case 'avatar':              $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                         WHERE fl.creator_id = ? AND fl.context_id = 3 AND fl.context_id = ct.context_id '.$order_param);
                 $db->execute(array($id));
                 break;
-            case 'id':            $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+            case 'id':            $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                         WHERE fl.ena_id = ? AND fl.creator_id = ? AND fl.context_id = ct.context_id AND fl.file_context <> 4 '.$order_param); // file_context <> 4 --> don't show personal files
                 $db->execute(array($id, $user_id)); //$user_id from $params
                 break;
-            case 'solution':            $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+            case 'solution':            $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                         WHERE fl.cur_id = ? AND fl.context_id = 4 AND fl.context_id = ct.context_id '.$order_param);
                 $db->execute(array($id));
                 break;
-            case 'task':                $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+            case 'task':                $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                         WHERE fl.reference_id = ? AND fl.context_id = '.$_SESSION['CONTEXT'][$dependency]->context_id.' AND fl.context_id = ct.context_id '.$order_param);
                 $db->execute(array($id));
                 break;
-            case 'user':                $db = DB::prepare('SELECT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+            case 'user':                $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                         WHERE fl.creator_id = ? AND fl.context_id = ct.context_id '.$order_param);             
                 $db->execute(array($id));
                 break;
-            case 'backup':              $db = DB::prepare('SELECT DISTINCT fl.*, ct.path AS context_path FROM files AS fl, context AS ct, curriculum_enrolments AS ce
+            case 'backup':              $db = DB::prepare('SELECT DISTINCT SQL_CALC_FOUND_ROWS fl.*, ct.path AS context_path FROM files AS fl, context AS ct, curriculum_enrolments AS ce
                                                         WHERE fl.context_id = 8 AND fl.context_id = ct.context_id AND fl.cur_id = ce.curriculum_id
                                                         AND ce.group_id = ANY (SELECT gr.group_id FROM groups_enrolments AS gr WHERE gr.user_id =  ?) '.$order_param);  
                                         $db->execute(array($id));
                 break;
-            case 'certificate':         $db = DB::prepare('SELECT DISTINCT fl.*, ct.path AS context_path FROM files AS fl, context AS ct
+            case 'certificate':         $db = DB::prepare('SELECT DISTINCT SQL_CALC_FOUND_ROWS fl.*, ct.path AS context_path FROM files AS fl, context AS ct
                                                             WHERE fl.context_id = 22 AND fl.context_id = ct.context_id AND fl.reference_id = ? '.$order_param);  
                                         $db->execute(array($id));
                 break;
@@ -539,6 +544,9 @@ class File {
             default : break; 
         }                      
 
+        if ($paginator != ''){ 
+             set_item_total($paginator); //set item total based on FOUND ROWS()
+        }
         $files = array(); //Array of files
         while($result = $db->fetchObject()) { 
                 $this->id                    = $result->id;
@@ -577,7 +585,7 @@ class File {
                 }
                 $files[]                     = clone $this;       
         }
-           
+
         if (isset($CFG->settings->repository) AND $externalFiles == true){
             foreach ($CFG->settings->repository as $r) {
                 if (method_exists($r,'getFiles')){
@@ -625,6 +633,9 @@ class File {
     public function hit(){ // hit counter
         $db = DB::prepare('UPDATE files SET hits = hits + 1 WHERE id = ?');
         $db->execute(array($this->id));
+        $db1 = DB::prepare('SELECT hits FROM files WHERE id = ?');
+        $db1->execute(array($this->id));
+        return $db1->fetchColumn();
     }
     /**
      * Überprüft in den folgenden Tabellen, ob die Datei verknüpft ist: 

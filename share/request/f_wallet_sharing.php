@@ -65,22 +65,21 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$content ='<form id="form_wallet_sharing" class="form-horizontal" role="form" method="post" action="../share/processors/fp_wallet_sharing.php"';
-if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
-if (isset($id)) {                                                               // only set id input field if set! prevents error on validation form reload
+$content ='<form id="form_wallet_sharing" class="form-horizontal" role="form" method="post" action="../share/processors/fp_wallet_sharing.php">'
+        . '<input type="hidden" name="func" id="func" value="'.$func.'"/>';
+if (isset($id)) {        // only set id input field if set! prevents error on validation form reload
      $content .= '<input id="id" name="id" type="text" class="invisible" value="'.$id.'">';
 }
 $content .= '<p><strong>'.$wallet->title.'</strong> teilen: <br></p>';
 $content .= '<div class="nav-tabs-custom"> 
                 <ul class="nav nav-tabs">
-                    <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false" >Personen</a></li>
-                    <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="true" >Gruppen</a></li>
-                    <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="true" >Institutionen</a></li>
+                    <li id="nav_tab_user" class="active"><a href="#tab_user" data-toggle="tab" aria-expanded="false" >Personen</a></li>
+                    <li id="nav_tab_groups" class=""><a href="#tab_groups" data-toggle="tab" aria-expanded="true" >Gruppen</a></li>
+                    <li id="nav_tab_institutions" class=""><a href="#tab_institutions" data-toggle="tab" aria-expanded="true" >Institutionen</a></li>
                 </ul>
             </div>
             <div class="tab-content">
-                <div class="tab-pane active" id="tab_1">';
+                <div class="tab-pane active" id="tab_user">';
     $content .= Form::input_select_multiple(array('id' => 'user_list', 'label' => 'Schülerauswahl', 'select_data' => $USER->getGroupMembers('my_groups'), 'select_label' => 'firstname, lastname', 'select_value' => 'id', 'input' => $user_list, 'error' => $error));
     $permissions = array('lesezugriff' => '0',
                          'kommentierbar' => '1',
@@ -106,13 +105,12 @@ $content .= '<div class="nav-tabs-custom">
                                        'bg_icon'      => 'fa fa-user',
                                        'bg_badge'     => 'bg-gray ',
                                        'badge'        => 'permission',
-                                       /*'badge_title'  => 'freigabe ',*/
-                                       /*'onclick_badge'=> 'expelUser('.$g->id.',__id__);'*/));
+                                       /*'badge_title'  => 'freigabe ',*/));
     
     $content .='</div><!-- /.tab-pane -->
-                <div class="tab-pane" id="tab_2">not implemented yet
+                <div class="tab-pane" id="tab_groups">not implemented yet
                 </div><!-- /.tab-pane -->
-                <div class="tab-pane" id="tab_3">not implemented yet
+                <div class="tab-pane" id="tab_institutions">not implemented yet
                 </div><!-- /.tab-pane -->
             </div>';
 $content .= '</form>';

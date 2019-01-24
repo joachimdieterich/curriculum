@@ -60,31 +60,30 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$content ='<form id="form_settings" class="form-horizontal" role="form" method="post" action="../share/processors/fp_settings.php"';
-if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
+$content ='<form id="form_settings" class="form-horizontal" role="form" method="post" action="../share/processors/fp_settings.php">
+           <input type="hidden" name="func" id="func" value="'.$func.'"/>';
 if (isset($id)) {                                                               // only set id input field if set! prevents error on validation form reload
      $content .= '<input id="id" name="id" type="text" class="invisible" value="'.$id.'">';
 }
 $content .= '<div class="nav-tabs-custom"> 
                 <ul class="nav nav-tabs">
-                    <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false" ><i class="fa fa-user margin-r-10"></i> Persönliche Einstellungen</a></li>
-                    <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="true" ><i class="fa fa-university margin-r-10"></i> Einstellungen (Institution)</a></li>';
+                    <li id="nav_tab_private" class="active"><a href="#tab_private" data-toggle="tab" aria-expanded="false" ><i class="fa fa-user margin-r-10"></i> Persönliche Einstellungen</a></li>
+                    <li id="nav_tab_institution" class=""><a href="#tab_institution" data-toggle="tab" aria-expanded="true" ><i class="fa fa-university margin-r-10"></i> Einstellungen (Institution)</a></li>';
 if (checkCapabilities('user:userListComplete', $USER->role_id, false, true)){
-$content .=         '<li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="true" ><i class="fa fa-globe margin-r-10"></i> Einstellungen (global)</a></li>';
+$content .=         '<li id="nav_tab_global" class=""><a href="#tab_global" data-toggle="tab" aria-expanded="true" ><i class="fa fa-globe margin-r-10"></i> Einstellungen (global)</a></li>';
 }
 $content .=   ' </ul>
             </div>
             <div class="tab-content">
-                <div class="tab-pane active" id="tab_1">
+                <div id="tab_private" class="tab-pane active">
                     <div class="nav-tabs-custom small"> 
                         <ul class="nav nav-tabs">
-                            <li class="active"><a href="#sub_tab_1" data-toggle="tab" aria-expanded="false" ><i class="fa fa-dashboard margin-r-10"></i> Template</a></li> 
-                            <li ><a href="#sub_tab_2" data-toggle="tab" aria-expanded="true" ><i class="fa fa- fa-envelope margin-r-10"></i> Signatur</a></li> 
+                            <li id="nav_tab_private_template" class="active"><a href="#tab_private_template" data-toggle="tab" aria-expanded="false" ><i class="fa fa-dashboard margin-r-10"></i> Template</a></li> 
+                            <li id="nav_tab_private_signature"><a href="#tab_private_signature" data-toggle="tab" aria-expanded="true" ><i class="fa fa- fa-envelope margin-r-10"></i> Signatur</a></li> 
                         </ul>
                     </div>
                     <div class="tab-content">
-                        <div class="tab-pane active" id="sub_tab_1">';
+                        <div id="tab_private_template" class="tab-pane active">';
                             $directories = glob($CFG->share_root . '/templates/*' , GLOB_ONLYDIR);
                             $templates_obj = new stdClass();
                             foreach ($directories as $key => $value) {
@@ -96,7 +95,7 @@ $content .=   ' </ul>
                             $content .= Form::input_button(['id' => 'user_template_save','label'=>'Speichern',  'icon'=>'fa fa-save']);
                                
            $content .= '</div>
-                        <div class="tab-pane" id="sub_tab_2">';
+                        <div id="tab_private_signature" class="tab-pane">';
                             $signature = new Content();
                             $content .= Form::info(['id' => 'user_signature_info', 'content' => 'Hier können Sie ihre Signatur für Nachrichten ändern.']);
                             if (isset($signature->get('signature', $USER->id)[0]->content)){
@@ -113,42 +112,42 @@ $content .=   ' </ul>
                 
     
     $content .='</div><!-- /.tab-pane -->
-                <div class="tab-pane" id="tab_2"> under construction
+                <div id="tab_institution" class="tab-pane"> under construction
                 </div><!-- /.tab-pane -->';
     if (checkCapabilities('user:userListComplete', $USER->role_id, false, true)){
         $terms = new Content();
-        $content .=  '<div class="tab-pane" id="tab_3">
+        $content .=  '<div id="tab_global" class="tab-pane">
                         <div class="nav-tabs-custom small">
                           <ul class="nav nav-tabs">
-                            <li class="active"><a href="#sub_tab_3_1" data-toggle="tab" aria-expanded="true" >Nutzungsbedingungen</a></li>
-                            <li ><a href="#sub_tab_3_2" data-toggle="tab" aria-expanded="false" >Impressum</a></li>
-                            <li ><a href="#sub_tab_3_3" data-toggle="tab" aria-expanded="false" >Datenschutz</a></li>
-                            <li ><a href="#sub_tab_3_4" data-toggle="tab" aria-expanded="false" >Was ist...</a></li>
-                            <li ><a href="#sub_tab_3_5" data-toggle="tab" aria-expanded="false" >Wie arbeite ich mit...</a></li>
+                            <li id="nav_tab_global_terms" class="active"><a href="#tab_global_terms" data-toggle="tab" aria-expanded="true" >Nutzungsbedingungen</a></li>
+                            <li id="nav_tab_global_imprint"><a href="#tab_global_imprint" data-toggle="tab" aria-expanded="false" >Impressum</a></li>
+                            <li id="nav_tab_global_privacy"><a href="#tab_global_privacy" data-toggle="tab" aria-expanded="false" >Datenschutz</a></li>
+                            <li id="nav_tab_global_what"><a href="#tab_global_what" data-toggle="tab" aria-expanded="false" >Was ist...</a></li>
+                            <li id="nav_tab_global_how"><a href="#tab_global_how" data-toggle="tab" aria-expanded="false" >Wie arbeite ich mit...</a></li>
                           </ul>
                         </div>
                         <div class="tab-content">';
-        $content .=  '<div class="tab-pane active" id="sub_tab_3_1">';
+        $content .=  '<div id="tab_global_terms" class="tab-pane active">';
         $content .= Form::info(['id' => 'global_terms_info', 'content' => 'Hier können Sie die Nutzungsbedingungen  ändern. <br>Diese muss von allen Nutzern beim ersten Login bestätigt werden.']);
         $content .= Form::input_textarea('global_terms', $terms->get('terms', 'terms'  )[0]->title, $terms->get('terms', 'terms'  )[0]->content, $error, '');
         $content .= Form::input_button(['id' => 'global_terms_save','label'=>'Speichern',  'icon'=>'fa fa-save']);
         $content .= '</div>
-                     <div class="tab-pane" id="sub_tab_3_2">';
+                     <div id="tab_global_imprint" class="tab-pane">';
         $content .= Form::info(['id' => 'global_imprint_info', 'content' => 'Hier können Sie das Impressum ändern.']);
         $content .= Form::input_textarea('global_imprint', $terms->get('terms', 'imprint')[0]->title, $terms->get('terms', 'imprint')[0]->content, $error, '');
         $content .= Form::input_button(['id' => 'global_imprint_save','label'=>'Speichern',  'icon'=>'fa fa-save']);
         $content .= '</div>
-                     <div class="tab-pane" id="sub_tab_3_3">';
+                     <div id="tab_global_privacy" class="tab-pane">';
         $content .= Form::info(['id' => 'global_privacy_info', 'content' => 'Hier können Sie die Datenschutzerklärung ändern.']);
         $content .= Form::input_textarea('global_privacy', $terms->get('terms', 'privacy')[0]->title, $terms->get('terms', 'privacy')[0]->content, $error, '');
         $content .= Form::input_button(['id' => 'global_privacy_save','label'=>'Speichern',  'icon'=>'fa fa-save']);
         $content .= '</div>
-                     <div class="tab-pane" id="sub_tab_3_4">';
+                     <div id="tab_global_what" class="tab-pane">';
 #        $content .= Form::info(['id' => 'global_whatIsIt_info', 'content' => 'Hier können Sie globale Informationen ändern.']);
         $content .= Form::input_textarea('global_whatIsIt', $terms->get('information', 1)[0]->title, $terms->get('information', 1)[0]->content, $error, '');
         $content .= Form::input_button(['id' => 'global_whatIsIt_save','label'=>'Speichern',  'icon'=>'fa fa-save']);
         $content .= '</div>
-                     <div class="tab-pane" id="sub_tab_3_5">';
+                     <div id="tab_global_how" class="tab-pane">';
 #        $content .= Form::info(['id' => 'global_howToWork_info', 'content' => 'Hier können Sie globale Informationen ändern.']);
         $content .= Form::input_textarea('global_howToWork', $terms->get('information', 2)[0]->title, $terms->get('information', 2)[0]->content, $error, '');
         $content .= Form::input_button(['id' => 'global_howToWork_save','label'=>'Speichern',  'icon'=>'fa fa-save']);

@@ -28,7 +28,7 @@ $TEMPLATE->assign('page_title', 'Benutzerrollen');
 $TEMPLATE->assign('breadcrumb',  array('Benutzerrollen' => 'index.php?action=role'));
 $role = new Roles();
 
-$p_options = array('delete' => array('onclick'    => "del('role',__id__);", 
+$p_options = array('delete' => array('onclick'    => "processor('delete', 'role', __id__, { 'reload': 'false', 'callback': 'replaceElementByID', 'element_Id': 'row__id__'});", 
                                      'capability' => checkCapabilities('role:delete', $USER->role_id, false),
                                      'icon'       => 'fa fa-trash',
                                      'tooltip'    => 'löschen'),

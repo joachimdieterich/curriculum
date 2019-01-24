@@ -64,10 +64,8 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$content ='<form id="form_bulletinBoard"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_bulletinBoard.php"';
-
-if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content.= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
+$content ='<form id="form_bulletinBoard"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_bulletinBoard.php">
+            <input type="hidden" name="func" id="func" value="'.$func.'"/>';
 /* Only edit bulletinboard of current institution todo, load bulletinboard on input_select*/
 //$html .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'institution_id', $institution_id , $error);
 $content.= Form::input_text('title', 'Überschrift', $title, $error,'z.B. Ankündigung');

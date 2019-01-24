@@ -30,5 +30,7 @@ if (empty($lang) || !is_array($lang))
 }
 
 $lang = array_merge($lang, array(
-	'REF_SELECTOR_TITLE'		=> 'Überfachliche Bezüge',
+    'SYS_CURRICULUM'                    => 'Lehrplan',
+    'SYS_CURRICULA'                     => 'Lehrpläne',
+    'REF_SELECTOR_TITLE'		=> 'Überfachliche Bezüge',
 ));

@@ -7,7 +7,7 @@
 {block name=additional_scripts}{$smarty.block.parent}
     {if isset($load_id)}
         <script type="text/javascript" > 
-            $(document).ready(loadmail({$load_id}, "inbox")); 
+            $(document).ready(processor("mail","get",{$load_id}, {literal}{'mailbox': 'inbox', 'reload': 'false', 'callback': 'innerHTML', 'element_id': 'mailbox'}{/literal})); 
         </script>
     {/if}
 {/block}
@@ -65,7 +65,7 @@
                 <ul class="nav nav-pills nav-stacked">
                 {if isset($messages[0])}  
                     {section name=mail loop=$messages start=$index max=$my_paginator_limit}
-                    <li name='{$box}_{$messages[mail]->id}' id='{$box}_{$messages[mail]->id}'><a onclick="loadmail({$messages[mail]->id}, '{$box}')"><i class="fa fa-circle-o text-light-blue"></i> 
+                    <li name='{$box}_{$messages[mail]->id}' id='{$box}_{$messages[mail]->id}'><a onclick="processor('mail','get',{$messages[mail]->id}, {literal}{'mailbox': '{/literal}{$box}{literal}', 'reload': 'false', 'callback': 'innerHTML', 'element_id': 'mailbox'}{/literal});"><i class="fa fa-circle-o text-light-blue"></i> 
                             {if isset($showInbox)}
                                 {if $messages[mail]->receiver_status == 0}<strong>{/if}
                                 {$messages[mail]->sender_firstname} {$messages[mail]->sender_lastname}&nbsp;({$messages[mail]->sender_username})

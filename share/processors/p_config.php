@@ -26,15 +26,10 @@ include_once(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Fun
 include_once(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER,$CFG, $PAGE;
 $USER   = $_SESSION['USER'];
-$func   = filter_input(INPUT_GET, 'func',           FILTER_SANITIZE_STRING);
+$func   = filter_input(INPUT_GET, 'func', FILTER_SANITIZE_STRING);
 $object = file_get_contents("php://input");
 
 switch ($func) {
-    case "user_paginator":  $u      = new User();        
-                            $val    = filter_input(INPUT_GET, 'val',           FILTER_SANITIZE_STRING); // kein INT --> System ID -1
-                            $u->update('value', 'paginator_limit', $val);
-                            $_SESSION['USER']->paginator_limit = $val;
-        break;
     case "institution_id":  $u      = new User();
                             $val    = filter_input(INPUT_GET, 'val', FILTER_VALIDATE_INT);
                             $u->id  = $USER->id;
@@ -47,6 +42,17 @@ switch ($func) {
                                 assign_to_template($u,'my_');   
                             }
         break;
+    case "paginator_limit": $u            = new User();        
+                            $val          = filter_input(INPUT_GET, 'val', FILTER_SANITIZE_STRING); // kein INT --> System ID -1
+                            $paginator    = filter_input(INPUT_GET, 'paginator', FILTER_SANITIZE_STRING);
+                            $u->update('value', 'paginator_limit', $val);
+                            $_SESSION['USER']->paginator_limit = $val;
+                            $_SESSION['SmartyPaginate'][$paginator]['current_item'] = 1;
+        break;    
+    case "paginator_item":  $paginator    = filter_input(INPUT_GET, 'paginator', FILTER_SANITIZE_STRING);
+                            $val          = filter_input(INPUT_GET, 'val', FILTER_SANITIZE_STRING); // kein INT --> System ID -1
+                            $_SESSION['SmartyPaginate'][$paginator]['current_item'] = $val;  
+        break;    
     case "paginator_col":   $paginator    = new SmartyPaginate();
                             $paginator_id = filter_input(INPUT_GET, 'val', FILTER_SANITIZE_STRING);
                             $column       = filter_input(INPUT_GET, 'column', FILTER_SANITIZE_STRING);
@@ -55,11 +61,63 @@ switch ($func) {
                         
     case "paginator_order": SmartyPaginate::setSort(filter_input(INPUT_GET, 'order', FILTER_SANITIZE_STRING),filter_input(INPUT_GET, 'sort', FILTER_SANITIZE_STRING), filter_input(INPUT_GET, 'paginator', FILTER_SANITIZE_STRING));
         break;
-    case "paginator_checkrow":  if (filter_input(INPUT_GET, 'reset', FILTER_UNSAFE_RAW) == 'true'){
-                                    SmartyPaginate::setSelection('none', filter_input(INPUT_GET, 'paginator', FILTER_SANITIZE_STRING));
+    case "paginator_checkrow":  $paginator = filter_input(INPUT_GET, 'paginator', FILTER_SANITIZE_STRING);
+                                if (filter_input(INPUT_GET, 'reset', FILTER_UNSAFE_RAW) == 'true'){
+                                    SmartyPaginate::setSelection('none', $paginator);
                                 } 
-                              
-                                echo json_encode(SmartyPaginate::setSelection(filter_input(INPUT_GET, 'val', FILTER_SANITIZE_STRING), filter_input(INPUT_GET, 'paginator', FILTER_SANITIZE_STRING)));
+                                $val = filter_input(INPUT_GET, 'val', FILTER_SANITIZE_STRING);
+                                $selected_values = SmartyPaginate::setSelection($val, $paginator);
+                                $new_element = array();
+                                if (isset($_GET['page'])){
+                                    switch ($_GET['page']) {
+                                        
+                                        case 'objectives': if ($val != 'none'){
+                                                $selected_curriculum_id = $_SESSION['PAGE']->objectives['cur_id'];
+                                                $selected_group         = $_SESSION['PAGE']->objectives['gp_id'];
+                                                $terminal_objectives    = new TerminalObjective();         //load terminal objectives
+                                                $enabling_objectives    = new EnablingObjective();         //load enabling objectives
+                                                if  ($val == 'page' AND (count($selected_values) == SmartyPaginate::getLimit($paginator))) {
+                                                    $selected_values = SmartyPaginate::_getSelect($val, $paginator);
+                                                    $val = 'none';
+                                                } else if (count($selected_values) > 1){
+                                                    $ter_obj = $terminal_objectives->getObjectives('curriculum', $selected_curriculum_id);
+                                                    $ena_obj = $enabling_objectives->getObjectives('group', $selected_curriculum_id, $selected_values);
+                                                } else {
+                                                    $group           = new Group();
+                                                    $sel_group_id    = $group->getGroups('course', $selected_group);
+                                                    $ter_obj = $terminal_objectives->getObjectives('curriculum', $selected_curriculum_id);
+                                                    $enabling_objectives->curriculum_id = $selected_curriculum_id;
+                                                    $ena_obj = $enabling_objectives->getObjectives('user', $selected_values[0]);
+                                                }  
+                                                $content = new Content();
+                                                $cur_content = array('label'=>'Digitalisierte Texte des Lehrplans', 'entrys'=> $content->get('curriculum', $selected_curriculum_id));
+                                                $element = RENDER::curriculum(array ( 
+                                                                            'terminalObjectives' => $ter_obj,
+                                                                            'enabledObjectives'  => $ena_obj,
+                                                                            'sel_curriculum'     => $selected_curriculum_id,
+                                                                            'selected_user_id'   => $selected_values,
+                                                                            'sel_group_id'       => $selected_group,
+                                                                            'cur_content'        => $cur_content));
+                                            } else {
+                                                $element = '<div id="curriculum_content"></div>';
+                                            }
+                                            $new_element = array('replaceId'  => $_GET['replaceId'],
+                                                                'element'=> $element);
+                                            
+                                            break;
+
+                                        default: 
+                                            break;   
+                                    }
+                                }
+                                echo json_encode(array_merge($new_element, array(
+                                                                    'func'      => 'updatePaginator', 
+                                                                    'val'       => $_GET['val'],
+                                                                    'paginator' => $paginator,
+                                                                    'select_page' => $_SESSION['SmartyPaginate'][$paginator]['select_page'],
+                                                                    'select_all'  => $_SESSION['SmartyPaginate'][$paginator]['select_all'],
+                                                                    'select_none' => $_SESSION['SmartyPaginate'][$paginator]['select_none'],
+                                                                    'selection' => $selected_values)));
         break;
     case "paginator_search": $paginator =  filter_input(INPUT_GET, 'val', FILTER_UNSAFE_RAW);
                             if (filter_input(INPUT_GET, 'search', FILTER_UNSAFE_RAW) == '%'){

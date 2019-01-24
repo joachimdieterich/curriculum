@@ -204,36 +204,32 @@ class CourseBook {
      * Get all availible Grades of current institution
      * @return array of Grade objects 
      */
-    public function get($dependency = 'user', $id = null, $date= null, $load_entries = true){
+    public function get($dependency = 'user', $id = null, $date= null, $load_entries = true, $paginator = ''){
         global $USER;
-        /*$order_param = orderPaginator($paginator, array('topic'         => 'cb',
-                                                        'description'   => 'cb')); */
-        if ($date != null){
-            $order_param = $date;
-        } else { 
-            $order_param = 0; 
-        }
+        $order_param = orderPaginator($paginator, array('topic'         => 'cb',
+                                                        'description'   => 'cb')); 
+        
         $entrys = array();                      //Array of grades
         switch ($dependency) {
-            case 'user':    $db = DB::prepare('SELECT cb.cb_id FROM course_book AS cb, curriculum_enrolments AS ce, groups_enrolments AS ge
+            case 'user':    $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS cb.cb_id FROM course_book AS cb, curriculum_enrolments AS ce, groups_enrolments AS ge
                                                         WHERE  cb.course_id = ce.id
                                                         AND ge.group_id = ce.group_id
                                                         AND ge.status = 1
-                                                        AND ge.user_id = ?
-                                                        AND cb.timestart >= ? 
-                                                       ORDER BY cb.timestart ASC');
-                            $db->execute(array($USER->id, $order_param));
+                                                        AND ge.user_id = ? '.$order_param);
+                            $db->execute(array($id));
                 break;
-            case 'course':  $db = DB::prepare('SELECT cb.cb_id
+            case 'course':  $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS cb.cb_id
                                                 FROM course_book AS cb
-                                                WHERE cb.course_id = ? ' );
+                                                WHERE cb.course_id = ? '.$order_param);
                             $db->execute(array($id));
                 break;
 
             default:
                 break;
         }
-        
+        if ($paginator != ''){ 
+             set_item_total($paginator); //set item total based on FOUND ROWS()
+        }
         while($result = $db->fetchObject()) { 
                 $this->id            = $result->cb_id;
                 if ($load_entries){
@@ -241,6 +237,7 @@ class CourseBook {
                 }
                 $entrys[]            = clone $this;        //it has to be clone, to get the object and not the reference
         } 
+        
         return $entrys;
     }
     

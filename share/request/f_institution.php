@@ -99,9 +99,8 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$content ='<form id="form_institution" class="form-horizontal" role="form" method="post" action="../share/processors/fp_institution.php"';
-if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
+$content ='<form id="form_institution" class="form-horizontal" role="form" method="post" action="../share/processors/fp_institution.php">
+           <input type="hidden" name="func" id="func" value="'.$func.'"/>';
 if (isset($id)) {                                                               // only set id input field if set! prevents error on validation form reload
      $content .= '<input id="id" name="id" type="text" class="invisible" value="'.$id.'">';
 }
@@ -120,7 +119,7 @@ $content .= Form::input_select('schooltype_id', 'Schulart', $sch->getSchooltypes
 $content .= '</div>';
 
 /* add new schooltype*/ 
-$content .= Form::input_checkbox('btn_newSchooltype', 'Neuen Schultyp anlegen', $btn_newSchooltype, $error, 'checkbox', 'toggle([\'newSchooltype\'], [\'existingSchooltype\']);');
+$content .= Form::input_checkbox('btn_newSchooltype', 'Neuen Schultyp anlegen', $btn_newSchooltype, $error, 'checkbox', 'toggle([\'newSchooltype\'],[\'existingSchooltype\'], [\'btn_newSchooltype\']);');
 $content .= '<div id="newSchooltype" ';
 if (!isset($new_schooltype) AND !isset($schooltype_description)){ $content .= 'class="hidden"';} // only hide if no Data is given
 $content .= '>';

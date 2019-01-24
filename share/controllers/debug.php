@@ -27,7 +27,8 @@ $TEMPLATE->assign('breadcrumb',  array('Debug' => 'index.php?action=debug'));
 $TEMPLATE->assign('page_title', 'Debug');  
 
 $debug_content  = new Content();
-$p_options = array('delete' => array('onclick'    => "del('content',__id__);", 
+
+$p_options = array('delete' => array('onclick'    => "processor('delete', 'content', __id__, { 'reload': 'false', 'callback': 'replaceElementByID', 'element_Id': 'row__id__'});", 
                                     'capability'  => checkCapabilities('content:delete', $USER->role_id, false),
                                     'icon'        => 'fa fa-trash',
                                     'tooltip'     => 'löschen'));

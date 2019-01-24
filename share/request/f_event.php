@@ -93,10 +93,9 @@ if (isset($_SESSION['FORM'])){
     }
 }
    
-$content ='<form id="form_event"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_event.php"';
-if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>
-<input type="hidden" name="context_id" id="context_id" value="'.$context_id.'"/>';
+$content ='<form id="form_event"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_event.php">
+            <input type="hidden" name="func" id="func" value="'.$func.'"/>
+            <input type="hidden" name="context_id" id="context_id" value="'.$context_id.'"/>';
 if (isset($event_id)){
     $content .= '<input type="hidden" name="event_id" id="event_id" value="'.$event_id.'"/> ';
 }
@@ -106,7 +105,7 @@ $content .= Form::input_textarea('description', 'Beschreibung', $description, $e
 $content .= Form::input_date(array('id'=>'timerange', 'label' => 'Dauer' , 'time' => $timerange, 'error' => $error, 'placeholder' => '', $type = 'date'));
 $content .= '</form>';
 if ($_GET['func'] == 'edit'){
-    $footer   = '<button type="submit" class="btn btn-danger pull-left" onclick="del(\'event\', \''.$event_id.'\');"><i class="fa fa-trash margin-r-5"></i> Termin löschen</button>';
+    $footer   = '<button type="submit" class="btn btn-danger pull-left" onclick="processor(\'delete\', \'event\', \''.$event_id.'\');"><i class="fa fa-trash margin-r-5"></i> Termin löschen</button>';
 }
 $footer   .= '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_event\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';   
 $html     = Form::modal(array('title'     => $header,

@@ -95,9 +95,8 @@ if (isset($_SESSION['FORM'])){
 }
 
 //* Load webservice form from plugin*/
-$content   ='<form id="form_ws_link_module" class="form-horizontal" role="form" method="post" action="../share/plugins/webservice/moodle/processors/fp_link_module.php"';
-if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content  .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
+$content   ='<form id="form_ws_link_module" class="form-horizontal" role="form" method="post" action="../share/plugins/webservice/moodle/processors/fp_link_module.php">'
+          . '<input type="hidden" name="func" id="func" value="'.$func.'"/>';
 if (isset($link_module_id)){
 $content  .= '<input type="hidden" name="link_module_id" id="cert_id" value="'.$link_module_id.'"/> ';
 }

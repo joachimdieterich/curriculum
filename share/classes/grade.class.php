@@ -145,18 +145,18 @@ class Grade {
                                                         'institution'   => 'ins')); 
         $grades = array();                      //Array of grades
         switch ($dependency) {
-            case 'global': $db = DB::prepare('SELECT gr.*, ins.institution 
+            case 'global': $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS gr.*, ins.institution 
                                             FROM grade AS gr, institution AS ins 
                                             WHERE gr.institution_id = ins.id '.$order_param );
                         $db->execute();
                 break;
-            case 'all': $db = DB::prepare('SELECT gr.*, ins.institution 
+            case 'all': $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS gr.*, ins.institution 
                                             FROM grade AS gr, institution AS ins 
                                             WHERE (gr.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE institution_id = ins.id AND user_id = ?) OR gr.institution_id = 0)
                                             AND gr.institution_id = ins.id '.$order_param );
                         $db->execute(array($USER->id));
                 break;
-            case 'institution': $db = DB::prepare('SELECT gr.*, ins.institution 
+            case 'institution': $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS gr.*, ins.institution 
                                                     FROM grade AS gr, institution AS ins 
                                                     WHERE (gr.institution_id = ? OR gr.institution_id = 0)
                                                     AND gr.institution_id = ins.id '.$order_param );
@@ -172,8 +172,11 @@ class Grade {
             if ($for_session){
                 $grades[$result->grade]= clone $this;        // store grade by id and grade to resolve both ways
             }
-            $grades[$result->id]       = clone $this;       
+            $grades[]       = clone $this;       
         } 
+        if ($paginator != ''){ 
+             set_item_total($paginator); //set item total based on FOUND ROWS()
+        }
         return $grades;
     }
     

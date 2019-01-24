@@ -75,13 +75,11 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$html    ='<form id="form_content_subscribe"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_content_subscribe.php"';
-if (isset($currentUrlId)){ $html .= $currentUrlId; }
-$html   .= '">
-<input id="func" name="func" type="hidden" value="'.$func.'"/>
-<input id="context_id" type="hidden" name="context_id" value="'.$context_id.'"/>
-<input id="reference_id" type="hidden" name="reference_id" value="'.$reference_id.'"/>
-<input id="id" name="id" type="text" class="invisible" ';
+$html    ='<form id="form_content_subscribe"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_content_subscribe.php">
+            <input id="func" name="func" type="hidden" value="'.$func.'"/>
+            <input id="context_id" type="hidden" name="context_id" value="'.$context_id.'"/>
+            <input id="reference_id" type="hidden" name="reference_id" value="'.$reference_id.'"/>
+            <input id="id" name="id" type="text" class="invisible" ';
 if (isset($id)) { $html .= 'value="'.$id.'"';} $html .= '>';
 $html     .= Form::info(array('id' => 'ref_info', 'content' => 'Bitte wählen Sie den Lehrplan, aus die Hinweise übernommen werden sollen aus'));
 $cur          = new Curriculum();

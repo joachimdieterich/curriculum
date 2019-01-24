@@ -96,13 +96,13 @@ class Semester {
                                                         'institution'   => 'ins')); 
         $semesters = array();
         switch ($dependency) {
-            case 'all': $db = DB::prepare('SELECT se.*, us.username, ins.institution
+            case 'all': $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS se.*, us.username, ins.institution
                            FROM semester AS se, users AS us, institution AS ins
                            WHERE (se.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE institution_id = ins.id AND user_id = ?) OR se.institution_id = 0 ) 
                            AND se.creator_id = us.id AND se.institution_id = ins.id '.$order_param);
                         $db->execute(array($USER->id)); //todo: check 
                 break;
-            case 'institution': $db = DB::prepare('SELECT se.*, us.username, ins.institution
+            case 'institution': $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS se.*, us.username, ins.institution
                                     FROM semester AS se, users AS us, institution AS ins
                                     WHERE (se.institution_id = ? OR se.institution_id = 0)
                                     AND se.creator_id = us.id AND se.institution_id = ins.id '.$order_param);
@@ -125,7 +125,9 @@ class Semester {
                 $this->creator_username    = $result->username;
                 $semesters[] = clone $this;
         } 
-
+        if ($paginator != ''){ 
+             set_item_total($paginator); //set item total based on FOUND ROWS()
+        }
         return $semesters;     
     }
     
