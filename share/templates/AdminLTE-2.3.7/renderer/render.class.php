@@ -1170,6 +1170,7 @@ class Render {
                           </div>
                           
                           <!--div class="timeline-footer"-->';
+            $r      .=    '<div style="display:inline-table;padding-left:10px;">'.Render::objective_list(array("dependency" => "courseBook", "id" => $cb->id)).'</div>';
             $r      .=    Render::todoList($cb->task, 'courseBook', $cb->id);
             if (checkCapabilities('absent:update', $USER->role_id, false)){
                 $r  .=    Render::absentListe($cb->absent_list, 'courseBook', $cb->id);
@@ -2840,6 +2841,7 @@ public static function quote_reference($quotes){
         switch ($dependency){
             case 'courseBook':
                 $os = new ObjectiveSubscription();
+                
                 $os->id = ObjectiveSubscription::getSubscriptionIds(10, $id, 27)[0];
                 
                 $code = '';
@@ -2848,17 +2850,17 @@ public static function quote_reference($quotes){
                     $terminal = new TerminalObjective();
                     $terminal->id = $os->reference_id;
                     $terminal->load();
-                    $code .= '<div style="display:inline-table; padding:10px">' . RENDER::objective(["type" =>"terminal_objective", "objective" => $terminal , "user_id" => $USER->id]) .'</div>';
+                    $code .= '<div style="display:inline-table;">' . RENDER::objective(["type" =>"terminal_objective", "objective" => $terminal , "user_id" => $USER->id]) .'</div>';
                     
                     #enable laden
                     $enable = new EnablingObjective();
                     $enable_ids = ObjectiveSubscription::getSubscriptionIds(10, $id, 12);
                     foreach ($enable_ids AS $eid){
-                        error_log("HIER");
+                        //error_log("HIER");
                         $enable->id = $eid;
                         $enable->load();
-                        error_log("Enable" . json_encode($enable));
-                        $code .= '<div style="display:inline-table; padding:10px">' . RENDER::objective(["type" =>"enabling_objective", "objective" => $enable , "user_id" => $USER->id]) .'</div>';
+                        //error_log("Enable" . json_encode($enable));
+                        $code .= '<div style="display:inline-table;">' . RENDER::objective(["type" =>"enabling_objective", "objective" => $enable , "border_color"=> $terminal->color, "user_id" => $USER->id]) .'</div>';
                         
                     }
                 }

@@ -128,9 +128,9 @@ class ObjectiveSubscription {
             $this->source_id = $result->source_id;
             $this->timecreated = $result->timecreated;
             $this->timemodified = $result->timemodified;
-            return True;
+            return true;
         }else{
-            return False;
+            return false;
         } 
     }
     
@@ -141,11 +141,11 @@ class ObjectiveSubscription {
                 . 'AND os.source_id = ? '
                 . 'AND os.objective_context_id = ?');
         $db->execute(array($context_id, $source_id, $objective_context_id));
-        $erg = array();
+        $result = array();
         while($result = $db->fetchObject()){
-            $erg[] = $result->id;
+            $result[] = $result->id;
         }
-        return $erg;
+        return $result;
     }
     
     public static function deleteAllObjectiveSubscriptionsByContextSource($context_id, $source_id, $creator_id){
