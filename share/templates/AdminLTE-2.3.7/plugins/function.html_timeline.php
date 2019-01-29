@@ -120,9 +120,6 @@ $_html_result .= '<div class="row"><div class="clearfix"><br><ul class="timeline
                   </div>
 
                   <!--div class="timeline-footer"-->';
-        
-        $_html_result     .=    Render::objective_list(array("dependency" => "courseBook", "id" => $_val->id));
-        
         $_html_result     .=    Render::todoList($_val->task, 'coursebook', $_val->id);
         if (checkCapabilities('absent:update', $USER->role_id, false)){
             $_html_result .=    Render::absentListe($_val->absent_list, 'coursebook', $_val->id);

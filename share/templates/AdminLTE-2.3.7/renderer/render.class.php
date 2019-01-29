@@ -1165,7 +1165,7 @@ class Render {
                           }  
             $r      .= '                </a> '.$cb->creator.'</h3>
                           <div class="timeline-body">
-                              <h4>'.$cb->topic.'</h4> 
+                              <h4>'.$cb->topic .'</h4> 
                              '.$cb->description.'
                           </div>
                           
@@ -2841,8 +2841,12 @@ public static function quote_reference($quotes){
         switch ($dependency){
             case 'courseBook':
                 $os = new ObjectiveSubscription();
-                
-                $os->id = ObjectiveSubscription::getSubscriptionIds(10, $id, 27)[0];
+                $to_ids = ObjectiveSubscription::getSubscriptionIds(10, $id, 27);
+                if (count($to_ids)>0){
+                    $os->id = $to_ids[0];
+                }else{
+                    $os->id = 0;
+                }
                 
                 $code = '';
                 if ($os->load()){
@@ -2856,11 +2860,9 @@ public static function quote_reference($quotes){
                     $enable = new EnablingObjective();
                     $enable_ids = ObjectiveSubscription::getSubscriptionIds(10, $id, 12);
                     foreach ($enable_ids AS $eid){
-                        //error_log("HIER");
                         $enable->id = $eid;
                         $enable->load();
-                        //error_log("Enable" . json_encode($enable));
-                        $code .= '<div style="display:inline-table;">' . RENDER::objective(["type" =>"enabling_objective", "objective" => $enable , "border_color"=> $terminal->color, "user_id" => $USER->id]) .'</div>';
+                        $code .= '<div style="display:inline-table; padding:10px">' . RENDER::objective(["type" =>"enabling_objective", "objective" => $enable , "user_id" => $USER->id]) .'</div>';
                         
                     }
                 }

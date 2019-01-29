@@ -141,7 +141,7 @@ if ($id == null) {
 }
 
 
-$content .= Form::input_select('terminal_objective_id', 'Thema / Kompetenzbereich', $terminal_objectives, 'terminal_objective', 'id', $terminal_objective_id , $error, 'getValues(\'objectives\', curriculum_id, \'enabling_objective_id\', \'enabling_objective_from_terminal_objective\');');
+$content .= Form::input_select('terminal_objective_id', 'Thema / Kompetenzbereich', $terminal_objectives, 'terminal_objective', 'id', $terminal_objective_id , $error, 'getValues(\'objectives\', this.value, \'enabling_objective_id\', \'enabling_objective_from_terminal_objective\');');
 $content .= Form::input_select_multiple(array('id' => 'enabling_objective_id', 'label' => 'Kompetenzen', 'select_data' => $enabling_objectives, 'select_label' => 'enabling_objective', 'select_value' => 'id', 'input' => array($enabling_objective_id), 'error' => $error)); 
 
 $grades   = new Grade();    //Load Grades
