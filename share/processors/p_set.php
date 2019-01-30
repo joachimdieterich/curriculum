@@ -42,9 +42,16 @@ switch ($func) { //$func == db table name
         break;
     case "ajaxsubmit":      
                             switch ($_POST['table']) {
+                                case 'config_system':   $c               = new Config();
+                                                        $c->name         = $_POST['params']['name'];
+                                                        $c->value        = $_POST['value'];
+                                                        $c->context_id   = $_SESSION['CONTEXT']['config']->context_id;
+                                                        $c->reference_id = 0; // System
+                                                        $c->set();
+                                                        //error_log(json_encode($c));
+                                    break;
                                 case 'config_plugins':  $c = new Config();
-                                                        error_log($c->set_config_plugin($_POST['params']['plugin'], $_POST['params']['name'], $_POST['value']));
-
+                                                        $c->set_config_plugin($_POST['params']['plugin'], $_POST['params']['name'], $_POST['value']);
                                     break;
 
                                 default:
