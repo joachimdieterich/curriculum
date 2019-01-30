@@ -61,6 +61,11 @@ class Institution {
      */
     public $city; 
     /**
+     * contains street, postalcode city
+     * @var string 
+     */
+    public $adress;
+    /**
      * phone
      * @var string 
      */
@@ -370,11 +375,10 @@ class Institution {
         }
         
         if (isset($dataInstitution)){
-            $value = $dataInstitution;
+            return $dataInstitution;
         } else {
-            $value = NULL;
+            return NULL;
         } 
-        return $value;
     }
     
     public function getStatistic($id, $institution_id = false){
