@@ -127,6 +127,9 @@ class Config {
             foreach ($result AS $key => $value){
                 $this->$key = $value;
             }
+            if ($this->type == 'bool'){
+                $this->value = filter_var($this->value, FILTER_VALIDATE_BOOLEAN);   //return proper datatypes for int string ...
+            }
             $entrys[]            = clone $this;
         } 
         
