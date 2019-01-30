@@ -32,9 +32,9 @@ $CFG->app_footer='<a href="http://www.curriculumonline.de" target="_blank">© Co
 
 /* DB Settings */
 $CFG->db_host='127.0.0.1';
-$CFG->db_user='DBUSER';
-$CFG->db_password ='DBPASS';
-$CFG->db_name='DBNAME';
+$CFG->db_user='root';
+$CFG->db_password ='root';
+$CFG->db_name='cur181010';
 if ($CFG->db_name != ''){
     try {
         $DB = new PDO('mysql:host='.$CFG->db_host.';dbname='.$CFG->db_name.';charset=utf8', $CFG->db_user, $CFG->db_password ); 
@@ -49,7 +49,7 @@ $CFG->ip= 'localhost';
 $CFG->protocol                      = 'http://'; //'https://';
 $CFG->base_folder                   = 'curriculum/';
 $CFG->base_url                      = $CFG->protocol.$CFG->ip.'/'.$CFG->base_folder;         //--> ! darf nicht localhost sein, da sonst probleme bei der Bilddarstellung bei Zugriff von extern
-$CFG->curriculumdata_root           = '[PATH TO CURRICULUMDATA]';
+$CFG->curriculumdata_root           = '/Applications/MAMP/cur_data/';
 /*  Paths - do not edit */
 $CFG->share_root                    = dirname(__FILE__).'/';
 $CFG->document_root                 = dirname(__FILE__).'/../public/';

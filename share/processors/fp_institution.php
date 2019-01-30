@@ -72,7 +72,6 @@ if($validated_data === false) {/* validation failed */
     $new_institution->timeout           = filter_input(INPUT_POST, 'timeout',           FILTER_VALIDATE_INT);
     $new_institution->semester_id       = filter_input(INPUT_POST, 'semester_id',       FILTER_VALIDATE_INT);
     $new_institution->file_id           = filter_input(INPUT_POST, 'file_id',           FILTER_VALIDATE_INT);
-    $new_institution->support_user_ids  = $_POST['support_user_ids']; #FILTER_VALIDATE_RAW
     
     switch ($_POST['func']) {
         case 'new':     if (isset($_POST['btn_newSchooltype'])){ 
@@ -104,7 +103,6 @@ if($validated_data === false) {/* validation failed */
         case 'edit':    if ($new_institution->update()){
                             $_SESSION['PAGE']->message[] = array('message' => 'Institution erfolgreich aktualisiert', 'icon' => 'fa-university text-success');
                             session_reload_user(); //reload session to get changes to current session (my enrolments)
-                            
                         }
             break;
 
