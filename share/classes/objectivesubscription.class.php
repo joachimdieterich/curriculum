@@ -135,17 +135,17 @@ class ObjectiveSubscription {
     }
     
     public static function getSubscriptionIds($context_id, $source_id, $objective_context_id){
-        $db = DB::prepare('SELECT id '
+        $db = DB::prepare('SELECT os.id '
                 . 'FROM objective_subscription AS os '
                 . 'WHERE os.context_id = ? '
                 . 'AND os.source_id = ? '
                 . 'AND os.objective_context_id = ?');
         $db->execute(array($context_id, $source_id, $objective_context_id));
-        $result = array();
+        $subscription_ids = array();
         while($result = $db->fetchObject()){
-            $result[] = $result->id;
+            $subscription_ids[] = $result->id;
         }
-        return $result;
+        return $subscription_ids;
     }
     
     public static function deleteAllObjectiveSubscriptionsByContextSource($context_id, $source_id, $creator_id){
