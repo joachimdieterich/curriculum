@@ -111,7 +111,7 @@ class Form {
         return self::form_group($id, $form, $label, $error, $class_left, $class_right);
     }
     
-    public static function input_switch($id, $label, $input, $error, $show_id = false, $class_left='col-sm-3', $class_right='col-sm-9'){
+    public static function input_switch($id, $label, $input, $error, $show_id = false, $class_left='col-sm-3', $class_right='col-sm-9', $onchange = ''){
         $form = '<div id="'.$id.'_form_group" class="form-group '.validate_msg($error, $id, true).'">
                   <label class="control-label '.$class_left.'" for="'.$id.'">'.$label;
         if ($show_id){
@@ -124,7 +124,9 @@ class Form {
                 } else {
                     $form .= ' value="false" ';
                 }
-                $form .= ' onclick="switchValue(\''.$id.'\');"/>
+                $form .= ' onclick="switchValue(\''.$id.'\');" ';
+                $form .= "onchange='{$onchange}'";
+                $form .= '/>
                  <label for="'.$id.'" class="checkbox-label" data-off="nicht erlaubt" data-on="erlaubt"></label>'; 
         $form .= '</div></div>';  
 
