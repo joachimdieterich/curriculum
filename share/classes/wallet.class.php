@@ -175,10 +175,10 @@ class Wallet {
                                                         'title'         => 'wa',
                                                         'description'   => 'wa')); 
         switch ($dependency) {
-            case 'id':      $db = DB::prepare('SELECT wa.* FROM wallet AS wa WHERE wa.id = ?');
+            case 'id':      $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS wa.* FROM wallet AS wa WHERE wa.id = ?');
                             $db->execute(array($id));
                 break;
-            case 'user':    $db = DB::prepare('SELECT wa.* FROM wallet AS wa WHERE wa.creator_id = ? '.$order_param);
+            case 'user':    $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS wa.* FROM wallet AS wa WHERE wa.creator_id = ? '.$order_param);
                             $db->execute(array($id));
                             $content            = new WalletContent();
                             $content->wallet_id = $this->id;
@@ -188,7 +188,7 @@ class Wallet {
                             $cm->context        = 'wallet'; 
                             $this->comments     = $cm->get('reference');
                 break;
-            case 'shared':  $db = DB::prepare('SELECT DISTINCT wa.* FROM wallet AS wa, wallet_sharing AS ws, context AS co
+            case 'shared':  $db = DB::prepare('SELECT DISTINCT SQL_CALC_FOUND_ROWS wa.* FROM wallet AS wa, wallet_sharing AS ws, context AS co
                                                             WHERE co.context = ? 
                                                             AND co.context_id = ws.context_id 
                                                             AND wa.id = ws.wallet_id
