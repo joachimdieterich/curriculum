@@ -68,12 +68,4 @@ class User_enrolments {
         return $erg;
     }
     
-    public static function deleteByUserIdContextIdReferemceId($user_id, $context_id, $reference_id){
-        $db = DB::prepare('DELETE FROM user_enrolments '
-                . 'WHERE user_id = ? '
-                . 'AND context_id = ? '
-                . 'AND reference_id = ?');
-        return $db->execute(array($user_id, $context_id, $reference_id));
-    }
-    
 }

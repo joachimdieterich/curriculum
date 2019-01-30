@@ -40,11 +40,6 @@ if (isset($COURSE->id)){
     $course_id = $COURSE->id;
 }
 $timerange     = null;
-$terminal_objectives = null;
-$terminal_objective_id = null;
-$enabling_objectives = null;
-$enabling_objective_id = null;
-
 
 /* user_list */
 $teacher_list  = null;
@@ -65,23 +60,11 @@ if (is_array($data)) {
         $$key = $value;
     }
 }
-
+            
 if (isset($_GET['func'])){
-    $curriculum        = new Curriculum();
-    $curriculum->id = $COURSE->curriculum_id;
-    $curriculum->load();
-    
-    
-    $ter        = new TerminalObjective();
-    $ena        = new EnablingObjective();
-    
     switch ($_GET['func']) {
         case "new":     checkCapabilities('coursebook:add',    $USER->role_id, false, true);
                         $header = 'Kursbucheintrag hinzufügen';  
-                        
-                        $context_id     = $_SESSION['CONTEXT'][filter_input(INPUT_GET, 'context', FILTER_SANITIZE_STRING)]->context_id;
-                        $reference_id   = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-
                         
                         $curriculum_id = $curriculum->id; 
 
@@ -94,8 +77,7 @@ if (isset($_GET['func'])){
                         
                         
             break;
-        case "edit":    
-                        #ToDo: checkCapabilities('coursebook:update', $USER->role_id, false, true);
+        case "edit":    checkCapabilities('coursebook:update', $USER->role_id, false, true);
                         $header = 'Kursbucheintrag aktualisieren';
                         $course_book = new CourseBook();
                         $course_book->load('cb_id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
@@ -113,18 +95,23 @@ if (isset($_GET['func'])){
                         
                         
                         $os = new ObjectiveSubscription();
-                        $os->id = ObjectiveSubscription::getSubscriptionIds(10, $course_book->id, 27)[0];
-                        $os->load();
-                        $terminal_objective_id = $os->reference_id;
-                        
-                        $enabling_objective_id = array();
-                        $enabling_objectiveSubscriptionsId = ObjectiveSubscription::getSubscriptionIds(10, $course_book->id, 12);
-                        foreach ($enabling_objectiveSubscriptionsId AS $eosid){
-                            $os->id = $eosid;
-                            $os->load();
-                            $enabling_objective_id[] = $os->reference_id;
+                        $terminal_ids = ObjectiveSubscription::getSubscriptionIds(10, $course_book->id, 27);
+                        if (count($terminal_ids)>0){
+                            $os->id = $terminal_ids[0];
+                        }else{
+                            $os->id = 0;
                         }
-                        
+                        if($os->load()){
+                            $terminal_objective_id = $os->reference_id;
+
+                            $enabling_objective_id = array();
+                            $enabling_objectiveSubscriptionsId = ObjectiveSubscription::getSubscriptionIds(10, $course_book->id, 12);
+                            foreach ($enabling_objectiveSubscriptionsId AS $eosid){
+                                $os->id = $eosid;
+                                $os->load();
+                                $enabling_objective_id[] = $os->reference_id;
+                            }
+                        }
                         
             break;
         default: break;
@@ -147,7 +134,6 @@ if (isset($id)) { $content .= 'value="'.$id.'"';} $content .= '>';
 $content .= Form::input_textarea('topic', 'Thema', $topic, $error, 'Stundenthema');
 $content .= Form::input_textarea('description', 'Beschreibung', $description, $error, 'Beschreibung');
 
-
 $courses = new Course(); 
 if(checkCapabilities('user:userListComplete', $USER->role_id, false, true)){
     $courses = $courses->getCourse('admin', $USER->id);  
@@ -156,7 +142,7 @@ if(checkCapabilities('user:userListComplete', $USER->role_id, false, true)){
 }                                               // Load schooltype 
 $content .= Form::input_select('course_id', 'Kurs / Klasse', $courses, 'course', 'course_id', $course_id , $error);
 
-$content .= Form::input_select('terminal_objective_id', 'Thema / Kompetenzbereich', $terminal_objectives, 'terminal_objective', 'id', $terminal_objective_id , $error, 'getValues(\'objectives\', this.value, \'enabling_objective_id\', \'enabling_objective_from_terminal_objective\');');
+$content .= Form::input_select('terminal_objective_id', 'Thema / Kompetenzbereich', $terminal_objectives, 'terminal_objective', 'id', $terminal_objective_id , $error, 'getValues(\'objectives\', this.value, \'enabling_objective_id\', \'enabling_objective_from_terminal_objective\');', "Keinen Lernstand auswählen");
 $content .= Form::input_select_multiple(array('id' => 'enabling_objective_id', 'label' => 'Kompetenzen', 'select_data' => $enabling_objectives, 'select_label' => 'enabling_objective', 'select_value' => 'id', 'input' => $enabling_objective_id, 'error' => $error)); 
 
 $content .= Form::input_date(array('id'=>'timerange', 'label' => 'Dauer' , 'time' => $timerange, 'error' => $error, 'placeholder' => '', $type = 'date'));

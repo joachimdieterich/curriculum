@@ -36,9 +36,6 @@ class CourseBook {
     public $curriculum_id;
     public $curriculum;
     public $event_id;
-    
-    public $terminalObjective_id;
-    public $enablingObjective_ids;
    
     //public $event;
     public $timestart;
@@ -66,19 +63,21 @@ class CourseBook {
             return false;
         }
         $success = True;
-        $os = new ObjectiveSubscription();
-        $os->creator_id=$this->creator_id;
-        $os->context_id=10;
-        $os->source_id = $this->id;
-        $os->objective_context_id = 27;
-        $os->reference_id = $this->terminalObjective_id;
-        $os->add();
-        $os->objective_context_id = 12;
-        if (is_numeric($this->id)){
-            foreach($this->enablingObjective_ids AS $eoid){
-                $os->reference_id = $eoid;
-                if (!is_numeric($os->add())){
-                    $success = False;
+        if ($this->terminalObjective_id != "false"){
+            $os = new ObjectiveSubscription();
+            $os->creator_id=$this->creator_id;
+            $os->context_id=10;
+            $os->source_id = $this->id;
+            $os->objective_context_id = 27;
+            $os->reference_id = $this->terminalObjective_id;
+            $os->add();
+            $os->objective_context_id = 12;
+            if (is_numeric($this->id)){
+                foreach($this->enablingObjective_ids AS $eoid){
+                    $os->reference_id = $eoid;
+                    if (!is_numeric($os->add())){
+                        $success = False;
+                    }
                 }
             }
         }
@@ -97,7 +96,6 @@ class CourseBook {
             $os = new ObjectiveSubscription();
             $os->id = ObjectiveSubscription::getSubscriptionIds(10, $this->id, 27)[0];
             $os->load();
-            
             if ($os->reference_id == $this->terminalObjective_id){
                 #Update der Enable Objectives, terminal ist identisch geblieben
                 $objectiveSubscription_ids = ObjectiveSubscription::getSubscriptionIds(10, $this->id, 12);
@@ -129,18 +127,20 @@ class CourseBook {
             }else{
                 #Terminal hat sich geändert, terminal und enable löschen und neu anlegen
                 ObjectiveSubscription::deleteAllObjectiveSubscriptionsByContextSource(10, $this->id, $USER->id);
-                $os->creator_id=$this->creator_id;
-                $os->context_id=10;
-                $os->source_id = $this->id;
-                $os->objective_context_id = 27;
-                $os->reference_id = $this->terminalObjective_id;
-                $os->add();
-                $os->objective_context_id = 12;
-                if (is_numeric($this->id)){
-                    foreach($this->enablingObjective_ids AS $eoid){
-                        $os->reference_id = $eoid;
-                        if (!is_numeric($os->add())){
-                            $success = False;
+                if ($this->terminalObjective_id != "false"){
+                    $os->creator_id=$this->creator_id;
+                    $os->context_id=10;
+                    $os->source_id = $this->id;
+                    $os->objective_context_id = 27;
+                    $os->reference_id = $this->terminalObjective_id;
+                    $os->add();
+                    $os->objective_context_id = 12;
+                    if (is_numeric($this->id)){
+                        foreach($this->enablingObjective_ids AS $eoid){
+                            $os->reference_id = $eoid;
+                            if (!is_numeric($os->add())){
+                                $success = False;
+                            }
                         }
                     }
                 }
@@ -156,15 +156,7 @@ class CourseBook {
         $this->load();
         $LOG->add($USER->id, 'coursebook.class.php', dirname(__FILE__), 'Delete coursebook: '.$this->topic.', course_id: '.$this->course_id.' creator_id: '.$this->creator_id);
         $db = DB::prepare('DELETE FROM course_book WHERE cb_id = ? AND creator_id = ?');
-        $success = $db->execute(array($this->id, $USER->id));
-        if ($success){
-            $db = DB::prepare('DELETE FROM objective_subscription '
-                    . 'WHERE context_id = 10 '
-                    . 'AND source_id = ? '
-                    . 'AND creator_id = ?');
-            return $db->execute(array($this->id, $USER->id));
-        }
-        return $success;
+        return $db->execute(array($this->id, $USER->id));
     } 
     
     public function load($dependency = 'cb_id', $value = null){
