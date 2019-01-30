@@ -256,9 +256,9 @@ class Curriculum {
                                                         'schooltype' => 'sc',
                                                         'grade'      => 'gr',
                                                         'subject'    => 'su'));  
-        if ($order_param == ''){
+        /*if ($order_param == ''){
             $order_param = 'ORDER BY cu.curriculum';
-        }
+        }*/
         $curriculum = array();
         switch ($dependency) {
             case 'group':   $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS cu.id, cu.curriculum, cu.description, fl.filename, su.subject, 
@@ -274,7 +274,10 @@ class Curriculum {
                             $db->execute(array($id));
                             while($result = $db->fetchObject()) { 
                                     $curriculum[] = $result; 
-                            }         
+                            } 
+                            if ($paginator != ''){ 
+                                set_item_total($paginator); //set item total based on FOUND ROWS()
+                            }
                 break;
             case 'creator': $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS cu.id, cu.curriculum, cu.description, gr.grade  
                                                 FROM curriculum AS cu, grade AS gr
@@ -282,6 +285,9 @@ class Curriculum {
                             $db->execute(array($id));
                             while($result = $db->fetchObject()) {
                                         $curriculum[] = $result; 
+                            }
+                            if ($paginator != ''){ 
+                                set_item_total($paginator); //set item total based on FOUND ROWS()
                             }
                 break; 
             case 'user':    if (checkCapabilities('curriculum:showAll', $USER->role_id, false)){
@@ -305,6 +311,9 @@ class Curriculum {
                                                 FROM curriculum_enrolments AS cure WHERE cure.status = 1 AND cure.group_id IN (SELECT ge.group_id FROM groups_enrolments AS ge WHERE ge.status = 1 AND ge.user_id = ?))) '.$order_param);
                                 $db->execute(array($id, $id));
                             }
+                            if ($paginator != ''){ 
+                                set_item_total($paginator); //set item total based on FOUND ROWS()
+                            }
                             while($result = $db->fetchObject()) {
                                 //get statistics
                                 $db2 = DB::prepare('SELECT clicks FROM statistics WHERE context_id = ? AND reference_id = ?');
@@ -322,9 +331,7 @@ class Curriculum {
                 break; 
             default:  break;
         }
-        if ($paginator != ''){ 
-             set_item_total($paginator); //set item total based on FOUND ROWS()
-        }
+        
         return $curriculum;
    }
    
