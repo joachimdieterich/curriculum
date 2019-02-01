@@ -78,7 +78,7 @@ class Reference {
             foreach ($result as $key => $value) {
                 $this->$key  = $value; 
             }
-            $this->grade = $_SESSION['GRADE'][$this->grade_id]->grade;
+            
             switch ($this->context_id) {
                 case $_SESSION['CONTEXT']['terminal_objective']->context_id:
                     $t                          = new TerminalObjective();
