@@ -2862,7 +2862,7 @@ public static function quote_reference($quotes){
                     foreach ($enable_ids AS $eid){
                         $enable->id = $eid;
                         $enable->load();
-                        $code .= '<div style="display:inline-table; padding:10px">' . RENDER::objective(["type" =>"enabling_objective", "objective" => $enable , "user_id" => $USER->id]) .'</div>';
+                        $code .= '<div style="display:inline-table; padding:10px">' . RENDER::objective(["type" =>"enabling_objective", "objective" => $enable , "border_color" => $terminal->color, "user_id" => $USER->id]) .'</div>';
                         
                     }
                 }
