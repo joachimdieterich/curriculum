@@ -125,34 +125,39 @@ class Institution {
     /**
      * load  institution from db depending on id
      */
-    public function load($dependency = 'id', $value = null) {
+    public function load($dependency = 'id', $value = null, $load_support_user = false) {
         if (isset($value)){ $v = $value; } else { $v = $this->id; }
         $db = DB::prepare('SELECT * FROM institution WHERE '.$dependency.' = ?');
         if ($db->execute(array($v))) {
-          $result = $db->fetchObject();
-          $this->id                 = $result->id;
-          $this->confirmed          = $result->confirmed;
-          $this->institution        = $result->institution; 
-          $this->description        = $result->description; 
-          $this->street             = $result->street; 
-          $this->postalcode         = $result->postalcode; 
-          $this->city               = $result->city; 
-          $this->phone              = $result->phone; 
-          $this->email              = $result->email; 
-          $this->schooltype_id      = $result->schooltype_id; 
-          $this->country_id         = $result->country_id; 
-          $this->state_id           = $result->state_id; 
-          $this->creation_time      = $result->creation_time; 
-          $this->creator_id         = $result->creator_id; 
-          $this->paginator_limit    = $result->paginator_limit; 
-          $this->std_role           = $result->std_role; 
-          $this->csv_size           = $result->csv_size; 
-          $this->avatar_size        = $result->avatar_size; 
-          $this->material_size      = $result->material_size; 
-          $this->acc_days           = $result->acc_days; 
-          $this->timeout            = $result->timeout; 
-          $this->semester_id        = $result->semester_id; 
-          $this->file_id            = $result->file_id; 
+            $result = $db->fetchObject();
+            $this->id                 = $result->id;
+            $this->confirmed          = $result->confirmed;
+            $this->institution        = $result->institution; 
+            $this->description        = $result->description; 
+            $this->street             = $result->street; 
+            $this->postalcode         = $result->postalcode; 
+            $this->city               = $result->city; 
+            $this->phone              = $result->phone; 
+            $this->email              = $result->email; 
+            $this->schooltype_id      = $result->schooltype_id; 
+            $this->country_id         = $result->country_id; 
+            $this->state_id           = $result->state_id; 
+            $this->creation_time      = $result->creation_time; 
+            $this->creator_id         = $result->creator_id; 
+            $this->paginator_limit    = $result->paginator_limit; 
+            $this->std_role           = $result->std_role; 
+            $this->csv_size           = $result->csv_size; 
+            $this->avatar_size        = $result->avatar_size; 
+            $this->material_size      = $result->material_size; 
+            $this->acc_days           = $result->acc_days; 
+            $this->timeout            = $result->timeout; 
+            $this->semester_id        = $result->semester_id; 
+            $this->file_id            = $result->file_id;
+            $this->support_user_ids   = null;
+            if ($load_support_user){
+                $this->support_user_ids = @User_enrolments::loadUserIdsByContextReference(9, $this->id);          
+            }
+
         } else {
             return false;
         }
@@ -233,7 +238,33 @@ class Institution {
         } else {
             $db = DB::prepare('UPDATE institution SET institution = ?, description= ?, street = ?, postalcode = ?, city = ?, phone = ?, email = ?, schooltype_id= ?, country_id= ?, state_id= ?, confirmed = ?, paginator_limit = ?, std_role = ?, csv_size = ?, avatar_size = ?, material_size = ?, acc_days = ?, timeout = ?, semester_id = ? , file_id = ? 
                                     WHERE id = ?');
-            return $db->execute(array($this->institution, $this->description, $this->street, $this->postalcode, $this->city, $this->phone, $this->email, $this->schooltype_id, $this->country_id, $this->state_id, $this->confirmed, $this->paginator_limit, $this->std_role, $this->csv_size, $this->avatar_size, $this->material_size, $this->acc_days, $this->timeout, $this->semester_id, $this->file_id, $this->id));
+            $success = $db->execute(array($this->institution, $this->description, $this->street, $this->postalcode, $this->city, $this->phone, $this->email, $this->schooltype_id, $this->country_id, $this->state_id, $this->confirmed, $this->paginator_limit, $this->std_role, $this->csv_size, $this->avatar_size, $this->material_size, $this->acc_days, $this->timeout, $this->semester_id, $this->file_id, $this->id));
+            if($success){
+                $enrolmentIdsInDB = User_enrolments::loadUserIdsByContextReference(9, $this->id);
+                $allIds = $enrolmentIdsInDB;
+                foreach($this->support_user_ids AS $suid){
+                    if(!in_array($suid, $allIds)){
+                        $allIds[] = $suid;
+                    }
+                }
+
+                $user_enrolment = new User_enrolments();
+                $user_enrolment->context_id = 9;
+                $user_enrolment->reference_id = $this->id;
+                $user_enrolment->creator_id = $USER->id;
+                foreach ($allIds AS $checkId){
+                    if (!in_array($checkId, $enrolmentIdsInDB) && in_array($checkId, $this->support_user_ids)){
+                        # id nicht in der Datenbank aber bei den neuen Ids des Benutzers dabei -> hinzufügen
+                        $user_enrolment->user_id = $checkId;
+                        $user_enrolment->add();
+                    }elseif(in_array($checkId, $enrolmentIdsInDB) && !in_array($checkId, $this->support_user_ids)){
+                        #id in der Datenbank aber nicht mehr bei den neuen Ids des Benutzers -> löschen aus DB
+                        User_enrolments::deleteByUserIdContextIdReferemceId($checkId, 9, $this->id);
+                    }
+                }
+
+            }
+            return $success;
         }
     }
     
