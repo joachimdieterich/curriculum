@@ -29,7 +29,7 @@ global $CFG, $USER, $COURSE;
 $USER          = $_SESSION['USER'];
 $COURSE        = $_SESSION['COURSE'];
 
-$cur           = new Curriculum();
+$curriculum    = new Curriculum();
 /*Variablen anlegen -> vermeidet unnötige if-Abfragen im Formular*/
 $id            = null;
 $topic         = null; 
@@ -49,8 +49,12 @@ $absent_list   = null;
 /* task */
 $task_id       = null; 
 $task          = null; 
-
+$terminal_objective_id = null; 
+$enabling_objective_id = null;
 $func          = $_GET['func'];
+$curriculum_id = $_SESSION['PAGE']->objectives['cur_id'];
+$ter                 = new TerminalObjective();
+$ena                 = new EnablingObjective();
 
 $error         =   null;
 $object        = file_get_contents("php://input");
@@ -65,10 +69,9 @@ if (isset($_GET['func'])){
     switch ($_GET['func']) {
         case "new":     checkCapabilities('coursebook:add',    $USER->role_id, false, true);
                         $header = 'Kursbucheintrag hinzufügen';  
-                        
-                        $curriculum_id = $curriculum->id; 
-
+                        //$curriculum_id = $_SESSION['PAGE']->objectives['cur_id'];
                         $ter->curriculum_id = $curriculum_id;
+                        
                         $terminal_objectives = $ter->getObjectives('curriculum', $curriculum_id);
                         
                         $ena->curriculum_id  = $curriculum_id;
