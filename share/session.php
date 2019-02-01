@@ -57,8 +57,8 @@ if (isset($_SESSION['GRADE'])){                                               //
     $GRADE                     = $_SESSION['GRADE'];
 } else {
     $g                         = new Grade();
-    $GRADE                     = $g->getGrades('global', null, '', true);
-    $_SESSION['GRADE']         = $GRADE;
+    $GRADE                     = $g->getGrades('session', null, '', true);
+    $_SESSION['GRADE']         = $GRADE;   
 }
 
 
