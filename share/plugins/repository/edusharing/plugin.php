@@ -35,7 +35,7 @@ class repository_plugin_edusharing extends repository_plugin_base {
 		$this->repoUrl  = $this->config('repoUrl');
 		$this->repoUser = $this->config('repoUser');
 		$this->repoPwd  = $this->config('repoPwd');
-		//$this->setTokens(); //do not set token here to prevent blankpage if edusharing is offline
+		$this->setTokens(); //do not set token here to prevent blankpage if edusharing is offline
 	}
         
         private function config($name){
@@ -160,7 +160,7 @@ class repository_plugin_edusharing extends repository_plugin_base {
 	}
 	
 	private function call($url, $httpMethod = '', $additionalHeaders = array(), $postFields = array()) {
-            $this->setTokens();    
+            //$this->setTokens();    
             $ch = curl_init ();
             curl_setopt ( $ch, CURLOPT_URL, $url );
             curl_setopt ( $ch, CURLOPT_RETURNTRANSFER, 1 );
