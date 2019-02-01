@@ -145,6 +145,11 @@ class Grade {
                                                         'institution'   => 'ins')); 
         $grades = array();                      //Array of grades
         switch ($dependency) {
+            case 'session': $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS gr.*, ins.institution 
+                                            FROM grade AS gr, institution AS ins 
+                                            WHERE gr.institution_id = ins.id' ); //kein $order_param nutzen! sonst wird ein Limit gesetzt
+                        $db->execute();
+                break;
             case 'global': $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS gr.*, ins.institution 
                                             FROM grade AS gr, institution AS ins 
                                             WHERE gr.institution_id = ins.id '.$order_param );
@@ -161,6 +166,7 @@ class Grade {
                                                     WHERE (gr.institution_id = ? OR gr.institution_id = 0)
                                                     AND gr.institution_id = ins.id '.$order_param );
                         $db->execute(array($id));
+                break;
             default:
                 break;
         }      
@@ -169,8 +175,9 @@ class Grade {
             foreach ($result as $key => $value) {
                 $this->$key = $value; 
             }
-            if ($for_session){
-                $grades[$result->grade]= clone $this;        // store grade by id and grade to resolve both ways
+            if ($for_session){                
+                $grades[$result->grade] = clone $this;        // store grade by id and grade to resolve both ways
+                $grades[$result->id]    = clone $this;        // store grade by id and grade to resolve both ways
             }
             $grades[]       = clone $this;       
         } 
