@@ -26,8 +26,8 @@
             <input type="text" class="form-control" id="username" name="username" {if isset($username)}value="{$username}"{/if} placeholder="Benutzername">
             <span class="glyphicon glyphicon-user form-control-feedback"></span>
           </div>
-          <div id="password" class="form-group has-feedback {if isset($page_message)}has-error{/if}">
-            <input type="password" class="form-control" name="password" placeholder="Passwort">
+          <div class="form-group has-feedback {if isset($page_message)}has-error{/if}">
+            <input id="password" type="password" class="form-control" name="password" placeholder="Passwort">
             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
           </div>
           <div class="row">
