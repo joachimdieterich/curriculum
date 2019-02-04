@@ -124,7 +124,7 @@ if ($func == 'new'){
     $content .= Form::input_select('group_id', 'Lerngruppe', $group->getGroups('institution', $USER->institution_id), 'group', 'id', $group_id , $error); 
 }
 $content .= '</form>';
-$footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_profile\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';    
+$footer   = '<button id="form_profile_btn_submit" type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_profile\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';    
 
 $script   = '<script id=\'modal_script\'>
         $(function() {
