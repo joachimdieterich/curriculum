@@ -26,14 +26,35 @@ global $CFG, $USER, $TEMPLATE, $PAGE, $INSTITUTION;
  
 if(isset($_FILES['datei']['name'])){                                                                                    //Wenn Datei ausgewählt wurde ...                   
     if($_FILES['datei']['size'] <  $INSTITUTION->csv_size) {                                                            //Dateigröße prüfen
-        move_uploaded_file($_FILES['datei']['tmp_name'], $CFG->curriculumdata_root.'temp/'.$_FILES['datei']['name']);   //Datei auf Server kopieren
+
+        $tmp_filename = $CFG->curriculumdata_root.'temp/'.$_FILES['datei']['name'];
+        move_uploaded_file($_FILES['datei']['tmp_name'], $tmp_filename);   //Datei auf Server kopieren
+
+        // convert file from its current encoding to UTF-8, thus preserving special characters in database and web view (e.g. Umlaute)
+        // iconv needs the encoding of the current file to be able to convert it
+        // PHP implementation does not provide the 'iconv -l' functionality to list all available encodings
+        // mb_detect_encoding only looks for encodings provided to it by mb_detect_order()
+        $encoding_list = array('ASCII', 
+                          'Windows-1252', 
+                          'ISO-8859-1', 
+                          'ISO-8859-15', 
+                          'UTF-8');
+        mb_detect_order($encoding_list);                                        // set list of encodings which the provided file could be encoded in and mb_detect_encoding looks for
+
+        $file_contents = file_get_contents($tmp_filename);
+
+        $file_enc = mb_detect_encoding($file_contents, $encoding_list, true);   // doesn't work properly if mb_detect_order is not set properly previously
+        $file_contents = iconv($file_enc, 'UTF-8', $file_contents);             // convert file contents
+
+        file_put_contents($tmp_filename, $file_contents);                       // ... and overwrite file with newly UTF-8 encoded content
+
         $new_userlist               = new User();
         $new_userlist->import(array('institution_id' => filter_input(INPUT_POST, 'institution_id', FILTER_VALIDATE_INT),
                                     'role_id'        => filter_input(INPUT_POST, 'role_id', FILTER_VALIDATE_INT),
                                     'group_id'       => filter_input(INPUT_POST, 'group_id', FILTER_VALIDATE_INT),
-                                    'import_file'    => $CFG->curriculumdata_root.'temp/'.$_FILES['datei']['name'],
+                                    'import_file'    => $tmp_filename,
                                     'delimiter'      => filter_input(INPUT_POST, 'delimiter', FILTER_UNSAFE_RAW))); //Importieren
-        unlink($CFG->curriculumdata_root.'temp/'.$_FILES['datei']['name']);                                             //TEMP-Datei löschen  
+        unlink($tmp_filename);                                             //TEMP-Datei löschen  
     } else {   
         $PAGE->message[] = array('message' => 'Die Datei darf nicht größer als '.$INSTITUTION->csv_size.' MB sein', 'icon' => 'fa-user text-success');//Datei zu groß
     }
