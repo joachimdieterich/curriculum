@@ -99,7 +99,7 @@ $TEMPLATE->assign('roles', $roles->get());                              //getRol
 //$group_list = $groups->getGroups('group', $USER->id);                   // Load groups
 $group_list = $groups->getGroups('institution', $USER->institution_id);   // Load groups --> only load groups of current institution to prevent enroling to groups of foreign institutions
 $TEMPLATE->assign('groups_array', $group_list);                         
-$TEMPLATE->assign('myInstitutions', $institution->getInstitutions('user', '', $USER->id));
+$TEMPLATE->assign('myInstitutions', $institution->getInstitutions('user', '', $USER->id, false));
 
 
 $users      = new USER();
