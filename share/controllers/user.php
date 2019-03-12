@@ -100,7 +100,7 @@ $TEMPLATE->assign('roles', $roles->get());                              //getRol
 $group_list = $groups->getGroups('institution', $USER->institution_id);   // Load groups --> only load groups of current institution to prevent enroling to groups of foreign institutions
 $TEMPLATE->assign('groups_array', $group_list);                         
 $TEMPLATE->assign('myInstitutions', $institution->getInstitutions('user', '', $USER->id));
-error_log(json_encode($institution->getInstitutions('user', '', $USER->id)));
+error_log(json_encode(end($institution->getInstitutions('user', '', $USER->id))));
 
 $users      = new USER();
 $p_options  = array('delete' => array('onclick'     => "processor('delete', 'user', __id__, { 'reload': 'false', 'callback': 'replaceElementByID', 'element_Id': 'row__id__'});", 
