@@ -76,9 +76,9 @@
             {if checkCapabilities('menu:readMyInstitution', $my_role_id, false)}
                 <li class="header bg-light-blue">Institution</li>
                 {if isset($mySemester) AND count($mySemester) > 1}
-                    {Form::input_select('semester_id', '', $mySemester, 'semester, institution', 'id', $my_semester_id, null,  "processor('semester','set',this.getAttribute('data-id'));", '---', '', '')}                  
+                    {Form::input_select('semester_id', '', $mySemester, 'semester, institution', 'id', $my_semester_id, null,  "processor('semester','set',this.value);", '---', '', '')}                  
                 {else if isset($my_institutions) AND count($my_institutions) > 1}
-                    {Form::input_select('institution_id', '', $my_institutions, 'institution', 'institution_id', $my_institution_id, null, "processor('config','institution_id',this.getAttribute('data-id'));", '---', '', '')}                  
+                    {Form::input_select('institution_id', '', $my_institutions, 'institution', 'institution_id', $my_institution_id, null, "processor('config','institution_id',this.value);", '---', '', '')}                  
                 {/if} 
                 
                 {if checkCapabilities('menu:readObjectives', $my_role_id, false)}
@@ -121,7 +121,7 @@
 
                 {if checkCapabilities('menu:readUser', $my_role_id, false)}
                     <li class="treeview {if $page_action eq 'user'}active{/if}">
-                        <a href="index.php?action=user">
+                        <a id="menu_btn_user" href="index.php?action=user">
                             <i class="fa fa-user"></i><span>Benutzerverwaltung</span>
                         </a>
                     </li>
