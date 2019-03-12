@@ -346,7 +346,7 @@ class Institution {
                                                         'state_id'      => 'ins',
                                                         'state'         => 'sta',
                                                         'de'            => 'co'));  
-        error_log($order_param);
+        error_log('uid'. $id . 'dependency' . $dependency . 'order' . $order_param);
         switch ($dependency) {
             case 'user':$db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS ins.id, ins.institution, ins.description, ins.street, ins.postalcode, ins.city, ins.phone, ins.email, ins.file_id, sch.schooltype AS schooltype_id, sta.state AS state_id, ins.country_id, ins.file_id, co.de AS country, ins.creation_time, usr.username AS creator_id, ro.role
                             FROM institution AS ins, schooltype AS sch, state AS sta, countries AS co, users AS usr, institution_enrolments AS ie, roles AS ro
