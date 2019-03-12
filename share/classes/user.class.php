@@ -1306,9 +1306,9 @@ class User {
    }
    
    
-   public function setSemester($semester){
+   public function setSemester($semester_id){
         $db = DB::prepare('UPDATE users SET semester_id = ? WHERE id = ?');
-        return $db->execute(array($semester, $this->id));
+        return $db->execute(array($semester_id, $this->id));
    }
    /**
     *
