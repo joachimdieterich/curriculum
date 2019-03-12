@@ -30,15 +30,16 @@ $UPDATE->info   = "Adding new table user_enrolments";
 if (isset($_GET['execute'])){
     $UPDATE->log = "Starte Update...<br>"; 
    
-    $db= DB::prepare("CREATE TABLE IF NOT EXISTS `user_enrolments` (
-  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) UNSIGNED NOT NULL,
-  `context_id` int(11) UNSIGNED NOT NULL,
-  `reference_id` int(11) UNSIGNED NOT NULL,
-  `creation_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    $db= DB::prepare("CREATE TABLE `user_enrolments` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) unsigned NOT NULL,
+  `context_id` int(11) unsigned NOT NULL,
+  `reference_id` int(11) unsigned NOT NULL,
+  `creation_time` timestamp NULL DEFAULT NULL,
   `time_modified` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  `creator_id` int(11) UNSIGNED NOT NULL,
-  PRIMARY KEY (`id`));");
+  `creator_id` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
     if ($db->execute(array())){
         $UPDATE->log .= "<b class=\"text-success\">Update 1 finished - OK</b><br>";
         $UPDATE->installed = true;

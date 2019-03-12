@@ -31,16 +31,17 @@ $UPDATE->info   = "Adding new table objective_subscription";
 if (isset($_GET['execute'])){
     $UPDATE->log = "Starte Update...<br>"; 
    
-    $db= DB::prepare("CREATE TABLE IF NOT EXISTS `objective_subscription` (
-  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `context_id` int(11) UNSIGNED NOT NULL,
-  `source_id` int(11) UNSIGNED NOT NULL,
-  `objective_context_id` int(11) UNSIGNED NOT NULL,
-  `reference_id` int(10) UNSIGNED NOT NULL,
-  `timecreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    $db= DB::prepare("CREATE TABLE `objective_subscription` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `context_id` int(11) unsigned NOT NULL,
+  `source_id` int(11) unsigned NOT NULL,
+  `objective_context_id` int(11) unsigned NOT NULL,
+  `reference_id` int(10) unsigned NOT NULL,
+  `timecreated` timestamp NULL DEFAULT NULL,
   `timemodified` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  `creator_id` int(11) UNSIGNED NOT NULL,
-  PRIMARY KEY (`id`));");
+  `creator_id` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
     if ($db->execute(array())){
         $UPDATE->log .= "<b class=\"text-success\">Update 1 finished - OK</b><br>";
         $UPDATE->installed = true;
