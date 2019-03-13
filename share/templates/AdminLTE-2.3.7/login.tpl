@@ -32,13 +32,14 @@
           </div>
           <div class="row">
                 <div class="col-xs-6 pull-left">{*!pull-left to not submit guest login on return, when entering regular user accounts*}
-                    <input id="pw_reset" class="btn btn-primary btn-block btn-flat visible" onclick="toggle(['reset', 'reset_info'], ['login', 'password', 'pw_reset']);" value="Passwort vergessen" />
+                    <!--input id="pw_reset" class="btn btn-primary btn-block btn-flat visible" onclick="toggle(['reset', 'reset_info'], ['login', 'password', 'pw_reset']);" value="Passwort vergessen" /-->
                 </div><!-- /.col -->
             <div class="col-xs-6 pull-right">
               <input id="login" type="submit" name="login" class="btn btn-primary btn-block btn-flat visible" value="Einloggen" />
-              <input id="reset" type="submit" name="reset" class="btn btn-primary btn-block btn-flat hidden" value="Passwort vergessen" />
+              <!--input id="reset" type="submit" name="reset" class="btn btn-primary btn-block btn-flat hidden" value="Passwort vergessen" /-->
             </div><!-- /.col -->
           </div>
+          </form>          
             {if $cfg_guest_login eq '1' OR  $cfg_shibboleth eq '1'}      
                 <p class="text-center top-buffer"><strong>- ODER -</strong></p>  
             {/if}
