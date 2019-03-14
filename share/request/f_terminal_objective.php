@@ -32,7 +32,7 @@
                                                         'institution'    => 'ins')); 
        
         $subjects       = array();
-        $db             = DB::prepare('SELECT sub.*, ins.institution 
+        $db             = DB::prepare('SELECT SQL_CALC_FOUND_ROWS sub.*, ins.institution 
                                        FROM subjects AS sub, institution AS ins 
                                        WHERE (sub.institution_id  = ANY (SELECT institution_id FROM institution_enrolments WHERE institution_id = ins.id AND user_id = ?) OR sub.institution_id = 0)
                                        AND sub.institution_id= ins.id '.$order_param);
@@ -48,7 +48,10 @@
                 $this->institution          = $result->institution;
                 $subjects[] = clone $this;
         } 
-         if (isset($subjects)) {    
+        if ($paginator != ''){ 
+            set_item_total($paginator); //set item total based on FOUND ROWS()
+        }
+        if (isset($subjects)) {    
             return $subjects;
         } else {return $result;}
     }*/

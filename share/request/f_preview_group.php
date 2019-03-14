@@ -53,6 +53,7 @@ foreach((array)$u_list AS $ul){
     $users->load('id', $ul, false);
     $list[] = clone $users;
 }
+$group = $_SESSION['CONTEXT']['group']->context_id;
 $content   .= Render::box_widget(array('widget_title' => 'Benutzer',
                                        'data'         => $list,
                                        'label'        => 'firstname, lastname', 
@@ -61,7 +62,7 @@ $content   .= Render::box_widget(array('widget_title' => 'Benutzer',
                                        'bg_badge'     => 'bg-gray ',
                                        'badge'        => true,
                                        'badge_title'  => 'ausschreiben',
-                                       'onclick_badge'=> 'expelUser('.$g->id.',__id__);'));
+                                       'onclick_badge'=> "processor('expel', 'userfromgroup', __id__, { 'ref_id': '$g->id', 'reload': 'false', 'callback': 'replaceElementByID', 'element_Id': 'w_row___id__'});"));
 
 $html       = Form::modal(array('title'   => 'Überblick Lerngruppe <strong>'.$g->group.'</strong>',
                                 'content' => $content));

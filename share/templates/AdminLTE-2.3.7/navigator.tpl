@@ -23,11 +23,13 @@ function toggleAll(){
         <div class="col-md-6 col-centered">
             {FORM::input_select('search', '', $search_navigator, 'title', 'onclick', '', '', 'window.location.assign(this.value);', 'Schnellzugriff', '', '')}
         </div>
-        {*if checkCapabilities('navigator:add', $my_role_id, false)}    
-            <div class="pull-left" style="padding: 0 0 10px 15px;">
+        {if checkCapabilities('navigator:add', $my_role_id, false)}    
+           {* <div class="pull-left" style="padding: 0 0 10px 15px;">
                 <button type="button" class="btn btn-default " onclick="formloader('help','new');" ><i class="fa fa-plus"></i> Datei hinzufügen</button>
-            </div>
-        {/if*}
+            </div>*}
+            {html_paginator id='navigatorP' title='Navigator'}
+        {/if}
+         
     </div>
     <div class="row"> 
         <div class="{$navigator[0]->nv_top_width_class} ">

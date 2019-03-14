@@ -1,11 +1,12 @@
 <?php
-/** This file is part of curriculum - http://www.joachimdieterich.de
+/**
+*  This file is part of curriculum - http://www.joachimdieterich.de
 * 
 * @package core
-* @filename updateFileHits.php
-* @copyright 2015 Joachim Dieterich
+* @filename schooltype.php
+* @copyright 2019 Joachim Dieterich
 * @author Joachim Dieterich
-* @date 2015.12.06 10:12
+* @date 2019.01.25 19:51
 * @license: 
 *
 * The MIT License (MIT)
@@ -20,13 +21,14 @@
 * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
 * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
-* THE USE OR OTHER DEALINGS IN THE SOFTWARE.     
+* THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-$base_url = dirname(__FILE__).'/../';
-include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
-include_once(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
-global $USER;
-$USER        = $_SESSION['USER'];
-$file        = new File();
-$file->id    = filter_input(INPUT_GET, 'fileID', FILTER_VALIDATE_INT); 
-$file->hit();
+global $USER, $TEMPLATE;
+$TEMPLATE->assign('page_title', 'Karte');
+$TEMPLATE->assign('breadcrumb',  array('Einstellungen' => 'index.php?action=map'));
+
+$TEMPLATE->assign('error', null);
+$ins        = new Institution();
+$ins_list   = $ins->getInstitutions('all');
+error_log(json_encode($ins_list));
+$TEMPLATE->assign('adresses', json_encode($ins->getInstitutions('all')));

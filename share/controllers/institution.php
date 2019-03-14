@@ -28,7 +28,7 @@ $TEMPLATE->assign('page_title',  'Institutionen');
 $TEMPLATE->assign('breadcrumb',  array('Institutionen' => 'index.php?action=institution'));
 $state     = new State;  
 
-$p_options = array('delete' => array('onclick'    => "del('institution',__id__);", 
+$p_options = array('delete' => array('onclick'    => "processor('delete', 'institution', __id__, { 'reload': 'false', 'callback': 'replaceElementByID', 'element_Id': 'row__id__'});", 
                                      'capability' => checkCapabilities('institution:delete', $USER->role_id, false),
                                      'icon'       => 'fa fa-trash',
                                      'tooltip'    => 'löschen'),

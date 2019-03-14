@@ -82,9 +82,9 @@ if (isset($_GET['func'])){
                         $content->load('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
                         if (checkCapabilities('content:delete', $USER->role_id, false, true)){
                             if (isset($_SESSION['PAGE']->curriculum)){
-                                $ref_id = ', '.$_SESSION['PAGE']->curriculum;
+                                $ref_id = $_SESSION['PAGE']->curriculum;
                             }
-                            $options   .= '<a onclick="del(\'content\','.$content->id.''.$ref_id.');" class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-trash"></i></a>';
+                            $options   .= '<a onclick="processor(\'delete\', \'content\', '.$content->id.', { \'ref_id\': '.$ref_id.'});" class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-trash"></i></a>';
                         }
                         $label_header   = $content->title;
                         if (checkCapabilities('content:update', $USER->role_id, false, true)){
@@ -116,13 +116,11 @@ if ($_GET['func'] != "show"){
         }
     }
 
-    $html    ='<form id="form_content"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_content.php"';
-    if (isset($currentUrlId)){ $html .= $currentUrlId; }
-    $html   .= '">
-    <input id="func" name="func" type="hidden" value="'.$func.'"/>
-    <input id="context_id" type="hidden" name="context_id" value="'.$context_id.'"/>
-    <input id="reference_id" type="hidden" name="reference_id" value="'.$reference_id.'"/>
-    <input id="id" name="id" type="text" class="invisible" ';
+    $html    ='<form id="form_content"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_content.php">
+                <input id="func" name="func" type="hidden" value="'.$func.'"/>
+                <input id="context_id" type="hidden" name="context_id" value="'.$context_id.'"/>
+                <input id="reference_id" type="hidden" name="reference_id" value="'.$reference_id.'"/>
+                <input id="id" name="id" type="text" class="invisible" ';
     if (isset($id)) { $html .= 'value="'.$id.'"';} $html .= '>';
     $html   .= Form::input_text('title', $label_title, $title, $error, 'Titel');
     $html   .= Form::input_textarea('content', $label_content, $content, $error, 'Beschreibung');

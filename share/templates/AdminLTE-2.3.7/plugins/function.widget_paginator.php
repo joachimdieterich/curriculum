@@ -24,6 +24,9 @@ function smarty_function_widget_paginator($params, $template) {
     require_once(dirname(__FILE__) . '/function.paginate_middle.php');
     require_once(dirname(__FILE__) . '/function.paginate_next.php');
     require_once(dirname(__FILE__) . '/function.paginate_last.php');
+    $file_id = 0;      // default
+    $subheader01 = ''; // default
+    $subheader02 = ''; // default
     foreach($params as $_key => $_val) {
         switch ($_key) {
             case 'id':          $id    = $_val;
@@ -166,7 +169,7 @@ function smarty_function_widget_paginator($params, $template) {
             if (isset($td['onclick'])){
                 $widget_onclick = str_replace('__id__', $_id, $td['onclick']);
             } else {
-                $widget_onclick = 'checkrow(\''.$_id.'\', \''.$id.'\', \'true\');';
+                $widget_onclick = 'processor(\'config\', \'paginator_checkrow\', \''.$_id.'\', {\'reload\': \'false\',  \'callback\':\'replaceElementByID\', \'paginator\':\''.$id.'\', \'reset\':\'true\'});';
             }
             $html .= '<div class="col-lg-3 col-md-4 col-sm-12 margin-bottom">'.
                     Render::paginator_widget(array('widget_title' => $header, 'widget_desc' => $subheader01, 'widget_onclick' =>  $widget_onclick, 'widget_timerange' => $subheader02, 'icon_url' => $CFG->access_id_url.$file_id/*.'&size=t'*/, 'bg_color' =>  $_val->color,'opt' => $opt))
@@ -191,9 +194,9 @@ function smarty_function_widget_paginator($params, $template) {
         if (isset($all['onclick'])){        
             $html .= 'onclick="'.$all['onclick'].'"';
         } else {
-            $html .= 'onclick="checkrow(\'all\', \''.$id.'\', \'true\');"';
+            $html .= 'onclick="processor(\'config\', \'paginator_checkrow\', \'all\', {\'reload\': \'false\',  \'callback\':\'replaceElementByID\', \'paginator\':\''.$id.'\', \'reset\':\'false\'});"';
         }
-        $html .= '> Alle <span id="span_unselect" class="hidden"><input type="checkbox" id="p_unselect" value="p_unselect" onclick="checkrow(\'none\', \''.$id.'\', \'true\');"> Auswahl aufheben </span>';
+        $html .= '> Alle <span id="span_unselect" class="hidden"><input type="checkbox" id="p_unselect" value="p_unselect" onclick="processor(\'config\', \'paginator_checkrow\', \'none\', {\'reload\': \'false\',\'page\': \'objectives\',\'selection\': \'none\', \'paginator\':\''.$id.'\', \'reset\':\'true\',  \'callback\':\'replaceElementByID\', \'replaceId\':\'curriculum_content\'});"> Auswahl aufheben </span>';
         $html .= ' | <span id="count_selection">'.count($selected_id).'</span> Datensätze markiert</span><br>';
     } 
     $html .= '</div>';

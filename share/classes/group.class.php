@@ -265,13 +265,13 @@ class Group {
         }
         $groups      = array();
         switch ($dependency) {
-            case 'course':  $db = DB::prepare('SELECT gp.*, gr.grade, se.semester FROM groups AS gp, semester AS se, grade AS gr
+            case 'course':  $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS gp.*, gr.grade, se.semester FROM groups AS gp, semester AS se, grade AS gr
                                             WHERE gp.semester_id = se.id AND gp.grade_id = gr.id AND gp.id = ? 
                                             '.$order_param);
                             $db->execute(array($id));
                 break;
 
-            case 'group':   $db = DB::prepare('SELECT gp.*, gr.grade, se.semester, ins.institution, us.username 
+            case 'group':   $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS gp.*, gr.grade, se.semester, ins.institution, us.username 
                                 FROM groups AS gp, grade AS gr, semester AS se, institution AS ins, users AS us
                                 WHERE gp.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE user_id = ? and status = 1)
                                 AND gr.id = gp.grade_id 
@@ -281,7 +281,7 @@ class Group {
                                 '.$order_param);
                             $db->execute(array($id));                            
                  break;
-            case 'user':    $db = DB::prepare('SELECT gp.*, gr.grade, se.semester, ins.institution AS institution_id, usr.username AS creator_id
+            case 'user':    $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS gp.*, gr.grade, se.semester, ins.institution AS institution_id, usr.username AS creator_id
                                                 FROM groups AS gp, semester AS se, institution AS ins, users AS usr, grade AS gr
                                                 WHERE se.id = gp.semester_id
                                                 AND gp.grade_id = gr.id
@@ -291,7 +291,7 @@ class Group {
                                                 '.$order_param);
                             $db->execute(array($id));
                  break; 
-            case 'user_institution':    $db = DB::prepare('SELECT gp.*, gr.grade, se.semester, ins.institution AS institution_id, usr.username AS creator_id
+            case 'user_institution':    $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS gp.*, gr.grade, se.semester, ins.institution AS institution_id, usr.username AS creator_id
                                                 FROM groups AS gp, semester AS se, institution AS ins, users AS usr, grade AS gr
                                                 WHERE se.id = gp.semester_id
                                                 AND gp.grade_id = gr.id
@@ -302,7 +302,7 @@ class Group {
                                                 '.$order_param);
                             $db->execute(array($institution_id, $id));
                  break; 
-            case 'institution':   $db = DB::prepare('SELECT gp.*, gr.grade, se.semester FROM groups AS gp, grade AS gr, semester AS se
+            case 'institution':   $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS gp.*, gr.grade, se.semester FROM groups AS gp, grade AS gr, semester AS se
                                                      WHERE se.id = gp.semester_id
                                                      AND gp.grade_id = gr.id AND gp.institution_id = ? 
                                 '.$order_param);
@@ -328,6 +328,9 @@ class Group {
                 }
                 $groups[] = clone $this;        //it has to be clone, to get the object and not the reference
         } 
+        if ($paginator != ''){ 
+             set_item_total($paginator); //set item total based on FOUND ROWS()
+        }
         return $groups;
     }
     

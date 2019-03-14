@@ -54,6 +54,14 @@ class Absent {
         return $db->execute(array($this->cb_id, $this->user_id, $this->reason, $this->done,$this->status,$USER->id, $this->id));
     }
     
+    public function delete(){
+        global $USER;
+        checkCapabilities('absent:delete', $USER->role_id);
+        $this->load();
+        $db = DB::prepare('DELETE FROM user_absent WHERE id = ?');
+        return $db->execute(array($this->id));
+    } 
+    
     public function load($dependency = 'id', $value = null, $usr_obj = false){
         if (isset($value)){ $v = $value; } else { $v = $this->id; }
         $db         = DB::prepare('SELECT * FROM user_absent WHERE '.$dependency.' = ?');
@@ -92,7 +100,7 @@ class Absent {
     
     public function get($paginator = ''){
         $order_param = orderPaginator($paginator, array()); 
-        $db = DB::prepare('SELECT ub.id FROM user_absent AS ub
+        $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS ub.id FROM user_absent AS ub
                                                 WHERE ub.cb_id = ? '.$order_param );
                             $db->execute(array($this->cb_id));
        
@@ -100,6 +108,9 @@ class Absent {
             $this->load('id', $result->id, true);
             $entrys[]       = clone $this;        //it has to be clone, to get the object and not the reference
         } 
+        if ($paginator != ''){ 
+             set_item_total($paginator); //set item total based on FOUND ROWS()
+        }
         if (isset($entrys)){
             return $entrys;                    
         } else {

@@ -6,10 +6,10 @@
           <div id="menu_top_placeholder"></div>
           <ul class="sidebar-menu">
             {if isset($myChildren)}
-                <li class="header">Meine Kinder</li>
+                <li class="header bg-light-blue">Meine Kinder</li>
                 {Form::input_select('my_children', '', $myChildren, 'firstname, lastname', 'id', $my_child_id, '',"window.location.assign('index.php?action=children&reset=true&child_id='+this.value);" ,'Bitte auswählen...','col-xs-0', 'col-xs-12')}
             {/if}  
-            <li class="header">Lehrpläne</li>
+            <li class="header bg-light-blue">{$lang['SYS_CURRICULA']}</li>
             {if $my_enrolments != ''}
                 {if ($cfg_guest_usr == $my_username) || ($my_role_name eq 'Indexer') || count($my_enrolments) > 10}
                     <select id="guest_menu" name="guest_menu" class="select2 form-control" onchange="location = this.value;">
@@ -26,7 +26,7 @@
                         {foreach item=cur_menu from=$my_enrolments name=enrolments}
                             {if $cur_menu->semester_id eq $my_semester_id}
                                     {$menu_index = $menu_index + 1}
-+                                {if {$menu_index} neq 5} 
+                                {if {$menu_index} neq 5} 
                                     <li {if isset($page_curriculum )}{if ($page_curriculum eq $cur_menu->id) && ($page_group eq $cur_menu->group_id)} class="active treeview"{/if}{/if}>                                
                                         <a class="text-ellipse" href="index.php?action=view&curriculum_id={$cur_menu->id}&group={$cur_menu->group_id}" >
                                             {*<span style="position: absolute;left: 0;top: 0;bottom:0px;right:0; background: url('{$access_file}{$cur_menu->icon_id|resolve_file_id:"t"}') center; background-size: cover; "></span>
@@ -74,7 +74,13 @@
             
             <!-- Institution Menu -->
             {if checkCapabilities('menu:readMyInstitution', $my_role_id, false)}
-                <li class="header">Institution: {$my_institution->institution}</li>
+                <li class="header bg-light-blue">Institution</li>
+                {if isset($mySemester) AND count($mySemester) > 1}
+                    {Form::input_select('semester_id', '', $mySemester, 'semester, institution', 'id', $my_semester_id, null,  "processor('semester','set',this.value);", '---', '', '')}                  
+                {else if isset($my_institutions) AND count($my_institutions) > 1}
+                    {Form::input_select('institution_id', '', $my_institutions, 'institution', 'institution_id', $my_institution_id, null, "processor('config','institution_id',this.value);", '---', '', '')}                  
+                {/if} 
+                
                 {if checkCapabilities('menu:readObjectives', $my_role_id, false)}
                 <li class="treeview {if $page_action eq 'objectives'}active{/if}">
                     <a href="index.php?action=objectives&reset=true">
@@ -115,7 +121,7 @@
 
                 {if checkCapabilities('menu:readUser', $my_role_id, false)}
                     <li class="treeview {if $page_action eq 'user'}active{/if}">
-                        <a href="index.php?action=user">
+                        <a id="menu_btn_user" href="index.php?action=user">
                             <i class="fa fa-user"></i><span>Benutzerverwaltung</span>
                         </a>
                     </li>
@@ -180,7 +186,7 @@
             {/if}
             
             {if checkCapabilities('menu:readLog', $my_role_id, false)}
-            <li class="header">Administration</li>    
+            <li class="header bg-light-blue">Administration</li>    
             
             <li {if $page_action eq 'log'}class="active"{/if}>
                 <a href="index.php?action=log">

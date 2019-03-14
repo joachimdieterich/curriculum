@@ -126,7 +126,7 @@ class Event {
      * Get all availible Grades of current institution
      * @return array of Grade objects 
      */
-    public function get($dependency = 'course', $id = null, $paginator = '', $limit = 5){
+    public function get($dependency = 'course', $id = null, $paginator = ''){
         global $USER;
         if ($id == null){
             $id = $this->id;
@@ -135,20 +135,20 @@ class Event {
                                                         'description'   => 'ev')); 
         
         switch ($dependency) {
-            case 'course':  $db = DB::prepare('SELECT ev.*
+            case 'course':  $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS ev.*
                                                     FROM event AS ev
                                                     WHERE ev.course_id = ? '.$order_param );
                             $db->execute(array($id));
                 break;
-            case 'user':    $db = DB::prepare('SELECT ev.*
+            case 'user':    $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS ev.*
                                                     FROM event AS ev
                                                     WHERE ev.creator_id = ? '.$order_param );
                             $db->execute(array($id));
                 break;
-            case 'upcoming':$db = DB::prepare('SELECT ev.*
+            case 'upcoming':$db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS ev.*
                                                     FROM event AS ev
-                                                    WHERE ev.creator_id = ? AND timestart >= NOW() ORDER BY timestart ASC LIMIT ? '.$order_param );
-                            $db->execute(array($id, $limit));
+                                                    WHERE ev.creator_id = ? AND timestart >= NOW() ORDER BY timestart ASC '.$order_param );
+                            $db->execute(array($id));
                 break;
 
             default:
@@ -175,6 +175,10 @@ class Event {
                 $this->summary           = $this->event.', '.$this->timestart.' - '.$this->timeend;
                 $entrys[]                = clone $this;        //it has to be clone, to get the object and not the reference
         } 
+        
+        if ($paginator != ''){ 
+             set_item_total($paginator); //set item total based on FOUND ROWS()
+        }
         
         return $entrys;
     }

@@ -54,12 +54,12 @@ switch ($func) {
                                     $objective   = new EnablingObjective();
                                     $objective->id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT); 
                                     $objective->load();
-                                    $header     = 'Aktenkoffer<br><small><b>Lernziel / Kompetenz</b><br>'.strip_tags($objective->enabling_objective).'</small>'; 
+                                    $header     = 'Aktenkoffer<br><small><b>Kompetenz/Bereich</b><br>'.strip_tags($objective->enabling_objective).'</small>'; 
                                 } else {
                                     $objective   = new TerminalObjective();
                                     $objective->id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT); 
                                     $objective->load();
-                                    $header     = 'Aktenkoffer<br><small><b>Lernziel / Kompetenz</b><br>'.strip_tags($objective->terminal_objective).'</small>'; 
+                                    $header     = 'Aktenkoffer<br><small><b>Kompetenz/Bereich</b><br>'.strip_tags($objective->terminal_objective).'</small>'; 
                                 }
         break;
     case 'id' :         $files  = $file->getFiles('id', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), '', array('externalFiles' => false, 'user_id' => filter_input(INPUT_GET, 'user_id', FILTER_VALIDATE_INT)));
@@ -82,7 +82,7 @@ $f_content  = null;
 $content    = null; 
     
 if (!$files AND !isset($references) AND !isset($sodis)){
-    $content .= 'Es gibt leider keine Eintragungen zum gewählten Lernziel.';
+    $content .= 'Es gibt leider keine Eintragungen zur gewählten Kompetenz.';
 } else {
     /* Tab header */    
     $file_context_count[1] = 0; // counter for file_context 1 --> global
@@ -130,10 +130,9 @@ if (!$files AND !isset($references) AND !isset($sodis)){
                     '8' => 'Textstellen-/Bezüge', 
                     '9' => 'KMK');
     $content .= '<ul class="nav nav-tabs">';
-    
     foreach ($tabs as $key => $value) {
         if ($file_context_count[$key] != 0){
-            $content .= '<li class="'.$active[$key].'"><a href="#f_context_'.$key.'" data-toggle="tab" >'.$value.' <span class="label label-primary">'.$file_context_count[$key].'</span></a></li>';
+            $content .= '<li id="nav_tab_'.$key.'" class="'.$active[$key].'"><a href="#tab_'.$key.'" data-toggle="tab" >'.$value.' <span class="label label-primary">'.$file_context_count[$key].'</span></a></li>';
         }
     }
     $content .='</ul>';
@@ -211,8 +210,8 @@ if (!$files AND !isset($references) AND !isset($sodis)){
             }
         }
         /* . Icon */
-        if ($files[$i]->type == 'internal'){ 
-            $m_onclick = 'updateFileHits('.$files[$i]->id.')'; 
+        if ($files[$i]->type == 'internal'){  //has no effect -> todo cleancode 
+            $m_onclick = 'processor("set","count",'.$files[$i]->id.', {"dependency":"fileHits", "reload":"false", "callback":"innerHTML", "element_id":"material_counter_id_'.$files[$i]->id.'"});'; 
         } else { 
             $m_onclick = false; //deactivate onclick ! 
         }
@@ -235,13 +234,13 @@ if (!$files AND !isset($references) AND !isset($sodis)){
             case 'external':  $m_url = $files[$i]->filename;
                 break;
             case '.mp3':    /* Player*/  
-                            $m_player =  '<audio width="100%" controls preload="none" onplay="updateFileHits('.$files[$i]->id.')">
+                            $m_player =  '<audio width="100%" controls preload="none" onplay="processor(\'set\',\'count\',\''.$files[$i]->id.'\', {\'dependency\':\'fileHits\', \'reload\':\'false\', \'callback\':\'innerHTML\', \'element_id\':\'material_counter_id_'.$files[$i]->id.'\'});">
                                             <source src="'.$CFG->access_id_url.$files[$i]->id.'" type="audio/mpeg" />
                                         Your browser does not support the audio element.</audio>';
                             $m_url = $CFG->access_id_url.$files[$i]->id;
                 break;
             case '.mp4':    /* Player*/ 
-            case '.mov':    $m_player =  '<video width="100%" controls onplay="updateFileHits('.$files[$i]->id.')">
+            case '.mov':    $m_player =  '<video width="100%" controls onplay="processor(\'set\',\'count\',\''.$files[$i]->id.'\', {\'dependency\':\'fileHits\', \'reload\':\'false\', \'callback\':\'innerHTML\', \'element_id\':\'material_counter_id_'.$files[$i]->id.'\'});">
                                             <source src="'.$CFG->access_id_url.$files[$i]->id.'&video=true"  type="video/mp4"/>
                                           Your browser does not support the video element.</video>';
                 break;
@@ -291,11 +290,10 @@ if (!$files AND !isset($references) AND !isset($sodis)){
             }
             $m_footer .= '</div></div><!-- ./col -->
                     <div class="col-xs-3 text-center" style="border-right: 1px solid #f4f4f4">
-                      <div id="sparkline-2"></div><div class="knob-label">';
+                      <div id="sparkline-2"></div><div id="material_counter_id_'.$files[$i]->id.'" class="knob-label">';
             if (isset($m_hits)){ $m_footer .= ' '.$m_hits.' Aufrufe'; }
             $m_footer .= '</div>
                     </div><!-- ./col -->
-                    
                     <div class="col-xs-4 text-center">
                       <div id="sparkline-3"></div>
                       <div class="knob-label">';
@@ -344,7 +342,7 @@ if (!$files AND !isset($references) AND !isset($sodis)){
             if ($active[$file_context-1] == 'active' ){
                 $content   .=' active';
             }
-            $content   .='" id="f_context_'.($file_context-1).'">';
+            $content   .='" id="tab_'.($file_context-1).'">';
             if ($file_context_count[5] != 0 AND ($file_context-1) == 5) {
                 $media_render_data            = [];
                 $media_render_data['subject'] = 'false';
@@ -372,7 +370,7 @@ if (!$files AND !isset($references) AND !isset($sodis)){
             if ($active[7] == 'active' ){
                 $content   .=' active';
             }
-            $content .='" id="f_context_7">';
+            $content .='" id="tab_7">';
             if ($_SESSION['PAGE']->reference_curriculum_id == false){
                 $content .= render_filter($schooltype_id  = null, $subject_id = null, $curriculum_id = null, $grade_id = null);
                 $content .='<span id="reference_ajax">';
@@ -385,6 +383,8 @@ if (!$files AND !isset($references) AND !isset($sodis)){
             
             $content   .='</span>';
             $content .='</div>';
+        }else{
+            $content .= 'Es bestehen keine Bezüge auf Ihrem Freigabelevel.';
         }
     }
     /* end internal reference*/
@@ -395,7 +395,7 @@ if (!$files AND !isset($references) AND !isset($sodis)){
             if ($active[8] == 'active' ){
                 $content   .=' active';
             }
-            $content .= '" id="f_context_8">';
+            $content .= '" id="tab_8">';
             $content .= '<br>'.RENDER::quote($quotes, array('schooltype_id' => 'false', 'subject_id' => 'false', 'curriculum_id' => 'false', 'grade_id' => 'false', 'ajax' => 'false')).'<hr>';
             $content .='</div>';
         }
@@ -413,7 +413,7 @@ if (!$files AND !isset($references) AND !isset($sodis)){
                 $r = json_decode($s);
                 $sodis_content   .= '<li>'.str_replace("0", ".", substr($r->get[0]->id, 5)).'. '.$r->get[0]->description.'</li>';   
             }
-            $content   .='" id="f_context_9">'.$sodis_content.'</div>';
+            $content   .='" id="tab_9">'.$sodis_content.'</div>';
         }
     }   
     /* end external sodis reference*/                          
@@ -425,10 +425,10 @@ if (!$files AND !isset($references) AND !isset($sodis)){
 if (filter_input(INPUT_GET, 'target', FILTER_SANITIZE_STRING)){
     $target = filter_input(INPUT_GET, 'target', FILTER_SANITIZE_STRING);
 } else { $target = 'popup'; }
-$html     = Form::modal(array('target'   => 'null',
-                                 'title' => $header, 
-                               'content' => $content, 
-                            'background' => '#ecf0f5'));  
+$html     = Form::modal(array('target' => 'null',
+                               'title' => $header, 
+                             'content' => $content, 
+                          'background' => '#ecf0f5'));  
 echo json_encode(array('html'=> $html, 'target' => $target));
 
 

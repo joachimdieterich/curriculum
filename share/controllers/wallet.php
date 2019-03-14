@@ -26,28 +26,7 @@ global $PAGE, $USER, $TEMPLATE;
 $TEMPLATE->assign('breadcrumb',  array('Sammelmappe' => 'index.php?action=wallet'));
 $TEMPLATE->assign('page_title', 'Sammelmappe');  
 $search = false;
-if (isset($_POST) ){
-    if (isset($_POST['search'])){
-        $search = filter_input(INPUT_POST, 'search', FILTER_SANITIZE_STRING);
-        $TEMPLATE->assign('wallet_reset', true); 
-    }
-}
-if (isset($_GET['view'])){
-    switch ($_GET['view']) {
-        case 'shared':  $wallet   = new Wallet();
-                        $TEMPLATE->assign('wallet', $wallet->get('shared', $USER->id, 'userFiles'));
-                        $TEMPLATE->assign('breadcrumb',  array('Sammelmappe' => 'index.php?action=wallet', 'Freigaben' => 'index.php?action=wallet&view=shared'));
-                        $TEMPLATE->assign('page_title', 'freigegebene Sammelmappen');
-                        setPaginator('walletP', $wallet->get('shared', $USER->id, 'userFiles'), 'wa_val', 'index.php?action=wallet&view=shared', $p_config);
-            break;
-
-        default:
-            break;
-    }
-} else {
-    $wallet   = new Wallet();
-    //$TEMPLATE->assign('wallet', $wallet->get('search', $search));
-    $p_options = array('delete' => array('onclick'    => "del('wallet',__id__);", 
+$p_options = array('delete' => array('onclick'    => "processor('delete', 'wallet', __id__, { 'reload': 'false', 'callback': 'replaceElementByID', 'element_Id': 'row__id__'});", 
                                         'capability'  => checkCapabilities('wallet:delete', $USER->role_id, false),
                                         'icon'        => 'fa fa-trash',
                                         'tooltip'     => 'löschen'),
@@ -73,14 +52,33 @@ if (isset($_GET['view'])){
                         'p_search'    => array('title','description'),
                         'p_widget'    => $p_widget, 
                         'p_options'   => $p_options);
-    //setPaginator('walletP', $wallet->get('search', $search), 'wa_val', 'index.php?action=wallet', $p_config); 
-    if ( empty($wallet->get('search', $search))) {
-        $TEMPLATE->assign('wallet', $wallet->get('shared', $USER->id, 'userFiles'));
-        $TEMPLATE->assign('page_title', 'freigegebene Sammelmappen');
-        setPaginator('walletP', $wallet->get('shared', $USER->id, 'userFiles'), 'wa_val', 'index.php?action=wallet&view=shared', $p_config);
-    } else {
-        $TEMPLATE->assign('wallet', $wallet->get('search', $search));
-        setPaginator('walletP', $wallet->get('search', $search), 'wa_val', 'index.php?action=wallet', $p_config);
+
+if (isset($_POST) ){
+    if (isset($_POST['search'])){
+        $search = filter_input(INPUT_POST, 'search', FILTER_SANITIZE_STRING);
+        $TEMPLATE->assign('wallet_reset', true); 
     }
+}
+
+
+if (isset($_GET['view'])){
+    switch ($_GET['view']) {
+        case 'shared':  $wallet   = new Wallet();
+                        $TEMPLATE->assign('wallet', $wallet->get('shared', $USER->id, 'userFiles'));
+                        $TEMPLATE->assign('breadcrumb',  array('Sammelmappe' => 'index.php?action=wallet', 'Freigaben' => 'index.php?action=wallet&view=shared'));
+                        $TEMPLATE->assign('page_title', 'freigegebene Sammelmappen');
+                        setPaginator('walletP', $wallet->get('shared', $USER->id, 'userFiles', 'walletP'), 'wa_val', 'index.php?action=wallet&view=shared', $p_config);
+            break;
+
+        default:
+            break;
+    }
+} else {
+    $wallet   = new Wallet();
+    
+    $TEMPLATE->assign('wallet', $wallet->get('shared', $USER->id, 'userFiles'));
+    $TEMPLATE->assign('page_title', 'freigegebene Sammelmappen');
+    setPaginator('walletP', $wallet->get('user', $USER->id, 'userFiles', 'walletP'), 'wa_val', 'index.php?action=wallet&view=shared', $p_config);
+    
     
 }

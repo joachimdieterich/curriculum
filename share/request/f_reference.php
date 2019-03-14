@@ -117,9 +117,8 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$content ='<form id="form_reference" class="form-horizontal" role="form" method="post" action="../share/processors/fp_reference.php"';
-if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
+$content ='<form id="form_reference" class="form-horizontal" role="form" method="post" action="../share/processors/fp_reference.php">
+           <input type="hidden" name="func" id="func" value="'.$func.'"/>';
 $content .= '<input id="context_id" name="context_id" type="text" class="invisible" value="'.$context_id.'">
              <input id="reference_id" name="reference_id" type="text" class="invisible" value="'.$reference_id.'">';
 if (isset($id)) {                                                               // only set id input field if set! prevents error on validation form reload
@@ -127,7 +126,7 @@ if (isset($id)) {                                                               
 }
 
 switch ($type) {
-    case 'enabling_objective': $type_text = "dem Lernziel bzw. der Kompetenz";
+    case 'enabling_objective': $type_text = "der Kompetenz";
         break;
     case 'terminal_objective': $type_text = "dem Thema bzw. Kompetenzbereich"; 
         break;
@@ -143,7 +142,7 @@ if ($id == null) {
 
 
 $content .= Form::input_select('terminal_objective_id', 'Thema / Kompetenzbereich', $terminal_objectives, 'terminal_objective', 'id', $terminal_objective_id , $error, 'getValues(\'objectives\', this.value, \'enabling_objective_id\', \'enabling_objective_from_terminal_objective\');');
-$content .= Form::input_select_multiple(array('id' => 'enabling_objective_id', 'label' => 'Kompetenzen/ Lernziele', 'select_data' => $enabling_objectives, 'select_label' => 'enabling_objective', 'select_value' => 'id', 'input' => array($enabling_objective_id), 'error' => $error)); 
+$content .= Form::input_select_multiple(array('id' => 'enabling_objective_id', 'label' => 'Kompetenzen', 'select_data' => $enabling_objectives, 'select_label' => 'enabling_objective', 'select_value' => 'id', 'input' => array($enabling_objective_id), 'error' => $error)); 
 
 $grades   = new Grade();    //Load Grades
 $content .= Form::info(array('id' => 'grade_info', 'content' => 'Im folgendenden Feld kann falls nötig die Klassenstufe präzisiert werden.'));

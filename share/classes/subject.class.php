@@ -73,23 +73,25 @@ class Subject {
                                                         'institution'    => 'ins')); 
        
         $subjects       = array();
+       
         if(checkCapabilities('curriculum:addglobalentries', $USER->role_id, false)){ // set for global ADMIN!
-            $db         = DB::prepare('SELECT sub.*, ins.institution, sco.schooltype
+            $db         = DB::prepare('SELECT SQL_CALC_FOUND_ROWS sub.*, ins.institution, sco.schooltype
                                        FROM subjects AS sub
                                        LEFT JOIN schooltype AS sco ON (sub.schooltype_id = sco.id)
                                        LEFT JOIN institution AS ins ON (sub.institution_id = ins.id)
                                        WHERE (sub.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE institution_id = ins.id AND user_id = ?)
-                                       OR sub.institution_id = 0 )'.$order_param);
+                                       OR sub.institution_id = 0 ) '.$order_param);
             $db->execute(array($USER->id));
         } else {
-            $db         = DB::prepare('SELECT sub.*, ins.institution, sco.schooltype
+            $db         = DB::prepare('SELECT SQL_CALC_FOUND_ROWS sub.*, ins.institution, sco.schooltype
                                        FROM subjects AS sub
                                        LEFT JOIN schooltype AS sco ON (sub.schooltype_id = sco.id)
                                        LEFT JOIN institution AS ins ON (sub.institution_id = ins.id)
                                        WHERE (sub.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE institution_id = ins.id AND user_id = ?)
-                                       OR (sub.institution_id = 0 AND (sub.schooltype_id = ?)))'.$order_param);
+                                       OR (sub.institution_id = 0 AND (sub.schooltype_id = ?))) '.$order_param);
             $db->execute(array($USER->id, $USER->institution->schooltype_id));
         }
+        
         while($result = $db->fetchObject()) { 
                 $this->id                   = $result->id;
                 $this->subject              = $result->subject;
@@ -107,7 +109,12 @@ class Subject {
                 }
                 $subjects[] = clone $this;
         } 
-         if (isset($subjects)) {    
+        
+        if ($paginator != ''){ 
+             set_item_total($paginator); //set item total based on FOUND ROWS()
+        }
+        
+        if (isset($subjects)) {    
             return $subjects;
         } else {return $result;}
     }

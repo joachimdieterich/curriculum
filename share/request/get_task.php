@@ -36,7 +36,7 @@ $content   =  '<div class="nav-tabs-custom"><div class="box-header">'
             if (checkCapabilities('task:update', $USER->role_id, false)){
             $content   .= '<div class="tools pull-right text-muted">
                             <i class="fa fa-edit" onclick="formloader(\'task\',\'edit\', \''.$t->id.'\');"></i>
-                            <i class="fa fa-trash-o" onclick="del(\'task\', '.$t->id.');"></i>
+                            <i class="fa fa-trash-o" onclick="processor(\'delete\', \'task\', '.$t->id.',{ \'reload\': \'false\', \'callback\': \'replaceElementByID\', \'element_Id\': \'task_right_col\'});"></i>
                         </div>';
             }
 
@@ -65,10 +65,6 @@ $comments = new Comment();
 $comments->context = 'task';
 $comments->reference_id = $t->id;
 $content .= '<hr><h4>Kommentare</h4>';
-$content .=  RENDER::comments(["comments" => $comments->get('reference'), "permission" => 1]);
-$content .= 'Neuen Kommentar hinzufügen
-            <textarea id="comment" name="comment"  style="width:100%;"></textarea>
-            <button type="submit" class="btn btn-primary pull-right" onclick="comment(\'new\','.$t->id.', 13, document.getElementById(\'comment\').value);">'
-        . '<i class="fa fa-commenting-o margin-r-10"></i> Kommentar abschicken</button>';
+$content .=  RENDER::comments(["id" => $t->id, "context" => "task"]);
 $content .= '</div></div>';
 echo $content;                 

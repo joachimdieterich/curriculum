@@ -29,7 +29,7 @@ global $CFG, $USER, $COURSE;
 $USER          = $_SESSION['USER'];
 $COURSE        = $_SESSION['COURSE'];
 
-$cur           = new Curriculum();
+$curriculum    = new Curriculum();
 /*Variablen anlegen -> vermeidet unnötige if-Abfragen im Formular*/
 $id            = null;
 $topic         = null; 
@@ -49,8 +49,12 @@ $absent_list   = null;
 /* task */
 $task_id       = null; 
 $task          = null; 
-
+$terminal_objective_id = null; 
+$enabling_objective_id = null;
 $func          = $_GET['func'];
+$curriculum_id = $_SESSION['PAGE']->objectives['cur_id'];
+$ter                 = new TerminalObjective();
+$ena                 = new EnablingObjective();
 
 $error         =   null;
 $object        = file_get_contents("php://input");
@@ -64,7 +68,17 @@ if (is_array($data)) {
 if (isset($_GET['func'])){
     switch ($_GET['func']) {
         case "new":     checkCapabilities('coursebook:add',    $USER->role_id, false, true);
-                        $header = 'Kursbucheintrag hinzufügen';          
+                        $header = 'Kursbucheintrag hinzufügen';  
+                        //$curriculum_id = $_SESSION['PAGE']->objectives['cur_id'];
+                        $ter->curriculum_id = $curriculum_id;
+                        
+                        $terminal_objectives = $ter->getObjectives('curriculum', $curriculum_id);
+                        
+                        $ena->curriculum_id  = $curriculum_id;
+                        $enabling_objectives = $ena->getObjectives('curriculum', $curriculum_id);
+                        
+                        
+                        
             break;
         case "edit":    checkCapabilities('coursebook:update', $USER->role_id, false, true);
                         $header = 'Kursbucheintrag aktualisieren';
@@ -75,6 +89,33 @@ if (isset($_GET['func'])){
                                 $$key = $value;
                             }
                         }
+                        
+                        $ter->curriculum_id = $curriculum_id;
+                        $terminal_objectives = $ter->getObjectives('curriculum', $curriculum_id);
+                        
+                        $ena->curriculum_id  = $curriculum_id;
+                        $enabling_objectives = $ena->getObjectives('curriculum', $curriculum_id);
+                        
+                        
+                        $os = new ObjectiveSubscription();
+                        $terminal_ids = ObjectiveSubscription::getSubscriptionIds(10, $course_book->id, 27);
+                        if (count($terminal_ids)>0){
+                            $os->id = $terminal_ids[0];
+                        }else{
+                            $os->id = 0;
+                        }
+                        if($os->load()){
+                            $terminal_objective_id = $os->reference_id;
+
+                            $enabling_objective_id = array();
+                            $enabling_objectiveSubscriptionsId = ObjectiveSubscription::getSubscriptionIds(10, $course_book->id, 12);
+                            foreach ($enabling_objectiveSubscriptionsId AS $eosid){
+                                $os->id = $eosid;
+                                $os->load();
+                                $enabling_objective_id[] = $os->reference_id;
+                            }
+                        }
+                        
             break;
         default: break;
     }
@@ -89,11 +130,9 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$content  ='<form id="form_courseBook"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_courseBook.php"';
-if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content .= '">
-<input type="hidden" name="func" id="func" value="'.$func.'"/>
-<input id="id" name="id" type="text" class="invisible" ';
+$content  ='<form id="form_courseBook"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_courseBook.php">
+            <input type="hidden" name="func" id="func" value="'.$func.'"/>
+            <input id="id" name="id" type="text" class="invisible" ';
 if (isset($id)) { $content .= 'value="'.$id.'"';} $content .= '>';
 $content .= Form::input_textarea('topic', 'Thema', $topic, $error, 'Stundenthema');
 $content .= Form::input_textarea('description', 'Beschreibung', $description, $error, 'Beschreibung');
@@ -105,6 +144,10 @@ if(checkCapabilities('user:userListComplete', $USER->role_id, false, true)){
     $courses = $courses->getCourse('teacher', $USER->id);  // abhängig von USER->my_semester id --> s. Select in objectives.tpl, 
 }                                               // Load schooltype 
 $content .= Form::input_select('course_id', 'Kurs / Klasse', $courses, 'course', 'course_id', $course_id , $error);
+
+$content .= Form::input_select('terminal_objective_id', 'Thema / Kompetenzbereich', $terminal_objectives, 'terminal_objective', 'id', $terminal_objective_id , $error, 'getValues(\'objectives\', this.value, \'enabling_objective_id\', \'enabling_objective_from_terminal_objective\');', "Keinen Lernstand auswählen");
+$content .= Form::input_select_multiple(array('id' => 'enabling_objective_id', 'label' => 'Kompetenzen', 'select_data' => $enabling_objectives, 'select_label' => 'enabling_objective', 'select_value' => 'id', 'input' => $enabling_objective_id, 'error' => $error)); 
+
 $content .= Form::input_date(array('id'=>'timerange', 'label' => 'Dauer' , 'time' => $timerange, 'error' => $error, 'placeholder' => '', $type = 'date'));
 $content .= '</form>';
 $footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_courseBook\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button> ';

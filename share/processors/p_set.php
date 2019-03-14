@@ -30,25 +30,39 @@ $func   = filter_input(INPUT_GET, 'func',           FILTER_SANITIZE_STRING);
 $object = file_get_contents("php://input");
 
 switch ($func) { //$func == db table name
-    case "comments":        $c              = new Comment();   
+    case "likes":           $id             = filter_input(INPUT_GET, 'val', FILTER_VALIDATE_INT);
+                            $c              = new Comment($id);   
                             $dependency     = filter_input(INPUT_GET, 'dependency', FILTER_SANITIZE_STRING);
-                            $c->$dependency = filter_input(INPUT_GET, 'input', FILTER_UNSAFE_RAW);
-                            $c->set($dependency, filter_input(INPUT_GET, 'val', FILTER_VALIDATE_INT));
+                            $c->$dependency = intval($c->$dependency)+1;
+                            $c->set($dependency, $id);
+                            echo json_encode(array('id'=> $dependency.'_'.$id, 'html'=>$c->$dependency));
         break;
     case "parentalAuthority": $u              = new User();   
                               $u->unsetChildren(filter_input(INPUT_GET, 'val', FILTER_VALIDATE_INT), filter_input(INPUT_GET, 'child_id', FILTER_VALIDATE_INT));
         break;
     case "ajaxsubmit":      
                             switch ($_POST['table']) {
+                                case 'config_system':   $c               = new Config();
+                                                        $c->name         = $_POST['params']['name'];
+                                                        $c->value        = $_POST['value'];
+                                                        $c->context_id   = $_SESSION['CONTEXT']['config']->context_id;
+                                                        $c->reference_id = 0; // System
+                                                        $c->set();
+                                                        //error_log(json_encode($c));
+                                    break;
                                 case 'config_plugins':  $c = new Config();
-                                                        error_log($c->set_config_plugin($_POST['params']['plugin'], $_POST['params']['name'], $_POST['value']));
-
+                                                        $c->set_config_plugin($_POST['params']['plugin'], $_POST['params']['name'], $_POST['value']);
                                     break;
 
                                 default:
                                     break;
                             }
         break; 
+    case "count":           $file        = new File();
+                            $file->id    = filter_input(INPUT_GET, 'val', FILTER_VALIDATE_INT); 
+                            $counter = $file->hit();
+                            echo json_encode(array('id'=> $_GET['element_id'], 'html'=>$counter.' Aufrufe'));
+        break;
   
     default: break;
 }

@@ -26,7 +26,7 @@ include_once(dirname(__FILE__).'/../setup.php');  // Klassen, DB Zugriff und Fun
 include_once(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 $_SESSION['USER']->semester_id    = filter_input(INPUT_GET, 'val', FILTER_VALIDATE_INT);      // Neuer Lernzeitraum übernehmen
 /*$TEMPLATE->assign('my_semester_id', $_SESSION['USER']->semester_id); */
-$change_semester      = new Semester($_SESSION['USER']->semester_id);
+//$change_semester      = new Semester($_SESSION['USER']->semester_id);
 $us = new User();                                                                                     // $USER hier noch nicht verfügbar
 $us->id = $_SESSION['USER']->id;
 $us->setSemester($_SESSION['USER']->semester_id);

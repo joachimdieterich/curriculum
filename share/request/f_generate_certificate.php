@@ -63,9 +63,8 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$content   ='<form id="form_generate_certificate" class="form-horizontal" role="form" method="post" action="../share/processors/fp_generate_certificate.php"';
-if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content  .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
+$content   ='<form id="form_generate_certificate" class="form-horizontal" role="form" method="post" action="../share/processors/fp_generate_certificate.php">
+             <input type="hidden" name="func" id="func" value="'.$func.'"/>';
 $content  .= '<input type="hidden" name="curriculum_id" id="curriculum_id" value="'.$certificate->curriculum_id.'"/> ';
 $content  .= Form::input_select('certificate_id', 'Druckvorlage', $certificates , 'certificate, institution', 'id', $certificate_id , $error);
 $content  .= Form::input_text('date', 'Ausgabedatum', date("d.m.Y"), $error, 'z. B. 22.01.2017');

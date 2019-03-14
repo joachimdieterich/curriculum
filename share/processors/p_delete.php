@@ -28,8 +28,11 @@ global $USER;
 $USER   = $_SESSION['USER'];
 $db     = filter_input(INPUT_GET, 'db',           FILTER_SANITIZE_STRING);
 $id     = filter_input(INPUT_GET, 'id',           FILTER_SANITIZE_STRING); // kein INT --> System ID -1
+$db     = filter_input(INPUT_GET, 'func',         FILTER_SANITIZE_STRING); // kein INT --> System ID -1 //Hack damit del über processor funktioniert
+$id     = filter_input(INPUT_GET, 'val',          FILTER_SANITIZE_STRING); // kein INT --> System ID -1 //Hack damit del über processor funktioniert
 $ref_id = filter_input(INPUT_GET, 'ref_id',       FILTER_VALIDATE_INT); 
 switch ($db) {
+    case "absent":              $t = new Absent();              break;
     case "certificate":         $t = new Certificate();         break;
     case "curriculum":          $t = new Curriculum();          break;
     case "event":               $t = new Event();               break;
@@ -64,6 +67,9 @@ switch ($db) {
 $t->id = $id;
 if ($t->delete()){
     $_SESSION['PAGE']->message[] = array('message' => 'Datensatz erfolgreich gelöscht', 'icon' => 'fa-trash-o text-success');
+    if (isset($_GET['callback'])){
+        echo json_encode(array('callback' => $_GET['callback'], 'replaceId'=> $_GET['element_Id'], 'func' => 'fadeOut', 'element'=>''));
+    }
 } else { 
     $_SESSION['PAGE']->message[] = array('message' => 'Datensatz konnte nicht gelöscht werden.', 'icon' => 'fa-trash-o text-danger');
 }

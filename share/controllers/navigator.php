@@ -39,26 +39,26 @@ if (isset($_GET)){
     if (isset($_GET['nv_id'])){
         $navigator_view = $_GET['nv_id'];
     }  elseif (checkCapabilities('navigator:add', $USER->role_id, false)) {
-        $p_options = array('delete' => array('onclick'    => "del('subject',__id__);", 
+        $p_options = array(/*'delete' => array('onclick'    => "", 
                                             'capability' => checkCapabilities('navigator:delete', $USER->role_id, false),
                                             'icon'       => 'fa fa-trash',
                                             'tooltip'    => 'löschen',),
                            'edit'  => array('onclick'    => "formloader('subject','edit',__id__);",
                                             'capability' => checkCapabilities('navigator:update', $USER->role_id, false),
                                             'icon'       => 'fa fa-edit',
-                                            'tooltip'    => 'bearbeiten'));
+                                            'tooltip'    => 'bearbeiten')*/);
        $p_widget  = array('header'      => 'na_title'/*,
                           'subheader01' => 'description',
                           'subheader02' => 'institution'*/); //false ==> don't show icon on widget
        $p_config =   array('id'         => 'checkbox',
                            'na_title'     => 'Fach', 
-                         'institution'   => 'Institution', 
-                         'p_search'      => array('na_title','institution'),
+                        /* 'institution'   => 'Institution', */
+                         'p_search'      => array('na_title'),
                          'p_widget'      => $p_widget, 
                          'p_options'     => $p_options);
         $navigators = new Navigator();
         setPaginator('navigatorP', $navigators->get(), 'na_id', 'index.php?action=navigator', $p_config);  
-        $TEMPLATE->assign('navigatorP',  true); //show navigator paginator ? 
+        $TEMPLATE->assign('shownavigatorP',  true); //show navigator paginator ? 
     }
 }
 

@@ -81,15 +81,13 @@ if (isset($_SESSION['FORM'])){
 
 $content  ='<div class="nav-tabs-custom"> 
               <ul class="nav nav-tabs">
-                <li class="active"><a href="#block_new" data-toggle="tab" aria-expanded="false">Neuer Block</a></li>
-                <li class=""><a href="#block_visible" data-toggle="tab" aria-expanded="true" >Ausgeblendete Blöcke</a></li>
+                <li id="nav_tab_new" class="active"><a href="#tab_new" data-toggle="tab" aria-expanded="false">Neuer Block</a></li>
+                <li id="nav_tab_visible" class=""><a href="#tab_visible" data-toggle="tab" aria-expanded="true" >Ausgeblendete Blöcke</a></li>
               </ul>
               <div class="tab-content">
-                <div class="tab-pane active" id="block_new">
-                <form id="form_block"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_block.php"';
-
-                if (isset($currentUrlId)){ $content .= $currentUrlId; }
-                $content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
+                <div id="tab_new" class="tab-pane active">
+                <form id="form_block" class="form-horizontal" role="form" method="post" action="../share/processors/fp_block.php">
+                <input type="hidden" name="func" id="func" value="'.$func.'"/>';
                 if (isset($id)){
                     $content .= '<input type="hidden" name="id" id="id" value="'.$id.'"/>';
                 }
@@ -113,19 +111,26 @@ $content  ='<div class="nav-tabs-custom">
                 $c->id        = 11;
                 $c->context   = 'Dashboard';
                 $content     .= Form::input_select('context_id', 'Bereich', array($c), 'context', 'id', $context_id , $error);
-                $r            = new stdClass();
-                $r->id        = null;
-                $r->region    = 'Übersicht';
-                $content     .= Form::input_select('region', 'Position', array($r), 'region', 'id', $region , $error);
+                
+                /* Width selector*/
+                $region_classes = array('Linke Spalte'  => 'left',
+                                        'Rechte Spalte' => 'right'
+                                       );
+                $region_obj = new stdClass();
+                foreach ($region_classes as $key => $value) {
+                    $region_obj->label  = $key;
+                    $region_obj->value = $value;
+                    $r[] = clone $region_obj;
+                }
+                $content .= Form::input_select('region', 'Position', $r, 'label', 'value', $region , $error);
                 // Sortierung neues input element generiern
-
                 $roles        = new Roles();
                 $content     .= Form::input_select('role_id', 'Anzeigen für:', $roles->get(), 'role', 'id', $block_id , $error);
                 $content     .= '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_block\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button><br><br>';
                 $content     .= '</form>  
                  </div><!-- /.tab-pane -->
                  
-                <div class="tab-pane " id="block_visible">';
+                <div id="tab_visible" class="tab-pane" >';
                 $blocks                 = new Block();
                 $ct = new Context();
                 $ct->resolve('context', 'dashboard');

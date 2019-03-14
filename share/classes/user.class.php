@@ -867,10 +867,10 @@ class User {
             case 'institution': if(checkCapabilities('user:userListComplete', $USER->role_id,false)){ //Global Admin
                                     if ($filter){
                                         switch ($filter) {
-                                            case 'register':    $db = DB::prepare('SELECT us.* FROM users AS us WHERE us.confirmed = 4 '.$order_param); 
+                                            case 'register':    $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS us.* FROM users AS us WHERE us.confirmed = 4 '.$order_param); 
                                                                 $db->execute(); 
                                                 break;
-                                            case 'lost':        $db = DB::prepare('SELECT us.* FROM users AS us, institution_enrolments AS ie 
+                                            case 'lost':        $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS us.* FROM users AS us, institution_enrolments AS ie 
                                                                              WHERE us.id = us.id AND ie.user_id = us.id AND ie.status = 0 '.$order_param); //hack id = id to user search
                                                                 $db->execute(); 
                                                 break;
@@ -879,15 +879,16 @@ class User {
                                                 break;
                                         }
                                     } else {
-                                        $db = DB::prepare('SELECT us.* FROM users AS us WHERE us.id = us.id '.$order_param); //hack id = id to user search
+                                        
+                                        $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS us.* FROM users AS us WHERE us.id = us.id '.$order_param); //hack id = id to user search
                                         $db->execute(); 
                                     }
                                 } else if (checkCapabilities('user:userListInstitution', $USER->role_id,false)) { //Manager
-                                    $db = DB::prepare('SELECT us.* FROM users AS us WHERE us.id = ANY (SELECT user_id FROM institution_enrolments 
+                                    $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS us.* FROM users AS us WHERE us.id = ANY (SELECT user_id FROM institution_enrolments 
                                                     WHERE institution_id = ? AND status = 1 AND role_id <> 1) '.$order_param); // HACK to prevent edit of super user
                                     $db->execute(array($USER->institution_id)); 
                                 } else if (checkCapabilities('user:userListGroup', $USER->role_id,false)) { //Kursersteller
-                                    $db = DB::prepare('SELECT DISTINCT us.* FROM users AS us, groups_enrolments AS ge, institution_enrolments AS ie, roles AS ro 
+                                    $db = DB::prepare('SELECT DISTINCT SQL_CALC_FOUND_ROWS us.* FROM users AS us, groups_enrolments AS ge, institution_enrolments AS ie, roles AS ro 
                                                         WHERE ie.institution_id = ? AND ie.status = 1
                                                         AND ie.role_id <> 1 /* HACK to prevent edit of super user*/
                                                         AND ro.id = ie.role_id 
@@ -913,7 +914,7 @@ class User {
                                         $group_filter = 'AND ge.group_id = '.intval($group_id); 
                                     }
                             
-                                    $db = DB::prepare('SELECT DISTINCT us.* FROM users AS us, groups_enrolments AS ge 
+                                    $db = DB::prepare('SELECT DISTINCT SQL_CALC_FOUND_ROWS us.* FROM users AS us, groups_enrolments AS ge 
                                                         WHERE us.id = ANY (SELECT ie.user_id FROM institution_enrolments AS ie,roles AS ro
                                                             WHERE ie.institution_id = ? 
                                                             AND ie.status = 1 
@@ -935,7 +936,7 @@ class User {
                                     } else { 
                                         $group_filter = intval($group_id); 
                                     }
-                                    $db = DB::prepare('SELECT DISTINCT us.*, ro.role AS role_name FROM users AS us, groups_enrolments AS ge, institution_enrolments AS ie, roles AS ro 
+                                    $db = DB::prepare('SELECT DISTINCT SQL_CALC_FOUND_ROWS us.*, ro.role AS role_name FROM users AS us, groups_enrolments AS ge, institution_enrolments AS ie, roles AS ro 
                                                         WHERE ie.institution_id = ? AND ie.status = 1
                                                         AND ie.role_id <> 1 /* HACK to prevent edit of super user*/
                                                         AND ro.id = ie.role_id '.$role_filter.'  
@@ -958,7 +959,9 @@ class User {
                 break; 
             default:  break;
         }
-
+        if ($paginator != ''){ 
+             set_item_total($paginator); //set item total based on FOUND ROWS()
+        }
         while($result = $db->fetchObject()) {
             $sortableUser = new stdClass();
             if (checkCapabilities('user:shortUserList', $USER->role_id, false)){
@@ -982,7 +985,7 @@ class User {
                 }
             }
             $users[] = clone $sortableUser;
-        } 
+        }   
         return $users;
     }
 
@@ -1008,7 +1011,7 @@ class User {
      */
     public function getCurricula($paginator = '') {
         $order_param = orderPaginator($paginator);
-        $db = DB::prepare('SELECT DISTINCT cu.id, cu.curriculum, cu.description, fl.filename, su.subject, gr.grade, sc.schooltype, st.state, co.de
+        $db = DB::prepare('SELECT DISTINCT SQL_CALC_FOUND_ROWS cu.id, cu.curriculum, cu.description, fl.filename, su.subject, gr.grade, sc.schooltype, st.state, co.de
                             FROM curriculum AS cu, groups_enrolments AS ce, curriculum_enrolments AS cure, files AS fl, subjects AS su, grade AS gr, schooltype AS sc, state AS st, countries AS co
                             WHERE cu.icon_id = fl.id
                             AND cu.id = cure.curriculum_id
@@ -1025,7 +1028,10 @@ class User {
 
         while($result = $db->fetchObject()) { 
                 $curricula[] = $result; 
-        }         
+        } 
+        if ($paginator != ''){ 
+             set_item_total($paginator); //set item total based on FOUND ROWS()
+        }        
         if (isset($curricula)) {
             return $curricula;      
         } else {
@@ -1039,7 +1045,7 @@ class User {
      */
     public function getGroups($paginator = ''){
        $order_param = orderPaginator($paginator); 
-       $db = DB::prepare('SELECT gp.*, gr.grade, yr.semester, ins.institution, us.username AS creator
+       $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS gp.*, gr.grade, yr.semester, ins.institution, us.username AS creator
                             FROM groups AS gp, groups_enrolments AS cle, grade AS gr, semester AS yr, institution AS ins, users AS us
                             WHERE cle.user_id = ?
                             AND cle.group_id = gp.id
@@ -1050,10 +1056,13 @@ class User {
                             AND cle.status = 1 '.$order_param);
        $db->execute(array($this->id)); 
 
-       while($result = $db->fetchObject()) {  
+        while($result = $db->fetchObject()) {  
                $groups[] = $result;
             } 
-       if (isset($groups)) {
+        if ($paginator != ''){ 
+             set_item_total($paginator); //set item total based on FOUND ROWS()
+        }    
+        if (isset($groups)) {
             return $groups;      
         } else {
             return false; 
@@ -1120,10 +1129,9 @@ class User {
                                                         'firstname' => 'us', 
                                                         'lastname'  => 'us'
                                                     ));
-        
         checkCapabilities('user:getUsers', $USER->role_id);
         switch ($dependency) {
-            case 'curriculum':  $db = DB::prepare('SELECT us.*, ie.role_id FROM users AS us, groups_enrolments AS ge, curriculum_enrolments AS ce, institution_enrolments as ie, groups as gr
+            case 'curriculum':  $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS us.*, ie.role_id FROM users AS us, groups_enrolments AS ge, curriculum_enrolments AS ce, institution_enrolments as ie, groups as gr
                                                 WHERE us.id = ge.user_id 
                                                 AND ce.curriculum_id = ?
                                                 AND ce.status = 1
@@ -1143,7 +1151,7 @@ class User {
                                     $users[]            = clone $this; 
                                 }               
                 break;
-            case 'wallet_shared':  $db = DB::prepare('SELECT DISTINCT us.*, ie.role_id, ws.permission, ws.timestart, ws.timeend, ws.id AS ws_id FROM users AS us, groups_enrolments AS ge, curriculum_enrolments AS ce, institution_enrolments as ie, groups as gr, wallet_sharing AS ws
+            case 'wallet_shared':  $db = DB::prepare('SELECT DISTINCT SQL_CALC_FOUND_ROWS us.*, ie.role_id, ws.permission, ws.timestart, ws.timeend, ws.id AS ws_id FROM users AS us, groups_enrolments AS ge, curriculum_enrolments AS ce, institution_enrolments as ie, groups as gr, wallet_sharing AS ws
                                                 WHERE us.id = ge.user_id 
                                                 AND ce.curriculum_id = ?
                                                 AND ce.status = 1
@@ -1184,7 +1192,7 @@ class User {
                                     $users[]            = clone $this; 
                                 }               
                 break;
-            case 'course':  $db = DB::prepare('SELECT us.*, ie.role_id FROM users AS us, groups_enrolments AS ge, curriculum_enrolments AS ce, institution_enrolments as ie, groups as gr
+            case 'course':  $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS us.*, ie.role_id FROM users AS us, groups_enrolments AS ge, curriculum_enrolments AS ce, institution_enrolments as ie, groups as gr
                                                 WHERE us.id = ge.user_id 
                                                 AND ce.curriculum_id = ?
                                                 AND ce.status = 1
@@ -1226,7 +1234,7 @@ class User {
                                     $users[] = clone $this;  
                             }
                             break;
-            case 'institution':  $db = DB::prepare('SELECT DISTINCT us.* FROM users AS us
+            case 'institution':  $db = DB::prepare('SELECT DISTINCT SQL_CALC_FOUND_ROWS us.* FROM users AS us
                                                 INNER JOIN groups_enrolments AS gr ON us.id = gr.user_id 
                                                 AND gr.group_id = ANY (SELECT id FROM groups WHERE institution_id = ANY 
                                                 (SELECT institution_id FROM institution_enrolments WHERE user_id = ? AND status = 1)) 
@@ -1243,7 +1251,9 @@ class User {
 
             default:        break;
         }
-
+        if ($paginator != ''){ 
+             set_item_total($paginator); //set item total based on FOUND ROWS()
+        }
         if (isset($users)) {
             return $users; 
         } else {return false;}
@@ -1296,9 +1306,9 @@ class User {
    }
    
    
-   public function setSemester($semester){
+   public function setSemester($semester_id){
         $db = DB::prepare('UPDATE users SET semester_id = ? WHERE id = ?');
-        return $db->execute(array($semester, $this->id));
+        return $db->execute(array($semester_id, $this->id));
    }
    /**
     *
@@ -1399,7 +1409,7 @@ class User {
      * @return string | array
      */
    public function get_instiution_enrolments($array = false) { 
-        $db = DB::prepare('SELECT ins.institution, ins.id AS institution_id, ro.id AS role_id, ro.role
+        $db = DB::prepare('SELECT ins.institution, ins.id, ro.id AS role_id, ro.role
                             FROM institution AS ins, institution_enrolments AS ie, roles AS ro
                             WHERE ins.id = ie.institution_id AND ie.status = 1 AND ie.role_id = ro.id
                             AND ie.user_id = ?');
@@ -1407,12 +1417,12 @@ class User {
         
         while($result = $db->fetchObject()) { 
             if ($array == true){ //Array output for quickform
-                $data[$result->institution_id] = $result->institution;
+                $data[$result->id] = $result->institution;
             } else {
                 $data[] = $result;         
             }
-            if (!in_array($result->institution_id, $this->institution_ids)){
-                array_push($this->institution_ids, $result->institution_id);
+            if (!in_array($result->id, $this->institution_ids)){
+                array_push($this->institution_ids, $result->id);
             }
         } 
         
@@ -1613,6 +1623,25 @@ class User {
             $users[]    = clone $this; 
         }
         return $users;
+    }
+    
+    /**
+     * Get Accomplished entry
+     * @param int $id
+     * @param int $user_id
+     * @param int $context_id
+     * @return \stdClass
+     */
+    public function getAccomplished($id, $user_id, $context_id){
+        $db = DB::prepare('SELECT * FROM user_accomplished WHERE reference_id = ? AND user_id = ? AND context_id = ?');
+        $db->execute(array($id, $user_id, $context_id));
+        $accomplished = new stdClass();
+        while($result = $db->fetchObject()) { 
+            foreach ($result as $key => $value) {
+                $accomplished->$key = $value;
+            }
+        }
+        return $accomplished;
     }
     /**
     * function used during the install process to set up creator id to new admin

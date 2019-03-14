@@ -105,7 +105,7 @@ $_html_result .= '<div class="row"><div class="clearfix"><br><ul class="timeline
         $_html_result .= '<li>
                 <i class="fa fa-check bg-green"></i>
                 <div class="timeline-item">
-                  <span class="time" onclick="del(\'courseBook\','.$_val->id.');"><i class="fa fa-trash-o"></i></span>
+                  <span class="time" onclick="processor(\'delete\', \'courseBook\', '.$_val->id.');"><i class="fa fa-trash-o"></i></span>
                       <span class="time" onclick="processor(\'print\',\'courseBook\','.$_val->id.');"><i class="fa fa-print"></i></span>
                   <span class="time" onclick="formloader(\'courseBook\',\'edit\','.$_val->id.');"><i class="fa fa-edit"></i></span>
                   <span class="time"><i class="fa fa-clock-o"></i> '.$_val->creation_time.'</span>
@@ -120,6 +120,9 @@ $_html_result .= '<div class="row"><div class="clearfix"><br><ul class="timeline
                   </div>
 
                   <!--div class="timeline-footer"-->';
+        
+        $_html_result     .=    '<div style="display:inline-table;padding-left:10px;">'.Render::objective_list(array("dependency" => "courseBook", "id" => $_val->id)).'</div>';
+        
         $_html_result     .=    Render::todoList($_val->task, 'coursebook', $_val->id);
         if (checkCapabilities('absent:update', $USER->role_id, false)){
             $_html_result .=    Render::absentListe($_val->absent_list, 'coursebook', $_val->id);

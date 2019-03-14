@@ -103,7 +103,7 @@ class Schedule {
         $order_param = orderPaginator($paginator, array('schedule'      => 'sd',
                                                         'description'   => 'sd')); 
         
-        $db = DB::prepare('SELECT *
+        $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS *
                                 FROM schedule AS sd
                                 WHERE sd.context_id = ? AND sd.reference_id IN ('.$reference_ids.') '.$order_param );
         $db->execute(array($_SESSION['CONTEXT'][$dependency]->id));
@@ -124,7 +124,9 @@ class Schedule {
                 $this->creator_id        = $result->creator_id;
                 $entrys[]                = clone $this;        //it has to be clone, to get the object and not the reference
         } 
-        
+        if ($paginator != ''){ 
+             set_item_total($paginator); //set item total based on FOUND ROWS()
+        } 
         return $entrys;
     }
     

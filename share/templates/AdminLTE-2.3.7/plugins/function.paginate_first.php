@@ -73,7 +73,7 @@ function smarty_function_paginate_first($params, &$smarty, $bootstrap = false) {
         $_show = false;
     }
     if ($bootstrap){
-        return $_show ? '<button type="button" class="btn btn-default" onclick="location.href=$(this).children(\'a:first\').attr(\'href\');"><a class="fa fa-step-backward" href="' . str_replace('&','&amp;', $_url) . '"' . $_attrs . '></a></button>' : '';
+        return $_show ? '<button type="button" class="btn btn-default" onclick="processor(\'config\',\'paginator_item\',1,{\'paginator\':\''.$_id.'\',\'reload\':\'true\'});"><a class="fa fa-step-backward" href="' . str_replace('&','&amp;', $_url) . '"' . $_attrs . '></a></button>' : '';
     } else {
         return $_show ? '<a href="' . str_replace('&','&amp;', $_url) . '"' . $_attrs . '>' . $_text . '</a>' : '';
     }

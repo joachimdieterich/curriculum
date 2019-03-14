@@ -25,6 +25,7 @@
 */
 
 class Navigator {
+    public $id;
     public $na_id;
     public $na_title;
     public $na_context_id;
@@ -35,6 +36,31 @@ class Navigator {
     
     public function __construct() {
        
+    }
+      
+    public function get(){
+        $order_param = orderPaginator('navigatorP', 
+                                        array('na_id'         => 'na',
+                                              'na_title'      => 'na'), 
+                                        'na_id');  //3.parameter cause    
+        $navigators      = array();
+        $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS na.* FROM navigator AS na
+                                WHERE na.na_context_id = ? '.$order_param);
+        $db->execute(array($_SESSION['CONTEXT']['institution']->context_id));
+     
+        while($result = $db->fetchObject()) { 
+            $this->id        = $result->na_id;
+            $this->na_id        = $result->na_id;
+            $this->na_title     = $result->na_title;
+            $this->na_reference_id = $result->na_reference_id;
+            $navigators[]       = clone $this; 
+        }
+        
+        if ($paginator != ''){ 
+             set_item_total($paginator); //set item total based on FOUND ROWS()
+        }
+        
+        return $navigators;
     }
       
     public function getNavigatorByInstitution($institution_id) {

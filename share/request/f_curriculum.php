@@ -97,16 +97,16 @@ $content ='';
 if (!isset($edit)){ // Tabs ausblenden wenn im Edit-Modus
 $content .= '<div class="nav-tabs-custom"> 
               <ul class="nav nav-tabs">
-                <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="false" onclick="toggle([\'form_curriculum\', \'bAdd\'], [\'tab_1\']);">Lehrplan hinzufügen</a></li>';
+                <li id="nav_tab_add" class="active"><a href="#tab_add" data-toggle="tab" aria-expanded="false" onclick="toggle([\'form_curriculum\', \'bAdd\'], [\'tab_add\']);">Lehrplan hinzufügen</a></li>';
                 if (checkCapabilities('curriculum:import', $USER->role_id, false, true)){
-                  $content .= '<li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="true" onclick="toggle([\'tab_1\'], [\'form_curriculum\', \'bAdd\']);">Lehrplan importieren</a></li>';
+                  $content .= '<li id="nav_tab_import" class=""><a href="#tab_import" data-toggle="tab" aria-expanded="true" onclick="toggle([\'tab_add\'], [\'form_curriculum\', \'bAdd\']);">Lehrplan importieren</a></li>';
                 }
 $content .='</ul>';
 
 $content .= '<div class="tab-content">
-      <div class="tab-pane active" id="tab_1">
+      <div id="tab_add" class="tab-pane active">
       </div><!-- /.tab-pane -->
-      <div class="tab-pane " id="tab_2">
+      <div id="tab_import" class="tab-pane">
         <div id="upload_form">
             <form id="curriculum_upload" action="" method="post" enctype="multipart/form-data">
                 <div class="form-group clearfix">
@@ -137,12 +137,10 @@ $content .= '       <span id="curriculum_upload_fType" class="hidden"></span>
   </div><!-- /.nav-tab-custom -->';
 }
 
-$content .='<form id="form_curriculum"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_curriculum.php"';
-if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content .= '">
-<input id="importFileName" name="importFileName" type="text" class="hidden" value="">
-<input type="hidden" name="func" id="func" value="'.$func.'"/>
-<input id="id" name="id" type="text" class="invisible" ';
+$content .= '<form id="form_curriculum"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_curriculum.php">';
+$content .= '<input id="importFileName" name="importFileName" type="text" class="hidden" value="">
+             <input type="hidden" name="func" id="func" value="'.$func.'"/>
+             <input id="id" name="id" type="text" class="invisible" ';
 if (isset($id)) { $content .= 'value="'.$id.'"';} $content .= '>';
 
 $content .= Form::input_text('curriculum', 'Titel des Lehrplans', $curriculum, $error, 'z. B. Deutsch');

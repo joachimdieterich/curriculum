@@ -59,14 +59,14 @@ $(window).on("popstate", function() {
                     
                     <div class="nav-tabs-custom"> 
                         <ul class="nav nav-tabs">
-                            <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">Persönlich</a></li>
+                            <li id="nav_tab_private" class="active"><a href="#tab_private" data-toggle="tab" aria-expanded="true">Persönlich</a></li>
                             {*<li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">Kursbuch (Aufgaben)</a></li>*}
-                            <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false">Gruppen</a></li>
-                            <li class=""><a href="#tab_4" data-toggle="tab" aria-expanded="false">Institution</a></li>
+                            <li id="nav_tab_groups" class=""><a href="#tab_groups" data-toggle="tab" aria-expanded="false">Gruppen</a></li>
+                            <li id="nav_tab_institutions" class=""><a href="#tab_institutions" data-toggle="tab" aria-expanded="false">Institution</a></li>
                             {*<button type="button" class="btn btn-default pull-right" style="margin-right:10px;"><i class="fa fa-plus"></i> Aufgabe hinzufügen</button>*}
                         </ul>
                         <div class="tab-content">
-                            <div class="tab-pane row active" id="tab_1">
+                            <div id="tab_private" class="tab-pane row active">
                                 <div class="form-horizontal col-xs-12">
                                 {if checkCapabilities('task:add', $my_role_id, false)}
                                     {Form::input_button(['id' => 'addUserTask', 'label' => 'Aufgabe / Notiz hinzufügen', 'icon' => 'fa fa-plus-circle', 'class' => 'btn btn-default pull-right', 'onclick' => "formloader('task', 'userFiles', $my_id);"])}
@@ -94,7 +94,7 @@ $(window).on("popstate", function() {
                             </div><!-- /.tab-pane -->
                             {/if*}
                             <!-- Groups -->
-                            <div class="tab-pane row" id="tab_3">
+                            <div id="tab_groups" class="tab-pane row">
                                 <div class="form-horizontal col-xs-12">
                                 {if isset($myInstitutions)}
                                     {Form::input_select('institution_group', 'Institution', $myInstitutions, 'institution', 'id', $my_institution_id, null, "getValues('group', this.value, 'groups');")}
@@ -114,7 +114,7 @@ $(window).on("popstate", function() {
                                 </div>
                             </div><!-- /.tab-pane -->
                             
-                            <div class="tab-pane" id="tab_4">
+                            <div id="tab_institutions" class="tab-pane">
                                 <div class="pull-right">
                                     {if isset($myInstitutions)}
                                         {Form::input_select('institution_filter', null, $myInstitutions, 'institution', 'id', $filter_institution_id, null, "location.href='index.php?action=task&filter_institution='+this.value+'#tab_4'", 'Nach Institution filtern', 'col-sm-0', 'col-sm-12')}

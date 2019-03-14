@@ -39,18 +39,18 @@ class Update {
     public function add(){
         global $USER;
         $db = DB::prepare('INSERT INTO updates (filename,description,status,timestamp,user_id) VALUES (?,?,?,NOW(),?)');
-        $db->execute(array($this->filename, $this->description, $this->status, $USER->id));
+        $db->execute(array(explode(".php", $this->filename)[0], $this->description, $this->status, $USER->id));
     }
     
     public function doUpdate(){
         global $USER;
         $db = DB::prepare('UPDATE updates SET status = ?, log = ?, timestamp_installed = NOW(), user_id = ? WHERE filename = ?');
-        return $db->execute(array($this->status, $this->log, $USER->id, $this->filename));
+        return $db->execute(array($this->status, $this->log, $USER->id, explode(".php", $this->filename)[0]));
     }
     
     public function load($dependency, $reference){
-        $db     = DB::prepare('SELECT ud.* FROM updates AS ud WHERE '.$dependency.' = ?');
-        $db->execute(array($reference));
+        $db = DB::prepare('SELECT ud.* FROM updates AS ud WHERE '.$dependency.' = ?');
+        $db->execute(array(explode(".php", $reference)[0]));
         $result = $db->fetchObject();
         if ($result){
             foreach ($result as $key => $value) {
@@ -59,7 +59,7 @@ class Update {
             $u = new User();
             $this->user = $u->resolveUserId($this->user_id);
             return true;                                                        
-        } else { 
+        } else {
             return false; 
         }
         

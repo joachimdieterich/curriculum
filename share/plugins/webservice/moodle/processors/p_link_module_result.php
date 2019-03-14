@@ -49,10 +49,10 @@ switch ($func) {
                                 }
                                 if ($config_data->moodle_percent <= $users_result){
                                     $enabling_objectives->setAccomplishedStatus('quiz', $USER->id, $USER->id, '11');
-                                    $_SESSION['PAGE']->message[] = array('message' => 'Sie haben die Aktivität <strong>'.$grades->items[0]->name.'</strong> mit <strong>'.$users_result.'%</strong> abgeschlossen. Lernziel / Kompetenz wurde erfolgreich erreicht.', 'icon' => 'fa fa-check-circle-o text-success');// Schließen und speichern
+                                    $_SESSION['PAGE']->message[] = array('message' => 'Sie haben die Aktivität <strong>'.$grades->items[0]->name.'</strong> mit <strong>'.$users_result.'%</strong> abgeschlossen. Kompetenz wurde erfolgreich erreicht.', 'icon' => 'fa fa-check-circle-o text-success');// Schließen und speichern
                                 } else {
                                     $enabling_objectives->setAccomplishedStatus('quiz', $USER->id, $USER->id, '00');
-                                    $_SESSION['PAGE']->message[] = array('message' => 'Sie haben die Aktivität <strong>'.$grades->items[0]->name.'</strong> mit <strong>'.$users_result.'%</strong> abgeschlossen. Das Lernziel / Kompetenz wird bei '.$config_data->moodle_percent.'% abgeschlossen.', 'icon' => 'fa fa-check-circle-o text-danger');// Schließen und speichern
+                                    $_SESSION['PAGE']->message[] = array('message' => 'Sie haben die Aktivität <strong>'.$grades->items[0]->name.'</strong> mit <strong>'.$users_result.'%</strong> abgeschlossen. Die Kompetenz wird bei '.$config_data->moodle_percent.'% abgeschlossen.', 'icon' => 'fa fa-check-circle-o text-danger');// Schließen und speichern
                                 }
         break;
                             

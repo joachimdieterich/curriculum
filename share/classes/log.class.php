@@ -90,7 +90,7 @@ class Log {
                                                         'url'           => 'lg', 
                                                         'info'          => 'lg')); 
         $log            = array();
-        $db             = DB::prepare('SELECT lg.*, us.username FROM log AS lg, users AS us WHERE lg.user_id = us.id '.$order_param );
+        $db             = DB::prepare('SELECT SQL_CALC_FOUND_ROWS lg.*, us.username FROM log AS lg, users AS us WHERE lg.user_id = us.id '.$order_param );
         $db->execute();
         while($result = $db->fetchObject()) { 
             $this->id                = $result->id;
@@ -102,7 +102,12 @@ class Log {
             $this->url               = $result->url;   
             $this->info              = $result->info;   
             $log[]                   = clone $this; 
-        }           
+        }      
+        
+        if ($paginator != ''){ 
+             set_item_total($paginator); //set item total based on FOUND ROWS()
+        }
+        
         return $log;
     }
 

@@ -34,12 +34,13 @@ switch ($func) {
         break;
 }
 
-$content    = '<div class="nav-tabs-custom"> <ul class="nav nav-tabs">
-              <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">Lerngruppen / Personen</a></li>
-              <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">Aufgaben / Notizen</a></li>
-            </ul>
-<div class="tab-content">
-              <div class="tab-pane active" id="tab_1"><div class="row">';
+$content    = '<div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    <li id="nav_tab_overview" class="active"><a href="#tab_overview" data-toggle="tab" aria-expanded="true">Lerngruppen / Personen</a></li>
+                    <li id="nav_tab_tasks" class=""><a href="#tab_tasks" data-toggle="tab" aria-expanded="false">Aufgaben / Notizen</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div id="tab_overview" class="tab-pane active"><div class="row">';
 $groups         = new Group(); 
 /* Groups / Institution */
 $content   .= Render::box_widget(array('widget_title' => 'Lerngruppe',
@@ -58,7 +59,7 @@ $content   .= Render::box_widget(array('widget_title' => 'Benutzer',
                                        'bg_icon'      => 'fa fa-user',
                                        'bg_color'     => 'blue'));
 $content   .='</div></div><!-- /.tab-pane -->
-              <div class="tab-pane" id="tab_2">';
+              <div id="tab_tasks" class="tab-pane">';
                 $t  = new Task();
 $content   .= Render::todoList($t->get('institution', $i->id), 'institution', $i->id).
               '</div>

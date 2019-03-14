@@ -2,7 +2,7 @@
 /** This file is part of curriculum - http://www.joachimdieterich.de
 * 
 * @package core
-* @filename expelUser.php
+* @filename p_expel.php
 * @copyright 2015 Joachim Dieterich
 * @author Joachim Dieterich
 * @date 2015.06.01 17:38
@@ -22,12 +22,27 @@
 * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
 * THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-$base_url           = dirname(__FILE__).'/../';
+$base_url   = dirname(__FILE__).'/../';
 include($base_url.'setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 include_once(dirname(__FILE__).'/../login-check.php');  //check login status and reset idletimer
 global $USER;
-$USER               = $_SESSION['USER'];
+$USER       = $_SESSION['USER'];
+$func       = filter_input(INPUT_GET, 'func', FILTER_SANITIZE_STRING);
 
-$current_user       = new User();
-$current_user->load('id', filter_input(INPUT_GET, 'userID', FILTER_VALIDATE_INT));
-$current_user->expelFromGroup(array(filter_input(INPUT_GET, 'groupsID', FILTER_VALIDATE_INT)));
+switch ($func) {
+    case 'userfromgroup':   $user       = new User();
+                            $user->load('id', filter_input(INPUT_GET, 'val', FILTER_VALIDATE_INT));
+                            if ($user->expelFromGroup(array(filter_input(INPUT_GET, 'ref_id', FILTER_VALIDATE_INT)))){
+                                echo json_encode(array('callback' => $_GET['callback'], 'replaceId'=> $_GET['element_Id'], 'func' => 'fadeOut', 'element'=>''));
+                            }
+        break;
+    case 'userfrominstitution':
+                            $user       = new User();
+                            $user->id   = filter_input(INPUT_GET, 'val', FILTER_VALIDATE_INT);
+                            if ($user->expelFromInstitution(filter_input(INPUT_GET, 'ref_id', FILTER_VALIDATE_INT))){
+                                echo json_encode(array('callback' => $_GET['callback'], 'replaceId'=> $_GET['element_Id'], 'func' => 'fadeOut', 'element'=>''));
+                            } 
+        break;
+    default:
+        break;
+}

@@ -42,10 +42,24 @@ class Render {
     public static function accCheckboxes($params){
         //$id, $student, $teacher
         global $USER, $CFG;
-        $link   = true;
-        $email  = false; 
-        $token  = false;
-        $html   = '';
+        $link       = true;
+        $email      = false; 
+        $token      = false;
+        $html       = '';
+        $style      = 'style="font-size:18px;"';
+        $options = array('green' => array('status' => 1,
+                                          'tooltip'=> 'data-toggle="tooltip" title="Selbsteinschätzung: Ich kann das selbstständig."'), 
+                         'orange'=> array('status' => 2, 
+                                          'tooltip'=> 'data-toggle="tooltip" title="Selbsteinschätzung: Ich kann das mit Hilfe."'), 
+                         'red'   => array('status' => 0, 
+                                          'tooltip'=> 'data-toggle="tooltip" title="Selbsteinschätzung: Ich kann das noch nicht."'), 
+                         'white' => array('status' => 3, 
+                                          'tooltip'=> 'data-toggle="tooltip" title="Selbsteinschätzung: Ich habe das noch nicht bearbeitet."'));   //available options
+         
+        $css_green  = 'margin-r-5 text-green pointer_hand';
+        $css_orange = 'margin-r-5 text-orange pointer_hand';
+        $css_red    = 'margin-r-5 text-red pointer_hand';
+        $css_white  = 'margin-r-5 text-gray pointer_hand';
         
         if (!is_array($params)){ //hack to use json_arrays from smarty
             $params = json_decode($params);
@@ -55,81 +69,56 @@ class Render {
         $ena       = new EnablingObjective();
         $ena->id   = $id;
         $ena->getObjectives('enabling_objective_status', $student); // get status of objective
-
-        $red       = 'fa fa-circle-o';
-        $green     = 'fa fa-circle-o';
-        $orange    = 'fa fa-circle-o';
-        $white     = 'fa fa-circle-o';
-
-        switch (true) {
-            case $ena->accomplished_status_id === 'x0': $red    = 'fa fa-check-circle-o';
-                       $bg     = 'bg-red';
+        
+        //generate css class based on accomplished status
+        if (strlen($ena->accomplished_status_id) == 1){ //fallback check for older versions
+            $ena->accomplished_status_id = 'x'.$ena->accomplished_status_id;
+        }
+        $student_bit = substr($ena->accomplished_status_id, 0,1);
+        switch (true) { //Student Part of status (first char)
+            case $student_bit === '0':   $red      = '-circle';
+                        $green = $orange = $white = '-circle-o';
                 break;
-            case $ena->accomplished_status_id === '0x': $red    = 'fa fa-circle';
-                       $bg     = 'bg-red';
+            case $student_bit === '1':   $green    = '-circle';
+                        $red = $orange = $white = '-circle-o';
                 break;
-            case $ena->accomplished_status_id === '00': $red    = 'fa fa-check-circle';
-                       $bg     = 'bg-red';
+            case $student_bit === '2':   $orange   = '-circle';
+                        $green = $red = $white = '-circle-o';
                 break;
-            case $ena->accomplished_status_id === '01': $red    = 'fa fa-circle';
-                       $green  = 'fa fa-check-circle-o';
-                       $bg     = 'bg-green';
+            case $student_bit === '3':   $white    = '-circle';
+                        $green = $red = $orange = '-circle-o';
                 break;
-            case $ena->accomplished_status_id === '02': $red    = 'fa fa-circle';
-                       $orange  = 'fa fa-check-circle-o';
-                       $bg     = 'bg-orange';
+            
+            default:    $green = $red = $orange = $white ='-circle-o';
                 break;
-            case $ena->accomplished_status_id === '03': $red    = 'fa fa-circle';
-                       $white  = 'fa fa-check-circle-o';
-                       $bg     = 'bg-white';
+        }
+        $teacher_bit = substr($ena->accomplished_status_id, 1,1);
+        switch (true) { //Teacher Part of status (second char)
+            case $teacher_bit === '0':   $red      = 'fa fa-check'.$red;
+                        $green    = 'fa fa'.$green;
+                        $orange   = 'fa fa'.$orange;
+                        $white    = 'fa fa'.$white;
                 break;
-            case $ena->accomplished_status_id === 'x1': $green  = 'fa fa-check-circle-o';
+            case $teacher_bit === '1':   $green    = 'fa fa-check'.$green;
+                        $red      = 'fa fa'.$red;
+                        $orange   = 'fa fa'.$orange;
+                        $white    = 'fa fa'.$white;
                 break;
-            case $ena->accomplished_status_id === '1x': $green  = 'fa fa-circle';
+            case $teacher_bit === '2':   $orange   = 'fa fa-check'.$orange;
+                        $red      =  'fa fa'.$red;
+                        $green    =  'fa fa'.$green;
+                        $white    =  'fa fa'.$white;
                 break;
-            case $ena->accomplished_status_id === '10': $red    = 'fa fa-check-circle-o';
-                     $green  = 'fa fa-circle';
-                break;
-            case $ena->accomplished_status_id === '11': $green  = 'fa fa-check-circle';
-                break;
-            case $ena->accomplished_status_id === '12': $green  = 'fa fa-circle';
-                     $orange = 'fa fa-check-circle-o';
-                break;
-            case $ena->accomplished_status_id === '13': $green  = 'fa fa-circle';
-                     $white  = 'fa fa-check-circle-o';
-                break;
-            case $ena->accomplished_status_id === 'x2': $orange = 'fa fa-check-circle-o';
-                break;
-            case $ena->accomplished_status_id === '2x': $orange = 'fa fa-circle';
-                break;
-            case $ena->accomplished_status_id === '20': $orange = 'fa fa-circle';
-                     $red    = 'fa fa-check-circle-o';
-                break;
-            case $ena->accomplished_status_id === '21': $orange = 'fa fa-circle';
-                     $green  = 'fa fa-check-circle-o';
-                break;
-            case $ena->accomplished_status_id === '22': $orange = 'fa fa-check-circle';
-                break;
-            case $ena->accomplished_status_id === '23': $orange = 'fa fa-circle';
-                                                        $white  = 'fa fa-check-circle-o';
-                break;
-            case $ena->accomplished_status_id === 'x3': $white  = 'fa fa-check-circle-o';
-                break;
-            case $ena->accomplished_status_id === '3x': $white  = 'fa fa-circle';
-                break;
-            case $ena->accomplished_status_id === '30': $white  = 'fa fa-circle';
-                       $red    = 'fa fa-check-circle-o';
-                break;
-            case $ena->accomplished_status_id === '31': $white  = 'fa fa-circle';
-                     $green  = 'fa fa-check-circle-o';
-                break;
-            case $ena->accomplished_status_id === '32': $white  = 'fa fa-circle';
-                     $orange = 'fa fa-check-circle-o';
-                break;
-            case $ena->accomplished_status_id === '33': $white  = 'fa fa-check-circle';
+            case $teacher_bit === '3':   $white    = 'fa fa-check'.$white;
+                        $red      =  'fa fa'.$red;
+                        $green    =  'fa fa'.$green;
+                        $orange   =  'fa fa'.$orange;                        
                 break;
 
-            default:
+            default:    $red      =  'fa fa'.$red;
+                        $green    =  'fa fa'.$green;
+                        $orange   =  'fa fa'.$orange;
+                        $white    =  'fa fa'.$white;
                 break;
         }
 
@@ -154,29 +143,15 @@ class Render {
                 . '<br><a href="'.$CFG->base_url.'public/index.php?action=extern&teacher='.$teacher.'&student='.$student.'&ena_id='.$id.'&status='.$student_status.'0'.'&token='.$token.'">... nicht erreicht.</a>';
         } else if ($USER->id != $student OR $student == $teacher){ // 2. Bedingung bewirkt, dass als Lehrer eigene Einreichungen bewerten kann --> für Demonstration der Plattform wichtig
             if ((!checkCapabilities('objectives:setStatus', $USER->role_id, false))){ //if student
-               $status = $ena->accomplished_status_id;
-                if (strlen($status) > 1){
-                    $teacher_status = substr($status, 1,1);
-                } else {
-                    $teacher_status = 'x';
-                }
-                $teacher = $student;
-                $html   = '<a class="pointer_hand" data-toggle="tooltip" title="Selbsteinschätzung: Ich kann das selbstständig." ><i id="'.$id.'_green" style="font-size:18px;" class="'.$green.' margin-r-5 text-green pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \'1'.$teacher_status.'\')"></i></a>'
-                        . '<a class="pointer_hand" data-toggle="tooltip" title="Selbsteinschätzung: Ich kann das mit Hilfe." ><i id="'.$id.'_orange" style="font-size:18px;" class="'.$orange.' margin-r-5 text-orange pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \'2'.$teacher_status.'\')"></i></a>'
-                        . '<a class="pointer_hand" data-toggle="tooltip" title="Selbsteinschätzung: Ich kann das noch nicht." ><i id="'.$id.'_red" style="font-size:18px;" class="'.$red.' margin-r-5 text-red pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \'0'.$teacher_status.'\')"></i></a>'
-                        . '<a class="pointer_hand" data-toggle="tooltip" title="Selbsteinschätzung: Ich habe das noch nicht bearbeitet." ><i id="'.$id.'_white" style="font-size:18px;" class="'.$white.' margin-r-5 text-gray pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \'3'.$teacher_status.'\')"></i></a>';
-            } else {
-                $status = $ena->accomplished_status_id;
-                if (strlen($status) > 1){
-                    $student_status = substr($status, 0,1);
-                } else {
-                    $student_status = 'x';
-                }
+                foreach($options AS $key => $val){
+                        $html   .= '<a class="pointer_hand" '.$val['tooltip'].'><i id="'.$id.'_'.$key.'"  '.$style.' class="'.$$key.' '.${'css_'.$key}.'"   onclick="processor(\'accomplish\', \'enabling_objective\', '.$id.',{\'status_id\':'.$val['status'].', \'reload\':\'false\', \'callback\':\'setElementById\'});"></i></a>';   
+                    }
+            } else { //teacher
                 if (checkCapabilities('course:selfAssessment', $USER->role_id, false) OR $teacher == $student) { // show in view
-                 $html   = '<a class="pointer_hand"><i id="'.$id.'_green" style="font-size:18px;" class="'.$green.' margin-r-5 text-green pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'1\')"></i></a>'
-                    . '<a class="pointer_hand"><i id="'.$id.'_orange" style="font-size:18px;" class="'.$orange.' margin-r-5 text-orange pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'2\')"></i></a>'
-                    . '<a class="pointer_hand"><i id="'.$id.'_red" style="font-size:18px;" class="'.$red.' margin-r-5 text-red pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'0\')"></i></a>'
-                    . '<a class="pointer_hand"><i id="'.$id.'_white" style="font-size:18px;" class="'.$white.' margin-r-5 text-gray pointer_hand" onclick="setAccomplishedObjectives('.$teacher.', \''.$student.'\', '.$id.', \''.$student_status.'3\')"></i></a>';
+                    foreach($options AS $key => $val){
+                        $html   .= '<a class="pointer_hand"><i id="'.$id.'_'.$key.'"  '.$style.' class="'.$$key.' '.${'css_'.$key}.'"   onclick="processor(\'accomplish\', \'enabling_objective\', '.$id.',{\'status_id\':'.$val['status'].', \'reload\':\'false\', \'callback\':\'setElementById\'});"></i></a>';   
+                    }
+                    $html  .= '<a class="pointer_hand"><i id="'.$id.'_comment" '.$style.' class="fa fa-comments text-primary margin-r-5 pointer_hand" onclick="formloader(\'comment\',\'accomplished\','.$id.');"></i></a>';
                 }
             }
             
@@ -314,13 +289,13 @@ class Render {
                                                     $html .= '<a href="#" class="btn btn-default btn-xs" data-toggle="tooltip" title="bearbeiten" onclick="formloader(\'file\',\'edit\','.$file->id.');"><i class="fa fa-edit"></i></a>';
                                                 }
                                                 if (checkCapabilities('file:delete', $USER->role_id, false) AND $file->creator_id == $USER->id){
-                                                    $html .= '<a href="#" class="btn btn-default btn-xs pull-right" data-toggle="tooltip" title="löschen" onclick="del(\'file\','.$file->id.');"><i class="fa fa-trash"></i></a>';
+                                                    $html .= '<a href="#" class="btn btn-default btn-xs pull-right" data-toggle="tooltip" title="löschen" onclick="processor(\'delete\', \'file\', '.$file->id.', { \'reload\': \'false\', \'callback\': \'replaceElementByID\', \'element_Id\': \'thumb_'.$file->id.'\'});"><i class="fa fa-trash"></i></a>';
                                                 }
                                 $html .= '</span></div></'.$tag.'>'; 
 
 
                     break;
-                case 'xs':      $html .=   '<div class="btn-group" style="padding-right:10px;">
+                case 'xs':      $html .=   '<div id="thumb_'.$file->id.'" class="btn-group" style="padding-right:10px;">
                                             <button type="button" class="btn btn-xs btn-default btn-flat" style="width:'.($width-25).'px !important; text-align:left;">';
                                             if ($icon == true){
                                                 $html .=   '<span class="pull-left"><i class="'.resolveFileType($file->type).'" style="padding-right:5px; margin-right:5px;"></i></span>';
@@ -348,12 +323,12 @@ class Render {
                                 }
                                 if (checkCapabilities('file:delete', $USER->role_id, false)){            
                                     $html .=   '  <li class="divider"></li>
-                                              <li><a href="#" onclick="del(\'file\','.$file->id.');"><i class="fa fa-trash"></i>löschen</a></li>';
+                                              <li><a href="#" onclick="processor(\'delete\', \'file\', '.$file->id.', { \'reload\': \'false\', \'callback\': \'replaceElementByID\', \'element_Id\': \'thumb_'.$file->id.'\'});"><i class="fa fa-trash"></i>löschen</a></li>';
                                 }
                                 $html .=   '</ul></div>';
                     break;
                 case 'thumb':   if ($icon == true){
-                                    $html .=   '<div style="position:relative; height: '.$height.';width:'.$width.'; float:left;"><i class="'.resolveFileType($file->type).' info-box-icon"></i>';
+                                    $html .=   '<div id="thumb_'.$file->id.'" style="position:relative; height: '.$height.';width:'.$width.'; float:left;"><i class="'.resolveFileType($file->type).' info-box-icon"></i>';
                                         if (isset($_SESSION['LICENSE'][$file->license]->file_id)){
                                             $html .= '<img style="position:absolute;bottom:0px; right:0px;" src="'.$CFG->access_id_url.$_SESSION['LICENSE'][$file->license]->file_id.'" height="25"/>';
                                         }
@@ -361,7 +336,7 @@ class Render {
                                     
                                     
                                 } else {
-                                    $html .=   '<div style="position:relative; height: '.$height.';width:'.$width.'; float:left; background: url(\''.$url.'\') center; background-size: cover; background-repeat: no-repeat;">';
+                                    $html .=   '<div id="thumb_'.$file->id.'" style="position:relative; height: '.$height.';width:'.$width.'; float:left; background: url(\''.$url.'\') center; background-size: cover; background-repeat: no-repeat;">';
                                         if (isset($_SESSION['LICENSE'][$file->license]->file_id)){
                                             $html .= '<img style="position:absolute;bottom:0px; right:0px;" src="'.$CFG->access_id_url.$_SESSION['LICENSE'][$file->license]->file_id.'" height="25"/>';
                                         }
@@ -380,7 +355,7 @@ class Render {
     
     public static function helpcard($help){
         global $USER;
-        $html =   '<div class="col-lg-3 col-md-6 col-xs-12">';
+        $html =   '<div id="helpcard'.$help->id.'" class="col-lg-3 col-md-6 col-xs-12">';
                     $html .= '<a href="#" onclick="formloader(\'preview\',\'help\','.$help->id.')">
                               <div class="info-box">';
                     $html .= RENDER::thumb(array('file_list' => $help->file_id, 'format'=> 'thumb', 'width' => '90px', 'height' => '90px'));  
@@ -388,7 +363,7 @@ class Render {
                         $html .='<a><span class="pull-right" onclick="formloader(\'help\',\'edit\','.$help->id.');"><i class="fa fa-edit margin"></i></span></a>';
                     }
                     if (checkCapabilities('help:add', $USER->role_id, false)){
-                        $html .='<a><span class="pull-right" onclick="del(\'help\','.$help->id.');"><i class="fa fa-trash top-buffer"></i></span></a>';
+                        $html .='<a><span class="pull-right" onclick="processor(\'delete\', \'help\', '.$help->id.', { \'reload\': \'false\', \'callback\': \'replaceElementByID\', \'element_Id\': \'helpcard'.$help->id.'\'});"><i class="fa fa-trash top-buffer"></i></span></a>';
                     }
                     $html .= '<p style="padding-left:100px;">
                               <span class="info-box-text text-black">'.$help->category.'</span>
@@ -401,7 +376,7 @@ class Render {
                     </div>';
         return $html;                                    
     }
-    
+    /* not used yet
     public static function wallet_thumb($params){
         $width_class     = 'col-lg-3 col-md-4 col-sm-6 col-xs-12';
                 
@@ -409,7 +384,7 @@ class Render {
             $$key = $val;
         }
         global $USER;
-        $html =   '<div class="'.$width_class.'">';
+        $html =   '<div id="wallet_'.$wallet->id.'" class="'.$width_class.'">';
                     
                     $html .= '<div class="thumbnail">
                                 <div class="row">
@@ -421,7 +396,7 @@ class Render {
                         $html .='<a class="pull-right"><span class="fa fa-edit padding-top-5 margin-r-5" onclick="formloader(\'wallet\',\'edit\','.$wallet->id.');"></span></a>';
                     }
                     if (checkCapabilities('help:add', $USER->role_id, false)){
-                        $html .='<a class="pull-right"><span class="fa fa-trash padding-top-5 margin-r-5" onclick="del(\'wallet\','.$wallet->id.');"></span></a>';
+                        $html .='<a class="pull-right"><span class="fa fa-trash padding-top-5 margin-r-5" onclick="processor(\'delete\', \'wallet\', '.$wallet->id.', { \'reload\': \'false\', \'callback\': \'replaceElementByID\', \'element_Id\': \'wallet_'.$wallet->id.'\'});"></span></a>';
                     }
                     
                     $html .= '  <span class="pull-left"><small>'.$wallet->timerange.'</small></span><div class="caption text-center"><br>
@@ -431,13 +406,14 @@ class Render {
                               </div><!-- /.events-->
                     </div>';
         return $html;                                    
-    }
+    }*/
+    
     public static function wallet_content($wallet_content, $edit){
        
-       $html  =   '<div class="sortable" style="width:100%;height:100%;"><div class="'.$wallet_content->width_class;
+       $html  =   '<div id="wallet_content_'.$wallet_content->id.'" class="sortable" style="width:100%;height:100%;"><div class="'.$wallet_content->width_class;
        if ($edit == true){
            $html  .=   ' sortable wallet-content"><span style="position: absolute; right:15px;" ></button><button type="button" onclick="formloader(\'wallet_content\',\'edit\','.$wallet_content->id.');"><i class="fa fa-edit"></i></button>'
-                      . '<button type="button"  onclick="del(\'wallet_content\','.$wallet_content->id.');"><i class="fa fa-trash"></i></button>'
+                      . '<button type="button"  onclick="processor(\'delete\', \'wallet_content\', '.$wallet_content->id.', { \'reload\': \'false\', \'callback\': \'replaceElementByID\', \'element_Id\': \'wallet_content_'.$wallet_content->id.'\'});"><i class="fa fa-trash"></i></button>'
                       . '<button type="button"  onclick=\'processor("orderWalletContent","left",'.$wallet_content->id.', {"order":"left"});\'><i class="fa fa-arrow-left"></i></button>'
                    . '<button type="button"  onclick=\'processor("orderWalletContent","right",'.$wallet_content->id.', {"order":"right"});\'><i class="fa fa-arrow-right"></i></button>'
                    . '<button type="button"  onclick=\'processor("orderWalletContent","up",'.$wallet_content->id.', {"order":"up"});\'><i class="fa fa-arrow-down"></i></button>'
@@ -461,94 +437,89 @@ class Render {
        $html .=   '</span></div></div>';
         return $html;  
     }
-    
+    /**
+     * 
+     * @global type $CFG
+     * @global type $USER
+     * @param array $params array(
+     *                            'permission' => 1         // Add / Delete comments
+     * 
+     *                            )
+     * @return string
+     */
     public static function comments($params){
         global $CFG, $USER;
         foreach($params as $key => $val) {
              $$key = $val;
         }
         if (!isset($permission)){ $permission = 1; }
+        /* Load comments based on id and context */
+        if (isset($id) AND isset($context)){
+            $cm                 = new Comment();
+            $cm->reference_id   = $id;
+            $cm->context        = $context; 
+            $comments           = $cm->get('reference');
+        }
+        
         $html = '<ul class="media-list ">';
-        foreach ($comments as $cm) {
-            $u      = new User();
-            $u->load('id', $cm->creator_id, false);
-            $size   = '48';
-            $html  .= '<li class="media" >
-                       <a class="pull-left" href="#" >
-                         <div style="height:'.$size.'px;width:'.$size.'px;background: url('.$CFG->access_id_url.$u->avatar_id.') center right;background-size: cover; background-repeat: no-repeat;"></div>
-                        </a>
-                        <a style="cursor:pointer;" class="text-red margin-r-10 pull-right" onclick=\'processor("set","comments",'.$cm->id.', {"dependency":"dislikes", "input":"'.($cm->dislikes+1).'"});\'><i class="fa fa-thumbs-o-down margin-r-5"></i> '.$cm->dislikes.' </a>
-                        <a style="cursor:pointer;" class="text-green margin-r-10 pull-right" onclick=\'processor("set","comments",'.$cm->id.', {"dependency":"likes", "input":"'.($cm->likes+1).'"});\'><i class="fa fa-thumbs-o-up margin-r-5"></i> '.$cm->likes.' </a>
-                        
-                      <div class="media-body" >
-                          <h4 class="media-heading">'.$u->username.' <small class="text-black margin-r-10"> '.$cm->creation_time.'</small> 
-                          </h4>
-                              <p class="media-heading">'.$cm->text.'<br>';
-                              if ($cm->creator_id == $USER->id){
-                                  if ($permission > 0){
-                                    $html  .= '<a class="text-red" onclick="del(\'comment\','.$cm->id.');"><i class="fa fa-trash "></i></a>';
-                                  }
-                              } else {
-                                $html  .= '<a class="text-red" onclick=""><i class="fa fa-exclamation-triangle "></i> Kommentar melden</a>';
-                              }
-                              if ($permission > 0){
-                                $html  .= ' | <a id="answer_'.$cm->id.'" onclick="toggle([\'comment_'.$cm->id.'\', \'cmbtn_'.$cm->id.'\'], [\'answer_'.$cm->id.'\'])">Antworten</a></p>';
-                              }
-                              $html .='<textarea id="comment_'.$cm->id.'" name="comment"  class="hidden" style="width:100%;"></textarea>
-                                        <button id="cmbtn_'.$cm->id.'" type="submit" class="btn btn-primary pull-right hidden" onclick="comment(\'new\','.$cm->reference_id.', '.$cm->context_id.', document.getElementById(\'comment_'.$cm->id.'\').value, '.$cm->id.');"><i class="fa fa-commenting-o margin-r-10"></i>Kommentar abschicken</button>';
-            /* sub comments */
-            if (!empty($cm->comment)){
-              $html .= RENDER::sub_comments(array('comment' => $cm->comment));
-            }
-            $html .= '</li><hr class="dashed">';
+        if (!isset($sub_comment)){
+            $html .= '<li class="media" id="comment_placeholder_'.$id.'"></li>';
+        }
+        
+        foreach ($comments as $c) {
+            $html .= RENDER::comment($c, $permission);
         }
         $html .=  '</ul>';
+        
+        /* add Comments */
+        if (checkCapabilities('comment:add', $USER->role_id, false, true) ){  
+            if (!isset($sub_comment)){
+                $html.= 'Neuen Kommentar hinzufügen
+                <textarea id="comment" name="comment" class="no_editor" style="width:100%;"></textarea>
+                <button type="submit" class="btn btn-primary pull-right" onclick="processor(\'comment\',\'new\','.$id.', {\'context_id\':'.$_SESSION['CONTEXT'][$context]->context_id.', \'text\':document.getElementById(\'comment\').value, \'reload\':\'false\', \'callback\':\'replaceElementByID\', \'elementId\':\'comment_placeholder_'.$id.'\'});"><i class="fa fa-commenting-o margin-r-10"></i> Kommentar abschicken</button>';
+            }
+        } else {
+            $html .= "Sie haben nicht die Berechtigung Kommentare zu schreiben.";
+        }
 
         return $html;
     }
     
-    public static function sub_comments($params){
+    public static function comment($cm, $permission, $show_add = true){
         global $CFG, $USER;
-        foreach($params as $key => $val) {
-             $$key = $val;
-        }
-        if (!isset($permission)){ $permission = 1; }
-        $html = '';
-        foreach ($comment as $cm){
-            $u = new User();
-            $u->load('id', $cm->creator_id, false);
-            $size = '32';
-            $html .=  '<div class="media ">
-                        <a class="pull-left" href="#" >
-                            <div style="height:'.$size.'px;width:'.$size.'px;background: url('.$CFG->access_id_url.$u->avatar_id.') center right;background-size: cover; background-repeat: no-repeat;"></div>
-                        </a>                        
-                        <div class="media-body" >
-                            <h4 class="media-heading">'.$u->username.' <small class="text-black margin-r-10"> '.$cm->creation_time.'</small>
-                                <a style="cursor:pointer;" class="text-green margin-r-10 " onclick=\'processor("set","comments",'.$cm->id.', {"dependency":"likes", "input":"'.($cm->likes+1).'"});\'><i class="fa fa-thumbs-o-up margin-r-5"></i> '.$cm->likes.' </a>
-                                <a style="cursor:pointer;" class="text-red margin-r-10 " onclick=\'processor("set","comments",'.$cm->id.', {"dependency":"dislikes", "input":"'.($cm->dislikes+1).'"});\'><i class="fa fa-thumbs-o-down margin-r-5"></i> '.$cm->dislikes.' </a>
-                            </h4>
-                                <p class="media-heading">'.$cm->text.'<br>';
-                                if ($cm->creator_id == $USER->id){
-                                    if ($permission > 0){
-                                        $html  .= '<a class="text-red" onclick="del(\'comment\','.$cm->id.');"><i class="fa fa-trash "></i></a>';
-                                    }
-                                  } else {
-                                    $html  .= '<a class="text-red" onclick=""><i class="fa fa-exclamation-triangle "></i> Kommentar melden</a>';
-                                  }
-                                if ($permission > 0){  
-                                    $html .= ' | <a id="answer_'.$cm->id.'" onclick="toggle([\'comment_'.$cm->id.'\', \'cmbtn_'.$cm->id.'\'], [\'answer_'.$cm->id.'\'])">Antworten</a></p>';
-                                }
-                                $html .='<textarea id="comment_'.$cm->id.'" name="comment"  class="hidden" style="width:100%;"></textarea>
-                                        <button id="cmbtn_'.$cm->id.'" type="submit" class="btn btn-primary pull-right hidden" onclick="comment(\'new\','.$cm->reference_id.', '.$cm->context_id.', document.getElementById(\'comment_'.$cm->id.'\').value, '.$cm->id.');"><i class="fa fa-commenting-o margin-r-10"></i>Kommentar abschicken</button>';
-                                if (!empty($cm->comment)){
-                                    $html .= RENDER::sub_comments(array('comment' => $cm->comment));
-                                }                         
-            $html .=  ' </div></div>';
+        $u      = new User();
+        $u->load('id', $cm->creator_id, false);
+        $size   = '48';
+        $html   = '<li id="comment_'.$cm->id.'" class="media" >
+                   <a class="pull-left" href="#" >
+                     <div style="height:'.$size.'px;width:'.$size.'px;background: url('.$CFG->access_id_url.$u->avatar_id.') center right;background-size: cover; background-repeat: no-repeat;"></div>
+                    </a>
+                  <div class="media-body" >
+                  <a style="cursor:pointer;" class="text-red margin-r-10 pull-right" onclick=\'processor("set","likes",'.$cm->id.', {"dependency":"dislikes", "reload":"false", "callback":"innerHTML"});\'><i class="fa fa-thumbs-o-down margin-r-5"></i><span id="dislikes_'.$cm->id.'"> '.$cm->dislikes.'</span></a>
+                    <a style="cursor:pointer;" class="text-green margin-r-10 pull-right" onclick=\'processor("set","likes",'.$cm->id.', {"dependency":"likes", "reload":"false",  "callback":"innerHTML"});\'><i class="fa fa-thumbs-o-up margin-r-5"></i><span id="likes_'.$cm->id.'"> '.$cm->likes.' </span></a>
 
-                
+                      <h4 class="media-heading">'.$u->username.' <small class="text-black margin-r-10"> '.$cm->creation_time.'</small> 
+                      </h4>
+                          <p class="media-heading">'.$cm->text.'<br>';
+                          if ($cm->creator_id == $USER->id){
+                              if (($permission > 0) AND checkCapabilities('comment:delete', $USER->role_id, false, true)){
+                                $html  .= '<a class="text-red pull-right" onclick="processor(\'delete\',\'comment\','.$cm->id.', {\'reload\':\'false\', \'callback\':\'replaceElementByID\', \'element_Id\':\'comment_'.$cm->id.'\'});"><i class="fa fa-trash "></i></a>';
+                              }
+                          } else if (!checkCapabilities('comment:delete', $USER->role_id, false, true)) {
+                            $html .= '<a class="text-red" onclick=""><i class="fa fa-exclamation-triangle "></i> Kommentar melden</a>';
+                          }
+                          if (($show_add == true) AND checkCapabilities('comment:add', $USER->role_id, false, true)){
+                            $html .= '<a id="answer_'.$cm->id.'" onclick="toggle([\'comment_text_'.$cm->id.'\', \'cmbtn_'.$cm->id.'\'], [\'answer_'.$cm->id.'\'])"><i class="fa fa-comments"></i></a></p>';
+                            $html .='<textarea id="comment_text_'.$cm->id.'" name="comment"  class="hidden no_editor" style="width:100%;"></textarea>
+                                    <button id="cmbtn_'.$cm->id.'" type="submit" class="btn btn-primary pull-right hidden" onclick="processor(\'comment\',\'new\','.$cm->reference_id.', {\'context_id\':'.$cm->context_id.', \'text\':document.getElementById(\'comment_text_'.$cm->id.'\').value, \'parent_id\':'.$cm->id.', \'reload\':\'false\', \'callback\':\'replaceElementByID\', \'elementId\':\'comment_placeholder_'.$cm->id.'\'});"><i class="fa fa-commenting-o margin-r-10"></i>Kommentar abschicken</button>';
+                         }
+                         $html .='<hr class="dashed">';
+        /* sub comments */
+        if (!empty($cm->comment)){
+            $html .= RENDER::comments(array('comments' => $cm->comment, 'sub_comment' => true));
         }
+        $html .= '<li class="media" id="comment_placeholder_'.$cm->id.'"></li></li>';  
         return $html;
-        
     }
     
     /* add all possible options (ter and ena) to this objective function*/
@@ -683,7 +654,7 @@ class Render {
                          if ($orderup){
                              $html  .= '<span class="fa fa-arrow-'.$icon_up.' '.$position.' box-sm-icon '.$icon_class.'" onclick=\'processor("orderObjective", "'.$type.'", "'.$objective->id.'", {"order":"up","reload":"true"});\'></span>';
                          }
-                         $html  .= '<span class="fa fa-minus pull-right box-sm-icon '.$icon_class.' margin-r-5" onclick=\'del("'.$type.'", '.$objective->id.');\'></span>
+                         $html  .= '<span class="fa fa-minus pull-right box-sm-icon '.$icon_class.' margin-r-5" onclick=\'processor("delete","'.$type.'","'.$objective->id.'", {"reload":"false", "callback":"replaceElementByID", "element_Id":"'.substr($type, 0, 3).'_'.$objective->id.'"});\'></span>
                                     <span class="fa fa-edit pull-right box-sm-icon '.$icon_class.'" onclick=\'formloader("'.$type.'", "edit", '.$objective->id.');\'></span>';
                          if ($orderdown){
                              $html  .= '<span class="fa fa-arrow-'.$icon_down.' pull-left box-sm-icon '.$icon_class.'" onclick=\'processor("orderObjective", "'.$type.'", "'.$objective->id.'", {"order":"down","reload":"true"});\'></span>';
@@ -843,7 +814,7 @@ class Render {
         } 
         $thumbs = Render::link($mail->message, 'message');
         $mail->message = Render::accomplish($mail->message, $sender->id, $receiver->id);
-        $content = '<div class="box">
+        $content = '<div id="mail_'.$mail->id.'" class="box">
                 <div class="box-header with-border">
                   <h3 class="box-title">Nachricht</h3>
                   <div class="box-tools pull-right" >
@@ -857,7 +828,7 @@ class Render {
                         <button class="btn btn-default btn-sm" data-toggle="tooltip" title="zurück"><i class="fa fa-chevron-left"></i></button>
                         <button class="btn btn-default btn-sm" data-toggle="tooltip" title="vor"><i class="fa fa-chevron-right"></i></button>
                     </div><!-- /.btn-group -->
-                    <button class="btn btn-default btn-sm" data-toggle="tooltip" title="löschen" onclick="del(\'message\', '. $mail->id.', \''.$box.'\')"><i class="fa fa-trash-o"></i> Löschen</button>
+                    <button class="btn btn-default btn-sm" data-toggle="tooltip" title="löschen" onclick="processor(\'delete\',\'message\','.$mail->id.', {\'ref_id\': \''.$box.'\', \'reload\':\'false\', \'callback\':\'replaceElementByID\', \'element_Id\':\'mail_'.$mail->id.'\'});"><i class="fa fa-trash-o"></i> Löschen</button>
                   </div>
                 </div><!-- /.box-header -->
                 <div class="box-body no-padding">
@@ -1118,7 +1089,7 @@ class Render {
                         <th style="width:50px;">Typ</th>
                     </tr>';
         foreach ($files as $f) {
-            $content .= '<tr>';
+            $content .= '<tr id="thumb_'.$f->id.'">';
             $content .= '<td><div class="btn-group"><button type="button" class="btn btn-xs btn-flat dropdown-toggle" data-toggle="dropdown">
                                 <span class="caret"></span>
                                 <span class="sr-only">Toggle Dropdown</span>
@@ -1135,7 +1106,7 @@ class Render {
             }    
             if (checkCapabilities('file:delete', $USER->role_id, false)){
                 $content .=   '  <li class="divider"></li>
-                          <li><a href="#" onclick="del(\'file\','.$f->id.');"><i class="fa fa-trash"></i>löschen</a></li>';
+                          <li><a href="#" onclick="processor(\'delete\', \'file\', '.$f->id.', { \'reload\': \'false\', \'callback\': \'replaceElementByID\', \'element_Id\': \'thumb_'.$f->id.'\'});"><i class="fa fa-trash"></i>löschen</a></li>';
             }
             $content .=  '</ul></div></td>';
             $content .= '<td>'.$f->filename.'</td>';
@@ -1183,7 +1154,7 @@ class Render {
             //$r      .= element('coursebook', $cb);
             
             $r      .= '<div class="timeline-item " style="border-color: #f4f4f4;border-style: solid;border-width: 1px;">
-                          <span class="time" onclick="del(\'courseBook\','.$cb->id.');"><i class="fa fa-trash-o"></i></span>
+                          <span class="time" onclick="processor(\'delete\', \'courseBook\', '.$cb->id.');"><i class="fa fa-trash-o"></i></span>
                           <span class="time" onclick="processor(\'print\',\'courseBook\','.$cb->id.');"><i class="fa fa-print"></i></span>
                           <span class="time" onclick="formloader(\'courseBook\',\'edit\','.$cb->id.');"><i class="fa fa-edit"></i></span>
                           <span class="time"><i class="fa fa-clock-o"></i> '.$cb->creation_time.'</span>
@@ -1194,14 +1165,15 @@ class Render {
                           }  
             $r      .= '                </a> '.$cb->creator.'</h3>
                           <div class="timeline-body">
-                              <h4>'.$cb->topic.'</h4> 
+                              <h4>'.$cb->topic .'</h4> 
                              '.$cb->description.'
                           </div>
                           
                           <!--div class="timeline-footer"-->';
-            $r      .=    Render::todoList($cb->task, 'coursebook', $cb->id);
+            $r      .=    '<div style="display:inline-table;padding-left:10px;">'.Render::objective_list(array("dependency" => "courseBook", "id" => $cb->id)).'</div>';
+            $r      .=    Render::todoList($cb->task, 'courseBook', $cb->id);
             if (checkCapabilities('absent:update', $USER->role_id, false)){
-                $r  .=    Render::absentListe($cb->absent_list, 'coursebook', $cb->id);
+                $r  .=    Render::absentListe($cb->absent_list, 'courseBook', $cb->id);
             }
             $r      .= ' </div></li>';
         }
@@ -1219,7 +1191,7 @@ class Render {
         $usr     = new User();
         $r       = '<ul class="todo-list ui-sortable">';
                  foreach ($task as $tsk) {
-        $r       .= ' <li class="tasklink" ';
+        $r       .= ' <li id="task_item_'.$tsk->id.'" class="tasklink" ';
         if ($onclick){ 
             $r   .= 'onclick="loadhtml(\'task\', '.$tsk->id.', \'task_left_col\', \'task_right_col\', \'col-xs-12 col-lg-6\', \'col-xs-12 col-lg-6\');">';
         }
@@ -1246,7 +1218,7 @@ class Render {
                         if (checkCapabilities('task:update', $USER->role_id, false) AND $onclick == false){
                             $r   .= '<div class="tools">
                                         <i class="fa fa-edit" onclick="formloader(\'task\',\'edit\', \''.$tsk->id.'\');"></i>
-                                        <i class="fa fa-trash-o" onclick="del(\'task\', '.$tsk->id.');"></i>
+                                        <i class="fa fa-trash-o" onclick="processor(\'delete\', \'task\', '.$tsk->id.', { \'reload\': \'false\', \'callback\': \'replaceElementByID\', \'element_Id\': \'task_item_'.$tsk->id.'\'});"></i>
                                     </div>';
                         }
         $r       .= '</li>';
@@ -1275,7 +1247,7 @@ class Render {
         global $CFG;
         $r      = '<div style="padding:10px;"><span>Abwesend<span><ul class="products-list product-list-in-box ui-sortable-handle">';
                   foreach ($absent as $ub) {
-        $r     .= '<li class="item" >
+        $r     .= '<li id="absent_entry_'.$ub->id.'" class="item" >
                       <div class="product-img">
                         <img src="'.$CFG->access_id_url.$ub->user->avatar_id.'" alt="Product Image">
                       </div>
@@ -1293,7 +1265,7 @@ class Render {
         $r     .= '     </a>
                         <span class="product-description">'.$ub->reason.'</span>
                         <span class="pull-right"><i class="fa fa-edit" onclick="formloader(\'absent\',\'edit\', '.$ub->id.')"></i>
-                        <i class="fa fa-trash-o" onclick="del(\'absent\', '.$ub->id.')"></i></span>
+                        <i class="fa fa-trash-o" onclick="processor(\'delete\', \'absent\', '.$ub->id.', { \'reload\': \'false\', \'callback\': \'replaceElementByID\', \'element_Id\': \'absent_entry_'.$ub->id.'\'});"></i></span>
                       </div>
                     </li><!-- /.item -->';
                   }
@@ -1398,7 +1370,7 @@ class Render {
         }
         /*get upcoming events*/
         $events = new Event();
-        $upcoming_events = $events->get('upcoming', $USER->id, '', 5);
+        $upcoming_events = $events->get('upcoming', $USER->id, '');
         if ($USER->role_id === $role_id OR $role_id == $CFG->settings->standard_role){
             if (isset($upcoming_events)){
                 $html ='';
@@ -1722,11 +1694,13 @@ class Render {
                             <div id="block_instance_'.$id.'_body" class="box-body" style="overflow: scroll; width: 100%; max-height: '.$height.';">';
                                     foreach ($blog->content as $value) {
                                         $author->load('id', $value->creator_id);
+                                        /* TODO implement count function for shorter syntax */
                                         $comments = new Comment();
                                         $comments->context = 'content';
                                         $comments->reference_id = $value->id;
                                         $c = $comments->get('reference');
                                         $c_max = count($c);
+                                        /**/
                                         $html  .=  '<div class="post">
                                                         <div class="user-block">
                                                           <img class="img-circle img-bordered-sm" src="'.$CFG->access_id_url.$author->avatar_id.'" alt="user image">
@@ -1747,11 +1721,8 @@ class Render {
                                                               ('.$c_max.')</a></li>
                                                         </ul>
                                                         <div class="bottom-buffer-20 hidden" id="comments_'.$value->id.'"><b>Kommentare</b>';
-                                        $html  .=       RENDER::comments(["comments" => $c, "permission" => '1']); //todo permission over rolecheck
-                                        $html  .=     '<textarea id="comment" name="comment"  style="width:100%;"></textarea>
-                                                       <p><button type="submit" class="btn btn-primary pull-right" onclick="comment(\'new\','.$value->id.', 15, document.getElementById(\'comment\').value);">
-                                                           <i class="fa fa-commenting-o margin-r-10"></i>Kommentar abschicken</button></p><br>
-                                                       </div>
+                                        $html  .=       RENDER::comments(["id" => $value->id, "context" => "content"]); 
+                                        $html  .=     '</div>
                                                     </div>';
                                     }    
              $html  .= '     </div>
@@ -2167,8 +2138,7 @@ class Render {
                                         global $v;
                                         return $v->{$r[1]}; 
                                     }, $href);
-                                
-                            $html   .= '<li><a href="'.$href_regex.'">'.$l;
+                            $html   .= '<li id="w_row_'.$value->id.'"><a href="'.$href_regex.'">'.$l;
                             if (isset($badge)){
                                 
                                 $onclick = str_replace('__id__', $value->id, $onclick_badge);
@@ -2322,16 +2292,15 @@ class Render {
 
 public static function render_reference_entry($ref, $context_id){
     global $USER;
-    $c  = '<div class="row">
+    $c  = '<div id="reference_entry_'.$ref->id.'" class="row">
             <div class="col-xs-12 col-sm-3 pull-left"><dt>Thema/Kompetenzbereich</dt>'.Render::objective(array('format' => 'reference', 'objective' => $ref->terminal_object, 'color')).'</div>';
             if ($ref->context_id == $_SESSION['CONTEXT']['enabling_objective']->context_id) {
-              $c .= '<div class="col-xs-12 col-sm-3"><dt>Lernziel/Kompetenz</dt>'.Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $ref->enabling_object, 'border_color' => $ref->terminal_object->color)).'</div>';
+              $c .= '<div class="col-xs-12 col-sm-3"><dt>Kompetenz</dt>'.Render::objective(array('format' => 'reference', 'type' => 'enabling_objective', 'objective' => $ref->enabling_object, 'border_color' => $ref->terminal_object->color)).'</div>';
             }
             $c .= '
            <div class="col-xs-12 col-sm-6 pull-right">';
             if (checkCapabilities('reference:add',    $USER->role_id, false, true)){
-                $c .= '<a onclick="del(\'reference\', '.$ref->id.');" class="btn btn-default btn-xs pull-right" data-toggle="tooltip" title="" data-original-title="Referenz löschen" style="margin-right:5px;"><i class="fa fa-trash"></i></a>';
-                //$c .= '<a onclick="formloader(\'reference\', \'edit\', '.$ref->id.', {\'context_id\': \''.$context_id.'\'});" class="btn btn-default btn-xs pull-right" data-toggle="tooltip" title="" data-original-title="Referenz editieren" style="margin-right:5px;"><i class="fa fa-edit"></i></a>';
+                $c .= '<a onclick="processor(\'delete\', \'reference\', '.$ref->id.', { \'reload\': \'false\', \'callback\': \'replaceElementByID\', \'element_Id\': \'reference_entry_'.$ref->id.'\'});" class="btn btn-default btn-xs pull-right" data-toggle="tooltip" title="" data-original-title="Referenz löschen" style="margin-right:5px;"><i class="fa fa-trash"></i></a>';
             }
     
             $c .= '<br><dt>Anregungen zur Unterrichtsgestaltung <dd> ';
@@ -2557,7 +2526,7 @@ public static function quote_reference($quotes){
         $c->load(false);
         $content .= '<h3>'. $c->curriculum.'</h3>'; 
         
-        $content .= '<h4>Bezüge zu den Kompetenzen / Lernziele</h4>'; 
+        $content .= '<h4>Bezüge zu den Kompetenzen</h4>'; 
         $ter_obj  = new TerminalObjective();         //load terminal objectives
         $ter      = $ter_obj->getObjectives('certificate', $id);
         $temp_ter_id = 0;
@@ -2845,7 +2814,7 @@ public static function quote_reference($quotes){
                 }
             }
         } else {
-            $content .= 'Keine Medien für dieses Lernziel/Fach vorhanden vorhanden.';
+            $content .= 'Keine Medien für diese Kompetenz, dieses Fach vorhanden vorhanden.';
         }
         if ($get['ajax'] == 'true'){ 
             echo $content;
@@ -2854,5 +2823,120 @@ public static function quote_reference($quotes){
         }
     }
     
+    public static function plugin_config( $plugin_class ){
+        $plugin = new $plugin_class();
+        if (method_exists($plugin,'plugin_config')){
+            return $plugin->plugin_config();
+        }
+        //return $plugin::PLUGINNAME;
+    }
+
+    
+    public static function objective_list($params){
+        global $USER;
+        foreach($params AS $key=>$value){
+            $$key = $value;
+        }
+        
+        switch ($dependency){
+            case 'courseBook':
+                $os = new ObjectiveSubscription();
+                $to_ids = ObjectiveSubscription::getSubscriptionIds(10, $id, 27);
+                if (count($to_ids)>0){
+                    $os->id = $to_ids[0];
+                }else{
+                    $os->id = 0;
+                }
+                
+                $code = '';
+                if ($os->load()){
+                    #terminal laden
+                    $terminal = new TerminalObjective();
+                    $terminal->id = $os->reference_id;
+                    $terminal->load();
+                    $code .= '<div style="display:inline-table;">' . RENDER::objective(["type" =>"terminal_objective", "objective" => $terminal , "user_id" => $USER->id]) .'</div>';
+                    
+                    #enable laden
+                    $enable = new EnablingObjective();
+                    $enable_ids = ObjectiveSubscription::getSubscriptionIds(10, $id, 12);
+                    foreach ($enable_ids AS $eid){
+                        $enable->id = $eid;
+                        $enable->load();
+                        $code .= '<div style="display:inline-table; padding:10px">' . RENDER::objective(["type" =>"enabling_objective", "objective" => $enable , "border_color" => $terminal->color, "user_id" => $USER->id]) .'</div>';
+                        
+                    }
+                }
+                
+                return $code;
+                break;
+            default:
+                return "";
+                break;
+        }
+        
+    }
+
+    /**
+     * array($terminalObjectives, $user, $sel_curriculum, $selected_user_id, $enabledObjectives)
+     * */
+    public static function curriculum($params){
+        global $CFG; 
+        foreach($params as $key => $val) {
+            $$key   = $val;
+        }
+        $html = '<div id="curriculum_content" class="row ">';
+        if (isset($terminalObjectives)){  
+            $html .= '<div class="col-xs-12">
+                <div class="box box-default">
+                    <div class="box-header ">';
+                        if (count($selected_user_id) > 1){
+                            $user  = new User(); 
+                            $user->load('id', $selected_user_id[0], false);
+                            if (isset($user->avatar)){
+                                 $html .= Render::split_button($cur_content);
+                                 $html .='<img src="'.$CFG->access_file.$user->avatar.'" style="height:40px;"class="user-image pull-left margin-r-5" alt="User Image">';
+                            }
+                            $html .= Render::badge_preview(["reference_id" => $sel_curriculum, "user_id" => $selected_user_id]);
+                        }
+                        $html .=' <p class="pull-right">Farb-Legende:
+                            <button class="btn btn-success btn-flat" style="cursor:default">selbständig erreicht</button>
+                            <button class="btn btn-warning btn-flat" style="cursor:default">mit Hilfe erreicht</button>
+                            <button class="btn btn-danger btn-flat" style="cursor:default">nicht erreicht</button>
+                            <button class="btn btn-default disabled btn-flat" style="cursor:default">nicht bearbeitet</button>
+                            </p>
+                        </div>';
+                    
+          $html .= '<div class="box-body" style="min-height:400px;">';
+
+                    if ( isset($terminalObjectives)){
+                        foreach ($terminalObjectives as $terid => $ter) {
+                        $html .='<div class="row" ><div class="col-xs-12">';
+                                // Thema
+                                $html .= RENDER::objective(["type" =>"terminal_objective", "objective" => $ter , "user_id" => $selected_user_id,"group_id" => $sel_group_id]);
+                                // Ziele
+                                foreach ($enabledObjectives as $enaid => $ena) {
+                                    if ($ena->terminal_objective_id == $ter->id){
+                                        $html .= RENDER::objective(["type" =>"enabling_objective", "objective" => $ena , "user_id" => $selected_user_id, "group_id" => $sel_group_id, "border_color" => $ter->color]);
+                                    }
+                                }
+                                 $html .='</div></div>';
+                        }
+                    } else {
+                        if (isset($selected_user_id)){
+                            $html .= '<p>Es wurden noch keine Kompetenzen eingegeben.</p>
+                                      <p>Dies können sie unter Lehrpläne machen.</p>';
+                        } else {
+                            if (isset($sel_curriculum)) { //Wenn noch keine Lehrpläne angelegt wurden
+                            $html .= '<p>Bitte wählen sie einen Benutzer aus.</p>';
+                            }            
+                        }
+                    } 
+                    $html .= '</div>
+                </div>
+            </div>';
+        }
+    $html .= '</div>';   
+    return $html;
+    }
     
 }

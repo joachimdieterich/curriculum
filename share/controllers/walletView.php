@@ -80,7 +80,7 @@ $TEMPLATE->assign('page_bg_file_id', $wallet->file_id);
 
 
 if ($users) {
-    $p_options = array('delete'    => array('onclick'    => "del('wallet_sharing',{$wallet->id},__id__);",
+    $p_options = array('delete'    => array('onclick'    => "processor('delete', 'wallet_sharing', {$wallet->id}, { 'ref_id': __id__, 'reload': 'false', 'callback': 'replaceElementByID', 'element_Id': 'row__id__'});",
                                             'capability' => checkCapabilities('wallet:share', $USER->role_id, false),
                                             'icon'       => 'fa fa-trash',
                                             'tooltip'    => 'lÃ¶schen'),
@@ -101,5 +101,5 @@ if ($users) {
                        'p_search'  => array('username', 'firstname', 'lastname'),
                        'p_options' => $p_options,
                        't_config'  => $t_config);
-    setPaginator('walletuserPaginator', $TEMPLATE, $users, 'results', 'index.php?action=walletView&wallet='.$wallet->id, $p_config); //set Paginator 
+    setPaginator('walletuserPaginator', $users, 'results', 'index.php?action=walletView&wallet='.$wallet->id, $p_config); //set Paginator 
 }

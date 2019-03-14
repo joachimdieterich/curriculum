@@ -45,6 +45,7 @@ $phone                  = null;
 $email                  = null;
 $country_id             = null;
 $state_id               = null;
+$support_user_ids       = null;
 $file_id                = $CFG->settings->standard_ins_logo_id; 
 $paginator_limit        = $CFG->settings->paginator_limit;
 $std_role               = $CFG->settings->standard_role;
@@ -75,10 +76,13 @@ if (isset($_GET['func'])){
                         $header     = 'Institution aktualisieren';
                         $ins        = new Institution();
                         $ins->id    = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-                        $ins->load();
+                        $ins->load('id', null, true);
                         foreach ($ins as $key => $value){
                              $$key = $value;
                          }
+                        $users = new User();
+                        $possible_supporting_users = $users->userList('institution_overview', '', false, $id);
+                        //error_log(json_encode($support_user_ids));
             break;
         default: break;
     }
@@ -93,9 +97,8 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$content ='<form id="form_institution" class="form-horizontal" role="form" method="post" action="../share/processors/fp_institution.php"';
-if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
+$content ='<form id="form_institution" class="form-horizontal" role="form" method="post" action="../share/processors/fp_institution.php">
+           <input type="hidden" name="func" id="func" value="'.$func.'"/>';
 if (isset($id)) {                                                               // only set id input field if set! prevents error on validation form reload
      $content .= '<input id="id" name="id" type="text" class="invisible" value="'.$id.'">';
 }
@@ -114,7 +117,7 @@ $content .= Form::input_select('schooltype_id', 'Schulart', $sch->getSchooltypes
 $content .= '</div>';
 
 /* add new schooltype*/ 
-$content .= Form::input_checkbox('btn_newSchooltype', 'Neuen Schultyp anlegen', $btn_newSchooltype, $error, 'checkbox', 'toggle([\'newSchooltype\'], [\'existingSchooltype\']);');
+$content .= Form::input_checkbox('btn_newSchooltype', 'Neuen Schultyp anlegen', $btn_newSchooltype, $error, 'checkbox', 'toggle([\'newSchooltype\'],[\'existingSchooltype\'], [\'btn_newSchooltype\']);');
 $content .= '<div id="newSchooltype" ';
 if (!isset($new_schooltype) AND !isset($schooltype_description)){ $content .= 'class="hidden"';} // only hide if no Data is given
 $content .= '>';
@@ -126,6 +129,10 @@ $countries = new State($country_id);                                            
 $states    = $countries->getStates();
 $content .= Form::input_select('country_id', 'Land', $countries->getCountries(), 'de', 'id', $country_id , $error, 'getValues(\'state\', this.value, \'state_id\');');
 $content .= Form::input_select('state_id', 'Bundesland/Region', $states, 'state', 'id', $state_id , $error);
+if ($id != null){
+    $content .= Form::info(array('id' => 'support_user_ids_info', 'label' => 'Info Betreuer', 'content' => 'Um als Betreuer einer Institution tätig zu sein, muss dieser an der Institution eingeschrieben sein.'));
+    $content .= Form::input_select_multiple(array('id' => 'support_user_ids', 'label' => 'Betreuer', 'select_data' => $possible_supporting_users, 'select_label' => 'firstname, lastname, role_name', 'select_value' => 'id', 'input' => $support_user_ids, 'error' => $error)); 
+}
    
 /* institution logo */ 
 

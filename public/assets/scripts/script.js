@@ -24,6 +24,11 @@
 
 var req;
 
+//to get php like check function
+function isset(v){
+     return !!v; // converting to boolean.
+}
+
 function formatBytes(bytes,decimals) {
    if(bytes === 0) return '0 Byte';
    var k = 1000; // or 1024 for binary
@@ -110,36 +115,6 @@ function toggle_column(){
     }	
 }
 
-function loadmail(mail_id, mailbox) {
-    document.getElementById('mailbox').innerHTML = '<div class="box"><div class="box-header"><h3 class="box-title">Loading...</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div>';    
-    var url = "../share/request/getMail.php?mailID="+ mail_id+"&box="+mailbox; 
-
-    req = XMLobject();
-        if(req) {        
-            req.onreadystatechange = function(){
-                mail(mail_id, mailbox);
-            };
-            req.open("GET", url, true);
-            req.send(null);
-        }
-}
-
-function mail(mail_id, mailbox) {
-    if (req.readyState === 4) {  
-        if (req.status === 200) {
-            if (req.responseText.length !== 1){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen
-                document.getElementById('mailbox').innerHTML = req.responseText;
-                if ($('li[name*='+mailbox+']').hasClass("active")){ //deactivate all active li tags
-                    $('li[name*='+mailbox+']').removeClass("active");
-                }
-                $('li[name='+mailbox+'_'+mail_id+']').addClass("active");
-            } else {
-                window.location.reload();
-            } 
-        }
-    }   
-}
-
 function loadhtml(dependency, id, source, target, source_width, target_width){
     document.getElementById(target).innerHTML = '<div class="box"><div class="box-header"><h3 class="box-title">Loading...</h3></div><div class="box-body"></div><div class="overlay"><i class="fa fa-refresh fa-spin"></i></div></div>';    
     var url = "../share/request/get_"+dependency+".php?id="+ id; 
@@ -173,90 +148,30 @@ function sethtml(dependency, id, source, target, source_width, target_width) {
 }
 
 
-function update_paginator(paginator){
-    if (req.readyState === 4) {  
-        if (req.status === 200) {
-            if (req.responseText.length !== 0){
-                $("[id^=row]").removeClass("bg-aqua");
-                $("[id^="+paginator+"_]").prop("checked", false);
-                response = JSON.parse(req.responseText);
-                if (typeof(response.length) === 'undefined'){
-                    document.getElementById('count_selection').innerHTML = 0; 
-                    $("[id^="+paginator+"_]").prop("checked", false);
-                    $("#p_unselect").prop("checked", false);
-                    $(document.getElementById("span_unselect")).removeClass("visible");
-                    $(document.getElementById("span_unselect")).addClass("hidden");
-                } else {
-                    document.getElementById('count_selection').innerHTML = response.length; 
-                    for (i = 0; i < response.length; i++) { 
-                        $("#"+paginator+"_"+response[i]).prop("checked", true);  
-                        $("#row"+response[i]).addClass("bg-aqua");
-                    }
-                    $(document.getElementById("span_unselect")).removeClass("hidden");
-                    $(document.getElementById("span_unselect")).addClass("visible");
-                }
-            }
-        }
-    }  
-}
-/**
- * 
- * @param {int} rowNr
- * @returns {undefined}
- */
-function checkrow(/*rowNr,link*/) {
-    paginator = arguments[1];
-    if (arguments.length >= 2) { 
-        var url = "../share/processors/p_config.php?func=paginator_checkrow&val="+ arguments[0] +"&paginator="+paginator+"&reset="+arguments[2];     
+function updatePaginator(response){
+    $("[id^=row]").removeClass("bg-aqua");
+    $("[id^="+response.paginator+"_]").prop("checked", false);
+    if (typeof(response.selection.length) === 'undefined'){
+        document.getElementById('count_selection').innerHTML = 0; 
+        $(document.getElementById("span_unselect")).removeClass("visible");
+        $(document.getElementById("span_unselect")).addClass("hidden");
     } else {
-        var url = "../share/processors/p_config.php?func=paginator_checkrow&val="+ arguments[0] +"&paginator="+paginator;
+        document.getElementById('count_selection').innerHTML = response.selection.length; 
+        for (i = 0; i < response.selection.length; i++) { 
+            $("#"+response.paginator+"_"+response.selection[i]).prop("checked", true);  
+            $("#row"+response.selection[i]).addClass("bg-aqua");
+        }
+        $(document.getElementById("span_unselect")).removeClass("hidden");
+        $(document.getElementById("span_unselect")).addClass("visible");
+        $("#"+response.paginator+"_"+response.val).prop("checked", true);  
     }
-
-    req = XMLobject();
-    if(req) {  
-        req.onreadystatechange = function(){
-            update_paginator(paginator);
-        };
-        req.open("GET", url, false); //false --> important for print function
-        req.send(null);
-    }
+     
+    $("#"+response.paginator+"_page").prop("checked", response.select_page);  
+    $("#"+response.paginator+"_all").prop("checked", response.select_all);  
+    $("#"+response.paginator+"_none").prop("checked", response.select_none);  
     
-    if (arguments.length === 4) { //reload with given url 
-        $(document).ajaxStart(function() { Pace.restart(); });
-        $("#curriculum_content").parent().load(arguments[3] + "&ajax=true #curriculum_content"); //.parent to replace #curriculum_content
-        $(document.getElementById("div_print_certificate")).removeClass("hidden");
-        //window.location.assign(arguments[3]);            //do not reload ! -> floting_table won't work
-    }
+    $('#'+response.replaceId).replaceWith(response.element); 
 }
-/*  Function without fixed layout
-function floating_table(wrapper, defaultTop, headerHeight, main_sidebar_class, paginator, field_array, target, source, default_position){
-    $("#"+wrapper).scroll(function(e) {
-            var scrollTop = $(e.target).scrollTop();
-            
-            if ((scrollTop > defaultTop) && (small === false)){
-                for(var i = 0, j = field_array.length; i < j; ++i) {
-                    $('td[name='+paginator+'_col_'+field_array[i]+']').addClass("hidden");
-                }
-                
-                $("#"+source).appendTo("#"+target);
-                $("#"+target).css({'background-color': '#ecf0f5', 'webkit-transform':'translate3d(0,0,0)'});
-                $('.'+main_sidebar_class).css({'top': scrollTop - headerHeight});
-                small    = true;
-            } 
-            if ((scrollTop > defaultTop) && (small === true)){
-                $('.'+main_sidebar_class).css({'top': scrollTop - headerHeight});
-            } 
-            
-            if ((scrollTop < defaultTop) && (small === true)){
-                small = false;
-                $("#"+source).appendTo("#"+default_position);
-                for(var i = 0, j = field_array.length; i < j; ++i) {
-                    $('td[name='+paginator+'_col_'+field_array[i]+']').removeClass("hidden");
-                }
-                $('.'+main_sidebar_class).css({'top': 0});
-            }
-        });
-}*/
 
 /* floating_table with fixed header */
 function findBottomPos(obj) {
@@ -404,16 +319,6 @@ function process(){
 
 /**
  * 
- * @param {string} URL
- * @param {string} target
- */
-function openLink(URL, target) {
-    if (URL !== ''){ //Sortiert "leere" Anfragen aus.
-        window.open(URL, target);
-    } 
-}
-/**
- * 
  * @param {string} ID
  * @param {boolean} checked
  */
@@ -425,115 +330,61 @@ function unmask(ID,checked){
     }
 }
 
-
-function hideFile() { //nach dem l\u00f6schen wird das thumbnail ausgeblendet
-    if (req.readyState === 4) {  
-        if (req.status === 200) {    
-           if (req.responseText.length !== 1){ //bei einem leeren responseText =1 ! wird das Fenster neu geladen
-                if (document.getElementById('thumb_'+arguments[0])) {
-                    document.getElementById('thumb_'+arguments[0]).style.display='none'; 
-                }
-           } else {
-               window.location.reload();
-           }
-        }
-    }   
-}
-
 function setStatusColor(ena_id, status){
-    red    = 'fa fa-circle-o';
-    green  = 'fa fa-circle-o';
-    orange = 'fa fa-circle-o';
-    white  = 'fa fa-circle-o';
     bg     = 'bg-white';
+    s_bit  = status.charAt(0); //Selbsteinschätzung
+    t_bit  = status.charAt(1); //Fremdeinschätzung
     
-    switch (true) {
-        case (status === 'x0'): red    = 'fa fa-check-circle-o';
-                                bg     = 'bg-red';
+    switch (true){
+        case (s_bit === '0'):   red    = '-circle';
+                                green  = orange = white = '-circle-o';
+                break;
+        case (s_bit === '1'):   green  = '-circle';
+                                red    = orange = white = '-circle-o';
             break;
-        case (status === '0x'): red  = 'fa fa-circle';
+        case (s_bit === '2'):   orange = '-circle';
+                                green  = red = white = '-circle-o';
             break;
-        case (status === '00'): red    = 'fa fa-check-circle';
-                                bg     = 'bg-red';
-            break;
-        case (status === '01'): red    = 'fa fa-circle';
-                                green  = 'fa fa-check-circle-o';
-                                bg     = 'bg-green';
-            break;
-        case (status === '02'): red    = 'fa fa-circle';
-                                orange  = 'fa fa-check-circle-o';
-                                bg     = 'bg-orange';
-            break;
-        case (status === '03'): red    = 'fa fa-circle';
-                                white  = 'fa fa-check-circle-o';
-                                bg     = 'bg-white';
-            break;
-        case  (status === 'x1'): green  = 'fa fa-check-circle-o';
-                                bg     = 'bg-green';
-            break;
-        case (status === '1x'): green  = 'fa fa-circle';
-            break;
-        case (status === '10'): red    = 'fa fa-check-circle-o';
-                                green  = 'fa fa-circle';
-                                bg     = 'bg-red';
-            break;
-        case (status === '11'): green  = 'fa fa-check-circle';
-                                bg     = 'bg-green';
-            break;
-        case (status === '12'): green  = 'fa fa-circle';
-                                orange = 'fa fa-check-circle-o';
-                                bg     = 'bg-orange';
-            break;
-        case (status === '13'): green  = 'fa fa-circle';
-                                white  = 'fa fa-check-circle-o';
-                                bg     = 'bg-white';
-            break;
-        case  (status === 'x2'): orange = 'fa fa-check-circle-o';
-                                bg     = 'bg-orange';
-            break;
-        case  (status === '2x'): orange = 'fa fa-circle';
-            break;
-        case (status === '20'): orange = 'fa fa-circle';
-                                red    = 'fa fa-check-circle-o';
-                                bg     = 'bg-red';
-            break;
-        case (status === '21'): orange = 'fa fa-circle';
-                                green  = 'fa fa-check-circle-o';
-                                bg     = 'bg-green';
-            break;
-        case (status === '22'): orange = 'fa fa-check-circle';
-                                bg     = 'bg-orange';
-            break;
-        case (status === '23'): orange = 'fa fa-circle';
-                                white  = 'fa fa-check-circle-o';
-                                bg     = 'bg-white';
-            break;
-        case (status ===  '3'): white  = 'fa fa-check-circle-o';
-            break;
-        case (status === '3x'): white  = 'fa fa-circle';
-            break;
-        case (status === 'x3'): white  = 'fa fa-check-circle-o';
-            break;
-        case (status === '30'): white  = 'fa fa-circle';
-                                red    = 'fa fa-check-circle-o';
-                                bg     = 'bg-red';
-            break;
-        case (status === '31'): white  = 'fa fa-circle';
-                                green  = 'fa fa-check-circle-o';
-                                bg     = 'bg-green';
-            break;
-        case (status === '32'): white  = 'fa fa-circle';
-                                orange = 'fa fa-check-circle-o';
-                                bg     = 'bg-orange';
-            break;
-        case (status === '33'): white  = 'fa fa-check-circle';
-                                bg     = 'bg-white';
+        case (s_bit === '3'):   white  = '-circle';
+                                green  = red = orange = '-circle-o';
             break;
 
-        default:
+        default:                green = red = orange = white ='-circle-o';
             break;
     }
+    
+    switch (true) { //Teacher Part of status (second char)
+        case (t_bit === '0'):   red      = 'fa fa-check'+red;
+                                green    = 'fa fa'+green;
+                                orange   = 'fa fa'+orange;
+                                white    = 'fa fa'+white;
+                                bg     = 'bg-red';
+            break;
+        case (t_bit === '1'):   green    = 'fa fa-check'+green;
+                                red      = 'fa fa'+red;
+                                orange   = 'fa fa'+orange;
+                                white    = 'fa fa'+white;
+                                bg       = 'bg-green';
+            break;
+        case (t_bit === '2'):   orange   = 'fa fa-check'+orange;
+                                red      =  'fa fa'+red;
+                                green    =  'fa fa'+green;
+                                white    =  'fa fa'+white;
+                                bg     = 'bg-orange';
+            break;
+        case (t_bit === '3'):   white    = 'fa fa-check'+white;
+                                red      =  'fa fa'+red;
+                                green    =  'fa fa'+green;
+                                orange   =  'fa fa'+orange;  
+                                bg     = 'bg-white';
+            break;
 
+         default:               red      =  'fa fa'+red;
+                                green    =  'fa fa'+green;
+                                orange   =  'fa fa'+orange;
+                                white    =  'fa fa'+white;
+            break;
+    }
     document.getElementById(ena_id+"_green").className  = 'margin-r-5 '+green+' text-green pointer_hand';
     document.getElementById(ena_id+"_orange").className = 'margin-r-5 '+orange+' text-orange pointer_hand';
     document.getElementById(ena_id+"_white").className  = 'margin-r-5 '+white+' text-gray pointer_hand';
@@ -541,21 +392,6 @@ function setStatusColor(ena_id, status){
     $(document.getElementById("ena_header_"+ena_id)).alterClass('bg-*', 'bg-'+status);
 }
 
-
-//SetAccomplishedObjectives
-function setAccomplishedObjectives(creatorID, userID, enablingObjectiveID, statusID){       
-    var url = "../share/processors/p_setAccObjectives.php?userID="+ userID +"&creatorID="+ creatorID +"&enablingObjectiveID="+ enablingObjectiveID+"&statusID="+statusID;
-    req = XMLobject();
-    if(req) {        
-        req.onreadystatechange = function (){
-            if (req.readyState===4 && req.status===200){
-                setStatusColor(enablingObjectiveID, statusID);
-            }
-        };
-        req.open("GET", url, true);
-        req.send(null);
-    }
-}
 /**
  * 
  * @param {string} url
@@ -570,10 +406,6 @@ function getRequest(url){
         req.setRequestHeader('Content-Type', 'application/json; charset=utf-8'); //Kann Meldung "Automatically populating $HTTP_RAW_POST_DATA is deprecated " in der Konsole erzeugen: Loesung: always_populate_raw_post_data = -1 //in der php.ini auf -1 setzen. 
         req.send();
     }   
-}
-
-function curriculumdocs(link) {
-    window.open(link, '_blank', '')
 }
 
 /*
@@ -595,12 +427,22 @@ function formloader(/*form, func, id, []*/){
 }
 
 function processor(/*proc, func, val, [..., reload = false], pluginpath*/){ // if reload = false: prevent reload
-    reload = true;
+    if (arguments[0] === 'delete'){
+        if (!confirm("Datensatz wirklich l\u00f6schen?")) {
+            return;
+        } 
+    }
+    reload   = true;
+    callback = false;
+    id       = arguments[2];
     if (typeof(arguments[3]) !== 'undefined'){
         if(typeof(arguments[3].reload) !== 'undefined'){ //don't reload
             var boolValue = "true";                      //hack to get boolean
             reload = (boolValue == arguments[3].reload); //hack to get boolean
         }// else not needed ->reload already set.
+        if(typeof(arguments[3].callback) !== 'undefined'){ 
+            callback = arguments[3].callback; 
+        }
     } 
     
     if (typeof(arguments[4]) !== 'undefined'){
@@ -616,7 +458,21 @@ function processor(/*proc, func, val, [..., reload = false], pluginpath*/){ // i
             if(this.readyState == this.DONE) {
                 if (reload == true){
                     window.location.reload();
-                } 
+                } else if (isset(callback)){
+                    response = JSON.parse(req.responseText);
+                    switch (callback){
+                        case 'innerHTML': innerHTML(response);
+                            break;
+                        case 'setElementById':
+                                    setStatusColor(id, response.status);
+                            break;
+                        case 'replaceElementByID':
+                                    replaceElementByID(response);
+                            break;
+                        default: 
+                            break;                            
+                    }    
+                }
             }
         }
     }
@@ -624,91 +480,31 @@ function processor(/*proc, func, val, [..., reload = false], pluginpath*/){ // i
     req.send(null);
 }
 
-function comment(/*func reference_id, context_id, text, (parent_id)*/){
-    if (typeof(arguments[4]) !== 'undefined'){
-        var url = "../share/processors/p_comment.php?func="+ arguments[0] +"&ref_id="+ arguments[1] + "&context_id=" + arguments[2] + "&text=" + arguments[3] +  "&parent_id=" + arguments[4];
-    } else {
-        var url = "../share/processors/p_comment.php?func="+ arguments[0] +"&ref_id="+ arguments[1] + "&context_id=" + arguments[2] + "&text=" + arguments[3];
-    }
-    req = XMLobject();
-    if(req) {  
-        req.onreadystatechange =  window.location.reload();
-        req.open("GET", url, false); //false --> important for print function
-        req.send(null);
-    }
-}
-/**
- * delete a dataset in a db-table
- **/
-function del() {
-    if (confirm("Datensatz wirklich l\u00f6schen?")) {
-        if (typeof(arguments[2]) !== 'undefined'){
-            var url = "../share/processors/p_delete.php?db="+arguments[0]+"&id="+ arguments[1]+"&ref_id="+ arguments[2];
-    } else {
-            var url = "../share/processors/p_delete.php?db="+arguments[0]+"&id="+ arguments[1];
-    }
-        
-        req = XMLobject();
-        if(req) {      
-            if (arguments[0] === 'message'){                                                    // Mail aus Liste entfernen und geloeschte Mail ausblenden
-              document.getElementById(arguments[2]+'_'+arguments[1]).style.display='none';
-              document.getElementById('mailbox').style.display='none';
-            } else if (arguments[0] === 'file'){
-                var id = arguments[1];
-                req.onreadystatechange = function(){
-                    hideFile(id);
-                };
-            } else {
-               req.onreadystatechange = process; //Dialog mit Meldungen zeigen 
-               //Reload erfolgt ueber Submit des Popups req.onreadystatechange = reloadPage; //window.location.reload() wichtig, damit Aenderungen angezeigt werden
-            }
-            req.open("GET", url, true);
-            req.send(null);
+function innerHTML(response){ //if callback == innerHTML is set, innerHTML of response.id is set
+    document.getElementById(response.id).innerHTML = response.html;
+    if(typeof(response.mailbox) !== 'undefined'){ 
+        if ($('li[name*='+response.mailbox+']').hasClass("active")){ //deactivate all active li tags
+            $('li[name*='+response.mailbox+']').removeClass("active");
         }
+        $('li[name='+response.mail_id+']').addClass("active");
     }
 }
 
-function removeMaterial(){
-    if (confirm("Datei wirklich l\u00f6schen?")) {
-        var url     = "../share/request/deleteFile.php?fileID="+ arguments[0];         //Link unterscheidet sich von den anderen Funktionen, da diese Funktion ((nur)vom upload_frame aufgerufen wird
-        var fileID  = arguments[0];
-        req         = XMLobject();
-        if(req) {        
-            req.onreadystatechange = function(){
-                    hideFile(fileID);
-                };
-            req.open("GET", url, true);
-            req.send(null);
+
+function replaceElementByID(response){
+    if(typeof(response.func) !== 'undefined'){ 
+        switch (response.func){
+            case 'fadeOut': $('#'+response.replaceId).fadeOut("fast");
+                break;
+            case 'fadeIn':  $('#'+response.replaceId).replaceWith(response.element);  
+                break;
+            case 'updatePaginator': updatePaginator(response);
+                break;
+            default:        
+                break;
         }
-    }
-}
-
-function deleteFile() {
-    if (confirm("Datei wirklich l\u00f6schen?")) {
-        var url     = "deleteFile.php?fileID="+ arguments[0];         //Link unterscheidet sich von den anderen Funktionen, da diese Funktion ((nur)vom upload_frame aufgerufen wird
-        var fileID  = arguments[0];
-        req         = XMLobject();
-        if(req) {        
-            req.onreadystatechange = function(){
-                    hideFile(fileID);
-                };
-            req.open("GET", url, true);
-            req.send(null);
-        }
-    }
-}
-
-function expelUser() {
-    if (confirm("Benutzer wirklich aus der Lerngruppe ausschreiben?")) {
-        var url     = "../share/request/expelUser.php?groupsID="+ arguments[0] +"&userID="+ arguments[1]; 
-        getRequest(url);
-    }
-}
-
-function expelFromInstituion() {
-    if (confirm("Benutzer wirklich aus der Institution ausschreiben?")) { 
-        var url     = "../share/request/expelFromInstitution.php?institutionID="+ arguments[0] +"&userID="+ arguments[1]; 
-        getRequest(url);
+    } else{
+        $('#'+response.replaceId).replaceWith(response.element);
     }
 }
 
@@ -777,36 +573,6 @@ function checkbox_addForm(){//arguments checked, style, id, invers_id -> if chec
     }
 }
 
-function hideMaterial(){
-    document.getElementById('popup').style.visibility='hidden';
-}
-
-function checkPaginatorRow(paginatorName, rowNr) {
-    var ch = document.getElementById(paginatorName+''+rowNr);
-    if(ch) {
-        if (ch.checked === false){
-            ch.checked = true;
-            document.getElementById('row'+rowNr).className = 'activecontenttablerow';
-        } else {
-            ch.checked = false;
-            document.getElementById('row'+rowNr).className = 'contenttablerow';
-        }  
-    }
-}
-
-//Fileuploadframe ausblenden
-function hideUploadframe(){
-       document.getElementById('uploadframe').style.display = 'none';
-}
-
-function confirmDialog(text) {
-    if (confirm(text)){
-        return true; 
-    } else {
-        return false;
-    }
-}
-
 //icon function
 function showSubjectIcon(path, icon){
     document.getElementById('icon_img').style.background =  "url('"+path+icon+"') center center";
@@ -820,16 +586,6 @@ function sendForm(form_id, file){
     });
     return false;           
     
-}
-
-function updateFileHits(){
-    var url = "../share/request/updateFileHits.php?fileID="+ arguments[0];
-
-    req = XMLobject();
-    if(req) {        
-            req.open("GET", url, true);
-            req.send(null);
-        }  
 }
 
 function resizeModal(){
@@ -858,32 +614,26 @@ function popupFunction(e){
     
     textareas = document.getElementsByTagName("textarea");                      // Replace the <textarea id="editor1"> with a CKEditor instance, using default configuration
     for (var i = 0, len = textareas.length; i < len; i++) {
-        CKEDITOR.dtd.$removeEmpty['i'] = false;
-        if (i == 0){                                                            // only collapse first editor -> description editors sould show toolbar
-            CKEDITOR.replace(textareas[i].id, { toolbarStartupExpanded : false});
+        if ($("#"+textareas[i].id).hasClass("no_editor")){
+         //do nothing
         } else {
-            CKEDITOR.replace(textareas[i].id, { toolbarStartupExpanded : true});
+            CKEDITOR.dtd.$removeEmpty['i'] = false;
+            if (i == 0){                                                            // only collapse first editor -> description editors sould show toolbar
+                CKEDITOR.replace(textareas[i].id, { toolbarStartupExpanded : false});
+            } else {
+                CKEDITOR.replace(textareas[i].id, { toolbarStartupExpanded : true});
+            }
+            CKEDITOR.on('instanceReady',function(){
+                resizeModal();      // if ckeditor is used, then modal has to be resized after ckeditor is ready
+            }); 
         }
-        CKEDITOR.on('instanceReady',function(){
-            resizeModal();      // if ckeditor is used, then modal has to be resized after ckeditor is ready
-        }); 
     }
     $(".select2").select2();
     
     $('button[data-toggle="collapse"]').click(function () {
         $(this).find('i.fa').toggleClass('fa-compress fa-expand');
     });
-    
-    /*var config = {
-      '.chosen-select'           : {},
-      '.chosen-select-deselect'  : {allow_single_deselect:true},
-      '.chosen-select-no-single' : {disable_search_threshold:10},
-      '.chosen-select-no-results': {no_results_text:'Keine Treffer!'},
-      '.chosen-select-width'     : {width:"95%"}
-    };
-    for (var selector in config) {
-        $(selector).chosen(config[selector]);
-    }*/  
+
     /*close popup when clicking outside modal*/
     $(function() {
         $("body").click(function(e) {

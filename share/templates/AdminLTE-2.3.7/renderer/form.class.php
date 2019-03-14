@@ -111,7 +111,7 @@ class Form {
         return self::form_group($id, $form, $label, $error, $class_left, $class_right);
     }
     
-    public static function input_switch($id, $label, $input, $error, $show_id = false, $class_left='col-sm-3', $class_right='col-sm-9'){
+    public static function input_switch($id, $label, $input, $error, $show_id = false, $class_left='col-sm-3', $class_right='col-sm-9', $onchange = ''){
         $form = '<div id="'.$id.'_form_group" class="form-group '.validate_msg($error, $id, true).'">
                   <label class="control-label '.$class_left.'" for="'.$id.'">'.$label;
         if ($show_id){
@@ -124,7 +124,9 @@ class Form {
                 } else {
                     $form .= ' value="false" ';
                 }
-                $form .= ' onclick="switchValue(\''.$id.'\');"/>
+                $form .= ' onclick="switchValue(\''.$id.'\');" ';
+                $form .= "onchange='{$onchange}'";
+                $form .= '/>
                  <label for="'.$id.'" class="checkbox-label" data-off="nicht erlaubt" data-on="erlaubt"></label>'; 
         $form .= '</div></div>';  
 
@@ -238,9 +240,9 @@ class Form {
             $$key = $val;
         }
         switch ($type) {
-            case 'date':    $icon .= 'fa-calendar'; break;
-            case 'time':    $icon .= 'fa-clock-o';  break;
-            default:        $icon .= 'fa-calendar'; break;
+            case 'date':    $icon = 'fa-calendar'; break;
+            case 'time':    $icon = 'fa-clock-o';  break;
+            default:        $icon = 'fa-calendar'; break;
         }
         
         $form = "<div class='input-group'>
@@ -406,7 +408,7 @@ class Form {
             $html .= '<button class="btn btn-box-tool"><a href="'.$url.'" target="_blank"><i class="fa fa-download"></i></a></button>';
         }
         if (isset($delete)){
-            $html .= '<button class="btn btn-box-tool" onclick="removeMaterial('.$id.')"><i class="fa fa-trash"></i></button>';
+            $html .= '<button class="btn btn-box-tool" onclick="processor(\'delete\', \'file\', '.$id.', { \'reload\': \'false\', \'callback\': \'replaceElementByID\', \'element_Id\': \'material_'.$id.'\'});"><i class="fa fa-trash"></i></button>';
         }
         $html .= '</div>';
         $html .= '<span class="info-box-text">';
@@ -426,12 +428,16 @@ class Form {
     }
     
     private static function form_group($id, $content, $label = '', $e = null, $css_l = 'col-sm-3', $css_r = 'col-sm-9') {
-        $form =  "<div id='{$id}_form_group' class='form-group ".validate_msg($e, $id, true)."'>";
-        if ($css_l != ''){ // if left class is empty no label is set
-            $form .= "<label class='control-label {$css_l}' for='{$id}'>{$label}</label>";
-        }
-        $form .= "<div class='{$css_r}'>".validate_msg($e, $id)."{$content}</div></div>";
-        return $form;        
+        if ($css_l == '' AND $css_r = ''){
+            return $content; //nur das Input-Element wird ausgegeben.
+        } else {
+            $form =  "<div id='{$id}_form_group' class='form-group ".validate_msg($e, $id, true)."'>";
+            if ($css_l != ''){ // if left class is empty no label is set
+                $form .= "<label class='control-label {$css_l}' for='{$id}'>{$label}</label>";
+            }
+            $form .= "<div class='{$css_r}'>".validate_msg($e, $id)."{$content}</div></div>";
+            return $form; 
+        }    
     }
     
 }

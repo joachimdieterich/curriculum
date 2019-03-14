@@ -78,7 +78,7 @@ class Reference {
             foreach ($result as $key => $value) {
                 $this->$key  = $value; 
             }
-            $this->grade = $_SESSION['GRADE'][$this->grade_id]->grade;
+            
             switch ($this->context_id) {
                 case $_SESSION['CONTEXT']['terminal_objective']->context_id:
                     $t                          = new TerminalObjective();
@@ -197,6 +197,7 @@ class Reference {
         $db->execute(array($context_id, $id));
         $r  = array();
         while($result = $db->fetchObject()) { 
+            
             $this->load('id',        $result->id); 
             //$this->load('unique_id', $this->unique_id); //load entry with matching unique_id
             if (($this->file_context == 1)||($USER->id == $this->creator_id)){

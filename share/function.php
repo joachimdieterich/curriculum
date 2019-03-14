@@ -125,7 +125,7 @@ function setPaginator($instance, $data, $returnVar, $currentURL, $config = false
             SmartyPaginate::setLimit(filter_input(INPUT_GET, 'paginator_limit', FILTER_UNSAFE_RAW), filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW));
         } 
     }*/
-    $SmartyPaginate->setLimit($USER->paginator_limit, $instance); //get paginator_limit from USER
+    $SmartyPaginate->setLimit($_SESSION['USER']->paginator_limit, $instance); //get paginator_limit from USER
     $SmartyPaginate->setUrl($currentURL, $instance);
     $SmartyPaginate->setWidth($width, $instance);
     $SmartyPaginate->setUrlVar($instance, $instance);
@@ -134,8 +134,9 @@ function setPaginator($instance, $data, $returnVar, $currentURL, $config = false
     $SmartyPaginate->setFirstText('Anfang',$instance);
     $SmartyPaginate->setLastText('Ende',$instance);    
     if ($data){
-        $SmartyPaginate->setTotal(count($data), $instance);
-        if ($SmartyPaginate->getCurrentIndex($instance) >= count($data)){ //resets paginators current index (if data was deleted)
+        //$SmartyPaginate->setTotal(count($data), $instance);
+        //if ($SmartyPaginate->getCurrentIndex($instance) >= count($data)){ //resets paginators current index (if data was deleted)
+        if ($SmartyPaginate->getCurrentIndex($instance) >= $_SESSION['SmartyPaginate'][$instance]['item_total']){ //resets paginators current index (if data was deleted)
             $SmartyPaginate->setCurrentItem(1, $instance); 
         }
         /* get all ids*/
@@ -144,13 +145,13 @@ function setPaginator($instance, $data, $returnVar, $currentURL, $config = false
         SmartyPaginate::setSelectAll($all, $instance);    //set all ids of data to paginator selectall
         
         $TEMPLATE->assign($returnVar, array_slice($data, $SmartyPaginate->getCurrentIndex($instance), $SmartyPaginate->getLimit($instance)), $instance); //hack for message paginator
-        SmartyPaginate::setData(array_slice($data, $SmartyPaginate->getCurrentIndex($instance), $SmartyPaginate->getLimit($instance)), $instance);
+        SmartyPaginate::setData($data, $instance);
         SmartyPaginate::setConfig($config, $instance); // set config
     } else {
         SmartyPaginate::setData(null,$instance);
     }
     
-    $TEMPLATE->assign('currentUrlId', $SmartyPaginate->getCurrentIndex($instance)+1); 
+    //$TEMPLATE->assign('currentUrlId', $SmartyPaginate->getCurrentIndex($instance)+1); //paginator benutzt keine url mehr
     $SmartyPaginate->assign($TEMPLATE, $instance, $instance);
 }
 
@@ -171,35 +172,73 @@ function resetPaginator($instance){  //resets Paginator to index 1
  * @param table array table shortcuts
  * @return string
  */
-function orderPaginator($instance, $table=null){
-    //error_log(json_encode(SmartyPaginate::_getSearchField($instance)));
+function orderPaginator($instance, $table=null, $id = 'id'){
+    $SmartyPaginate         = new SmartyPaginate(); 
+    $SmartyPaginate->connect($instance);
+    $SmartyPaginate->setLimit($_SESSION['USER']->paginator_limit, $instance); //get paginator_limit from USER
+    //error_log(json_encode($_SESSION['SmartyPaginate'][$instance]));
     if ($table AND is_array(SmartyPaginate::_getSearchField($instance))){
-        $search = ' AND (';
-        $fields = SmartyPaginate::_getSearchField($instance);
-        for ($i = 0; $i < count($fields); $i++) {           // generates sql search query based on field array
-            $t       = $table[$fields[$i]]; //get proper table shortcut
-            $search .= $t.'.'.$fields[$i].' LIKE \'%'.SmartyPaginate::_getSearch($instance).'%\' ';
-            if ($i+1 != count($fields)){
-                $search .= 'OR ';
-            } else {
-                $search .= ')';
+        if (SmartyPaginate::_getSearch($instance) != null){
+            $search = ' AND (';
+            $fields = SmartyPaginate::_getSearchField($instance);
+            for ($i = 0; $i < count($fields); $i++) {           // generates sql search query based on field array
+                $t       = $table[$fields[$i]]; //get proper table shortcut
+
+                $search .= $t.'.'.$fields[$i].' LIKE \'%'.SmartyPaginate::_getSearch($instance).'%\' ';
+                if ($i+1 != count($fields)){
+                    $search .= 'OR ';
+                } else {
+                    $search .= ')';
+                }
             }
-        } 
+        } else {
+            $search = ''; //if no search is set, set default to get shorter query
+        }
         $order  = SmartyPaginate::_getOrder($instance);
         
         if ($order != '' AND isset($table[$order])) {
             $order = ' ORDER BY '. $table[$order].'.'.$order; 
         } else {
-            $order = ' ORDER BY id'.$order; //hack to prevent blank pages if $table[$order !isset]
+            $order = ' ORDER BY '.$id.$order; //hack to prevent blank pages if $table[$order !isset]
         }
+        $limit  = SmartyPaginate::getLimit($instance);
+        if ($limit != false) {
+            if (((int)$_SESSION['SmartyPaginate'][$instance]['current_item'] - 1) < 0){ // -1 would return all table entries
+                $begin = 0;
+            } else {
+                $begin = ((int)$_SESSION['SmartyPaginate'][$instance]['current_item'] - 1);
+            }
+            $limit = " LIMIT " . $begin . ", ".$limit; 
+        } else {
+            $limit = '';
+        }
+        //error_log($limit);
         $sort   = SmartyPaginate::getSort('sort', $instance) ;
         
-        return $search.' '.$order.' '.$sort;      
-    } else {
-       return '';
+        return $search.' '.$order.' '.$sort.' '.$limit;      
+    } else { //if Paginator is not set yet get set Limit
+        $limit  = SmartyPaginate::getLimit($instance);
+        if ($limit != false) {
+            if (((int)$_SESSION['SmartyPaginate'][$instance]['current_item'] - 1) < 0){ // -1 would return all table entries
+                $begin = 0;
+            } else {
+                $begin = ((int)$_SESSION['SmartyPaginate'][$instance]['current_item'] - 1);
+            }
+            $limit = " LIMIT " . $begin . ", ".$limit; 
+        } else {
+            $limit = '';
+        }
+        return " ".$limit;
     }
 }
 
+
+function set_item_total($paginator){
+    $dbc     = DB::prepare('SELECT FOUND_ROWS()');
+    $dbc->execute(array());
+    
+    $_SESSION['SmartyPaginate'][$paginator]['item_total'] = $dbc->fetchColumn(); 
+}
 
 
 function removeUrlParameter($url, $param) {

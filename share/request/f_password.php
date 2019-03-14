@@ -67,11 +67,8 @@ if (isset($_SESSION['FORM'])){
     }
 }
 
-$content = '<form id="form_password"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_password.php"';
-
-if (isset($currentUrlId)){ $content .= $currentUrlId; }
-$content .= '"><input type="hidden" name="func" id="func" value="'.$func.'"/>';
-
+$content = '<form id="form_password"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_password.php">
+            <input type="hidden" name="func" id="func" value="'.$func.'"/>';
 if (isset($info)){
     $content .= Form::info(array('id' => 'p_rule', 'content' => 'Ihr Kennwort wurde neu angelegt bzw. zurückgesetzt. Bitte ändern Sie daher das Kennwort um unbefugten Zugriff auf Ihre Daten zu vermeiden.'));
 }
