@@ -82,11 +82,12 @@ if (isset($id)){
 }
 $content .= '<input type="hidden" name="func" id="func" value="'.$func.'"/>';
 $content .= Form::input_text('group', 'Lerngruppe', $group, $error);
-$content .= Form::input_text('description', 'Beschreibung', $description, $error);        
-$content .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'institution_id', $institution_id , $error, 'getMultipleValues([\'semester\', this.value, \'semester_id\'], [\'grade\', this.value, \'grade_id\']);');
+$content .= Form::input_text('description', 'Beschreibung', $description, $error);   
 if ($institution_id == null){
-    $institution_id = reset($USER->institutions)->institution_id; //get id of first institution to load proper semesterlist
+    $institution_id = $USER->institution_id; //get id of first institution to load proper semesterlist
 }
+$content .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'id', $institution_id , $error, 'getMultipleValues([\'semester\', this.value, \'semester_id\'], [\'grade\', this.value, \'grade_id\']);');
+
 $semesters                  = new Semester();  //Load Semesters
 $semesters->institution_id  = $institution_id;
 $content .= Form::input_select('semester_id', 'Lernzeitraum', $semesters->getSemesters('institution',$institution_id), 'semester', 'id', $semester_id , $error);
