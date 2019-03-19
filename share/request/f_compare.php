@@ -69,19 +69,20 @@ if (isset($ena->enabling_objective)){
                     );
     rsort($order);
     
+    //error_log(json_encode($order));
     //User-Solutions laden
-    $user_id_list = array();
-    foreach ($order as $key => $value) {
-        if (is_array($$value['var'])){
-            foreach($$value['var'] AS $v) {
-                $user_id_list[] = $v->user_id;
-            }
-        }
-    }
+//    $user_id_list = array();
+//    foreach ($order as $key => $value) {
+//        if (is_array($$value['var'])){
+//            foreach($$value['var'] AS $v) {
+//                $user_id_list[] = $v->user_id;
+//            }
+//        }
+//    }
     
     $files     = new File(); 
     $content  .= Render::compare_list(array('order'     => $order,
-                                            'solutions' => $files->getSolutions('objective', $user_id_list, $ena->id),
+                                            //'solutions' => $files->getSolutions('objective', $user_id_list, $ena->id),
                                             'acc_0'     => $acc_0,
                                             'acc_1'     => $acc_1,
                                             'acc_2'     => $acc_2,
