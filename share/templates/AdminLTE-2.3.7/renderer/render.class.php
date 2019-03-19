@@ -1361,6 +1361,56 @@ class Render {
             }
         }
     }
+
+    public static function supporter_block($params){ 
+        global $USER,$CFG;
+        $width  = '';//'col-md-4';
+        $status = '';
+        foreach($params['blockdata'] as $key => $val) {
+            $$key = $val;
+        }
+        $ins        = new Institution();
+        $ins->id    = $USER->institution_id;
+        $ins->load('id', null, true);
+        if ($USER->role_id === $role_id OR $role_id == $CFG->settings->standard_role){
+            $html  = '<div id="block_instance_'.$id.'" class="'.$width.' sortable">
+                        <div class="box '.$status.' bottom-buffer-20">
+                            <div class="box-header with-border">
+                                  <h3 class="box-title">'.$name.'</h3>
+                                  <div class="box-tools pull-right">';
+                                    if (checkCapabilities('block:add', $USER->role_id, false)){
+                                        $html  .= '<button class="btn btn-box-tool" data-widget="edit" onclick="formloader(\'block\',\'edit\','.$id.');"><i class="fa fa-edit"></i></button>';
+                                    }
+                                    $html  .= '<button class="btn btn-box-tool" data-widget="collapse" onclick="processor(\'config\',\'collapse\', '.$id.');">';
+                                        if ($status == ''){
+                                            $html  .= '<i class="fa fa-compress"></i></button>';
+                                        } else {
+                                            $html  .= '<i class="fa fa-expand"></i></button>';
+                                        }
+                                    $html  .= '<button class="btn btn-box-tool" data-widget="remove" onclick="processor(\'config\',\'remove\', '.$id.');"><i class="fa fa-times"></i></button>
+                                  </div>
+                            </div><!-- /.box-header -->
+                            <div class="box-body">
+                                <ul class="users-list clearfix">';
+                                    foreach($ins->support_user_ids AS $supporter){
+                                        $u  = new User();
+                                        $u->load('id', $supporter, false);
+                                        $html .='<li>
+                                                    <img src="'.$CFG->access_file.$u->avatar.'" alt="User Image">
+                                                    <a class="users-list-name" href="#" onclick="formloader(\'mail\', \'gethelp\', '.$u->id.');">'.$u->lastname.'
+                                                    <span class="users-list-date" >Kontakt</span></a>
+                                                 </li>';
+                                        //$html .= json_encode($supporter);
+                                    }
+               $html .=    '</ul></div>
+                        </div>
+                   </div>';
+
+            if ($visible == 1){
+                return $html; 
+            }
+        }
+    }
     public static function event_block($params){ 
         global $USER,$CFG;
         $width  = '';//'col-md-4';
@@ -2176,8 +2226,8 @@ class Render {
                             $html .= '</div>
                             <div class="box-footer no-padding">
                                 <ul class="nav nav-stacked">';
-                                if (isset($$value['var'])){
-                                    foreach($$value['var'] AS $v) {
+                                if (isset($value['var'])){
+                                    foreach(${$value['var']} AS $v) {
                                         $user     = new User();
                                         $html .= '<li><a href="#">'.$user->resolveUserId($v->user_id);
 
