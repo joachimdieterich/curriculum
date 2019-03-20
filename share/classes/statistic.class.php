@@ -212,7 +212,7 @@ class Statistic {
             case 'curriculum':  $node_l3 = new Node();
                                 $size_l3 = 1000;
                                 $cur = new Curriculum();
-                                $curriculum = $cur->getCurricula('user');
+                                $curriculum = $cur->getCurricula('user', null);
                                 //topLevel
                                 $node_l0->name        = $CFG->app_title;
                                 $node_l0->parentName  = 'A';
@@ -319,7 +319,7 @@ class Statistic {
         $size_l1 = 200;
       
         $cur = new Curriculum();
-        $curriculum = $cur->getCurricula('user');
+        $curriculum = $cur->getCurricula('user', null);
         //topLevel
         $node_l0->name        = $CFG->app_title;
         $node_l0->parentName  = 'A';
