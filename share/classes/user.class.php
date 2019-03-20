@@ -1009,35 +1009,39 @@ class User {
      * If User isn't enroled in any curriculum, return is false
      * @return array of object | boolean 
      */
-    public function getCurricula($paginator = '') {
-        $order_param = orderPaginator($paginator);
-        $db = DB::prepare('SELECT DISTINCT SQL_CALC_FOUND_ROWS cu.id, cu.curriculum, cu.description, fl.filename, su.subject, gr.grade, sc.schooltype, st.state, co.de
-                            FROM curriculum AS cu, groups_enrolments AS ce, curriculum_enrolments AS cure, files AS fl, subjects AS su, grade AS gr, schooltype AS sc, state AS st, countries AS co
-                            WHERE cu.icon_id = fl.id
-                            AND cu.id = cure.curriculum_id
-                            AND cure.group_id = ce.group_id
-                            AND cu.grade_id = gr.id
-                            AND cu.subject_id = su.id
-                            AND cu.schooltype_id = sc.id
-                            AND cu.state_id = st.id
-                            AND cu.country_id = co.id
-                            AND ce.user_id = ?
-                            AND ce.status = 1
-                            '.$order_param);
-        $db->execute(array($this->id));
-
-        while($result = $db->fetchObject()) { 
-                $curricula[] = $result; 
-        } 
-        if ($paginator != ''){ 
-             set_item_total($paginator); //set item total based on FOUND ROWS()
-        }        
-        if (isset($curricula)) {
-            return $curricula;      
-        } else {
-            return false; 
-        }
-    }
+//    public function getCurricula($paginator = '', $order = true) {
+//        if ($order == true){
+//            $order_param = orderPaginator($paginator);
+//        } else {
+//            $order_param = '';    
+//        }
+//        $db = DB::prepare('SELECT DISTINCT SQL_CALC_FOUND_ROWS cu.id, cu.curriculum, cu.description, fl.filename, su.subject, gr.grade, sc.schooltype, st.state, co.de
+//                            FROM curriculum AS cu, groups_enrolments AS ce, curriculum_enrolments AS cure, files AS fl, subjects AS su, grade AS gr, schooltype AS sc, state AS st, countries AS co
+//                            WHERE cu.icon_id = fl.id
+//                            AND cu.id = cure.curriculum_id
+//                            AND cure.group_id = ce.group_id
+//                            AND cu.grade_id = gr.id
+//                            AND cu.subject_id = su.id
+//                            AND cu.schooltype_id = sc.id
+//                            AND cu.state_id = st.id
+//                            AND cu.country_id = co.id
+//                            AND ce.user_id = ?
+//                            AND ce.status = 1
+//                            '.$order_param);
+//        $db->execute(array($this->id));
+//
+//        while($result = $db->fetchObject()) { 
+//                $curricula[] = $result; 
+//        } 
+//        if ($paginator != ''){ 
+//             set_item_total($paginator); //set item total based on FOUND ROWS()
+//        }        
+//        if (isset($curricula)) {
+//            return $curricula;      
+//        } else {
+//            return false; 
+//        }
+//    }
     
     /**
      * get groups of current user
