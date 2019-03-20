@@ -245,7 +245,7 @@ class Curriculum {
      * @param int $id
      * @return array of curriculum objects  
      */
-    public function getCurricula($dependency = null, $id = null, $paginator = '', $order = true){
+    public function getCurricula($dependency = null, $id = null, $paginator = ''){
         global $USER;
         //if ($order == true){
             $order_param = orderPaginator($paginator, array('id' => 'cu',
