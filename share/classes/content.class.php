@@ -140,7 +140,7 @@ class Content {
                                                         WHERE  co.context = ?
                                                         AND co.context_id = cts.context_id
                                                         AND cts.content_id = ct.id');
-                                if ($id == null) { $id = terms;}
+                                if ($id == null) { $id = 'terms';}
                                 $db->execute(array($id));
                 break;
             case 'solution': $db = DB::prepare('SELECT ct.*, cts.context_id, cts.reference_id, cts.file_context FROM content AS ct, content_subscriptions AS cts, context AS co
