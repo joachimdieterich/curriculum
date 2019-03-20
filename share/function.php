@@ -217,18 +217,19 @@ function orderPaginator($instance, $table=null, $id = 'id'){
         
         return $search.' '.$order.' '.$sort.' '.$limit;      
     } else { //if Paginator is not set yet get set Limit
-        $limit  = SmartyPaginate::getLimit($instance);
-        if ($limit != false) {
-            if (((int)$_SESSION['SmartyPaginate'][$instance]['current_item'] - 1) < 0){ // -1 would return all table entries
-                $begin = 0;
-            } else {
-                $begin = ((int)$_SESSION['SmartyPaginate'][$instance]['current_item'] - 1);
-            }
-            $limit = " LIMIT " . $begin . ", ".$limit; 
-        } else {
-            $limit = '';
-        }
-        return " ".$limit;
+//        $limit  = SmartyPaginate::getLimit($instance);
+//        if ($limit != false) {
+//            if (((int)$_SESSION['SmartyPaginate'][$instance]['current_item'] - 1) < 0){ // -1 would return all table entries
+//                $begin = 0;
+//            } else {
+//                $begin = ((int)$_SESSION['SmartyPaginate'][$instance]['current_item'] - 1);
+//            }
+//            $limit = " LIMIT " . $begin . ", ".$limit; 
+//        } else {
+//            $limit = '';
+//        }
+//        return " ".$limit;
+        return ""; 
     }
 }
 
