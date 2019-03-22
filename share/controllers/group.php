@@ -33,35 +33,35 @@ $curriculum         = new Curriculum();
 
 if($_POST ){ 
     $group = new Group();
-    switch ($_POST) {
-        case isset($_POST['enrol']): 
-        case isset($_POST['expel']):    $sel_id    = SmartyPaginate::_getSelection('groupP'); //use selection from paginator (don't use form data $_POST['id']) to get selections on all pages of paginator
-                                        if ($sel_id == NULL OR !isset($_POST['curriculum'])) {   
-                                            $PAGE->message[] = array('message' => 'Es muss mindestens eine Lerngruppe/ein Lehrplan ausgewählt werden!', 'icon' => 'fa-group text-warning');
-                                        } else {
-                                            foreach ($sel_id as $check ) { 
-                                                $cur_array = $_POST['curriculum'];
-                                                foreach($cur_array as $cur_id) {
-                                                    $group->id      = $check;
-                                                    $group->load();
-                                                    if (isset($_POST['enrol'])){
-                                                        $group->enrol($USER->id, $cur_id); 
-                                                    }
-                                                    if (isset($_POST['expel'])){
-                                                        $group->expel($USER->id, $cur_id);
-                                                    }
-                                                }     
-                                            }
-                                        }
-            break;
-                                           
-        default: break;      
-    }
+    $sel_id    = SmartyPaginate::_getSelection('groupP'); //use selection from paginator (don't use form data $_POST['id']) to get selections on all pages of paginator
+    
+    if ($sel_id == NULL OR !isset($_POST['curriculum'])) {   
+        $PAGE->message[] = array('message' => 'Es muss mindestens eine Lerngruppe/ein Lehrplan ausgewählt werden!', 'icon' => 'fa-group text-warning');
+    } else {
+        
+        foreach ($sel_id as $check ) { 
+            $cur_array = $_POST['curriculum'];
+            
+            foreach($cur_array as $cur_id) {
+                $group->id      = $check;
+                $group->load();
+                
+                switch ($_POST) {
+                    case isset($_POST['enrol']): $group->enrol($USER->id, $cur_id); 
+                        break;
+                    
+                    case isset($_POST['expel']): $group->expel($USER->id, $cur_id);
+                        break;
+
+                    default: break;      
+                }
+            }     
+        }
+    } 
 }
 /*******************************************************************************
  * END POST / GET 
  */
-
 
 $curricula                  = new Curriculum();                             //Load curricula
 $result                     = $curricula->getCurricula('user', $USER->id); 
