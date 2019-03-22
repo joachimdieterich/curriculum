@@ -72,11 +72,11 @@ $content .= Form::input_date(array('id'=>'timerange', 'label' => 'Dauer' , 'time
 $institutions       = $USER->institutions;
 if(checkCapabilities('curriculum:addglobalentries', $USER->role_id, false)){ // set for global ADMIN!
     $ins                 = new stdClass();
-    $ins->institution_id = 0; 
+    $ins->id = 0; 
     $ins->institution    = 'globaler Lernzeitraum';
     $institutions[]      = $ins;
 }
-$content .= Form::input_select('institution_id', 'Institution', $institutions, 'institution', 'institution_id', $institution_id , $error);
+$content .= Form::input_select('institution_id', 'Institution', $institutions, 'institution', 'id', $institution_id , $error);
 $content .= '</form>';
 $footer   = '<button type="submit" class="btn btn-primary fa fa-plus pull-right" onclick="document.getElementById(\'form_semester\').submit();"> '.$header.'</button>';
 $html     = Form::modal(array('title'     => $header,
