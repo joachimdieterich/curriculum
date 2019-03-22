@@ -35,36 +35,23 @@ if($_POST ){
     $group = new Group();
     switch ($_POST) {
         case isset($_POST['enrol']): 
-        case isset($_POST['expel']):   $sel_id    = SmartyPaginate::_getSelection('groupP'); //use selection from paginator (don't use form data $_POST['id']) to get selections on all pages of paginator
-                                       foreach ($sel_id as $check ) { 
-                                            if ($check == "none" ) {   
-                                                if (count($_POST['id']) == 1){  // Diese Abfrage ist wichtig, da sonst Meldungen doppelt ausgegeben werden. 
-                                                    $PAGE->message[] = array('message' => 'Es muss mindestens eine Lerngruppe ausgewählt werden!', 'icon' => 'fa-group text-warning');
-                                                }
-                                            } else {
+        case isset($_POST['expel']):    $sel_id    = SmartyPaginate::_getSelection('groupP'); //use selection from paginator (don't use form data $_POST['id']) to get selections on all pages of paginator
+                                        if ($sel_id == NULL OR !isset($_POST['curriculum'])) {   
+                                            $PAGE->message[] = array('message' => 'Es muss mindestens eine Lerngruppe/ein Lehrplan ausgewählt werden!', 'icon' => 'fa-group text-warning');
+                                        } else {
+                                            foreach ($sel_id as $check ) { 
                                                 $cur_array = $_POST['curriculum'];
-                                                foreach($cur_array as $c) {
-                                                    $curriculum->id = $c;
-                                                    $curriculum->load();
+                                                foreach($cur_array as $cur_id) {
                                                     $group->id      = $check;
                                                     $group->load();
                                                     if (isset($_POST['enrol'])){
-                                                        if($group->checkEnrolment($curriculum->id ) > 0) { 
-                                                            $PAGE->message[] = array('message' => 'Die Lerngruppe <strong>'.$group->group.'</strong> ist bereits in <strong>'.$curriculum->curriculum.'</strong> eingeschrieben.', 'icon' => 'fa-group text-warning');
-                                                        } else {
-                                                            $group->enrol($USER->id, $curriculum->id );
-                                                            $PAGE->message[] = array('message' => 'Die Lerngruppe <strong>'.$group->group.'</strong> wurde erfolgreich in <strong>'.$curriculum->curriculum.'</strong> eingeschrieben.', 'icon' => 'fa-group text-success');  
-                                                        }   
+                                                        $group->enrol($USER->id, $cur_id); 
                                                     }
                                                     if (isset($_POST['expel'])){
-                                                        if ($group->expel($USER->id, $curriculum->id )) {
-                                                            $PAGE->message[] = array('message' => 'Lerngruppe <strong>'.$group->group.'</strong> wurde erfolgreich aus <strong>'.$curriculum->curriculum.'</strong> ausgeschrieben.', 'icon' => 'fa-group text-success');
-                                                        } else {
-                                                            $PAGE->message[] = array('message' => 'Lerngruppe <strong>'.$group->group.'</strong> war nicht in <strong>'.$curriculum->curriculum.'</strong> eingeschrieben.', 'icon' => 'fa-group text-warning');
-                                                        }
+                                                        $group->expel($USER->id, $cur_id);
                                                     }
-                                                }
-                                            }        
+                                                }     
+                                            }
                                         }
             break;
                                            

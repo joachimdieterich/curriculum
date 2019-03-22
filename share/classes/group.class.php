@@ -193,13 +193,22 @@ class Group {
      * @return boolean 
      */
     public function expel($user_id, $curriculum_id){
-        global $USER;
+        global $USER, $PAGE;
         checkCapabilities('groups:expel', $USER->role_id);
+        $curriculum = new Curriculum();
+        $curriculum->id = $curriculum_id;
+        $curriculum->load();
+        
         if ($this->checkEnrolment($curriculum_id)) {
             $db = DB::prepare('UPDATE curriculum_enrolments SET status = 0, creator_id = ?, creation_time = NOW()
                                 WHERE group_id = ? AND curriculum_id = ?'); //Status 0 == not enroled
-            return $db->execute(array($user_id, $this->id, $curriculum_id));
-        } 
+            $result = $db->execute(array($user_id, $this->id, $curriculum_id));
+            
+            $PAGE->message[] = array('message' => 'Lerngruppe <strong>'.$this->group.'</strong> wurde erfolgreich aus <strong>'.$curriculum->curriculum.'</strong> ausgeschrieben.', 'icon' => 'fa-group text-success');
+            return $result;
+        } else {
+            $PAGE->message[] = array('message' => 'Lerngruppe <strong>'.$this->group.'</strong> war nicht in <strong>'.$curriculum->curriculum.'</strong> eingeschrieben.', 'icon' => 'fa-group text-warning');
+        }
     }
     
     /**
@@ -209,16 +218,26 @@ class Group {
      * @return boolean 
      */
     public function enrol($user_id, $curriculum_id){
-        global $USER;
+        global $USER, $PAGE;
         checkCapabilities('groups:enrol', $USER->role_id);
+        $curriculum = new Curriculum();
+        $curriculum->id = $curriculum_id;
+        $curriculum->load();
+        
         if ($this->checkEnrolment($curriculum_id, 0)) {
             $db = DB::prepare('UPDATE curriculum_enrolments SET status = 1, creator_id = ?, creation_time = NOW()
                                 WHERE group_id = ? AND curriculum_id = ?'); //Status 1 == eingeschrieben
-            return $db->execute(array($user_id, $this->id, $curriculum_id)); 
+            $result = $db->execute(array($user_id, $this->id, $curriculum_id)); 
+            
+            $PAGE->message[] = array('message' => 'Die Lerngruppe <strong>'.$this->group.'</strong> war in <strong>'.$curriculum->curriculum.'</strong> eingeschrieben (deaktiviert). Die Einschreibung wurde wieder auf \'aktiv\' gesetzt.', 'icon' => 'fa-group text-warning');
+            return $result;
         } else {
             $db = DB::prepare('INSERT INTO curriculum_enrolments (status,group_id,curriculum_id,creator_id) 
                                 VALUES (1,?,?,?)');//Status 1 == eingeschrieben
-            return $db->execute(array($this->id, $curriculum_id, $user_id));
+
+            $PAGE->message[] = array('message' => 'Die Lerngruppe <strong>'.$this->group.'</strong> wurde erfolgreich in <strong>'.$curriculum->curriculum.'</strong> eingeschrieben.', 'icon' => 'fa-group text-success');  
+            $result = $db->execute(array($this->id, $curriculum_id, $user_id));
+            return $result;
         }
     }
     
