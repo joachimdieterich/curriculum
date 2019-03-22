@@ -1146,6 +1146,9 @@ class User {
                                                 AND gr.institution_id = ie.institution_id
                                                 AND gr.id = ge.group_id '.$order_param);
                                 $db->execute(array($id)); 
+                                if ($paginator != ''){ 
+                                    set_item_total($paginator); //set item total based on FOUND ROWS()
+                                }
                                 while($result = $db->fetchObject()) {  
                                     $this->id           = $result->id;
                                     $this->username     = $result->username;
@@ -1173,6 +1176,9 @@ class User {
                                                 AND ws.wallet_id = ?
                                                 AND ws.reference_id = us.id '.$order_param);
                                 $db->execute(array($id, 'userFiles', $wallet_id, $wallet_id)); 
+                                if ($paginator != ''){ 
+                                    set_item_total($paginator); //set item total based on FOUND ROWS()
+                                }
                                 while($result = $db->fetchObject()) {  
                                     $this->id           = $result->id;
                                     $this->ws_id        = $result->ws_id;
@@ -1211,6 +1217,9 @@ class User {
                                                 '.$order_param);
                 
                             $db->execute(array($id, $group, 0)); 
+                            if ($paginator != ''){  
+                                set_item_total($paginator); //has to be here! set item total based on FOUND ROWS()
+                           }
                             while($result = $db->fetchObject()) {  
                                     $this->id           = $result->id;
                                     $this->username     = $result->username;
@@ -1244,7 +1253,9 @@ class User {
                                                 (SELECT institution_id FROM institution_enrolments WHERE user_id = ? AND status = 1)) 
                                                 '.$order_param);
                             $db->execute(array($this->id)); 
-
+                            if ($paginator != ''){ 
+                                set_item_total($paginator); //set item total based on FOUND ROWS()
+                           }
                             while($result = $db->fetchObject()) { 
                                 $this->id           = $result->id;
                                 $this->load('id', $this->id, false);
@@ -1255,9 +1266,9 @@ class User {
 
             default:        break;
         }
-        if ($paginator != ''){ 
-             set_item_total($paginator); //set item total based on FOUND ROWS()
-        }
+//        if ($paginator != ''){ 
+//             set_item_total($paginator); //! wird hier nach jeder Abfrage oben gemacht, da nachgelagerte Abfrage zu fehlerhaften Ergebnissen führen
+//        }
         if (isset($users)) {
             return $users; 
         } else {return false;}
