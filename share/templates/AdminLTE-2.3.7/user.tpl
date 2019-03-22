@@ -34,7 +34,7 @@
                 <div class="box-header with-border">
                     {if checkCapabilities('user:addUser', $my_role_id, false)}
                     <div class="btn-group" role="group" aria-label="...">
-                        <button type="button" class="btn btn-default" onclick="formloader('profile', 'new');"><a  href="#">
+                        <button id="user_btn_new" type="button" class="btn btn-default" onclick="formloader('profile', 'new');"><a  href="#">
                             <span class="fa fa-plus-circle" aria-hidden="true"></span> Benutzer hinzufügen</a>
                         </button>
                         {if checkCapabilities('menu:readuserImport', $my_role_id, false)}
@@ -71,7 +71,7 @@
             </div>
                         
             {* Function Tabs *}
-            <form id='userlist'   method='post' action="index.php?action=user">
+            {*<form id='userlist'   method='post' action="index.php?action=user">*}
             <div class="row ">
                     <div class="col-sm-12">
                         <div class="nav-tabs-custom">
@@ -96,79 +96,94 @@
                             <div class="tab-content">
                                 {if checkCapabilities('user:resetPassword', $my_role_id, false)}
                                     <div id="tab_password" class="tab-pane {if isset($tab_password)}active{/if} row " >
-                                        <div class="form-horizontal col-xs-12">
-                                        {Form::info(['id' => 'pw_info', 'content' => 'Neues Passwort für markierte Benutzer festlegen. Passwort muss mind. 6 Zeichen lang sein.'])}
-                                        {Form::input_text('pwchange', 'Passwort', '', null, '', 'password')}
-                                        {Form::input_checkbox('showpassword', 'Passwort anzeigen', '', null, 'checkbox', 'unmask(\'pwchange\', this.checked);')}
-                                        {Form::input_checkbox('confirmed', 'Passwortänderung', '', null)}
-                                        {Form::input_button(['id' => 'resetPassword', 'label' => 'Passwort zurücksetzen', 'icon' => 'fa fa-lock', 'class' => 'btn btn-default pull-right'])}
-                                        </div>
+                                        <form id='userlist_pw'   method='post' action="index.php?action=user">
+                                            <div class="form-horizontal col-xs-12">
+                                            {Form::info(['id' => 'pw_info', 'content' => 'Neues Passwort für markierte Benutzer festlegen. Passwort muss mind. 6 Zeichen lang sein.'])}
+                                            {Form::input_text('pwchange', 'Passwort', '', null, '', 'password')}
+                                            {Form::input_checkbox('showpassword', 'Passwort anzeigen', '', null, 'checkbox', 'unmask(\'pwchange\', this.checked);')}
+                                            {Form::input_checkbox('confirmed', 'Passwortänderung', '', null)}
+                                            {Form::input_button(['id' => 'resetPassword', 'label' => 'Passwort zurücksetzen', 'icon' => 'fa fa-lock', 'class' => 'btn btn-default pull-right'])}
+                                            </div>
+                                        </form>
                                     </div>
                                 {/if}
+                                
                                 {if checkCapabilities('user:enroleToGroup', $my_role_id, false) OR checkCapabilities('user:expelFromGroup', $my_role_id, false)}
                                     <div id="tab_group" class="tab-pane row {if isset($tab_group)}active{/if}" >
-                                        <div class="form-horizontal col-xs-12">
-                                            {Form::info(['id' => 'group_info', 'content' => 'Markierte Benutzer in Lerngruppe ein bzw. ausschreiben.<br> <strong>Benutzer muss an der entsprechenden Institution eingeschrieben sein, damit  die Lerngruppe angezeigt wird.</strong>'])}
-                                            {if isset($myInstitutions)}
-                                                {Form::input_select('institution_group', 'Institution', $myInstitutions, 'institution', 'id', $my_institution_id, null, "getValues('group', this.value, 'groups');")}
-                                            {/if} 
-                                        {if isset($groups_array)}
-                                            {Form::input_select_multiple(['id' => 'groups', 'label' => 'Lerngruppe', 'select_data' => $groups_array, 'select_label' => 'group, semester', 'select_value' => 'id', 'input' => null, 'error' => null, 'limiter' => ', ' ])}
-                                            <div class="btn-group pull-right" role="group" aria-label="...">
-                                            {if checkCapabilities('user:enroleToGroup', $my_role_id, false)}
-                                                {Form::input_button(['id' => 'enroleGroups', 'label' => 'einschreiben', 'icon' => 'fa fa-plus-circle', 'class' => 'btn btn-default pull-left'])}
-                                            {/if}
-                                            {if checkCapabilities('user:expelFromGroup', $my_role_id, false)}
-                                                {Form::input_button(['id' => 'expelGroups', 'label' => 'ausschreiben', 'icon' => 'fa fa-minus-circle', 'class' => 'btn btn-default pull-left'])}
+                                        <form id='userlist_groups'   method='post' action="index.php?action=user">
+                                            <div class="form-horizontal col-xs-12">
+                                                {Form::info(['id' => 'group_info', 'content' => 'Markierte Benutzer in Lerngruppe ein bzw. ausschreiben.<br> <strong>Benutzer muss an der entsprechenden Institution eingeschrieben sein, damit  die Lerngruppe angezeigt wird.</strong>'])}
+                                                {if isset($myInstitutions)}
+                                                    {Form::input_select('institution_group', 'Institution', $myInstitutions, 'institution', 'id', $my_institution_id, null, "getValues('group', this.value, 'groups');")}
+                                                {/if} 
+                                            {if isset($groups_array)}
+                                                {Form::input_select_multiple(['id' => 'groups', 'label' => 'Lerngruppe', 'select_data' => $groups_array, 'select_label' => 'group, semester', 'select_value' => 'id', 'input' => null, 'error' => null, 'limiter' => ', ' ])}
+                                                <div class="btn-group pull-right" role="group" aria-label="...">
+                                                {if checkCapabilities('user:enroleToGroup', $my_role_id, false)}
+                                                    {Form::input_button(['id' => 'enroleGroups', 'label' => 'einschreiben', 'icon' => 'fa fa-plus-circle', 'class' => 'btn btn-default pull-left'])}
+                                                {/if}
+                                                {if checkCapabilities('user:expelFromGroup', $my_role_id, false)}
+                                                    {Form::input_button(['id' => 'expelGroups', 'label' => 'ausschreiben', 'icon' => 'fa fa-minus-circle', 'class' => 'btn btn-default pull-left'])}
+                                                {/if}
+                                                </div>
                                             {/if}
                                             </div>
-                                        {/if}
-                                        </div>
+                                        </form>
                                     </div>
                                 {/if}
+                                
                                 {if checkCapabilities('user:updateRole', $my_role_id, false)}
                                     <div id="tab_institution" class="tab-pane row {if isset($tab_institution)}active{/if}" >
-                                        <div class="form-horizontal col-xs-12">
-                                            {Form::info(['id' => 'role_info', 'content' => 'Beim Zuweisen einer Rolle werden die markierten Nutzer automatisch in die aktuelle/ausgewählte Institution eingeschrieben bzw. die Daten aktualisiert.'])}
-                                        {if isset($myInstitutions)}
-                                            {Form::input_select('institution', 'Institution', $myInstitutions, 'institution', 'id', $my_institution_id, null)}
-                                        {/if}    
-                                        {Form::input_select('roles', 'Benutzer-Rolle', $roles, 'role', 'id', $institution_std_role, null)}
+                                        <form id='userlist_institutions'   method='post' action="index.php?action=user">
+                                            <div class="form-horizontal col-xs-12">
+                                                    {Form::info(['id' => 'role_info', 'content' => 'Beim Zuweisen einer Rolle werden die markierten Nutzer automatisch in die aktuelle/ausgewählte Institution eingeschrieben bzw. die Daten aktualisiert.'])}
+                                                {if isset($myInstitutions)}
+                                                    {Form::input_select('institution', 'Institution', $myInstitutions, 'institution', 'id', $my_institution_id, null)}
+                                                {/if}    
+                                                {Form::input_select('roles', 'Benutzer-Rolle', $roles, 'role', 'id', $institution_std_role, null)}
 
-                                        <div class="btn-group pull-right" role="group" aria-label="...">
-                                        {if checkCapabilities('user:enroleToInstitution', $my_role_id, false)}
-                                            {Form::input_button(['id' => 'enroleInstitution', 'label' => 'Rolle zuweisen / einschreiben', 'icon' => 'fa fa-plus-circle', 'class' => 'btn btn-default'])}
-                                        {/if}
-                                        {if checkCapabilities('user:expelFromInstitution', $my_role_id, false)}
-                                            {Form::input_button(['id' => 'expelInstitution', 'label' => 'ausschreiben', 'icon' => 'fa fa-minus-circle', 'class' => 'btn btn-default'])}
-                                        {/if} 
-                                        </div>
-                                        </div>
+                                                <div class="btn-group pull-right" role="group" aria-label="...">
+                                                {if checkCapabilities('user:enroleToInstitution', $my_role_id, false)}
+                                                    {Form::input_button(['id' => 'enroleInstitution', 'label' => 'Rolle zuweisen / einschreiben', 'icon' => 'fa fa-plus-circle', 'class' => 'btn btn-default'])}
+                                                {/if}
+                                                {if checkCapabilities('user:expelFromInstitution', $my_role_id, false)}
+                                                    {Form::input_button(['id' => 'expelInstitution', 'label' => 'ausschreiben', 'icon' => 'fa fa-minus-circle', 'class' => 'btn btn-default'])}
+                                                {/if} 
+                                                </div>
+                                            </div>
+                                        </form>
                                     </div>
                                 {/if}
+                                
                                 {if checkCapabilities('user:userListComplete', $my_role_id, false)}
                                     <div id="tab_register" class="tab-pane row {if isset($tab_register)}active{/if}" >
-                                        <div class="form-horizontal col-xs-12">
-                                            {Form::info(['id' => 'user_info', 'content' => 'Registerung für die markierten Benutzer bestätigen.'])}
-                                            {Form::input_button(['id' => 'acceptUser', 'label' => 'Benutzer bestätigen', 'icon' => 'fa fa-user-plus', 'class' => 'btn btn-default'])}
-                                        </div>
+                                        <form id='userlist_register'   method='post' action="index.php?action=user">
+                                            <div class="form-horizontal col-xs-12">
+                                                {Form::info(['id' => 'user_info', 'content' => 'Registerung für die markierten Benutzer bestätigen.'])}
+                                                {Form::input_button(['id' => 'acceptUser', 'label' => 'Benutzer bestätigen', 'icon' => 'fa fa-user-plus', 'class' => 'btn btn-default'])}
+                                            </div>
+                                        </form>
                                     </div>
                                 {/if}
+                                
                                 {if checkCapabilities('user:delete', $my_role_id, false)}
                                     <div id="tab_delete" class="tab-pane row {if isset($tab_delete)}active{/if}" >
-                                        <div class="form-horizontal col-xs-12">
-                                            {Form::info(['id' => 'user_info', 'content' => 'Markierte Benutzer löschen.'])}
-                                            {Form::input_button(['id' => 'submitdeleteUser', 'label' => 'löschen', 'icon' => 'fa fa-minus-circle', 'type' => 'button', 'onclick' => 'userdelete()', 'class' => 'btn btn-default pull-right'])}
-                                            {Form::input_button(['id' => 'deleteUser', 'label' => 'löschen', 'icon' => 'fa fa-minus-circle', 'class' => 'hidden'])}
-                                        </div>
+                                        <form id='userlist_delete'   method='post' action="index.php?action=user">
+                                            <div class="form-horizontal col-xs-12">
+                                                {Form::info(['id' => 'user_info', 'content' => 'Markierte Benutzer löschen.'])}
+                                                {Form::input_button(['id' => 'submitdeleteUser', 'label' => 'löschen', 'icon' => 'fa fa-minus-circle', 'type' => 'button', 'onclick' => 'userdelete()', 'class' => 'btn btn-default pull-right'])}
+                                                {Form::input_button(['id' => 'deleteUser', 'label' => 'löschen', 'icon' => 'fa fa-minus-circle', 'class' => 'hidden'])}
+                                            </div>
+                                        </form>
                                     </div>
                                 {/if}
+                                
                             </div><!-- ./tab-content -->
                         </div><!-- ./nav-tabs-custom -->
                     </div><!-- ./col-xs-12 -->  
                  
             </div>
-            </form>   
+{*            </form>   *}
         {if !isset($groups_array)}<p>Sie können noch keine Benutzer verwalten, da sie entweder nicht über die nötigen Rechte verfügen, oder keine Benutzer in ihrer Institution vorhanden sind.</p><p>&nbsp;</p>{/if}
    </div> 
 </section>
