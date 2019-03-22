@@ -301,7 +301,7 @@ class User {
                 $db1 = DB::prepare('SELECT ie.role_id, ie.institution_id FROM institution_enrolments AS ie WHERE ie.user_id = ? AND ie.status = 1 LIMIT 1'); // hack: if User is enroled to more than one institution but not enroled in any group use first institution enrolment.
                 $db1->execute(array($this->id)); 
             }
-            $ie_result          = $db1->fetchObject();
+            $ie_result          = $db1->fetchObject();         
             $this->role_id      = $ie_result->role_id;
             $role               = new Roles(); 
             $role->id           = $this->role_id;
@@ -567,16 +567,19 @@ class User {
      * List of new Users since last login of current user
      * @return array of object
      */
-    public function newUsers($id){
+    public function newUsers($id, $paginator = ''){
         global $USER; 
         checkCapabilities('user:listNewUsers', $USER->role_id);
-        $db = DB::prepare('SELECT us.*, ro.role, ie.role_id
+        $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS us.*, ro.role, ie.role_id
                     FROM users AS us, roles AS ro, institution_enrolments AS ie
                     WHERE ie.role_id = ro.id 
                     AND ie.user_id = us.id
                     AND us.creation_time > (SELECT last_login FROM users WHERE id = ?)');
         $db->execute(array($id));
-            while($result = $db->fetchObject()) { 
+        if ($paginator != ''){ 
+             set_item_total($paginator); //set item total based on FOUND ROWS()
+        }
+        while($result = $db->fetchObject()) { 
             $this->id                = $result->id;
             $this->username          = $result->username;
             $this->password          = $result->password;
