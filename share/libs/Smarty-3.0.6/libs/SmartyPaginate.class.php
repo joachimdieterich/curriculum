@@ -187,10 +187,17 @@ class SmartyPaginate {
                             if ((SmartyPaginate::_getSelect('select_page', $id) == false) /*OR (SmartyPaginate::getLimit($id) == count($_SESSION['SmartyPaginate'][$id]['pagi_selection']))*/){
                                 unset($_SESSION['SmartyPaginate'][$id]['pagi_selection']);
                             } else {
+//                                error_log('getTotal'.SmartyPaginate::getTotal($id));
+//                                error_log('getLimit'.SmartyPaginate::getLimit($id));
+//                                error_log('datamax'.count($data));
                                 if (SmartyPaginate::getLimit($id) > SmartyPaginate::getTotal($id)){
                                     $limit = SmartyPaginate::getTotal($id);
+                                    
                                 } else {
                                     $limit = SmartyPaginate::getLimit($id);
+                                }
+                                if (count($data) < SmartyPaginate::getLimit($id)){ //bugfix for last page in paginator where count(data) can be lower than limit
+                                    $limit = count($data);
                                 }
                                 unset($_SESSION['SmartyPaginate'][$id]['pagi_selection']);
                                 for ($index = 0; $index <= $limit-1; $index++) {
