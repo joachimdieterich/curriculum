@@ -301,7 +301,7 @@ class User {
                 $db1 = DB::prepare('SELECT ie.role_id, ie.institution_id FROM institution_enrolments AS ie WHERE ie.user_id = ? AND ie.status = 1 LIMIT 1'); // hack: if User is enroled to more than one institution but not enroled in any group use first institution enrolment.
                 $db1->execute(array($this->id)); 
             }
-            $ie_result          = $db1->fetchObject();
+            $ie_result          = $db1->fetchObject();         
             $this->role_id      = $ie_result->role_id;
             $role               = new Roles(); 
             $role->id           = $this->role_id;
@@ -567,16 +567,19 @@ class User {
      * List of new Users since last login of current user
      * @return array of object
      */
-    public function newUsers($id){
+    public function newUsers($id, $paginator = ''){
         global $USER; 
         checkCapabilities('user:listNewUsers', $USER->role_id);
-        $db = DB::prepare('SELECT us.*, ro.role, ie.role_id
+        $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS us.*, ro.role, ie.role_id
                     FROM users AS us, roles AS ro, institution_enrolments AS ie
                     WHERE ie.role_id = ro.id 
                     AND ie.user_id = us.id
                     AND us.creation_time > (SELECT last_login FROM users WHERE id = ?)');
         $db->execute(array($id));
-            while($result = $db->fetchObject()) { 
+        if ($paginator != ''){ 
+             set_item_total($paginator); //set item total based on FOUND ROWS()
+        }
+        while($result = $db->fetchObject()) { 
             $this->id                = $result->id;
             $this->username          = $result->username;
             $this->password          = $result->password;
@@ -1009,35 +1012,39 @@ class User {
      * If User isn't enroled in any curriculum, return is false
      * @return array of object | boolean 
      */
-    public function getCurricula($paginator = '') {
-        $order_param = orderPaginator($paginator);
-        $db = DB::prepare('SELECT DISTINCT SQL_CALC_FOUND_ROWS cu.id, cu.curriculum, cu.description, fl.filename, su.subject, gr.grade, sc.schooltype, st.state, co.de
-                            FROM curriculum AS cu, groups_enrolments AS ce, curriculum_enrolments AS cure, files AS fl, subjects AS su, grade AS gr, schooltype AS sc, state AS st, countries AS co
-                            WHERE cu.icon_id = fl.id
-                            AND cu.id = cure.curriculum_id
-                            AND cure.group_id = ce.group_id
-                            AND cu.grade_id = gr.id
-                            AND cu.subject_id = su.id
-                            AND cu.schooltype_id = sc.id
-                            AND cu.state_id = st.id
-                            AND cu.country_id = co.id
-                            AND ce.user_id = ?
-                            AND ce.status = 1
-                            '.$order_param);
-        $db->execute(array($this->id));
-
-        while($result = $db->fetchObject()) { 
-                $curricula[] = $result; 
-        } 
-        if ($paginator != ''){ 
-             set_item_total($paginator); //set item total based on FOUND ROWS()
-        }        
-        if (isset($curricula)) {
-            return $curricula;      
-        } else {
-            return false; 
-        }
-    }
+//    public function getCurricula($paginator = '', $order = true) {
+//        if ($order == true){
+//            $order_param = orderPaginator($paginator);
+//        } else {
+//            $order_param = '';    
+//        }
+//        $db = DB::prepare('SELECT DISTINCT SQL_CALC_FOUND_ROWS cu.id, cu.curriculum, cu.description, fl.filename, su.subject, gr.grade, sc.schooltype, st.state, co.de
+//                            FROM curriculum AS cu, groups_enrolments AS ce, curriculum_enrolments AS cure, files AS fl, subjects AS su, grade AS gr, schooltype AS sc, state AS st, countries AS co
+//                            WHERE cu.icon_id = fl.id
+//                            AND cu.id = cure.curriculum_id
+//                            AND cure.group_id = ce.group_id
+//                            AND cu.grade_id = gr.id
+//                            AND cu.subject_id = su.id
+//                            AND cu.schooltype_id = sc.id
+//                            AND cu.state_id = st.id
+//                            AND cu.country_id = co.id
+//                            AND ce.user_id = ?
+//                            AND ce.status = 1
+//                            '.$order_param);
+//        $db->execute(array($this->id));
+//
+//        while($result = $db->fetchObject()) { 
+//                $curricula[] = $result; 
+//        } 
+//        if ($paginator != ''){ 
+//             set_item_total($paginator); //set item total based on FOUND ROWS()
+//        }        
+//        if (isset($curricula)) {
+//            return $curricula;      
+//        } else {
+//            return false; 
+//        }
+//    }
     
     /**
      * get groups of current user
@@ -1142,6 +1149,9 @@ class User {
                                                 AND gr.institution_id = ie.institution_id
                                                 AND gr.id = ge.group_id '.$order_param);
                                 $db->execute(array($id)); 
+                                if ($paginator != ''){ 
+                                    set_item_total($paginator); //set item total based on FOUND ROWS()
+                                }
                                 while($result = $db->fetchObject()) {  
                                     $this->id           = $result->id;
                                     $this->username     = $result->username;
@@ -1169,6 +1179,9 @@ class User {
                                                 AND ws.wallet_id = ?
                                                 AND ws.reference_id = us.id '.$order_param);
                                 $db->execute(array($id, 'userFiles', $wallet_id, $wallet_id)); 
+                                if ($paginator != ''){ 
+                                    set_item_total($paginator); //set item total based on FOUND ROWS()
+                                }
                                 while($result = $db->fetchObject()) {  
                                     $this->id           = $result->id;
                                     $this->ws_id        = $result->ws_id;
@@ -1207,6 +1220,9 @@ class User {
                                                 '.$order_param);
                 
                             $db->execute(array($id, $group, 0)); 
+                            if ($paginator != ''){  
+                                set_item_total($paginator); //has to be here! set item total based on FOUND ROWS()
+                           }
                             while($result = $db->fetchObject()) {  
                                     $this->id           = $result->id;
                                     $this->username     = $result->username;
@@ -1240,7 +1256,9 @@ class User {
                                                 (SELECT institution_id FROM institution_enrolments WHERE user_id = ? AND status = 1)) 
                                                 '.$order_param);
                             $db->execute(array($this->id)); 
-
+                            if ($paginator != ''){ 
+                                set_item_total($paginator); //set item total based on FOUND ROWS()
+                           }
                             while($result = $db->fetchObject()) { 
                                 $this->id           = $result->id;
                                 $this->load('id', $this->id, false);
@@ -1251,9 +1269,9 @@ class User {
 
             default:        break;
         }
-        if ($paginator != ''){ 
-             set_item_total($paginator); //set item total based on FOUND ROWS()
-        }
+//        if ($paginator != ''){ 
+//             set_item_total($paginator); //! wird hier nach jeder Abfrage oben gemacht, da nachgelagerte Abfrage zu fehlerhaften Ergebnissen führen
+//        }
         if (isset($users)) {
             return $users; 
         } else {return false;}

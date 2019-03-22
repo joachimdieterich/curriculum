@@ -2190,10 +2190,9 @@ class Render {
                                     }, $href);
                             $html   .= '<li id="w_row_'.$value->id.'"><a href="'.$href_regex.'">'.$l;
                             if (isset($badge)){
-                                
                                 $onclick = str_replace('__id__', $value->id, $onclick_badge);
                                 $html   .= '<span class="pull-right badge '.$bg_badge.'" onclick="'.$onclick.'">';
-                                if (isset($badge_title)){
+                                if (isset($badge_title) and count($data) > 0){
                                     $html   .= $badge_title;
                                 } else {
                                     $html   .= $value->$badge;

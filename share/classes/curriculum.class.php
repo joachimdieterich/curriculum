@@ -247,18 +247,18 @@ class Curriculum {
      */
     public function getCurricula($dependency = null, $id = null, $paginator = ''){
         global $USER;
-        
-        $order_param = orderPaginator($paginator, array('id' => 'cu',
+        //if ($order == true){
+            $order_param = orderPaginator($paginator, array('id' => 'cu',
                                                         'curriculum' => 'cu',
                                                         'description' => 'cu',
                                                         'de'         => 'co',
                                                         'state'      => 'st',
                                                         'schooltype' => 'sc',
                                                         'grade'      => 'gr',
-                                                        'subject'    => 'su'));  
-        /*if ($order_param == ''){
-            $order_param = 'ORDER BY cu.curriculum';
-        }*/
+                                                        'subject'    => 'su'));
+//        } else {
+//            $order_param = '';    
+//        }
         $curriculum = array();
         switch ($dependency) {
             case 'group':   $db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS cu.id, cu.curriculum, cu.description, fl.filename, su.subject, 

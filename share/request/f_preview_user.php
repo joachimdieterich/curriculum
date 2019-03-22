@@ -47,9 +47,15 @@ $content   .= Render::box_widget(array('widget_title' => 'Institutionen',
                                        'badge'        => 'role',
                                        'bg_icon'      => 'fa fa-institution'));
 /* Curricula / groups */
+if (is_array($u->enrolments)){
+    $enrolments = $u->enrolments;
+} else {
+    $enrolments = array();
+}
+ 
 $content   .= Render::box_widget(array('widget_title' => 'Lehrpläne',
                                        'widget_desc'  => 'Lehrpläne | Lerngruppe',
-                                       'data'         => $u->enrolments,
+                                       'data'         => $enrolments,
                                        'label'        => 'curriculum', 
                                        'badge'        => 'groups',
                                        'bg_icon'      => 'fa fa-th',

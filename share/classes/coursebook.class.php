@@ -199,7 +199,7 @@ class CourseBook {
     public function get($dependency = 'user', $id = null, $date= null, $load_entries = true, $paginator = ''){
         global $USER;
         $order_param = orderPaginator($paginator, array('topic'         => 'cb',
-                                                        'description'   => 'cb')); 
+                                                        'description'   => 'cb'), 'cb.cb_id'); 
         
         $entrys = array();                      //Array of grades
         switch ($dependency) {

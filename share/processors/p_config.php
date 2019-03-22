@@ -67,27 +67,30 @@ switch ($func) {
                                 } 
                                 $val = filter_input(INPUT_GET, 'val', FILTER_SANITIZE_STRING);
                                 $selected_values = SmartyPaginate::setSelection($val, $paginator);
+                                //error_log(json_encode($selected_values));
                                 $new_element = array();
                                 if (isset($_GET['page'])){
                                     switch ($_GET['page']) {
-                                        
                                         case 'objectives': if ($val != 'none'){
                                                 $selected_curriculum_id = $_SESSION['PAGE']->objectives['cur_id'];
                                                 $selected_group         = $_SESSION['PAGE']->objectives['gp_id'];
                                                 $terminal_objectives    = new TerminalObjective();         //load terminal objectives
                                                 $enabling_objectives    = new EnablingObjective();         //load enabling objectives
-                                                if  ($val == 'page' AND (count($selected_values) == SmartyPaginate::getLimit($paginator))) {
-                                                    $selected_values = SmartyPaginate::_getSelect($val, $paginator);
-                                                    $val = 'none';
-                                                } else if (count($selected_values) > 1){
+                                                
+                                                if  (($val == 'page' OR $val == 'all') AND SmartyPaginate::_getSelect('select_page', $paginator) == true) {
+                                                    $selected_values = SmartyPaginate::_getSelectAll($paginator);
+                                                } 
+                                                if (count($selected_values) > 1){
                                                     $ter_obj = $terminal_objectives->getObjectives('curriculum', $selected_curriculum_id);
                                                     $ena_obj = $enabling_objectives->getObjectives('group', $selected_curriculum_id, $selected_values);
+                                                    //error_log('elseif'. json_encode($selected_values));
                                                 } else {
                                                     $group           = new Group();
                                                     $sel_group_id    = $group->getGroups('course', $selected_group);
                                                     $ter_obj = $terminal_objectives->getObjectives('curriculum', $selected_curriculum_id);
                                                     $enabling_objectives->curriculum_id = $selected_curriculum_id;
                                                     $ena_obj = $enabling_objectives->getObjectives('user', $selected_values[0]);
+                                                    //error_log('else'. json_encode($selected_values));
                                                 }  
                                                 $content = new Content();
                                                 $cur_content = array('label'=>'Digitalisierte Texte des Lehrplans', 'entrys'=> $content->get('curriculum', $selected_curriculum_id));

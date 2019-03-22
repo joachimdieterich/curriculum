@@ -332,7 +332,7 @@ class Institution {
     * @return array , default = null 
     */
     public function getInstitutions($dependency = 'user', $paginator = '', $id = null, $order = true){
-        if ($order == true){
+        //if ($order == true){
             $order_param = orderPaginator($paginator, array('id'            => 'ins',
                                                             'institution'   => 'ins',
                                                             'description'   => 'ins',
@@ -347,9 +347,9 @@ class Institution {
                                                             'state_id'      => 'ins',
                                                             'state'         => 'sta',
                                                             'de'            => 'co'));  
-        } else {
-            $order_param = '';
-        }
+//        } else {
+//            $order_param = '';
+//        }
         
         switch ($dependency) {
             case 'user':$db = DB::prepare('SELECT SQL_CALC_FOUND_ROWS ins.id, ins.institution, ins.description, ins.street, ins.postalcode, ins.city, ins.phone, ins.email, ins.file_id, sch.schooltype AS schooltype_id, sta.state AS state_id, ins.country_id, ins.file_id, co.de AS country, ins.creation_time, usr.username AS creator_id, ro.role

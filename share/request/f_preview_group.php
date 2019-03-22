@@ -48,10 +48,12 @@ $content    = Render::box_widget(array('widget_title' => 'Lehrpläne',
 $users      = new User();
 $u_list     = $users->getGroupMembers('group', $g->id);
 $list       = array();
-foreach((array)$u_list AS $ul){
-    $users      = new User();
-    $users->load('id', $ul, false);
-    $list[] = clone $users;
+if ($u_list){ //get users only if u_list is not emtpy
+    foreach((array)$u_list AS $ul){
+        $users      = new User();
+        $users->load('id', $ul, false);
+        $list[] = clone $users;
+    }
 }
 $group = $_SESSION['CONTEXT']['group']->context_id;
 $content   .= Render::box_widget(array('widget_title' => 'Benutzer',

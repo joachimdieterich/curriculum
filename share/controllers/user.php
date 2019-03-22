@@ -28,14 +28,14 @@ global $USER, $PAGE, $TEMPLATE;
 $groups      = new Group();
 $institution = new Institution();
 
-if (isset($_POST) ){
+if (!empty($_POST)){ //empty benutzen, da bei isset auch bei leerem POST der folgende code ausgeführt wird
     $edit_user = new User(); 
     $sel_id    = SmartyPaginate::_getSelection('userP');    //use selection from paginator (don't use form data) to get selections on all pages of paginator
     if (is_array($sel_id)){
         foreach ($sel_id as $edit_user->id ) {              //Array per schleife abarbeiten	
             $edit_user->load('id',$edit_user->id);          // load current user 
             switch ($_POST) {
-                case isset($_POST['resetPassword']):
+                case isset($_POST['resetPassword']): 
                                     if (isset($_POST['confirmed'])) {
                                         $edit_user->confirmed = 3; // User have to change password after login
                                     } else {

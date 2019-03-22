@@ -39,7 +39,7 @@
               <!--input id="reset" type="submit" name="reset" class="btn btn-primary btn-block btn-flat hidden" value="Passwort vergessen" /-->
             </div><!-- /.col -->
           </div>
-          </form>          
+          
             {if $cfg_guest_login eq '1' OR  $cfg_shibboleth eq '1'}      
                 <p class="text-center top-buffer"><strong>- ODER -</strong></p>  
             {/if}
