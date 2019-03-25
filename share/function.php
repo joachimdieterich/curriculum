@@ -125,7 +125,7 @@ function setPaginator($instance, $data, $returnVar, $currentURL, $config = false
       SmartyPaginate::setLimit(filter_input(INPUT_GET, 'paginator_limit', FILTER_UNSAFE_RAW), filter_input(INPUT_GET, 'paginator', FILTER_UNSAFE_RAW));
       }
       } */
-    $SmartyPaginate->setLimit($_SESSION['USER']->paginator_limit, $instance); //get paginator_limit from USER
+        $SmartyPaginate->setLimit($_SESSION['USER']->paginator_limit, $instance); //get paginator_limit from USER
     $SmartyPaginate->setUrl($currentURL, $instance);
     $SmartyPaginate->setWidth($width, $instance);
     $SmartyPaginate->setUrlVar($instance, $instance);
@@ -144,6 +144,7 @@ function setPaginator($instance, $data, $returnVar, $currentURL, $config = false
         foreach ($data as $d) {
             $all[] = $d->id;
         }
+        
         SmartyPaginate::setSelectAll($all, $instance);    //set all ids of data to paginator selectall
 
         $TEMPLATE->assign($returnVar, array_slice($data, $SmartyPaginate->getCurrentIndex($instance), $SmartyPaginate->getLimit($instance)), $instance); //hack for message paginator
