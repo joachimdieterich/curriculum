@@ -32,10 +32,13 @@ class repository_plugin_edusharing extends repository_plugin_base {
 	private $repoUser;
 	private $repoPwd;
 	public function __construct() {
+            global $USER;
 		$this->repoUrl  = $this->config('repoUrl');
 		$this->repoUser = $this->config('repoUser');
 		$this->repoPwd  = $this->config('repoPwd');
-		$this->setTokens(); //do not set token here to prevent blankpage if edusharing is offline
+                if (isset($USER->id)){
+                    $this->setTokens(); //do not set token here to prevent blankpage if edusharing is offline
+                }
 	}
         
         private function config($name){
@@ -52,6 +55,7 @@ class repository_plugin_edusharing extends repository_plugin_base {
 		$raw = $this->call ( $this->repoUrl . '/oauth2/token', 'POST', array (), $postFields );
 		$return = json_decode ( $raw );
 		$this->accessToken = $return->access_token;
+                //error_log($this->accessToken);
 	}
         public function getAbout() {
 		$ret = $this->call($this->repoUrl . 'rest/_about');
@@ -159,8 +163,7 @@ class repository_plugin_edusharing extends repository_plugin_base {
 		return json_decode($ret, true);
 	}
 	
-	private function call($url, $httpMethod = '', $additionalHeaders = array(), $postFields = array()) {
-            //$this->setTokens();    
+	private function call($url, $httpMethod = '', $additionalHeaders = array(), $postFields = array()) {   
             $ch = curl_init ();
             curl_setopt ( $ch, CURLOPT_URL, $url );
             curl_setopt ( $ch, CURLOPT_RETURNTRANSFER, 1 );
@@ -219,8 +222,10 @@ class repository_plugin_edusharing extends repository_plugin_base {
         
         //https://mediathek.schul.campus-rlp.de/edu-sharing/swagger/#!/SEARCH_v1/searchByProperty
         public function getSearchCustom($repository, $params) {
+            //error_log($this->repoUrl . 'rest/search/v1/custom/' . $repository.'?'.http_build_query($params));
             $ret =$this->call ( $this->repoUrl . 'rest/search/v1/custom/' . $repository.'?'.http_build_query($params));
             //error_log($this->repoUrl . 'rest/search/v1/custom/' . $repository.'?'.http_build_query($params));
+            //error_log(json_encode($ret));
             return json_decode($ret, true);
 	}
         
@@ -230,6 +235,7 @@ class repository_plugin_edusharing extends repository_plugin_base {
                                 AND fi.id = fs.file_id AND fi.orgin = ?');   
             $db->execute(array($id, $_SESSION['CONTEXT'][$dependency]->id, self::PLUGINNAME));
             $es_array   = array();
+            error_log('counter'.json_encode($result));
             while($result = $db->fetchObject()) { 
                 $es_array = array_merge($es_array, $this->processReference($result->path));
             }
@@ -250,7 +256,9 @@ class repository_plugin_edusharing extends repository_plugin_base {
             $value          = $query['value'];          //e.g.11990503;
             $maxItems       = 10;
             $skipCount      = 0;
-            
+            //error_log(json_encode($arguments));
+            $this->setTokens(); //reset token
+            //$nodes        = $this->getSearchCustom('-home-', array ('contentType' =>'FILES', 'property' => 'ccm:competence_digital2', 'value' => '11061007', 'maxItems' => 10));
             $nodes      = $this->getSearchCustom('-home-', array ('contentType' =>$contentType, 'property' => $property, 'value' => $value, 'maxItems' => $maxItems, 'skipCount' => $skipCount));
             //error_log(json_encode($nodes));
             $tmp_file   = new File();
@@ -267,11 +275,12 @@ class repository_plugin_edusharing extends repository_plugin_base {
                 $tmp_file->path         = 'https://hochschul.campus-rlp.de/edu-sharing/components/render/'.$node['ref']['id'];
                 //$tmp_file->path         = $node['contentUrl'];
                 $tmp_file->full_path    = 'https://hochschul.campus-rlp.de/edu-sharing/components/render/'.$node['ref']['id'];
-                error_log($tmp_file->full_path);
+                //error_log($tmp_file->full_path);
                 //$tmp_file->full_path    = $node['contentUrl'];
                 $tmp_file->orgin        = self::PLUGINNAME;
                 $tmp_array[]            = clone $tmp_file;     
             }
+            //error_log(json_encode($tmp_array));
             return $tmp_array;
         }
         
