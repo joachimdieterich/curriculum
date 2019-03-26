@@ -88,7 +88,7 @@ class Subject {
                                        LEFT JOIN schooltype AS sco ON (sub.schooltype_id = sco.id)
                                        LEFT JOIN institution AS ins ON (sub.institution_id = ins.id)
                                        WHERE (sub.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE institution_id = ins.id AND user_id = ?)
-                                       OR (sub.institution_id = 0 AND (sub.schooltype_id = ?))) '.$order_param);
+                                       OR (sub.institution_id = 0 )) '.$order_param); 
             $db->execute(array($USER->id, $USER->institution->schooltype_id));
         }
         
