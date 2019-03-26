@@ -28,14 +28,32 @@
 class repository_plugin_edusharing extends repository_plugin_base {
         const PLUGINNAME = 'edusharing';
 	private $accessToken = '';
+	private $grant_type;
+	private $client_id;
+	private $client_secret;
 	private $repoUrl;
 	private $repoUser;
 	private $repoPwd;
+        
+        private $proxy = false;
+        private $proxy_port = false;
+        
 	public function __construct() {
             global $USER;
-		$this->repoUrl  = $this->config('repoUrl');
-		$this->repoUser = $this->config('repoUser');
-		$this->repoPwd  = $this->config('repoPwd');
+		$this->grant_type       = $this->config('grant_type');
+		$this->client_id        = $this->config('client_id');
+		$this->client_secret    = $this->config('client_secret');
+		$this->repoUrl          = $this->config('repoUrl');
+		$this->repoUser         = $this->config('repoUser');
+		$this->repoPwd          = $this->config('repoPwd');
+                /* set Proxy settings */
+                if (null !== $this->config('proxy')){
+                    $this->proxy        = $this->config('proxy');
+                    if (null !== $this->config('proxy_port')){
+                        $this->proxy_port        = $this->config('proxy_port');
+                    } 
+                } 
+		
                 if (isset($USER->id)){
                     $this->setTokens(); //do not set token here to prevent blankpage if edusharing is offline
                 }
@@ -51,14 +69,14 @@ class repository_plugin_edusharing extends repository_plugin_base {
     }
         
 	private function setTokens() {
-		$postFields = 'grant_type=password&client_id=eduApp&client_secret=secret&username=' . $this->repoUser . '&password=' . $this->repoPwd;
+		$postFields = 'grant_type=' . $this->grant_type . '&client_id=' . $this->client_id . '&client_secret=' . $this->client_secret . '&username=' . $this->repoUser . '&password=' . $this->repoPwd;
+                //error_log($postFields);
 		$raw = $this->call ( $this->repoUrl . '/oauth2/token', 'POST', array (), $postFields );
 		$return = json_decode ( $raw );
 		$this->accessToken = $return->access_token;
-                //error_log($this->accessToken);
 	}
         public function getAbout() {
-		$ret = $this->call($this->repoUrl . 'rest/_about');
+		$ret = $this->call($this->repoUrl . '/rest/_about');
 		return json_decode($ret, true);
 	} 
         
@@ -163,11 +181,21 @@ class repository_plugin_edusharing extends repository_plugin_base {
 		return json_decode($ret, true);
 	}
 	
-	private function call($url, $httpMethod = '', $additionalHeaders = array(), $postFields = array()) {   
+	private function call($url, $httpMethod = '', $additionalHeaders = array(), $postFields = array()) {      
             $ch = curl_init ();
             curl_setopt ( $ch, CURLOPT_URL, $url );
             curl_setopt ( $ch, CURLOPT_RETURNTRANSFER, 1 );
-
+            curl_setopt ( $ch, CURLOPT_CONNECTTIMEOUT, 5);  //timeout in seconds
+            curl_setopt ( $ch, CURLOPT_TIMEOUT, 10); //timeout in seconds
+            
+            if ($this->proxy){
+                curl_setopt ( $ch, CURLOPT_PROXY, $this->proxy);
+                if ($this->proxy_port){
+                    curl_setopt ( $ch, CURLOPT_PROXYPORT, $this->proxy_port);
+                }
+            }
+            
+            
             switch ($httpMethod) {
                     case 'POST' :
                             curl_setopt ( $ch, CURLOPT_POST, true );
@@ -190,11 +218,12 @@ class repository_plugin_edusharing extends repository_plugin_base {
             if (! empty ( $postFields )) {
                     curl_setopt ( $ch, CURLOPT_POSTFIELDS, $postFields );
             }
-
+            
             $exec = curl_exec ( $ch );
 
             if ($exec === false) {
-                    throw new Exception ( curl_error ( $ch ) );
+                     error_log($url . ' ---> ' .  curl_error ( $ch ) .' ---> Error-Code:' .curl_errno($ch)); // for debugging
+                    //throw new Exception ( curl_error ( $ch ) );
             }
 
             $httpcode = curl_getinfo ( $ch, CURLINFO_HTTP_CODE );
@@ -214,18 +243,16 @@ class repository_plugin_edusharing extends repository_plugin_base {
 	}
         
         public function getRendering($repository, $node) {
-            $query = $this->repoUrl . 'rest/rendering/v1/details/' . $repository . '/' . $node;
+            $query = $this->repoUrl . '/rest/rendering/v1/details/' . $repository . '/' . $node;
             //error_log($query);
-            $ret = $this->call($this->repoUrl . 'rest/rendering/v1/details/' . $repository . '/' . $node);
+            $ret = $this->call($this->repoUrl . '/rest/rendering/v1/details/' . $repository . '/' . $node);
             return json_decode($ret, true);
 	}
         
         //https://mediathek.schul.campus-rlp.de/edu-sharing/swagger/#!/SEARCH_v1/searchByProperty
         public function getSearchCustom($repository, $params) {
-            //error_log($this->repoUrl . 'rest/search/v1/custom/' . $repository.'?'.http_build_query($params));
-            $ret =$this->call ( $this->repoUrl . 'rest/search/v1/custom/' . $repository.'?'.http_build_query($params));
-            //error_log($this->repoUrl . 'rest/search/v1/custom/' . $repository.'?'.http_build_query($params));
-            //error_log(json_encode($ret));
+            $ret =$this->call ( $this->repoUrl . '/rest/search/v1/custom/' . $repository.'?'.http_build_query($params));
+            
             return json_decode($ret, true);
 	}
         
@@ -235,7 +262,7 @@ class repository_plugin_edusharing extends repository_plugin_base {
                                 AND fi.id = fs.file_id AND fi.orgin = ?');   
             $db->execute(array($id, $_SESSION['CONTEXT'][$dependency]->id, self::PLUGINNAME));
             $es_array   = array();
-            error_log('counter'.json_encode($result));
+            $this->setTokens(); //(re)set token
             while($result = $db->fetchObject()) { 
                 $es_array = array_merge($es_array, $this->processReference($result->path));
             }
@@ -256,8 +283,7 @@ class repository_plugin_edusharing extends repository_plugin_base {
             $value          = $query['value'];          //e.g.11990503;
             $maxItems       = 10;
             $skipCount      = 0;
-            //error_log(json_encode($arguments));
-            $this->setTokens(); //reset token
+            
             //$nodes        = $this->getSearchCustom('-home-', array ('contentType' =>'FILES', 'property' => 'ccm:competence_digital2', 'value' => '11061007', 'maxItems' => 10));
             $nodes      = $this->getSearchCustom('-home-', array ('contentType' =>$contentType, 'property' => $property, 'value' => $value, 'maxItems' => $maxItems, 'skipCount' => $skipCount));
             //error_log(json_encode($nodes));
@@ -280,7 +306,7 @@ class repository_plugin_edusharing extends repository_plugin_base {
                 $tmp_file->orgin        = self::PLUGINNAME;
                 $tmp_array[]            = clone $tmp_file;     
             }
-            //error_log(json_encode($tmp_array));
+           
             return $tmp_array;
         }
         
