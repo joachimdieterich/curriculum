@@ -73,7 +73,6 @@ class Subject {
                                                         'institution'    => 'ins')); 
        
         $subjects       = array();
-       
         if(checkCapabilities('curriculum:addglobalentries', $USER->role_id, false)){ // set for global ADMIN!
             $db         = DB::prepare('SELECT SQL_CALC_FOUND_ROWS sub.*, ins.institution, sco.schooltype
                                        FROM subjects AS sub
@@ -89,7 +88,7 @@ class Subject {
                                        LEFT JOIN institution AS ins ON (sub.institution_id = ins.id)
                                        WHERE (sub.institution_id = ANY (SELECT institution_id FROM institution_enrolments WHERE institution_id = ins.id AND user_id = ?)
                                        OR (sub.institution_id = 0 )) '.$order_param); 
-            $db->execute(array($USER->id, $USER->institution->schooltype_id));
+            $db->execute(array($USER->id));
         }
         
         while($result = $db->fetchObject()) { 
