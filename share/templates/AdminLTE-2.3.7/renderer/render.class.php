@@ -2898,6 +2898,7 @@ public static function quote_reference($quotes){
                 }
                 
                 $code = '';
+                
                 if ($os->load()){
                     #terminal laden
                     $terminal = new TerminalObjective();
@@ -2909,10 +2910,11 @@ public static function quote_reference($quotes){
                     $enable = new EnablingObjective();
                     $enable_ids = ObjectiveSubscription::getSubscriptionIds(10, $id, 12);
                     foreach ($enable_ids AS $eid){
-                        $enable->id = $eid;
-                        $enable->load();
-                        $code .= '<div style="display:inline-table; padding:10px">' . RENDER::objective(["type" =>"enabling_objective", "objective" => $enable , "border_color" => $terminal->color, "user_id" => $USER->id]) .'</div>';
-                        
+                       $os->id = $eid;
+                       $os->load();
+                       $enable->id = $os->reference_id;
+                       $enable->load();
+                       $code .= '<div style="display:inline-table; padding:10px">' . RENDER::objective(["type" =>"enabling_objective", "objective" => $enable , "border_color" => $terminal->color, "user_id" => $USER->id]) .'</div>';
                     }
                 }
                 
