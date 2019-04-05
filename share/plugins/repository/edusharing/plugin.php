@@ -304,11 +304,12 @@ class repository_plugin_edusharing extends repository_plugin_base {
             foreach ($nodes['nodes'] as $node) {
                 //error_log('geht doch'.json_encode($node['preview']['url']));
                 $tmp_file->license      = $node['licenseURL'];
-                $tmp_file->title        = isset($node['title']) ?  $node['title'] : 'Kein Titel verfügbar';
+                $tmp_file->title        = isset($node['title']) ?  $node['title'] : $node['name'];
                 $tmp_file->type         ='external';
                 $tmp_file->file_context = 5; //--> todo define context!
                 $tmp_file->description  = $node['description'];
                 $tmp_file->file_version['t']['filename'] = $node['preview']['url'];
+                
                 $tmp_file->filename     = $node['contentUrl'];
                 $tmp_file->path         = 'https://hochschul.campus-rlp.de/edu-sharing/components/render/'.$node['ref']['id'];
                 //$tmp_file->path         = $node['contentUrl'];
