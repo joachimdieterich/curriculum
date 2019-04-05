@@ -284,7 +284,7 @@ class repository_plugin_edusharing extends repository_plugin_base {
             $contentType    = isset($query['contentType']) ? $query['contentType'] : null;    //e.g.'FILES';
             $property       = isset($query['property']) ? $query['property'] : null;      //e.g.'ccm:competence_digital2';
             $value          = $query['value'];          //e.g.11990503;
-            $maxItems       = 10;
+            $maxItems       = 40;
             $skipCount      = 0;
             
             //$nodes        = $this->getSearchCustom('-home-', array ('contentType' =>'FILES', 'property' => 'ccm:competence_digital2', 'value' => '11061007', 'maxItems' => 10));
