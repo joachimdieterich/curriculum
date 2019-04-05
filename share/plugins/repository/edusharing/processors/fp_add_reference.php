@@ -36,6 +36,7 @@ $_POST          = $gump->sanitize($_POST);       //sanitize $_POST
 $context_id     = $_SESSION['CONTEXT'][$_POST['func']]->id;
 
 $reference_id               = $_POST['reference_id'];
+$endpoint                   = $_POST['endpoint'];
 $content_type               = $_POST['content_type'];
 $property                   = $_POST['property'];
 $value                      = $_POST['value'];
@@ -45,8 +46,8 @@ $file_context_reference_id  = $_POST['file_context_reference_id'];
 $gump->validation_rules(array(
 'func'                      => 'required',
 'reference_id'              => 'required',
-'content_type'              => 'required',
-'property'                  => 'required',
+/*'content_type'              => 'required',
+'property'                  => 'required',*/ // not used by getNodeChildren
 'value'                     => 'required',
 'file_context'              => 'required', 
 'file_context_reference_id' => 'required'
@@ -58,6 +59,7 @@ if($validated_data === false) {/* validation failed */
     
     $_SESSION['FORM']->context_id                   = $context_id;
     $_SESSION['FORM']->reference_id                 = $reference_id;
+    $_SESSION['FORM']->endpoint                     = $_POST['endpoint'];
     $_SESSION['FORM']->content_type                 = $_POST['content_type'];
     $_SESSION['FORM']->property                     = $_POST['property'];
     $_SESSION['FORM']->value                        = $_POST['value'];
@@ -68,7 +70,7 @@ if($validated_data === false) {/* validation failed */
     $_SESSION['FORM']->func                         = $_POST['func'];
 } else {
         $edu  = new repository_plugin_edusharing();
-        $edu->set_link_to_curriculum_db($context_id, $reference_id, $content_type, $property, $value, $file_context, $file_context_reference_id);
+        $edu->set_link_to_curriculum_db($context_id, $reference_id, $endpoint, $content_type, $property, $value, $file_context, $file_context_reference_id);
         $_SESSION['PAGE']->message[] = array('message' => 'Edusharing-Objekt verknüpft', 'icon' => 'fa-external-link-square text-success');
     
     $_SESSION['FORM']            = null;                     // reset Session Form object 
