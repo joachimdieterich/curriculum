@@ -321,7 +321,6 @@ class repository_plugin_edusharing extends repository_plugin_base {
                 //$tmp_file->full_path    = $node['contentUrl'];
                 $tmp_file->orgin        = self::PLUGINNAME;
                 $tmp_array[]            = clone $tmp_file;     
-                error_log(json_encode($node));
             }
            
             return $tmp_array;
