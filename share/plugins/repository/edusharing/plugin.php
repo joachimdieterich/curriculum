@@ -303,6 +303,9 @@ class repository_plugin_edusharing extends repository_plugin_base {
             $tmp_array  = array();
             foreach ($nodes['nodes'] as $node) {
                 //error_log('geht doch'.json_encode($node['preview']['url']));
+                if ($node['mediatype'] == 'folder'){ //todo es muss überlegt werden, ob subfolder geladen werden
+                    continue;
+                }
                 $tmp_file->license      = $node['licenseURL'];
                 $tmp_file->title        = isset($node['title']) ?  $node['title'] : $node['name'];
                 $tmp_file->type         ='external';
@@ -318,6 +321,7 @@ class repository_plugin_edusharing extends repository_plugin_base {
                 //$tmp_file->full_path    = $node['contentUrl'];
                 $tmp_file->orgin        = self::PLUGINNAME;
                 $tmp_array[]            = clone $tmp_file;     
+                error_log(json_encode($node));
             }
            
             return $tmp_array;
