@@ -165,11 +165,7 @@ class repository_plugin_edusharing extends repository_plugin_base {
 		$return = json_decode($return, true);
 	
 	}
-	
-	public function getChildren($parentId) {
-		$children = $this->call($this->repoUrl . '/rest/node/v1/nodes/-home-/'.$parentId.'/children?maxItems=5000000&skipCount=0');
-		return json_decode($children, true);
-	}
+
 	
 	public function getAllGroups() {
 		$ret = $this->call($this->repoUrl . '/rest/iam/v1/groups/-home-?pattern=*');
@@ -249,11 +245,16 @@ class repository_plugin_edusharing extends repository_plugin_base {
             return json_decode($ret, true);
 	}
         
-        //https://mediathek.schul.campus-rlp.de/edu-sharing/swagger/#!/SEARCH_v1/searchByProperty
+        //https://[EDUSHARINGDOMAIN]/edu-sharing/swagger/#!/SEARCH_v1/searchByProperty
         public function getSearchCustom($repository, $params) {
             $ret =$this->call ( $this->repoUrl . '/rest/search/v1/custom/' . $repository.'?'.http_build_query($params));
             
             return json_decode($ret, true);
+	}
+        
+        public function getChildren($repository, $parentId, $params) {
+            $children = $this->call($this->repoUrl . '/rest/node/v1/nodes/'. $repository.'/'.$parentId.'/children?'.http_build_query($params));
+            return json_decode($children, true);
 	}
         
         public function getFiles ($dependency, $id, $files){
@@ -278,21 +279,32 @@ class repository_plugin_edusharing extends repository_plugin_base {
         
         public function processReference($arguments){
             parse_str($arguments, $query);
-            $contentType    = $query['contentType'];    //e.g.'FILES';
-            $property       = $query['property'];      //e.g.'ccm:competence_digital2';
+           
+            $apiEndpoint    = isset($query['endpoint']) ?  $query['endpoint'] : 'getSearchCustom';             
+            $contentType    = isset($query['contentType']) ? $query['contentType'] : null;    //e.g.'FILES';
+            $property       = isset($query['property']) ? $query['property'] : null;      //e.g.'ccm:competence_digital2';
             $value          = $query['value'];          //e.g.11990503;
             $maxItems       = 10;
             $skipCount      = 0;
             
             //$nodes        = $this->getSearchCustom('-home-', array ('contentType' =>'FILES', 'property' => 'ccm:competence_digital2', 'value' => '11061007', 'maxItems' => 10));
-            $nodes      = $this->getSearchCustom('-home-', array ('contentType' =>$contentType, 'property' => $property, 'value' => $value, 'maxItems' => $maxItems, 'skipCount' => $skipCount));
+            switch ($apiEndpoint) {
+                case 'getSearchCustom': $nodes      = $this->getSearchCustom('-home-', array ('contentType' =>$contentType, 'property' => $property, 'value' => $value, 'maxItems' => $maxItems, 'skipCount' => $skipCount));
+                    break;
+                case 'getNodeChildren': $nodes      = $this->getChildren('-home-', $value, array ('maxItems' => $maxItems, 'skipCount' => $skipCount));
+                    break;
+
+                default:
+                    break;
+            }
+            
             //error_log(json_encode($nodes));
             $tmp_file   = new File();
             $tmp_array  = array();
             foreach ($nodes['nodes'] as $node) {
                 //error_log('geht doch'.json_encode($node['preview']['url']));
                 $tmp_file->license      = $node['licenseURL'];
-                $tmp_file->title        = $node['title'];
+                $tmp_file->title        = isset($node['title']) ?  $node['title'] : 'Kein Titel verfügbar';
                 $tmp_file->type         ='external';
                 $tmp_file->file_context = 5; //--> todo define context!
                 $tmp_file->description  = $node['description'];
@@ -340,13 +352,21 @@ class repository_plugin_edusharing extends repository_plugin_base {
             return $c;
         }
         
-        public function set_link_to_curriculum_db($context_id, $reference_id, $content_type, $propery, $value, $file_context, $file_context_reference_id){
+        public function set_link_to_curriculum_db($context_id, $reference_id, $endpoint, $content_type, $propery, $value, $file_context, $file_context_reference_id){
             //todo: check capability
             // Add Entry to file table
             $f               = new File();
             $f->context_id   = $context_id; 
             $f->reference_id = $reference_id;
-            $f->path         = "contentType={$content_type}&property={$propery}&value={$value}";
+            switch ($endpoint) {
+                case 'getSearchCustom': $f->path  = "endpoint={$endpoint}&contentType={$content_type}&property={$propery}&value={$value}";
+                    break;
+                case 'getNodeChildren':$f->path   = "endpoint={$endpoint}&value={$value}";
+                    break;
+
+                default:
+                    break;
+            }
             $f->filename     = '';
             $f->author       = '';
             $f->license      = '';
