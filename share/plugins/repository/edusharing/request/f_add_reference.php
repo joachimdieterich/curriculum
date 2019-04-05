@@ -90,6 +90,10 @@ if (isset($reference_id)){
 $content  .= '<input type="hidden" name="reference_id" id="reference_id" value="'.$reference_id.'"/> ';
 }
 $content   .= Form::info(array('id' => '', 'content' => 'Bitte gewünschte Linkparameter eingeben:'));
+/* endpoint selector*/
+$endpoint_obj = generate_select_object( array('getSearchCustom'     => 'getSearchCustom',
+                                                'getNodeChildren'   => 'getNodeChildren'));
+$content .= Form::input_select('endpoint', 'Objekttyp', $endpoint_obj, 'label', 'value', $content_type , $error);
 /* Type selector*/
 $content_type_obj = generate_select_object( array('Dateien'                 => 'FILES',
                                                 'Ordner'                    => 'FOLDERS',
@@ -99,7 +103,7 @@ $content_type_obj = generate_select_object( array('Dateien'                 => '
                                                 'Alle'                      => 'ALL'));
 $content .= Form::input_select('content_type', 'Objekttyp', $content_type_obj, 'label', 'value', $content_type , $error);
 $content .= Form::input_text('property', 'Suchbereich', $property, $error);
-$content .= Form::input_text('value', 'Edusharing-ID (Suchbereich)', $value, $error, 'z.B. 11990503');
+$content .= Form::input_text('value', 'Edusharing-ID/Node_ID', $value, $error, 'z.B. 11990503');
 $ct = new Context();
 $content .= Form::input_select('file_context', 'Freigabe-Level', $ct->get(), 'description', 'id', $context , $error, 'getValues(\'file_context_reference\', this.value, \'file_context_reference_id\');');
 $content .= Form::input_select_multiple(array('id' => 'file_context_reference_id', 'label' => 'Freigabe-Referenz', 'select_data' => $file_context_reference, 'select_label' => $select_label, 'select_value' => 'id', 'input' => array($file_context_reference_id), 'error' => $error)); 
@@ -110,5 +114,18 @@ $footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="d
 $html      = Form::modal(array('title' => $header,
                           'content'   => $content, 
                           'f_content' => $footer));  
+$script = "<script id='modal_script'>
+    $('#endpoint').on('select2:select', function (e) {
+  if($(this).val() == 'getNodeChildren'){ 
+                $('#content_type_form_group').hide();
+                $('#property_form_group').hide();
+            } else {
+                $('#content_type_form_group').show();
+                $('#property_form_group').show();
+            }
+});
+       
+    </script>";
 
-echo json_encode(array('html'=> $html));
+
+echo json_encode(array('html'=> $html, 'script'=> $script));
