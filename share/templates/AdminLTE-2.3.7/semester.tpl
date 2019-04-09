@@ -18,7 +18,7 @@
                 <div class="box-body">
                 {if !isset($showForm) && checkCapabilities('semester:add', $my_role_id, false)}    
                 <div class="btn-group" role="group" aria-label="...">
-                    <button type="button" class="btn btn-default" onclick="formloader('semester','new');"><a >
+                    <button id="semester_btn_new" type="button" class="btn btn-default" onclick="formloader('semester','new');"><a >
                         <span class="fa fa-plus-circle" aria-hidden="true"></span> Lernzeitraum hinzufügen</a>
                     </button>
                 </div>

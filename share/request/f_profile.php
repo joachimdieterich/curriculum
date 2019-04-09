@@ -119,9 +119,12 @@ $content .= Form::input_checkbox('confirm', 'Passwortänderung', $confirm, $erro
 if ($func == 'new'){
     $roles    = new Roles();
     $content .= Form::input_select('role_id', 'Rolle', $roles->get(), 'role', 'id', $role_id , $error); 
-    $content .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'institution_id', $institution_id , $error, 'getValues(\'group\', this.value, \'group_id\');');
+    if (!isset($institution_id)){
+        $institution_id = $USER->institution_id;
+    }
+    $content .= Form::input_select('institution_id', 'Institution', $USER->institutions, 'institution', 'id', $institution_id , $error, 'getValues(\'group\', this.value, \'group_id\');');
     $group    = new Group();
-    $content .= Form::input_select('group_id', 'Lerngruppe', $group->getGroups('institution', $USER->institution_id), 'group', 'id', $group_id , $error); 
+    $content .= Form::input_select('group_id', 'Lerngruppe', $group->getGroups('institution', $institution_id), 'group', 'id', $group_id , $error); 
 }
 $content .= '</form>';
 $footer   = '<button id="form_profile_btn_submit" type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_profile\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';    

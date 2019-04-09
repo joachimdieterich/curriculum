@@ -308,7 +308,13 @@ if (!$files AND !isset($references) AND !isset($sodis)){
                            <div class="row">   
                             <div class="col-xs-12 text-center">
                                 <div class="knob-label" style="padding-top:10px;white-space:normal; text-transform:none; display:block;">';
-            if (isset($license->license)){ $m_footer .= $license->license; }
+            if (isset($license->license)){ 
+                if (filter_var($license->license, FILTER_VALIDATE_URL)) { 
+                    $m_footer .= '<img style="max-height:20px;" src="' . $license->license . '">';
+                } else { 
+                    $m_footer .= $license->license; 
+                }
+            }
             $m_footer .= '     </div>
                             </div><!-- ./col -->
                            </div><!-- ./row -->

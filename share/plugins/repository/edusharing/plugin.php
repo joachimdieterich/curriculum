@@ -28,14 +28,35 @@
 class repository_plugin_edusharing extends repository_plugin_base {
         const PLUGINNAME = 'edusharing';
 	private $accessToken = '';
+	private $grant_type;
+	private $client_id;
+	private $client_secret;
 	private $repoUrl;
 	private $repoUser;
 	private $repoPwd;
+        
+        private $proxy = false;
+        private $proxy_port = false;
+        
 	public function __construct() {
-		$this->repoUrl  = $this->config('repoUrl');
-		$this->repoUser = $this->config('repoUser');
-		$this->repoPwd  = $this->config('repoPwd');
-		$this->setTokens(); //do not set token here to prevent blankpage if edusharing is offline
+            global $USER;
+		$this->grant_type       = $this->config('grant_type');
+		$this->client_id        = $this->config('client_id');
+		$this->client_secret    = $this->config('client_secret');
+		$this->repoUrl          = $this->config('repoUrl');
+		$this->repoUser         = $this->config('repoUser');
+		$this->repoPwd          = $this->config('repoPwd');
+                /* set Proxy settings */
+                if (null !== $this->config('proxy')){
+                    $this->proxy        = $this->config('proxy');
+                    if (null !== $this->config('proxy_port')){
+                        $this->proxy_port        = $this->config('proxy_port');
+                    } 
+                } 
+		
+                if (isset($USER->id)){
+                    $this->setTokens(); //do not set token here to prevent blankpage if edusharing is offline
+                }
 	}
         
         private function config($name){
@@ -48,13 +69,14 @@ class repository_plugin_edusharing extends repository_plugin_base {
     }
         
 	private function setTokens() {
-		$postFields = 'grant_type=password&client_id=eduApp&client_secret=secret&username=' . $this->repoUser . '&password=' . $this->repoPwd;
+		$postFields = 'grant_type=' . $this->grant_type . '&client_id=' . $this->client_id . '&client_secret=' . $this->client_secret . '&username=' . $this->repoUser . '&password=' . $this->repoPwd;
+                //error_log($postFields);
 		$raw = $this->call ( $this->repoUrl . '/oauth2/token', 'POST', array (), $postFields );
 		$return = json_decode ( $raw );
 		$this->accessToken = $return->access_token;
 	}
         public function getAbout() {
-		$ret = $this->call($this->repoUrl . 'rest/_about');
+		$ret = $this->call($this->repoUrl . '/rest/_about');
 		return json_decode($ret, true);
 	} 
         
@@ -143,11 +165,7 @@ class repository_plugin_edusharing extends repository_plugin_base {
 		$return = json_decode($return, true);
 	
 	}
-	
-	public function getChildren($parentId) {
-		$children = $this->call($this->repoUrl . '/rest/node/v1/nodes/-home-/'.$parentId.'/children?maxItems=5000000&skipCount=0');
-		return json_decode($children, true);
-	}
+
 	
 	public function getAllGroups() {
 		$ret = $this->call($this->repoUrl . '/rest/iam/v1/groups/-home-?pattern=*');
@@ -159,12 +177,21 @@ class repository_plugin_edusharing extends repository_plugin_base {
 		return json_decode($ret, true);
 	}
 	
-	private function call($url, $httpMethod = '', $additionalHeaders = array(), $postFields = array()) {
-            //$this->setTokens();    
+	private function call($url, $httpMethod = '', $additionalHeaders = array(), $postFields = array()) {      
             $ch = curl_init ();
             curl_setopt ( $ch, CURLOPT_URL, $url );
             curl_setopt ( $ch, CURLOPT_RETURNTRANSFER, 1 );
-
+            curl_setopt ( $ch, CURLOPT_CONNECTTIMEOUT, 5);  //timeout in seconds
+            curl_setopt ( $ch, CURLOPT_TIMEOUT, 10); //timeout in seconds
+            
+            if ($this->proxy){
+                curl_setopt ( $ch, CURLOPT_PROXY, $this->proxy);
+                if ($this->proxy_port){
+                    curl_setopt ( $ch, CURLOPT_PROXYPORT, $this->proxy_port);
+                }
+            }
+            
+            
             switch ($httpMethod) {
                     case 'POST' :
                             curl_setopt ( $ch, CURLOPT_POST, true );
@@ -187,11 +214,12 @@ class repository_plugin_edusharing extends repository_plugin_base {
             if (! empty ( $postFields )) {
                     curl_setopt ( $ch, CURLOPT_POSTFIELDS, $postFields );
             }
-
+            
             $exec = curl_exec ( $ch );
 
             if ($exec === false) {
-                    throw new Exception ( curl_error ( $ch ) );
+                     error_log($url . ' ---> ' .  curl_error ( $ch ) .' ---> Error-Code:' .curl_errno($ch)); // for debugging
+                    //throw new Exception ( curl_error ( $ch ) );
             }
 
             $httpcode = curl_getinfo ( $ch, CURLINFO_HTTP_CODE );
@@ -211,17 +239,22 @@ class repository_plugin_edusharing extends repository_plugin_base {
 	}
         
         public function getRendering($repository, $node) {
-            $query = $this->repoUrl . 'rest/rendering/v1/details/' . $repository . '/' . $node;
+            $query = $this->repoUrl . '/rest/rendering/v1/details/' . $repository . '/' . $node;
             //error_log($query);
-            $ret = $this->call($this->repoUrl . 'rest/rendering/v1/details/' . $repository . '/' . $node);
+            $ret = $this->call($this->repoUrl . '/rest/rendering/v1/details/' . $repository . '/' . $node);
             return json_decode($ret, true);
 	}
         
-        //https://mediathek.schul.campus-rlp.de/edu-sharing/swagger/#!/SEARCH_v1/searchByProperty
+        //https://[EDUSHARINGDOMAIN]/edu-sharing/swagger/#!/SEARCH_v1/searchByProperty
         public function getSearchCustom($repository, $params) {
-            $ret =$this->call ( $this->repoUrl . 'rest/search/v1/custom/' . $repository.'?'.http_build_query($params));
-            //error_log($this->repoUrl . 'rest/search/v1/custom/' . $repository.'?'.http_build_query($params));
+            $ret =$this->call ( $this->repoUrl . '/rest/search/v1/custom/' . $repository.'?'.http_build_query($params));
+            
             return json_decode($ret, true);
+	}
+        
+        public function getChildren($repository, $parentId, $params) {
+            $children = $this->call($this->repoUrl . '/rest/node/v1/nodes/'. $repository.'/'.$parentId.'/children?'.http_build_query($params));
+            return json_decode($children, true);
 	}
         
         public function getFiles ($dependency, $id, $files){
@@ -230,6 +263,7 @@ class repository_plugin_edusharing extends repository_plugin_base {
                                 AND fi.id = fs.file_id AND fi.orgin = ?');   
             $db->execute(array($id, $_SESSION['CONTEXT'][$dependency]->id, self::PLUGINNAME));
             $es_array   = array();
+            $this->setTokens(); //(re)set token
             while($result = $db->fetchObject()) { 
                 $es_array = array_merge($es_array, $this->processReference($result->path));
             }
@@ -245,33 +279,50 @@ class repository_plugin_edusharing extends repository_plugin_base {
         
         public function processReference($arguments){
             parse_str($arguments, $query);
-            $contentType    = $query['contentType'];    //e.g.'FILES';
-            $property       = $query['property'];      //e.g.'ccm:competence_digital2';
+           
+            $apiEndpoint    = isset($query['endpoint']) ?  $query['endpoint'] : 'getSearchCustom';             
+            $contentType    = isset($query['contentType']) ? $query['contentType'] : null;    //e.g.'FILES';
+            $property       = isset($query['property']) ? $query['property'] : null;      //e.g.'ccm:competence_digital2';
             $value          = $query['value'];          //e.g.11990503;
-            $maxItems       = 10;
+            $maxItems       = 40;
             $skipCount      = 0;
             
-            $nodes      = $this->getSearchCustom('-home-', array ('contentType' =>$contentType, 'property' => $property, 'value' => $value, 'maxItems' => $maxItems, 'skipCount' => $skipCount));
+            //$nodes        = $this->getSearchCustom('-home-', array ('contentType' =>'FILES', 'property' => 'ccm:competence_digital2', 'value' => '11061007', 'maxItems' => 10));
+            switch ($apiEndpoint) {
+                case 'getSearchCustom': $nodes      = $this->getSearchCustom('-home-', array ('contentType' =>$contentType, 'property' => $property, 'value' => $value, 'maxItems' => $maxItems, 'skipCount' => $skipCount));
+                    break;
+                case 'getNodeChildren': $nodes      = $this->getChildren('-home-', $value, array ('maxItems' => $maxItems, 'skipCount' => $skipCount));
+                    break;
+
+                default:
+                    break;
+            }
+            
             //error_log(json_encode($nodes));
             $tmp_file   = new File();
             $tmp_array  = array();
             foreach ($nodes['nodes'] as $node) {
                 //error_log('geht doch'.json_encode($node['preview']['url']));
+                if ($node['mediatype'] == 'folder'){ //todo es muss überlegt werden, ob subfolder geladen werden
+                    continue;
+                }
                 $tmp_file->license      = $node['licenseURL'];
-                $tmp_file->title        = $node['title'];
+                $tmp_file->title        = isset($node['title']) ?  $node['title'] : $node['name'];
                 $tmp_file->type         ='external';
                 $tmp_file->file_context = 5; //--> todo define context!
                 $tmp_file->description  = $node['description'];
                 $tmp_file->file_version['t']['filename'] = $node['preview']['url'];
+                
                 $tmp_file->filename     = $node['contentUrl'];
                 $tmp_file->path         = 'https://hochschul.campus-rlp.de/edu-sharing/components/render/'.$node['ref']['id'];
                 //$tmp_file->path         = $node['contentUrl'];
                 $tmp_file->full_path    = 'https://hochschul.campus-rlp.de/edu-sharing/components/render/'.$node['ref']['id'];
-                error_log($tmp_file->full_path);
+                //error_log($tmp_file->full_path);
                 //$tmp_file->full_path    = $node['contentUrl'];
                 $tmp_file->orgin        = self::PLUGINNAME;
                 $tmp_array[]            = clone $tmp_file;     
             }
+           
             return $tmp_array;
         }
         
@@ -305,13 +356,21 @@ class repository_plugin_edusharing extends repository_plugin_base {
             return $c;
         }
         
-        public function set_link_to_curriculum_db($context_id, $reference_id, $content_type, $propery, $value, $file_context, $file_context_reference_id){
+        public function set_link_to_curriculum_db($context_id, $reference_id, $endpoint, $content_type, $propery, $value, $file_context, $file_context_reference_id){
             //todo: check capability
             // Add Entry to file table
             $f               = new File();
             $f->context_id   = $context_id; 
             $f->reference_id = $reference_id;
-            $f->path         = "contentType={$content_type}&property={$propery}&value={$value}";
+            switch ($endpoint) {
+                case 'getSearchCustom': $f->path  = "endpoint={$endpoint}&contentType={$content_type}&property={$propery}&value={$value}";
+                    break;
+                case 'getNodeChildren':$f->path   = "endpoint={$endpoint}&value={$value}";
+                    break;
+
+                default:
+                    break;
+            }
             $f->filename     = '';
             $f->author       = '';
             $f->license      = '';
