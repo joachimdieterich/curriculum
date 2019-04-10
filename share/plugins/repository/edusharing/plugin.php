@@ -248,7 +248,7 @@ class repository_plugin_edusharing extends repository_plugin_base {
         //https://[EDUSHARINGDOMAIN]/edu-sharing/swagger/#!/SEARCH_v1/searchByProperty
         public function getSearchCustom($repository, $params) {
             $ret =$this->call ( $this->repoUrl . '/rest/search/v1/custom/' . $repository.'?'.http_build_query($params));
-            
+            //error_log($ret);
             return json_decode($ret, true);
 	}
         
@@ -313,10 +313,10 @@ class repository_plugin_edusharing extends repository_plugin_base {
                 $tmp_file->description  = $node['description'];
                 $tmp_file->file_version['t']['filename'] = $node['preview']['url'];
                 
-                $tmp_file->filename     = $node['contentUrl'];
-                $tmp_file->path         = 'https://hochschul.campus-rlp.de/edu-sharing/components/render/'.$node['ref']['id'];
+                $tmp_file->filename     = $this->repoUrl . '/components/render/' .$node['ref']['id'];
+                $tmp_file->path         = $this->repoUrl . '/components/render/'.$node['ref']['id'];
                 //$tmp_file->path         = $node['contentUrl'];
-                $tmp_file->full_path    = 'https://hochschul.campus-rlp.de/edu-sharing/components/render/'.$node['ref']['id'];
+                $tmp_file->full_path    = $this->repoUrl . '/components/render/'.$node['ref']['id'];
                 //error_log($tmp_file->full_path);
                 //$tmp_file->full_path    = $node['contentUrl'];
                 $tmp_file->orgin        = self::PLUGINNAME;
