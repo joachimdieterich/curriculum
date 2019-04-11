@@ -83,21 +83,21 @@
                 
                 {if checkCapabilities('menu:readObjectives', $my_role_id, false)}
                 <li class="treeview {if $page_action eq 'objectives'}active{/if}">
-                    <a href="index.php?action=objectives&reset=true">
+                    <a id="menu_btn_objectives" href="index.php?action=objectives&reset=true">
                         <i class="fa fa-edit"></i> <span>Lernstand eingeben</span>
                     </a>
                 </li>
                 {/if}
                 {if checkCapabilities('menu:readCourseBook', $my_role_id, false)}
                 <li class="treeview {if $page_action eq 'courseBook'}active{/if}">
-                    <a href="index.php?action=courseBook">
+                    <a id="menu_btn_courseBook" href="index.php?action=courseBook">
                         <i class="fa fa-book"></i> <span>Kursbuch</span>
                     </a>
                 </li>
                 {/if}
                 {if checkCapabilities('menu:readWallet', $my_role_id, false)}
                 <li class="treeview {if $page_action eq 'wallet'}active{/if}">
-                    <a href="index.php?action=wallet">
+                    <a id="menu_btn_wallet" href="index.php?action=wallet">
                         <i class="fa fa-newspaper-o"></i> <span>Sammelmappe</span>
                     </a>
                 </li>
@@ -105,7 +105,7 @@
 
                 {if checkCapabilities('menu:readCurriculum', $my_role_id, false)}
                 <li class="treeview {if $page_action eq 'curriculum'}active{/if}">
-                    <a href="index.php?action=curriculum">
+                    <a id="menu_btn_curriculum" href="index.php?action=curriculum">
                         <i class="fa fa-th"></i> <span>Lehrpläne</span>
                     </a>
                 </li>                  
@@ -113,7 +113,7 @@
 
                 {if checkCapabilities('menu:readGroup', $my_role_id, false)}
                     <li class="treeview {if $page_action eq 'group'}active{/if}">
-                        <a href="index.php?action=group">
+                        <a id="menu_btn_group" href="index.php?action=group">
                             <i class="fa fa-group"></i><span>Lerngruppen</span>
                         </a>
                     </li>
@@ -121,7 +121,7 @@
 
                 {if checkCapabilities('menu:readUser', $my_role_id, false)}
                     <li class="treeview {if $page_action eq 'user'}active{/if}">
-                        <a id="menu_btn_user" href="index.php?action=user">
+                        <a id="menu_btn_user" id="menu_btn_user" href="index.php?action=user">
                             <i class="fa fa-user"></i><span>Benutzerverwaltung</span>
                         </a>
                     </li>
@@ -129,56 +129,56 @@
 
                 {if checkCapabilities('menu:readRole', $my_role_id, false)}
                     <li class="treeview {if $page_action eq 'role'}active{/if}">
-                        <a href="index.php?action=role">
+                        <a id="menu_btn_role" href="index.php?action=role">
                             <i class="fa fa-key"></i><span>Rollenverwaltung</span>
                         </a>
                     </li>
                 {/if}
                 {if checkCapabilities('menu:readGrade', $my_role_id, false)}
                     <li class="treeview {if $page_action eq 'grade'}active{/if}">
-                        <a href="index.php?action=grade">
+                        <a id="menu_btn_grade" href="index.php?action=grade">
                             <i class="fa fa-signal"></i><span>Klassenstufen</span>
                         </a>
                     </li>
                 {/if}
                 {if checkCapabilities('menu:readSubject', $my_role_id, false)}
                     <li class="treeview {if $page_action eq 'subject'}active{/if}">
-                        <a href="index.php?action=subject">
+                        <a id="menu_btn_subject" href="index.php?action=subject">
                             <i class="fa fa-language"></i><span>Fächer</span>
                         </a>
                     </li>
                 {/if}
                 {if checkCapabilities('menu:readSemester', $my_role_id, false)}
                     <li class="treeview {if $page_action eq 'semester'}active{/if}">
-                        <a href="index.php?action=semester">
+                        <a id="menu_btn_semester" href="index.php?action=semester">
                             <i class="fa fa-history"></i><span>Lernzeiträume</span>
                         </a>
                     </li>
                 {/if}
                 {if checkCapabilities('menu:readBackup', $my_role_id, false)}
                     <li class="treeview {if $page_action eq 'backup'}active{/if}">
-                        <a href="index.php?action=backup">
+                        <a id="menu_btn_backup" href="index.php?action=backup">
                             <i class="fa fa-cloud-download"></i><span>Backup</span>
                         </a>
                     </li>
                 {/if}
                 {if checkCapabilities('menu:readCertificate', $my_role_id, false)}   
                     <li class="treeview {if $page_action eq 'certificate'}active{/if}">
-                        <a href="index.php?action=certificate">
+                        <a id="menu_btn_certificate" href="index.php?action=certificate">
                             <i class="fa fa-certificate"></i><span>Zertifikate</span>
                         </a>
                     </li>
                 {/if}
                 {if checkCapabilities('menu:readInstitution', $my_role_id, false)}   
                     <li class="treeview {if $page_action eq 'institution'}active{/if}">
-                        <a href="index.php?action=institution">
+                        <a id="menu_btn_institution" href="index.php?action=institution">
                             <i class="fa fa-university"></i><span>Institutionen</span>
                         </a>
                     </li>
                 {/if}
                 {if checkCapabilities('menu:readSchooltype', $my_role_id, false)}   
                     <li class="treeview {if $page_action eq 'schooltype'}active{/if}">
-                        <a href="index.php?action=schooltype">
+                        <a id="menu_btn_schooltype" href="index.php?action=schooltype">
                             <i class="fa fa-list-alt"></i><span>Schul-/Institutionstypen</span>
                         </a>
                     </li>
@@ -189,7 +189,7 @@
             <li class="header bg-light-blue">Administration</li>    
             
             <li {if $page_action eq 'log'}class="active"{/if}>
-                <a href="index.php?action=log">
+                <a id="menu_btn_log" href="index.php?action=log">
                     <i class="fa fa-list"></i><span>Berichte</span>
                 </a>
             </li>
