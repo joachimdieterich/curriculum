@@ -7,7 +7,7 @@
           <ul class="sidebar-menu">
             {if isset($myChildren)}
                 <li class="header bg-light-blue">Meine Kinder</li>
-                {Form::input_select('my_children', '', $myChildren, 'firstname, lastname', 'id', $my_child_id, '',"window.location.assign('index.php?action=children&reset=true&child_id='+this.value);" ,'Bitte auswählen...','col-xs-0', 'col-xs-12')}
+                {Form::input_select('my_children', '', $myChildren, 'firstname, lastname', 'id', $my_child_id, '',"window.location.assign('index.php?action=children&reset=true&child_id='+this.value);" ,'Bitte auswählen...','','','', 'margin-bottom-none')}
             {/if}  
             <li class="header bg-light-blue">{$lang['SYS_CURRICULA']}</li>
             {if $my_enrolments != ''}

@@ -147,7 +147,7 @@ class Form {
      * @param type $class_right
      * @return string
      */
-    public static function input_select($id, $label, $select_data, $select_label, $select_value, $input, $error, $onchange= '', $placeholder ='---', $class_left='col-sm-3', $class_right='col-sm-9', $disabled = ''){
+    public static function input_select($id, $label, $select_data, $select_label, $select_value, $input, $error, $onchange= '', $placeholder ='---', $class_left='col-sm-3', $class_right='col-sm-9', $disabled = '', $css_group = ''){
         $limiter        = ' '; //todo: $params array 
         $select_entries = $placeholder; 
         $form = '<select id="'.$id.'" name="'.$id.'" class="select2 form-control" onchange="'.$onchange.'" '.$disabled.'>';
@@ -175,7 +175,7 @@ class Form {
             $form .= '<input type="hidden" name="'.$id.'" value="'.$input.'" />'; //to get value on submit
         }
         
-        return self::form_group($id, $form, $label, $error, $class_left, $class_right);
+        return self::form_group($id, $form, $label, $error, $class_left, $class_right, $css_group);
     }
     public static function input_select_multiple($params){
         /*$id, $label, $select_data, $select_label, $select_value, $input*/
@@ -427,11 +427,11 @@ class Form {
         return $html;   
     }
     
-    private static function form_group($id, $content, $label = '', $e = null, $css_l = 'col-sm-3', $css_r = 'col-sm-9') {
+    private static function form_group($id, $content, $label = '', $e = null, $css_l = 'col-sm-3', $css_r = 'col-sm-9', $css_group = '') {
         if ($css_l == '' AND $css_r = ''){
             return $content; //nur das Input-Element wird ausgegeben.
         } else {
-            $form =  "<div id='{$id}_form_group' class='form-group ".validate_msg($e, $id, true)."'>";
+            $form =  "<div id='{$id}_form_group' class='form-group " . $css_group . " " . validate_msg($e, $id, true) . "'>";
             if ($css_l != ''){ // if left class is empty no label is set
                 $form .= "<label class='control-label {$css_l}' for='{$id}'>{$label}</label>";
             }
