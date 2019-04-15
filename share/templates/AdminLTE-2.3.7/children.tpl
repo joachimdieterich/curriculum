@@ -15,20 +15,16 @@
 <section id="section_content" class="content">
     <div id="row_content" class="row">
         <div class="col-sm-12">
-            <div>
-                {if isset($courses)}
-                    <form method='post' action='index.php?action=children&course={$selected_curriculum_id}'>        
-                        <div class="form-horizontal">
-                            <div class="row">
-                                <div class="col-md-4 col-sm-12">
-                                    {Form::input_select('course', '', $courses, 'curriculum', 'id', $selected_curriculum_id, null, "window.location.assign('index.php?action=children&curriculum_id='+this.value);", 'Lehrplan wählen...', '', 'col-sm-12')}
-                                </div>
-                            </div>
+            {if isset($courses)}
+                <form method='post' action='index.php?action=children&course={$selected_curriculum_id}'>        
+                    <div class="form-horizontal">
+                        <div class="col-md-4 col-sm-12">
+                             {Form::input_select('course', '', $courses, 'curriculum', 'id', $selected_curriculum_id, null, "window.location.assign('index.php?action=children&curriculum_id='+this.value);", 'Lehrplan wählen...', '', 'col-sm-12')}
                         </div>
-                    </form>
-                {else}<strong>Ihr Kind ist in keine Lehrpläne eingeschrieben</strong>
-                {/if}        
-            </div>
+                    </div>
+                </form>
+            {else}<strong>Ihr Kind ist in keine Lehrpläne eingeschrieben</strong>
+            {/if}        
         </div>
     </div>
     
