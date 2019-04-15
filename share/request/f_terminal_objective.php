@@ -110,11 +110,11 @@ $content = '<form id="form_terminal_objective" method="post" action="../share/pr
 <input type="hidden" name="func" id="func" value="'.$func.'"/>'; 
 $content .= Form::input_textarea('terminal_objective', 'Thema', $terminal_objective, $error, 'z.B. ');
 $content .= Form::input_textarea('description', 'Beschreibung', $description, $error, 'z.B. ');
-$content .= Form::input_select('type_id', 'Typ', $ter_objective->getType(), 'type', 'id', $type_id , $error);
+$content .= Form::input_select('type_id', 'Typ', $ter_objective->getType(), 'type', 'id', $type_id , $error, '$(\'#form_terminal_objective_submit_btn\').html($( \'#type_id option:selected\' ).text()+\' speichern\');');
 $content .= Form::input_text('reference', 'Externe Referenz', $reference, $error, 'Beschreibung');
 $content .= Form::input_color(array('id' => 'color', 'rgb' => $color, 'error' => $error));
 $content .= '</form>';
-$footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_terminal_objective\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';
+$footer   = '<button id="form_terminal_objective_submit_btn" type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_terminal_objective\').submit();"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>';
 
 $html     = Form::modal(array('title'     => $header,
                               'content'   => $content, 
