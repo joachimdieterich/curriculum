@@ -105,7 +105,7 @@ class Form {
     public static function input_checkbox($id, $label, $input, $error, $type='checkbox', $onclick='', $class_left='col-sm-3', $class_right='col-sm-9'){
         $form = '<input id="'.$id.'" name="'.$id.'" type="'.$type.'"';
         if ($input == true){
-            $form .= 'checked="checked';
+            $form .= 'checked="checked"';
         }    
         $form .= ' onclick="'.$onclick.'" />';
         return self::form_group($id, $form, $label, $error, $class_left, $class_right);
