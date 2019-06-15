@@ -29,10 +29,6 @@ global $CFG, $PAGE, $USER, $LOG;
 if (!isset($_SESSION['USER'])){ die(); }    // logged in?
 $USER       = $_SESSION['USER'];
 
-/*foreach ($_POST as $key => $value) {
-    $$key = $value;
-}*/
-
 $file       = new File();
 
 /* set defaults*/
@@ -58,9 +54,9 @@ $fileURL            = NULL;
 
 //$v_error  = false;
 /* get url parameters */
-foreach ($_GET  as $key => $value) { $$key = $value; } 
+extract($_GET);
 /* get form data */
-foreach ($_POST as $key => $value) { $$key = $value; }
+extract($_POST);
 
 // Pfade
 switch ($context) {

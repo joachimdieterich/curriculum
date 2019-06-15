@@ -50,9 +50,7 @@ $error          = null;
 $object         = file_get_contents("php://input");
 $data           = json_decode($object, true);
 if (is_array($data)) {
-    foreach ($data as $key => $value){
-        $$key = $value;
-    }
+    extract($data);
 }
             
 if (isset($func)){
@@ -64,18 +62,14 @@ if (isset($func)){
                          $header            = 'Profil bearbeiten';
                          $user->load('id', filter_input(INPUT_GET,  'id', FILTER_VALIDATE_INT));
                          $user_id           = filter_input(INPUT_GET,  'id', FILTER_VALIDATE_INT);
-                         foreach ($user as $key => $value){
-                             $$key = $value;
-                         }
+                         extract($user);
         break;
         
         case "edit":     checkCapabilities('user:update',    $USER->role_id, false, true);
                          $header            = 'Mein Profil aktualisieren';
                          $user->load('id',    $USER->id);
                          $user_id           = $USER->id;//Läd die bestehenden Daten aus der db
-                         foreach ($user as $key => $value){
-                             $$key = $value;
-                         }
+                         extract($user);
             break;
         default: break;
     }
@@ -84,9 +78,7 @@ if (isset($func)){
 /* if validation failed, get formdata from session*/
 if (isset($_SESSION['FORM'])){
     if (is_object($_SESSION['FORM'])) {
-        foreach ($_SESSION['FORM'] as $key => $value){
-            $$key = $value;
-        }
+        extract($_SESSION['FORM']);
     }
 }
 

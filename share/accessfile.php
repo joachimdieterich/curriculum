@@ -28,9 +28,7 @@ include_once('setup.php');  //Läd Klassen, DB Zugriff und Funktionen
 global $CFG, $USER;
 
 /* get url parameters */
-foreach ($_GET  as $key => $value) { 
-    $$key = $value; 
-} 
+extract($_GET);
 
 if (isset($token)){                  // Zugriff über token. Externe Services. 
     $f      = new File();

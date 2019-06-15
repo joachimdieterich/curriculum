@@ -77,9 +77,7 @@ switch ($func) {
     case 'edit':    $ter_objective->id            = $_GET['id'];
                     $terminal_objective_id        = $ter_objective->id;
                     $ter_objective->load();                                 //Läd die bestehenden Daten aus der db
-                    foreach ($ter_objective as $key => $value){
-                        $$key = $value;
-                    }
+                    extract($ter_objective);
                     
                     if (isset($CFG->settings->repository->omega)){ // prüfen, ob omega Repository Plugin vorhanden ist. //todo global solution for plugins
                         $reference  = $CFG->settings->repository->omega->getReference('terminal_objective', $ter_objective->id);
@@ -98,9 +96,7 @@ switch ($func) {
 /* if validation failed, get formdata from session*/
 if (isset($_SESSION['FORM'])){
     if (is_object($_SESSION['FORM'])) {
-        foreach ($_SESSION['FORM'] as $key => $value){
-            $$key = $value;
-        }
+        extract($_SESSION['FORM']);
     }
 }
 

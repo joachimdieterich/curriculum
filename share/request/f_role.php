@@ -42,9 +42,7 @@ switch ($func) {
     case 'edit':    $edit_role        = new Roles();
                     $edit_role->load('id', filter_input(INPUT_GET, 'id', FILTER_UNSAFE_RAW), true);                                     //load capabilities // INPUT_GET kein INT da Systemrolle -1
                     $role_id          = $edit_role->id;
-                    foreach ($edit_role as $key => $value){
-                        $$key = $value;
-                    }
+                    extract($edit_role);
                     $header           = 'Benutzerrolle aktualisieren';           
         break;
     default:
@@ -53,9 +51,7 @@ switch ($func) {
 /* if validation failed */
 if (isset($_SESSION['FORM'])){
     if (is_object($_SESSION['FORM'])) {
-        foreach ($_SESSION['FORM'] as $key => $value){
-            $$key = $value;
-        }
+        extract($_SESSION['FORM']);
     }
 }
 

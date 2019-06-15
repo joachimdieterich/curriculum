@@ -43,9 +43,7 @@ $id                 = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 $object             = file_get_contents("php://input");
 $data               = json_decode($object, true);
 if (is_array($data)) {
-    foreach ($data as $key => $value){
-        $$key = $value;   
-    }
+    extract($data);
 }
 
 switch ($func) {

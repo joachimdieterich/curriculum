@@ -2883,9 +2883,7 @@ public static function quote_reference($quotes){
     
     public static function objective_list($params){
         global $USER;
-        foreach($params AS $key=>$value){
-            $$key = $value;
-        }
+        extract($params);
         
         switch ($dependency){
             case 'courseBook':

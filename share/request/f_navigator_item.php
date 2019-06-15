@@ -47,9 +47,7 @@ $func                 = $_GET['func'];
 switch ($func) {
     case 'edit':    $navigator->load('navigator_block', filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
                     $header                       = 'Navigations-Element aktualisieren'; 
-                    foreach ($navigator AS $key => $value){
-                        $$key = $value;
-                    }
+                    extract($navigator);
         break;
     case 'new':     $navigator->nb_id           = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT); // new case: id == ter_id
                     $header                       = 'Navigations-Element hinzufügen';
@@ -62,9 +60,7 @@ switch ($func) {
 /* if validation failed, get formdata from session*/
 if (isset($_SESSION['FORM'])){
     if (is_object($_SESSION['FORM'])) {
-        foreach ($_SESSION['FORM'] as $key => $value){
-            $$key = $value;
-        }
+        extract($_SESSION['FORM']);
     }
 }
 

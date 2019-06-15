@@ -41,9 +41,7 @@ switch ($func) {
     case 'edit':    $sub_obj->id       = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);  // edit case: id == ena_id
                     $subject_id        = $sub_obj->id;
                     $sub_obj->load();                                 //Läd die bestehenden Daten aus der db
-                    foreach ($sub_obj as $key => $value){
-                        $$key = $value;
-                    }
+                    extract($sub_obj);
                     $header            = 'Fach aktualisieren';           
         break;
     case 'new':     $header            = 'Fach hinzufügen';
@@ -56,9 +54,7 @@ switch ($func) {
 /* if validation failed, get formdata from session*/
 if (isset($_SESSION['FORM'])){
     if (is_object($_SESSION['FORM'])) {
-        foreach ($_SESSION['FORM'] as $key => $value){
-            $$key = $value;
-        }
+        extract($_SESSION['FORM']);
     }
 }
 

@@ -43,9 +43,7 @@ $error          = null;
 $object         = file_get_contents("php://input");
 $data           = json_decode($object, true);
 if (is_array($data)) {
-    foreach ($data as $key => $value){
-        $$key = $value;
-    }
+    extract($data);
 }
             
 if (isset($_GET['func'])){
@@ -57,9 +55,7 @@ if (isset($_GET['func'])){
                         $header   = 'Sammelmappe bearbeiten';
                         $edit     = true; 
                         $w        = new Wallet(filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
-                        foreach ($w as $key => $value){
-                             $$key = $value;
-                         }
+                        extract($w);
             break;
         default: break;
     }
@@ -68,9 +64,7 @@ if (isset($_GET['func'])){
 /* if validation failed, get formdata from session*/
 if (isset($_SESSION['FORM'])){
     if (is_object($_SESSION['FORM'])) {
-        foreach ($_SESSION['FORM'] as $key => $value){
-            $$key = $value;
-        }
+        extract($_SESSION['FORM']);
     }
 }
 

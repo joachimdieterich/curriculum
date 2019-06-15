@@ -33,9 +33,7 @@ $error          = null;
 $object         = file_get_contents("php://input");
 $data           = json_decode($object, true);
 if (is_array($data)) {
-    foreach ($data as $key => $value){
-        $$key = $value;
-    }
+    extract($data);
 }
             
 if (isset($func)){
@@ -56,9 +54,7 @@ if (isset($func)){
 /* if validation failed, get formdata from session*/
 if (isset($_SESSION['FORM'])){
     if (is_object($_SESSION['FORM'])) {
-        foreach ($_SESSION['FORM'] as $key => $value){
-            $$key = $value;
-        }
+        extract($_SESSION['FORM']);
     }
 }
 $footer  = '<button type="submit" class="btn btn-primary pull-right" onclick="closePopup()"><i class="fa fa-commenting-o margin-r-10"></i> Schließen</button>'; //Default

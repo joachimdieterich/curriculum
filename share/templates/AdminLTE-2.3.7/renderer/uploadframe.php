@@ -50,10 +50,10 @@ $error      = '';
 $image      = '';
 $copy_link  = '';
 
-/* get url parameters */
-foreach ($_GET  as $key => $value) { $$key = $value; } 
-/* get form data */
-foreach ($_POST as $key => $value) { $$key = $value; }
+
+extract($_GET); /* get url parameters */
+extract($_POST); /* get form data */
+
 if (isset($paginator) AND isset($paginator_search) AND isset($order)) {
     if ($paginator_search == '%'){
         unset ($_SESSION['SmartyPaginate'][$paginator]['pagi_search']);
