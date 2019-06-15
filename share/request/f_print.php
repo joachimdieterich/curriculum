@@ -47,7 +47,7 @@ if (is_array($data)) {
 }
 
 switch ($func) {
-    case 'curriculum': $header = 'Lehrplan drucken';
+    case 'curriculum': $header = 'Drucken';
                        
         break;
    
@@ -73,7 +73,7 @@ $content  .= Form::input_checkbox('print_reference', 'Lehrplanbezüge', $print_r
 
 
 $content .= '</form>';
-$footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_print\').submit();closePopup(\'null\');"><i class="fa fa-floppy-o margin-r-5"></i>'.$header.'</button>'; 
+$footer   = '<button type="submit" class="btn btn-primary pull-right" onclick="document.getElementById(\'form_print\').submit();closePopup(\'null\');"><i class="fa fa-print margin-r-5"></i>'.$header.'</button>'; 
 
 $html = Form::modal(array('target'      => 'null',
                           'title'       => $header,
