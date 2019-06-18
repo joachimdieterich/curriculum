@@ -56,8 +56,9 @@ class Config {
              * check for plugin and load existing plugins
              */
             switch ($result->name) {
-                case 'repository':
                 case 'auth':
+                case 'repository':
+                case 'tool':
                 case 'webservice':  if (!isset($CFG->settings->{$result->name})){
                                         $CFG->settings->{$result->name} = new stdClass();
                                     }

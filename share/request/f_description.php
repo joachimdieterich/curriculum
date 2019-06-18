@@ -51,6 +51,8 @@ switch ($func) {
                                 $ena->id    = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
                                 $ena->load();  
                                 $ter->id    = $ena->terminal_objective_id;  
+                                
+                                
                                 //$_SESSION['anchor'] = 'ena_'.$ena->id;
         break;
 
@@ -71,8 +73,30 @@ switch ($func) {
                                 if (!isset($ena->description) && !isset($ter->description)){    
                                   $content .= 'Keine Beschreibung vorhanden';
                                 }
+                                
+                                /* additional content*/
+                                $additional_content         = new Content();
+                                $content_entries = $additional_content->get($func, filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
+                              
+                                if (empty($content_entries)) break; 
+                                
+                                foreach ($content_entries AS $c_entry){
+                                    $content .= '<hr>';
+                                    $content .= '<span class="pull-right">';
+                                    if (checkCapabilities('content:delete', $USER->role_id, false, true)){
+                                        $content   .= '<a onclick="processor(\'delete\', \'content\', '.$c_entry->id.', { \'ref_id\': '.filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT).'});" class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-trash"></i></a>';
+                                    }
+                                    
+                                    if (checkCapabilities('content:update', $USER->role_id, false, true)){
+                                        $content   .= '<a onclick="formloader(\'content\', \'edit\','.$c_entry->id.')" class="btn btn-default btn-xs pull-right" style="margin-right:5px;"><i class="fa fa-edit"></i></a>';
+                                    }
+                                    $content .= '</span>';
+                                    $content .= '<p><strong>'.$c_entry->title.'</strong></p>';
+                                    $content .= '<p>'.$c_entry->content.'<p>';
+                                }
         break;
 }
+
 
 
 

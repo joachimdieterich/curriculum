@@ -48,7 +48,7 @@ class TerminalObjective {
      * Hex color code #123456
      * @var string
      */
-    public $color; 
+    public $color = '#3bc95a'; 
     /**
      * Timestamp when Grade was created
      * @var timestamp
@@ -92,7 +92,9 @@ class TerminalObjective {
         $db = DB::prepare('SELECT MAX(order_id) as max FROM terminalObjectives WHERE curriculum_id = ?');
         $db->execute(array($this->curriculum_id));
         $result = $db->fetchObject();
-        $this->order_id = $result->max+1;
+        if (!isset($this->order_id)){
+            $this->order_id = $result->max+1;
+        }
         $db = DB::prepare('INSERT INTO terminalObjectives (terminal_objective,description,curriculum_id,color,order_id,creator_id, type_id) 
                     VALUES (?,?,?,?,?,?,?)');
         $db->execute(array($this->terminal_objective, $this->description, $this->curriculum_id, $this->color, $this->order_id, $USER->id, $this->type_id));

@@ -84,7 +84,7 @@ if($validated_data === false) {/* validation failed */
         $content->update();
     }  else {
         checkCapabilities('content:add', $USER->role_id);   //has to be done here --> content class is used in wallet with permission wallet:add
-        $content->add(); 
+        $content->add(true); 
     }
     switch ($content->context_id) {
         case 4: 

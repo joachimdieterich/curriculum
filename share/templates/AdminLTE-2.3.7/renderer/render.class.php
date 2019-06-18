@@ -751,6 +751,7 @@ class Render {
                                              $html  .='pull-right" onclick=\'formloader("link_module","enabling_objective","'.$objective->id.'","","webservice/moodle");\'></span>';
                                          }   
                                      }
+                                    $html  .='<span class="fa fa-file-text-o pull-right box-sm-icon '.$icon_class.'" style=" margin-right:3px;" data-toggle="tooltip" title="Text hinzufügen" onclick="formloader(\'content\', \'new\', null, {\'context_id\':\''.$_SESSION['CONTEXT'][$type]->context_id.'\', \'reference_id\':\''.$objective->id.'\'});"></span>';
                                  } else {
 
                                      if ($type != 'terminal_objective'){
