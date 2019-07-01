@@ -43,8 +43,8 @@ class repository_plugin_edusharing extends repository_plugin_base {
 		$this->grant_type       = $this->config('grant_type');
 		$this->client_id        = $this->config('client_id');
 		$this->client_secret    = $this->config('client_secret');
-		$this->repoUrl          = $this->config('repoUrl');
-		$this->repoUser         = $this->config('repoUser');
+		$this->repoUrl          = $this->config('repoUrl');         
+		$this->repoUser         = $this->config('repoUser');        //Benutzer soll in Zukunft der authentifizierte User sein
 		$this->repoPwd          = $this->config('repoPwd');
                 /* set Proxy settings */
                 if (null !== $this->config('proxy')){
