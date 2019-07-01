@@ -40,7 +40,9 @@ switch ($func) {
     case 'edit':    $grade_obj->id     = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);  // edit case: id == ena_id
                     $grade_id          = $grade_obj->id;
                     $grade_obj->load();                                 //Läd die bestehenden Daten aus der db
-                    extract($grade_obj);
+                    foreach ($grade_obj as $key => $value){
+                        $$key = $value;
+                    }
                     $header                       = 'Klassenstufe aktualisieren';           
         break;
     case 'new':     $header                       = 'Klassenstufe hinzufügen';
@@ -53,8 +55,10 @@ switch ($func) {
 /* if validation failed, get formdata from session*/
 if (isset($_SESSION['FORM'])){
     if (is_object($_SESSION['FORM'])) {
-        extract($_SESSION['FORM']);
+        foreach ($_SESSION['FORM'] as $key => $value){
+            $$key = $value;
     }
+}
 }
 
 $content = '<form id="form_grade" method="post" action="../share/processors/fp_grade.php">

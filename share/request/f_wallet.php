@@ -55,7 +55,9 @@ if (isset($_GET['func'])){
                         $header   = 'Sammelmappe bearbeiten';
                         $edit     = true; 
                         $w        = new Wallet(filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
-                        extract($w);
+                        foreach ($w as $key => $value){
+                             $$key = $value;
+                         }
             break;
         default: break;
     }
@@ -64,8 +66,10 @@ if (isset($_GET['func'])){
 /* if validation failed, get formdata from session*/
 if (isset($_SESSION['FORM'])){
     if (is_object($_SESSION['FORM'])) {
-        extract($_SESSION['FORM']);
+        foreach ($_SESSION['FORM'] as $key => $value){
+            $$key = $value;
     }
+}
 }
 
 $content ='<form id="form_wallet" class="form-horizontal" role="form" method="post" action="../share/processors/fp_wallet.php">'

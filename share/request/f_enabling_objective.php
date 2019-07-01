@@ -42,7 +42,9 @@ switch ($func) {
     case 'edit':    $ena_objective->id            = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);  // edit case: id == ena_id
                     $enabling_objective_id        = $ena_objective->id;
                     $ena_objective->load();                                 //Läd die bestehenden Daten aus der db
-                    extract($ena_objective);
+                    foreach ($ena_objective as $key => $value){
+                        $$key = $value;
+                    }
                     if (isset($CFG->repository)){ // prüfen, ob Repository Plugin vorhanden ist.
                         $reference                = $CFG->repository->getReference('enabling_objective', $ena_objective->id);
                     }
@@ -63,7 +65,9 @@ switch ($func) {
 /* if validation failed, get formdata from session*/
 if (isset($_SESSION['FORM'])){
     if (is_object($_SESSION['FORM'])) {
-        extract($_SESSION['FORM']);
+        foreach ($_SESSION['FORM'] as $key => $value){
+            $$key = $value;
+        }
     }
 }
 

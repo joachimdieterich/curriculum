@@ -50,7 +50,9 @@ if (isset($_GET['func'])){
                         $header   = 'Hilfe-Datei bearbeiten';
                         $edit     = true; 
                         $h        = new Help(filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
-                        extract($h);
+                        foreach ($h as $key => $value){
+                             $$key = $value;
+                         }
             break;
         default: break;
     }
@@ -59,8 +61,10 @@ if (isset($_GET['func'])){
 /* if validation failed, get formdata from session*/
 if (isset($_SESSION['FORM'])){
     if (is_object($_SESSION['FORM'])) {
-        extract($_SESSION['FORM']);
+        foreach ($_SESSION['FORM'] as $key => $value){
+            $$key = $value;
     }
+}
 }
 
 $content ='<form id="form_help" class="form-horizontal" role="form" method="post" action="../share/processors/fp_help.php">

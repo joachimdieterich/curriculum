@@ -68,7 +68,9 @@ if (isset($_GET['func'])){
                         $header  = 'Lehrplan bearbeiten';
                         $cur->id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
                         $cur->load();
-                        extract($cur);
+                        foreach ($cur as $key => $value){
+                            $$key = $value;
+                        }
                         $edit = true; 
             break;
         case "import":  checkCapabilities('curriculum:import',     $USER->role_id, false, true);     //USER berechtigt?
@@ -83,7 +85,9 @@ if (isset($_GET['func'])){
 /* if validation failed, get formdata from session*/
 if (isset($_SESSION['FORM'])){
     if (is_object($_SESSION['FORM'])) {
-        extract($_SESSION['FORM']);
+        foreach ($_SESSION['FORM'] as $key => $value){
+            $$key = $value;
+        }
     }
 }
 

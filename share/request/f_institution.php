@@ -58,7 +58,9 @@ $error                  = null;
 $object                 = file_get_contents("php://input");
 $data                   = json_decode($object, true);
 if (is_array($data)) {
-    extract($data);
+    foreach ($data as $key => $value){
+        $$key = $value;
+}
 }
             
 if (isset($_GET['func'])){
@@ -75,7 +77,9 @@ if (isset($_GET['func'])){
                         $ins        = new Institution();
                         $ins->id    = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
                         $ins->load('id', null, true);
-                        extract($ins);
+                        foreach ($ins as $key => $value){
+                             $$key = $value;
+                         }
                         $users = new User();
                         $possible_supporting_users = $users->userList('institution_overview', '', false, $id);
                         //error_log(json_encode($support_user_ids));
@@ -87,7 +91,9 @@ if (isset($_GET['func'])){
 /* if validation failed, get formdata from session*/
 if (isset($_SESSION['FORM'])){
     if (is_object($_SESSION['FORM'])) {
-        extract($_SESSION['FORM']);
+        foreach ($_SESSION['FORM'] as $key => $value){
+            $$key = $value;
+        }
     }
 }
 

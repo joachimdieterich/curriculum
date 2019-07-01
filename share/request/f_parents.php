@@ -34,7 +34,9 @@ $error          = null;
 $object         = file_get_contents("php://input");
 $data           = json_decode($object, true);
 if (is_array($data)) {
-    extract($data);
+    foreach ($data as $key => $value){
+        $$key = $value;
+}
 }
             
 if (isset($func)){

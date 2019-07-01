@@ -54,8 +54,10 @@ if (isset($func)){
 /* if validation failed, get formdata from session*/
 if (isset($_SESSION['FORM'])){
     if (is_object($_SESSION['FORM'])) {
-        extract($_SESSION['FORM']);
+        foreach ($_SESSION['FORM'] as $key => $value){
+            $$key = $value;
     }
+}
 }
 $footer  = '<button type="submit" class="btn btn-primary pull-right" onclick="closePopup()"><i class="fa fa-commenting-o margin-r-10"></i> Schließen</button>'; //Default
 if (isset($acc_id->id)){

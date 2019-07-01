@@ -37,7 +37,9 @@ $error                  = null;
 $object                 = file_get_contents("php://input");
 $data                   = json_decode($object, true);
 if (is_array($data)) {
-    extract($data);
+    foreach ($data as $key => $value){
+        $$key = $value;
+}
 }
             
 if (isset($_GET['func'])){
@@ -54,7 +56,9 @@ if (isset($_GET['func'])){
                         $sc        = new Schooltype();
                         $sc->id    = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
                         $sc->load();
-                        extract($sc);
+                        foreach ($sc as $key => $value){
+                             $$key = $value;
+                         }
             break;
         default: break;
     }

@@ -63,8 +63,10 @@ if (isset($func)){
 /* if validation failed, get formdata from session*/
 if (isset($_SESSION['FORM'])){
     if (is_object($_SESSION['FORM'])) {
-        extract($_SESSION['FORM']);
+        foreach ($_SESSION['FORM'] as $key => $value){
+            $$key = $value;
     }
+}
 }
    
 $content  = '<form id="form_backup"  class="form-horizontal" role="form" method="post" action="../share/processors/fp_backup.php">

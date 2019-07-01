@@ -42,7 +42,9 @@ $object         = file_get_contents("php://input");
 $data           = json_decode($object, true);
 
 if (is_array($data)) {
-    extract($data);
+    foreach ($data as $key => $value){
+        $$key = $value;
+}
 }
 checkCapabilities('wallet:workon',    $USER->role_id, false, true);            
 if (isset($_GET['func'])){
@@ -68,7 +70,9 @@ if (isset($_GET['func'])){
                             $edit       = true; 
                             $walletc    = new WalletContent(filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
                             
-                            extract($walletc);
+                            foreach ($walletc as $key => $value){
+                                $$key = $value;
+                            }
                             switch ($context) {
                                 case 'content':     $type = 'html';
                                                     $co    = new Content();
@@ -89,8 +93,10 @@ if (isset($_GET['func'])){
 /* if validation failed, get formdata from session*/
 if (isset($_SESSION['FORM'])){
     if (is_object($_SESSION['FORM'])) {
-        extract($_SESSION['FORM']);
+        foreach ($_SESSION['FORM'] as $key => $value){
+            $$key = $value;
     }
+}
 }
 
 $content ='<form id="form_wallet_content" class="form-horizontal" role="form" method="post" action="../share/processors/fp_wallet_content.php">'
