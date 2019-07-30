@@ -494,6 +494,7 @@ class Backup {
                 
                 $this->appendFile($xml, $ter, $ter_value->id, 'terminal_objective', $file); // terminal objective material
                 $this->appendReference($xml, $ter, $ter_value->id, 'terminal_objective');   //append references
+                $this->appendQuoteSubscription($xml, $ter, $ter_value->id, 'terminal_objective');   //append references
                 
                 /* enabling objectives */
                 if (count($ter_value->enabling_objectives) >= 1 AND $ter_value->enabling_objectives != false){
@@ -510,6 +511,7 @@ class Backup {
                         
                         $this->appendFile($xml, $ena, $ena_value->id, 'enabling_objective', $file); // enabling objective material
                         $this->appendReference($xml, $ena, $ena_value->id, 'enabling_objective');   //append references
+                        $this->appendQuoteSubscription($xml, $ena, $ena_value->id, 'enabling_objective');   //append references
                         $ter->appendChild( $ena );                              // append enabling_objective to terminal_objective
                     }
                 }
@@ -540,6 +542,11 @@ class Backup {
                 $content_tag->appendChild($content_tag_title);
                 $content_tag_content = $xml->createElement("text", htmlspecialchars($con_value->content, ENT_QUOTES));
                 $content_tag->appendChild($content_tag_content);   
+                
+                //set quote 
+                $this->appendQuote($xml, $content_tag, $con_value->id, 'content');
+                //
+                
                 $parent_node->appendChild($content_tag);
             }
         }
@@ -583,6 +590,29 @@ class Backup {
                 
                 $parent_node->appendChild( $child );        // Datei enabling objective zuordnen
             }
+        }
+    }
+    
+    
+    
+    private function appendQuote($xml, $parent_node, $ref_id, $context){
+        $db = DB::prepare('SELECT * FROM quote WHERE context_id = ? AND reference_id = ?');
+        $db->execute(array( $_SESSION['CONTEXT'][$context]->context_id, $ref_id));
+        while($result = $db->fetchObject()) { 
+            $child  = $xml->createElement('quote');
+            $child->setAttribute('unique_id',  $result->id); //
+            
+            $parent_node->appendChild( $child );        // Datei enabling objective zuordnen
+        }
+    }
+    
+    private function appendQuoteSubscription($xml, $parent_node, $ref_id, $context){
+        $db = DB::prepare('SELECT * FROM quote_subscriptions WHERE context_id = ? AND reference_id = ?');
+        $db->execute(array( $_SESSION['CONTEXT'][$context]->context_id, $ref_id));
+        while($result = $db->fetchObject()) { 
+            $child  = $xml->createElement('quote_subscription');
+            $child->setAttribute('unique_id',     $result->quote_id); 
+            $parent_node->appendChild( $child );        // Datei enabling objective zuordnen
         }
     }
     
