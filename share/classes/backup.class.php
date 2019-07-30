@@ -611,7 +611,9 @@ class Backup {
         $db->execute(array( $_SESSION['CONTEXT'][$context]->context_id, $ref_id));
         while($result = $db->fetchObject()) { 
             $child  = $xml->createElement('quote_subscription');
-            $child->setAttribute('unique_id',     $result->quote_id); 
+            $child->setAttribute('unique_id',       $result->quote_id); 
+            $child->setAttribute('file_context',    $result->file_context); 
+            $child->setAttribute('status',          $result->status); 
             $parent_node->appendChild( $child );        // Datei enabling objective zuordnen
         }
     }
