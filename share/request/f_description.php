@@ -64,11 +64,11 @@ switch ($func) {
 switch ($func) {
     case 'terminal_objective':  
     case 'enabling_objective':  $ter->load();
-                                $header = 'Beschreibung<br><small><b>Kompetenz</b><br>'.strip_tags($ter->terminal_objective).'</small><br>';
+                                $header = 'Beschreibung<br><small><b class="text-black">Kompetenz/Thema:</b><br>'.$ter->terminal_objective.'</small>';
                                 if (isset($ena)){
-                                   $header .= '<small>- '.strip_tags($ena->enabling_objective).'</small>';
+                                   $header .= '<small><b class="text-black">Konkretisierung</b><br> '.$ena->enabling_objective.'</small>';
                                 }
-                                if ($ter->description AND $ter->description != ''){         $content .=  $ter->description; } 
+                                if ($func == 'terminal_objective' AND isset($ter->description) AND $ter->description != ''){         $content .=  $ter->description; } 
                                 if (isset($ena->description)){  $content .= '<br>'.$ena->description; } 
                                 if (!isset($ena->description) && !isset($ter->description)){    
                                   $content .= 'Keine Beschreibung vorhanden';
