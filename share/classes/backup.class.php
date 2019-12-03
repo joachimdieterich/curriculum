@@ -452,7 +452,7 @@ class Backup {
     
     public function generateXML($c, $filename){
         global $CFG; 
-
+                        
         $xml = new DOMDocument("1.0", "UTF-8"); 
         /* curriculum */
         $cur = $xml->createElement("curriculum");
@@ -468,6 +468,7 @@ class Backup {
         $cur->setAttribute("schooltype",    $sch->schooltype);
         $cur->setAttribute("state_id",      $c->state_id);
         $cur->setAttribute("description",   htmlspecialchars($c->description, ENT_QUOTES));
+        $this->appendInlineFile($xml, $cur, $c->id,  $c->description );
         $cur->setAttribute("country_id",    $c->country_id);
         $cur->setAttribute("creation_time", $c->creation_time);
         $usr = new User($c->creator_id);
@@ -483,7 +484,9 @@ class Backup {
                 $ter = $xml->createElement("terminal_objective");
                 $ter->setAttribute("id",                 $ter_value->id);
                 $ter->setAttribute("terminal_objective", htmlspecialchars($ter_value->terminal_objective, ENT_QUOTES));
+                $this->appendInlineFile($xml, $ter, $c->id, $ter_value->terminal_objective, 'embedded-file' );
                 $ter->setAttribute("description",        htmlspecialchars($ter_value->description, ENT_QUOTES));
+                $this->appendInlineFile($xml, $ter, $c->id,$ter_value->description, 'embedded-file');
                 $ter->setAttribute("order_id",           $ter_value->order_id);
                 $ter->setAttribute("repeat_interval",    $ter_value->repeat_interval);
                 $ter->setAttribute("color",              $ter_value->color);
@@ -502,7 +505,9 @@ class Backup {
                         $ena = $xml->createElement('enabling_objective');
                         $ena->setAttribute('id',                 $ena_value->id);
                         $ena->setAttribute('enabling_objective', htmlspecialchars($ena_value->enabling_objective, ENT_QUOTES));
+                        $this->appendInlineFile($xml, $ena, $c->id, $ena_value->enabling_objective, 'embedded-file');
                         $ena->setAttribute('description',        htmlspecialchars($ena_value->description, ENT_QUOTES));
+                        $this->appendInlineFile($xml, $ena, $c->id, $ena_value->description, 'embedded-file');
                         $ena->setAttribute('order_id',           $ena_value->order_id);
                         $ena->setAttribute('repeat_interval',    $ena_value->repeat_interval);
                         if (isset($ext_ref)){
@@ -540,19 +545,40 @@ class Backup {
                 $content_tag         = $xml->createElement($element_tag);
                 $content_tag_title   = $xml->createElement("title", htmlspecialchars($con_value->title, ENT_QUOTES));
                 $content_tag->appendChild($content_tag_title);
-                $content_tag_content = $xml->createElement("text", htmlspecialchars($con_value->content, ENT_QUOTES));
+                $content_tag_content = $xml->createElement("text", htmlspecialchars($con_value->content, ENT_QUOTES)); 
+                $this->appendInlineFile($xml, $content_tag_content, $ref_id, $con_value->content, 'embedded-file');
                 $content_tag->appendChild($content_tag_content);   
                 
                 //set quote 
                 $this->appendQuote($xml, $content_tag, $con_value->id, 'content');
-                //
                 
                 $parent_node->appendChild($content_tag);
             }
         }
     }
     
-    private function appendFile($xml, $parent_node, $ref_id, $context, $file){
+    private function appendInlineFile($xml, $parent_node, $curriculum_id, $con_value, $tag = 'file'){
+        global $CFG;
+        $regex   = '#\<img.*?src=".*?accessfile\.php\?id=(.*?)"[^\>]*>#is';
+        preg_match_all($regex, $con_value, $matches);
+        //$matches[0] == with quote tag
+        //$matches[1] == quote only
+        for ($i = 0; $i < count($matches[1]); $i++) {
+            $inlineFile = new File();
+            $inlineFile->load($matches[1][$i]);
+            $child  = $xml->createElement($tag);
+            $this->array_to_Attribute($child, $inlineFile);   
+            $parent_node->appendChild( $child );        // Datei parent zuordnen
+            /* Datei in Backup Temp kopieren */
+            if ($inlineFile->type != '.url' AND $inlineFile->type != 'external'){
+                silent_mkdir($this->temp_path.'/'.$curriculum_id);
+                copy($CFG->curriculumdata_root.$inlineFile->full_path, $this->temp_path.'/'.$curriculum_id.'/'.$inlineFile->filename);
+            }
+            
+        }
+    }
+    
+    private function appendFile($xml, $parent_node, $ref_id, $context, $file, $tag = 'file'){
         global $CFG;
         if ($context == 'curriculum'){
             $cur_files  = $file->getFiles($context, $ref_id,'', array('cur' => true));
@@ -561,9 +587,9 @@ class Backup {
         }
         if (count($cur_files) >= 1){
             foreach($cur_files as $f_value) {
-                $child  = $xml->createElement('file');
+                $child  = $xml->createElement($tag);
                 $this->array_to_Attribute($child, $f_value);   
-                $parent_node->appendChild( $child );        // Datei enabling objective zuordnen
+                $parent_node->appendChild( $child );        // Datei curriculum zuordnen
                 /* Datei in Backup Temp kopieren */
                 if ($f_value->type != '.url' AND $f_value->type != 'external'){
                     silent_mkdir($this->temp_path.'/'.$f_value->path);
@@ -611,9 +637,9 @@ class Backup {
         $db->execute(array( $_SESSION['CONTEXT'][$context]->context_id, $ref_id));
         while($result = $db->fetchObject()) { 
             $child  = $xml->createElement('quote_subscription');
-            $child->setAttribute('unique_id',       $result->quote_id); 
-            $child->setAttribute('file_context',    $result->file_context); 
-            $child->setAttribute('status',          $result->status); 
+            $child->setAttribute('unique_id',           $result->quote_id); 
+            $child->setAttribute('sharing_level_id',    $result->file_context); 
+            $child->setAttribute('visibility',          $result->status); 
             $parent_node->appendChild( $child );        // Datei enabling objective zuordnen
         }
     }
