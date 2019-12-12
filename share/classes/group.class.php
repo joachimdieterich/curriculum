@@ -232,12 +232,14 @@ class Group {
             $PAGE->message[] = array('message' => 'Die Lerngruppe <strong>'.$this->group.'</strong> war in <strong>'.$curriculum->curriculum.'</strong> eingeschrieben (deaktiviert). Die Einschreibung wurde wieder auf \'aktiv\' gesetzt.', 'icon' => 'fa-group text-warning');
             return $result;
         } else {
-            $db = DB::prepare('INSERT INTO curriculum_enrolments (status,group_id,curriculum_id,creator_id) 
-                                VALUES (1,?,?,?)');//Status 1 == eingeschrieben
+            if (!$this->checkEnrolment($curriculum_id, 1)) {
+                $db = DB::prepare('INSERT INTO curriculum_enrolments (status,group_id,curriculum_id,creator_id) 
+                                    VALUES (1,?,?,?)');//Status 1 == eingeschrieben
 
-            $PAGE->message[] = array('message' => 'Die Lerngruppe <strong>'.$this->group.'</strong> wurde erfolgreich in <strong>'.$curriculum->curriculum.'</strong> eingeschrieben.', 'icon' => 'fa-group text-success');  
-            $result = $db->execute(array($this->id, $curriculum_id, $user_id));
-            return $result;
+                $PAGE->message[] = array('message' => 'Die Lerngruppe <strong>'.$this->group.'</strong> wurde erfolgreich in <strong>'.$curriculum->curriculum.'</strong> eingeschrieben.', 'icon' => 'fa-group text-success');  
+                $result = $db->execute(array($this->id, $curriculum_id, $user_id));
+                return $result;
+            }
         }
     }
     
