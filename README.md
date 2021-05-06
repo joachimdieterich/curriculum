@@ -1,4 +1,7 @@
+deprecated, please use new repo: https://github.com/joachimdieterich/laravel-curriculum-adminlte3
+
 curriculum BETA Version 0.9.4
+
 
 Verion 0.9.4
 =================
